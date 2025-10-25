@@ -1,0 +1,29 @@
+Game Idea
+
+Title: Castle Crushers
+
+Genre: Rogulite/Aracde game
+
+Tetris style play field (10 width x 20 height)
+
+Select a deck of monsters to use as blocks that will fall from the top of the screen and need to be arrenaged into full rows of 10 to be destroyed and launch an attack that travels back up the screen to attack a castle wall and damaging the castles hit points. Having 4+ matching monsters consecutivley to launch an attack increases a special gauge for an ultimate ability.
+
+When  monster blocks reach the number of consecutive matching icons to launch an attack they are destroyed (base damage/special gauge is increased if more than 4 of the same monsters are linked consecutivley in a row for every extra matching monster icon) when attack is launched the monster icon blocks are destroyed all blocks above destroyed blocks are shifted down one row.
+
+Castle hp reaching 0 is the win condition for the player to complete the level and recieve a reward/boost for the remainder of the run. Then next level starts with increased difficulty.
+
+Player accummulates score based on the damage done during a run.
+
+Monsters selected for the players deck are the only ones that will be spawned/dropped from the top during that run. Each deck requires a single monster for each block type (Square, T-shape, offset-square-left, offset-square right, Line, L-Left, and L-Right)
+
+Active block can be rotated clockwise or counterclockwise until it is blocked by an inactive block (like tetris). Once the active block is at rest and set to inactive, next block is spawned and set as new active block.
+
+Each monster has a specific block shape (L-shape and offset-square can use the same monster for both left and right variation).
+
+Special block has a chance to be spawned (low spawn rate) single lightning bolt block that destroys all of one kind of monster block currently on the the board. Calculate damage/special gauge increase based on number of blocks destroyed.
+
+Special block bomb (Low spawn rate) that blows up all block in a one row/column range of it's inactive location (a 3x3 range with the bomb block at the center of the grid)
+
+Different player characters with unique ultimate abilities.
+
+Unlockables through achievements and currency gained after a finished run. (New player characters, monsters, Starting perks for a run, player character skins, upgrade monster blocks)
