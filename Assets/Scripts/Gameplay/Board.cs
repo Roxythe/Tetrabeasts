@@ -1,0 +1,184 @@
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class Board : MonoBehaviour
+{
+    [Header("Grid Size")]
+    public int width = 10;
+    public int height = 20;
+
+    [Header("Refs")]
+    public RectTransform gridRoot;   // child under GameBoard
+    public Image tilePrefab;         // TileUI_Prefab (UI Image)
+
+    // runtime
+    RectTransform boardRect;         // the GameBoard panel
+    Vector2 cellSize;            // size of one (square) cell in pixels
+    Vector2 contentSize;         // total pixel size actually used by the grid (width*cell, height*cell)
+    readonly Transform[,] grid = null; // (not used for UI placement—kept for logic)
+    Dictionary<Vector2Int, RectTransform> placed = new();
+
+    void Awake()
+    {
+        boardRect = GetComponent<RectTransform>();
+        if (!gridRoot) gridRoot = (RectTransform)transform;
+    }
+
+    void Start()
+    {
+        RecomputeCellMetrics();
+        DrawGridOverlay(); // nice to have; remove if you don’t want lines
+    }
+
+    public void RecomputeCellMetrics()
+    {
+        var r = boardRect.rect;              // pixel rect of the GameBoard panel
+        float cw = r.width / width;
+        float ch = r.height / height;
+        float s = Mathf.Floor(Mathf.Min(cw, ch));       // make cells square (use the limiting side)
+        s = Mathf.Max(1f, s);
+        cellSize = new Vector2(s, s);
+        contentSize = new Vector2(width * s, height * s);
+    }
+    public Vector2 CellToAnchoredPos(Vector2Int cell)
+    {
+        var r = boardRect.rect;
+
+        float x0 = -contentSize.x * 0.5f;
+        float y0 = -contentSize.y * 0.5f;
+        float x = x0 + (cell.x + 0.5f) * cellSize.x;
+        float y = y0 + (cell.y + 0.5f) * cellSize.y;
+        return new Vector2(x, y);
+    }
+
+    public RectTransform InstantiateTileUI(Color color)
+    {
+        var t = Instantiate(tilePrefab, gridRoot);
+        t.color = color;
+        var rt = t.rectTransform;
+        rt.sizeDelta = cellSize;
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.localScale = Vector3.one;
+        return rt;
+    }
+
+    public bool InBounds(Vector2Int c) =>
+        c.x >= 0 && c.x < width && c.y >= 0 && c.y < height;
+
+    public bool IsFree(Vector2Int c) => InBounds(c) && !placed.ContainsKey(c);
+
+    public bool Valid(Vector2Int[] cells)
+    {
+        for (int i = 0; i < cells.Length; i++)
+        {
+            var c = cells[i];
+
+            // X must always be inside columns
+            if (c.x < 0 || c.x >= width) return false;
+
+            // Above the board is OK (spawn zone)
+            if (c.y >= height) continue;
+
+            // Below the board is not OK (floor)
+            if (c.y < 0) return false;
+
+            // Inside the board: must be empty
+            if (placed.ContainsKey(c)) return false;
+        }
+        return true;
+    }
+
+    public void Place(Vector2Int c, RectTransform visual)
+    {
+        placed[c] = visual;
+        visual.anchoredPosition = CellToAnchoredPos(c);
+        visual.sizeDelta = cellSize;
+    }
+
+    public void ClearFullLines(out int cleared)
+    {
+        cleared = 0;
+        for (int y = 0; y < height; y++)
+        {
+            bool full = true;
+            for (int x = 0; x < width; x++)
+                if (!placed.ContainsKey(new Vector2Int(x, y))) { full = false; break; }
+
+            if (!full) continue;
+
+            // delete row
+            for (int x = 0; x < width; x++)
+            {
+                var key = new Vector2Int(x, y);
+                if (placed.TryGetValue(key, out var rt))
+                {
+                    Destroy(rt.gameObject);
+                    placed.Remove(key);
+                }
+            }
+
+            // drop above
+            for (int yy = y + 1; yy < height; yy++)
+                for (int x = 0; x < width; x++)
+                {
+                    var from = new Vector2Int(x, yy);
+                    if (placed.TryGetValue(from, out var rt))
+                    {
+                        var to = new Vector2Int(x, yy - 1);
+                        placed.Remove(from);
+                        placed[to] = rt;
+                        rt.anchoredPosition = CellToAnchoredPos(to);
+                    }
+                }
+
+            y--;  // re-check same row
+            cleared++;
+        }
+    }
+
+    // simple thin-line overlay
+    void DrawGridOverlay()
+    {
+        // optional: remove old lines first
+        foreach (Transform child in gridRoot)
+            if (child.name.StartsWith("GridLine_")) Destroy(child.gameObject);
+
+        var col = new Color(1, 1, 1, 0.5f); // Semi-transparent white grid lines
+        for (int x = 0; x <= width; x++)
+        {
+            var img = new GameObject($"GridLine_V_{x}", typeof(Image)).GetComponent<Image>();
+            img.transform.SetParent(gridRoot, false);
+            img.color = col;
+            var rt = img.rectTransform;
+            rt.sizeDelta = new Vector2(1f, Mathf.Round(contentSize.y));
+            rt.anchoredPosition = new Vector2(Mathf.Round(-contentSize.x * 0.5f + x * cellSize.x), 0f);
+            img.name = "GridLine_" + img.name;
+        }
+        for (int y = 0; y <= height; y++)
+        {
+            var img = new GameObject($"GridLine_H_{y}", typeof(Image)).GetComponent<Image>();
+            img.transform.SetParent(gridRoot, false);
+            img.color = col;
+            var rt = img.rectTransform;
+            rt.sizeDelta = new Vector2(Mathf.Round(contentSize.x), 1f);
+            rt.anchoredPosition = new Vector2(0f, Mathf.Round(-contentSize.y * 0.5f + y * cellSize.y));
+            img.name = "GridLine_" + img.name;
+        }
+    }
+
+    // Handle resizing at runtime
+    void OnRectTransformDimensionsChange()
+    {
+        if (boardRect == null) boardRect = GetComponent<RectTransform>();
+        RecomputeCellMetrics();
+        // Reposition any placed tiles
+        var toFix = new List<KeyValuePair<Vector2Int, RectTransform>>(placed);
+        foreach (var kv in toFix)
+            kv.Value.anchoredPosition = CellToAnchoredPos(kv.Key);
+        DrawGridOverlay();
+    }
+
+    // helper so others can read cell size
+    public Vector2 GetCellSize() => cellSize;
+}
