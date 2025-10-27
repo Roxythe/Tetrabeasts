@@ -20,15 +20,36 @@ public class HighScoreUI : MonoBehaviour
     {
         if (!panel) panel = gameObject;
         if (submitButton) submitButton.onClick.AddListener(Submit);
-        Hide();
     }
 
     public void TryShow(int score)
     {
         pendingScore = score;
         RefreshTable();
+
         bool qualifies = HighScoreManager.IsHighScore(score);
-        Show(qualifies);
+        ForceActivate();
+
+        // Bring to front so nothing covers it
+        //panel.transform.SetAsLastSibling();
+
+        if (nameInput) nameInput.gameObject.SetActive(qualifies);
+        if (submitButton) submitButton.gameObject.SetActive(qualifies);
+
+        Debug.Log($"[HS] TryShow: score={score}, qualifies={qualifies}, " +
+                  $"panelActiveSelf={panel.activeSelf}, compGOActiveSelf={gameObject.activeSelf}, " +
+                  $"panelID={panel.GetInstanceID()}, compGOID={gameObject.GetInstanceID()}");
+    }
+
+    void ForceActivate()
+    {
+        // Activate the component's GO
+        if (!gameObject.activeSelf) gameObject.SetActive(true);
+        if (panel && !panel.activeSelf) panel.SetActive(true);
+
+        // If there's a CanvasGroup, make sure it's visible & clickable
+        var cg = (panel ? panel : gameObject).GetComponent<CanvasGroup>();
+        if (cg) { cg.alpha = 1f; cg.interactable = true; cg.blocksRaycasts = true; }
     }
 
     void Submit()

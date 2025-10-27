@@ -96,6 +96,18 @@ public class Board : MonoBehaviour
         visual.sizeDelta = cellSize;
     }
 
+    public void ClearAll()
+    {
+        // delete every placed tile
+        foreach (var kv in placed)
+            if (kv.Value) Destroy(kv.Value.gameObject);
+        placed.Clear();
+
+        // (optional) rebuild gridlines so positions are exact post-resize
+        RecomputeCellMetrics();
+        DrawGridOverlay();
+    }
+
     public void ClearFullLines(out int cleared)
     {
         cleared = 0;
@@ -151,7 +163,7 @@ public class Board : MonoBehaviour
             img.transform.SetParent(gridRoot, false);
             img.color = col;
             var rt = img.rectTransform;
-            rt.sizeDelta = new Vector2(1f, Mathf.Round(contentSize.y));
+            rt.sizeDelta = new Vector2(2f, Mathf.Round(contentSize.y)); // 2 pixels thick grid line
             rt.anchoredPosition = new Vector2(Mathf.Round(-contentSize.x * 0.5f + x * cellSize.x), 0f);
             img.name = "GridLine_" + img.name;
         }
@@ -161,7 +173,7 @@ public class Board : MonoBehaviour
             img.transform.SetParent(gridRoot, false);
             img.color = col;
             var rt = img.rectTransform;
-            rt.sizeDelta = new Vector2(Mathf.Round(contentSize.x), 1f);
+            rt.sizeDelta = new Vector2(Mathf.Round(contentSize.x), 2f); // 2 pixels thick grid line
             rt.anchoredPosition = new Vector2(0f, Mathf.Round(-contentSize.y * 0.5f + y * cellSize.y));
             img.name = "GridLine_" + img.name;
         }

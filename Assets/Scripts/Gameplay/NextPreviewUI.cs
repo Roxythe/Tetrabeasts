@@ -53,4 +53,9 @@ public class NextPreviewUI : MonoBehaviour
             tiles.Add(rt);
         }
     }
+
+    public void ClearPreview()
+    {
+        foreach (Transform c in root) Destroy(c.gameObject);
+    }
 }

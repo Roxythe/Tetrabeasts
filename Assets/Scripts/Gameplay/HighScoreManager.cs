@@ -46,7 +46,7 @@ public static class HighScoreManager
         if (list.Count == 0)
         {
             for (int i = 0; i < max; i++)
-                list.Add(new HighScoreEntry { name = "No Name", score = 0, date = "" });
+                list.Add(new HighScoreEntry { name = "......", score = 0, date = "" });
             Save(list);
         }
     }
@@ -58,7 +58,7 @@ public static class HighScoreManager
         if (list.Count > max) list = list.GetRange(0, max);
         if (pad && list.Count < max)
             while (list.Count < max)
-                list.Add(new HighScoreEntry { name = "No Name", score = 0, date = "" });
+                list.Add(new HighScoreEntry { name = "......", score = 0, date = "" });
         return list;
     }
 }

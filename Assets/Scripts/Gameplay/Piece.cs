@@ -189,4 +189,15 @@ public class Piece : MonoBehaviour
         enabled = false; // Will be re-enabled by controller
         GetComponent<GameController>().SpawnNextPiece();
     }
+
+    public void ResetPiece()
+    {
+        enabled = false;
+        // remove active visuals
+        for (int i = 0; i < visuals.Count; i++)
+            if (visuals[i]) Destroy(visuals[i].gameObject);
+        visuals.Clear();
+        cells.Clear();
+    }
+
 }
