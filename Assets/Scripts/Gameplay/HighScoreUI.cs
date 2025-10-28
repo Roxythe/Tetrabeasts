@@ -89,4 +89,12 @@ public class HighScoreUI : MonoBehaviour
             }
         }
     }
+
+    public void ShowReadOnly()
+    {
+        ForceActivate();
+        RefreshTable();                         // rebuild rows
+        if (nameInput) nameInput.gameObject.SetActive(false);
+        if (submitButton) submitButton.gameObject.SetActive(false);
+    }
 }
