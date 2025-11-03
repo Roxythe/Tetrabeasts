@@ -98,12 +98,17 @@ public class Board : MonoBehaviour
 
     public void ClearAll()
     {
-        // delete every placed tile
-        foreach (var kv in placed)
-            if (kv.Value) Destroy(kv.Value.gameObject);
         placed.Clear();
 
-        // (optional) rebuild gridlines so positions are exact post-resize
+        if (gridRoot != null)
+        {
+            for (int i = gridRoot.childCount - 1; i >= 0; i--)
+            {
+                var child = gridRoot.GetChild(i);
+                UnityEngine.Object.Destroy(child.gameObject);
+            }
+        }
+
         RecomputeCellMetrics();
         DrawGridOverlay();
     }

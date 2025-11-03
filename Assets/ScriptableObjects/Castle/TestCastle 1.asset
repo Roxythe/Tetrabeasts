@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d53674e82a67d24eb4f78ba0f273f3a, type: 3}
+  m_Name: TestCastle 1
+  m_EditorClassIdentifier: Assembly-CSharp::CastleData
+  castleName: Basic Town
+  damageStages:
+  - {fileID: -4570795205544323055, guid: 1f0ff268de0e76d4c91ac180ab7e6e6e, type: 3}
+  - {fileID: 3745522521326032154, guid: 9082ffe4cf1f7e146b700d31ac4725da, type: 3}
+  - {fileID: 5044524973614600863, guid: 72665c402bca98948ac42bedf1620070, type: 3}
+  - {fileID: 8856490401782157092, guid: 8ef84dac0848a8b4f81252dbc3fac646, type: 3}
+  maxHP: 200

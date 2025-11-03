@@ -70,6 +70,14 @@ public class Piece : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q)) RotateCCW();
         if (Input.GetKeyDown(KeyCode.Space)) HardDrop();
 #endif
+
+        if (cells.Count == 0 || visuals.Count == 0)
+        {
+            fallTimer = 0f;
+            lockTimer = 0f;
+            return;
+        }
+
         // GRAVITY
         fallTimer += Time.deltaTime;
         if (fallTimer >= fallInterval)
@@ -84,8 +92,14 @@ public class Piece : MonoBehaviour
     void BuildVisuals()
     {
         // clear
-        foreach (var v in visuals) if (v) Destroy(v.gameObject);
+        foreach (var v in visuals)
+            if (v) Destroy(v.gameObject);
         visuals.Clear();
+
+        if (board == null || board.gridRoot == null)
+        {
+            return;
+        }
 
         foreach (var c in cells)
         {
@@ -100,8 +114,23 @@ public class Piece : MonoBehaviour
 
     void SyncVisuals()
     {
+        if (visuals.Count != cells.Count)
+        {
+            BuildVisuals();
+            return;
+        }
+
         for (int i = 0; i < visuals.Count; i++)
+        {
+            // If a tile was destroyed externally, bail out and rebuild.
+            if (visuals[i] == null)
+            {
+                BuildVisuals();
+                return;
+            }
+
             visuals[i].anchoredPosition = board.CellToAnchoredPos(cells[i]);
+        }
     }
 
     bool TryMove(Vector2Int delta)
@@ -193,11 +222,24 @@ public class Piece : MonoBehaviour
     public void ResetPiece()
     {
         enabled = false;
-        // remove active visuals
+
+        // Remove active visuals
         for (int i = 0; i < visuals.Count; i++)
-            if (visuals[i]) Destroy(visuals[i].gameObject);
+        {
+            if (visuals[i] != null)
+                Destroy(visuals[i].gameObject);
+        }
         visuals.Clear();
+
+        for (int i = transform.childCount - 1; i >= 0; i--)
+        {
+            var child = transform.GetChild(i);
+            Destroy(child.gameObject);
+        }
+
         cells.Clear();
+        fallTimer = 0f;
+        lockTimer = 0f;
     }
 
 }

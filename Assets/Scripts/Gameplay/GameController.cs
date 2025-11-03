@@ -1,5 +1,6 @@
-using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
@@ -11,12 +12,19 @@ public class GameController : MonoBehaviour
     public NextPreviewUI nextPreview;
     public TetrominoData[] allTetrominoes;
 
+    [Header("Progression")]
+    public EnemyCastleUI enemyCastleUI;
+    public CastleData[] castlesByLevel;  // fill in inspector: level 0,1,2...
+    int currentLevel = 0;
+
     readonly Queue<TetrominoData> bag = new();
     public int score { get; private set; }
     bool gameOver = false;
+    bool levelWon = false;
 
-    public ScoreUI scoreUI;          // drag your ScoreUI here
-    public HighScoreUI highScoreUI;  // drag HighScoreUI here
+    public ScoreUI scoreUI;        
+    public HighScoreUI highScoreUI;
+    public TMP_Text levelText;
 
 
     void Start()
@@ -35,6 +43,9 @@ public class GameController : MonoBehaviour
         }
         if (!gameBoard) gameBoard = FindFirstObjectByType<Board>();
         if (!piece) piece = GetComponent<Piece>();
+
+        InitLevel(currentLevel);
+
         if (bag.Count == 0) RefillBag();
         ShowNextPreview();
         SpawnNextPiece();
@@ -112,9 +123,81 @@ public class GameController : MonoBehaviour
 
     public void OnPieceLocked(int linesCleared)
     {
-        score += Mathf.Max(0, linesCleared);    // +1 per row
+        // score update
+        score += Mathf.Max(0, linesCleared);
         if (scoreUI) scoreUI.Set(score);
+
+        // play SFX if we cleared anything
         if (linesCleared > 0 && AudioManager.I)
             AudioManager.I.PlayRandomLineClear();
+
+        // Deal castle damage if we cleared anything
+        if (linesCleared > 0 && enemyCastleUI && !gameOver)
+        {
+            int damage = linesCleared * 10; // simple 1 dmg per row cleared
+            enemyCastleUI.ApplyDamage(damage);
+
+            // Did the castle die here?
+            if (enemyCastleUI.currentHP <= 0)
+            {
+                // Let GameController handle victory
+                OnCastleDestroyed();
+            }
+        }
     }
+
+    void InitLevel(int levelIndex)
+    {
+        levelWon = false;
+
+        // Pick castle data for this level
+        CastleData data = null;
+        if (castlesByLevel != null && levelIndex >= 0 && levelIndex < castlesByLevel.Length)
+        {
+            data = castlesByLevel[levelIndex];
+        }
+
+        if (!enemyCastleUI)
+        {
+            enemyCastleUI = FindFirstObjectByType<EnemyCastleUI>(FindObjectsInactive.Include);
+        }
+
+        if (enemyCastleUI && data)
+        {
+            enemyCastleUI.InitCastle(data);
+        }
+        else
+        {
+            Debug.LogWarning("InitLevel: castle data or enemyCastleUI missing");
+        }
+    }
+
+    // Call this when castle HP has been reduced to 0
+    public void OnCastleDestroyed()
+    {
+        if (gameOver || levelWon) return;
+        levelWon = true;
+
+        Debug.Log("Level WON! Castle destroyed.");
+
+        // Give reward, increment level, etc.
+        currentLevel++;
+
+        // For now let's just end the run as a 'win' and go to high score:
+        EndRunAsWin();
+    }
+
+    void EndRunAsWin()
+    {
+        gameOver = true;
+
+        // Stop music, maybe play victory SFX
+        if (AudioManager.I) AudioManager.I.StopMusic();
+        // You could add AudioManager.I.PlaySFX(victoryClip);
+
+        // Show high score entry
+        if (highScoreUI) highScoreUI.TryShow(score);
+        if (restartButton) restartButton.gameObject.SetActive(true);
+    }
+
 }
