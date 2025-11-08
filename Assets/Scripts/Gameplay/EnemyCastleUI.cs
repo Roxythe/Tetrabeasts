@@ -15,11 +15,18 @@ public class EnemyCastleUI : MonoBehaviour
     public int maxHP { get; private set; }
     public int currentHP { get; private set; }
     public string castleName { get; private set; }
+    public int levelNumber { get; private set; }
 
     CastleData sourceData;
 
     // Call this at the start of a level
     public void InitCastle(CastleData data)
+    {
+        InitCastle(data, 1);
+    }
+
+    // New overload that accepts the level number
+    public void InitCastle(CastleData data, int levelNumber)
     {
         if (data == null)
         {
@@ -32,11 +39,11 @@ public class EnemyCastleUI : MonoBehaviour
         castleName = data.castleName;
         maxHP = Mathf.Max(1, data.maxHP);
         currentHP = maxHP;
+        this.levelNumber = Mathf.Max(1, levelNumber);
 
         if (castleNameText) castleNameText.text = castleName;
-        if (levelNameText) levelNameText.text = castleName;
+        if (levelNameText) levelNameText.text = $"Level: {this.levelNumber}";
 
-        // set up slider
         if (healthBarSlider)
         {
             healthBarSlider.minValue = 0;

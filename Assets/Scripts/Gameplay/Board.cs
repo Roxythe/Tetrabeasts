@@ -7,6 +7,7 @@ public class Board : MonoBehaviour
     [Header("Grid Size")]
     public int width = 10;
     public int height = 20;
+    public float verticalBufferCells = 0.25f;
 
     [Header("Refs")]
     public RectTransform gridRoot;   // child under GameBoard
@@ -33,14 +34,17 @@ public class Board : MonoBehaviour
 
     public void RecomputeCellMetrics()
     {
-        var r = boardRect.rect;              // pixel rect of the GameBoard panel
-        float cw = r.width / width;
-        float ch = r.height / height;
-        float s = Mathf.Floor(Mathf.Min(cw, ch));       // make cells square (use the limiting side)
+        var r = boardRect.rect;  // Pixel rect of the GameBoard panel
+        float sWidth = r.width / width;
+        float sHeight = r.height / (height + 2f * verticalBufferCells);
+
+        float s = Mathf.Floor(Mathf.Min(sWidth, sHeight));
         s = Mathf.Max(1f, s);
+
         cellSize = new Vector2(s, s);
         contentSize = new Vector2(width * s, height * s);
     }
+
     public Vector2 CellToAnchoredPos(Vector2Int cell)
     {
         var r = boardRect.rect;

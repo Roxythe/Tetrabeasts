@@ -14,7 +14,7 @@ public class GameController : MonoBehaviour
 
     [Header("Progression")]
     public EnemyCastleUI enemyCastleUI;
-    public CastleData[] castlesByLevel;  // fill in inspector: level 0,1,2...
+    public CastleData[] castlesByLevel; 
     int currentLevel = 0;
 
     readonly Queue<TetrominoData> bag = new();
@@ -25,7 +25,6 @@ public class GameController : MonoBehaviour
     public ScoreUI scoreUI;        
     public HighScoreUI highScoreUI;
     public TMP_Text levelText;
-
 
     void Start()
     {
@@ -150,21 +149,18 @@ public class GameController : MonoBehaviour
     {
         levelWon = false;
 
-        // Pick castle data for this level
         CastleData data = null;
         if (castlesByLevel != null && levelIndex >= 0 && levelIndex < castlesByLevel.Length)
-        {
             data = castlesByLevel[levelIndex];
-        }
 
         if (!enemyCastleUI)
-        {
             enemyCastleUI = FindFirstObjectByType<EnemyCastleUI>(FindObjectsInactive.Include);
-        }
 
         if (enemyCastleUI && data)
         {
-            enemyCastleUI.InitCastle(data);
+            int levelNumber = levelIndex + 1; 
+            enemyCastleUI.InitCastle(data, levelNumber);
+            if (levelText) levelText.text = $"Level: {levelNumber}";
         }
         else
         {
