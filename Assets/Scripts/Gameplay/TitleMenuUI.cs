@@ -14,9 +14,13 @@ public class TitleMenuUI : MonoBehaviour
     public GameObject highScorePanel;   // set if you have a HS panel in the title scene
     public GameObject settingsPanel;    // reuse your Volume panel here if you like
     public HighScoreUI highScoreUI;
+    public CharacterSelectUI characterSelectPanel;
 
     [Header("Pause While Panels Open?")]
     public bool pauseOnPanels = false;  // usually false for title screen
+
+    [Header("Default Character (optional)")]
+    public PlayerCharacterData defaultCharacter;
 
     void Awake()
     {
@@ -31,12 +35,22 @@ public class TitleMenuUI : MonoBehaviour
     // --- Button hooks ---
     public void OnStartGame()
     {
-        // (Optional) play a click SFX here via AudioManager if you want
-        if (AudioManager.I) AudioManager.I.PlaySFX(AudioManager.I.sfxRestart);
+        // Ensure we have a character before loading Gameplay
+        if (SelectedCharacterStore.Current == null)
+        {
+            if (defaultCharacter != null)
+                SelectedCharacterStore.Current = defaultCharacter;
+            else if (characterSelectPanel != null &&
+                     characterSelectPanel.roster != null &&
+                     characterSelectPanel.roster.Length > 0)
+                SelectedCharacterStore.Current = characterSelectPanel.roster[0];
+            else
+                Debug.LogWarning("No character selected and no default/roster configured. Gameplay will use its own fallback if set.");
+        }
 
-        // Simple sync load (fast scenes). For fancy fades, you can async-load + fade CanvasGroup.
+        if (AudioManager.I) AudioManager.I.PlaySFX(AudioManager.I.sfxRestart);
         if (!string.IsNullOrEmpty(gameplaySceneName))
-            SceneManager.LoadScene(gameplaySceneName);
+            UnityEngine.SceneManagement.SceneManager.LoadScene(gameplaySceneName);
         else
             Debug.LogError("TitleMenuUI: gameplaySceneName is empty.");
     }
@@ -55,6 +69,21 @@ public class TitleMenuUI : MonoBehaviour
         highScorePanel.SetActive(show);
         if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
     }
+
+    public void OnToggleSelectCharacter()
+    {
+        if (!characterSelectPanel) return;
+
+        var go = characterSelectPanel.gameObject;   // <- toggle the GO
+        bool show = !go.activeSelf;
+        go.SetActive(show);
+
+        if (show)
+            characterSelectPanel.RefreshPreview();  // show the currently stored pick
+
+        if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
+    }
+
 
     public void OnToggleSettings()
     {

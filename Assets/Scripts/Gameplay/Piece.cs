@@ -213,8 +213,8 @@ public class Piece : MonoBehaviour
         foreach (var v in visuals) if (v) Destroy(v.gameObject);
         visuals.Clear();
 
-        board.ClearFullLines(out int lines);
-        GetComponent<GameController>().OnPieceLocked(lines);
+        board.ClearFullLines(out int squares);
+        GetComponent<GameController>().OnPieceLocked(squares);
         enabled = false; // Will be re-enabled by controller
         GetComponent<GameController>().SpawnNextPiece();
     }
@@ -223,7 +223,7 @@ public class Piece : MonoBehaviour
     {
         enabled = false;
 
-        // Remove active visuals
+        // Remove only the active falling tile visuals we spawned
         for (int i = 0; i < visuals.Count; i++)
         {
             if (visuals[i] != null)
@@ -231,15 +231,10 @@ public class Piece : MonoBehaviour
         }
         visuals.Clear();
 
-        for (int i = transform.childCount - 1; i >= 0; i--)
-        {
-            var child = transform.GetChild(i);
-            Destroy(child.gameObject);
-        }
-
         cells.Clear();
         fallTimer = 0f;
         lockTimer = 0f;
     }
+
 
 }

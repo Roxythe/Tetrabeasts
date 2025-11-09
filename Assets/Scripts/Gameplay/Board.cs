@@ -23,7 +23,15 @@ public class Board : MonoBehaviour
     void Awake()
     {
         boardRect = GetComponent<RectTransform>();
-        if (!gridRoot) gridRoot = (RectTransform)transform;
+
+        // Always isolate spawned tiles/lines under a dedicated child of THIS Board
+        if (!gridRoot || gridRoot.transform.parent != transform)
+        {
+            var go = new GameObject("GridRoot", typeof(RectTransform));
+            var rt = go.GetComponent<RectTransform>();
+            rt.SetParent(transform, false);
+            gridRoot = rt;
+        }
     }
 
     void Start()
@@ -60,6 +68,9 @@ public class Board : MonoBehaviour
     {
         var t = Instantiate(tilePrefab, gridRoot);
         t.color = color;
+        t.name = "Tile_" + t.GetInstanceID();
+        t.gameObject.AddComponent<BoardOwned>(); 
+
         var rt = t.rectTransform;
         rt.sizeDelta = cellSize;
         rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
@@ -106,10 +117,10 @@ public class Board : MonoBehaviour
 
         if (gridRoot != null)
         {
-            for (int i = gridRoot.childCount - 1; i >= 0; i--)
+            var owned = gridRoot.GetComponentsInChildren<BoardOwned>(true);
+            for (int i = owned.Length - 1; i >= 0; i--)
             {
-                var child = gridRoot.GetChild(i);
-                UnityEngine.Object.Destroy(child.gameObject);
+                Destroy(owned[i].gameObject);
             }
         }
 
@@ -117,9 +128,10 @@ public class Board : MonoBehaviour
         DrawGridOverlay();
     }
 
-    public void ClearFullLines(out int cleared)
+    public void ClearFullLines(out int squaresCleared)
     {
-        cleared = 0;
+        squaresCleared = 0;
+
         for (int y = 0; y < height; y++)
         {
             bool full = true;
@@ -128,7 +140,7 @@ public class Board : MonoBehaviour
 
             if (!full) continue;
 
-            // delete row
+            // Delete row (count squares)
             for (int x = 0; x < width; x++)
             {
                 var key = new Vector2Int(x, y);
@@ -136,11 +148,13 @@ public class Board : MonoBehaviour
                 {
                     Destroy(rt.gameObject);
                     placed.Remove(key);
+                    squaresCleared++; // 1 point/damage per square
                 }
             }
 
-            // drop above
+            // Drop all above by 1
             for (int yy = y + 1; yy < height; yy++)
+            {
                 for (int x = 0; x < width; x++)
                 {
                     var from = new Vector2Int(x, yy);
@@ -152,27 +166,74 @@ public class Board : MonoBehaviour
                         rt.anchoredPosition = CellToAnchoredPos(to);
                     }
                 }
+            }
 
-            y--;  // re-check same row
-            cleared++;
+            y--; // Re-check same y after shift
         }
+    }
+
+    public int ClearBottomRows(int rows)
+    {
+        if (rows <= 0) return 0;
+        rows = Mathf.Min(rows, height);
+
+        int squaresCleared = 0;
+
+        var toDelete = new List<Vector2Int>();
+        foreach (var kv in placed)
+            if (kv.Key.y < rows) toDelete.Add(kv.Key);
+
+        foreach (var key in toDelete)
+        {
+            if (placed.TryGetValue(key, out var rt))
+            {
+                Destroy(rt.gameObject);
+            }
+            placed.Remove(key);
+            squaresCleared++;
+        }
+
+        // Shift everything at y >= rows down by 'rows'
+        // Move using a snapshot to avoid key-collision while iterating.
+        var snapshot = new List<KeyValuePair<Vector2Int, RectTransform>>(placed);
+        foreach (var kv in snapshot)
+        {
+            var from = kv.Key;
+            if (from.y >= rows)
+            {
+                var rt = kv.Value;
+                var to = new Vector2Int(from.x, from.y - rows);
+                placed.Remove(from);
+                placed[to] = rt;
+                rt.anchoredPosition = CellToAnchoredPos(to);
+            }
+        }
+
+        return squaresCleared;
     }
 
     // simple thin-line overlay
     void DrawGridOverlay()
     {
-        // optional: remove old lines first
-        foreach (Transform child in gridRoot)
-            if (child.name.StartsWith("GridLine_")) Destroy(child.gameObject);
+        // Remove old grid lines by marker, not by name
+        if (gridRoot)
+        {
+            var olds = gridRoot.GetComponentsInChildren<BoardOwned>(true);
+            foreach (var m in olds)
+            {
+                if (m.name.StartsWith("GridLine_")) Destroy(m.gameObject);
+            }
+        }
 
-        var col = new Color(1, 1, 1, 0.5f); // Semi-transparent white grid lines
+        var col = new Color(1, 1, 1, 0.5f);
         for (int x = 0; x <= width; x++)
         {
             var img = new GameObject($"GridLine_V_{x}", typeof(Image)).GetComponent<Image>();
             img.transform.SetParent(gridRoot, false);
             img.color = col;
+            img.gameObject.AddComponent<BoardOwned>(); 
             var rt = img.rectTransform;
-            rt.sizeDelta = new Vector2(2f, Mathf.Round(contentSize.y)); // 2 pixels thick grid line
+            rt.sizeDelta = new Vector2(2f, Mathf.Round(contentSize.y));
             rt.anchoredPosition = new Vector2(Mathf.Round(-contentSize.x * 0.5f + x * cellSize.x), 0f);
             img.name = "GridLine_" + img.name;
         }
@@ -181,12 +242,14 @@ public class Board : MonoBehaviour
             var img = new GameObject($"GridLine_H_{y}", typeof(Image)).GetComponent<Image>();
             img.transform.SetParent(gridRoot, false);
             img.color = col;
+            img.gameObject.AddComponent<BoardOwned>(); 
             var rt = img.rectTransform;
-            rt.sizeDelta = new Vector2(Mathf.Round(contentSize.x), 2f); // 2 pixels thick grid line
+            rt.sizeDelta = new Vector2(Mathf.Round(contentSize.x), 2f);
             rt.anchoredPosition = new Vector2(0f, Mathf.Round(-contentSize.y * 0.5f + y * cellSize.y));
             img.name = "GridLine_" + img.name;
         }
     }
+
 
     // Handle resizing at runtime
     void OnRectTransformDimensionsChange()

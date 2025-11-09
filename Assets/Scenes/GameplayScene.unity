@@ -346,7 +346,7 @@ GameObject:
   - component: {fileID: 73739977}
   - component: {fileID: 73739976}
   m_Layer: 5
-  m_Name: Charcter_Image
+  m_Name: Player_Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -677,7 +677,7 @@ GameObject:
   - component: {fileID: 458098585}
   - component: {fileID: 458098584}
   m_Layer: 5
-  m_Name: CharacterName_Text
+  m_Name: PlayerName_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2178,6 +2178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Board
   width: 10
   height: 20
+  verticalBufferCells: 0.25
   gridRoot: {fileID: 1903717878}
   tilePrefab: {fileID: 1946968788498790587, guid: 1c9906466f5f60b41a8d6e70f0f7b5bd, type: 3}
 --- !u!224 &1488354586
@@ -2654,7 +2655,7 @@ GameObject:
   - component: {fileID: 2029103630}
   - component: {fileID: 2029103629}
   m_Layer: 5
-  m_Name: Character_Panel
+  m_Name: Player_Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2863,6 +2864,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 347f97c862e224641898291b159f0743, type: 2}
   - {fileID: 11400000, guid: e3344096f4bcc724c9a2efed9ccedc29, type: 2}
   - {fileID: 11400000, guid: fcd660acd77e3bf4c80a70c0f8d77d7a, type: 2}
+  playerPortrait: {fileID: 73739976}
+  playerName: {fileID: 458098584}
+  selectedCharacter: {fileID: 0}
+  roster: []
   scoreUI: {fileID: 2092384766}
   highScoreUI: {fileID: 330590300}
   levelText: {fileID: 685653179}

@@ -17,6 +17,14 @@ public class GameController : MonoBehaviour
     public CastleData[] castlesByLevel; 
     int currentLevel = 0;
 
+    [Header("Player")]
+    public UnityEngine.UI.Image playerPortrait;
+    public TMPro.TMP_Text playerName;
+
+    [Header("Characters")]
+    public PlayerCharacterData selectedCharacter;   // set this in the inspector, or via a select UI
+    public PlayerCharacterData[] roster;           // optional: populate for a character select screen
+
     readonly Queue<TetrominoData> bag = new();
     public int score { get; private set; }
     bool gameOver = false;
@@ -43,6 +51,21 @@ public class GameController : MonoBehaviour
         if (!gameBoard) gameBoard = FindFirstObjectByType<Board>();
         if (!piece) piece = GetComponent<Piece>();
 
+        // Prefer the character picked on the title screen
+        if (SelectedCharacterStore.Current != null)
+            selectedCharacter = SelectedCharacterStore.Current;
+        else if (!selectedCharacter && roster != null && roster.Length > 0)
+            selectedCharacter = roster[0];
+
+        // Apply character UI
+        if (selectedCharacter)
+        {
+            if (playerPortrait && selectedCharacter.portrait)
+                playerPortrait.sprite = selectedCharacter.portrait;
+            if (playerName)
+                playerName.text = selectedCharacter.displayName;
+        }
+
         InitLevel(currentLevel);
 
         if (bag.Count == 0) RefillBag();
@@ -53,6 +76,17 @@ public class GameController : MonoBehaviour
         if (scoreUI) scoreUI.Set(score);
         if (restartButton) restartButton.gameObject.SetActive(false);
         if (AudioManager.I) AudioManager.I.PlayMusic(AudioManager.I.bgmLoop, true, AudioManager.I.musicVolume);
+    }
+
+    void Update()
+    {
+#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
+    if (UnityEngine.InputSystem.Keyboard.current.rKey.wasPressedThisFrame)
+        ActivateSpecial();
+#else
+        if (Input.GetKeyDown(KeyCode.R))
+            ActivateSpecial();
+#endif
     }
 
     void ShowNextPreview()
@@ -83,6 +117,8 @@ public class GameController : MonoBehaviour
         if (gameBoard) gameBoard.ClearAll(); // Clear board tiles
 
         // Reset run state
+        currentLevel = 0;
+        InitLevel(currentLevel);
         gameOver = false;
         score = 0;
         if (scoreUI) scoreUI.Set(score);   
@@ -120,28 +156,22 @@ public class GameController : MonoBehaviour
         foreach (var d in list) bag.Enqueue(d);
     }
 
-    public void OnPieceLocked(int linesCleared)
+    public void OnPieceLocked(int squaresCleared)
     {
-        // score update
-        score += Mathf.Max(0, linesCleared);
+        // score update: 1 point per square
+        score += Mathf.Max(0, squaresCleared);
         if (scoreUI) scoreUI.Set(score);
 
-        // play SFX if we cleared anything
-        if (linesCleared > 0 && AudioManager.I)
+        // SFX if we cleared anything
+        if (squaresCleared > 0 && AudioManager.I)
             AudioManager.I.PlayRandomLineClear();
 
-        // Deal castle damage if we cleared anything
-        if (linesCleared > 0 && enemyCastleUI && !gameOver)
+        // Deal castle damage: 1 dmg per square
+        if (squaresCleared > 0 && enemyCastleUI && !gameOver)
         {
-            int damage = linesCleared * 10; // simple 1 dmg per row cleared
+            int damage = squaresCleared;
             enemyCastleUI.ApplyDamage(damage);
-
-            // Did the castle die here?
-            if (enemyCastleUI.currentHP <= 0)
-            {
-                // Let GameController handle victory
-                OnCastleDestroyed();
-            }
+            if (enemyCastleUI.currentHP <= 0) OnCastleDestroyed();
         }
     }
 
@@ -174,26 +204,83 @@ public class GameController : MonoBehaviour
         if (gameOver || levelWon) return;
         levelWon = true;
 
-        Debug.Log("Level WON! Castle destroyed.");
-
-        // Give reward, increment level, etc.
         currentLevel++;
 
-        // For now let's just end the run as a 'win' and go to high score:
-        EndRunAsWin();
+        if (castlesByLevel != null && currentLevel < castlesByLevel.Length)
+        {
+            StartNextLevel();  // fresh board + new castle, keep score
+        }
+        else
+        {
+            EndRunAsWin();     // only when last castle is beaten
+        }
+    }
+
+    void StartNextLevel()
+    {
+        if (piece) piece.ResetPiece();
+        if (gameBoard) gameBoard.ClearAll();
+
+        InitLevel(currentLevel);   // sets castle to full HP and updates level text
+
+        bag.Clear();
+        RefillBag();
+        ShowNextPreview();
+        SpawnNextPiece();
+
+        levelWon = false; // re-arm
     }
 
     void EndRunAsWin()
     {
         gameOver = true;
-
-        // Stop music, maybe play victory SFX
         if (AudioManager.I) AudioManager.I.StopMusic();
-        // You could add AudioManager.I.PlaySFX(victoryClip);
-
-        // Show high score entry
         if (highScoreUI) highScoreUI.TryShow(score);
         if (restartButton) restartButton.gameObject.SetActive(true);
+    }
+
+    void ActivateSpecial()
+    {
+        if (gameOver || gameBoard == null || selectedCharacter == null) return;
+
+        switch (selectedCharacter.ability)
+        {
+            case SpecialAbility.ClearBottomRows:
+                {
+                    int rows = Mathf.Max(1, selectedCharacter.clearRows);
+                    int squaresCleared = gameBoard.ClearBottomRows(rows);
+
+                    if (squaresCleared > 0)
+                    {
+                        // 1 point / damage per square
+                        score += squaresCleared;
+                        if (scoreUI) scoreUI.Set(score);
+
+                        if (AudioManager.I) AudioManager.I.PlayRandomLineClear();
+
+                        if (enemyCastleUI && !levelWon)
+                        {
+                            enemyCastleUI.ApplyDamage(squaresCleared);
+                            if (enemyCastleUI.currentHP <= 0) OnCastleDestroyed();
+                        }
+                    }
+                    break;
+                }
+                // Add more abilities here later
+        }
+    }
+
+
+    public void SetCharacter(PlayerCharacterData data)
+    {
+        selectedCharacter = data;
+        if (selectedCharacter)
+        {
+            if (playerPortrait && selectedCharacter.portrait)
+                playerPortrait.sprite = selectedCharacter.portrait;
+            if (playerName)
+                playerName.text = selectedCharacter.displayName;
+        }
     }
 
 }

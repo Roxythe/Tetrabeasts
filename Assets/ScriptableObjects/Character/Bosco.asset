@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeee6209ccafb68438616e30a515b029, type: 3}
+  m_Name: Bosco
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterData
+  displayName: Bosco
+  portrait: {fileID: -5746821224976465101, guid: e84b3d9040ace1b46b20e1d35cbd036b, type: 3}
+  specialDescription: Clear all tiles from the bottom 3 rows.
+  ability: 0
+  clearRows: 3
+  cooldownSeconds: 0
