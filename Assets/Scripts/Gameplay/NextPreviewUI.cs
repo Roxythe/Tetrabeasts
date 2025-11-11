@@ -8,14 +8,14 @@ public class NextPreviewUI : MonoBehaviour
     public Image tilePrefab;        // same Tile_UI prefab
     readonly List<RectTransform> tiles = new();
 
-    public void Show(TetrominoData data, Color color)
+    public void Show(TetrominoData data, Color color, MonsterData[] monsters)
     {
         // clear old
         for (int i = 0; i < tiles.Count; i++) if (tiles[i]) Destroy(tiles[i].gameObject);
         tiles.Clear();
         if (!data || root == null || tilePrefab == null) return;
 
-        // compute a tight bounding box around the tetromino cells
+        // (same bounding box code as your existing Show)
         int minX = int.MaxValue, minY = int.MaxValue, maxX = int.MinValue, maxY = int.MinValue;
         foreach (var c in data.cells)
         {
@@ -25,32 +25,45 @@ public class NextPreviewUI : MonoBehaviour
         int w = (maxX - minX + 1);
         int h = (maxY - minY + 1);
 
-        // choose a square tile size that fits inside NextPanel with a little padding
         var r = ((RectTransform)transform).rect;
         float pad = 8f;
         float s = Mathf.Floor(Mathf.Min((r.width - 2 * pad) / w, (r.height - 2 * pad) / h));
         s = Mathf.Max(1f, s);
         Vector2 tileSize = new(s, s);
 
-        // center the shape
         float contentW = w * s, contentH = h * s;
         Vector2 origin = new(-contentW * 0.5f, -contentH * 0.5f);
 
-        foreach (var cell in data.cells)
+        for (int i = 0; i < data.cells.Length; i++)
         {
+            var cell = data.cells[i];
             var img = Instantiate(tilePrefab, root);
             img.color = color;
             var rt = img.rectTransform;
             rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
             rt.sizeDelta = tileSize;
 
-            int lx = cell.x - minX;          // local coords inside bbox
-            int ly = cell.y - minY;
+            int lx = cell.x - minX, ly = cell.y - minY;
             float x = origin.x + (lx + 0.5f) * s;
             float y = origin.y + (ly + 0.5f) * s;
-
             rt.anchoredPosition = new Vector2(Mathf.Round(x), Mathf.Round(y));
             tiles.Add(rt);
+
+            // child portrait
+            if (monsters != null && i < monsters.Length && monsters[i] && monsters[i].portrait)
+            {
+                var portraitGO = new GameObject("MonsterPortrait", typeof(Image));
+                var pimg = portraitGO.GetComponent<Image>();
+                pimg.sprite = monsters[i].portrait;
+                pimg.preserveAspect = true;
+
+                var prt = pimg.rectTransform;
+                prt.SetParent(rt, false);
+                prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
+                float inset = 4f;
+                prt.sizeDelta = rt.sizeDelta - new Vector2(inset, inset);
+                prt.anchoredPosition = Vector2.zero;
+            }
         }
     }
 

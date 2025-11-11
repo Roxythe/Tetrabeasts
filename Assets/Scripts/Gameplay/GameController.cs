@@ -25,6 +25,10 @@ public class GameController : MonoBehaviour
     public PlayerCharacterData selectedCharacter;   // set this in the inspector, or via a select UI
     public PlayerCharacterData[] roster;           // optional: populate for a character select screen
 
+    [Header("Monsters")]
+    public MonsterData[] fallbackMonsters; // 2 defaults, set in Inspector
+    readonly Queue<MonsterData[]> monstersBag = new(); // parallel to 'bag'
+
     readonly Queue<TetrominoData> bag = new();
     public int score { get; private set; }
     bool gameOver = false;
@@ -91,23 +95,27 @@ public class GameController : MonoBehaviour
 
     void ShowNextPreview()
     {
-        if (nextPreview == null || bag.Count == 0) return;
+        if (nextPreview == null || bag.Count == 0 || monstersBag.Count == 0) return;
         var next = bag.Peek();
-        nextPreview.Show(next, next.color);
+        var m = monstersBag.Peek();
+        nextPreview.Show(next, next.color, m); // new overload that accepts monsters[]
     }
 
     public void SpawnNextPiece()
     {
         if (gameOver) return;
         if (bag.Count == 0) RefillBag();
+
         var data = bag.Dequeue();
+        var mons = monstersBag.Dequeue();
 
         piece.data = data;
         piece.color = data.color;
+        piece.SetMonsters(mons);  // NEW: pass monsters down
         piece.enabled = true;
         piece.SpawnAtTop();
 
-        ShowNextPreview();   // update preview to the new peek
+        ShowNextPreview();
     }
 
     public void RestartGame()
@@ -153,27 +161,47 @@ public class GameController : MonoBehaviour
             int j = Random.Range(0, i + 1);
             (list[i], list[j]) = (list[j], list[i]);
         }
-        foreach (var d in list) bag.Enqueue(d);
+
+        var roster = GetActiveMonsterRoster();
+        foreach (var d in list)
+        {
+            bag.Enqueue(d);
+
+            // Create a monster array (one entry per tile in the piece)
+            var cellsCount = Mathf.Max(1, d.cells.Length);
+            var arr = new MonsterData[cellsCount];
+            for (int k = 0; k < cellsCount; k++)
+                arr[k] = WeightedPick(roster);
+
+            monstersBag.Enqueue(arr);
+        }
     }
 
-    public void OnPieceLocked(int squaresCleared)
+    public void OnPieceLocked(int rowsCleared, System.Collections.Generic.List<Vector2Int> removedCells)
     {
-        // score update: 1 point per square
-        score += Mathf.Max(0, squaresCleared);
+        // Score rule: rowsCleared × 10 (ignore dead/alive here)
+        int gained = Mathf.Max(0, rowsCleared) * 10;
+        score += gained;
         if (scoreUI) scoreUI.Set(score);
 
-        // SFX if we cleared anything
-        if (squaresCleared > 0 && AudioManager.I)
-            AudioManager.I.PlayRandomLineClear();
-
-        // Deal castle damage: 1 dmg per square
-        if (squaresCleared > 0 && enemyCastleUI && !gameOver)
+        // Damage: sum ATTACK for removed cells whose monster HP > 0
+        int damage = 0;
+        foreach (var cell in removedCells)
         {
-            int damage = squaresCleared;
+            if (gameBoard.TryGetMonster(cell, out var inst))
+            {
+                if (inst.hp > 0f && inst.data) damage += Mathf.RoundToInt(inst.data.attackPower);
+            }
+        }
+
+        if (damage > 0 && enemyCastleUI && !gameOver)
+        {
+            if (AudioManager.I) AudioManager.I.PlayRandomLineClear();
             enemyCastleUI.ApplyDamage(damage);
             if (enemyCastleUI.currentHP <= 0) OnCastleDestroyed();
         }
     }
+
 
     void InitLevel(int levelIndex)
     {
@@ -270,7 +298,6 @@ public class GameController : MonoBehaviour
         }
     }
 
-
     public void SetCharacter(PlayerCharacterData data)
     {
         selectedCharacter = data;
@@ -283,4 +310,31 @@ public class GameController : MonoBehaviour
         }
     }
 
+    List<MonsterData> GetActiveMonsterRoster()
+    {
+        var active = (SelectedMonstersStore.Active != null && SelectedMonstersStore.Active.Count >= 2)
+                     ? SelectedMonstersStore.Active
+                     : new System.Collections.Generic.List<MonsterData>(fallbackMonsters);
+
+        // enforce 2..4 just in case
+        if (active.Count < 2 && fallbackMonsters != null && fallbackMonsters.Length >= 2)
+            active = new System.Collections.Generic.List<MonsterData>(fallbackMonsters);
+        if (active.Count > 4) active = active.GetRange(0, 4);
+        return active;
+    }
+
+    MonsterData WeightedPick(List<MonsterData> roster)
+    {
+        float total = 0f;
+        for (int i = 0; i < roster.Count; i++) total += Mathf.Max(0f, roster[i].weightedSpawnRate);
+        if (total <= 0f) return roster[Random.Range(0, roster.Count)];
+
+        float r = Random.Range(0f, total);
+        for (int i = 0; i < roster.Count; i++)
+        {
+            float w = Mathf.Max(0f, roster[i].weightedSpawnRate);
+            if ((r -= w) <= 0f) return roster[i];
+        }
+        return roster[roster.Count - 1];
+    }
 }

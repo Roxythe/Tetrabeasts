@@ -2868,6 +2868,9 @@ MonoBehaviour:
   playerName: {fileID: 458098584}
   selectedCharacter: {fileID: 0}
   roster: []
+  fallbackMonsters:
+  - {fileID: 11400000, guid: 433e723cd1e13c44185e776bf85f5eec, type: 2}
+  - {fileID: 11400000, guid: beed2f869003d004da23471404171e2d, type: 2}
   scoreUI: {fileID: 2092384766}
   highScoreUI: {fileID: 330590300}
   levelText: {fileID: 685653179}

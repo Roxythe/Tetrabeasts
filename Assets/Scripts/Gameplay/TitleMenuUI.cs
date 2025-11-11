@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -13,14 +14,18 @@ public class TitleMenuUI : MonoBehaviour
     [Header("Panels (optional)")]
     public GameObject highScorePanel;   // set if you have a HS panel in the title scene
     public GameObject settingsPanel;    // reuse your Volume panel here if you like
+    public MonsterSelectUI monsterSelectPanel;
     public HighScoreUI highScoreUI;
     public CharacterSelectUI characterSelectPanel;
+
 
     [Header("Pause While Panels Open?")]
     public bool pauseOnPanels = false;  // usually false for title screen
 
-    [Header("Default Character (optional)")]
+    [Header("Defaults")]
     public PlayerCharacterData defaultCharacter;
+    public MonsterData defaultA;
+    public MonsterData defaultB;
 
     void Awake()
     {
@@ -48,6 +53,15 @@ public class TitleMenuUI : MonoBehaviour
                 Debug.LogWarning("No character selected and no default/roster configured. Gameplay will use its own fallback if set.");
         }
 
+        if (SelectedMonstersStore.Active.Count < 2)
+        {
+            // fall back to your first two defaults, or any two you like
+            SelectedMonstersStore.Active = new List<MonsterData> { defaultA, defaultB };
+        }
+
+        // Also truncate to 4 if user picked more.
+        while (SelectedMonstersStore.Active.Count > 4) SelectedMonstersStore.Active.RemoveAt(SelectedMonstersStore.Active.Count - 1);
+
         if (AudioManager.I) AudioManager.I.PlaySFX(AudioManager.I.sfxRestart);
         if (!string.IsNullOrEmpty(gameplaySceneName))
             UnityEngine.SceneManagement.SceneManager.LoadScene(gameplaySceneName);
@@ -74,12 +88,26 @@ public class TitleMenuUI : MonoBehaviour
     {
         if (!characterSelectPanel) return;
 
-        var go = characterSelectPanel.gameObject;   // <- toggle the GO
+        var go = characterSelectPanel.gameObject;
         bool show = !go.activeSelf;
         go.SetActive(show);
 
         if (show)
             characterSelectPanel.RefreshPreview();  // show the currently stored pick
+
+        if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
+    }
+
+    public void OnToggleSelectMonster()
+    {
+        if (!monsterSelectPanel) return;
+
+        var go = monsterSelectPanel.gameObject;
+        bool show = !go.activeSelf;
+        go.SetActive(show);
+
+        if (show)
+            monsterSelectPanel.RefreshAllUI();
 
         if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
     }

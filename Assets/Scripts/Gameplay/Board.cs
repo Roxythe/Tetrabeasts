@@ -20,6 +20,17 @@ public class Board : MonoBehaviour
     readonly Transform[,] grid = null; // (not used for UI placement—kept for logic)
     Dictionary<Vector2Int, RectTransform> placed = new();
 
+    [System.Serializable]
+    public struct MonsterInstance
+    {
+        public MonsterData data;
+        public float hp;
+
+        public MonsterInstance(MonsterData d) { data = d; hp = (d ? d.maxHealth : 0f); }
+    }
+
+    private readonly Dictionary<Vector2Int, MonsterInstance> monsters = new();
+
     void Awake()
     {
         boardRect = GetComponent<RectTransform>();
@@ -128,9 +139,10 @@ public class Board : MonoBehaviour
         DrawGridOverlay();
     }
 
-    public void ClearFullLines(out int squaresCleared)
+    public void ClearFullLines(out int rowsCleared, out List<Vector2Int> removedCells)
     {
-        squaresCleared = 0;
+        rowsCleared = 0;
+        removedCells = new List<Vector2Int>();
 
         for (int y = 0; y < height; y++)
         {
@@ -140,7 +152,9 @@ public class Board : MonoBehaviour
 
             if (!full) continue;
 
-            // Delete row (count squares)
+            rowsCleared++;
+
+            // mark cells to delete
             for (int x = 0; x < width; x++)
             {
                 var key = new Vector2Int(x, y);
@@ -148,27 +162,35 @@ public class Board : MonoBehaviour
                 {
                     Destroy(rt.gameObject);
                     placed.Remove(key);
-                    squaresCleared++; // 1 point/damage per square
+                    removedCells.Add(key);
                 }
+                monsters.Remove(key); // Remove monster at this cell
             }
 
-            // Drop all above by 1
+            // shift everything above down by 1 (tiles + monsters)
             for (int yy = y + 1; yy < height; yy++)
             {
                 for (int x = 0; x < width; x++)
                 {
                     var from = new Vector2Int(x, yy);
+                    var to = new Vector2Int(x, yy - 1);
+
                     if (placed.TryGetValue(from, out var rt))
                     {
-                        var to = new Vector2Int(x, yy - 1);
                         placed.Remove(from);
                         placed[to] = rt;
                         rt.anchoredPosition = CellToAnchoredPos(to);
                     }
+
+                    if (monsters.TryGetValue(from, out var inst))
+                    {
+                        monsters.Remove(from);
+                        monsters[to] = inst;
+                    }
                 }
             }
 
-            y--; // Re-check same y after shift
+            y--; // re-check this row after the drop
         }
     }
 
@@ -265,4 +287,11 @@ public class Board : MonoBehaviour
 
     // helper so others can read cell size
     public Vector2 GetCellSize() => cellSize;
+
+    public void SetMonsterAt(Vector2Int cell, MonsterInstance inst)
+    {
+        monsters[cell] = inst;
+    }
+
+    public bool TryGetMonster(Vector2Int cell, out MonsterInstance inst) => monsters.TryGetValue(cell, out inst);
 }

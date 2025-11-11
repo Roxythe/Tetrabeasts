@@ -27,3 +27,5 @@ Special block bomb (Low spawn rate) that blows up all block in a one row/column 
 Different player characters with unique ultimate abilities.
 
 Unlockables through achievements and currency gained after a finished run. (New player characters, monsters, Starting perks for a run, player character skins, upgrade monster blocks)
+
+Enemy castle can attack player pieces (arrows/fireballs) stopping at first living piece square. Player pieces have different health and ussually inversley porportional to damage (low dmg = high base health). Player pieces that have 0 hp do not deal damage on row clear.

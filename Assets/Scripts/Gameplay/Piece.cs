@@ -20,6 +20,7 @@ public class Piece : MonoBehaviour
     Vector2Int origin;               // rotation/translation origin
     readonly List<Vector2Int> cells = new();
     readonly List<RectTransform> visuals = new();
+    readonly List<MonsterData> monstersForCells = new();
 
     float fallTimer, lockTimer;
 
@@ -91,23 +92,40 @@ public class Piece : MonoBehaviour
 
     void BuildVisuals()
     {
-        // clear
-        foreach (var v in visuals)
-            if (v) Destroy(v.gameObject);
+        foreach (var v in visuals) if (v) Destroy(v.gameObject);
         visuals.Clear();
 
-        if (board == null || board.gridRoot == null)
-        {
-            return;
-        }
+        if (board == null || board.gridRoot == null) return;
 
-        foreach (var c in cells)
+        for (int i = 0; i < cells.Count; i++)
         {
+            var c = cells[i];
             var img = Instantiate(activeTilePrefab, board.gridRoot);
             img.color = color;
+
             var rt = img.rectTransform;
             rt.sizeDelta = board.GetCellSize();
+            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.localScale = Vector3.one;
             rt.anchoredPosition = board.CellToAnchoredPos(c);
+
+            // child portrait (centered)
+            if (i < monstersForCells.Count && monstersForCells[i] && monstersForCells[i].portrait)
+            {
+                var portraitGO = new GameObject("MonsterPortrait", typeof(UnityEngine.UI.Image));
+                var pimg = portraitGO.GetComponent<UnityEngine.UI.Image>();
+                pimg.sprite = monstersForCells[i].portrait;
+                pimg.preserveAspect = true;
+
+                var prt = pimg.rectTransform;
+                prt.SetParent(rt, false);
+                prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
+                // inset a bit so the portrait sits inside the tile nicely
+                float inset = 4f;
+                prt.sizeDelta = rt.sizeDelta - new Vector2(inset, inset);
+                prt.anchoredPosition = Vector2.zero;
+            }
+
             visuals.Add(rt);
         }
     }
@@ -196,26 +214,29 @@ public class Piece : MonoBehaviour
             foreach (var v in visuals) if (v) Destroy(v.gameObject);
             visuals.Clear();
 
-            GetComponent<GameController>().OnPieceLocked(0);
-            GetComponent<GameController>().GameOver();    // we'll add this method below
+            GetComponent<GameController>().OnPieceLocked(0, new System.Collections.Generic.List<Vector2Int>());
+            GetComponent<GameController>().GameOver();
             enabled = false;
             return;
         }
 
-        // convert active visuals into placed tiles
         for (int i = 0; i < cells.Count; i++)
         {
             var placed = board.InstantiateTileUI(color);
             placed.anchoredPosition = board.CellToAnchoredPos(cells[i]);
             board.Place(cells[i], placed);
+
+            // place monster runtime instance aligned to this tile
+            MonsterData md = (i < monstersForCells.Count) ? monstersForCells[i] : null;
+            board.SetMonsterAt(cells[i], new Board.MonsterInstance(md));
         }
 
         foreach (var v in visuals) if (v) Destroy(v.gameObject);
         visuals.Clear();
 
-        board.ClearFullLines(out int squares);
-        GetComponent<GameController>().OnPieceLocked(squares);
-        enabled = false; // Will be re-enabled by controller
+        board.ClearFullLines(out int rows, out var removedCells);
+        GetComponent<GameController>().OnPieceLocked(rows, removedCells);
+        enabled = false;
         GetComponent<GameController>().SpawnNextPiece();
     }
 
@@ -236,5 +257,9 @@ public class Piece : MonoBehaviour
         lockTimer = 0f;
     }
 
-
+    public void SetMonsters(MonsterData[] arr)
+    {
+        monstersForCells.Clear();
+        if (arr != null) monstersForCells.AddRange(arr);
+    }
 }
