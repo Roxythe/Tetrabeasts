@@ -214,7 +214,7 @@ public class Piece : MonoBehaviour
             foreach (var v in visuals) if (v) Destroy(v.gameObject);
             visuals.Clear();
 
-            GetComponent<GameController>().OnPieceLocked(0, new System.Collections.Generic.List<Vector2Int>(), 0);
+            GetComponent<GameController>().OnPieceLocked(0, new System.Collections.Generic.List<Vector2Int>(), 0, 0f);
             GetComponent<GameController>().GameOver();
             enabled = false;
             return;
@@ -234,10 +234,20 @@ public class Piece : MonoBehaviour
         foreach (var v in visuals) if (v) Destroy(v.gameObject);
         visuals.Clear();
 
-        board.ClearFullLines(out int rows, out var removedCells, out int damageFromMonsters);
-        GetComponent<GameController>().OnPieceLocked(rows, removedCells, damageFromMonsters);
+        board.ClearFullLines(out int rows,
+                     out var removedCells,
+                     out int damageFromMonsters,
+                     out float specialChargeFromMonsters);
+
+        var gc = GetComponent<GameController>();
+        int levelBefore = gc.CurrentLevel;
+        gc.OnPieceLocked(rows, removedCells, damageFromMonsters, specialChargeFromMonsters);
+
         enabled = false;
-        GetComponent<GameController>().SpawnNextPiece();
+
+        // Only spawn if the level didn't end
+        if (gc != null && gc.CurrentLevel == levelBefore && gc.CanSpawnNewPiece())
+            gc.SpawnNextPiece();
     }
 
     public void ResetPiece()

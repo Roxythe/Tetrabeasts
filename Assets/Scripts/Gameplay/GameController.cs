@@ -29,6 +29,14 @@ public class GameController : MonoBehaviour
     public MonsterData[] fallbackMonsters; // 2 defaults, set in Inspector
     readonly Queue<MonsterData[]> monstersBag = new(); // parallel to 'bag'
 
+    [Header("Special Gauge UI")]
+    public UnityEngine.UI.Slider specialSlider;  // assign in inspector (min=0, max=1)
+    public TMP_Text specialText;                 // optional “0% … 100%” readout
+
+    [Header("Special Gauge")]
+    public float specialGauge = 0f;
+    public float specialGaugeMax = 100f; // overridden by selectedCharacter if set
+
     readonly Queue<TetrominoData> bag = new();
     public int score { get; private set; }
     bool gameOver = false;
@@ -37,6 +45,8 @@ public class GameController : MonoBehaviour
     public ScoreUI scoreUI;        
     public HighScoreUI highScoreUI;
     public TMP_Text levelText;
+
+    public int CurrentLevel => currentLevel;
 
     void Start()
     {
@@ -70,6 +80,13 @@ public class GameController : MonoBehaviour
                 playerName.text = selectedCharacter.displayName;
         }
 
+        // Apply character special gauge max
+        if (selectedCharacter && selectedCharacter.specialGaugeMax > 0f)
+            specialGaugeMax = selectedCharacter.specialGaugeMax;
+
+        specialGauge = 0f;
+        UpdateSpecialUI();
+
         InitLevel(currentLevel);
 
         if (bag.Count == 0) RefillBag();
@@ -101,9 +118,11 @@ public class GameController : MonoBehaviour
         nextPreview.Show(next, next.color, m); // new overload that accepts monsters[]
     }
 
+    public bool CanSpawnNewPiece() => !gameOver && !levelWon;
+
     public void SpawnNextPiece()
     {
-        if (gameOver) return;
+        if (gameOver || levelWon) return;
         if (bag.Count == 0) RefillBag();
 
         var data = bag.Dequeue();
@@ -111,7 +130,7 @@ public class GameController : MonoBehaviour
 
         piece.data = data;
         piece.color = data.color;
-        piece.SetMonsters(mons);  // NEW: pass monsters down
+        piece.SetMonsters(mons);
         piece.enabled = true;
         piece.SpawnAtTop();
 
@@ -177,24 +196,36 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void OnPieceLocked(int rowsCleared, List<Vector2Int> removedCells, int damageFromMonsters)
+    public void OnPieceLocked(int rowsCleared,
+                          List<Vector2Int> removedCells,
+                          int damageFromMonsters,
+                          float specialChargeFromMonsters)
     {
+        // Score rule: rowsCleared × 10
         int gained = Mathf.Max(0, rowsCleared) * 10;
         score += gained;
         if (scoreUI) scoreUI.Set(score);
 
-        // Play SFX for the clear itself
+        // Play SFX for the clear itself (even if damage is 0)
         if (rowsCleared > 0 && AudioManager.I)
             AudioManager.I.PlayRandomLineClear();
 
-        // Then apply damage (may be 0 if all monsters were dead)
+        // Apply monster damage (precomputed by Board)
         int damage = Mathf.Max(0, damageFromMonsters);
         if (damage > 0 && enemyCastleUI && !gameOver)
         {
             enemyCastleUI.ApplyDamage(damage);
             if (enemyCastleUI.currentHP <= 0) OnCastleDestroyed();
         }
+
+        // Apply special charge
+        if (specialChargeFromMonsters > 0f)
+        {
+            specialGauge = Mathf.Min(specialGaugeMax, specialGauge + specialChargeFromMonsters);
+            UpdateSpecialUI();
+        }
     }
+
 
     void InitLevel(int levelIndex)
     {
@@ -229,12 +260,20 @@ public class GameController : MonoBehaviour
 
         if (castlesByLevel != null && currentLevel < castlesByLevel.Length)
         {
-            StartNextLevel();  // fresh board + new castle, keep score
+            // Defer the level transition to next frame
+            StartCoroutine(CoStartNextLevel());
         }
         else
         {
-            EndRunAsWin();     // only when last castle is beaten
+            EndRunAsWin();
         }
+    }
+
+    private System.Collections.IEnumerator CoStartNextLevel()
+    {
+        yield return null;  
+
+        StartNextLevel();  
     }
 
     void StartNextLevel()
@@ -264,6 +303,9 @@ public class GameController : MonoBehaviour
     {
         if (gameOver || gameBoard == null || selectedCharacter == null) return;
 
+        // Gate: require full gauge
+        if (specialGauge < specialGaugeMax) return;
+
         switch (selectedCharacter.ability)
         {
             case SpecialAbility.ClearBottomRows:
@@ -271,9 +313,13 @@ public class GameController : MonoBehaviour
                     int rows = Mathf.Max(1, selectedCharacter.clearRows);
                     int squaresCleared = gameBoard.ClearBottomRows(rows);
 
+                    // Reset gauge on use
+                    specialGauge = 0f;
+                    UpdateSpecialUI();
+
                     if (squaresCleared > 0)
                     {
-                        // 1 point / damage per square
+                        // 1 point / damage per square (your existing rule for this special)
                         score += squaresCleared;
                         if (scoreUI) scoreUI.Set(score);
 
@@ -287,7 +333,6 @@ public class GameController : MonoBehaviour
                     }
                     break;
                 }
-                // Add more abilities here later
         }
     }
 
@@ -329,5 +374,14 @@ public class GameController : MonoBehaviour
             if ((r -= w) <= 0f) return roster[i];
         }
         return roster[roster.Count - 1];
+    }
+
+    void UpdateSpecialUI()
+    {
+        if (specialSlider)
+            specialSlider.value = Mathf.Clamp01(specialGauge / Mathf.Max(1f, specialGaugeMax));
+
+        if (specialText)
+            specialText.text = $"{Mathf.RoundToInt(100f * Mathf.Clamp01(specialGauge / Mathf.Max(1f, specialGaugeMax)))}%";
     }
 }

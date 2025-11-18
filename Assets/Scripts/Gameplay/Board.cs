@@ -156,11 +156,15 @@ public class Board : MonoBehaviour
         DrawGridOverlay();
     }
 
-    public void ClearFullLines(out int rowsCleared, out List<Vector2Int> removedCells, out int damageFromMonsters)
+    public void ClearFullLines(out int rowsCleared,
+                           out List<Vector2Int> removedCells,
+                           out int damageFromMonsters,
+                           out float specialChargeFromMonsters)
     {
         rowsCleared = 0;
         removedCells = new List<Vector2Int>();
         damageFromMonsters = 0;
+        specialChargeFromMonsters = 0f;
 
         for (int y = 0; y < height; y++)
         {
@@ -171,20 +175,25 @@ public class Board : MonoBehaviour
 
             rowsCleared++;
 
-            // remove this row, but tally monster damage BEFORE removing
             for (int x = 0; x < width; x++)
             {
                 var key = new Vector2Int(x, y);
 
-                // tally damage first
+                // Tally BEFORE removal
                 if (monsters.TryGetValue(key, out var inst))
                 {
-                    if (inst.hp > 0f && inst.data)
-                        damageFromMonsters += Mathf.RoundToInt(inst.data.attackPower);
+                    if (inst.data)
+                    {
+                        // Damage rule you already use:
+                        if (inst.hp > 0f)
+                            damageFromMonsters += Mathf.RoundToInt(inst.data.attackPower);
+
+                        // Gauge gain per monster (always counts, or gate by hp>0 if you prefer)
+                        specialChargeFromMonsters += inst.data.specialGaugeGain;
+                    }
                     monsters.Remove(key);
                 }
 
-                // then remove the tile
                 if (placed.TryGetValue(key, out var rt))
                 {
                     Destroy(rt.gameObject);
@@ -193,7 +202,7 @@ public class Board : MonoBehaviour
                 }
             }
 
-            // shift everything above down by 1 (tiles + monsters)
+            // shift down tiles + monsters (unchanged)
             for (int yy = y + 1; yy < height; yy++)
             {
                 for (int x = 0; x < width; x++)
@@ -215,9 +224,10 @@ public class Board : MonoBehaviour
                 }
             }
 
-            y--; // re-check same row after shift
+            y--;
         }
     }
+
 
     public int ClearBottomRows(int rows)
     {
