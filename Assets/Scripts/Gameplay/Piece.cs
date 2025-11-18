@@ -214,7 +214,7 @@ public class Piece : MonoBehaviour
             foreach (var v in visuals) if (v) Destroy(v.gameObject);
             visuals.Clear();
 
-            GetComponent<GameController>().OnPieceLocked(0, new System.Collections.Generic.List<Vector2Int>());
+            GetComponent<GameController>().OnPieceLocked(0, new System.Collections.Generic.List<Vector2Int>(), 0);
             GetComponent<GameController>().GameOver();
             enabled = false;
             return;
@@ -222,11 +222,11 @@ public class Piece : MonoBehaviour
 
         for (int i = 0; i < cells.Count; i++)
         {
-            var placed = board.InstantiateTileUI(color);
+            var sprite = (i < monstersForCells.Count && monstersForCells[i]) ? monstersForCells[i].portrait : null;
+            var placed = board.InstantiateTileUI(color, sprite);
             placed.anchoredPosition = board.CellToAnchoredPos(cells[i]);
             board.Place(cells[i], placed);
 
-            // place monster runtime instance aligned to this tile
             MonsterData md = (i < monstersForCells.Count) ? monstersForCells[i] : null;
             board.SetMonsterAt(cells[i], new Board.MonsterInstance(md));
         }
@@ -234,8 +234,8 @@ public class Piece : MonoBehaviour
         foreach (var v in visuals) if (v) Destroy(v.gameObject);
         visuals.Clear();
 
-        board.ClearFullLines(out int rows, out var removedCells);
-        GetComponent<GameController>().OnPieceLocked(rows, removedCells);
+        board.ClearFullLines(out int rows, out var removedCells, out int damageFromMonsters);
+        GetComponent<GameController>().OnPieceLocked(rows, removedCells, damageFromMonsters);
         enabled = false;
         GetComponent<GameController>().SpawnNextPiece();
     }

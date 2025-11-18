@@ -89,6 +89,26 @@ public class Board : MonoBehaviour
         return rt;
     }
 
+    public RectTransform InstantiateTileUI(Color color, Sprite portrait, float inset = 4f)
+    {
+        var rt = InstantiateTileUI(color); // existing method
+        if (portrait)
+        {
+            var go = new GameObject("MonsterPortrait", typeof(UnityEngine.UI.Image));
+            var img = go.GetComponent<UnityEngine.UI.Image>();
+            img.sprite = portrait;
+            img.preserveAspect = true;
+
+            var prt = img.rectTransform;
+            prt.SetParent(rt, false);
+            prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
+            prt.sizeDelta = rt.sizeDelta - new Vector2(inset, inset);
+            prt.anchoredPosition = Vector2.zero;
+        }
+        return rt;
+    }
+
+
     public bool InBounds(Vector2Int c) =>
         c.x >= 0 && c.x < width && c.y >= 0 && c.y < height;
 
@@ -100,17 +120,13 @@ public class Board : MonoBehaviour
         {
             var c = cells[i];
 
-            // X must always be inside columns
-            if (c.x < 0 || c.x >= width) return false;
+            if (c.x < 0 || c.x >= width) return false; // X must always be inside columns
+            
+            if (c.y >= height) continue; // Above the board is OK (spawn zone)
+            
+            if (c.y < 0) return false; // Below the board is not OK (floor)
 
-            // Above the board is OK (spawn zone)
-            if (c.y >= height) continue;
-
-            // Below the board is not OK (floor)
-            if (c.y < 0) return false;
-
-            // Inside the board: must be empty
-            if (placed.ContainsKey(c)) return false;
+            if (placed.ContainsKey(c)) return false; // Inside the board: must be empty
         }
         return true;
     }
@@ -125,6 +141,7 @@ public class Board : MonoBehaviour
     public void ClearAll()
     {
         placed.Clear();
+        monsters.Clear();
 
         if (gridRoot != null)
         {
@@ -139,32 +156,41 @@ public class Board : MonoBehaviour
         DrawGridOverlay();
     }
 
-    public void ClearFullLines(out int rowsCleared, out List<Vector2Int> removedCells)
+    public void ClearFullLines(out int rowsCleared, out List<Vector2Int> removedCells, out int damageFromMonsters)
     {
         rowsCleared = 0;
         removedCells = new List<Vector2Int>();
+        damageFromMonsters = 0;
 
         for (int y = 0; y < height; y++)
         {
             bool full = true;
             for (int x = 0; x < width; x++)
                 if (!placed.ContainsKey(new Vector2Int(x, y))) { full = false; break; }
-
             if (!full) continue;
 
             rowsCleared++;
 
-            // mark cells to delete
+            // remove this row, but tally monster damage BEFORE removing
             for (int x = 0; x < width; x++)
             {
                 var key = new Vector2Int(x, y);
+
+                // tally damage first
+                if (monsters.TryGetValue(key, out var inst))
+                {
+                    if (inst.hp > 0f && inst.data)
+                        damageFromMonsters += Mathf.RoundToInt(inst.data.attackPower);
+                    monsters.Remove(key);
+                }
+
+                // then remove the tile
                 if (placed.TryGetValue(key, out var rt))
                 {
                     Destroy(rt.gameObject);
                     placed.Remove(key);
                     removedCells.Add(key);
                 }
-                monsters.Remove(key); // Remove monster at this cell
             }
 
             // shift everything above down by 1 (tiles + monsters)
@@ -181,7 +207,6 @@ public class Board : MonoBehaviour
                         placed[to] = rt;
                         rt.anchoredPosition = CellToAnchoredPos(to);
                     }
-
                     if (monsters.TryGetValue(from, out var inst))
                     {
                         monsters.Remove(from);
@@ -190,7 +215,7 @@ public class Board : MonoBehaviour
                 }
             }
 
-            y--; // re-check this row after the drop
+            y--; // re-check same row after shift
         }
     }
 

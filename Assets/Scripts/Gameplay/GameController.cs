@@ -177,31 +177,24 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void OnPieceLocked(int rowsCleared, System.Collections.Generic.List<Vector2Int> removedCells)
+    public void OnPieceLocked(int rowsCleared, List<Vector2Int> removedCells, int damageFromMonsters)
     {
-        // Score rule: rowsCleared × 10 (ignore dead/alive here)
         int gained = Mathf.Max(0, rowsCleared) * 10;
         score += gained;
         if (scoreUI) scoreUI.Set(score);
 
-        // Damage: sum ATTACK for removed cells whose monster HP > 0
-        int damage = 0;
-        foreach (var cell in removedCells)
-        {
-            if (gameBoard.TryGetMonster(cell, out var inst))
-            {
-                if (inst.hp > 0f && inst.data) damage += Mathf.RoundToInt(inst.data.attackPower);
-            }
-        }
+        // Play SFX for the clear itself
+        if (rowsCleared > 0 && AudioManager.I)
+            AudioManager.I.PlayRandomLineClear();
 
+        // Then apply damage (may be 0 if all monsters were dead)
+        int damage = Mathf.Max(0, damageFromMonsters);
         if (damage > 0 && enemyCastleUI && !gameOver)
         {
-            if (AudioManager.I) AudioManager.I.PlayRandomLineClear();
             enemyCastleUI.ApplyDamage(damage);
             if (enemyCastleUI.currentHP <= 0) OnCastleDestroyed();
         }
     }
-
 
     void InitLevel(int levelIndex)
     {

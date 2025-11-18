@@ -29,3 +29,27 @@ Different player characters with unique ultimate abilities.
 Unlockables through achievements and currency gained after a finished run. (New player characters, monsters, Starting perks for a run, player character skins, upgrade monster blocks)
 
 Enemy castle can attack player pieces (arrows/fireballs) stopping at first living piece square. Player pieces have different health and ussually inversley porportional to damage (low dmg = high base health). Player pieces that have 0 hp do not deal damage on row clear.
+
+****** TODO ******
+
+*** PLAYER SPECIAL ATTACKS ***
+
+Create special gauge UI
+
+Add Special gauge increase to MonsterData
+
+Apply Special gauge increase per monster on line clear to special gauge
+
+Prevent player from using special ability until special gauge is full and when special ability is used, reset special gauge to 0
+
+*** SPECIAL BLOCKS ***
+
+Special block has a chance to be spawned (low spawn rate) single lightning bolt block that destroys all of one kind of monster block currently on the the board. Calculate damage/special gauge increase based on number of blocks destroyed.
+
+Special block bomb (Low spawn rate) that blows up all block in a one row/column range of it's inactive location (a 3x3 range with the bomb block at the center of the grid)
+
+*** ENEMY ATTACK ***
+
+Add Enemy attacks to periodically bombard the players inactive pieces
+
+Prevent players active tile from overlapping a tile occupied by an enemy attack
