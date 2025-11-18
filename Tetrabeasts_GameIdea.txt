@@ -32,15 +32,13 @@ Enemy castle can attack player pieces (arrows/fireballs) stopping at first livin
 
 ****** TODO ******
 
+*** KNOWN BUGS ***
+
+Sometime the next piece preview does not update correctly and shows the same piece twice in a row when the two pieces are not in fact identical. It tends to happen more often when using spacebar to hard drop a piece.
+
 *** PLAYER SPECIAL ATTACKS ***
 
-Create special gauge UI
-
-Add Special gauge increase to MonsterData
-
-Apply Special gauge increase per monster on line clear to special gauge
-
-Prevent player from using special ability until special gauge is full and when special ability is used, reset special gauge to 0
+Verify that damage is being calculated correctly when using special to clear rows/tile pieces based on the monster contained in the tile.
 
 *** SPECIAL BLOCKS ***
 
