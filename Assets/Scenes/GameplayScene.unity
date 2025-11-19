@@ -3324,6 +3324,11 @@ MonoBehaviour:
   specialText: {fileID: 360363618}
   specialGauge: 0
   specialGaugeMax: 100
+  specialBlocks:
+  - {fileID: 11400000, guid: ff62e5aa180367e43935c6bf3098f5fc, type: 2}
+  - {fileID: 11400000, guid: 76d1cbaa83a0dd040b55b04bd2932b37, type: 2}
+  - {fileID: 11400000, guid: 3b2b178012d4e3f45a1be4fffc5b8def, type: 2}
+  specialChancePerEnqueue: 0.15
   scoreUI: {fileID: 2092384766}
   highScoreUI: {fileID: 330590300}
   levelText: {fileID: 685653179}

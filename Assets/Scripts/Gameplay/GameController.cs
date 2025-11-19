@@ -31,11 +31,15 @@ public class GameController : MonoBehaviour
 
     [Header("Special Gauge UI")]
     public UnityEngine.UI.Slider specialSlider;  // assign in inspector (min=0, max=1)
-    public TMP_Text specialText;                 // optional “0% … 100%” readout
+    public TMP_Text specialText;                 // optional 0% - 100%
 
     [Header("Special Gauge")]
     public float specialGauge = 0f;
     public float specialGaugeMax = 100f; // overridden by selectedCharacter if set
+
+    [Header("Special Blocks")]
+    public TetrominoData[] specialBlocks;      // Assign special pieces here
+    public float specialChancePerEnqueue = 0.08f;
 
     readonly Queue<TetrominoData> bag = new();
     public int score { get; private set; }
@@ -113,10 +117,30 @@ public class GameController : MonoBehaviour
     void ShowNextPreview()
     {
         if (nextPreview == null || bag.Count == 0 || monstersBag.Count == 0) return;
+
         var next = bag.Peek();
         var m = monstersBag.Peek();
-        nextPreview.Show(next, next.color, m); // new overload that accepts monsters[]
+
+        // Make sure preview has a proper monsters array for normals 
+        if (next.special == SpecialType.None)
+        {
+            if (m == null || m.Length != next.cells.Length)
+            {
+                var roster = GetActiveMonsterRoster();
+                var rebuilt = new MonsterData[next.cells.Length];
+                for (int i = 0; i < rebuilt.Length; i++)
+                    rebuilt[i] = WeightedPick(roster);
+                m = rebuilt; // local use for preview only
+            }
+        }
+        else
+        {
+            m = System.Array.Empty<MonsterData>(); // specials show only their icon
+        }
+
+        nextPreview.Show(next, next.color, m);
     }
+
 
     public bool CanSpawnNewPiece() => !gameOver && !levelWon;
 
@@ -128,11 +152,31 @@ public class GameController : MonoBehaviour
         var data = bag.Dequeue();
         var mons = monstersBag.Dequeue();
 
+        // Guarantee a full monsters array for normal pieces
+        if (data.special == SpecialType.None)
+        {
+            if (mons == null || mons.Length != data.cells.Length)
+            {
+                var roster = GetActiveMonsterRoster();
+                mons = new MonsterData[data.cells.Length];
+                for (int i = 0; i < mons.Length; i++)
+                    mons[i] = WeightedPick(roster);
+            }
+        }
+        else
+        {
+            // Specials should NEVER have monsters.
+            mons = System.Array.Empty<MonsterData>();
+        }
+
         piece.data = data;
         piece.color = data.color;
         piece.SetMonsters(mons);
         piece.enabled = true;
         piece.SpawnAtTop();
+
+        if (bag.Count == 0 || monstersBag.Count == 0)
+            RefillBag();
 
         ShowNextPreview();
     }
@@ -184,13 +228,35 @@ public class GameController : MonoBehaviour
         var roster = GetActiveMonsterRoster();
         foreach (var d in list)
         {
-            bag.Enqueue(d);
+            // Maybe replace this entry with a special (weighting)
+            TetrominoData use = d;
+            if (specialBlocks != null && specialBlocks.Length > 0 && Random.value < specialChancePerEnqueue)
+            {
+                // weighted pick among specials by spawnWeight
+                float total = 0f; foreach (var s in specialBlocks) total += Mathf.Max(0f, s.spawnWeight);
+                float r = Random.Range(0f, Mathf.Max(0.0001f, total));
+                for (int k = 0; k < specialBlocks.Length; k++)
+                {
+                    float w = Mathf.Max(0f, specialBlocks[k].spawnWeight);
+                    if ((r -= w) <= 0f) { use = specialBlocks[k]; break; }
+                }
+            }
 
-            // Create a monster array (one entry per tile in the piece)
-            var cellsCount = Mathf.Max(1, d.cells.Length);
-            var arr = new MonsterData[cellsCount];
-            for (int k = 0; k < cellsCount; k++)
-                arr[k] = WeightedPick(roster);
+            bag.Enqueue(use);
+
+            // monsters array: only used by normal pieces
+            var cellsCount = Mathf.Max(1, use.cells.Length);
+            MonsterData[] arr;
+            if (use.special == SpecialType.None)
+            {
+                arr = new MonsterData[cellsCount];
+                for (int k = 0; k < cellsCount; k++) arr[k] = WeightedPick(roster);
+            }
+            else
+            {
+                // Special pieces: no monsters at all
+                arr = System.Array.Empty<MonsterData>();
+            }
 
             monstersBag.Enqueue(arr);
         }
@@ -256,17 +322,15 @@ public class GameController : MonoBehaviour
         if (gameOver || levelWon) return;
         levelWon = true;
 
+        if (nextPreview)
+            nextPreview.ClearPreview();
+
         currentLevel++;
 
         if (castlesByLevel != null && currentLevel < castlesByLevel.Length)
-        {
-            // Defer the level transition to next frame
             StartCoroutine(CoStartNextLevel());
-        }
         else
-        {
             EndRunAsWin();
-        }
     }
 
     private System.Collections.IEnumerator CoStartNextLevel()

@@ -92,7 +92,12 @@ public class Piece : MonoBehaviour
 
     void BuildVisuals()
     {
-        foreach (var v in visuals) if (v) Destroy(v.gameObject);
+        bool isSpecial = data.special != SpecialType.None;
+
+        foreach (var v in visuals)
+            if (v)
+                Destroy(v.gameObject);
+
         visuals.Clear();
 
         if (board == null || board.gridRoot == null) return;
@@ -109,9 +114,21 @@ public class Piece : MonoBehaviour
             rt.localScale = Vector3.one;
             rt.anchoredPosition = board.CellToAnchoredPos(c);
 
-            // child portrait (centered)
-            if (i < monstersForCells.Count && monstersForCells[i] && monstersForCells[i].portrait)
+            if (isSpecial && data.specialSprite != null)
             {
+                var portraitGO = new GameObject("SpecialIcon", typeof(UnityEngine.UI.Image));
+                var pimg = portraitGO.GetComponent<UnityEngine.UI.Image>();
+                pimg.sprite = data.specialSprite;
+                pimg.preserveAspect = true;
+                var prt = pimg.rectTransform;
+                prt.SetParent(rt, false);
+                prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
+                prt.sizeDelta = rt.sizeDelta - new Vector2(4f, 4f);
+                prt.anchoredPosition = Vector2.zero;
+            }
+            else if (!isSpecial && i < monstersForCells.Count && monstersForCells[i] && monstersForCells[i].portrait)
+            {
+                // child portrait (centered)
                 var portraitGO = new GameObject("MonsterPortrait", typeof(UnityEngine.UI.Image));
                 var pimg = portraitGO.GetComponent<UnityEngine.UI.Image>();
                 pimg.sprite = monstersForCells[i].portrait;
@@ -206,6 +223,8 @@ public class Piece : MonoBehaviour
     void Lock()
     {
         bool toppedOut = false;
+        bool isSpecial = data.special != SpecialType.None;
+
         for (int i = 0; i < cells.Count; i++)
             if (cells[i].y >= board.height) { toppedOut = true; break; }
 
@@ -220,6 +239,102 @@ public class Piece : MonoBehaviour
             return;
         }
 
+        var gc = GetComponent<GameController>();   // declared once here
+
+        // ---------- SPECIAL PIECES ----------
+        if (isSpecial)
+        {
+            // No permanent tile is placed; run the special effect and return.
+            // Clean up active visuals
+            foreach (var v in visuals) if (v) Destroy(v.gameObject);
+            visuals.Clear();
+
+            // Landing/center cell (clamped)
+            var center = cells[0];
+            center.x = Mathf.Clamp(center.x, 0, board.width - 1);
+            center.y = Mathf.Clamp(center.y, 0, board.height - 1);
+
+            var toRemove = new List<Vector2Int>();
+
+            switch (data.special)
+            {
+                case SpecialType.Death:
+                    {
+                        // Tally present monster types (weighted by count), pick one, remove all of that type
+                        var present = new Dictionary<MonsterData, int>();
+                        for (int y = 0; y < board.height; y++)
+                            for (int x = 0; x < board.width; x++)
+                            {
+                                var c = new Vector2Int(x, y);
+                                if (board.TryGetMonster(c, out var inst) && inst.data)
+                                {
+                                    if (!present.ContainsKey(inst.data)) present[inst.data] = 0;
+                                    present[inst.data]++;
+                                }
+                            }
+                        if (present.Count > 0)
+                        {
+                            int total = 0; foreach (var kv in present) total += kv.Value;
+                            int r = Random.Range(0, Mathf.Max(1, total));
+                            MonsterData chosen = null;
+                            foreach (var kv in present) { r -= kv.Value; if (r < 0) { chosen = kv.Key; break; } }
+
+                            for (int y = 0; y < board.height; y++)
+                                for (int x = 0; x < board.width; x++)
+                                {
+                                    var c = new Vector2Int(x, y);
+                                    if (board.TryGetMonster(c, out var inst) && inst.data == chosen)
+                                        toRemove.Add(c);
+                                }
+                        }
+                        break;
+                    }
+
+                case SpecialType.Bomb:
+                    {
+                        // 3x3 around landing
+                        for (int dy = -1; dy <= 1; dy++)
+                            for (int dx = -1; dx <= 1; dx++)
+                            {
+                                var c = new Vector2Int(center.x + dx, center.y + dy);
+                                if (board.InBounds(c) && !board.IsFree(c)) toRemove.Add(c);
+                            }
+                        break;
+                    }
+
+                case SpecialType.Bolt:
+                    {
+                        // All blocks strictly below in same column
+                        for (int y = center.y - 1; y >= 0; y--)
+                        {
+                            var c = new Vector2Int(center.x, y);
+                            if (!board.IsFree(c)) toRemove.Add(c);
+                        }
+                        break;
+                    }
+            }
+
+            // Remove targets and make columns fall
+            board.RemoveCellsAndFall(toRemove,
+                                     out var removedA,
+                                     out int dmgA,
+                                     out float chargeA);
+
+            // Then clear any new full lines created by the fall
+            board.ClearFullLines(out int rowsAfter,
+                                 out var removedB,
+                                 out int dmgB,
+                                 out float chargeB);
+
+            // Report totals
+            gc.OnPieceLocked(rowsAfter, removedB, dmgA + dmgB, chargeA + chargeB);
+
+            enabled = false;
+            if (gc != null && gc.CanSpawnNewPiece()) gc.SpawnNextPiece();
+            return;
+        }
+
+        // ---------- NORMAL PIECES ----------
         for (int i = 0; i < cells.Count; i++)
         {
             var sprite = (i < monstersForCells.Count && monstersForCells[i]) ? monstersForCells[i].portrait : null;
@@ -234,18 +349,15 @@ public class Piece : MonoBehaviour
         foreach (var v in visuals) if (v) Destroy(v.gameObject);
         visuals.Clear();
 
-        board.ClearFullLines(out int rows,
-                     out var removedCells,
-                     out int damageFromMonsters,
-                     out float specialChargeFromMonsters);
+        board.ClearFullLines(out int rowsCleared,
+                             out var removedCells,
+                             out int damageFromMonsters,
+                             out float specialChargeFromMonsters);
 
-        var gc = GetComponent<GameController>();
         int levelBefore = gc.CurrentLevel;
-        gc.OnPieceLocked(rows, removedCells, damageFromMonsters, specialChargeFromMonsters);
+        gc.OnPieceLocked(rowsCleared, removedCells, damageFromMonsters, specialChargeFromMonsters);
 
         enabled = false;
-
-        // Only spawn if the level didn't end
         if (gc != null && gc.CurrentLevel == levelBefore && gc.CanSpawnNewPiece())
             gc.SpawnNextPiece();
     }

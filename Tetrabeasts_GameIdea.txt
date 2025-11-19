@@ -42,9 +42,15 @@ Verify that damage is being calculated correctly when using special to clear row
 
 *** SPECIAL BLOCKS ***
 
-Special block has a chance to be spawned (low spawn rate) single lightning bolt block that destroys all of one kind of monster block currently on the the board. Calculate damage/special gauge increase based on number of blocks destroyed.
+Pieces do not adjust correctly after the activation of a special block. Currently every block is being dropped down when a special block is activated if it was attached to a block that was destroyed by the special block. But I only want tilese that are directly above a block that was destroyed to be moved down and I only want them moved down an equal number of rows to the number of blocks directly below it that were destroyed.
 
-Special block bomb (Low spawn rate) that blows up all block in a one row/column range of it's inactive location (a 3x3 range with the bomb block at the center of the grid)
+I would like to use this current fall system though with a new special block called earthquake. I don't want this special block to actually destroy other existing blocks/tiles though, I want it to shake the board breifly and make any block that currently does not have a tile directly below it to fall untill it either hits the bottom of the board or comes to rest that the top of another existing tile (essentially removing any air pockets in the existing tetris board).
+
+Add a light red tint to all effected cells while a special block is still active.
+
+When a special block is activated flash a specific image (set in termino data) for all effected cells.
+
+Set a specific SFX for each special block (set in termino data) when a special block is activated
 
 *** ENEMY ATTACK ***
 

@@ -307,6 +307,65 @@ public class Board : MonoBehaviour
         }
     }
 
+    public void RemoveCellsAndFall(IEnumerable<Vector2Int> toRemove,
+                               out List<Vector2Int> removedCells,
+                               out int damageFromMonsters,
+                               out float specialChargeFromMonsters)
+    {
+        removedCells = new List<Vector2Int>();
+        damageFromMonsters = 0;
+        specialChargeFromMonsters = 0f;
+
+        // Remove & tally
+        var removeSet = new HashSet<Vector2Int>(toRemove);
+        foreach (var key in removeSet)
+        {
+            if (monsters.TryGetValue(key, out var inst))
+            {
+                if (inst.data)
+                {
+                    if (inst.hp > 0f) damageFromMonsters += Mathf.RoundToInt(inst.data.attackPower);
+                    specialChargeFromMonsters += inst.data.specialGaugeGain;
+                }
+                monsters.Remove(key);
+            }
+
+            if (placed.TryGetValue(key, out var rt))
+            {
+                Destroy(rt.gameObject);
+                placed.Remove(key);
+                removedCells.Add(key);
+            }
+        }
+
+        // Column-wise fall
+        for (int x = 0; x < width; x++)
+        {
+            int writeY = 0;
+            for (int y = 0; y < height; y++)
+            {
+                var from = new Vector2Int(x, y);
+                if (placed.TryGetValue(from, out var rt))
+                {
+                    var to = new Vector2Int(x, writeY);
+                    if (to != from)
+                    {
+                        placed.Remove(from);
+                        placed[to] = rt;
+                        rt.anchoredPosition = CellToAnchoredPos(to);
+                    }
+
+                    if (monsters.TryGetValue(from, out var inst))
+                    {
+                        monsters.Remove(from);
+                        monsters[to] = inst;
+                    }
+
+                    writeY++;
+                }
+            }
+        }
+    }
 
     // Handle resizing at runtime
     void OnRectTransformDimensionsChange()
