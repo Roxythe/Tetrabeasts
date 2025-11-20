@@ -19,3 +19,6 @@ MonoBehaviour:
   special: 1
   specialSprite: {fileID: 21300000, guid: 888974688956fbe44803e3eb32fcb9d6, type: 3}
   spawnWeight: 0.33
+  specialFlashSprite: {fileID: 21300000, guid: 888974688956fbe44803e3eb32fcb9d6, type: 3}
+  flashOnlyOccupied: 1
+  specialSFX: {fileID: 8300000, guid: 027facf2a8011a441ab00dec09d46441, type: 3}

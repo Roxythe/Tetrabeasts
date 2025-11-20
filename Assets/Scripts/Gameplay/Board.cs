@@ -338,7 +338,64 @@ public class Board : MonoBehaviour
             }
         }
 
-        // Column-wise fall
+        // Sparse drop only move tiles down by the count of removed rows below them
+        for (int x = 0; x < width; x++)
+        {
+            // Build a sorted list of removed rows in this column
+            var removedRows = new List<int>();
+            for (int y = 0; y < height; y++)
+            {
+                var key = new Vector2Int(x, y);
+                if (!placed.ContainsKey(key))
+                    continue;
+            }
+
+            // We already know which cells were removed; collect their rows for this x:
+            foreach (var rc in removedCells)
+                if (rc.x == x)
+                    removedRows.Add(rc.y);
+            if (removedRows.Count == 0)
+                continue;
+            removedRows.Sort(); // ascending
+
+            var moves = new List<(Vector2Int from, Vector2Int to, RectTransform rt)>();
+            var monsterMoves = new List<(Vector2Int from, Vector2Int to, Board.MonsterInstance inst)>();
+
+            for (int y = 0; y < height; y++)
+            {
+                var from = new Vector2Int(x, y);
+                if (!placed.TryGetValue(from, out var rt)) continue;
+
+                int drop = 0;
+                for (int i = 0; i < removedRows.Count; i++)
+                    if (removedRows[i] < y) drop++; else break;
+
+                if (drop > 0)
+                {
+                    var to = new Vector2Int(x, y - drop);
+                    moves.Add((from, to, rt));
+                    if (monsters.TryGetValue(from, out var inst))
+                        monsterMoves.Add((from, to, inst));
+                }
+            }
+
+            // Apply moves
+            foreach (var m in moves)
+            {
+                placed.Remove(m.from);
+                placed[m.to] = m.rt;
+                m.rt.anchoredPosition = CellToAnchoredPos(m.to);
+            }
+            foreach (var mm in monsterMoves)
+            {
+                monsters.Remove(mm.from);
+                monsters[mm.to] = mm.inst;
+            }
+        }
+    }
+
+    public void SettleAllColumns()
+    {
         for (int x = 0; x < width; x++)
         {
             int writeY = 0;
@@ -360,11 +417,41 @@ public class Board : MonoBehaviour
                         monsters.Remove(from);
                         monsters[to] = inst;
                     }
-
                     writeY++;
                 }
             }
         }
+    }
+
+    public void FlashCells(IEnumerable<Vector2Int> cells, Sprite sprite, bool onlyOccupied)
+    {
+        if (sprite == null) return;
+        StartCoroutine(FlashCellsCo(cells, sprite, onlyOccupied));
+    }
+
+    System.Collections.IEnumerator FlashCellsCo(IEnumerable<Vector2Int> cells, Sprite sprite, bool onlyOccupied)
+    {
+        var made = new List<UnityEngine.UI.Image>();
+        foreach (var c in cells)
+        {
+            if (onlyOccupied && !placed.ContainsKey(c)) continue;
+
+            var img = new GameObject("SpecialFlash", typeof(UnityEngine.UI.Image)).GetComponent<UnityEngine.UI.Image>();
+            img.sprite = sprite;
+            img.preserveAspect = true;
+            img.color = new Color(1, 1, 1, 0.9f);
+            var rt = img.rectTransform;
+            rt.SetParent(gridRoot, false);
+            rt.sizeDelta = GetCellSize();
+            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.anchoredPosition = CellToAnchoredPos(c);
+            made.Add(img);
+        }
+
+        yield return new WaitForSeconds(0.15f);
+
+        for (int i = 0; i < made.Count; i++)
+            if (made[i]) Destroy(made[i].gameObject);
     }
 
     // Handle resizing at runtime

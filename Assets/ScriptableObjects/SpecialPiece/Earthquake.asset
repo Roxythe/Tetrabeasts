@@ -10,15 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1494f8b3dc5a41f419f6592e52725581, type: 3}
-  m_Name: Bomb
+  m_Name: Earthquake
   m_EditorClassIdentifier: Assembly-CSharp::TetrominoData
-  id: Bomb
-  color: {r: 0.9622642, g: 0.9622642, b: 0.9622642, a: 1}
-  cells:
-  - {x: 0, y: 0}
-  special: 2
-  specialSprite: {fileID: -1483665779731714255, guid: 80efab21e563a70418eeee08ee145f38, type: 3}
-  spawnWeight: 0.33
-  specialFlashSprite: {fileID: 5986030973748356752, guid: 3fa32e60adcf4b24bbd4bfafd594a35b, type: 3}
+  id: Earthquake
+  color: {r: 1, g: 0.4117647, b: 0.7058824, a: 1}
+  cells: []
+  special: 4
+  specialSprite: {fileID: 21300000, guid: f5d57fa648607704fb3815ac946c2f6d, type: 3}
+  spawnWeight: 0.25
+  specialFlashSprite: {fileID: 0}
   flashOnlyOccupied: 0
-  specialSFX: {fileID: 8300000, guid: dc9dc3ff86a344844bd1d08c0402c81e, type: 3}
+  specialSFX: {fileID: 8300000, guid: fef80799cf9040849be2d0991d651fe6, type: 3}

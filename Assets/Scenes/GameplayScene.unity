@@ -3328,6 +3328,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ff62e5aa180367e43935c6bf3098f5fc, type: 2}
   - {fileID: 11400000, guid: 76d1cbaa83a0dd040b55b04bd2932b37, type: 2}
   - {fileID: 11400000, guid: 3b2b178012d4e3f45a1be4fffc5b8def, type: 2}
+  - {fileID: 11400000, guid: 83208262cc66a7143b101ba8cdb0d548, type: 2}
   specialChancePerEnqueue: 0.15
   scoreUI: {fileID: 2092384766}
   highScoreUI: {fileID: 330590300}
@@ -3604,10 +3605,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 588429713779898078, guid: e266400955faf8b4cba7769fe58d6b32, type: 3}
-      propertyPath: masterVolume
-      value: 0.5
-      objectReference: {fileID: 0}
     - target: {fileID: 1150672262309858253, guid: e266400955faf8b4cba7769fe58d6b32, type: 3}
       propertyPath: m_Name
       value: AudioManager
