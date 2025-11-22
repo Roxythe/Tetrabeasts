@@ -707,7 +707,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '%'
+  m_text: Percentage
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2520,7 +2520,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 175, y: 175}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1419328443
 GameObject:
@@ -3271,11 +3271,11 @@ RectTransform:
   - {fileID: 1488354586}
   - {fileID: 1051868989}
   - {fileID: 2029103628}
-  - {fileID: 901058034}
-  - {fileID: 1064853677}
   - {fileID: 330590299}
+  - {fileID: 1064853677}
   - {fileID: 1062029521}
   - {fileID: 1919700311}
+  - {fileID: 901058034}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -3332,8 +3332,6 @@ MonoBehaviour:
   specialChancePerEnqueue: 0.15
   projectileRoot: {fileID: 2092384763}
   projectileSpeed: 800
-  minBagPieces: 2
-  forceOneSpecialPerRefill: 0
   scoreUI: {fileID: 2092384766}
   highScoreUI: {fileID: 330590300}
   levelText: {fileID: 685653179}

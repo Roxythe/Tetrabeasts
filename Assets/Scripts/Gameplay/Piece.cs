@@ -95,6 +95,8 @@ public class Piece : MonoBehaviour
 
         if (data.special != SpecialType.None)
             UpdateSpecialHints();
+        else
+            UpdateNormalHints();
     }
 
     void BuildVisuals()
@@ -240,7 +242,12 @@ public class Piece : MonoBehaviour
             foreach (var v in visuals) if (v) Destroy(v.gameObject);
             visuals.Clear();
 
-            GetComponent<GameController>().OnPieceLocked(0, new System.Collections.Generic.List<Vector2Int>(), 0, 0f);
+            GetComponent<GameController>().OnPieceLocked(0, new System.Collections.Generic.List<Vector2Int>(),
+                                                         0, 0f, new System.Collections.Generic.Dictionary<int, int>(),
+                                                         new System.Collections.Generic.Dictionary<int, MonsterData>(),
+                                                         new System.Collections.Generic.Dictionary<int,
+                                                         System.Collections.Generic.List<int>>());
+
             GetComponent<GameController>().GameOver();
             enabled = false;
             return;
@@ -333,12 +340,15 @@ public class Piece : MonoBehaviour
                                 affectedEQ.Add(new Vector2Int(x, y));
                         board.FlashCells(affectedEQ, data.specialFlashSprite, data.flashOnlyOccupied);
 
-                        // Settle everything; then clear any full lines created by settling
                         board.SettleAllColumns();
-                        board.ClearFullLines(out int rowsEQ, out var removedEQ, out int dmgEQ, out float chargeEQ);
 
-                        // Report totals, end special, maybe spawn next
-                        gc.OnPieceLocked(rowsEQ, removedEQ, dmgEQ, chargeEQ);
+                        board.ClearFullLines(out int rowsEQ, out var removedEQ, out int dmgEQ, out float chargeEQ,
+                                             out var rowDamageEQ, out var rowDomEQ);
+
+                        var emptyCols = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<int>>();
+
+                        gc.OnPieceLocked(rowsEQ, removedEQ, dmgEQ, chargeEQ, rowDamageEQ, rowDomEQ, emptyCols);
+
                         enabled = false;
                         if (gc != null && gc.CanSpawnNewPiece()) gc.SpawnNextPiece();
                         return; // <<< IMPORTANT: stop here so we don't run the common path below
@@ -354,17 +364,21 @@ public class Piece : MonoBehaviour
             // Remove targets and make only the directly-above tiles fall sparsely
             board.RemoveCellsAndFall(toRemove, out var removedA, out int dmgA, out float chargeA);
 
-            // Then clear any new full lines created by the fall
-            board.ClearFullLines(out int rowsAfter, out var removedB, out int dmgB, out float chargeB);
+            board.ClearFullLines(out int rowsAfter, out var removedB, out int dmgB, out float chargeB,
+                                 out var rowDamageB, out var rowDomB);
 
-            // Report totals, end special, maybe spawn next
-            gc.OnPieceLocked(rowsAfter, removedB, dmgA + dmgB, chargeA + chargeB);
+            var colsByRowSpecial = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<int>>();
+
+            gc.OnPieceLocked(rowsAfter, removedB, dmgA + dmgB, chargeA + chargeB, rowDamageB, rowDomB, colsByRowSpecial);
+
             enabled = false;
             if (gc != null && gc.CanSpawnNewPiece()) gc.SpawnNextPiece();
             return;
         }
 
         // ---------- NORMAL PIECES ----------
+
+        ClearHints();
         for (int i = 0; i < cells.Count; i++)
         {
             var sprite = (i < monstersForCells.Count && monstersForCells[i]) ? monstersForCells[i].portrait : null;
@@ -379,10 +393,22 @@ public class Piece : MonoBehaviour
         foreach (var v in visuals) if (v) Destroy(v.gameObject);
         visuals.Clear();
 
-        board.ClearFullLines(out int rowsCleared, out var removedCells, out int damageFromMonsters, out float specialChargeFromMonsters);
+        var colsByRow = new Dictionary<int, List<int>>();
+        for (int i = 0; i < cells.Count; i++)
+        {
+            var c = cells[i];
+            if (c.y < 0 || c.y >= board.height) continue;
+            if (!colsByRow.TryGetValue(c.y, out var list)) { list = new List<int>(); colsByRow[c.y] = list; }
+            if (!list.Contains(c.x)) list.Add(c.x);
+        }
 
+        // Call the extended Board method
+        board.ClearFullLines(out int rowsCleared, out var removedCells, out int damageFromMonsters,
+                             out float specialChargeFromMonsters, out var rowDamage, out var rowDominantMonster);
+
+        // Pass colsByRow forward 
         int levelBefore = gc.CurrentLevel;
-        gc.OnPieceLocked(rowsCleared, removedCells, damageFromMonsters, specialChargeFromMonsters);
+        gc.OnPieceLocked(rowsCleared, removedCells, damageFromMonsters, specialChargeFromMonsters, rowDamage, rowDominantMonster, colsByRow);
 
         enabled = false;
         if (gc != null && gc.CurrentLevel == levelBefore && gc.CanSpawnNewPiece())
@@ -504,4 +530,59 @@ public class Piece : MonoBehaviour
             hintOverlays.Add(rt);
         }
     }
+
+    List<Vector2Int> ComputeLandingCells()
+    {
+        // Make a working copy of the current cells
+        var landing = new List<Vector2Int>(cells);
+
+        // Try dropping the copy straight down until it would collide
+        bool canDrop = true;
+        while (canDrop)
+        {
+            // build next test
+            var next = new Vector2Int[landing.Count];
+            for (int i = 0; i < landing.Count; i++)
+                next[i] = landing[i] + Vector2Int.down;
+
+            if (board.Valid(next))
+            {
+                for (int i = 0; i < landing.Count; i++) landing[i] = next[i];
+            }
+            else
+            {
+                canDrop = false;
+            }
+        }
+
+        // Clamp to visible board only (ignore any cells above the top)
+        for (int i = landing.Count - 1; i >= 0; i--)
+            if (landing[i].y < 0 || landing[i].y >= board.height)
+                landing.RemoveAt(i);
+
+        return landing;
+    }
+
+    void UpdateNormalHints()
+    {
+        ClearHints();
+
+        // Where would a Spacebar (HardDrop) put us right now?
+        var landing = ComputeLandingCells();
+        if (landing.Count == 0) return;
+
+        foreach (var c in landing)
+        {
+            var img = new GameObject("GhostHint", typeof(UnityEngine.UI.Image))
+                      .GetComponent<UnityEngine.UI.Image>();
+            img.color = hintColor;                       // the same light red you already use
+            var rt = img.rectTransform;
+            rt.SetParent(board.gridRoot, false);
+            rt.sizeDelta = board.GetCellSize();
+            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.anchoredPosition = board.CellToAnchoredPos(c);
+            hintOverlays.Add(rt);
+        }
+    }
+
 }

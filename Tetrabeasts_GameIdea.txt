@@ -39,6 +39,18 @@ Enemy castle can attack player pieces (arrows/fireballs) stopping at first livin
 
 Verify that damage is being calculated correctly when using special to clear rows/tile pieces based on the monster contained in the tile.
 
+Add more characters and character specials
+
+*** MONSTER PIECES ***
+
+Add slider background to monster piece linked to unit health. When unit health depletes the background color should porportionally deplete. If unit health = 0 the background should also be fully depleted for the block.
+
+Add healing unit capability
+
+Add tanky low damage units
+
+Add more unit variations
+
 *** SPECIAL BLOCKS ***
 
 On level clear, remove any red tints that might be left over if the level was cleared with a special block.

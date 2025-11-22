@@ -41,6 +41,15 @@ public class GameController : MonoBehaviour
     public TetrominoData[] specialBlocks;      // Assign special pieces here
     public float specialChancePerEnqueue = 0.08f;
 
+    [Header("Projectiles")]
+    public RectTransform projectileRoot;  // assign to your UI canvas layer (same space as board.gridRoot)
+    public float projectileSpeed = 800f;
+
+    [Header("Bag Settings")]
+    public int minBagPieces = 2;                 // keep at least this many ready
+    public bool forceOneSpecialPerRefill = false; // optional "ensure a special" switch
+
+
     readonly Queue<TetrominoData> bag = new();
     public int score { get; private set; }
     bool gameOver = false;
@@ -94,6 +103,7 @@ public class GameController : MonoBehaviour
         InitLevel(currentLevel);
 
         if (bag.Count == 0) RefillBag();
+        EnsureMinBag(3);
         ShowNextPreview();
         SpawnNextPiece();
 
@@ -116,43 +126,47 @@ public class GameController : MonoBehaviour
 
     void ShowNextPreview()
     {
-        if (nextPreview == null || bag.Count == 0 || monstersBag.Count == 0) return;
+        if (!nextPreview) return;
 
-        var next = bag.Peek();
-        var m = monstersBag.Peek();
+        EnsureMinBag(3); 
+        var next = PeekSafeHead();     
+        if (next == null) return; 
 
-        // Make sure preview has a proper monsters array for normals 
+        // aligned partner for preview
+        var m = (monstersBag.Count > 0) ? monstersBag.Peek() : null;
         if (next.special == SpecialType.None)
         {
             if (m == null || m.Length != next.cells.Length)
             {
                 var roster = GetActiveMonsterRoster();
                 var rebuilt = new MonsterData[next.cells.Length];
-                for (int i = 0; i < rebuilt.Length; i++)
-                    rebuilt[i] = WeightedPick(roster);
-                m = rebuilt; // local use for preview only
+                for (int i = 0; i < rebuilt.Length; i++) rebuilt[i] = WeightedPick(roster);
+                m = rebuilt;
             }
         }
         else
         {
-            m = System.Array.Empty<MonsterData>(); // specials show only their icon
+            m = System.Array.Empty<MonsterData>();
         }
 
         nextPreview.Show(next, next.color, m);
     }
-
 
     public bool CanSpawnNewPiece() => !gameOver && !levelWon;
 
     public void SpawnNextPiece()
     {
         if (gameOver || levelWon) return;
-        if (bag.Count == 0) RefillBag();
 
+        // Make sure there is a valid, non-null head before we dequeue
+        var head = PeekSafeHead();
+        if (head == null) { return; } // nothing valid to spawn; caller will try again later
+
+        // Dequeue the aligned pair (PeekSafeHead already trimmed nulls & topped up)
         var data = bag.Dequeue();
-        var mons = monstersBag.Dequeue();
+        var mons = monstersBag.Count > 0 ? monstersBag.Dequeue() : null;
 
-        // Guarantee a full monsters array for normal pieces
+        // Heal monster array for normal pieces (specials never carry monsters)
         if (data.special == SpecialType.None)
         {
             if (mons == null || mons.Length != data.cells.Length)
@@ -165,19 +179,18 @@ public class GameController : MonoBehaviour
         }
         else
         {
-            // Specials should NEVER have monsters.
             mons = System.Array.Empty<MonsterData>();
         }
 
+        // Spawn piece
         piece.data = data;
         piece.color = data.color;
         piece.SetMonsters(mons);
         piece.enabled = true;
         piece.SpawnAtTop();
 
-        if (bag.Count == 0 || monstersBag.Count == 0)
-            RefillBag();
-
+        // Keep bags topped and refresh preview after consuming one
+        EnsureMinBag(3);
         ShowNextPreview();
     }
 
@@ -191,13 +204,22 @@ public class GameController : MonoBehaviour
         currentLevel = 0;
         InitLevel(currentLevel);
         gameOver = false;
+
+        specialGaugeMax = (selectedCharacter && selectedCharacter.specialGaugeMax > 0f)
+        ? selectedCharacter.specialGaugeMax
+        : 100f;
+        specialGauge = 0f;
+        UpdateSpecialUI();
+
         score = 0;
         if (scoreUI) scoreUI.Set(score);   
         if (highScoreUI) highScoreUI.Hide(); // Close high-score panel if it was open
 
         // Reset bag and preview
         bag.Clear();
+        monstersBag.Clear();
         RefillBag();
+        EnsureMinBag(2);
         ShowNextPreview();
         SpawnNextPiece(); // Spawn fresh piece
         if (restartButton) restartButton.gameObject.SetActive(false);
@@ -218,34 +240,57 @@ public class GameController : MonoBehaviour
 
     void RefillBag()
     {
-        var list = new List<TetrominoData>(allTetrominoes);
-        for (int i = list.Count - 1; i > 0; i--)
+        // Validate source arrays to avoid null floods
+        var normals = new List<TetrominoData>();
+        for (int i = 0; i < allTetrominoes.Length; i++)
+            if (allTetrominoes[i] != null) normals.Add(allTetrominoes[i]);
+
+        if (normals.Count == 0)
         {
-            int j = Random.Range(0, i + 1);
-            (list[i], list[j]) = (list[j], list[i]);
+            Debug.LogError("RefillBag: allTetrominoes has no valid entries.");
+            return;
         }
 
-        var roster = GetActiveMonsterRoster();
-        foreach (var d in list)
+        // Fisher–Yates shuffle
+        for (int i = normals.Count - 1; i > 0; i--)
         {
-            // Maybe replace this entry with a special (weighting)
+            int j = Random.Range(0, i + 1);
+            (normals[i], normals[j]) = (normals[j], normals[i]);
+        }
+
+        // Build weighted index for specials once
+        float specialTotal = 0f;
+        if (specialBlocks != null)
+            for (int i = 0; i < specialBlocks.Length; i++)
+                if (specialBlocks[i]) specialTotal += Mathf.Max(0f, specialBlocks[i].spawnWeight);
+
+        bool specialsAvailable = specialBlocks != null && specialBlocks.Length > 0 && specialTotal > 0f;
+
+        var roster = GetActiveMonsterRoster();
+        int specialsAddedThisRefill = 0;
+
+        foreach (var d in normals)
+        {
             TetrominoData use = d;
-            if (specialBlocks != null && specialBlocks.Length > 0 && Random.value < specialChancePerEnqueue)
+
+            // Gate: maybe replace with special
+            if (specialsAvailable && Random.value < specialChancePerEnqueue)
             {
-                // weighted pick among specials by spawnWeight
-                float total = 0f; foreach (var s in specialBlocks) total += Mathf.Max(0f, s.spawnWeight);
-                float r = Random.Range(0f, Mathf.Max(0.0001f, total));
+                float r = Random.Range(0f, specialTotal);
                 for (int k = 0; k < specialBlocks.Length; k++)
                 {
-                    float w = Mathf.Max(0f, specialBlocks[k].spawnWeight);
-                    if ((r -= w) <= 0f) { use = specialBlocks[k]; break; }
+                    var sp = specialBlocks[k];
+                    if (!sp) continue;
+                    float w = Mathf.Max(0f, sp.spawnWeight);
+                    if ((r -= w) <= 0f) { use = sp; specialsAddedThisRefill++; break; }
                 }
             }
 
+            // Enqueue selected piece
             bag.Enqueue(use);
 
-            // monsters array: only used by normal pieces
-            var cellsCount = Mathf.Max(1, use.cells.Length);
+            // Enqueue monsters array in parallel
+            int cellsCount = Mathf.Max(1, use.cells != null ? use.cells.Length : 1);
             MonsterData[] arr;
             if (use.special == SpecialType.None)
             {
@@ -254,44 +299,87 @@ public class GameController : MonoBehaviour
             }
             else
             {
-                // Special pieces: no monsters at all
-                arr = System.Array.Empty<MonsterData>();
+                arr = System.Array.Empty<MonsterData>(); // specials never carry monsters
             }
-
             monstersBag.Enqueue(arr);
+        }
+
+        // Optional: guarantee at least ONE special per refill batch
+        if (forceOneSpecialPerRefill && specialsAvailable && specialsAddedThisRefill == 0)
+        {
+            // append one extra special at end of queues
+            float r = Random.Range(0f, specialTotal);
+            TetrominoData spPick = null;
+            for (int k = 0; k < specialBlocks.Length; k++)
+            {
+                var sp = specialBlocks[k];
+                if (!sp) continue;
+                float w = Mathf.Max(0f, sp.spawnWeight);
+                if ((r -= w) <= 0f) { spPick = sp; break; }
+            }
+            if (spPick != null)
+            {
+                bag.Enqueue(spPick);
+                monstersBag.Enqueue(System.Array.Empty<MonsterData>());
+            }
         }
     }
 
-    public void OnPieceLocked(int rowsCleared,
-                          List<Vector2Int> removedCells,
-                          int damageFromMonsters,
-                          float specialChargeFromMonsters)
+    public void OnPieceLocked(int rowsCleared, List<Vector2Int> removedCells, int damageFromMonsters,
+                          float specialChargeFromMonsters, Dictionary<int, int> rowDamage,
+                          Dictionary<int, MonsterData> rowDominantMonster, Dictionary<int,
+                              List<int>> colsByRow) 
     {
         // Score rule: rowsCleared × 10
         int gained = Mathf.Max(0, rowsCleared) * 10;
         score += gained;
         if (scoreUI) scoreUI.Set(score);
 
-        // Play SFX for the clear itself (even if damage is 0)
         if (rowsCleared > 0 && AudioManager.I)
             AudioManager.I.PlayRandomLineClear();
 
-        // Apply monster damage (precomputed by Board)
-        int damage = Mathf.Max(0, damageFromMonsters);
-        if (damage > 0 && enemyCastleUI && !gameOver)
-        {
-            enemyCastleUI.ApplyDamage(damage);
-            if (enemyCastleUI.currentHP <= 0) OnCastleDestroyed();
-        }
-
-        // Apply special charge
+        // Special gauge
         if (specialChargeFromMonsters > 0f)
         {
             specialGauge = Mathf.Min(specialGaugeMax, specialGauge + specialChargeFromMonsters);
             UpdateSpecialUI();
         }
-    }
 
+        // Spawn one projectile per cleared row
+        if (rowsCleared > 0 && gameBoard && enemyCastleUI && enemyCastleUI.castleImage)
+        {
+            foreach (var kv in rowDamage)
+            {
+                int rowY = kv.Key;
+                int dmg = Mathf.Max(0, kv.Value);
+
+                // Use dominant monster for this row pick attack sprite
+                Sprite attackSprite = null;
+                if (rowDominantMonster != null && rowDominantMonster.TryGetValue(rowY, out var md) && md)
+                    attackSprite = md.attackSprite ? md.attackSprite : md.portrait;
+
+                // Choose a start column from the last-placed piece's columns on this row
+                int col = UnityEngine.Random.Range(0, gameBoard.width);
+                if (colsByRow != null && colsByRow.TryGetValue(rowY, out var cols) && cols != null && cols.Count > 0)
+                    col = cols[UnityEngine.Random.Range(0, cols.Count)];
+
+                // pick start in board space
+                Vector2 startBoard = gameBoard.CellToAnchoredPos(new Vector2Int(col, rowY));
+                // pick target in castle-image space (its anchored center)
+                Vector2 targetCastle = enemyCastleUI.castleImage.rectTransform.anchoredPosition;
+
+                // convert both to the projectileRoot (UI_Canvas) space
+                var root = projectileRoot ? projectileRoot : gameBoard.gridRoot;  // you’ll set this to UI_Canvas
+                Vector2 start = LocalTo(root, gameBoard.gridRoot, startBoard);
+                Vector2 target = LocalTo(root, enemyCastleUI.castleImage.rectTransform, targetCastle);
+
+                // spawn
+                SpawnAttackProjectile(attackSprite, start, target, dmg);
+            }
+        }
+
+        // NO immediate ApplyDamage here; damage applies on impact
+    }
 
     void InitLevel(int levelIndex)
     {
@@ -348,7 +436,9 @@ public class GameController : MonoBehaviour
         InitLevel(currentLevel);   // sets castle to full HP and updates level text
 
         bag.Clear();
+        monstersBag.Clear();
         RefillBag();
+        EnsureMinBag(3);
         ShowNextPreview();
         SpawnNextPiece();
 
@@ -447,5 +537,101 @@ public class GameController : MonoBehaviour
 
         if (specialText)
             specialText.text = $"{Mathf.RoundToInt(100f * Mathf.Clamp01(specialGauge / Mathf.Max(1f, specialGaugeMax)))}%";
+    }
+
+    void SpawnAttackProjectile(Sprite sprite, Vector2 startAnchored, Vector2 targetAnchored, int damage)
+    {
+        if (projectileRoot == null) projectileRoot = gameBoard.gridRoot; // fallback
+
+        var go = new GameObject("AttackProjectile", typeof(UnityEngine.UI.Image));
+        var img = go.GetComponent<UnityEngine.UI.Image>();
+        img.sprite = sprite;
+        img.preserveAspect = true;
+        img.raycastTarget = false;
+
+        var rt = img.rectTransform;
+        rt.SetParent(projectileRoot, false);
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.sizeDelta = gameBoard.GetCellSize(); // roughly tile-sized
+        rt.anchoredPosition = startAnchored;
+
+        StartCoroutine(MoveProjectileAndHit(rt, targetAnchored, damage));
+    }
+
+    System.Collections.IEnumerator MoveProjectileAndHit(RectTransform rt, Vector2 targetAnchored, int damage)
+    {
+        float speed = Mathf.Max(10f, projectileSpeed);
+        while (rt && (rt.anchoredPosition - targetAnchored).sqrMagnitude > 9f)
+        {
+            rt.anchoredPosition = Vector2.MoveTowards(rt.anchoredPosition, targetAnchored, speed * Time.deltaTime);
+            yield return null;
+        }
+
+        if (rt) Destroy(rt.gameObject);
+
+        // Apply damage on impact
+        if (damage > 0 && enemyCastleUI && !levelWon && !gameOver)
+        {
+            enemyCastleUI.ApplyDamage(damage);
+            if (enemyCastleUI.currentHP <= 0) OnCastleDestroyed();
+        }
+    }
+
+    Vector2 LocalTo(RectTransform dst, RectTransform src, Vector2 anchored)
+    {
+        var world = src.TransformPoint(new Vector3(anchored.x, anchored.y, 0f));
+        var local = dst.InverseTransformPoint(world);
+        return new Vector2(local.x, local.y);
+    }
+
+    void EnsureMinBag(int min = -1)
+    {
+        if (min <= 0) min = Mathf.Max(1, minBagPieces);
+
+        // Trim any leading nulls & keep queues aligned
+        while (bag.Count > 0 && bag.Peek() == null)
+        {
+            bag.Dequeue();
+            if (monstersBag.Count > 0) monstersBag.Dequeue();
+        }
+        // If monsters queue got out of sync somehow, realign by dropping extras.
+        while (monstersBag.Count > bag.Count && monstersBag.Count > 0)
+            monstersBag.Dequeue();
+
+        int safety = 12; // avoids infinite loops if arrays are misconfigured
+        while ((bag.Count < min || monstersBag.Count < min) && safety-- > 0)
+            RefillBag();
+
+        // Final trim pass in case RefillBag skipped null entries
+        while (bag.Count > 0 && bag.Peek() == null)
+        {
+            bag.Dequeue();
+            if (monstersBag.Count > 0) monstersBag.Dequeue();
+        }
+    }
+
+    TetrominoData PeekSafeHead()
+    {
+        EnsureMinBag(3);
+
+        while (bag.Count > 0 && bag.Peek() == null)
+        {
+            bag.Dequeue();
+            if (monstersBag.Count > 0) monstersBag.Dequeue();
+        }
+
+        if (bag.Count == 0)
+        {
+            // Fabricate one piece if the source arrays are misconfigured
+            var fallback = System.Array.Find(allTetrominoes, t => t != null);
+            if (fallback != null)
+            {
+                bag.Enqueue(fallback);
+                var cells = Mathf.Max(1, fallback.cells != null ? fallback.cells.Length : 1);
+                monstersBag.Enqueue(new MonsterData[cells]);
+            }
+        }
+
+        return bag.Count > 0 ? bag.Peek() : null;
     }
 }

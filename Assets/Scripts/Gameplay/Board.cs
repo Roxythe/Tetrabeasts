@@ -159,12 +159,16 @@ public class Board : MonoBehaviour
     public void ClearFullLines(out int rowsCleared,
                            out List<Vector2Int> removedCells,
                            out int damageFromMonsters,
-                           out float specialChargeFromMonsters)
+                           out float specialChargeFromMonsters,
+                           out Dictionary<int, int> rowDamage,                    
+                           out Dictionary<int, MonsterData> rowDominantMonster) 
     {
         rowsCleared = 0;
         removedCells = new List<Vector2Int>();
         damageFromMonsters = 0;
         specialChargeFromMonsters = 0f;
+        rowDamage = new Dictionary<int, int>();
+        rowDominantMonster = new Dictionary<int, MonsterData>();
 
         for (int y = 0; y < height; y++)
         {
@@ -175,34 +179,54 @@ public class Board : MonoBehaviour
 
             rowsCleared++;
 
+            // Tally this row BEFORE removal
+            int dmgRow = 0;
+            var counts = new Dictionary<MonsterData, int>();
+            for (int x = 0; x < width; x++)
+            {
+                var key = new Vector2Int(x, y);
+                if (monsters.TryGetValue(key, out var inst) && inst.data)
+                {
+                    // damage rule: only if hp>0 counts toward damage, but for dominance we count presence
+                    if (inst.hp > 0f) dmgRow += Mathf.RoundToInt(inst.data.attackPower);
+
+                    if (!counts.ContainsKey(inst.data)) counts[inst.data] = 0;
+                    counts[inst.data] += 1;
+
+                    specialChargeFromMonsters += inst.data.specialGaugeGain;
+                }
+            }
+
+            damageFromMonsters += dmgRow;
+            rowDamage[y] = dmgRow;
+
+            // pick dominant (ties -> random among max)
+            if (counts.Count > 0)
+            {
+                int max = 0;
+                foreach (var kv in counts) if (kv.Value > max) max = kv.Value;
+                var candidates = new List<MonsterData>();
+                foreach (var kv in counts) if (kv.Value == max) candidates.Add(kv.Key);
+                var dominant = candidates[UnityEngine.Random.Range(0, candidates.Count)];
+                rowDominantMonster[y] = dominant;
+            }
+
+            // remove this row 
             for (int x = 0; x < width; x++)
             {
                 var key = new Vector2Int(x, y);
 
-                // Tally BEFORE removal
-                if (monsters.TryGetValue(key, out var inst))
-                {
-                    if (inst.data)
-                    {
-                        // Damage rule you already use:
-                        if (inst.hp > 0f)
-                            damageFromMonsters += Mathf.RoundToInt(inst.data.attackPower);
-
-                        // Gauge gain per monster (always counts, or gate by hp>0 if you prefer)
-                        specialChargeFromMonsters += inst.data.specialGaugeGain;
-                    }
-                    monsters.Remove(key);
-                }
+                if (monsters.ContainsKey(key)) monsters.Remove(key);
 
                 if (placed.TryGetValue(key, out var rt))
                 {
-                    Destroy(rt.gameObject);
+                    UnityEngine.Object.Destroy(rt.gameObject);
                     placed.Remove(key);
                     removedCells.Add(key);
                 }
             }
 
-            // shift down tiles + monsters (unchanged)
+            // shift down tiles + monsters above 
             for (int yy = y + 1; yy < height; yy++)
             {
                 for (int x = 0; x < width; x++)
@@ -224,10 +248,11 @@ public class Board : MonoBehaviour
                 }
             }
 
-            y--;
+            y--; // re-check same row after shift
         }
-    }
 
+        CleanOrphanedTiles();
+    }
 
     public int ClearBottomRows(int rows)
     {
@@ -392,6 +417,8 @@ public class Board : MonoBehaviour
                 monsters[mm.to] = mm.inst;
             }
         }
+
+        CleanOrphanedTiles();
     }
 
     public void SettleAllColumns()
@@ -421,6 +448,8 @@ public class Board : MonoBehaviour
                 }
             }
         }
+
+        CleanOrphanedTiles();
     }
 
     public void FlashCells(IEnumerable<Vector2Int> cells, Sprite sprite, bool onlyOccupied)
@@ -472,6 +501,19 @@ public class Board : MonoBehaviour
     public void SetMonsterAt(Vector2Int cell, MonsterInstance inst)
     {
         monsters[cell] = inst;
+    }
+
+    void CleanOrphanedTiles()
+    {
+        // Any child named "Tile_*" that isn't referenced by `placed` is an orphan ? destroy it.
+        var live = new HashSet<RectTransform>(placed.Values);
+        for (int i = 0; i < gridRoot.childCount; i++)
+        {
+            var t = gridRoot.GetChild(i) as RectTransform;
+            if (!t) continue;
+            if (!t.name.StartsWith("Tile_")) continue; // don't touch grid lines, flashes, etc.
+            if (!live.Contains(t)) Destroy(t.gameObject);
+        }
     }
 
     public bool TryGetMonster(Vector2Int cell, out MonsterInstance inst) => monsters.TryGetValue(cell, out inst);

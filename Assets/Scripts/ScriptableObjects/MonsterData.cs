@@ -18,4 +18,7 @@ public class MonsterData : ScriptableObject
     [Header("Special")]
     public float specialGaugeGain = 1.0f; // How much this monster adds to the gauge on line clear
 
+    [Header("VFX")]
+    public Sprite attackSprite;
+
 }

@@ -10,6 +10,9 @@ public class NextPreviewUI : MonoBehaviour
 
     public void Show(TetrominoData data, Color color, MonsterData[] monsters)
     {
+        if (!data || root == null || tilePrefab == null)
+            return;
+
         bool isSpecial = data.special != SpecialType.None;
 
         // Clear old
@@ -18,9 +21,6 @@ public class NextPreviewUI : MonoBehaviour
                 Destroy(tiles[i].gameObject);
 
         tiles.Clear();
-
-        if (!data || root == null || tilePrefab == null)
-            return;
 
         // Calculate bounds
         int minX = int.MaxValue, minY = int.MaxValue, maxX = int.MinValue, maxY = int.MinValue;
@@ -33,8 +33,8 @@ public class NextPreviewUI : MonoBehaviour
         int h = (maxY - minY + 1);
 
         var r = root.rect;
-        float pad = 8f;
-        float s = Mathf.Floor(Mathf.Min((r.width - 2 * pad) / w, (r.height - 2 * pad) / h));
+        float pad = 0.25f; // Padding in preview area
+        float s = Mathf.Min((r.width - 2 * pad) / w, (r.height - 2 * pad) / h); // no Floor
         s = Mathf.Max(1f, s);
         Vector2 tileSize = new(s, s);
 
@@ -88,5 +88,6 @@ public class NextPreviewUI : MonoBehaviour
     public void ClearPreview()
     {
         foreach (Transform c in root) Destroy(c.gameObject);
+        tiles.Clear();
     }
 }

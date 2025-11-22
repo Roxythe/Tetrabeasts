@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TetrominoData
   id: Earthquake
   color: {r: 1, g: 0.4117647, b: 0.7058824, a: 1}
-  cells: []
+  cells:
+  - {x: 0, y: 0}
   special: 4
   specialSprite: {fileID: 21300000, guid: f5d57fa648607704fb3815ac946c2f6d, type: 3}
   spawnWeight: 0.25
-  specialFlashSprite: {fileID: 0}
-  flashOnlyOccupied: 0
+  specialFlashSprite: {fileID: 21300000, guid: f5d57fa648607704fb3815ac946c2f6d, type: 3}
+  flashOnlyOccupied: 1
   specialSFX: {fileID: 8300000, guid: fef80799cf9040849be2d0991d651fe6, type: 3}
