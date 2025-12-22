@@ -3334,6 +3334,8 @@ MonoBehaviour:
   projectileSpeed: 800
   minBagPieces: 2
   forceOneSpecialPerRefill: 0
+  castleAttackInterval: 3
+  castleProjectileSprite: {fileID: 21300000, guid: ca7186951d5077d419fe7998de074c6d, type: 3}
   scoreUI: {fileID: 2092384766}
   highScoreUI: {fileID: 330590300}
   levelText: {fileID: 685653179}

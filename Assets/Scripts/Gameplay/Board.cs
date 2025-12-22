@@ -19,6 +19,7 @@ public class Board : MonoBehaviour
     Vector2 contentSize;         // total pixel size actually used by the grid (width*cell, height*cell)
     readonly Transform[,] grid = null; // (not used for UI placement—kept for logic)
     Dictionary<Vector2Int, RectTransform> placed = new();
+    readonly Dictionary<Vector2Int, float> healTimers = new();
 
     [System.Serializable]
     public struct MonsterInstance
@@ -27,6 +28,18 @@ public class Board : MonoBehaviour
         public float hp;
 
         public MonsterInstance(MonsterData d) { data = d; hp = (d ? d.maxHealth : 0f); }
+    }
+
+    // single-pixel white sprite for line drawing and Tile fills
+    static Sprite _onePx;
+    static Sprite OnePx()
+    {
+        if (_onePx) return _onePx;
+        var tex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+        tex.SetPixel(0, 0, Color.white);
+        tex.Apply(false, true);
+        _onePx = Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
+        return _onePx;
     }
 
     private readonly Dictionary<Vector2Int, MonsterInstance> monsters = new();
@@ -49,6 +62,67 @@ public class Board : MonoBehaviour
     {
         RecomputeCellMetrics();
         DrawGridOverlay(); // nice to have; remove if you don’t want lines
+    }
+
+    void Update()
+    {
+        // Healers pulse over time
+        if (monsters.Count == 0 || healTimers.Count == 0) return;
+
+        var toKeys = new List<Vector2Int>(healTimers.Keys);
+        foreach (var k in toKeys)
+        {
+            if (!monsters.TryGetValue(k, out var inst) || inst.data == null)
+            { healTimers.Remove(k); continue; }
+
+            var md = inst.data;
+            if (md.healAmount <= 0f || md.healSpeed <= 0f)
+            { healTimers.Remove(k); continue; }
+
+            float interval = md.healSpeed;
+            if (!healTimers.TryGetValue(k, out var last)) last = 0f;
+            if (Time.time - last < interval) continue;
+
+            // Build candidates in Manhattan range
+            int range = Mathf.Clamp(Mathf.RoundToInt(md.healRange), 0, 3);
+            Vector2Int? best = null;
+            int bestDist = int.MaxValue;
+            float bestFrac = 1f; // lower is better
+
+            for (int y = Mathf.Max(0, k.y - range); y <= Mathf.Min(height - 1, k.y + range); y++)
+                for (int x = Mathf.Max(0, k.x - range); x <= Mathf.Min(width - 1, k.x + range); x++)
+                {
+                    var c = new Vector2Int(x, y);
+                    if (c == k) continue;
+
+                    if (!monsters.TryGetValue(c, out var ally) || ally.data == null) continue;
+                    if (ally.hp <= 0f) continue;                          // cannot heal dead
+                    if (ally.hp >= ally.data.maxHealth) continue;         // already full
+
+                    int d = Mathf.Abs(c.x - k.x) + Mathf.Abs(c.y - k.y);
+                    if (d > range) continue;
+
+                    float frac = ally.hp / Mathf.Max(1f, ally.data.maxHealth);
+                    // pick nearest, then lowest hp fraction
+                    bool take =
+                        (d < bestDist) ||
+                        (d == bestDist && frac < bestFrac);
+
+                    if (take) { best = c; bestDist = d; bestFrac = frac; }
+                }
+
+            healTimers[k] = Time.time; // tick consumed (even if no target)
+
+            if (best.HasValue)
+            {
+                // perform one heal
+                if (HealTile(best.Value, md.healAmount))
+                {
+                    // play healer’s VFX on the healed cell
+                    PlayHealVFX(best.Value, md.healSprite, 0.5f); // Time used as vfx duration = 0.5f
+                }
+            }
+        }
     }
 
     public void RecomputeCellMetrics()
@@ -77,37 +151,107 @@ public class Board : MonoBehaviour
 
     public RectTransform InstantiateTileUI(Color color)
     {
-        var t = Instantiate(tilePrefab, gridRoot);
-        t.color = color;
-        t.name = "Tile_" + t.GetInstanceID();
-        t.gameObject.AddComponent<BoardOwned>(); 
+        // Root rect (1 tile)
+        var rt = new GameObject($"Tile_{GetInstanceID()}",
+            typeof(RectTransform), typeof(CanvasRenderer),
+            typeof(UnityEngine.UI.Image), typeof(BoardOwned))
+            .GetComponent<RectTransform>();
 
-        var rt = t.rectTransform;
+        rt.SetParent(gridRoot, false);
         rt.sizeDelta = cellSize;
         rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
         rt.localScale = Vector3.one;
+
+        var baseImg = rt.GetComponent<UnityEngine.UI.Image>();
+        baseImg.color = Color.black;
+
+        const float BORDER = 2f;
+
+        // Back (gray)
+        var back = new GameObject("BackFill", typeof(UnityEngine.UI.Image)).GetComponent<UnityEngine.UI.Image>();
+        back.transform.SetParent(rt, false);
+        var backRT = back.rectTransform;
+        backRT.anchorMin = backRT.anchorMax = new Vector2(0.5f, 0.5f);
+        backRT.sizeDelta = rt.sizeDelta - new Vector2(BORDER * 2f, BORDER * 2f);
+        back.sprite = OnePx(); // simple 1x1 white pixel
+        back.type = UnityEngine.UI.Image.Type.Simple;
+        back.color = new Color(0.6f, 0.6f, 0.6f, 1f);
+
+        // HealthFill (colored, filled horizontally)
+        var fill = new GameObject("HealthFill", typeof(UnityEngine.UI.Image)).GetComponent<UnityEngine.UI.Image>();
+        fill.transform.SetParent(rt, false);
+        var frt = fill.rectTransform;
+        frt.anchorMin = frt.anchorMax = new Vector2(0.5f, 0.5f);
+        frt.sizeDelta = backRT.sizeDelta;
+        fill.sprite = OnePx(); // simple 1x1 white pixel
+        fill.type = UnityEngine.UI.Image.Type.Filled;
+        fill.fillMethod = UnityEngine.UI.Image.FillMethod.Vertical;
+        fill.fillOrigin = (int)UnityEngine.UI.Image.OriginVertical.Bottom;
+        fill.fillAmount = 1f;
+        fill.color = color;
+
+        // Mask so the portrait disappears as health depletes
+        var mask = fill.gameObject.AddComponent<UnityEngine.UI.Mask>();
+        mask.showMaskGraphic = true;
+
         return rt;
     }
 
     public RectTransform InstantiateTileUI(Color color, Sprite portrait, float inset = 4f)
     {
-        var rt = InstantiateTileUI(color); // existing method
+        var rt = InstantiateTileUI(color);
         if (portrait)
         {
             var go = new GameObject("MonsterPortrait", typeof(UnityEngine.UI.Image));
             var img = go.GetComponent<UnityEngine.UI.Image>();
             img.sprite = portrait;
             img.preserveAspect = true;
+            img.raycastTarget = false;
 
             var prt = img.rectTransform;
-            prt.SetParent(rt, false);
+            prt.SetParent(rt.Find("HealthFill"), false); // Stays clipped by Mask
             prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
-            prt.sizeDelta = rt.sizeDelta - new Vector2(inset, inset);
+            prt.sizeDelta = ((RectTransform)rt.Find("HealthFill")).sizeDelta - new Vector2(2f, 2f);
             prt.anchoredPosition = Vector2.zero;
         }
         return rt;
     }
 
+    void UpdateTileHPVisual(Vector2Int cell, float current, float max)
+    {
+        if (!placed.TryGetValue(cell, out var rt)) return;
+        var fill = rt.Find("HealthFill") as RectTransform;
+        if (!fill) return;
+
+        var img = fill.GetComponent<UnityEngine.UI.Image>();
+        float amt = (max <= 0f) ? 0f : Mathf.Clamp01(current / max);
+        img.fillAmount = amt; // depleted area shows the gray base underneath
+    }
+
+    public bool DamageTile(Vector2Int cell, float amount)
+    {
+        if (!monsters.TryGetValue(cell, out var inst) || inst.data == null) return false;
+        if (inst.hp <= 0f) return false; // already “dead” – projectiles pass through
+
+        inst.hp = Mathf.Max(0f, inst.hp - amount);
+        monsters[cell] = inst;
+        UpdateTileHPVisual(cell, inst.hp, inst.data.maxHealth);
+        if (inst.hp <= 0f) Debug.Log($"Tile at {cell} ({inst.data.name}) died.");
+        return inst.hp > 0f;
+    }
+
+    public bool HealTile(Vector2Int cell, float amount)
+    {
+        if (!monsters.TryGetValue(cell, out var inst) || inst.data == null) return false;
+        if (inst.hp <= 0f) return false; // cannot heal “dead” tiles
+        float newHp = Mathf.Min(inst.data.maxHealth, inst.hp + amount);
+        if (Mathf.Approximately(newHp, inst.hp)) return false;
+
+        inst.hp = newHp;
+        monsters[cell] = inst;
+        UpdateTileHPVisual(cell, inst.hp, inst.data.maxHealth);
+        return true;
+    }
 
     public bool InBounds(Vector2Int c) =>
         c.x >= 0 && c.x < width && c.y >= 0 && c.y < height;
@@ -187,13 +331,16 @@ public class Board : MonoBehaviour
                 var key = new Vector2Int(x, y);
                 if (monsters.TryGetValue(key, out var inst) && inst.data)
                 {
-                    // damage rule: only if hp>0 counts toward damage, but for dominance we count presence
-                    if (inst.hp > 0f) dmgRow += Mathf.RoundToInt(inst.data.attackPower);
+                    if (inst.hp > 0f)
+                    {
+                        dmgRow += Mathf.RoundToInt(inst.data.attackPower);
+                        specialChargeFromMonsters += inst.data.specialGaugeGain;
+                    }
+                    // dominance count still counts presence
+                    if (!counts.ContainsKey(inst.data))
+                        counts[inst.data] = 0;
 
-                    if (!counts.ContainsKey(inst.data)) counts[inst.data] = 0;
                     counts[inst.data] += 1;
-
-                    specialChargeFromMonsters += inst.data.specialGaugeGain;
                 }
             }
 
@@ -234,12 +381,19 @@ public class Board : MonoBehaviour
                     var from = new Vector2Int(x, yy);
                     var to = new Vector2Int(x, yy - 1);
 
+                    if (healTimers.TryGetValue(from, out var t))
+                    {
+                        healTimers.Remove(from);
+                        healTimers[to] = t;
+                    }
+
                     if (placed.TryGetValue(from, out var rt))
                     {
                         placed.Remove(from);
                         placed[to] = rt;
                         rt.anchoredPosition = CellToAnchoredPos(to);
                     }
+
                     if (monsters.TryGetValue(from, out var inst))
                     {
                         monsters.Remove(from);
@@ -393,14 +547,22 @@ public class Board : MonoBehaviour
 
                 int drop = 0;
                 for (int i = 0; i < removedRows.Count; i++)
-                    if (removedRows[i] < y) drop++; else break;
+                    if (removedRows[i] < y) drop++;
+                    else break;
 
                 if (drop > 0)
                 {
                     var to = new Vector2Int(x, y - drop);
                     moves.Add((from, to, rt));
+
                     if (monsters.TryGetValue(from, out var inst))
                         monsterMoves.Add((from, to, inst));
+
+                    if (healTimers.TryGetValue(from, out var t))
+                    {
+                        healTimers.Remove(from);
+                        healTimers[to] = t;
+                    }
                 }
             }
 
@@ -444,6 +606,13 @@ public class Board : MonoBehaviour
                         monsters.Remove(from);
                         monsters[to] = inst;
                     }
+
+                    if (healTimers.TryGetValue(from, out var t))
+                    {
+                        healTimers.Remove(from);
+                        healTimers[to] = t;
+                    }
+
                     writeY++;
                 }
             }
@@ -500,7 +669,15 @@ public class Board : MonoBehaviour
 
     public void SetMonsterAt(Vector2Int cell, MonsterInstance inst)
     {
+        if (inst.data && inst.hp <= 0f)
+            inst.hp = inst.data.maxHealth;
+
         monsters[cell] = inst;
+        UpdateTileHPVisual(cell, inst.hp, inst.data ? inst.data.maxHealth : 0f);
+
+        // initialize healer timer if needed
+        if (inst.data && inst.data.healAmount > 0f)
+            healTimers[cell] = Time.time; // next tick starts from now
     }
 
     void CleanOrphanedTiles()
@@ -517,4 +694,39 @@ public class Board : MonoBehaviour
     }
 
     public bool TryGetMonster(Vector2Int cell, out MonsterInstance inst) => monsters.TryGetValue(cell, out inst);
+
+    // ======== Healing VFX ========
+
+    public void PlayHealVFX(Vector2Int cell, Sprite sprite, float duration = 0.5f)
+    {
+        if (!sprite) return;
+        StartCoroutine(PlayHealVFXCo(cell, sprite, duration));
+    }
+
+    private System.Collections.IEnumerator PlayHealVFXCo(Vector2Int cell, Sprite sprite, float duration)
+    {
+        if (!InBounds(cell)) yield break;
+
+        var img = new GameObject("HealVFX", typeof(UnityEngine.UI.Image)).GetComponent<UnityEngine.UI.Image>();
+        img.sprite = sprite;
+        img.preserveAspect = true;
+        img.raycastTarget = false;
+
+        var rt = img.rectTransform;
+        rt.SetParent(gridRoot, false);
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.sizeDelta = GetCellSize() - new Vector2(6f, 6f);  // slight inset
+        rt.anchoredPosition = CellToAnchoredPos(cell);
+
+        float t = 0f;
+        while (t < duration && img)
+        {
+            t += Time.deltaTime;
+            // quick pop-in/out if you want a little life
+            float a = 1f - Mathf.Abs((t / duration) * 2f - 1f); // triangle 0..1..0
+            img.color = new Color(1f, 1f, 1f, 0.35f + 0.65f * a);
+            yield return null;
+        }
+        if (img) Destroy(img.gameObject);
+    }
 }

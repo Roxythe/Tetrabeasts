@@ -49,6 +49,12 @@ public class GameController : MonoBehaviour
     public int minBagPieces = 2;                 // keep at least this many ready
     public bool forceOneSpecialPerRefill = false; // optional "ensure a special" switch
 
+    [Header("Castle Attacks")]
+    public float castleAttackInterval = 3.0f;  // seconds between shots
+    public Sprite castleProjectileSprite;      // optional; else reuse an attack sprite
+    float _castleAttackTimer = 0f;
+    int castleProjectileDamage = 1;
+
 
     readonly Queue<TetrominoData> bag = new();
     public int score { get; private set; }
@@ -122,6 +128,17 @@ public class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
             ActivateSpecial();
 #endif
+
+        // Periodic castle projectile
+        if (!gameOver && !levelWon && gameBoard)
+        {
+            _castleAttackTimer += Time.deltaTime;
+            if (_castleAttackTimer >= castleAttackInterval)
+            {
+                _castleAttackTimer = 0f;
+                TrySpawnCastleDownshot();
+            }
+        }
     }
 
     void ShowNextPreview()
@@ -139,8 +156,9 @@ public class GameController : MonoBehaviour
             if (m == null || m.Length != next.cells.Length)
             {
                 var roster = GetActiveMonsterRoster();
+                var chosen = WeightedPick(roster);
                 var rebuilt = new MonsterData[next.cells.Length];
-                for (int i = 0; i < rebuilt.Length; i++) rebuilt[i] = WeightedPick(roster);
+                for (int i = 0; i < rebuilt.Length; i++) rebuilt[i] = chosen;
                 m = rebuilt;
             }
         }
@@ -166,15 +184,15 @@ public class GameController : MonoBehaviour
         var data = bag.Dequeue();
         var mons = monstersBag.Count > 0 ? monstersBag.Dequeue() : null;
 
-        // Heal monster array for normal pieces (specials never carry monsters)
+        // Heal monster array for normal pieces
         if (data.special == SpecialType.None)
         {
             if (mons == null || mons.Length != data.cells.Length)
             {
                 var roster = GetActiveMonsterRoster();
+                var chosen = WeightedPick(roster);   
                 mons = new MonsterData[data.cells.Length];
-                for (int i = 0; i < mons.Length; i++)
-                    mons[i] = WeightedPick(roster);
+                for (int i = 0; i < mons.Length; i++) mons[i] = chosen;
             }
         }
         else
@@ -294,13 +312,15 @@ public class GameController : MonoBehaviour
             MonsterData[] arr;
             if (use.special == SpecialType.None)
             {
+                var chosen = WeightedPick(roster);
                 arr = new MonsterData[cellsCount];
-                for (int k = 0; k < cellsCount; k++) arr[k] = WeightedPick(roster);
+                for (int k = 0; k < cellsCount; k++) arr[k] = chosen;
             }
             else
             {
-                arr = System.Array.Empty<MonsterData>(); // specials never carry monsters
+                arr = System.Array.Empty<MonsterData>();
             }
+
             monstersBag.Enqueue(arr);
         }
 
@@ -394,8 +414,12 @@ public class GameController : MonoBehaviour
 
         if (enemyCastleUI && data)
         {
-            int levelNumber = levelIndex + 1; 
+            int levelNumber = levelIndex + 1;
             enemyCastleUI.InitCastle(data, levelNumber);
+            castleAttackInterval = data.projectileInterval;
+            projectileSpeed = data.projectileSpeed;
+            castleProjectileSprite = data.projectileSprite;
+            castleProjectileDamage = data.projectileDamage;
             if (levelText) levelText.text = $"Level: {levelNumber}";
         }
         else
@@ -634,4 +658,109 @@ public class GameController : MonoBehaviour
 
         return bag.Count > 0 ? bag.Peek() : null;
     }
+
+    // ================ Castle Attack System ===================
+
+    void TrySpawnCastleDownshot()
+    {
+        // Build two column pools: cols with any tile alive, cols with any tile (all dead)
+        var aliveCols = new List<int>();
+        var deadOnlyCols = new List<int>();
+
+        for (int x = 0; x < gameBoard.width; x++)
+        {
+            bool hasAny = false, hasAlive = false;
+
+            for (int y = gameBoard.height - 1; y >= 0; y--)
+            {
+                var c = new Vector2Int(x, y);
+                if (gameBoard.IsFree(c)) continue;
+
+                hasAny = true;
+                if (gameBoard.TryGetMonster(c, out var mi) && mi.data && mi.hp > 0f)
+                { hasAlive = true; break; }
+            }
+
+            if (hasAlive) aliveCols.Add(x);
+            else if (hasAny) deadOnlyCols.Add(x);
+        }
+
+        if (aliveCols.Count == 0 && deadOnlyCols.Count == 0)
+            return; // no targets on board
+
+        // Choose a column: prefer aliveCols, else deadOnlyCols
+        var pool = (aliveCols.Count > 0) ? aliveCols : deadOnlyCols;
+        int col = pool[UnityEngine.Random.Range(0, pool.Count)];
+
+        // Find the first *living* target in that column (if none, we’ll drop to floor)
+        Vector2Int? hitCell = null;
+        for (int y = gameBoard.height - 1; y >= 0; y--)
+        {
+            var c = new Vector2Int(col, y);
+            if (gameBoard.IsFree(c)) continue;
+
+            if (gameBoard.TryGetMonster(c, out var inst) && inst.data && inst.hp > 0f)
+            { hitCell = c; break; }
+            // else: dead tile — projectile should pass through
+        }
+
+        // Start above top; end at hitCell (if any) or bottom
+        Vector2 start = gameBoard.CellToAnchoredPos(new Vector2Int(col, gameBoard.height - 1))
+                      + new Vector2(0f, gameBoard.GetCellSize().y * 0.75f);
+
+        Vector2 end = hitCell.HasValue
+            ? gameBoard.CellToAnchoredPos(hitCell.Value)
+            : gameBoard.CellToAnchoredPos(new Vector2Int(col, 0));
+
+        // Convert to projectile root space if needed
+        var root = projectileRoot ? projectileRoot : gameBoard.gridRoot;
+        if (root != gameBoard.gridRoot)
+        {
+            start = LocalTo(root, gameBoard.gridRoot, start);
+            end = LocalTo(root, gameBoard.gridRoot, end);
+        }
+
+        SpawnCastleDownProjectile(castleProjectileSprite, start, end, hitCell); // Spawn projectile
+    }
+
+
+    void SpawnCastleDownProjectile(Sprite sprite, Vector2 start, Vector2 end, Vector2Int? targetCell)
+    {
+        var root = projectileRoot ? projectileRoot : gameBoard.gridRoot;
+        var go = new GameObject("CastleDownshot", typeof(UnityEngine.UI.Image));
+        var img = go.GetComponent<UnityEngine.UI.Image>();
+        img.sprite = sprite;
+        img.preserveAspect = true;
+        img.raycastTarget = false;
+        var rt = img.rectTransform;
+        rt.SetParent(root, false);
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.sizeDelta = gameBoard.GetCellSize();
+        rt.anchoredPosition = start;
+
+        StartCoroutine(CastleDownshotCo(rt, end, targetCell));
+    }
+
+    System.Collections.IEnumerator CastleDownshotCo(RectTransform rt, Vector2 end, Vector2Int? targetCell)
+    {
+        float speed = Mathf.Max(10f, projectileSpeed);
+        while (rt && (rt.anchoredPosition - end).sqrMagnitude > 4f)
+        {
+            rt.anchoredPosition = Vector2.MoveTowards(rt.anchoredPosition, end, speed * Time.deltaTime);
+            yield return null;
+        }
+
+        if (rt) Destroy(rt.gameObject);
+
+        // On impact: deal damage if we have a valid, living target
+        if (targetCell.HasValue && !levelWon && !gameOver)
+        {
+            bool aliveAfter = gameBoard.DamageTile(targetCell.Value, castleProjectileDamage);
+            if (gameBoard.TryGetMonster(targetCell.Value, out var inst) && inst.data)
+                Debug.Log($"Hit {inst.data.name} at {targetCell.Value}: {inst.hp}/{inst.data.maxHealth}"
+                          + (aliveAfter ? "" : " (DEAD)"));
+        }
+
+    }
+
 }

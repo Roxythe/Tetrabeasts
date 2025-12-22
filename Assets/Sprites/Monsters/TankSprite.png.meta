@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: ca7186951d5077d419fe7998de074c6d
+guid: ece728398788f8c4490534d11882b9d6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3418701903819259282
-    second: ArrowEnemyProj_0
+      213: -794975277745631723
+    second: TankSprite_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -139,13 +139,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ArrowEnemyProj_0
+      name: TankSprite_0
       rect:
         serializedVersion: 2
-        x: 100
-        y: 0
-        width: 1321
-        height: 1024
+        x: 35
+        y: 62
+        width: 965
+        height: 824
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 29d391ab44ba17f20800000000000000
-      internalID: 3418701903819259282
+      spriteID: 51e01c4623ea7f4f0800000000000000
+      internalID: -794975277745631723
       vertices: []
       indices: 
       edges: []
@@ -174,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ArrowEnemyProj_0: 3418701903819259282
+      TankSprite_0: -794975277745631723
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

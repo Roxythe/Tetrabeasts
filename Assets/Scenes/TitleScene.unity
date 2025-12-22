@@ -194,8 +194,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.6617}
-  m_SizeDelta: {x: 0, y: 1.3234}
+  m_AnchoredPosition: {x: 6.2435303, y: 3.0720825}
+  m_SizeDelta: {x: 18.2399, y: 8.791}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &35795729
 MonoBehaviour:
@@ -299,11 +299,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7508733031300296860, guid: 3b14f087e3986b04abf41ccbff2fe2e1, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 5.0664
       objectReference: {fileID: 0}
     - target: {fileID: 7508733031300296860, guid: 3b14f087e3986b04abf41ccbff2fe2e1, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 7.6156
       objectReference: {fileID: 0}
     - target: {fileID: 7508733031300296860, guid: 3b14f087e3986b04abf41ccbff2fe2e1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -335,11 +335,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7508733031300296860, guid: 3b14f087e3986b04abf41ccbff2fe2e1, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 0.39257812
       objectReference: {fileID: 0}
     - target: {fileID: 7508733031300296860, guid: 3b14f087e3986b04abf41ccbff2fe2e1, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -1.37
       objectReference: {fileID: 0}
     - target: {fileID: 7508733031300296860, guid: 3b14f087e3986b04abf41ccbff2fe2e1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -4038,8 +4038,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.6616821}
-  m_SizeDelta: {x: 0, y: 1.3234}
+  m_AnchoredPosition: {x: 6.501404, y: 3.0720825}
+  m_SizeDelta: {x: 24.8368, y: 8.791}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1480193593
 MonoBehaviour:
@@ -4054,8 +4054,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSelectUI
   roster:
+  - {fileID: 11400000, guid: d4d85dbe02ecb8842a4f7113ddd64b76, type: 2}
+  - {fileID: 11400000, guid: 570857b45968c634a93e3ce8cd7dfe3e, type: 2}
   - {fileID: 11400000, guid: 433e723cd1e13c44185e776bf85f5eec, type: 2}
   - {fileID: 11400000, guid: beed2f869003d004da23471404171e2d, type: 2}
+  - {fileID: 11400000, guid: d9b2cf3a66b90e94e87a013247773b65, type: 2}
+  - {fileID: 11400000, guid: 67a287bec1238d04da2b5d4f9321f491, type: 2}
   listParent: {fileID: 624186671}
   itemButtonPrefab: {fileID: 1250721185657284317, guid: 66bc74a54d8200e4b90190dfada8677a, type: 3}
   previewImage: {fileID: 1625216076}
@@ -5036,9 +5040,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 665172192}
-        m_TargetAssemblyTypeName: TitleMenuUI, Assembly-CSharp
-        m_MethodName: OnToggleSelectMonster
+      - m_Target: {fileID: 1480193593}
+        m_TargetAssemblyTypeName: MonsterSelectUI, Assembly-CSharp
+        m_MethodName: ConfirmAndClose
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

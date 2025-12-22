@@ -33,6 +33,13 @@ public class MonsterSelectUI : MonoBehaviour
         RefreshAllUI();
     }
 
+    void OnEnable()
+    {
+        // Pull current selections
+        SyncFromStore();
+        RefreshAllUI();
+    }
+
     void BuildList()
     {
         // Clear any existing children
@@ -72,23 +79,33 @@ public class MonsterSelectUI : MonoBehaviour
 
     void ToggleSelect(MonsterData md)
     {
+        bool changed = false;
+
         if (selected.Contains(md))
         {
-            // Attempt to deselect
-            if (selected.Count <= MinSelect) return; // enforce minimum
+            // Allow deselecting freely (even if this makes it < MinSelect)
             selected.Remove(md);
+            changed = true;
         }
         else
         {
-            // Attempt to add
-            if (selected.Count >= MaxSelect) return; // enforce maximum
-            selected.Add(md);
+            // Enforce MAX at click time
+            if (selected.Count < MaxSelect)
+            {
+                selected.Add(md);
+                changed = true;
+            }
+            else
+            {
+                // Optional: play a "bump" SFX or flash the counter
+            }
         }
 
-        // Push to global store so Gameplay can read it later
+        // Always resync UI so a 5th click never leaves a stray highlight
         SelectedMonstersStore.Active = new List<MonsterData>(selected);
         RefreshAllUI();
     }
+
 
     void SeedDefaultsIfNeeded()
     {
@@ -153,15 +170,47 @@ public class MonsterSelectUI : MonoBehaviour
 
     void SetButtonHighlight(Button btn, bool on)
     {
-        // Expect an optional child named "Highlight" (Image) that we toggle
+        // Optional overlay toggle (kept if you use it)
         var frame = btn.transform.Find("Highlight")?.GetComponent<Image>();
         if (frame) frame.enabled = on;
 
-        // Subtle fallback: change colors if no highlight child exists
+        // Force all states to same opacity so state machine can't fight you
         var colors = btn.colors;
-        colors.normalColor = on ? new Color(1f, 1f, 1f, 0.95f) : new Color(1f, 1f, 1f, 0.75f);
-        colors.highlightedColor = on ? Color.white : colors.highlightedColor;
+        Color onCol = new Color(1f, 1f, 1f, 1.0f);
+        Color offCol = new Color(1f, 1f, 1f, 0.5f);
+
+        Color a = on ? onCol : offCol;
+
+        colors.normalColor = a;
+        colors.highlightedColor = a;
+        colors.selectedColor = a;
+        colors.pressedColor = a;   // keeps it consistent while mouse is down
         btn.colors = colors;
+
+        // Optional: clear UI selection if this button just turned OFF and remains "selected"
+        var es = UnityEngine.EventSystems.EventSystem.current;
+        if (!on && es && es.currentSelectedGameObject == btn.gameObject)
+            es.SetSelectedGameObject(null);
+    }
+
+
+    public void ConfirmAndClose()
+    {
+        // Ensure at least MinSelect by auto-filling from roster order
+        if (selected.Count < MinSelect && roster != null)
+        {
+            for (int i = 0; i < roster.Length && selected.Count < MinSelect; i++)
+            {
+                var md = roster[i];
+                if (md != null && !selected.Contains(md))
+                    selected.Add(md);
+            }
+        }
+
+        // Persist & refresh one last time, then hide panel
+        SelectedMonstersStore.Active = new List<MonsterData>(selected);
+        RefreshAllUI();
+        gameObject.SetActive(false);
     }
 
 }

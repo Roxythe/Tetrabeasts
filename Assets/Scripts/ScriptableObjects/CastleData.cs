@@ -12,6 +12,12 @@ public class CastleData : ScriptableObject
     [Header("Stats")]
     public int maxHP = 100;
 
+    [Header("Projectile Attack")]
+    public Sprite projectileSprite;          // arrow sprite, etc.
+    [Min(0.1f)] public float projectileInterval = 3f;
+    [Min(1f)] public float projectileSpeed = 800f;
+    [Min(1)] public int projectileDamage = 1;
+
     public Sprite GetSpriteForHealth(float hpPercent)
     {
         // clamp

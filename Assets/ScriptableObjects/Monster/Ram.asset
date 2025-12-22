@@ -15,10 +15,14 @@ MonoBehaviour:
   monsterName: Ram
   portrait: {fileID: 21300000, guid: d5e11407eb2f62149b1192c051abc4bf, type: 3}
   monsterDescription: Default A
-  maxHealth: 1
+  maxHealth: 2
   minHealth: 0
-  currentHealth: 1
-  attackPower: 1
+  currentHealth: 2
+  attackPower: 2
   weightedSpawnRate: 2
-  specialGaugeGain: 2
+  healAmount: 0
+  healRange: 1
+  healSpeed: 10
+  specialGaugeGain: 1
   attackSprite: {fileID: 21300000, guid: d55993f5b15ca3a4d833192a9b95d2a2, type: 3}
+  healSprite: {fileID: 0}

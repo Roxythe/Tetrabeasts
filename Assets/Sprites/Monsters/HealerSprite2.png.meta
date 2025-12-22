@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: ca7186951d5077d419fe7998de074c6d
+guid: 8f69e6099d0cdfc48b0ca6d892164b68
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3418701903819259282
-    second: ArrowEnemyProj_0
+      213: 2347549697006692985
+    second: HealerSprite2_0
+  - first:
+      213: 8352964834129953951
+    second: HealerSprite2_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -139,13 +142,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ArrowEnemyProj_0
+      name: HealerSprite2_0
       rect:
         serializedVersion: 2
-        x: 100
-        y: 0
-        width: 1321
-        height: 1024
+        x: 102
+        y: 36
+        width: 875
+        height: 940
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +157,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 29d391ab44ba17f20800000000000000
-      internalID: 3418701903819259282
+      spriteID: 97ae8a6f20c249020800000000000000
+      internalID: 2347549697006692985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HealerSprite2_1
+      rect:
+        serializedVersion: 2
+        x: 765
+        y: 962
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9445afb241bbe370800000000000000
+      internalID: 8352964834129953951
       vertices: []
       indices: 
       edges: []
@@ -174,7 +199,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ArrowEnemyProj_0: 3418701903819259282
+      HealerSprite2_0: 2347549697006692985
+      HealerSprite2_1: 8352964834129953951
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

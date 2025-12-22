@@ -32,11 +32,13 @@ Enemy castle can attack player pieces (arrows/fireballs) stopping at first livin
 
 ****** TODO ******
 
-When ally pieces have 0 hp left their tile background becomes gray and enemy attacks will pass through them. Enemy attacks should only hit ally tiles that have health greater than 0. Tiles with 0 hp do not contribute damage to the enemy castle or points towards filling the player's special ability gauge. 
+- Add sounds for healing
+- Add tile music
+- Add button press sfx
 
-Add slider background to monster piece linked to unit health. When unit health depletes the background color should porportionally deplete, leaving the depleted area a gray color. If unit health = 0 the background should also be fully depleted for the block.
+- Create special character ability to set all inactive tiles back to full health (revives dead tile monsters)
 
-Add healing type units. Healing type units will periodically heal damged ally tiles within their range. Healing units cannot heal units that have 0 health. Variables for healing units should be similar to the current normal units except they should also have a variable for how often they heal, the tile range in which their heal will reach (1-3 tiles distance from the healing unit), and the potency/power of their heal.
+- Create a setting for mixed tetrapieces or uniform monster pieces
 
 - Play with the grid size and experiment with different grid sizes.
 

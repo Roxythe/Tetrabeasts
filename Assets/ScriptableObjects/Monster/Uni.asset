@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fb8a4948cc13aaa4fa2dab935dc7542b, type: 3}
-  m_Name: Rem
+  m_Name: Uni
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
-  monsterName: Rem
-  portrait: {fileID: 21300000, guid: 953e0fc93d59f3c4e8d6cd75bbd040ea, type: 3}
-  monsterDescription: Default B
-  maxHealth: 2
+  monsterName: Uni
+  portrait: {fileID: 21300000, guid: 9e77fd43c6f846c43a211b5267acc76a, type: 3}
+  monsterDescription: Healer with short range, but powerful spells
+  maxHealth: 1
   minHealth: 0
-  currentHealth: 2
-  attackPower: 3
+  currentHealth: 1
+  attackPower: 1
   weightedSpawnRate: 1
-  healAmount: 0
+  healAmount: 3
   healRange: 1
-  healSpeed: 10
-  specialGaugeGain: 1
-  attackSprite: {fileID: 21300000, guid: 8cb849c8035fff74ab70771545fa61b7, type: 3}
-  healSprite: {fileID: 0}
+  healSpeed: 6
+  specialGaugeGain: 2
+  attackSprite: {fileID: 21300000, guid: d55993f5b15ca3a4d833192a9b95d2a2, type: 3}
+  healSprite: {fileID: 21300000, guid: dc6ff6b0cfcef97419f4edc308db832a, type: 3}
