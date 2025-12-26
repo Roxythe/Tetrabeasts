@@ -426,6 +426,17 @@ public class GameController : MonoBehaviour
         {
             Debug.LogWarning("InitLevel: castle data or enemyCastleUI missing");
         }
+
+        if (AudioManager.I && data != null)
+        {
+            // Priority: bossBGM > levelBGM > global bgmLoop
+            if (data.isBossLevel && data.bossBGM)
+                AudioManager.I.PlayMusic(data.bossBGM, loop: true, vol: data.bossBGMVolume);
+            else if (data.levelBGM)
+                AudioManager.I.PlayMusic(data.levelBGM, loop: true, vol: data.levelBGMVolume);
+            else
+                AudioManager.I.PlayMusic(AudioManager.I.bgmLoop, loop: true, vol: AudioManager.I.musicVolume);
+        }
     }
 
     // Call this when castle HP has been reduced to 0

@@ -33,8 +33,7 @@ Enemy castle can attack player pieces (arrows/fireballs) stopping at first livin
 ****** TODO ******
 
 - Add sounds for healing
-- Add tile music
-- Add button press sfx
+- Add sounds for individual monster piece attacks, the sounds should play when the monster projectile damages the enemy castle
 
 - Create special character ability to set all inactive tiles back to full health (revives dead tile monsters)
 
@@ -44,6 +43,9 @@ Enemy castle can attack player pieces (arrows/fireballs) stopping at first livin
 
 *** KNOWN BUGS ***
 
+- Special death block doesn't seem to be deleting the correct monster tetra pieces. It seems to be deleing all of onw type of monster piece, just not the monster piece it is dropped on top of. When deciding what monster piece to delete it should be choosing based on the monster piece directly below it when set to inactive and before being destroyed.
+
+- When tiles are damage and they turn gray, I would like the monster image to still be fully visible. Right now the whole tile seems to be filled up with grey and covering the monster image within the tile.
 
 *** PLAYER SPECIAL ATTACKS ***
 

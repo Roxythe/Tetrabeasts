@@ -25,6 +25,10 @@ public class MonsterSelectUI : MonoBehaviour
     const int MinSelect = 2;
     const int MaxSelect = 4;
 
+    [Header("Audio")]
+    public AudioClip selectSFX;
+    public AudioClip hoverSFX;
+
     void Awake()
     {
         BuildList();
@@ -65,12 +69,17 @@ public class MonsterSelectUI : MonoBehaviour
 
             // show details on hover/click (optional: click already handled above)
             var evt = btn.gameObject.AddComponent<UnityEngine.EventSystems.EventTrigger>();
-            var entry = new UnityEngine.EventSystems.EventTrigger.Entry
+
+            // HOVER: preview + sound
+            var enter = new UnityEngine.EventSystems.EventTrigger.Entry
             {
                 eventID = UnityEngine.EventSystems.EventTriggerType.PointerEnter
             };
-            entry.callback.AddListener(_ => ShowPreview(captured));
-            evt.triggers.Add(entry);
+            enter.callback.AddListener(_ => {
+                ShowPreview(captured);
+                if (AudioManager.I && hoverSFX) AudioManager.I.PlaySFX(hoverSFX);
+            });
+            evt.triggers.Add(enter);
 
             buttons[captured] = btn;
             SetButtonHighlight(btn, false); // default off; we’ll enable for selected later
@@ -100,6 +109,9 @@ public class MonsterSelectUI : MonoBehaviour
                 // Optional: play a "bump" SFX or flash the counter
             }
         }
+
+        if (AudioManager.I && selectSFX)
+            AudioManager.I.PlaySFX(selectSFX);
 
         // Always resync UI so a 5th click never leaves a stray highlight
         SelectedMonstersStore.Active = new List<MonsterData>(selected);

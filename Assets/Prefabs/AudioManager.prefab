@@ -47,12 +47,12 @@ MonoBehaviour:
   mixer: {fileID: 24100000, guid: 57e1049380a4c1c44910470098c3cf56, type: 2}
   musicGroup: {fileID: -3974107776444165418, guid: 57e1049380a4c1c44910470098c3cf56, type: 2}
   sfxGroup: {fileID: -2550373149824464684, guid: 57e1049380a4c1c44910470098c3cf56, type: 2}
-  bgmLoop: {fileID: 8300000, guid: 0101ed564f6324842a201a37504139b5, type: 3}
-  sfxRestart: {fileID: 8300000, guid: 8792a26c730b7d44db95052d522f1061, type: 3}
+  bgmLoop: {fileID: 0}
+  sfxRestart: {fileID: 8300000, guid: 9b934f9e5161c1f4699da6b51d6f07d0, type: 3}
   sfxGameOver: {fileID: 8300000, guid: b96cbb9c8427edb42a6e35fdb78cb3cd, type: 3}
   sfxLineClears:
-  - {fileID: 8300000, guid: 6133bcf53e79b864da3bd4b942209373, type: 3}
-  - {fileID: 8300000, guid: 83825beea633c4e439eeb59700ac7a34, type: 3}
+  - {fileID: 8300000, guid: 4ceffb438abbea1468771745cd9d8fec, type: 3}
+  - {fileID: 8300000, guid: 15fdf873adb28aa49887361e123756a9, type: 3}
   masterVolume: 0.5
   musicVolume: 0.5
   sfxVolume: 1

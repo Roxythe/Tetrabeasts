@@ -17,6 +17,11 @@ public class EnemyCastleUI : MonoBehaviour
     public string castleName { get; private set; }
     public int levelNumber { get; private set; }
 
+    [Header("Boss Overlay")]
+    public Image bossOverlayImage;             // Drag your Boss_Image here
+    public Vector2 bossOverlaySize = Vector2.zero; // Optional fixed size; leave (0,0) to inherit castle size
+    public Vector2 bossOverlayOffset = Vector2.zero; // Fine-tune placement
+
     CastleData sourceData;
 
     // Call this at the start of a level
@@ -52,6 +57,7 @@ public class EnemyCastleUI : MonoBehaviour
         }
 
         UpdateVisuals();
+        SetupBossOverlay();
     }
 
     // Call this whenever you deal damage to the castle
@@ -93,4 +99,33 @@ public class EnemyCastleUI : MonoBehaviour
         // We'll let GameController decide what to do on win
         Debug.Log("Castle destroyed! Player wins level.");
     }
+
+    void SetupBossOverlay()
+    {
+        if (!bossOverlayImage) return;
+
+        bool on = (sourceData != null && sourceData.isBossLevel);
+        bossOverlayImage.enabled = on;
+        if (!on) return;
+
+        // If you added a sprite field to CastleData (recommended), prefer it:
+        if (sourceData.bossOverlaySprite) bossOverlayImage.sprite = sourceData.bossOverlaySprite;
+
+        // Anchor the overlay to the center of the castle image
+        var brt = bossOverlayImage.rectTransform;
+        if (castleImage) brt.SetParent(castleImage.rectTransform, false);
+
+        brt.anchorMin = brt.anchorMax = new Vector2(0.5f, 0.5f);
+        brt.anchoredPosition = bossOverlayOffset;
+        bossOverlayImage.preserveAspect = true;
+        bossOverlayImage.raycastTarget = false;
+
+        // Size: inherit castle size unless you set a specific size
+        if (bossOverlaySize != Vector2.zero) brt.sizeDelta = bossOverlaySize;
+        else if (castleImage) brt.sizeDelta = castleImage.rectTransform.sizeDelta;
+
+        // Ensure it renders on top of the castle
+        brt.SetAsLastSibling();
+    }
+
 }

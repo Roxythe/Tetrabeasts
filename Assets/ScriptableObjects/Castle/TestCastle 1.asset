@@ -23,3 +23,8 @@ MonoBehaviour:
   projectileInterval: 3
   projectileSpeed: 800
   projectileDamage: 2
+  isBossLevel: 0
+  bossBGM: {fileID: 8300000, guid: 6824fd3217be2fb4b9ff175138689e20, type: 3}
+  bossBGMVolume: 0.6
+  levelBGM: {fileID: 8300000, guid: 0101ed564f6324842a201a37504139b5, type: 3}
+  levelBGMVolume: 0.5

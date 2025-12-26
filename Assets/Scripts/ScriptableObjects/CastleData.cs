@@ -18,6 +18,16 @@ public class CastleData : ScriptableObject
     [Min(1f)] public float projectileSpeed = 800f;
     [Min(1)] public int projectileDamage = 1;
 
+    [Header("Boss Level")]
+    public bool isBossLevel;
+    public Sprite bossOverlaySprite;
+    public AudioClip bossBGM;
+    [Range(0f, 1f)] public float bossBGMVolume = 0.6f;
+
+    // (optional) non-boss per-level music
+    public AudioClip levelBGM;
+    [Range(0f, 1f)] public float levelBGMVolume = 0.5f;
+
     public Sprite GetSpriteForHealth(float hpPercent)
     {
         // clamp

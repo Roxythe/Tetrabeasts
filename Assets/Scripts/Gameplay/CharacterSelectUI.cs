@@ -14,6 +14,10 @@ public class CharacterSelectUI : MonoBehaviour
     public Image selectedPortrait;       // optional preview
     public TMP_Text selectedSpecialDescription;
 
+    [Header("Audio")]
+    public AudioClip selectSFX;
+    public AudioClip hoverSFX;
+
     void Awake()
     {
         BuildList();
@@ -36,13 +40,28 @@ public class CharacterSelectUI : MonoBehaviour
             if (txt) txt.text = data.displayName;
             if (img && data.portrait) img.sprite = data.portrait;
 
-            btn.onClick.AddListener(() => { SetCurrent(data); });
+            btn.onClick.AddListener(() => { SetCurrent(data); }); // select
+
+            // Hover SFX
+            var evt = btn.gameObject.AddComponent<UnityEngine.EventSystems.EventTrigger>();
+            var enter = new UnityEngine.EventSystems.EventTrigger.Entry
+            {
+                eventID = UnityEngine.EventSystems.EventTriggerType.PointerEnter
+            };
+            enter.callback.AddListener(_ => {
+                if (hoverSFX && AudioManager.I) AudioManager.I.PlaySFX(hoverSFX);
+            });
+            evt.triggers.Add(enter);
         }
     }
 
     void SetCurrent(PlayerCharacterData data)
     {
         SelectedCharacterStore.Current = data;
+
+        if (AudioManager.I && selectSFX)
+            AudioManager.I.PlaySFX(selectSFX);
+
         RefreshPreview();
     }
 

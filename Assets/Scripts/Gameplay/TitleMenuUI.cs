@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -27,6 +29,14 @@ public class TitleMenuUI : MonoBehaviour
     public MonsterData defaultA;
     public MonsterData defaultB;
 
+    [Header("Audio (Title)")]
+    public AudioClip titleBGM;   
+    [Range(0f, 1f)] public float titleBGMVolume = 0.5f;
+
+    public AudioClip startGameSFX;
+    public AudioClip uiClickSFX; 
+    public AudioClip uiHoverSFX; 
+
     void Awake()
     {
         // Ensure panels start hidden
@@ -37,9 +47,31 @@ public class TitleMenuUI : MonoBehaviour
         HighScoreManager.EnsureInitialized(10);
     }
 
+    void Start()
+    {
+        // Start title BGM
+        if (AudioManager.I)
+        {
+            var clip = titleBGM ? titleBGM : AudioManager.I.bgmLoop; // fallback to default loop
+            AudioManager.I.PlayMusic(clip, loop: true, vol: titleBGMVolume);
+        }
+
+        // Auto-hook all Buttons under this menu for click/hover sounds
+        HookAllButtonsForSFX();
+    }
+
+
     // --- Button hooks ---
     public void OnStartGame()
     {
+        // Stop title BGM
+        if (AudioManager.I)
+        {
+            var clip = startGameSFX ? startGameSFX : AudioManager.I.sfxRestart;
+            AudioManager.I.PlaySFX(clip);
+            AudioManager.I.StopMusic(); // fade/stop title BGM
+        }
+
         // Ensure we have a character before loading Gameplay
         if (SelectedCharacterStore.Current == null)
         {
@@ -55,7 +87,7 @@ public class TitleMenuUI : MonoBehaviour
 
         if (SelectedMonstersStore.Active.Count < 2)
         {
-            // fall back to your first two defaults, or any two you like
+            // Fall back to the first two defaults
             SelectedMonstersStore.Active = new List<MonsterData> { defaultA, defaultB };
         }
 
@@ -138,6 +170,31 @@ public class TitleMenuUI : MonoBehaviour
         {
             if (settingsPanel && settingsPanel.activeSelf) { OnToggleSettings(); return; }
             if (highScorePanel && highScorePanel.activeSelf) { OnToggleHighScore(); return; }
+        }
+    }
+
+    // --- SFX hooking ---
+    void HookAllButtonsForSFX()
+    {
+        var buttons = GetComponentsInChildren<Button>(includeInactive: true);
+        foreach (var b in buttons)
+        {
+            // click
+            b.onClick.AddListener(() => { if (AudioManager.I) AudioManager.I.PlaySFX(uiClickSFX); });
+
+            // hover (optional)
+            var hover = b.gameObject.GetComponent<UIButtonSFX>();
+            if (!hover) hover = b.gameObject.AddComponent<UIButtonSFX>();
+            hover.hoverClip = uiHoverSFX;
+        }
+    }
+
+    public sealed class UIButtonSFX : MonoBehaviour, IPointerEnterHandler
+    {
+        public AudioClip hoverClip;
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (hoverClip && AudioManager.I) AudioManager.I.PlaySFX(hoverClip, 1f, 1f);
         }
     }
 }
