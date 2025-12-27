@@ -14,7 +14,7 @@ public class GameController : MonoBehaviour
 
     [Header("Progression")]
     public EnemyCastleUI enemyCastleUI;
-    public CastleData[] castlesByLevel; 
+    public CastleData[] castlesByLevel;
     int currentLevel = 0;
 
     [Header("Player")]
@@ -61,11 +61,13 @@ public class GameController : MonoBehaviour
     bool gameOver = false;
     bool levelWon = false;
 
-    public ScoreUI scoreUI;        
+    public ScoreUI scoreUI;
     public HighScoreUI highScoreUI;
     public TMP_Text levelText;
 
     public int CurrentLevel => currentLevel;
+
+    private CastleData currentCastleData;
 
     void Start()
     {
@@ -145,9 +147,9 @@ public class GameController : MonoBehaviour
     {
         if (!nextPreview) return;
 
-        EnsureMinBag(3); 
-        var next = PeekSafeHead();     
-        if (next == null) return; 
+        EnsureMinBag(3);
+        var next = PeekSafeHead();
+        if (next == null) return;
 
         // aligned partner for preview
         var m = (monstersBag.Count > 0) ? monstersBag.Peek() : null;
@@ -190,7 +192,7 @@ public class GameController : MonoBehaviour
             if (mons == null || mons.Length != data.cells.Length)
             {
                 var roster = GetActiveMonsterRoster();
-                var chosen = WeightedPick(roster);   
+                var chosen = WeightedPick(roster);
                 mons = new MonsterData[data.cells.Length];
                 for (int i = 0; i < mons.Length; i++) mons[i] = chosen;
             }
@@ -230,7 +232,7 @@ public class GameController : MonoBehaviour
         UpdateSpecialUI();
 
         score = 0;
-        if (scoreUI) scoreUI.Set(score);   
+        if (scoreUI) scoreUI.Set(score);
         if (highScoreUI) highScoreUI.Hide(); // Close high-score panel if it was open
 
         // Reset bag and preview
@@ -348,7 +350,7 @@ public class GameController : MonoBehaviour
     public void OnPieceLocked(int rowsCleared, List<Vector2Int> removedCells, int damageFromMonsters,
                           float specialChargeFromMonsters, Dictionary<int, int> rowDamage,
                           Dictionary<int, MonsterData> rowDominantMonster, Dictionary<int,
-                              List<int>> colsByRow) 
+                              List<int>> colsByRow)
     {
         // Score rule: rowsCleared × 10
         int gained = Mathf.Max(0, rowsCleared) * 10;
@@ -375,8 +377,13 @@ public class GameController : MonoBehaviour
 
                 // Use dominant monster for this row pick attack sprite
                 Sprite attackSprite = null;
+                MonsterData attackerMD = null;
+
                 if (rowDominantMonster != null && rowDominantMonster.TryGetValue(rowY, out var md) && md)
+                {
+                    attackerMD = md; // Remember for SFX on impact
                     attackSprite = md.attackSprite ? md.attackSprite : md.portrait;
+                }
 
                 // Choose a start column from the last-placed piece's columns on this row
                 int col = UnityEngine.Random.Range(0, gameBoard.width);
@@ -389,12 +396,11 @@ public class GameController : MonoBehaviour
                 Vector2 targetCastle = enemyCastleUI.castleImage.rectTransform.anchoredPosition;
 
                 // convert both to the projectileRoot (UI_Canvas) space
-                var root = projectileRoot ? projectileRoot : gameBoard.gridRoot;  // you’ll set this to UI_Canvas
+                var root = projectileRoot ? projectileRoot : gameBoard.gridRoot;  // Set this to UI_Canvas
                 Vector2 start = LocalTo(root, gameBoard.gridRoot, startBoard);
                 Vector2 target = LocalTo(root, enemyCastleUI.castleImage.rectTransform, targetCastle);
 
-                // spawn
-                SpawnAttackProjectile(attackSprite, start, target, dmg);
+                SpawnAttackProjectile(attackSprite, start, target, dmg, attackerMD); // Spawn projectile
             }
         }
 
@@ -411,6 +417,8 @@ public class GameController : MonoBehaviour
 
         if (!enemyCastleUI)
             enemyCastleUI = FindFirstObjectByType<EnemyCastleUI>(FindObjectsInactive.Include);
+
+        currentCastleData = data; // for external reference if needed
 
         if (enemyCastleUI && data)
         {
@@ -458,9 +466,9 @@ public class GameController : MonoBehaviour
 
     private System.Collections.IEnumerator CoStartNextLevel()
     {
-        yield return null;  
+        yield return null;
 
-        StartNextLevel();  
+        StartNextLevel();
     }
 
     void StartNextLevel()
@@ -574,9 +582,9 @@ public class GameController : MonoBehaviour
             specialText.text = $"{Mathf.RoundToInt(100f * Mathf.Clamp01(specialGauge / Mathf.Max(1f, specialGaugeMax)))}%";
     }
 
-    void SpawnAttackProjectile(Sprite sprite, Vector2 startAnchored, Vector2 targetAnchored, int damage)
+    void SpawnAttackProjectile(Sprite sprite, Vector2 startAnchored, Vector2 targetAnchored, int damage, MonsterData attackerMD)
     {
-        if (projectileRoot == null) projectileRoot = gameBoard.gridRoot; // fallback
+        if (projectileRoot == null) projectileRoot = gameBoard.gridRoot;
 
         var go = new GameObject("AttackProjectile", typeof(UnityEngine.UI.Image));
         var img = go.GetComponent<UnityEngine.UI.Image>();
@@ -587,13 +595,13 @@ public class GameController : MonoBehaviour
         var rt = img.rectTransform;
         rt.SetParent(projectileRoot, false);
         rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
-        rt.sizeDelta = gameBoard.GetCellSize(); // roughly tile-sized
+        rt.sizeDelta = gameBoard.GetCellSize();
         rt.anchoredPosition = startAnchored;
 
-        StartCoroutine(MoveProjectileAndHit(rt, targetAnchored, damage));
+        StartCoroutine(MoveProjectileAndHit(rt, targetAnchored, damage, attackerMD));
     }
 
-    System.Collections.IEnumerator MoveProjectileAndHit(RectTransform rt, Vector2 targetAnchored, int damage)
+    System.Collections.IEnumerator MoveProjectileAndHit(RectTransform rt, Vector2 targetAnchored, int damage, MonsterData attackerMD)
     {
         float speed = Mathf.Max(10f, projectileSpeed);
         while (rt && (rt.anchoredPosition - targetAnchored).sqrMagnitude > 9f)
@@ -607,6 +615,14 @@ public class GameController : MonoBehaviour
         // Apply damage on impact
         if (damage > 0 && enemyCastleUI && !levelWon && !gameOver)
         {
+            // Play the attacking monster's impact SFX (if provided)
+            if (AudioManager.I && attackerMD)
+            {
+                var clip = attackerMD.PickRandomAttackSFX();
+                if (clip)
+                    AudioManager.I.PlaySFX(clip);
+            }
+
             enemyCastleUI.ApplyDamage(damage);
             if (enemyCastleUI.currentHP <= 0) OnCastleDestroyed();
         }
@@ -731,6 +747,17 @@ public class GameController : MonoBehaviour
             end = LocalTo(root, gameBoard.gridRoot, end);
         }
 
+        if (AudioManager.I && currentCastleData)
+        {
+            var fireClip = currentCastleData.PickRandom(
+                currentCastleData.sfxProjectileFiredClips,
+                currentCastleData.sfxProjectileFired // fallback
+            );
+
+            if (fireClip)
+                AudioManager.I.PlaySFX(fireClip);
+        }
+
         SpawnCastleDownProjectile(castleProjectileSprite, start, end, hitCell); // Spawn projectile
     }
 
@@ -763,10 +790,17 @@ public class GameController : MonoBehaviour
 
         if (rt) Destroy(rt.gameObject);
 
+        AudioClip hitClip = null;
+        if (currentCastleData)
+            hitClip = currentCastleData.PickRandom(currentCastleData.sfxProjectileHitTileClips,
+                                                   currentCastleData.sfxProjectileHitTile);
+
         // On impact: deal damage if we have a valid, living target
         if (targetCell.HasValue && !levelWon && !gameOver)
         {
-            bool aliveAfter = gameBoard.DamageTile(targetCell.Value, castleProjectileDamage);
+            bool aliveAfter = gameBoard.DamageTile(targetCell.Value, castleProjectileDamage,
+                                                   Board.DamageSource.CastleProjectile, hitClip);
+
             if (gameBoard.TryGetMonster(targetCell.Value, out var inst) && inst.data)
                 Debug.Log($"Hit {inst.data.name} at {targetCell.Value}: {inst.hp}/{inst.data.maxHealth}"
                           + (aliveAfter ? "" : " (DEAD)"));

@@ -27,4 +27,25 @@ public class MonsterData : ScriptableObject
     public Sprite attackSprite;
     public Sprite healSprite;
 
+    [Header("SFX")]
+    public AudioClip sfxHeal;    // played when this healer successfully heals someone
+    public AudioClip[] sfxHealClips;
+    public AudioClip sfxAttack;  // played when this monster's projectile hits the castle
+    public AudioClip[] sfxAttackClips;
+
+    AudioClip PickRandomFrom(AudioClip[] arr, AudioClip fallback)
+    {
+        if (arr != null && arr.Length > 0)
+        {
+            for (int tries = 0; tries < 8; tries++)
+            {
+                var c = arr[Random.Range(0, arr.Length)];
+                if (c) return c;
+            }
+        }
+        return fallback;
+    }
+
+    public AudioClip PickRandomHealSFX() => PickRandomFrom(sfxHealClips, sfxHeal);
+    public AudioClip PickRandomAttackSFX() => PickRandomFrom(sfxAttackClips, sfxAttack);
 }

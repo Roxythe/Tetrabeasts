@@ -13,6 +13,8 @@ public class Board : MonoBehaviour
     public RectTransform gridRoot;   // child under GameBoard
     public Image tilePrefab;         // TileUI_Prefab (UI Image)
 
+    public enum DamageSource { Generic, CastleProjectile } // for SFX differentiation
+
     // runtime
     RectTransform boardRect;         // the GameBoard panel
     Vector2 cellSize;            // size of one (square) cell in pixels
@@ -103,10 +105,9 @@ public class Board : MonoBehaviour
                     if (d > range) continue;
 
                     float frac = ally.hp / Mathf.Max(1f, ally.data.maxHealth);
+
                     // pick nearest, then lowest hp fraction
-                    bool take =
-                        (d < bestDist) ||
-                        (d == bestDist && frac < bestFrac);
+                    bool take = (d < bestDist) || (d == bestDist && frac < bestFrac);
 
                     if (take) { best = c; bestDist = d; bestFrac = frac; }
                 }
@@ -118,8 +119,14 @@ public class Board : MonoBehaviour
                 // perform one heal
                 if (HealTile(best.Value, md.healAmount))
                 {
-                    // play healer’s VFX on the healed cell
-                    PlayHealVFX(best.Value, md.healSprite, 0.5f); // Time used as vfx duration = 0.5f
+                    PlayHealVFX(best.Value, md.healSprite, 0.5f); // VFX call
+
+                    // Random heal SFX
+                    if (AudioManager.I && md)
+                    {
+                        var clip = md.PickRandomHealSFX();
+                        if (clip) AudioManager.I.PlaySFX(clip);
+                    }
                 }
             }
         }
@@ -190,10 +197,6 @@ public class Board : MonoBehaviour
         fill.fillAmount = 1f;
         fill.color = color;
 
-        // Mask so the portrait disappears as health depletes
-        var mask = fill.gameObject.AddComponent<UnityEngine.UI.Mask>();
-        mask.showMaskGraphic = true;
-
         return rt;
     }
 
@@ -209,11 +212,16 @@ public class Board : MonoBehaviour
             img.raycastTarget = false;
 
             var prt = img.rectTransform;
-            prt.SetParent(rt.Find("HealthFill"), false); // Stays clipped by Mask
+            prt.SetParent(rt, false);
             prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
+
+            // Slight inset so it sits inside the inline border
             prt.sizeDelta = ((RectTransform)rt.Find("HealthFill")).sizeDelta - new Vector2(2f, 2f);
             prt.anchoredPosition = Vector2.zero;
+            
+            prt.SetAsLastSibling(); // Ensure the portrait renders on top
         }
+
         return rt;
     }
 
@@ -228,14 +236,23 @@ public class Board : MonoBehaviour
         img.fillAmount = amt; // depleted area shows the gray base underneath
     }
 
-    public bool DamageTile(Vector2Int cell, float amount)
+    public bool DamageTile(Vector2Int cell, float amount,
+                       DamageSource src = DamageSource.Generic,
+                       AudioClip sfxOverride = null)
     {
         if (!monsters.TryGetValue(cell, out var inst) || inst.data == null) return false;
-        if (inst.hp <= 0f) return false; // already “dead” – projectiles pass through
+        if (inst.hp <= 0f) return false;
 
         inst.hp = Mathf.Max(0f, inst.hp - amount);
         monsters[cell] = inst;
         UpdateTileHPVisual(cell, inst.hp, inst.data.maxHealth);
+
+        // --- Choose and play a hurt SFX ---
+        AudioClip clip = sfxOverride;
+
+        if (AudioManager.I && clip)
+            AudioManager.I.PlaySFX(clip);
+
         if (inst.hp <= 0f) Debug.Log($"Tile at {cell} ({inst.data.name}) died.");
         return inst.hp > 0f;
     }

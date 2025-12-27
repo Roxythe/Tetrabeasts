@@ -26,3 +26,15 @@ MonoBehaviour:
   specialGaugeGain: 1
   attackSprite: {fileID: 21300000, guid: d55993f5b15ca3a4d833192a9b95d2a2, type: 3}
   healSprite: {fileID: 0}
+  sfxHeal: {fileID: 0}
+  sfxHealClips: []
+  sfxAttack: {fileID: 8300000, guid: e93d0aeabb7cc5d4d8b70ff71393aaf2, type: 3}
+  sfxAttackClips:
+  - {fileID: 8300000, guid: 41b3f34a39795c945a3ba5cc14bb02b9, type: 3}
+  - {fileID: 8300000, guid: e93d0aeabb7cc5d4d8b70ff71393aaf2, type: 3}
+  - {fileID: 8300000, guid: ebbc786614ed4ce40a6c4b8dd7150231, type: 3}
+  sfxHurt: {fileID: 8300000, guid: 6bf402a552edcc24291e706965866709, type: 3}
+  sfxHurtClips:
+  - {fileID: 8300000, guid: fccb4318ede48ff4db14c0d040030810, type: 3}
+  - {fileID: 8300000, guid: 6bf402a552edcc24291e706965866709, type: 3}
+  - {fileID: 8300000, guid: 23223cee22f6a6c4caceff40d1bcd1e6, type: 3}

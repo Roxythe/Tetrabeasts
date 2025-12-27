@@ -23,6 +23,23 @@ MonoBehaviour:
   projectileInterval: 3
   projectileSpeed: 800
   projectileDamage: 1
+  sfxProjectileHitTile: {fileID: 8300000, guid: 23223cee22f6a6c4caceff40d1bcd1e6, type: 3}
+  sfxProjectileHitTileClips:
+  - {fileID: 8300000, guid: fccb4318ede48ff4db14c0d040030810, type: 3}
+  - {fileID: 8300000, guid: 6bf402a552edcc24291e706965866709, type: 3}
+  - {fileID: 8300000, guid: 23223cee22f6a6c4caceff40d1bcd1e6, type: 3}
+  sfxDamageStageClips:
+  - {fileID: 8300000, guid: 8ff6ce060d8e67b41b53c73f72237f0c, type: 3}
+  - {fileID: 8300000, guid: 371a4a17708185d49828361a722a5430, type: 3}
+  - {fileID: 8300000, guid: 81dc2fffeb5847f409aa65263d0b8138, type: 3}
+  - {fileID: 8300000, guid: 8759481d2f970e14498d13e322ffe788, type: 3}
+  sfxProjectileFired: {fileID: 8300000, guid: 212ba41b43c8a004ca231baaa67f9610, type: 3}
+  sfxProjectileFiredClips:
+  - {fileID: 8300000, guid: 0b408daecd92fb146a11de4451ab6af3, type: 3}
+  - {fileID: 8300000, guid: 23402266cd39763498457e9d3adc6932, type: 3}
+  - {fileID: 8300000, guid: 36168d0de03667d49b6b637203e675eb, type: 3}
+  - {fileID: 8300000, guid: 212ba41b43c8a004ca231baaa67f9610, type: 3}
+  - {fileID: 8300000, guid: 8990cdb32fd36a74c9df4c24a499b0a1, type: 3}
   isBossLevel: 1
   bossOverlaySprite: {fileID: 2311437191288037494, guid: 7016d7e9103892c479ddc8b4ea3dca5f, type: 3}
   bossBGM: {fileID: 8300000, guid: 6824fd3217be2fb4b9ff175138689e20, type: 3}

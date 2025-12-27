@@ -23,6 +23,7 @@ public class EnemyCastleUI : MonoBehaviour
     public Vector2 bossOverlayOffset = Vector2.zero; // Fine-tune placement
 
     CastleData sourceData;
+    int _lastStageIndex = -1;
 
     // Call this at the start of a level
     public void InitCastle(CastleData data)
@@ -79,17 +80,29 @@ public class EnemyCastleUI : MonoBehaviour
 
     void UpdateVisuals()
     {
-        // Update health bar value & text
-        if (healthBarSlider)
-            healthBarSlider.value = currentHP;
+        if (healthBarSlider) healthBarSlider.value = currentHP;
+        if (healthBarText) healthBarText.text = $"{currentHP} / {maxHP}";
 
-        if (healthBarText)
-            healthBarText.text = $"{currentHP} / {maxHP}";
-
-        // Update sprite based on %HP
         if (castleImage && sourceData != null)
         {
-            float hpPercent = (float)currentHP / (float)maxHP;
+            float hpPercent = (float)currentHP / Mathf.Max(1, maxHP);
+
+            // Compute stage index exactly like CastleData.GetSpriteForHealth does
+            int stageIndex =
+                (hpPercent >= 0.76f) ? 0 :
+                (hpPercent >= 0.51f) ? 1 :
+                (hpPercent >= 0.26f) ? 2 : 3;
+
+            // If stage changed (and not the very first initialization), play SFX
+            if (_lastStageIndex != -1 && stageIndex != _lastStageIndex)
+            {
+                var clip = sourceData.PickRandom(sourceData.sfxDamageStageClips, null);
+                if (clip && AudioManager.I) AudioManager.I.PlaySFX(clip);
+            }
+
+            _lastStageIndex = stageIndex;
+
+            // Update the sprite
             castleImage.sprite = sourceData.GetSpriteForHealth(hpPercent);
         }
     }

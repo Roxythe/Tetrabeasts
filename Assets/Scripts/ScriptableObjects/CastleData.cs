@@ -18,6 +18,13 @@ public class CastleData : ScriptableObject
     [Min(1f)] public float projectileSpeed = 800f;
     [Min(1)] public int projectileDamage = 1;
 
+    [Header("SFX")]
+    public AudioClip sfxProjectileHitTile;
+    public AudioClip[] sfxProjectileHitTileClips;
+    public AudioClip[] sfxDamageStageClips;
+    public AudioClip sfxProjectileFired;
+    public AudioClip[] sfxProjectileFiredClips;
+
     [Header("Boss Level")]
     public bool isBossLevel;
     public Sprite bossOverlaySprite;
@@ -48,5 +55,19 @@ public class CastleData : ScriptableObject
             return damageStages[0];
 
         return null;
+    }
+
+    public AudioClip PickRandom(AudioClip[] arr, AudioClip fallback = null)
+    {
+        if (arr != null && arr.Length > 0)
+        {
+            // Keep retrying until we hit a non-null element, up to a few tries
+            for (int k = 0; k < 8; k++)
+            {
+                var c = arr[Random.Range(0, arr.Length)];
+                if (c) return c;
+            }
+        }
+        return fallback;
     }
 }
