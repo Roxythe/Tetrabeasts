@@ -32,10 +32,9 @@ Enemy castle can attack player pieces (arrows/fireballs) stopping at first livin
 
 ****** TODO ******
 
-- Add sounds for healing
-- Add sounds for individual monster piece attacks, the sounds should play when the monster projectile damages the enemy castle
+- Create special character ability to set all inactive tiles back to full health, both damaged and dead tiles (revives dead tile monsters)
 
-- Create special character ability to set all inactive tiles back to full health (revives dead tile monsters)
+- Create special character ability to set all inactive tiles to take no damage for a certain period of time. While damage immunity is active I would like to to change the black inner border outline for tiles from black to a glowing gold color for both inactive and active (currently falling) tiles. When the Immunity is getting close to running out of time, I would like the inner border outline color of tiles to pulse between black and the glowing gold color in 3 sets of 3 pulse with each set of pulses being progrssivley faster until the ability effect timer runs out and all inner boarder outlines return to black and tiles can start taking damage again.
 
 - Create a setting for mixed tetrapieces or uniform monster pieces
 
@@ -43,9 +42,8 @@ Enemy castle can attack player pieces (arrows/fireballs) stopping at first livin
 
 *** KNOWN BUGS ***
 
-- Special death block doesn't seem to be deleting the correct monster tetra pieces. It seems to be deleing all of onw type of monster piece, just not the monster piece it is dropped on top of. When deciding what monster piece to delete it should be choosing based on the monster piece directly below it when set to inactive and before being destroyed.
+Sometimes the death special block seems to land on a monster, but ends up removing all of another monster. Occurs more often when pressing spacebar to drop special block.
 
-- When tiles are damage and they turn gray, I would like the monster image to still be fully visible. Right now the whole tile seems to be filled up with grey and covering the monster image within the tile.
 
 *** PLAYER SPECIAL ATTACKS ***
 
@@ -72,3 +70,12 @@ Sometimes the death special block seems to land on a monster, but ends up removi
 Add Enemy attacks to periodically bombard the players inactive pieces
 
 Prevent players active tile from overlapping a tile occupied by an enemy attack
+
+*** ROUND WON BUFFS/DEBUFFS ***
+
+Add new end of round panel to select from one of 3 premade buffs to effect gameplay during run
+
+Add new end of round panel to select from one of 3 premade Debuffs to effect gameplay during run
+
+Add sound effect for round won
+ 
