@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +14,14 @@ public class Board : MonoBehaviour
     public RectTransform gridRoot;   // child under GameBoard
     public Image tilePrefab;         // TileUI_Prefab (UI Image)
 
+    [Header("Tile Visuals")]
+    public Color normalBorderColor = Color.black;
+    public Color immuneBorderColor = new Color(1f, 0.84f, 0f, 1f); // gold
+
+    [Header("SFX")]
+    public AudioClip sfxImmuneHit;
+
+    bool tilesImmune = false;
     public enum DamageSource { Generic, CastleProjectile } // for SFX differentiation
 
     // runtime
@@ -170,7 +179,7 @@ public class Board : MonoBehaviour
         rt.localScale = Vector3.one;
 
         var baseImg = rt.GetComponent<UnityEngine.UI.Image>();
-        baseImg.color = Color.black;
+        baseImg.color = TilesDamageImmune ? immuneBorderColor : normalBorderColor;
 
         const float BORDER = 2f;
 
@@ -236,12 +245,53 @@ public class Board : MonoBehaviour
         img.fillAmount = amt; // depleted area shows the gray base underneath
     }
 
-    public bool DamageTile(Vector2Int cell, float amount,
-                       DamageSource src = DamageSource.Generic,
-                       AudioClip sfxOverride = null)
+    public void SpawnHealBurst(Vector2Int cell, Sprite sprite, float seconds = 0.5f)
     {
-        if (!monsters.TryGetValue(cell, out var inst) || inst.data == null) return false;
-        if (inst.hp <= 0f) return false;
+        if (!placed.TryGetValue(cell, out var rt)) return;
+
+        var go = new GameObject("HealVFX", typeof(Image));
+        var img = go.GetComponent<Image>();
+        img.sprite = sprite;
+        img.preserveAspect = true;
+        img.raycastTarget = false;
+        img.color = new Color(1f, 1f, 1f, 0.95f);
+
+        var vfx = img.rectTransform;
+        vfx.SetParent(rt, false);
+        vfx.anchorMin = vfx.anchorMax = new Vector2(0.5f, 0.5f);
+        vfx.sizeDelta = rt.sizeDelta * 0.9f;
+
+        StartCoroutine(FadeAndDestroy(img, seconds));
+    }
+
+    IEnumerator FadeAndDestroy(Image img, float seconds)
+    {
+        float t = 0f;
+        var c = img.color;
+        while (img && t < seconds)
+        {
+            t += Time.deltaTime;
+            c.a = Mathf.Lerp(0.95f, 0f, t / seconds);
+            img.color = c;
+            yield return null;
+        }
+        if (img) Destroy(img.gameObject);
+    }
+
+    public bool DamageTile(Vector2Int cell, float amount, DamageSource src = DamageSource.Generic,
+                           AudioClip sfxOverride = null)
+    {
+        if (tilesImmune)
+        {
+            if (AudioManager.I && sfxImmuneHit) AudioManager.I.PlaySFX(sfxImmuneHit);
+            return true; // No damage taken
+        }
+
+        if (!monsters.TryGetValue(cell, out var inst) || inst.data == null)
+            return false;
+
+        if (inst.hp <= 0f)
+            return false;
 
         inst.hp = Mathf.Max(0f, inst.hp - amount);
         monsters[cell] = inst;
@@ -425,6 +475,8 @@ public class Board : MonoBehaviour
         CleanOrphanedTiles();
     }
 
+    // ================ Character Special Abilities ================
+
     public int ClearBottomRows(int rows)
     {
         if (rows <= 0) return 0;
@@ -463,6 +515,59 @@ public class Board : MonoBehaviour
         }
 
         return squaresCleared;
+    }
+
+    public int ReviveAllTilesToFull(List<Vector2Int> changedCells)
+    {
+        if (changedCells == null) changedCells = new List<Vector2Int>();
+
+        // SNAPSHOT the keys so we can safely write back into the dictionary
+        var keys = new List<Vector2Int>(monsters.Keys);
+
+        foreach (var cell in keys)
+        {
+            if (!monsters.TryGetValue(cell, out var inst) || inst.data == null) continue;
+
+            float max = Mathf.Max(0f, inst.data.maxHealth);
+            if (inst.hp < max) // includes reviving from 0
+            {
+                inst.hp = max;
+                monsters[cell] = inst;
+
+                // just update the existing fill; don't add new layers
+                UpdateTileHPVisual(cell, inst.hp, max);
+
+                changedCells.Add(cell);
+            }
+        }
+        return changedCells.Count;
+    }
+
+    public void SetTilesDamageImmunity(bool on)
+    {
+        tilesImmune = on;
+    }
+
+    public bool TilesDamageImmune => tilesImmune;
+
+    public void SetAllTileBorderColor(Color c)
+    {
+        // 'placed' should be your Dictionary<Vector2Int, RectTransform> of inactive tiles.
+        foreach (var kv in placed)
+        {
+            var rt = kv.Value;
+            if (!rt) continue;
+
+            // Border is the Image on the root of the tile (do NOT use GetComponentsInChildren)
+            var img = rt.GetComponent<UnityEngine.UI.Image>();
+            if (img) img.color = c;
+        }
+    }
+
+    public void StyleInlineBorder(RectTransform rt, Color c)
+    {
+        var img = rt ? rt.GetComponent<UnityEngine.UI.Image>() : null;
+        if (img) img.color = c;               // border only
     }
 
     // simple thin-line overlay

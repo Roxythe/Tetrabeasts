@@ -14,8 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterData
   displayName: Grol
   portrait: {fileID: -7301860725011293664, guid: 557d5743c08a59d4e91513d92657dc80, type: 3}
-  specialDescription: TBA
-  ability: 0
+  specialDescription: Tiles become immune to damage for 12 seconds.
+  ability: 2
   clearRows: 3
   cooldownSeconds: 0
   specialGaugeMax: 100
+  reviveAllVFXSprite: {fileID: 0}
+  sfxRestoreAll: {fileID: 0}
+  immunityDuration: 12
+  sfxImmunityOn: {fileID: 8300000, guid: e1ad37cf1e900874482c9264e3c7f391, type: 3}
+  sfxImmunityWarn: {fileID: 8300000, guid: 427959b6c383a494aac8b488b50cd679, type: 3}
+  sfxImmunityOff: {fileID: 8300000, guid: 0dc45fe7af6546549b26d2a9f1776805, type: 3}

@@ -16,10 +16,7 @@ public class NextPreviewUI : MonoBehaviour
         bool isSpecial = data.special != SpecialType.None;
 
         // Clear old
-        for (int i = 0; i < tiles.Count; i++)
-            if (tiles[i])
-                Destroy(tiles[i].gameObject);
-
+        foreach (var t in tiles) if (t) Destroy(t.gameObject);
         tiles.Clear();
 
         // Calculate bounds
@@ -44,17 +41,44 @@ public class NextPreviewUI : MonoBehaviour
         for (int i = 0; i < data.cells.Length; i++)
         {
             var cell = data.cells[i];
-            var tileImg = Instantiate(tilePrefab, root); 
-            tileImg.color = color;
+
+            // root == border
+            var tileImg = Instantiate(tilePrefab, root);
+            tileImg.sprite = null;                     // border only
+            tileImg.raycastTarget = false;
+            var outline = tileImg.GetComponent<UnityEngine.UI.Outline>();
+            if (outline) Destroy(outline);
+
             var rt = tileImg.rectTransform;
             rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
             rt.sizeDelta = tileSize;
+            rt.anchoredPosition = new Vector2(
+                Mathf.Round(origin.x + (cell.x - minX + 0.5f) * s),
+                Mathf.Round(origin.y + (cell.y - minY + 0.5f) * s)
+            );
 
-            int lx = cell.x - minX, ly = cell.y - minY;
-            float x = origin.x + (lx + 0.5f) * s;
-            float y = origin.y + (ly + 0.5f) * s;
-            rt.anchoredPosition = new Vector2(Mathf.Round(x), Mathf.Round(y));
-            tiles.Add(rt);
+            // match board outline color when immune (optional)
+            var gc = GetComponent<GameController>();
+            var boardCmp = GetComponent<Board>();
+            Color borderColor = Color.black;
+            if (boardCmp)
+                borderColor = (gc && gc.immunityActive) ? boardCmp.immuneBorderColor : boardCmp.normalBorderColor;
+            tileImg.color = borderColor;
+
+            // inner fill
+            float BORDER = Mathf.Max(2f, Mathf.Round(s * 0.08f));
+            var fillGO = new GameObject("PreviewFill", typeof(Image));
+            var fill = fillGO.GetComponent<Image>();
+            fill.sprite = null;
+            fill.raycastTarget = false;
+            fill.color = color;
+
+            var frt = fill.rectTransform;
+            frt.SetParent(rt, false);
+            frt.anchorMin = frt.anchorMax = new Vector2(0.5f, 0.5f);
+            frt.sizeDelta = rt.sizeDelta - new Vector2(BORDER * 2f, BORDER * 2f);
+            frt.anchoredPosition = Vector2.zero;
+            frt.SetAsFirstSibling();
 
             if (isSpecial && data.specialSprite != null)
             {
@@ -82,6 +106,18 @@ public class NextPreviewUI : MonoBehaviour
                 prt.sizeDelta = rt.sizeDelta - new Vector2(4f, 4f);
                 prt.anchoredPosition = Vector2.zero;
             }
+
+            tiles.Add(rt);
+        }
+    }
+
+    public void SyncBorderToImmunity(bool immune, Color immuneColor, Color normalColor)
+    {
+        var c = immune ? immuneColor : normalColor;
+        foreach (var rt in tiles)
+        {
+            var img = rt.GetComponent<UnityEngine.UI.Image>();
+            if (img) img.color = c;
         }
     }
 

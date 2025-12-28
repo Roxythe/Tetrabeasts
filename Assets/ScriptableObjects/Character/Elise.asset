@@ -14,8 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterData
   displayName: Elise
   portrait: {fileID: -4337318997203435395, guid: 0b6ed9acc06146e4bb0103810912d48b, type: 3}
-  specialDescription: TBA
-  ability: 0
+  specialDescription: Heal all tiles back to full health
+  ability: 1
   clearRows: 3
   cooldownSeconds: 0
   specialGaugeMax: 100
+  reviveAllVFXSprite: {fileID: 21300000, guid: cad205a4202e77a4a92fbd7314efd68a, type: 3}
+  sfxRestoreAll: {fileID: 8300000, guid: 9820830a92651ee41acf7d44fe6f3bac, type: 3}
+  immunityDuration: 5
+  sfxImmunityOn: {fileID: 0}
+  sfxImmunityWarn: {fileID: 0}
+  sfxImmunityOff: {fileID: 0}

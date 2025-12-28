@@ -103,10 +103,7 @@ public class Piece : MonoBehaviour
     {
         bool isSpecial = data.special != SpecialType.None;
 
-        foreach (var v in visuals)
-            if (v)
-                Destroy(v.gameObject);
-
+        foreach (var v in visuals) if (v) Destroy(v.gameObject);
         visuals.Clear();
 
         if (board == null || board.gridRoot == null) return;
@@ -114,45 +111,71 @@ public class Piece : MonoBehaviour
         for (int i = 0; i < cells.Count; i++)
         {
             var c = cells[i];
-            var img = Instantiate(activeTilePrefab, board.gridRoot);
-            img.color = color;
 
+            // Root = OUTLINE (border only)
+            var img = Instantiate(activeTilePrefab, board.gridRoot);
             var rt = img.rectTransform;
+
+            // ensure this root image is only a border, never a filled square
+            img.sprite = null;                // no sprite = solid tint square
+            img.raycastTarget = false;
+            var anyOutline = img.GetComponent<UnityEngine.UI.Outline>();
+            if (anyOutline) Destroy(anyOutline);
+
+            // size/position
             rt.sizeDelta = board.GetCellSize();
             rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
             rt.localScale = Vector3.one;
             rt.anchoredPosition = board.CellToAnchoredPos(c);
 
+            // pick outline color (gold while immune, otherwise black)
+            var gc = GetComponent<GameController>();
+            img.color = (gc && gc.immunityActive)
+                ? board.immuneBorderColor    // gold during immunity
+                : board.normalBorderColor;
+
+            // build a separate inner fill so the border is "inline"
+            const float BORDER = 2f;
+            var fillGO = new GameObject("ActiveFill", typeof(UnityEngine.UI.Image));
+            var fill = fillGO.GetComponent<UnityEngine.UI.Image>();
+            fill.raycastTarget = false;
+            fill.sprite = null;
+            fill.color = color;              // piece body color only
+
+            var frt = fill.rectTransform;
+            frt.SetParent(rt, false);
+            frt.anchorMin = frt.anchorMax = new Vector2(0.5f, 0.5f);
+            frt.sizeDelta = rt.sizeDelta - new Vector2(BORDER * 2f, BORDER * 2f);
+            frt.anchoredPosition = Vector2.zero;
+            frt.SetAsFirstSibling();          // portraits sit on top
+
+            // Portrait/special icon (unchanged)
             if (isSpecial && data.specialSprite != null)
             {
-                var portraitGO = new GameObject("SpecialIcon", typeof(UnityEngine.UI.Image));
-                var pimg = portraitGO.GetComponent<UnityEngine.UI.Image>();
-                pimg.sprite = data.specialSprite;
-                pimg.preserveAspect = true;
-                var prt = pimg.rectTransform;
-                prt.SetParent(rt, false);
+                var go = new GameObject("SpecialIcon", typeof(UnityEngine.UI.Image));
+                var p = go.GetComponent<UnityEngine.UI.Image>();
+                p.sprite = data.specialSprite; p.preserveAspect = true;
+                var prt = p.rectTransform; prt.SetParent(rt, false);
                 prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
                 prt.sizeDelta = rt.sizeDelta - new Vector2(4f, 4f);
                 prt.anchoredPosition = Vector2.zero;
             }
             else if (!isSpecial && i < monstersForCells.Count && monstersForCells[i] && monstersForCells[i].portrait)
             {
-                // child portrait (centered)
-                var portraitGO = new GameObject("MonsterPortrait", typeof(UnityEngine.UI.Image));
-                var pimg = portraitGO.GetComponent<UnityEngine.UI.Image>();
-                pimg.sprite = monstersForCells[i].portrait;
-                pimg.preserveAspect = true;
-
-                var prt = pimg.rectTransform;
-                prt.SetParent(rt, false);
+                var go = new GameObject("MonsterPortrait", typeof(UnityEngine.UI.Image));
+                var p = go.GetComponent<UnityEngine.UI.Image>();
+                p.sprite = monstersForCells[i].portrait; p.preserveAspect = true;
+                var prt = p.rectTransform; prt.SetParent(rt, false);
                 prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
-                // inset a bit so the portrait sits inside the tile nicely
                 float inset = 4f;
                 prt.sizeDelta = rt.sizeDelta - new Vector2(inset, inset);
                 prt.anchoredPosition = Vector2.zero;
             }
 
             visuals.Add(rt);
+
+            // Ensure the outline (root image) is styled correctly (currently black).
+            if (gc) gc.StyleInlineBorder(rt);
         }
     }
 
@@ -585,4 +608,19 @@ public class Piece : MonoBehaviour
         }
     }
 
+    // ========== Inline Border Color Change ==========
+
+    public void SetInlineBorderColor(Color c)
+    {
+        for (int i = 0; i < visuals.Count; i++)
+        {
+            var img = visuals[i] ? visuals[i].GetComponent<UnityEngine.UI.Image>() : null;
+            if (img) img.color = c;   // only the root (border)
+        }
+    }
+
+    public void ResetInlineBorderColor(Color c)
+    {
+        SetInlineBorderColor(c);
+    }
 }

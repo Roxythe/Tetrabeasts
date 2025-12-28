@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -55,6 +56,11 @@ public class GameController : MonoBehaviour
     float _castleAttackTimer = 0f;
     int castleProjectileDamage = 1;
 
+    [Header("Global Immunity Visuals")]
+    public bool immunityActive = false;
+    public Color immunityOutline = new Color(1f, 0.85f, 0f, 1f); // gold
+    public Color normalOutline = Color.black;
+
 
     readonly Queue<TetrominoData> bag = new();
     public int score { get; private set; }
@@ -105,7 +111,7 @@ public class GameController : MonoBehaviour
         if (selectedCharacter && selectedCharacter.specialGaugeMax > 0f)
             specialGaugeMax = selectedCharacter.specialGaugeMax;
 
-        specialGauge = 0f;
+        specialGauge = 0f; // Initialize Special gauge. Start full for testing
         UpdateSpecialUI();
 
         InitLevel(currentLevel);
@@ -170,6 +176,9 @@ public class GameController : MonoBehaviour
         }
 
         nextPreview.Show(next, next.color, m);
+
+        if (nextPreview)
+            nextPreview.SyncBorderToImmunity(immunityActive, gameBoard.immuneBorderColor, gameBoard.normalBorderColor);
     }
 
     public bool CanSpawnNewPiece() => !gameOver && !levelWon;
@@ -530,6 +539,39 @@ public class GameController : MonoBehaviour
                     }
                     break;
                 }
+
+            case SpecialAbility.RestoreAllToFull:
+                {
+                    var changed = new List<Vector2Int>();
+                    int count = gameBoard.ReviveAllTilesToFull(changed);
+
+                    if (selectedCharacter.sfxRestoreAll && AudioManager.I)
+                        AudioManager.I.PlaySFX(selectedCharacter.sfxRestoreAll);
+
+                    Sprite vfx = (selectedCharacter && selectedCharacter.reviveAllVFXSprite)
+                                 ? selectedCharacter.reviveAllVFXSprite
+                                 : null;
+
+                    if (vfx && count > 0)
+                        foreach (var cell in changed)
+                            gameBoard.SpawnHealBurst(cell, vfx, 0.5f);
+
+                    // reset gauge
+                    specialGauge = 0f;
+                    UpdateSpecialUI();
+                    break;
+                }
+
+            case SpecialAbility.GlobalImmunity:
+                {
+                    // start the timer/pulse co-routine
+                    StartCoroutine(GlobalImmunityCo(Mathf.Max(0.25f, selectedCharacter.immunityDuration)));
+
+                    // reset gauge
+                    specialGauge = 0f;
+                    UpdateSpecialUI();
+                    break;
+                }
         }
     }
 
@@ -761,7 +803,6 @@ public class GameController : MonoBehaviour
         SpawnCastleDownProjectile(castleProjectileSprite, start, end, hitCell); // Spawn projectile
     }
 
-
     void SpawnCastleDownProjectile(Sprite sprite, Vector2 start, Vector2 end, Vector2Int? targetCell)
     {
         var root = projectileRoot ? projectileRoot : gameBoard.gridRoot;
@@ -805,7 +846,86 @@ public class GameController : MonoBehaviour
                 Debug.Log($"Hit {inst.data.name} at {targetCell.Value}: {inst.hp}/{inst.data.maxHealth}"
                           + (aliveAfter ? "" : " (DEAD)"));
         }
+    }
 
+    // ================ Global Immunity System ===================
+
+    System.Collections.IEnumerator GlobalImmunityCo(float totalSeconds)
+    {
+        if (totalSeconds <= 0f) yield break;
+
+        immunityActive = true;                      // set flag
+        gameBoard.SetTilesDamageImmunity(true);
+
+        // Start immunity: GOLD outlines everywhere
+        gameBoard.SetAllTileBorderColor(gameBoard.immuneBorderColor);
+        if (piece && piece.enabled) piece.SetInlineBorderColor(gameBoard.immuneBorderColor);
+
+        if (nextPreview)
+            nextPreview.SyncBorderToImmunity(true, gameBoard.immuneBorderColor, gameBoard.normalBorderColor);
+
+        if (selectedCharacter && selectedCharacter.sfxImmunityOn && AudioManager.I)
+            AudioManager.I.PlaySFX(selectedCharacter.sfxImmunityOn);
+
+        // steady gold (no pulse)
+        float warnWindow = Mathf.Min(3f, totalSeconds);
+        float steady = Mathf.Max(0f, totalSeconds - warnWindow);
+        for (float t = 0f; t < steady; t += Time.deltaTime) yield return null;
+
+        if (selectedCharacter && selectedCharacter.sfxImmunityWarn && AudioManager.I)
+            AudioManager.I.PlaySFX(selectedCharacter.sfxImmunityWarn);
+
+        // Pulse outlines ONLY: gold <-> black
+        int sets = 3;
+        float[] setDur = { 0.9f, 0.6f, 0.45f };
+        for (int s = 0; s < sets; s++)
+        {
+            float setTime = setDur[Mathf.Clamp(s, 0, setDur.Length - 1)];
+            float pulseDur = setTime / 3f;
+
+            for (int p = 0; p < 3; p++)
+            {
+                // GOLD -> BLACK
+                gameBoard.SetAllTileBorderColor(Color.black);
+                if (piece && piece.enabled) piece.SetInlineBorderColor(Color.black);
+
+                if (nextPreview)
+                    nextPreview.SyncBorderToImmunity(true, gameBoard.immuneBorderColor, gameBoard.normalBorderColor);
+
+                yield return new WaitForSeconds(pulseDur * 0.5f);
+
+                // BLACK -> GOLD
+                gameBoard.SetAllTileBorderColor(gameBoard.immuneBorderColor);
+                if (piece && piece.enabled) piece.SetInlineBorderColor(gameBoard.immuneBorderColor);
+
+                if (nextPreview)
+                    nextPreview.SyncBorderToImmunity(true, gameBoard.immuneBorderColor, gameBoard.normalBorderColor);
+
+                yield return new WaitForSeconds(pulseDur * 0.5f);
+            }
+        }
+
+        // End immunity: back to BLACK
+        gameBoard.SetTilesDamageImmunity(false);
+        immunityActive = false;                     // clear flag
+        gameBoard.SetAllTileBorderColor(gameBoard.normalBorderColor);
+        if (piece && piece.enabled) piece.ResetInlineBorderColor(gameBoard.normalBorderColor);
+
+        if (nextPreview)
+            nextPreview.SyncBorderToImmunity(true, gameBoard.immuneBorderColor, gameBoard.normalBorderColor);
+
+        if (selectedCharacter && selectedCharacter.sfxImmunityOff && AudioManager.I)
+            AudioManager.I.PlaySFX(selectedCharacter.sfxImmunityOff);
+    }
+
+    public void StyleInlineBorder(RectTransform rt)
+    {
+        var borderImg = rt ? rt.GetComponent<UnityEngine.UI.Image>() : null;
+        if (!borderImg) return;
+
+        borderImg.color = immunityActive
+            ? gameBoard.immuneBorderColor  // gold during immunity
+            : gameBoard.normalBorderColor; // black otherwise
     }
 
 }

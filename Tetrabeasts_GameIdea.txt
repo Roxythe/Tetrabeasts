@@ -1,48 +1,27 @@
-Game Idea
-
-Title: Tetrabeasts
-
-Genre: Rogulite/Aracde game
-
-Tetris style play field (10 width x 20 height)
-
-Select a deck of monsters to use as blocks that will fall from the top of the screen and need to be arrenaged into full rows of 10 to be destroyed and launch an attack that travels back up the screen to attack a castle wall and damaging the castles hit points. Having 4+ matching monsters consecutivley to launch an attack increases a special gauge for an ultimate ability.
-
-When  monster blocks reach the number of consecutive matching icons to launch an attack they are destroyed (base damage/special gauge is increased if more than 4 of the same monsters are linked consecutivley in a row for every extra matching monster icon) when attack is launched the monster icon blocks are destroyed all blocks above destroyed blocks are shifted down one row.
-
-Castle hp reaching 0 is the win condition for the player to complete the level and recieve a reward/boost for the remainder of the run. Then next level starts with increased difficulty.
-
-Player accummulates score based on the damage done during a run.
-
-Monsters selected for the players deck are the only ones that will be spawned/dropped from the top during that run. Each deck requires a single monster for each block type (Square, T-shape, offset-square-left, offset-square right, Line, L-Left, and L-Right)
-
-Active block can be rotated clockwise or counterclockwise until it is blocked by an inactive block (like tetris). Once the active block is at rest and set to inactive, next block is spawned and set as new active block.
-
-Each monster has a specific block shape (L-shape and offset-square can use the same monster for both left and right variation).
-
-Special block has a chance to be spawned (low spawn rate) single lightning bolt block that destroys all of one kind of monster block currently on the the board. Calculate damage/special gauge increase based on number of blocks destroyed.
-
-Special block bomb (Low spawn rate) that blows up all block in a one row/column range of it's inactive location (a 3x3 range with the bomb block at the center of the grid)
-
-Different player characters with unique ultimate abilities.
-
-Unlockables through achievements and currency gained after a finished run. (New player characters, monsters, Starting perks for a run, player character skins, upgrade monster blocks)
-
-Enemy castle can attack player pieces (arrows/fireballs) stopping at first living piece square. Player pieces have different health and ussually inversley porportional to damage (low dmg = high base health). Player pieces that have 0 hp do not deal damage on row clear.
-
 ****** TODO ******
 
-- Create special character ability to set all inactive tiles back to full health, both damaged and dead tiles (revives dead tile monsters)
-
-- Create special character ability to set all inactive tiles to take no damage for a certain period of time. While damage immunity is active I would like to to change the black inner border outline for tiles from black to a glowing gold color for both inactive and active (currently falling) tiles. When the Immunity is getting close to running out of time, I would like the inner border outline color of tiles to pulse between black and the glowing gold color in 3 sets of 3 pulse with each set of pulses being progrssivley faster until the ability effect timer runs out and all inner boarder outlines return to black and tiles can start taking damage again.
+- Make persistent data for character select and monster select so that I don't have to manually select after every time my game is closed/restarted.
 
 - Create a setting for mixed tetrapieces or uniform monster pieces
 
+- Create a pause panel with settings option, restart option, return to main menu, and quit option. Keybind to escape.
+
 - Play with the grid size and experiment with different grid sizes.
+- Tinker with inline boarder thickness/appearance 
 
 *** KNOWN BUGS ***
 
 Sometimes the death special block seems to land on a monster, but ends up removing all of another monster. Occurs more often when pressing spacebar to drop special block.
+
+*** PERSISTENT DATA ***
+
+- Character and monster select
+
+- Currency
+
+- Statistics (Number of lines cleared, monsters used, castles destroyed, bosses beaten, monsters destroyed with special pieces, monster health restored, dead monsters used in attack, etc)
+
+- Unlocked characters, monsters, monster skin variations, challenge modes completed, achievments, and personal high score
 
 
 *** PLAYER SPECIAL ATTACKS ***
@@ -59,6 +38,8 @@ Add tanky low damage units
 
 Add more unit variations
 
+Add color Variations for monsters
+
 *** SPECIAL BLOCKS ***
 
 On level clear, remove any red tints that might be left over if the level was cleared with a special block.
@@ -66,8 +47,6 @@ On level clear, remove any red tints that might be left over if the level was cl
 Sometimes the death special block seems to land on a monster, but ends up removing all of another monster.
 
 *** ENEMY ATTACK ***
-
-Add Enemy attacks to periodically bombard the players inactive pieces
 
 Prevent players active tile from overlapping a tile occupied by an enemy attack
 
@@ -78,4 +57,13 @@ Add new end of round panel to select from one of 3 premade buffs to effect gamep
 Add new end of round panel to select from one of 3 premade Debuffs to effect gameplay during run
 
 Add sound effect for round won
- 
+
+*** REWARD SYSTEM ***
+
+- Add currency used to unlock characters, monsters, monster skin variations
+
+- Add achievements
+
+*** CHALLENGE MODE ***
+
+- Add difficulty modifiers to increase/unlock rewards

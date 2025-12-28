@@ -2708,6 +2708,9 @@ MonoBehaviour:
   verticalBufferCells: 0.25
   gridRoot: {fileID: 1903717878}
   tilePrefab: {fileID: 1946968788498790587, guid: 1c9906466f5f60b41a8d6e70f0f7b5bd, type: 3}
+  normalBorderColor: {r: 0, g: 0, b: 0, a: 1}
+  immuneBorderColor: {r: 1, g: 0.84, b: 0, a: 1}
+  sfxImmuneHit: {fileID: 8300000, guid: 91a29aa9391039a4f96be5434d7b3676, type: 3}
 --- !u!224 &1488354586
 RectTransform:
   m_ObjectHideFlags: 0
