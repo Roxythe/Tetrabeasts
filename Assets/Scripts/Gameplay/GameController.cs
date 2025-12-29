@@ -61,6 +61,15 @@ public class GameController : MonoBehaviour
     public Color immunityOutline = new Color(1f, 0.85f, 0f, 1f); // gold
     public Color normalOutline = Color.black;
 
+    [Header("Pause")]
+    public GameObject pausePanel;           // panel that holds Resume / Restart / Volume / Main Menu / Quit
+    public UnityEngine.UI.Button resumeButton;
+    public UnityEngine.UI.Button mainMenuButton;
+    public UnityEngine.UI.Button quitButton;
+    public VolumePanelUI volumePanelInPause; // your existing VolumePanelUI moved under pause menu
+    public string titleSceneName = "TitleScene";
+    bool isPaused = false;
+    public bool IsPaused => isPaused;
 
     readonly Queue<TetrominoData> bag = new();
     public int score { get; private set; }
@@ -92,6 +101,13 @@ public class GameController : MonoBehaviour
         if (!gameBoard) gameBoard = FindFirstObjectByType<Board>();
         if (!piece) piece = GetComponent<Piece>();
 
+        // Resolve saved character selection if any
+        if (selectedCharacter == null && roster != null && roster.Length > 0)
+        {
+            var saved = SelectedCharacterStore.ResolveFromRoster(roster);
+            if (saved != null) SelectedCharacterStore.Current = saved;
+        }
+
         // Prefer the character picked on the title screen
         if (SelectedCharacterStore.Current != null)
             selectedCharacter = SelectedCharacterStore.Current;
@@ -116,6 +132,19 @@ public class GameController : MonoBehaviour
 
         InitLevel(currentLevel);
 
+        // Pause menu defaults
+        if (pausePanel) pausePanel.SetActive(false);
+        Time.timeScale = 1f;
+        isPaused = false;
+
+        // Wire pause buttons once
+        if (resumeButton) resumeButton.onClick.AddListener(ResumeGame);
+        if (mainMenuButton) mainMenuButton.onClick.AddListener(ReturnToMainMenu);
+        if (quitButton) quitButton.onClick.AddListener(QuitGame);
+
+        // If you moved your Volume panel under pause menu, let it NOT pause by itself
+        if (volumePanelInPause) volumePanelInPause.pauseWhenOpen = false;
+
         if (bag.Count == 0) RefillBag();
         EnsureMinBag(3);
         ShowNextPreview();
@@ -123,7 +152,7 @@ public class GameController : MonoBehaviour
 
         score = 0;
         if (scoreUI) scoreUI.Set(score);
-        if (restartButton) restartButton.gameObject.SetActive(false);
+        //if (restartButton) restartButton.gameObject.SetActive(false); // Set to false if you want to remove restart until game over
         if (AudioManager.I) AudioManager.I.PlayMusic(AudioManager.I.bgmLoop, true, AudioManager.I.musicVolume);
     }
 
@@ -136,6 +165,19 @@ public class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
             ActivateSpecial();
 #endif
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (!isPaused) PauseGame();
+            else
+            {
+                // If a sub panel (like volume) is open, close it first; else resume
+                if (volumePanelInPause && volumePanelInPause.gameObject.activeSelf)
+                    volumePanelInPause.Close();
+                else
+                    ResumeGame();
+            }
+        }
 
         // Periodic castle projectile
         if (!gameOver && !levelWon && gameBoard)
@@ -221,38 +263,6 @@ public class GameController : MonoBehaviour
         // Keep bags topped and refresh preview after consuming one
         EnsureMinBag(3);
         ShowNextPreview();
-    }
-
-    public void RestartGame()
-    {
-        if (AudioManager.I) AudioManager.I.PlaySFX(AudioManager.I.sfxRestart);
-        if (piece) piece.ResetPiece(); // Stop the current drop
-        if (gameBoard) gameBoard.ClearAll(); // Clear board tiles
-
-        // Reset run state
-        currentLevel = 0;
-        InitLevel(currentLevel);
-        gameOver = false;
-
-        specialGaugeMax = (selectedCharacter && selectedCharacter.specialGaugeMax > 0f)
-        ? selectedCharacter.specialGaugeMax
-        : 100f;
-        specialGauge = 0f;
-        UpdateSpecialUI();
-
-        score = 0;
-        if (scoreUI) scoreUI.Set(score);
-        if (highScoreUI) highScoreUI.Hide(); // Close high-score panel if it was open
-
-        // Reset bag and preview
-        bag.Clear();
-        monstersBag.Clear();
-        RefillBag();
-        EnsureMinBag(2);
-        ShowNextPreview();
-        SpawnNextPiece(); // Spawn fresh piece
-        if (restartButton) restartButton.gameObject.SetActive(false);
-        if (AudioManager.I) AudioManager.I.PlayMusic(AudioManager.I.bgmLoop);
     }
 
     public void GameOver()
@@ -926,6 +936,94 @@ public class GameController : MonoBehaviour
         borderImg.color = immunityActive
             ? gameBoard.immuneBorderColor  // gold during immunity
             : gameBoard.normalBorderColor; // black otherwise
+    }
+
+
+    // ================ Pause Menu Button Functions ===================
+
+    public void PauseGame()
+    {
+        if (gameOver || levelWon) return;
+        isPaused = true;
+        Time.timeScale = 0f;
+        AudioListener.pause = true;  // pause SFX/music globally
+
+        if (pausePanel) pausePanel.SetActive(true);
+
+        // Optional: stop gravity/auto-drop even if any script ignores timescale
+        if (piece) piece.enabled = false;
+    }
+
+    public void RestartGame()
+    {
+        // Unpause if needed
+        Time.timeScale = 1f;
+        AudioListener.pause = false;
+        isPaused = false;
+        if (pausePanel) pausePanel.SetActive(false);
+
+        if (AudioManager.I) AudioManager.I.PlaySFX(AudioManager.I.sfxRestart);
+        if (piece) piece.ResetPiece(); // Stop the current drop
+        if (gameBoard) gameBoard.ClearAll(); // Clear board tiles
+
+        // Reset run state
+        currentLevel = 0;
+        InitLevel(currentLevel);
+        gameOver = false;
+
+        specialGaugeMax = (selectedCharacter && selectedCharacter.specialGaugeMax > 0f)
+        ? selectedCharacter.specialGaugeMax
+        : 100f;
+        specialGauge = 0f;
+        UpdateSpecialUI();
+
+        score = 0;
+        if (scoreUI) scoreUI.Set(score);
+        if (highScoreUI) highScoreUI.Hide(); // Close high-score panel if it was open
+
+        // Reset bag and preview
+        bag.Clear();
+        monstersBag.Clear();
+        RefillBag();
+        EnsureMinBag(2);
+        ShowNextPreview();
+        SpawnNextPiece(); // Spawn fresh piece
+        if (restartButton) restartButton.gameObject.SetActive(false);
+        if (AudioManager.I) AudioManager.I.PlayMusic(AudioManager.I.bgmLoop);
+    }
+
+    public void ResumeGame()
+    {
+        isPaused = false;
+        Time.timeScale = 1f;
+        AudioListener.pause = false;
+
+        if (pausePanel) pausePanel.SetActive(false);
+        if (piece) piece.enabled = true;
+    }
+
+    // Called by the Pause menu "Main Menu" button
+    public void ReturnToMainMenu()
+    {
+        // Always resume time/audio before scene swap
+        Time.timeScale = 1f;
+        AudioListener.pause = false;
+        isPaused = false;
+
+        if (!string.IsNullOrEmpty(titleSceneName))
+            UnityEngine.SceneManagement.SceneManager.LoadScene(titleSceneName);
+        else
+            Debug.LogError("GameController.titleSceneName is empty or not set.");
+    }
+
+    // Called by the Pause menu "Quit" button
+    public void QuitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+    Application.Quit();
+#endif
     }
 
 }

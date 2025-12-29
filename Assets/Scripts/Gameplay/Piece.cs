@@ -298,25 +298,29 @@ public class Piece : MonoBehaviour
             {
                 case SpecialType.Death:
                     {
-                        // Pick a monster type present on the board, weighted by count
-                        var present = new Dictionary<MonsterData, int>();
-                        for (int y = 0; y < board.height; y++)
-                            for (int x = 0; x < board.width; x++)
-                            {
-                                var c = new Vector2Int(x, y);
-                                if (board.TryGetMonster(c, out var inst) && inst.data)
-                                {
-                                    if (!present.ContainsKey(inst.data)) present[inst.data] = 0;
-                                    present[inst.data]++;
-                                }
-                            }
-                        if (present.Count > 0)
-                        {
-                            int total = 0; foreach (var kv in present) total += kv.Value;
-                            int r = Random.Range(0, Mathf.Max(1, total));
-                            MonsterData chosen = null;
-                            foreach (var kv in present) { r -= kv.Value; if (r < 0) { chosen = kv.Key; break; } }
+                        int dropY = center.y;
+                        while (dropY > 0 && board.IsFree(new Vector2Int(center.x, dropY - 1)))
+                            dropY--;
 
+                        var landing = new Vector2Int(center.x, dropY);
+
+                        // Find the first monster below the landing in that column
+                        MonsterData chosen = null;
+                        for (int y = landing.y - 1; y >= 0; y--)
+                        {
+                            var c = new Vector2Int(landing.x, y);
+                            if (!board.InBounds(c)) break;
+                            if (!board.IsFree(c))
+                            {
+                                if (board.TryGetMonster(c, out var inst) && inst.data)
+                                    chosen = inst.data;
+                                break;
+                            }
+                        }
+
+                        // If we found a monster type, remove all of that type (board-wide)
+                        if (chosen)
+                        {
                             for (int y = 0; y < board.height; y++)
                                 for (int x = 0; x < board.width; x++)
                                 {

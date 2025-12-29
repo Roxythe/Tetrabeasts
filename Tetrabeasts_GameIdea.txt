@@ -1,13 +1,13 @@
 ****** TODO ******
 
-- Make persistent data for character select and monster select so that I don't have to manually select after every time my game is closed/restarted.
+- Character and monster select is still not persistent. It still seems to use my default choices for both when I close and re open my game in the unity editor.
 
-- Create a setting for mixed tetrapieces or uniform monster pieces
-
-- Create a pause panel with settings option, restart option, return to main menu, and quit option. Keybind to escape.
+- Add currency to UI. Add currency drops from round win and occasionaly from line clears.
 
 - Play with the grid size and experiment with different grid sizes.
-- Tinker with inline boarder thickness/appearance 
+- Create a setting for mixed tetrapieces or uniform monster pieces
+
+- I would like to make the inline boarder on tile sides touching another tile half thickness. This should make inline boarders appear to have the same thickness for each side whether they are next to another tile or not. Currently when two tiles share a boarder the black line between them looks twice as thick as I would like since the two inline boarders are directly touch each other. This change should be reflected in both active and set tiles so that when a tile is placed next to an inactive tile the viisual is updated and not just when the tetrapiece is spawned.
 
 *** KNOWN BUGS ***
 

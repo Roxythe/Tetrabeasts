@@ -33,6 +33,15 @@ public class MonsterSelectUI : MonoBehaviour
     {
         BuildList();
         SeedDefaultsIfNeeded();    // ensure >= 2 selected (first two by default)
+
+        var resolved = SelectedMonstersStore.ResolveFromRoster(roster);
+        if (resolved.Count > 0)
+        {
+            selected.Clear();
+            foreach (var md in resolved) if (md) selected.Add(md);
+            SelectedMonstersStore.Active = new List<MonsterData>(selected);
+        }
+
         SyncFromStore();
         RefreshAllUI();
     }
@@ -221,6 +230,7 @@ public class MonsterSelectUI : MonoBehaviour
 
         // Persist & refresh one last time, then hide panel
         SelectedMonstersStore.Active = new List<MonsterData>(selected);
+        SelectedMonstersStore.SaveNames(SelectedMonstersStore.Active); // Persist to PlayerPrefs
         RefreshAllUI();
         gameObject.SetActive(false);
     }

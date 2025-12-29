@@ -18,6 +18,10 @@ public class Board : MonoBehaviour
     public Color normalBorderColor = Color.black;
     public Color immuneBorderColor = new Color(1f, 0.84f, 0f, 1f); // gold
 
+    public Sprite defaultDeadOverlaySprite;          // assign in Inspector
+    public Color deadOverlayTint = Color.white;     // keep white if your sprite has its own alpha
+    public bool deadOverlayPreserveAspect = true;
+
     [Header("SFX")]
     public AudioClip sfxImmuneHit;
 
@@ -231,6 +235,30 @@ public class Board : MonoBehaviour
             prt.SetAsLastSibling(); // Ensure the portrait renders on top
         }
 
+        {
+            // Add a DeadOverlay layer (initially hidden) that exactly covers the inner fill
+            var fillRT = (RectTransform)rt.Find("HealthFill");
+            if (fillRT)
+            {
+                var deadGO = new GameObject("DeadOverlay", typeof(UnityEngine.UI.Image));
+                var deadImg = deadGO.GetComponent<UnityEngine.UI.Image>();
+                deadImg.raycastTarget = false;
+                deadImg.sprite = defaultDeadOverlaySprite; // use your premade sprite
+                deadImg.color = deadOverlayTint;          // usually Color.white
+                deadImg.preserveAspect = deadOverlayPreserveAspect;
+                deadImg.type = UnityEngine.UI.Image.Type.Simple; // or Sliced if your art is a 9-slice frame
+
+                var drt = deadImg.rectTransform;
+                drt.SetParent(rt, false);
+                drt.anchorMin = drt.anchorMax = new Vector2(0.5f, 0.5f);
+                drt.sizeDelta = fillRT.sizeDelta;     // cover the inner area
+                drt.anchoredPosition = Vector2.zero;
+
+                deadGO.SetActive(false);              // hidden until HP == 0
+                drt.SetAsLastSibling();               // above portrait/fill
+            }
+        }
+
         return rt;
     }
 
@@ -243,6 +271,10 @@ public class Board : MonoBehaviour
         var img = fill.GetComponent<UnityEngine.UI.Image>();
         float amt = (max <= 0f) ? 0f : Mathf.Clamp01(current / max);
         img.fillAmount = amt; // depleted area shows the gray base underneath
+
+        // Show/hide the dead overlay
+        var dead = rt.Find("DeadOverlay");
+        if (dead) dead.gameObject.SetActive(current <= 0f);
     }
 
     public void SpawnHealBurst(Vector2Int cell, Sprite sprite, float seconds = 0.5f)

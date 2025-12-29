@@ -22,9 +22,12 @@ public class CharacterSelectUI : MonoBehaviour
     {
         BuildList();
 
-        // If nothing picked yet and we have a roster, default to first
+        var saved = SelectedCharacterStore.ResolveFromRoster(roster);
+        if (saved != null)
+            SelectedCharacterStore.Current = saved;
+
         if (SelectedCharacterStore.Current == null && roster != null && roster.Length > 0)
-            SetCurrent(roster[0]);
+            SetCurrent(roster[0]); // also saves to prefs via SetCurrent
         else
             RefreshPreview();
     }
@@ -57,6 +60,7 @@ public class CharacterSelectUI : MonoBehaviour
 
     void SetCurrent(PlayerCharacterData data)
     {
+        SelectedCharacterStore.Save(data);
         SelectedCharacterStore.Current = data;
 
         if (AudioManager.I && selectSFX)
