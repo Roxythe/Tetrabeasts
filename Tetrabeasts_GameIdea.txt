@@ -1,11 +1,9 @@
 ****** TODO ******
 
-- Character and monster select is still not persistent. It still seems to use my default choices for both when I close and re open my game in the unity editor.
-
 - Play with the grid size and experiment with different grid sizes.
 - Create a setting for mixed tetrapieces or uniform monster pieces
 
-- I would like to make the inline boarder on tile sides touching another tile half thickness. This should make inline boarders appear to have the same thickness for each side whether they are next to another tile or not. Currently when two tiles share a boarder the black line between them looks twice as thick as I would like since the two inline boarders are directly touch each other. This change should be reflected in both active and set tiles so that when a tile is placed next to an inactive tile the viisual is updated and not just when the tetrapiece is spawned.
+- I would like to make the inline boarder on tile sides touching another tile half thickness. Tile sides that are not next to another tile should still have the normal line thickness. This should make inline boarders appear to have the same thickness for each side whether they are next to another tile or not. Currently when two tiles share a boarder the black line between them looks twice as thick as I would like since the two inline boarders are directly touch each other. This change should be reflected in both active and set tiles so that when a tile is placed next to an inactive tile the viisual is updated and not just when the tetrapiece is spawned.
 
 *** KNOWN BUGS ***
 

@@ -8,6 +8,108 @@ public class NextPreviewUI : MonoBehaviour
     public Image tilePrefab;        // same Tile_UI prefab
     readonly List<RectTransform> tiles = new();
 
+    // Single-pixel white sprite for edge drawing
+    static Sprite _onePx;
+
+    static Sprite OnePx()
+    {
+        if (_onePx) return _onePx;
+
+        var tex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+        tex.SetPixel(0, 0, Color.white);
+        tex.Apply(false, true);
+        _onePx = Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
+        return _onePx;
+    }
+
+    Image GetOrCreateEdge(RectTransform rt, string name)
+    {
+        var t = rt.Find(name);
+        if (t)
+        {
+            var existing = t.GetComponent<Image>();
+            if (existing) return existing;
+        }
+
+        var go = new GameObject(name, typeof(Image));
+        go.transform.SetParent(rt, false);
+
+        var edge = go.GetComponent<Image>();
+        edge.sprite = OnePx();
+        edge.type = Image.Type.Simple;
+        edge.raycastTarget = false;
+        return edge;
+    }
+
+    void EnsureEdges(RectTransform rt)
+    {
+        // Left
+        var L = GetOrCreateEdge(rt, "Edge_L");
+        var Lrt = L.rectTransform;
+        Lrt.anchorMin = new Vector2(0f, 0f);
+        Lrt.anchorMax = new Vector2(0f, 1f);
+        Lrt.pivot = new Vector2(0f, 0.5f);
+        Lrt.anchoredPosition = Vector2.zero;
+
+        // Right
+        var R = GetOrCreateEdge(rt, "Edge_R");
+        var Rrt = R.rectTransform;
+        Rrt.anchorMin = new Vector2(1f, 0f);
+        Rrt.anchorMax = new Vector2(1f, 1f);
+        Rrt.pivot = new Vector2(1f, 0.5f);
+        Rrt.anchoredPosition = Vector2.zero;
+
+        // Top
+        var T = GetOrCreateEdge(rt, "Edge_T");
+        var Trt = T.rectTransform;
+        Trt.anchorMin = new Vector2(0f, 1f);
+        Trt.anchorMax = new Vector2(1f, 1f);
+        Trt.pivot = new Vector2(0.5f, 1f);
+        Trt.anchoredPosition = Vector2.zero;
+
+        // Bottom
+        var B = GetOrCreateEdge(rt, "Edge_B");
+        var Brt = B.rectTransform;
+        Brt.anchorMin = new Vector2(0f, 0f);
+        Brt.anchorMax = new Vector2(1f, 0f);
+        Brt.pivot = new Vector2(0.5f, 0f);
+        Brt.anchoredPosition = Vector2.zero;
+    }
+
+    void SetEdgeColor(RectTransform rt, Color c)
+    {
+        EnsureEdges(rt);
+        foreach (var n in new[] { "Edge_L", "Edge_R", "Edge_T", "Edge_B" })
+        {
+            var img = rt.Find(n)?.GetComponent<Image>();
+            if (img) img.color = c;
+        }
+    }
+
+    void ApplySharedEdges(RectTransform rt, bool leftShared, bool rightShared, bool topShared, bool bottomShared, float border)
+    {
+        EnsureEdges(rt);
+
+        float half = border * 0.5f;
+        float left = leftShared ? half : border;
+        float right = rightShared ? half : border;
+        float top = topShared ? half : border;
+        float bottom = bottomShared ? half : border;
+
+        rt.Find("Edge_L").GetComponent<RectTransform>().sizeDelta = new Vector2(left, 0f);
+        rt.Find("Edge_R").GetComponent<RectTransform>().sizeDelta = new Vector2(right, 0f);
+        rt.Find("Edge_T").GetComponent<RectTransform>().sizeDelta = new Vector2(0f, top);
+        rt.Find("Edge_B").GetComponent<RectTransform>().sizeDelta = new Vector2(0f, bottom);
+
+        // Adjust inner fill to match varying thickness
+        //var fillRt = rt.Find("PreviewFill") as RectTransform;
+        //if (fillRt)
+        //{
+        //    fillRt.sizeDelta = rt.sizeDelta - new Vector2(left + right, top + bottom);
+        //    fillRt.anchoredPosition = new Vector2((right - left) * 0.5f, (top - bottom) * 0.5f);
+        //}
+    }
+
     public void Show(TetrominoData data, Color color, MonsterData[] monsters)
     {
         if (!data || root == null || tilePrefab == null)
@@ -30,23 +132,32 @@ public class NextPreviewUI : MonoBehaviour
         int h = (maxY - minY + 1);
 
         var r = root.rect;
-        float pad = 0.25f; // Padding in preview area
-        float s = Mathf.Min((r.width - 2 * pad) / w, (r.height - 2 * pad) / h); // no Floor
+        float pad = 0.25f;
+        float s = Mathf.Min((r.width - 2 * pad) / w, (r.height - 2 * pad) / h);
         s = Mathf.Max(1f, s);
         Vector2 tileSize = new(s, s);
 
         float contentW = w * s, contentH = h * s;
         Vector2 origin = new(-contentW * 0.5f, -contentH * 0.5f);
 
+        var previewSet = new HashSet<Vector2Int>(data.cells);
+
+        // match board outline color when immune (optional)
+        var gc = GetComponent<GameController>();
+        var boardCmp = GetComponent<Board>();
+        Color borderColor = Color.black;
+        if (boardCmp)
+            borderColor = (gc && gc.immunityActive) ? boardCmp.immuneBorderColor : boardCmp.normalBorderColor;
+
         for (int i = 0; i < data.cells.Length; i++)
         {
             var cell = data.cells[i];
 
-            // root == border
             var tileImg = Instantiate(tilePrefab, root);
-            tileImg.sprite = null;                     // border only
+            tileImg.sprite = null;
             tileImg.raycastTarget = false;
-            var outline = tileImg.GetComponent<UnityEngine.UI.Outline>();
+
+            var outline = tileImg.GetComponent<Outline>();
             if (outline) Destroy(outline);
 
             var rt = tileImg.rectTransform;
@@ -57,53 +168,64 @@ public class NextPreviewUI : MonoBehaviour
                 Mathf.Round(origin.y + (cell.y - minY + 0.5f) * s)
             );
 
-            // match board outline color when immune (optional)
-            var gc = GetComponent<GameController>();
-            var boardCmp = GetComponent<Board>();
-            Color borderColor = Color.black;
-            if (boardCmp)
-                borderColor = (gc && gc.immunityActive) ? boardCmp.immuneBorderColor : boardCmp.normalBorderColor;
-            tileImg.color = borderColor;
+            // Root image invisible; edges draw the border
+            tileImg.color = new Color(0f, 0f, 0f, 0f);
+            SetEdgeColor(rt, borderColor);
 
-            // inner fill
-            float BORDER = Mathf.Max(2f, Mathf.Round(s * 0.08f));
+            // inner fill (FIX: fillGO declared correctly)
             var fillGO = new GameObject("PreviewFill", typeof(Image));
             var fill = fillGO.GetComponent<Image>();
-            fill.sprite = null;
+            fill.sprite = OnePx();
+            fill.type = Image.Type.Simple;
             fill.raycastTarget = false;
             fill.color = color;
 
             var frt = fill.rectTransform;
             frt.SetParent(rt, false);
             frt.anchorMin = frt.anchorMax = new Vector2(0.5f, 0.5f);
-            frt.sizeDelta = rt.sizeDelta - new Vector2(BORDER * 2f, BORDER * 2f);
+            frt.sizeDelta = rt.sizeDelta;      // full tile fill (add this)
             frt.anchoredPosition = Vector2.zero;
             frt.SetAsFirstSibling();
 
+            // shared-edge halving
+            bool Ls = previewSet.Contains(cell + Vector2Int.left);
+            bool Rs = previewSet.Contains(cell + Vector2Int.right);
+            bool Us = previewSet.Contains(cell + Vector2Int.up);
+            bool Ds = previewSet.Contains(cell + Vector2Int.down);
+
+            float border = Mathf.Max(2f, Mathf.Round(s * 0.08f));
+            ApplySharedEdges(rt, Ls, Rs, Us, Ds, border);
+
             if (isSpecial && data.specialSprite != null)
             {
+                var innerRT = (rt.Find("PreviewFill") as RectTransform) ?? rt;
+
                 var go = new GameObject("SpecialIcon", typeof(Image));
-                var iconImg = go.GetComponent<Image>(); 
+                var iconImg = go.GetComponent<Image>();
                 iconImg.sprite = data.specialSprite;
                 iconImg.preserveAspect = true;
+                iconImg.raycastTarget = false;
 
                 var prt = iconImg.rectTransform;
-                prt.SetParent(rt, false);
+                prt.SetParent(innerRT, false);
                 prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
-                prt.sizeDelta = rt.sizeDelta - new Vector2(4f, 4f);
+                prt.sizeDelta = innerRT.sizeDelta - new Vector2(2f, 2f);
                 prt.anchoredPosition = Vector2.zero;
             }
             else if (monsters != null && i < monsters.Length && monsters[i] && monsters[i].portrait)
             {
+                var innerRT = (rt.Find("PreviewFill") as RectTransform) ?? rt;
+
                 var go = new GameObject("MonsterPortrait", typeof(Image));
-                var portraitImg = go.GetComponent<Image>(); 
+                var portraitImg = go.GetComponent<Image>();
                 portraitImg.sprite = monsters[i].portrait;
                 portraitImg.preserveAspect = true;
+                portraitImg.raycastTarget = false;
 
                 var prt = portraitImg.rectTransform;
-                prt.SetParent(rt, false);
+                prt.SetParent(innerRT, false);
                 prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
-                prt.sizeDelta = rt.sizeDelta - new Vector2(4f, 4f);
+                prt.sizeDelta = innerRT.sizeDelta - new Vector2(2f, 2f);
                 prt.anchoredPosition = Vector2.zero;
             }
 
@@ -116,8 +238,7 @@ public class NextPreviewUI : MonoBehaviour
         var c = immune ? immuneColor : normalColor;
         foreach (var rt in tiles)
         {
-            var img = rt.GetComponent<UnityEngine.UI.Image>();
-            if (img) img.color = c;
+            if (rt) SetEdgeColor(rt, c);
         }
     }
 

@@ -32,7 +32,7 @@ public class Board : MonoBehaviour
     RectTransform boardRect;         // the GameBoard panel
     Vector2 cellSize;            // size of one (square) cell in pixels
     Vector2 contentSize;         // total pixel size actually used by the grid (width*cell, height*cell)
-    readonly Transform[,] grid = null; // (not used for UI placement—kept for logic)
+    readonly Transform[,] grid = null; // (not used for UI placement kept for logic)
     Dictionary<Vector2Int, RectTransform> placed = new();
     readonly Dictionary<Vector2Int, float> healTimers = new();
 
@@ -57,6 +57,152 @@ public class Board : MonoBehaviour
         return _onePx;
     }
 
+
+    // ================= Inline Border (per-edge thickness) =================
+    const float DEFAULT_BORDER = 2f;
+
+    UnityEngine.UI.Image GetOrCreateEdge(RectTransform rt, string name)
+    {
+        var t = rt.Find(name);
+        if (t)
+        {
+            var img = t.GetComponent<UnityEngine.UI.Image>();
+            if (img) return img;
+        }
+
+        var go = new GameObject(name, typeof(UnityEngine.UI.Image));
+        go.transform.SetParent(rt, false);
+        var edge = go.GetComponent<UnityEngine.UI.Image>();
+        edge.sprite = OnePx();
+        edge.type = UnityEngine.UI.Image.Type.Simple;
+        edge.raycastTarget = false;
+        return edge;
+    }
+
+    void EnsureInlineBorder(RectTransform rt)
+    {
+        if (!rt) return;
+
+        // Left
+        var L = GetOrCreateEdge(rt, "Edge_L");
+        var Lrt = L.rectTransform;
+        Lrt.anchorMin = new Vector2(0f, 0f);
+        Lrt.anchorMax = new Vector2(0f, 1f);
+        Lrt.pivot = new Vector2(0f, 0.5f);
+        Lrt.anchoredPosition = Vector2.zero;
+
+        // Right
+        var R = GetOrCreateEdge(rt, "Edge_R");
+        var Rrt = R.rectTransform;
+        Rrt.anchorMin = new Vector2(1f, 0f);
+        Rrt.anchorMax = new Vector2(1f, 1f);
+        Rrt.pivot = new Vector2(1f, 0.5f);
+        Rrt.anchoredPosition = Vector2.zero;
+
+        // Top
+        var T = GetOrCreateEdge(rt, "Edge_T");
+        var Trt = T.rectTransform;
+        Trt.anchorMin = new Vector2(0f, 1f);
+        Trt.anchorMax = new Vector2(1f, 1f);
+        Trt.pivot = new Vector2(0.5f, 1f);
+        Trt.anchoredPosition = Vector2.zero;
+
+        // Bottom
+        var B = GetOrCreateEdge(rt, "Edge_B");
+        var Brt = B.rectTransform;
+        Brt.anchorMin = new Vector2(0f, 0f);
+        Brt.anchorMax = new Vector2(1f, 0f);
+        Brt.pivot = new Vector2(0.5f, 0f);
+        Brt.anchoredPosition = Vector2.zero;
+
+        L.rectTransform.SetAsLastSibling();
+        R.rectTransform.SetAsLastSibling();
+        T.rectTransform.SetAsLastSibling();
+        B.rectTransform.SetAsLastSibling();
+    }
+
+    void SetEdgeThickness(RectTransform rt, float left, float right, float top, float bottom)
+    {
+        var L = rt.Find("Edge_L")?.GetComponent<UnityEngine.UI.Image>();
+        var R = rt.Find("Edge_R")?.GetComponent<UnityEngine.UI.Image>();
+        var T = rt.Find("Edge_T")?.GetComponent<UnityEngine.UI.Image>();
+        var B = rt.Find("Edge_B")?.GetComponent<UnityEngine.UI.Image>();
+
+        if (L) L.rectTransform.sizeDelta = new Vector2(left, 0f);
+        if (R) R.rectTransform.sizeDelta = new Vector2(right, 0f);
+        if (T) T.rectTransform.sizeDelta = new Vector2(0f, top);
+        if (B) B.rectTransform.sizeDelta = new Vector2(0f, bottom);
+    }
+
+    void AdjustInnerArea(RectTransform tileRoot, string innerName, float left, float right, float top, float bottom)
+    {
+        var t = tileRoot ? tileRoot.Find(innerName) as RectTransform : null;
+        if (!t) return;
+
+        // If thickness is asymmetric, shift the inner area so it stays visually centered.
+        t.sizeDelta = tileRoot.sizeDelta - new Vector2(left + right, top + bottom);
+        t.anchoredPosition = new Vector2((right - left) * 0.5f, (top - bottom) * 0.5f);
+    }
+
+    public void SetInlineBorderColor(RectTransform rt, Color c)
+    {
+        if (!rt) return;
+
+        EnsureInlineBorder(rt);
+
+        var L = rt.Find("Edge_L")?.GetComponent<UnityEngine.UI.Image>();
+        var R = rt.Find("Edge_R")?.GetComponent<UnityEngine.UI.Image>();
+        var T = rt.Find("Edge_T")?.GetComponent<UnityEngine.UI.Image>();
+        var B = rt.Find("Edge_B")?.GetComponent<UnityEngine.UI.Image>();
+
+        if (L) L.color = c;
+        if (R) R.color = c;
+        if (T) T.color = c;
+        if (B) B.color = c;
+    }
+
+    public void ApplySharedEdges(RectTransform rt, bool leftShared, bool rightShared, bool topShared, bool bottomShared, float border = DEFAULT_BORDER)
+    {
+        if (!rt) return;
+
+        EnsureInlineBorder(rt);
+
+        float half = border * 0.5f;
+        float left = leftShared ? half : border;
+        float right = rightShared ? half : border;
+        float top = topShared ? half : border;
+        float bottom = bottomShared ? half : border;
+
+        SetEdgeThickness(rt, left, right, top, bottom);
+
+        // Keep inner visuals tight to the variable border thickness.
+        //AdjustInnerArea(rt, "BackFill", left, right, top, bottom);
+        //AdjustInnerArea(rt, "HealthFill", left, right, top, bottom);
+        //AdjustInnerArea(rt, "ActiveFill", left, right, top, bottom);
+        //AdjustInnerArea(rt, "PreviewFill", left, right, top, bottom);
+    }
+
+    public void RefreshTileBordersAt(Vector2Int cell)
+    {
+        if (!placed.TryGetValue(cell, out var rt) || !rt) return;
+
+        bool leftShared = InBounds(cell + Vector2Int.left) && placed.ContainsKey(cell + Vector2Int.left);
+        bool rightShared = InBounds(cell + Vector2Int.right) && placed.ContainsKey(cell + Vector2Int.right);
+        bool topShared = InBounds(cell + Vector2Int.up) && placed.ContainsKey(cell + Vector2Int.up);
+        bool bottomShared = InBounds(cell + Vector2Int.down) && placed.ContainsKey(cell + Vector2Int.down);
+
+        ApplySharedEdges(rt, leftShared, rightShared, topShared, bottomShared, DEFAULT_BORDER);
+        SetInlineBorderColor(rt, TilesDamageImmune ? immuneBorderColor : normalBorderColor);
+    }
+
+    public void RefreshTileBordersAround(Vector2Int cell)
+    {
+        RefreshTileBordersAt(cell);
+        if (InBounds(cell + Vector2Int.left)) RefreshTileBordersAt(cell + Vector2Int.left);
+        if (InBounds(cell + Vector2Int.right)) RefreshTileBordersAt(cell + Vector2Int.right);
+        if (InBounds(cell + Vector2Int.up)) RefreshTileBordersAt(cell + Vector2Int.up);
+        if (InBounds(cell + Vector2Int.down)) RefreshTileBordersAt(cell + Vector2Int.down);
+    }
     private readonly Dictionary<Vector2Int, MonsterInstance> monsters = new();
 
     void Awake()
@@ -76,7 +222,7 @@ public class Board : MonoBehaviour
     void Start()
     {
         RecomputeCellMetrics();
-        DrawGridOverlay(); // nice to have; remove if you don’t want lines
+        DrawGridOverlay(); // nice to have; remove if you dont want lines
     }
 
     void Update()
@@ -183,16 +329,20 @@ public class Board : MonoBehaviour
         rt.localScale = Vector3.one;
 
         var baseImg = rt.GetComponent<UnityEngine.UI.Image>();
-        baseImg.color = TilesDamageImmune ? immuneBorderColor : normalBorderColor;
+        baseImg.sprite = null;
+        baseImg.raycastTarget = false;
+        baseImg.color = new Color(0f, 0f, 0f, 0f); // border is drawn by Edge_* children
 
-        const float BORDER = 2f;
+        // Edge_* children handle border thickness + color
+        SetInlineBorderColor(rt, TilesDamageImmune ? immuneBorderColor : normalBorderColor);
 
         // Back (gray)
         var back = new GameObject("BackFill", typeof(UnityEngine.UI.Image)).GetComponent<UnityEngine.UI.Image>();
         back.transform.SetParent(rt, false);
         var backRT = back.rectTransform;
         backRT.anchorMin = backRT.anchorMax = new Vector2(0.5f, 0.5f);
-        backRT.sizeDelta = rt.sizeDelta - new Vector2(BORDER * 2f, BORDER * 2f);
+        backRT.sizeDelta = rt.sizeDelta;   // fill the whole tile
+        backRT.anchoredPosition = Vector2.zero;
         back.sprite = OnePx(); // simple 1x1 white pixel
         back.type = UnityEngine.UI.Image.Type.Simple;
         back.color = new Color(0.6f, 0.6f, 0.6f, 1f);
@@ -202,13 +352,19 @@ public class Board : MonoBehaviour
         fill.transform.SetParent(rt, false);
         var frt = fill.rectTransform;
         frt.anchorMin = frt.anchorMax = new Vector2(0.5f, 0.5f);
-        frt.sizeDelta = backRT.sizeDelta;
+        frt.sizeDelta = rt.sizeDelta;      // fill the whole tile
+        frt.anchoredPosition = Vector2.zero;
         fill.sprite = OnePx(); // simple 1x1 white pixel
         fill.type = UnityEngine.UI.Image.Type.Filled;
         fill.fillMethod = UnityEngine.UI.Image.FillMethod.Vertical;
         fill.fillOrigin = (int)UnityEngine.UI.Image.OriginVertical.Bottom;
         fill.fillAmount = 1f;
         fill.color = color;
+
+        ApplySharedEdges(rt, false, false, false, false, DEFAULT_BORDER);
+        SetInlineBorderColor(rt, TilesDamageImmune ? immuneBorderColor : normalBorderColor);
+        frt.SetAsFirstSibling();
+        backRT.SetAsFirstSibling();
 
         return rt;
     }
@@ -231,7 +387,7 @@ public class Board : MonoBehaviour
             // Slight inset so it sits inside the inline border
             prt.sizeDelta = ((RectTransform)rt.Find("HealthFill")).sizeDelta - new Vector2(2f, 2f);
             prt.anchoredPosition = Vector2.zero;
-            
+
             prt.SetAsLastSibling(); // Ensure the portrait renders on top
         }
 
@@ -342,7 +498,7 @@ public class Board : MonoBehaviour
     public bool HealTile(Vector2Int cell, float amount)
     {
         if (!monsters.TryGetValue(cell, out var inst) || inst.data == null) return false;
-        if (inst.hp <= 0f) return false; // cannot heal “dead” tiles
+        if (inst.hp <= 0f) return false; // cannot heal dead tiles
         float newHp = Mathf.Min(inst.data.maxHealth, inst.hp + amount);
         if (Mathf.Approximately(newHp, inst.hp)) return false;
 
@@ -364,9 +520,9 @@ public class Board : MonoBehaviour
             var c = cells[i];
 
             if (c.x < 0 || c.x >= width) return false; // X must always be inside columns
-            
+
             if (c.y >= height) continue; // Above the board is OK (spawn zone)
-            
+
             if (c.y < 0) return false; // Below the board is not OK (floor)
 
             if (placed.ContainsKey(c)) return false; // Inside the board: must be empty
@@ -403,8 +559,8 @@ public class Board : MonoBehaviour
                            out List<Vector2Int> removedCells,
                            out int damageFromMonsters,
                            out float specialChargeFromMonsters,
-                           out Dictionary<int, int> rowDamage,                    
-                           out Dictionary<int, MonsterData> rowDominantMonster) 
+                           out Dictionary<int, int> rowDamage,
+                           out Dictionary<int, MonsterData> rowDominantMonster)
     {
         rowsCleared = 0;
         removedCells = new List<Vector2Int>();
@@ -621,7 +777,7 @@ public class Board : MonoBehaviour
             var img = new GameObject($"GridLine_V_{x}", typeof(Image)).GetComponent<Image>();
             img.transform.SetParent(gridRoot, false);
             img.color = col;
-            img.gameObject.AddComponent<BoardOwned>(); 
+            img.gameObject.AddComponent<BoardOwned>();
             var rt = img.rectTransform;
             rt.sizeDelta = new Vector2(2f, Mathf.Round(contentSize.y));
             rt.anchoredPosition = new Vector2(Mathf.Round(-contentSize.x * 0.5f + x * cellSize.x), 0f);
@@ -632,7 +788,7 @@ public class Board : MonoBehaviour
             var img = new GameObject($"GridLine_H_{y}", typeof(Image)).GetComponent<Image>();
             img.transform.SetParent(gridRoot, false);
             img.color = col;
-            img.gameObject.AddComponent<BoardOwned>(); 
+            img.gameObject.AddComponent<BoardOwned>();
             var rt = img.rectTransform;
             rt.sizeDelta = new Vector2(Mathf.Round(contentSize.x), 2f);
             rt.anchoredPosition = new Vector2(0f, Mathf.Round(-contentSize.y * 0.5f + y * cellSize.y));

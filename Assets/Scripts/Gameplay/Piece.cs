@@ -28,6 +28,19 @@ public class Piece : MonoBehaviour
 
     float fallTimer, lockTimer;
 
+
+    // Single-pixel white sprite for UI fills (so Image actually renders)
+    static Sprite _onePx;
+    static Sprite OnePx()
+    {
+        if (_onePx) return _onePx;
+        var tex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+        tex.SetPixel(0, 0, Color.white);
+        tex.Apply(false, true);
+        _onePx = Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
+        return _onePx;
+    }
+
     void OnEnable()
     {
         fallTimer = 0f; lockTimer = 0f;
@@ -108,17 +121,20 @@ public class Piece : MonoBehaviour
 
         if (board == null || board.gridRoot == null) return;
 
+        var activeSet = new HashSet<Vector2Int>(cells);
+
         for (int i = 0; i < cells.Count; i++)
         {
             var c = cells[i];
 
-            // Root = OUTLINE (border only)
+            // Root = transparent container (border drawn by Edge_* children)
             var img = Instantiate(activeTilePrefab, board.gridRoot);
             var rt = img.rectTransform;
 
-            // ensure this root image is only a border, never a filled square
-            img.sprite = null;                // no sprite = solid tint square
+            img.sprite = null;
             img.raycastTarget = false;
+            img.color = new Color(0f, 0f, 0f, 0f);
+
             var anyOutline = img.GetComponent<UnityEngine.UI.Outline>();
             if (anyOutline) Destroy(anyOutline);
 
@@ -130,34 +146,44 @@ public class Piece : MonoBehaviour
 
             // pick outline color (gold while immune, otherwise black)
             var gc = GetComponent<GameController>();
-            img.color = (gc && gc.immunityActive)
-                ? board.immuneBorderColor    // gold during immunity
-                : board.normalBorderColor;
+            Color borderColor = (gc && gc.immunityActive) ? board.immuneBorderColor : board.normalBorderColor;
+            board.SetInlineBorderColor(rt, borderColor);
 
-            // build a separate inner fill so the border is "inline"
-            const float BORDER = 2f;
+            // Build inner fill FIRST so ApplySharedEdges can resize it correctly on shared edges
             var fillGO = new GameObject("ActiveFill", typeof(UnityEngine.UI.Image));
             var fill = fillGO.GetComponent<UnityEngine.UI.Image>();
             fill.raycastTarget = false;
-            fill.sprite = null;
-            fill.color = color;              // piece body color only
+            fill.sprite = OnePx();
+            fill.type = UnityEngine.UI.Image.Type.Simple;
+            fill.color = color;
 
             var frt = fill.rectTransform;
             frt.SetParent(rt, false);
             frt.anchorMin = frt.anchorMax = new Vector2(0.5f, 0.5f);
-            frt.sizeDelta = rt.sizeDelta - new Vector2(BORDER * 2f, BORDER * 2f);
+            frt.sizeDelta = rt.sizeDelta;
             frt.anchoredPosition = Vector2.zero;
-            frt.SetAsFirstSibling();          // portraits sit on top
+            frt.SetAsFirstSibling(); // icons/portraits sit on top
 
-            // Portrait/special icon (unchanged)
+            // halve thickness on shared edges (active-active OR active-placed)
+            bool L = activeSet.Contains(c + Vector2Int.left) || (board.InBounds(c + Vector2Int.left) && !board.IsFree(c + Vector2Int.left));
+            bool R = activeSet.Contains(c + Vector2Int.right) || (board.InBounds(c + Vector2Int.right) && !board.IsFree(c + Vector2Int.right));
+            bool U = activeSet.Contains(c + Vector2Int.up) || (board.InBounds(c + Vector2Int.up) && !board.IsFree(c + Vector2Int.up));
+            bool D = activeSet.Contains(c + Vector2Int.down) || (board.InBounds(c + Vector2Int.down) && !board.IsFree(c + Vector2Int.down));
+
+            board.ApplySharedEdges(rt, L, R, U, D);
+
+            // Portrait/special icon (parented to inner fill so it always matches varying border thickness)
+            var innerRT = frt;
             if (isSpecial && data.specialSprite != null)
             {
                 var go = new GameObject("SpecialIcon", typeof(UnityEngine.UI.Image));
                 var p = go.GetComponent<UnityEngine.UI.Image>();
                 p.sprite = data.specialSprite; p.preserveAspect = true;
-                var prt = p.rectTransform; prt.SetParent(rt, false);
+                p.raycastTarget = false;
+
+                var prt = p.rectTransform; prt.SetParent(innerRT, false);
                 prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
-                prt.sizeDelta = rt.sizeDelta - new Vector2(4f, 4f);
+                prt.sizeDelta = innerRT.sizeDelta - new Vector2(2f, 2f);
                 prt.anchoredPosition = Vector2.zero;
             }
             else if (!isSpecial && i < monstersForCells.Count && monstersForCells[i] && monstersForCells[i].portrait)
@@ -165,17 +191,15 @@ public class Piece : MonoBehaviour
                 var go = new GameObject("MonsterPortrait", typeof(UnityEngine.UI.Image));
                 var p = go.GetComponent<UnityEngine.UI.Image>();
                 p.sprite = monstersForCells[i].portrait; p.preserveAspect = true;
-                var prt = p.rectTransform; prt.SetParent(rt, false);
+                p.raycastTarget = false;
+
+                var prt = p.rectTransform; prt.SetParent(innerRT, false);
                 prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
-                float inset = 4f;
-                prt.sizeDelta = rt.sizeDelta - new Vector2(inset, inset);
+                prt.sizeDelta = innerRT.sizeDelta - new Vector2(2f, 2f);
                 prt.anchoredPosition = Vector2.zero;
             }
 
             visuals.Add(rt);
-
-            // Ensure the outline (root image) is styled correctly (currently black).
-            if (gc) gc.StyleInlineBorder(rt);
         }
     }
 
@@ -276,7 +300,7 @@ public class Piece : MonoBehaviour
             return;
         }
 
-        var gc = GetComponent<GameController>(); 
+        var gc = GetComponent<GameController>();
 
         // ---------- SPECIAL PIECES ----------
         if (isSpecial)
@@ -417,6 +441,12 @@ public class Piece : MonoBehaviour
             board.SetMonsterAt(cells[i], new Board.MonsterInstance(md));
         }
 
+        foreach (var v in visuals)
+
+            // Recompute per-edge border thickness for the new blocks + neighbors
+            for (int i = 0; i < cells.Count; i++)
+                board.RefreshTileBordersAround(cells[i]);
+
         foreach (var v in visuals) if (v) Destroy(v.gameObject);
         visuals.Clear();
 
@@ -477,7 +507,7 @@ public class Piece : MonoBehaviour
         ClearHints();
         if (data.special == SpecialType.None) return;
 
-        // Compute the “landing” cell for the special’s center
+        // Compute the landing cell for the special center
         var center = cells[0];
         // drop until blocked (or bottom)
         var dropY = center.y;
@@ -485,7 +515,7 @@ public class Piece : MonoBehaviour
         var landing = new Vector2Int(Mathf.Clamp(center.x, 0, board.width - 1),
                                      Mathf.Clamp(dropY, 0, board.height - 1));
 
-        // Build affected set based on the special’s behavior
+        // Build affected set based on the special behavior
         var affected = new HashSet<Vector2Int>();
 
         switch (data.special)
