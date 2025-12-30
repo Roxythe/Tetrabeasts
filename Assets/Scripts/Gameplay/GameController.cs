@@ -30,6 +30,14 @@ public class GameController : MonoBehaviour
     public MonsterData[] fallbackMonsters; // 2 defaults, set in Inspector
     readonly Queue<MonsterData[]> monstersBag = new(); // parallel to 'bag'
 
+    [Header("Currency")]
+    public CurrencyUI currencyUI;          // drag your Currency prefab instance in GameplayScene
+    public int currencyPerRoundWin = 5;    // how much for winning a round
+    [Range(0f, 1f)] public float currencyChancePerClearedRow = 0.10f; // 10% per cleared row
+    public Sprite currencyPopupSprite;     // same coin sprite (for +1 popup)
+    public float currencyPopupDuration = 0.6f; // seconds
+    public AudioClip sfxCurrencyLineGain;   // play when +1 drops from a line clear
+
     [Header("Special Gauge UI")]
     public UnityEngine.UI.Slider specialSlider;  // assign in inspector (min=0, max=1)
     public TMP_Text specialText;                 // optional 0% - 100%
@@ -152,6 +160,7 @@ public class GameController : MonoBehaviour
 
         score = 0;
         if (scoreUI) scoreUI.Set(score);
+        if (currencyUI) currencyUI.Refresh();
         //if (restartButton) restartButton.gameObject.SetActive(false); // Set to false if you want to remove restart until game over
         if (AudioManager.I) AudioManager.I.PlayMusic(AudioManager.I.bgmLoop, true, AudioManager.I.musicVolume);
     }
@@ -386,6 +395,40 @@ public class GameController : MonoBehaviour
             UpdateSpecialUI();
         }
 
+        // Chance-based currency drops: +1 per cleared row with probability
+        if (rowsCleared > 0)
+        {
+            for (int i = 0; i < rowsCleared; i++)
+            {
+                if (Random.value <= currencyChancePerClearedRow)
+                {
+                    CurrencyStore.Add(1);
+                    if (currencyUI) currencyUI.Refresh();
+
+                    // Pick a cleared row (prefer rows you actually cleared if provided)
+                    int rowY = i;
+                    if (colsByRow != null && colsByRow.Count > 0)
+                    {
+                        foreach (var kv in colsByRow) { rowY = kv.Key; break; }
+                    }
+
+                    // Compute start just OUTSIDE the grid's right edge, same row (in board/grid space)
+                    Vector2 startBoardRight = BoardRightGutterY(rowY, -2.5f); // bump margin up if you want it further in/out
+
+                    // Convert to projectile root space if different
+                    var root = projectileRoot ? projectileRoot : gameBoard.gridRoot;
+                    Vector2 start = (root == gameBoard.gridRoot)
+                        ? startBoardRight
+                        : LocalTo(root, gameBoard.gridRoot, startBoardRight);
+
+                    if (AudioManager.I && sfxCurrencyLineGain)
+                        AudioManager.I.PlaySFX(sfxCurrencyLineGain);
+
+                    ShowCurrencyPopup(start, +1);
+                }
+            }
+        }
+
         // Spawn one projectile per cleared row
         if (rowsCleared > 0 && gameBoard && enemyCastleUI && enemyCastleUI.castleImage)
         {
@@ -476,6 +519,9 @@ public class GameController : MonoBehaviour
             nextPreview.ClearPreview();
 
         currentLevel++;
+
+        CurrencyStore.Add(currencyPerRoundWin);
+        if (currencyUI) currencyUI.Refresh();
 
         if (castlesByLevel != null && currentLevel < castlesByLevel.Length)
             StartCoroutine(CoStartNextLevel());
@@ -1026,4 +1072,84 @@ public class GameController : MonoBehaviour
 #endif
     }
 
+    // ================ Currency Popup System ===================
+
+    void ShowCurrencyPopup(Vector2 anchoredStart, int amount)
+    {
+        if (!gameBoard) return; // hard guard
+
+        var parent = projectileRoot ? projectileRoot : gameBoard.gridRoot;
+        if (!parent) return; // nothing to parent to
+
+        // container
+        var go = new GameObject("Currency+1", typeof(RectTransform));
+        var rt = go.GetComponent<RectTransform>();
+        rt.SetParent(parent, false);
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.anchoredPosition = anchoredStart;
+
+        // Icon component
+        var iconGO = new GameObject("Icon", typeof(UnityEngine.UI.Image));
+        var icon = iconGO.GetComponent<UnityEngine.UI.Image>();
+        if (currencyPopupSprite) icon.sprite = currencyPopupSprite; // sprite optional
+        icon.preserveAspect = true;
+        icon.raycastTarget = false;
+
+        var cell = gameBoard.GetCellSize();
+        var irt = icon.rectTransform;
+        irt.SetParent(rt, false);
+        irt.anchorMin = irt.anchorMax = new Vector2(0.5f, 0.5f);
+        irt.sizeDelta = cell * 0.5f;
+        irt.anchoredPosition = Vector2.left * (irt.sizeDelta.x * 0.6f);
+
+        // Text component
+        var textGO = new GameObject("Text", typeof(TMPro.TextMeshProUGUI));
+        var tmp = textGO.GetComponent<TMPro.TextMeshProUGUI>();
+        tmp.text = $"+{amount}";
+        tmp.fontSize = 24f;
+        tmp.alignment = TMPro.TextAlignmentOptions.MidlineLeft;
+        tmp.raycastTarget = false;
+        tmp.color = new Color(1f, 1f, 1f, 1f);
+
+        var trt = tmp.rectTransform;
+        trt.SetParent(rt, false);
+        trt.anchorMin = trt.anchorMax = new Vector2(0.5f, 0.5f);
+        trt.anchoredPosition = Vector2.right * (irt.sizeDelta.x * 0.6f);
+
+        StartCoroutine(CurrencyPopupCo(rt, tmp, icon, currencyPopupDuration));
+    }
+
+    System.Collections.IEnumerator CurrencyPopupCo(RectTransform rt, TMPro.TMP_Text tmp, UnityEngine.UI.Image icon, float dur)
+    {
+        float t = 0f;
+        var start = rt.anchoredPosition;
+        var end = start + new Vector2(0f, gameBoard.GetCellSize().y * 0.6f);
+
+        while (t < dur && rt)
+        {
+            t += Time.deltaTime;
+            float u = t / dur;
+            // rise
+            rt.anchoredPosition = Vector2.LerpUnclamped(start, end, u);
+            // fade
+            float a = Mathf.Lerp(1f, 0f, u);
+            if (tmp) tmp.color = new Color(tmp.color.r, tmp.color.g, tmp.color.b, a);
+            if (icon) icon.color = new Color(icon.color.r, icon.color.g, icon.color.b, a);
+            yield return null;
+        }
+        if (rt) Destroy(rt.gameObject);
+    }
+
+    // ================== Helper/Utility ==================
+    Vector2 BoardRightGutterY(int rowY, float marginCells = 0.6f)
+    {
+        // y from the row's cell center:
+        float y = gameBoard.CellToAnchoredPos(new Vector2Int(0, rowY)).y;
+
+        // x = right edge of grid + margin
+        float halfW = gameBoard.gridRoot.rect.width * 0.5f;   // right edge in anchored coords (pivot-centered)
+        float x = halfW + gameBoard.GetCellSize().x * marginCells;
+
+        return new Vector2(x, y);
+    }
 }

@@ -20,6 +20,9 @@ public class TitleMenuUI : MonoBehaviour
     public HighScoreUI highScoreUI;
     public CharacterSelectUI characterSelectPanel;
 
+    [SerializeField] CharacterSelectUI characterSelectUI; // drag from scene
+    [SerializeField] MonsterSelectUI monsterSelectUI;   // drag from scene
+
 
     [Header("Pause While Panels Open?")]
     public bool pauseOnPanels = false;  // usually false for title screen
@@ -35,16 +38,39 @@ public class TitleMenuUI : MonoBehaviour
 
     public AudioClip startGameSFX;
     public AudioClip uiClickSFX; 
-    public AudioClip uiHoverSFX; 
+    public AudioClip uiHoverSFX;
 
     void Awake()
     {
-        // Ensure panels start hidden
-        if (highScorePanel) highScorePanel.SetActive(false);
-        if (settingsPanel) settingsPanel.SetActive(false);
+        if (characterSelectUI && characterSelectUI.roster != null && characterSelectUI.roster.Length > 0)
+        {
+            var savedChar = SelectedCharacterStore.ResolveFromRoster(characterSelectUI.roster);
+            if (savedChar != null)
+                SelectedCharacterStore.Current = savedChar;
+            else
+                SelectedCharacterStore.Save(characterSelectUI.roster[0]); // write a default once
 
-        if (pauseOnPanels) Time.timeScale = 1f;
-        HighScoreManager.EnsureInitialized(10);
+            characterSelectUI.RefreshPreview();
+        }
+
+        if (monsterSelectUI && monsterSelectUI.roster != null && monsterSelectUI.roster.Length > 0)
+        {
+            var resolved = SelectedMonstersStore.ResolveFromRoster(monsterSelectUI.roster);
+            if (resolved != null && resolved.Count >= 2)
+            {
+                SelectedMonstersStore.Active = resolved;
+            }
+            else
+            {
+                var fallbacks = new List<MonsterData>();
+                if (monsterSelectUI.roster.Length >= 1 && monsterSelectUI.roster[0]) fallbacks.Add(monsterSelectUI.roster[0]);
+                if (monsterSelectUI.roster.Length >= 2 && monsterSelectUI.roster[1]) fallbacks.Add(monsterSelectUI.roster[1]);
+                SelectedMonstersStore.Active = fallbacks;
+                SelectedMonstersStore.SaveNames(fallbacks); // persist once so it sticks next run
+            }
+
+            monsterSelectUI.RefreshAllUI();
+        }
     }
 
     void Start()

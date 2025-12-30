@@ -341,7 +341,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7508733031300296860, guid: 3b14f087e3986b04abf41ccbff2fe2e1, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -1.37
+      value: -1.3699951
       objectReference: {fileID: 0}
     - target: {fileID: 7508733031300296860, guid: 3b14f087e3986b04abf41ccbff2fe2e1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1389,6 +1389,108 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 420636141}
   m_CullTransparentMesh: 1
+--- !u!1001 &443624048
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 665172191}
+    m_Modifications:
+    - target: {fileID: 329539716738683249, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_Name
+      value: Currency_Prefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 75
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 75
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 750
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 475
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+--- !u!224 &443624049 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+  m_PrefabInstance: {fileID: 443624048}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &455807635
 GameObject:
   m_ObjectHideFlags: 0
@@ -2614,6 +2716,7 @@ RectTransform:
   m_Children:
   - {fileID: 715049697}
   - {fileID: 455807636}
+  - {fileID: 443624049}
   - {fileID: 418901611284447399}
   - {fileID: 1572454903}
   - {fileID: 1706727370}
@@ -2649,11 +2752,13 @@ MonoBehaviour:
   monsterSelectPanel: {fileID: 1480193593}
   highScoreUI: {fileID: 45832899}
   characterSelectPanel: {fileID: 35795729}
+  characterSelectUI: {fileID: 35795729}
+  monsterSelectUI: {fileID: 1480193593}
   pauseOnPanels: 0
   defaultCharacter: {fileID: 11400000, guid: 522ec691af63f98439dd7b2789627a17, type: 2}
   defaultA: {fileID: 11400000, guid: 433e723cd1e13c44185e776bf85f5eec, type: 2}
   defaultB: {fileID: 11400000, guid: beed2f869003d004da23471404171e2d, type: 2}
-  titleBGM: {fileID: 8300000, guid: fcc44a3e630fb284a8fcb01d6bae0add, type: 3}
+  titleBGM: {fileID: 8300000, guid: d92c02d4c0fd75845b39c14e64de1c18, type: 3}
   titleBGMVolume: 0.5
   startGameSFX: {fileID: 8300000, guid: 488ab8eb662bd144d80e846e95d32dd7, type: 3}
   uiClickSFX: {fileID: 8300000, guid: 731b97b241116d84aa62d03a949ca0e8, type: 3}
