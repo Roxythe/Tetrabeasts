@@ -45,6 +45,7 @@ public class GameController : MonoBehaviour
     [Header("Special Gauge")]
     public float specialGauge = 0f;
     public float specialGaugeMax = 100f; // overridden by selectedCharacter if set
+    public TMP_Text activateSpecialGaugeText;
 
     [Header("Special Blocks")]
     public TetrominoData[] specialBlocks;      // Assign special pieces here
@@ -577,6 +578,9 @@ public class GameController : MonoBehaviour
 
                     // Reset gauge on use
                     specialGauge = 0f;
+                    if (activateSpecialGaugeText)
+                        activateSpecialGaugeText.gameObject.SetActive(false);
+
                     UpdateSpecialUI();
 
                     if (squaresCleared > 0)
@@ -678,6 +682,9 @@ public class GameController : MonoBehaviour
 
         if (specialText)
             specialText.text = $"{Mathf.RoundToInt(100f * Mathf.Clamp01(specialGauge / Mathf.Max(1f, specialGaugeMax)))}%";
+
+        bool full = specialGauge >= (specialGaugeMax - 0.001f); // small tolerance
+        if (activateSpecialGaugeText) activateSpecialGaugeText.gameObject.SetActive(full);
     }
 
     void SpawnAttackProjectile(Sprite sprite, Vector2 startAnchored, Vector2 targetAnchored, int damage, MonsterData attackerMD)
