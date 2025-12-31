@@ -91,23 +91,17 @@ public class NextPreviewUI : MonoBehaviour
         EnsureEdges(rt);
 
         float half = border * 0.5f;
-        float left = leftShared ? half : border;
-        float right = rightShared ? half : border;
-        float top = topShared ? half : border;
-        float bottom = bottomShared ? half : border;
+        const float OUTER_OVERLAP = 0f;
+
+        float left = leftShared ? half : (border + OUTER_OVERLAP);
+        float right = rightShared ? half : (border + OUTER_OVERLAP);
+        float top = topShared ? half : (border + OUTER_OVERLAP);
+        float bottom = bottomShared ? half : (border + OUTER_OVERLAP);
 
         rt.Find("Edge_L").GetComponent<RectTransform>().sizeDelta = new Vector2(left, 0f);
         rt.Find("Edge_R").GetComponent<RectTransform>().sizeDelta = new Vector2(right, 0f);
         rt.Find("Edge_T").GetComponent<RectTransform>().sizeDelta = new Vector2(0f, top);
         rt.Find("Edge_B").GetComponent<RectTransform>().sizeDelta = new Vector2(0f, bottom);
-
-        // Adjust inner fill to match varying thickness
-        //var fillRt = rt.Find("PreviewFill") as RectTransform;
-        //if (fillRt)
-        //{
-        //    fillRt.sizeDelta = rt.sizeDelta - new Vector2(left + right, top + bottom);
-        //    fillRt.anchoredPosition = new Vector2((right - left) * 0.5f, (top - bottom) * 0.5f);
-        //}
     }
 
     public void Show(TetrominoData data, Color color, MonsterData[] monsters)

@@ -167,11 +167,14 @@ public class Board : MonoBehaviour
 
         EnsureInlineBorder(rt);
 
-        float half = border * 0.5f;
-        float left = leftShared ? half : border;
-        float right = rightShared ? half : border;
-        float top = topShared ? half : border;
-        float bottom = bottomShared ? half : border;
+        float outline = border * 0.5f;
+        float full = border + outline;
+        float half = full * 0.5f;
+
+        float left = leftShared ? half : full;
+        float right = rightShared ? half : full;
+        float top = topShared ? half : full;
+        float bottom = bottomShared ? half : full;
 
         SetEdgeThickness(rt, left, right, top, bottom);
 
@@ -191,6 +194,9 @@ public class Board : MonoBehaviour
         bool topShared = InBounds(cell + Vector2Int.up) && placed.ContainsKey(cell + Vector2Int.up);
         bool bottomShared = InBounds(cell + Vector2Int.down) && placed.ContainsKey(cell + Vector2Int.down);
 
+        rt.sizeDelta = GetCellSize();
+        rt.anchoredPosition = CellToAnchoredPos(cell);
+
         ApplySharedEdges(rt, leftShared, rightShared, topShared, bottomShared, DEFAULT_BORDER);
         SetInlineBorderColor(rt, TilesDamageImmune ? immuneBorderColor : normalBorderColor);
     }
@@ -203,6 +209,7 @@ public class Board : MonoBehaviour
         if (InBounds(cell + Vector2Int.up)) RefreshTileBordersAt(cell + Vector2Int.up);
         if (InBounds(cell + Vector2Int.down)) RefreshTileBordersAt(cell + Vector2Int.down);
     }
+
     private readonly Dictionary<Vector2Int, MonsterInstance> monsters = new();
 
     void Awake()
@@ -312,6 +319,7 @@ public class Board : MonoBehaviour
         float y0 = -contentSize.y * 0.5f;
         float x = x0 + (cell.x + 0.5f) * cellSize.x;
         float y = y0 + (cell.y + 0.5f) * cellSize.y;
+
         return new Vector2(x, y);
     }
 
