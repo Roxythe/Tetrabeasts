@@ -18,6 +18,15 @@ public class GameController : MonoBehaviour
     public CastleData[] castlesByLevel;
     int currentLevel = 0;
 
+    [Header("Run Mods")]
+    public RunModifierSO[] buffPool;
+    public RunModifierSO[] debuffPool;
+
+    public RoundRewardUI roundRewardUI; // drag the panel controller here
+
+    readonly List<RunModifierSO> _runBuffs = new();
+    readonly List<RunModifierSO> _runDebuffs = new();
+
     [Header("Player")]
     public UnityEngine.UI.Image playerPortrait;
     public TMPro.TMP_Text playerName;
@@ -80,6 +89,25 @@ public class GameController : MonoBehaviour
     bool isPaused = false;
     public bool IsPaused => isPaused;
 
+    // -------- RUN MODIFIERS (reset each run) --------
+    [Header("Run Modifiers (runtime)")]
+    public float enemyAttackIntervalMult = 1f;     // < 1 = attacks faster, > 1 = slower
+    public float enemyProjectileDamageMult = 1f;   // > 1 = more damage
+    public float enemyProjectileSpeedMult = 1f;
+
+    public float specialGainMult = 1f;             // gauge gain multiplier
+    public float specialDrainMult = 1f;            // if you have drain/decay anywhere
+
+    public float specialBlockChanceAdd = 0f;       // additive to specialChancePerEnqueue
+
+    public float pieceGravityMult = 1f;            // < 1 = slower falling, > 1 = faster
+    public float monsterDamageMult = 1f;           // scales monster attackPower contribution
+    public float monsterSpecialGainMult = 1f;      // scales monster specialGaugeGain contribution
+    public float monsterMaxHpMult = 1f;            // used when spawning monster tiles
+
+    public static int CurrencyPerRoundWinAdd = 0;
+    public static float CurrencyPerRoundWinMult = 1f;
+
     readonly Queue<TetrominoData> bag = new();
     public int score { get; private set; }
     bool gameOver = false;
@@ -139,6 +167,7 @@ public class GameController : MonoBehaviour
         specialGauge = 0f; // Initialize Special gauge. Start full for testing
         UpdateSpecialUI();
 
+        ResetRunMods();
         InitLevel(currentLevel);
 
         // Pause menu defaults
@@ -199,6 +228,27 @@ public class GameController : MonoBehaviour
                 TrySpawnCastleDownshot();
             }
         }
+    }
+
+    void ResetRunMods()
+    {
+        _runBuffs.Clear();
+        _runDebuffs.Clear();
+
+        // Pull runtime values from the store (fresh defaults after TitleMenu reset)
+        enemyAttackIntervalMult = RunModsStore.EnemyAttackIntervalMult;
+        enemyProjectileDamageMult = RunModsStore.EnemyProjectileDamageMult;
+        enemyProjectileSpeedMult = RunModsStore.EnemyProjectileSpeedMult;
+
+        specialGainMult = RunModsStore.SpecialGainMult;
+        specialDrainMult = RunModsStore.SpecialDrainMult;
+        specialBlockChanceAdd = RunModsStore.SpecialBlockChanceAdd;
+
+        pieceGravityMult = RunModsStore.PieceGravityMult;
+
+        monsterDamageMult = RunModsStore.MonsterDamageMult;
+        monsterSpecialGainMult = RunModsStore.MonsterSpecialGainMult;
+        monsterMaxHpMult = RunModsStore.MonsterMaxHpMult;
     }
 
     void ShowNextPreview()
@@ -318,12 +368,14 @@ public class GameController : MonoBehaviour
         var roster = GetActiveMonsterRoster();
         int specialsAddedThisRefill = 0;
 
+        float chance = Mathf.Clamp01(specialChancePerEnqueue + specialBlockChanceAdd);
+
         foreach (var d in normals)
         {
             TetrominoData use = d;
 
             // Gate: maybe replace with special
-            if (specialsAvailable && Random.value < specialChancePerEnqueue)
+            if (specialsAvailable && Random.value < chance)
             {
                 float r = Random.Range(0f, specialTotal);
                 for (int k = 0; k < specialBlocks.Length; k++)
@@ -487,10 +539,12 @@ public class GameController : MonoBehaviour
         {
             int levelNumber = levelIndex + 1;
             enemyCastleUI.InitCastle(data, levelNumber);
-            castleAttackInterval = data.projectileInterval;
-            projectileSpeed = data.projectileSpeed;
             castleProjectileSprite = data.projectileSprite;
-            castleProjectileDamage = data.projectileDamage;
+
+            castleAttackInterval = data.projectileInterval * enemyAttackIntervalMult;
+            projectileSpeed = data.projectileSpeed * enemyProjectileSpeedMult;
+            castleProjectileDamage = Mathf.RoundToInt(data.projectileDamage * enemyProjectileDamageMult);
+
             if (levelText) levelText.text = $"Level: {levelNumber}";
         }
         else
@@ -516,19 +570,69 @@ public class GameController : MonoBehaviour
         if (gameOver || levelWon) return;
         levelWon = true;
 
-        if (nextPreview)
-            nextPreview.ClearPreview();
+        if (nextPreview) nextPreview.ClearPreview();
 
         currentLevel++;
 
         CurrencyStore.Add(currencyPerRoundWin);
         if (currencyUI) currencyUI.Refresh();
 
+        // Show rewards before continuing
+        if (roundRewardUI)
+        {
+            roundRewardUI.Show(buffPool, debuffPool, OnRoundModsChosen);
+        }
+        else
+        {
+            ContinueAfterRoundRewards(); // fallback if UI not wired
+        }
+    }
+
+    void OnRoundModsChosen(RunModifierSO buff, RunModifierSO debuff)
+    {
+        if (buff)
+        {
+            _runBuffs.Add(buff);
+            RunModsStore.Buffs.Add(buff);
+            buff.Apply(this);
+        }
+
+        if (debuff)
+        {
+            _runDebuffs.Add(debuff);
+            RunModsStore.Debuffs.Add(debuff);
+            debuff.Apply(this);
+        }
+
+        SyncRunModsToStore();
+        ContinueAfterRoundRewards();
+    }
+
+    void SyncRunModsToStore()
+    {
+        RunModsStore.EnemyAttackIntervalMult = enemyAttackIntervalMult;
+        RunModsStore.EnemyProjectileDamageMult = enemyProjectileDamageMult;
+        RunModsStore.EnemyProjectileSpeedMult = enemyProjectileSpeedMult;
+
+        RunModsStore.SpecialGainMult = specialGainMult;
+        RunModsStore.SpecialDrainMult = specialDrainMult;
+        RunModsStore.SpecialBlockChanceAdd = specialBlockChanceAdd;
+
+        RunModsStore.PieceGravityMult = pieceGravityMult;
+
+        RunModsStore.MonsterDamageMult = monsterDamageMult;
+        RunModsStore.MonsterSpecialGainMult = monsterSpecialGainMult;
+        RunModsStore.MonsterMaxHpMult = monsterMaxHpMult;
+    }
+
+    void ContinueAfterRoundRewards()
+    {
         if (castlesByLevel != null && currentLevel < castlesByLevel.Length)
             StartCoroutine(CoStartNextLevel());
         else
             EndRunAsWin();
     }
+
 
     private System.Collections.IEnumerator CoStartNextLevel()
     {
@@ -1020,6 +1124,8 @@ public class GameController : MonoBehaviour
         if (gameBoard) gameBoard.ClearAll(); // Clear board tiles
 
         // Reset run state
+        RunModsStore.ResetAll();
+        ResetRunMods();
         currentLevel = 0;
         InitLevel(currentLevel);
         gameOver = false;

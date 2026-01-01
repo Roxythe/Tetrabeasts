@@ -285,6 +285,7 @@ GameObject:
   - component: {fileID: 8932469155110016488}
   - component: {fileID: 3971138751131615089}
   - component: {fileID: 7548400664462000278}
+  - component: {fileID: 7447676673276691927}
   m_Layer: 5
   m_Name: RunModOption_Button
   m_TagString: Untagged
@@ -335,7 +336,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.3047378, g: 0.6886792, b: 0.23064259, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -411,6 +412,33 @@ MonoBehaviour:
   m_EffectColor: {r: 1, g: 0, b: 0, a: 1}
   m_EffectDistance: {x: 5, y: 5}
   m_UseGraphicAlpha: 1
+--- !u!114 &7447676673276691927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8153505177777701206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9945838fbfb7494b84dbdbdc3a88978, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RunModOptionButton
+  button: {fileID: 3971138751131615089}
+  icon: {fileID: 856707843274440850}
+  nameText: {fileID: 4207872807279646451}
+  descText: {fileID: 8862253447905925466}
+  highlightOutline: {fileID: 7548400664462000278}
+  commonNameColor: {r: 0.8509804, g: 0.8509804, b: 0.8509804, a: 1}
+  uncommonNameColor: {r: 0, g: 1, b: 0, a: 1}
+  rareNameColor: {r: 0.3, g: 0.6, b: 1, a: 1}
+  epicNameColor: {r: 0.60752934, g: 0.08877714, b: 0.8962264, a: 1}
+  legendaryNameColor: {r: 1, g: 0.6534665, b: 0.06132078, a: 1}
+  commonDescColor: {r: 0.85, g: 0.85, b: 0.85, a: 1}
+  uncommonDescColor: {r: 0, g: 1, b: 0, a: 1}
+  rareDescColor: {r: 0.29803923, g: 0.6, b: 1, a: 1}
+  epicDescColor: {r: 0.60784316, g: 0.09019608, b: 0.8980392, a: 1}
+  legendaryDescColor: {r: 1, g: 0.654902, b: 0.0627451, a: 1}
 --- !u!1 &8828697326665646018
 GameObject:
   m_ObjectHideFlags: 0

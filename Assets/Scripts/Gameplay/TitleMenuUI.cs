@@ -121,6 +121,9 @@ public class TitleMenuUI : MonoBehaviour
         while (SelectedMonstersStore.Active.Count > 4) SelectedMonstersStore.Active.RemoveAt(SelectedMonstersStore.Active.Count - 1);
 
         if (AudioManager.I) AudioManager.I.PlaySFX(AudioManager.I.sfxRestart);
+
+        RunModsStore.ResetAll();
+
         if (!string.IsNullOrEmpty(gameplaySceneName))
             UnityEngine.SceneManagement.SceneManager.LoadScene(gameplaySceneName);
         else

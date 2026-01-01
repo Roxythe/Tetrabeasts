@@ -1,5 +1,8 @@
 ****** TODO ******
 
+- Add gold obtained from round win to round win panel
+- Add way to track what current active buffs/debuffs of run are
+
 - Play with the grid size and experiment with different grid sizes.
 - Create a setting for mixed tetrapieces or uniform monster pieces
 
@@ -8,11 +11,19 @@
 
 - Add skin variations for monsters on monster select screen
 
+- Add way to level individual monsters at select monster screen
+
 - Add locks to characters, monsters, and skins
+
+
+Possible new loss condition - add limited count of total monster pieces, so when a monster dies it stays dead when a new piece is made with the same monster type. Exact same piece unnescessary, just keep track of total living monster groupings
 
 *** KNOWN BUGS ***
 
 Sometimes the death special block seems to land on a monster, but ends up removing all of another monster. Occurs more often when pressing spacebar to drop special block.
+
+round win panel opens before castle destruction sound plays.
+level background music continues to play after round win panel opens
 
 *** PERSISTENT DATA ***
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -576,6 +577,7 @@ public class Board : MonoBehaviour
         specialChargeFromMonsters = 0f;
         rowDamage = new Dictionary<int, int>();
         rowDominantMonster = new Dictionary<int, MonsterData>();
+        var gc = FindFirstObjectByType<GameController>(); // or cached reference
 
         for (int y = 0; y < height; y++)
         {
@@ -596,8 +598,8 @@ public class Board : MonoBehaviour
                 {
                     if (inst.hp > 0f)
                     {
-                        dmgRow += Mathf.RoundToInt(inst.data.attackPower);
-                        specialChargeFromMonsters += inst.data.specialGaugeGain;
+                        dmgRow += Mathf.RoundToInt(inst.data.attackPower * (gc ? gc.monsterDamageMult : 1f));
+                        specialChargeFromMonsters += inst.data.specialGaugeGain * (gc ? gc.monsterSpecialGainMult : 1f);
                     }
                     // dominance count still counts presence
                     if (!counts.ContainsKey(inst.data))
@@ -812,6 +814,7 @@ public class Board : MonoBehaviour
         removedCells = new List<Vector2Int>();
         damageFromMonsters = 0;
         specialChargeFromMonsters = 0f;
+        var gc = FindFirstObjectByType<GameController>();
 
         // Remove & tally
         var removeSet = new HashSet<Vector2Int>(toRemove);
@@ -821,8 +824,10 @@ public class Board : MonoBehaviour
             {
                 if (inst.data)
                 {
-                    if (inst.hp > 0f) damageFromMonsters += Mathf.RoundToInt(inst.data.attackPower);
-                    specialChargeFromMonsters += inst.data.specialGaugeGain;
+                    if (inst.hp > 0f)
+                        damageFromMonsters += Mathf.RoundToInt(inst.data.attackPower * (gc ? gc.monsterDamageMult : 1f));
+
+                    specialChargeFromMonsters += inst.data.specialGaugeGain * (gc ? gc.monsterSpecialGainMult : 1f);
                 }
                 monsters.Remove(key);
             }

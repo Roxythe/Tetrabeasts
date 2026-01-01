@@ -64,6 +64,12 @@ public class Piece : MonoBehaviour
         BuildVisuals();
     }
 
+    private void Start()
+    {
+        var gc = FindFirstObjectByType<GameController>();
+        float efectiveFallInterval = fallInterval / gc.pieceGravityMult;
+    }
+
     void Update()
     {
         // INPUT
