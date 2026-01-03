@@ -20,6 +20,17 @@ public static class RunModsStore
     public static float MonsterSpecialGainMult = 1f;
     public static float MonsterMaxHpMult = 1f;
 
+    public static float HealPowerMult = 1f;
+    public static int HealRangeAdd = 0;
+
+    public static bool DisableNextPreview = false;
+    public static bool DisableLandingHint = false;
+
+    public static float LineClearCurrencyChanceAdd = 0f;
+    public static float LineClearCurrencyAmountMult = 1f;
+
+    public static float EnemyCastleHpMult = 1f;
+
     public static void ResetAll()
     {
         Buffs.Clear();
@@ -38,5 +49,16 @@ public static class RunModsStore
         MonsterDamageMult = 1f;
         MonsterSpecialGainMult = 1f;
         MonsterMaxHpMult = 1f;
+
+        HealPowerMult = 1f;
+        HealRangeAdd = 0;
+
+        DisableNextPreview = false;
+        DisableLandingHint = false;
+
+        LineClearCurrencyChanceAdd = 0f;
+        LineClearCurrencyAmountMult = 1f;
+
+        EnemyCastleHpMult = 1f;
     }
 }

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90562e4e9a0c7934aab92bcb4ad86cca, type: 3}
+  m_Name: Buff_MonAtk_1
+  m_EditorClassIdentifier: Assembly-CSharp::RunModifier
+  displayName: Increase Monster Atack
+  description: Modestly increases the attack value for all monsters in your current
+    roster
+  icon: {fileID: 422595395969729942, guid: dbafa8ba4703ac744ab93d833031a898, type: 3}
+  isBuff: 1
+  rarity: 1
+  stat: 9
+  op: 1
+  value: 1.2

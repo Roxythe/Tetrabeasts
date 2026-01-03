@@ -21,16 +21,15 @@ public class RoundRewardUI : MonoBehaviour
 
     [Header("Prefabs")]
     public RunModOptionButton optionButtonPrefab;
+    public TMP_Text currnecyGained;
 
     RunModifierSO _selectedBuff;
     RunModifierSO _selectedDebuff;
 
     Action<RunModifierSO, RunModifierSO> _onComplete;
 
-    public void Show(
-        RunModifierSO[] buffPool,
-        RunModifierSO[] debuffPool,
-        Action<RunModifierSO, RunModifierSO> onComplete)
+    public void Show(RunModifierSO[] buffPool, RunModifierSO[] debuffPool, Action<RunModifierSO, RunModifierSO> onComplete,
+                     int currencyGained)
     {
         _onComplete = onComplete;
 
@@ -43,6 +42,9 @@ public class RoundRewardUI : MonoBehaviour
 
         _selectedBuff = null;
         _selectedDebuff = null;
+
+        if (currnecyGained)
+            currnecyGained.text = $"+{currencyGained}";
 
         Populate(buffContainer, Pick3Unique(buffPool), isBuff: true);
         confirmBuffButton.onClick.RemoveAllListeners();

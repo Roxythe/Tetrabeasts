@@ -72,6 +72,11 @@ public class Piece : MonoBehaviour
 
     void Update()
     {
+        // Pause check
+        var gc = FindFirstObjectByType<GameController>();
+        if (gc != null && gc.IsPaused)
+            return;
+
         // INPUT
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
         if (Keyboard.current.leftArrowKey.wasPressedThisFrame)  TryMove(Vector2Int.left);
@@ -628,25 +633,34 @@ public class Piece : MonoBehaviour
 
     void UpdateNormalHints()
     {
+        var gc = FindFirstObjectByType<GameController>();
+
         ClearHints();
 
-        // Where would a Spacebar (HardDrop) put us right now?
+        if (gc != null && gc.disableLandingHint)
+            return; // skip if disabled by run mods
+
         var landing = ComputeLandingCells();
         if (landing.Count == 0) return;
 
         foreach (var c in landing)
         {
-            var img = new GameObject("GhostHint", typeof(UnityEngine.UI.Image))
-                      .GetComponent<UnityEngine.UI.Image>();
-            img.color = hintColor;                       // the same light red you already use
+            var img = new GameObject("GhostHint", typeof(Image)).GetComponent<Image>();
+            img.sprite = OnePx();
+            img.type = Image.Type.Simple;
+            img.raycastTarget = false;
+            img.color = hintColor;
+
             var rt = img.rectTransform;
             rt.SetParent(board.gridRoot, false);
             rt.sizeDelta = board.GetCellSize();
             rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
             rt.anchoredPosition = board.CellToAnchoredPos(c);
+
             hintOverlays.Add(rt);
         }
     }
+
 
     // ========== Inline Border Color Change ==========
 

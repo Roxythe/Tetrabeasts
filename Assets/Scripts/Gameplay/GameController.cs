@@ -27,6 +27,12 @@ public class GameController : MonoBehaviour
     readonly List<RunModifierSO> _runBuffs = new();
     readonly List<RunModifierSO> _runDebuffs = new();
 
+    [Header("Run Mods UI Panel")]
+    [SerializeField] RunModsPanelUI runModsPanelUI;
+    [SerializeField] Button openRunModsButton;      // the button on pause menu
+    [SerializeField] GameObject runModsPanelRoot;   // the panel GameObject to show/hide
+    [SerializeField] Button closeRunModsButton;     // the close button on the panel
+
     [Header("Player")]
     public UnityEngine.UI.Image playerPortrait;
     public TMPro.TMP_Text playerName;
@@ -93,25 +99,34 @@ public class GameController : MonoBehaviour
     [Header("Run Modifiers (runtime)")]
     public float enemyAttackIntervalMult = 1f;     // < 1 = attacks faster, > 1 = slower
     public float enemyProjectileDamageMult = 1f;   // > 1 = more damage
-    public float enemyProjectileSpeedMult = 1f;
+    public float enemyProjectileSpeedMult = 1f;    // < 1 = Faster enemy projectiles (Currently unused)
+    public float enemyCastleHpMult = 1f;
 
     public float specialGainMult = 1f;             // gauge gain multiplier
-    public float specialDrainMult = 1f;            // if you have drain/decay anywhere
+    public float specialDrainMult = 1f;            // if you have drain/decay anywhere (Currently unused)
 
     public float specialBlockChanceAdd = 0f;       // additive to specialChancePerEnqueue
-
     public float pieceGravityMult = 1f;            // < 1 = slower falling, > 1 = faster
+
     public float monsterDamageMult = 1f;           // scales monster attackPower contribution
     public float monsterSpecialGainMult = 1f;      // scales monster specialGaugeGain contribution
     public float monsterMaxHpMult = 1f;            // used when spawning monster tiles
+    public float healPowerMult = 1f;
+    public int healRangeAdd = 0;
 
-    public static int CurrencyPerRoundWinAdd = 0;
-    public static float CurrencyPerRoundWinMult = 1f;
+    public bool disableNextPreview = false;
+    public bool disableLandingHint = false;
+
+    public int currencyPerRoundWinAdd = 0;
+    public float currencyPerRoundWinMult = 1f;
+    public float lineClearCurrencyChanceAdd = 0f;
+    public float lineClearCurrencyAmountMult = 1f; 
 
     readonly Queue<TetrominoData> bag = new();
     public int score { get; private set; }
     bool gameOver = false;
     bool levelWon = false;
+    private bool winQueued = false;
 
     public ScoreUI scoreUI;
     public HighScoreUI highScoreUI;
@@ -160,6 +175,19 @@ public class GameController : MonoBehaviour
                 playerName.text = selectedCharacter.displayName;
         }
 
+        // Wire Run Mods panel buttons
+        if (!runModsPanelRoot && runModsPanelUI)
+            runModsPanelRoot = runModsPanelUI.gameObject;
+
+        if (openRunModsButton)
+            openRunModsButton.onClick.AddListener(OpenRunModsPanel);
+
+        if (closeRunModsButton)
+            closeRunModsButton.onClick.AddListener(CloseRunModsPanel);
+
+        // Ensure it starts closed
+        if (runModsPanelRoot) runModsPanelRoot.SetActive(false);
+
         // Apply character special gauge max
         if (selectedCharacter && selectedCharacter.specialGaugeMax > 0f)
             specialGaugeMax = selectedCharacter.specialGaugeMax;
@@ -207,13 +235,29 @@ public class GameController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (!isPaused) PauseGame();
+            if (!isPaused)
+            {
+                PauseGame();
+            }
             else
             {
-                // If a sub panel (like volume) is open, close it first; else resume
-                if (volumePanelInPause && volumePanelInPause.gameObject.activeSelf)
+                // Close any sub-panels opened from pause
+                bool closedSomething = false;
+
+                if (runModsPanelRoot && runModsPanelRoot.activeSelf)
+                {
+                    runModsPanelRoot.SetActive(false);
+                    closedSomething = true;
+                }
+
+                if (!closedSomething && volumePanelInPause && volumePanelInPause.gameObject.activeSelf)
+                {
                     volumePanelInPause.Close();
-                else
+                    closedSomething = true;
+                }
+
+                // If nothing else to close, resume the game
+                if (!closedSomething)
                     ResumeGame();
             }
         }
@@ -249,11 +293,29 @@ public class GameController : MonoBehaviour
         monsterDamageMult = RunModsStore.MonsterDamageMult;
         monsterSpecialGainMult = RunModsStore.MonsterSpecialGainMult;
         monsterMaxHpMult = RunModsStore.MonsterMaxHpMult;
+
+        healPowerMult = RunModsStore.HealPowerMult;
+        healRangeAdd = RunModsStore.HealRangeAdd;
+
+        disableNextPreview = RunModsStore.DisableNextPreview;
+        disableLandingHint = RunModsStore.DisableLandingHint;
+
+        lineClearCurrencyChanceAdd = RunModsStore.LineClearCurrencyChanceAdd;
+        lineClearCurrencyAmountMult = RunModsStore.LineClearCurrencyAmountMult;
+
+        enemyCastleHpMult = RunModsStore.EnemyCastleHpMult;
+
     }
 
     void ShowNextPreview()
     {
         if (!nextPreview) return;
+
+        if (disableNextPreview)
+        {
+            nextPreview.ClearPreview();   // optional, but helps hide old preview
+            return;
+        }
 
         EnsureMinBag(3);
         var next = PeekSafeHead();
@@ -525,6 +587,7 @@ public class GameController : MonoBehaviour
     void InitLevel(int levelIndex)
     {
         levelWon = false;
+        winQueued = false;
 
         CastleData data = null;
         if (castlesByLevel != null && levelIndex >= 0 && levelIndex < castlesByLevel.Length)
@@ -538,7 +601,7 @@ public class GameController : MonoBehaviour
         if (enemyCastleUI && data)
         {
             int levelNumber = levelIndex + 1;
-            enemyCastleUI.InitCastle(data, levelNumber);
+            enemyCastleUI.InitCastle(data, levelNumber, enemyCastleHpMult);
             castleProjectileSprite = data.projectileSprite;
 
             castleAttackInterval = data.projectileInterval * enemyAttackIntervalMult;
@@ -574,17 +637,19 @@ public class GameController : MonoBehaviour
 
         currentLevel++;
 
-        CurrencyStore.Add(currencyPerRoundWin);
+        int gained = GetRoundWinCurrency();
+
+        CurrencyStore.Add(gained);
         if (currencyUI) currencyUI.Refresh();
 
         // Show rewards before continuing
         if (roundRewardUI)
         {
-            roundRewardUI.Show(buffPool, debuffPool, OnRoundModsChosen);
+            roundRewardUI.Show(buffPool, debuffPool, OnRoundModsChosen, gained);
         }
         else
         {
-            ContinueAfterRoundRewards(); // fallback if UI not wired
+            ContinueAfterRoundRewards();
         }
     }
 
@@ -605,6 +670,7 @@ public class GameController : MonoBehaviour
         }
 
         SyncRunModsToStore();
+        if (runModsPanelUI) runModsPanelUI.Refresh();
         ContinueAfterRoundRewards();
     }
 
@@ -623,6 +689,18 @@ public class GameController : MonoBehaviour
         RunModsStore.MonsterDamageMult = monsterDamageMult;
         RunModsStore.MonsterSpecialGainMult = monsterSpecialGainMult;
         RunModsStore.MonsterMaxHpMult = monsterMaxHpMult;
+
+        RunModsStore.HealPowerMult = healPowerMult;
+        RunModsStore.HealRangeAdd = healRangeAdd;
+
+        RunModsStore.DisableNextPreview = disableNextPreview;
+        RunModsStore.DisableLandingHint = disableLandingHint;
+
+        RunModsStore.LineClearCurrencyChanceAdd = lineClearCurrencyChanceAdd;
+        RunModsStore.LineClearCurrencyAmountMult = lineClearCurrencyAmountMult;
+
+        RunModsStore.EnemyCastleHpMult = enemyCastleHpMult;
+
     }
 
     void ContinueAfterRoundRewards()
@@ -824,7 +902,7 @@ public class GameController : MonoBehaviour
         // Apply damage on impact
         if (damage > 0 && enemyCastleUI && !levelWon && !gameOver)
         {
-            // Play the attacking monster's impact SFX (if provided)
+            // Play the attacking monster's impact SFX 
             if (AudioManager.I && attackerMD)
             {
                 var clip = attackerMD.PickRandomAttackSFX();
@@ -833,9 +911,22 @@ public class GameController : MonoBehaviour
             }
 
             enemyCastleUI.ApplyDamage(damage);
-            if (enemyCastleUI.currentHP <= 0) OnCastleDestroyed();
+
+            if (enemyCastleUI.currentHP <= 0 && !winQueued)
+            {
+                winQueued = true;
+                StartCoroutine(CoWinAfterDelay(0.25f)); // or your death clip length
+                yield break;
+            }
         }
     }
+
+    IEnumerator CoWinAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        OnCastleDestroyed();
+    }
+
 
     Vector2 LocalTo(RectTransform dst, RectTransform src, Vector2 anchored)
     {
@@ -1107,8 +1198,6 @@ public class GameController : MonoBehaviour
 
         if (pausePanel) pausePanel.SetActive(true);
 
-        // Optional: stop gravity/auto-drop even if any script ignores timescale
-        if (piece) piece.enabled = false;
     }
 
     public void RestartGame()
@@ -1118,6 +1207,8 @@ public class GameController : MonoBehaviour
         AudioListener.pause = false;
         isPaused = false;
         if (pausePanel) pausePanel.SetActive(false);
+
+        ClosePauseSubPanels();
 
         if (AudioManager.I) AudioManager.I.PlaySFX(AudioManager.I.sfxRestart);
         if (piece) piece.ResetPiece(); // Stop the current drop
@@ -1153,12 +1244,13 @@ public class GameController : MonoBehaviour
 
     public void ResumeGame()
     {
+        ClosePauseSubPanels();
+
         isPaused = false;
         Time.timeScale = 1f;
         AudioListener.pause = false;
 
         if (pausePanel) pausePanel.SetActive(false);
-        if (piece) piece.enabled = true;
     }
 
     // Called by the Pause menu "Main Menu" button
@@ -1184,6 +1276,32 @@ public class GameController : MonoBehaviour
     Application.Quit();
 #endif
     }
+
+    public void OpenRunModsPanel()
+    {
+        if (!runModsPanelRoot) return;
+
+        if (runModsPanelUI) runModsPanelUI.Refresh(); // Make sure the list is up to date before showing
+
+        runModsPanelRoot.SetActive(true);
+    } 
+
+    public void CloseRunModsPanel()
+    {
+        if (runModsPanelRoot) runModsPanelRoot.SetActive(false);
+    }
+
+    void ClosePauseSubPanels()
+    {
+        // Close Run Mods
+        if (runModsPanelRoot && runModsPanelRoot.activeSelf)
+            runModsPanelRoot.SetActive(false);
+
+        // Close Volume settings panel
+        if (volumePanelInPause && volumePanelInPause.gameObject.activeSelf)
+            volumePanelInPause.Close();
+    }
+
 
     // ================ Currency Popup System ===================
 
@@ -1251,6 +1369,14 @@ public class GameController : MonoBehaviour
             yield return null;
         }
         if (rt) Destroy(rt.gameObject);
+    }
+
+    int GetRoundWinCurrency()
+    {
+        int baseAmt = currencyPerRoundWin; // Base is inspector value
+        float raw = (baseAmt + currencyPerRoundWinAdd) * currencyPerRoundWinMult; // Apply run mods
+
+        return Mathf.Max(0, Mathf.RoundToInt(raw)); // Round and clamp
     }
 
     // ================== Helper/Utility ==================

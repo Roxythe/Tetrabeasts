@@ -9,6 +9,7 @@ public enum RunModStat
     EnemyAttackIntervalMult,
     EnemyProjectileDamageMult,
     EnemyProjectileSpeedMult,
+    EnemyCastleHpMult,
 
     // Special
     SpecialGainMult,
@@ -22,6 +23,18 @@ public enum RunModStat
     MonsterDamageMult,
     MonsterSpecialGainMult,
     MonsterMaxHpMult,
+
+    // Healing
+    HealPowerMult,
+    HealRangeAdd,
+
+    // UI / Hints
+    DisableNextPreview,          // bool-ish (use Add with 1/0)
+    DisableLandingHint,          // bool-ish
+
+    // Currency drops from cleared lines
+    LineClearCurrencyChanceAdd,  // +0.05 = +5%
+    LineClearCurrencyAmountMult, // 1.25 = +25% 
 }
 
 public enum RunModOp { Add, Multiply }
@@ -46,7 +59,17 @@ public class RunModifier : RunModifierSO
     {
         switch (stat)
         {
-            // ---------------- Currency ----------------
+            // ---------------- Currency Drops ----------------
+            case RunModStat.LineClearCurrencyChanceAdd:
+                if (op == RunModOp.Add) gc.lineClearCurrencyChanceAdd += value;
+                else gc.lineClearCurrencyChanceAdd *= value;
+                break;
+
+            case RunModStat.LineClearCurrencyAmountMult:
+                ApplyFloat(ref gc.lineClearCurrencyAmountMult);
+                break;
+
+            // ---------------- Currency Per Round ----------------
             case RunModStat.CurrencyPerRoundWin:
                 if (op == RunModOp.Add) gc.currencyPerRoundWin += Mathf.RoundToInt(value);
                 else gc.currencyPerRoundWin = Mathf.RoundToInt(gc.currencyPerRoundWin * value);
@@ -63,6 +86,10 @@ public class RunModifier : RunModifierSO
 
             case RunModStat.EnemyProjectileSpeedMult:
                 ApplyFloat(ref gc.enemyProjectileSpeedMult);
+                break;
+
+            case RunModStat.EnemyCastleHpMult:
+                ApplyFloat(ref gc.enemyCastleHpMult);
                 break;
 
             // ---------------- Special ----------------
@@ -97,6 +124,30 @@ public class RunModifier : RunModifierSO
             case RunModStat.MonsterMaxHpMult:
                 ApplyFloat(ref gc.monsterMaxHpMult);
                 break;
+
+            // ---------------- Healing ----------------
+            case RunModStat.HealPowerMult:
+                ApplyFloat(ref gc.healPowerMult);
+                break;
+
+            case RunModStat.HealRangeAdd:
+                // usually Add
+                if (op == RunModOp.Add) gc.healRangeAdd += Mathf.RoundToInt(value);
+                else gc.healRangeAdd = Mathf.RoundToInt(gc.healRangeAdd * value);
+                break;
+
+            // ---------------- UI / Hints ----------------
+            case RunModStat.DisableNextPreview:
+                // treat value >= 0.5 as "true"
+                if (op == RunModOp.Add) gc.disableNextPreview = (value >= 0.5f) || gc.disableNextPreview;
+                else gc.disableNextPreview = (value >= 0.5f); // multiply not meaningful, but supported
+                break;
+
+            case RunModStat.DisableLandingHint:
+                if (op == RunModOp.Add) gc.disableLandingHint = (value >= 0.5f) || gc.disableLandingHint;
+                else gc.disableLandingHint = (value >= 0.5f);
+                break;
+
         }
     }
 

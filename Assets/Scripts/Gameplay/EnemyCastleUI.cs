@@ -57,6 +57,41 @@ public class EnemyCastleUI : MonoBehaviour
             healthBarSlider.value = currentHP;
         }
 
+        _lastStageIndex = -1;
+        UpdateVisuals();
+        SetupBossOverlay();
+    }
+
+    // Overload with HP multiplier (used for run modifiers)
+    public void InitCastle(CastleData data, int levelNumber, float hpMult)
+    {
+        if (data == null)
+        {
+            Debug.LogError("EnemyCastleUI.InitCastle called with null data");
+            return;
+        }
+
+        sourceData = data;
+
+        castleName = data.castleName;
+
+        int baseMax = Mathf.Max(1, data.maxHP);
+        maxHP = Mathf.Max(1, Mathf.RoundToInt(baseMax * Mathf.Max(0.01f, hpMult)));
+        currentHP = maxHP;
+
+        this.levelNumber = Mathf.Max(1, levelNumber);
+
+        if (castleNameText) castleNameText.text = castleName;
+        if (levelNameText) levelNameText.text = $"Level: {this.levelNumber}";
+
+        if (healthBarSlider)
+        {
+            healthBarSlider.minValue = 0;
+            healthBarSlider.maxValue = maxHP;
+            healthBarSlider.value = currentHP;
+        }
+
+        _lastStageIndex = -1;
         UpdateVisuals();
         SetupBossOverlay();
     }

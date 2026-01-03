@@ -135,16 +135,6 @@ public class Board : MonoBehaviour
         if (B) B.rectTransform.sizeDelta = new Vector2(0f, bottom);
     }
 
-    void AdjustInnerArea(RectTransform tileRoot, string innerName, float left, float right, float top, float bottom)
-    {
-        var t = tileRoot ? tileRoot.Find(innerName) as RectTransform : null;
-        if (!t) return;
-
-        // If thickness is asymmetric, shift the inner area so it stays visually centered.
-        t.sizeDelta = tileRoot.sizeDelta - new Vector2(left + right, top + bottom);
-        t.anchoredPosition = new Vector2((right - left) * 0.5f, (top - bottom) * 0.5f);
-    }
-
     public void SetInlineBorderColor(RectTransform rt, Color c)
     {
         if (!rt) return;
@@ -178,12 +168,6 @@ public class Board : MonoBehaviour
         float bottom = bottomShared ? half : full;
 
         SetEdgeThickness(rt, left, right, top, bottom);
-
-        // Keep inner visuals tight to the variable border thickness.
-        //AdjustInnerArea(rt, "BackFill", left, right, top, bottom);
-        //AdjustInnerArea(rt, "HealthFill", left, right, top, bottom);
-        //AdjustInnerArea(rt, "ActiveFill", left, right, top, bottom);
-        //AdjustInnerArea(rt, "PreviewFill", left, right, top, bottom);
     }
 
     public void RefreshTileBordersAt(Vector2Int cell)
@@ -238,6 +222,10 @@ public class Board : MonoBehaviour
         // Healers pulse over time
         if (monsters.Count == 0 || healTimers.Count == 0) return;
 
+        var gc = FindFirstObjectByType<GameController>();
+        float healMult = (gc != null) ? gc.healPowerMult : 1f;
+        int rangeAdd = (gc != null) ? gc.healRangeAdd : 0;
+
         var toKeys = new List<Vector2Int>(healTimers.Keys);
         foreach (var k in toKeys)
         {
@@ -248,12 +236,14 @@ public class Board : MonoBehaviour
             if (md.healAmount <= 0f || md.healSpeed <= 0f)
             { healTimers.Remove(k); continue; }
 
+            int finalHeal = Mathf.RoundToInt(md.healAmount * healMult);
+
             float interval = md.healSpeed;
             if (!healTimers.TryGetValue(k, out var last)) last = 0f;
             if (Time.time - last < interval) continue;
 
             // Build candidates in Manhattan range
-            int range = Mathf.Clamp(Mathf.RoundToInt(md.healRange), 0, 3);
+            int range = Mathf.Clamp(Mathf.RoundToInt(md.healRange + rangeAdd), 0, 3);
             Vector2Int? best = null;
             int bestDist = int.MaxValue;
             float bestFrac = 1f; // lower is better
@@ -284,7 +274,7 @@ public class Board : MonoBehaviour
             if (best.HasValue)
             {
                 // perform one heal
-                if (HealTile(best.Value, md.healAmount))
+                if (HealTile(best.Value, finalHeal))
                 {
                     PlayHealVFX(best.Value, md.healSprite, 0.5f); // VFX call
 
