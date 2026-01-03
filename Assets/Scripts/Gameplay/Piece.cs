@@ -156,7 +156,7 @@ public class Piece : MonoBehaviour
             rt.anchoredPosition = board.CellToAnchoredPos(c);
 
             // pick outline color (gold while immune, otherwise black)
-            var gc = GetComponent<GameController>();
+            var gc = FindFirstObjectByType<GameController>();
             Color borderColor = (gc && gc.immunityActive) ? board.immuneBorderColor : board.normalBorderColor;
             board.SetInlineBorderColor(rt, borderColor);
 
@@ -232,6 +232,18 @@ public class Piece : MonoBehaviour
             }
 
             visuals[i].anchoredPosition = board.CellToAnchoredPos(cells[i]);
+
+            // After we move/rotate, shared edges can change — recompute thickness per tile.
+            var activeSet = new HashSet<Vector2Int>(cells);
+            var c = cells[i];
+
+            // shared with other active cells OR with placed tiles
+            bool L = activeSet.Contains(c + Vector2Int.left) || (board.InBounds(c + Vector2Int.left) && !board.IsFree(c + Vector2Int.left));
+            bool R = activeSet.Contains(c + Vector2Int.right) || (board.InBounds(c + Vector2Int.right) && !board.IsFree(c + Vector2Int.right));
+            bool U = activeSet.Contains(c + Vector2Int.up) || (board.InBounds(c + Vector2Int.up) && !board.IsFree(c + Vector2Int.up));
+            bool D = activeSet.Contains(c + Vector2Int.down) || (board.InBounds(c + Vector2Int.down) && !board.IsFree(c + Vector2Int.down));
+
+            board.ApplySharedEdges(visuals[i], L, R, U, D);
         }
     }
 

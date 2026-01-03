@@ -31,6 +31,10 @@ public static class RunModsStore
 
     public static float EnemyCastleHpMult = 1f;
 
+    public static float Luck = 0f;
+    public static float Misfortune = 0f;
+
+
     public static void ResetAll()
     {
         Buffs.Clear();
@@ -60,5 +64,8 @@ public static class RunModsStore
         LineClearCurrencyAmountMult = 1f;
 
         EnemyCastleHpMult = 1f;
+
+        Luck = 0f;
+        Misfortune = 0f;
     }
 }

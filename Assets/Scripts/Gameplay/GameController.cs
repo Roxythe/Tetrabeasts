@@ -27,6 +27,10 @@ public class GameController : MonoBehaviour
     readonly List<RunModifierSO> _runBuffs = new();
     readonly List<RunModifierSO> _runDebuffs = new();
 
+    [Header("Run RNG")]
+    public float luck = 0f;        // helps buffs skew higher rarity
+    public float misfortune = 0f;  // helps debuffs skew higher rarity
+
     [Header("Run Mods UI Panel")]
     [SerializeField] RunModsPanelUI runModsPanelUI;
     [SerializeField] Button openRunModsButton;      // the button on pause menu
@@ -700,6 +704,9 @@ public class GameController : MonoBehaviour
         RunModsStore.LineClearCurrencyAmountMult = lineClearCurrencyAmountMult;
 
         RunModsStore.EnemyCastleHpMult = enemyCastleHpMult;
+
+        RunModsStore.Luck = luck;
+        RunModsStore.Misfortune = misfortune;
 
     }
 

@@ -158,7 +158,7 @@ public class Board : MonoBehaviour
 
         EnsureInlineBorder(rt);
 
-        float outline = border * 0.5f;
+        float outline = border * 1.0f;
         float full = border + outline;
         float half = full * 0.5f;
 
