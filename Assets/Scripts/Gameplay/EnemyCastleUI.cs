@@ -156,24 +156,17 @@ public class EnemyCastleUI : MonoBehaviour
         bossOverlayImage.enabled = on;
         if (!on) return;
 
-        // If you added a sprite field to CastleData (recommended), prefer it:
-        if (sourceData.bossOverlaySprite) bossOverlayImage.sprite = sourceData.bossOverlaySprite;
+        if (sourceData.bossOverlaySprite)
+            bossOverlayImage.sprite = sourceData.bossOverlaySprite;
 
-        // Anchor the overlay to the center of the castle image
         var brt = bossOverlayImage.rectTransform;
-        if (castleImage) brt.SetParent(castleImage.rectTransform, false);
-
-        brt.anchorMin = brt.anchorMax = new Vector2(0.5f, 0.5f);
-        brt.anchoredPosition = bossOverlayOffset;
         bossOverlayImage.preserveAspect = true;
         bossOverlayImage.raycastTarget = false;
 
-        // Size: inherit castle size unless you set a specific size
-        if (bossOverlaySize != Vector2.zero) brt.sizeDelta = bossOverlaySize;
-        else if (castleImage) brt.sizeDelta = castleImage.rectTransform.sizeDelta;
-
-        // Ensure it renders on top of the castle
-        brt.SetAsLastSibling();
+        // Optional size override (safe)
+        if (bossOverlaySize != Vector2.zero)
+            brt.sizeDelta = bossOverlaySize;
     }
+
 
 }

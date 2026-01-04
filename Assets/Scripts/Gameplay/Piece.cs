@@ -26,7 +26,7 @@ public class Piece : MonoBehaviour
     readonly List<RectTransform> hintOverlays = new();
     static readonly Color hintColor = new Color(1f, 0f, 0f, 0.25f); // light red
 
-    float fallTimer, lockTimer;
+    float fallTimer = 0f, lockTimer;
 
 
     // Single-pixel white sprite for UI fills (so Image actually renders)
@@ -66,8 +66,7 @@ public class Piece : MonoBehaviour
 
     private void Start()
     {
-        var gc = FindFirstObjectByType<GameController>();
-        float efectiveFallInterval = fallInterval / gc.pieceGravityMult;
+        
     }
 
     void Update()
@@ -673,6 +672,16 @@ public class Piece : MonoBehaviour
         }
     }
 
+    public void SetFallInterval(float seconds, bool resetAccumulator)
+    {
+        fallInterval = Mathf.Max(0.01f, seconds);
+
+        if (resetAccumulator)
+        {
+            fallTimer = 0f;
+            lockTimer = 0f;
+        }
+    }
 
     // ========== Inline Border Color Change ==========
 

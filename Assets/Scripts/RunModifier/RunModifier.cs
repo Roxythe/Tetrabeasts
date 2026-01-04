@@ -17,12 +17,17 @@ public enum RunModStat
 
     // Piece / Specials
     SpecialBlockChanceAdd,
-    PieceGravityMult,
+    PieceGravityMult, // Base gravity
+    FallRampRateMult, // How much faster gravity gets over time
 
     // Monsters
     MonsterDamageMult,
     MonsterSpecialGainMult,
     MonsterMaxHpMult,
+
+    // Mod Rarity chance increase
+    LuckAdd,
+    MisfortuneAdd,
 
     // Healing
     HealPowerMult,
@@ -112,6 +117,10 @@ public class RunModifier : RunModifierSO
                 ApplyFloat(ref gc.pieceGravityMult);
                 break;
 
+            case RunModStat.FallRampRateMult:
+                ApplyFloat(ref gc.fallRampRateMult);
+                break;
+
             // ---------------- Monsters ----------------
             case RunModStat.MonsterDamageMult:
                 ApplyFloat(ref gc.monsterDamageMult);
@@ -123,6 +132,18 @@ public class RunModifier : RunModifierSO
 
             case RunModStat.MonsterMaxHpMult:
                 ApplyFloat(ref gc.monsterMaxHpMult);
+                break;
+
+            // ---------------- Rarity Chance ----------------
+            case RunModStat.LuckAdd:
+                // Typically Add only; Multiply supported if you want scaling mods later
+                if (op == RunModOp.Add) gc.luck += value;
+                else gc.luck *= value;
+                break;
+
+            case RunModStat.MisfortuneAdd:
+                if (op == RunModOp.Add) gc.misfortune += value;
+                else gc.misfortune *= value;
                 break;
 
             // ---------------- Healing ----------------

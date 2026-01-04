@@ -15,6 +15,7 @@ public static class RunModsStore
     public static float SpecialBlockChanceAdd = 0f;
 
     public static float PieceGravityMult = 1f;
+    public static float FallRampRateMult = 1f;
 
     public static float MonsterDamageMult = 1f;
     public static float MonsterSpecialGainMult = 1f;
@@ -49,6 +50,7 @@ public static class RunModsStore
         SpecialBlockChanceAdd = 0f;
 
         PieceGravityMult = 1f;
+        FallRampRateMult = 1f;
 
         MonsterDamageMult = 1f;
         MonsterSpecialGainMult = 1f;

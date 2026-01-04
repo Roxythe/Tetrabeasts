@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90562e4e9a0c7934aab92bcb4ad86cca, type: 3}
+  m_Name: Buff_Luck_4
+  m_EditorClassIdentifier: Assembly-CSharp::RunModifier
+  displayName: Increase Luck
+  description: Massivley increase luck raising the chance of getting higher rarity
+    buffs
+  icon: {fileID: -3420943125301509092, guid: 9334548252c4c074797343cc387c4128, type: 3}
+  isBuff: 1
+  rarity: 4
+  stat: 13
+  op: 0
+  value: 50

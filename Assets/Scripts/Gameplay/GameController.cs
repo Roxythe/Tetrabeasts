@@ -13,10 +13,21 @@ public class GameController : MonoBehaviour
     public NextPreviewUI nextPreview;
     public TetrominoData[] allTetrominoes;
 
-    [Header("Progression")]
+    [Header("Level Progression")]
     public EnemyCastleUI enemyCastleUI;
     public CastleData[] castlesByLevel;
     int currentLevel = 0;
+
+    [Header("Drop Speed Progression")]
+    [SerializeField] TMP_Text levelTimerText;      // assign in inspector (UI text on board)
+    [SerializeField] float startFallInterval = 1.0f; // seconds between drops at level 1 (before gravity mult)
+    [SerializeField] float minFallInterval = 0.10f;  // clamp (fastest allowed)
+    [SerializeField] float fallIntervalDecreasePerSecond = 0.01f; // how much interval shrinks each second during a level
+    [SerializeField] float startFallIntervalMultPerLevel = 0.97f;  // <1 makes next level start faster (ex: 0.97 = 3% faster)
+
+    float _levelTimer = 0f;
+    float _thisLevelStartInterval;     // cached at level start
+    int _lastLevelInitialized = -999;  // prevents double-applying when InitLevel is called more than once
 
     [Header("Run Mods")]
     public RunModifierSO[] buffPool;
@@ -111,6 +122,7 @@ public class GameController : MonoBehaviour
 
     public float specialBlockChanceAdd = 0f;       // additive to specialChancePerEnqueue
     public float pieceGravityMult = 1f;            // < 1 = slower falling, > 1 = faster
+    public float fallRampRateMult = 1f;            // < 1 = ramp slower, >1 = ramp faster
 
     public float monsterDamageMult = 1f;           // scales monster attackPower contribution
     public float monsterSpecialGainMult = 1f;      // scales monster specialGaugeGain contribution
@@ -276,6 +288,17 @@ public class GameController : MonoBehaviour
                 TrySpawnCastleDownshot();
             }
         }
+
+        // Level timer + fall speed ramp (pauses while pause menu is active)
+        if (!isPaused && !gameOver && !levelWon)
+        {
+            _levelTimer += Time.deltaTime;
+            UpdateLevelTimerUI();
+
+            // Keep the currently falling piece synced to the current interval
+            if (piece && piece.enabled)
+                piece.SetFallInterval(GetCurrentFallInterval(), resetAccumulator: false);
+        }
     }
 
     void ResetRunMods()
@@ -293,6 +316,7 @@ public class GameController : MonoBehaviour
         specialBlockChanceAdd = RunModsStore.SpecialBlockChanceAdd;
 
         pieceGravityMult = RunModsStore.PieceGravityMult;
+        fallRampRateMult = RunModsStore.FallRampRateMult;
 
         monsterDamageMult = RunModsStore.MonsterDamageMult;
         monsterSpecialGainMult = RunModsStore.MonsterSpecialGainMult;
@@ -385,6 +409,7 @@ public class GameController : MonoBehaviour
         piece.SetMonsters(mons);
         piece.enabled = true;
         piece.SpawnAtTop();
+        piece.SetFallInterval(GetCurrentFallInterval(), resetAccumulator: true);
 
         // Keep bags topped and refresh preview after consuming one
         EnsureMinBag(3);
@@ -593,6 +618,18 @@ public class GameController : MonoBehaviour
         levelWon = false;
         winQueued = false;
 
+        // Only apply level-start logic once per level (InitLevel can be called more than once)
+        if (levelIndex != _lastLevelInitialized)
+        {
+            _lastLevelInitialized = levelIndex;
+
+            // After each level, reset the timer and make the NEXT level start slightly faster
+            if (levelIndex > 0)
+                startFallInterval *= startFallIntervalMultPerLevel;
+
+            ResetLevelTimerAndDrop();
+        }
+
         CastleData data = null;
         if (castlesByLevel != null && levelIndex >= 0 && levelIndex < castlesByLevel.Length)
             data = castlesByLevel[levelIndex];
@@ -640,6 +677,15 @@ public class GameController : MonoBehaviour
         if (nextPreview) nextPreview.ClearPreview();
 
         currentLevel++;
+
+        int roundsWon = currentLevel;
+
+        // +5 every round, plus +5 more for each completed set of 3 rounds
+        int bonusSteps = roundsWon / 3;
+        float misfortuneGain = 5f + (5f * bonusSteps);
+
+        misfortune += misfortuneGain;
+        RunModsStore.Misfortune = misfortune;     // keep store in sync if your UI reads from it
 
         int gained = GetRoundWinCurrency();
 
@@ -1386,10 +1432,41 @@ public class GameController : MonoBehaviour
         return Mathf.Max(0, Mathf.RoundToInt(raw)); // Round and clamp
     }
 
+    // ================ Level Timer and Fall Interval System ===================
+
+    void ResetLevelTimerAndDrop()
+    {
+        _levelTimer = 0f;
+        _thisLevelStartInterval = startFallInterval;
+        UpdateLevelTimerUI();
+    }
+
+    // current fall interval for “right now” in this level
+    float GetCurrentFallInterval()
+    {
+        // During the level, the interval shrinks over time => drops faster.
+        float ramp = fallIntervalDecreasePerSecond * Mathf.Max(0f, fallRampRateMult);
+        float interval = _thisLevelStartInterval - (_levelTimer * ramp);
+
+        // Apply your existing gravity modifier ( >1 = faster, <1 = slower )
+        interval /= Mathf.Max(0.01f, pieceGravityMult);
+
+        return Mathf.Max(minFallInterval, interval);
+    }
+
+    void UpdateLevelTimerUI()
+    {
+        if (!levelTimerText) return;
+
+        int mins = Mathf.FloorToInt(_levelTimer / 60f);
+        int secs = Mathf.FloorToInt(_levelTimer % 60f);
+        levelTimerText.text = $"{mins:00}:{secs:00}";
+    }
+
     // ================== Helper/Utility ==================
     Vector2 BoardRightGutterY(int rowY, float marginCells = 0.6f)
     {
-        // y from the row's cell center:
+        // y from the row's cell center
         float y = gameBoard.CellToAnchoredPos(new Vector2Int(0, rowY)).y;
 
         // x = right edge of grid + margin
