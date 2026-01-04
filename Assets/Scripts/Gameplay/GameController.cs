@@ -18,6 +18,10 @@ public class GameController : MonoBehaviour
     public CastleData[] castlesByLevel;
     int currentLevel = 0;
 
+    [Header("Round Win Audio")]
+    public AudioClip roundWinClip;
+    [Range(0f, 1f)] public float roundWinClipVolume = 1f;
+
     [Header("Drop Speed Progression")]
     [SerializeField] TMP_Text levelTimerText;      // assign in inspector (UI text on board)
     [SerializeField] float startFallInterval = 1.0f; // seconds between drops at level 1 (before gravity mult)
@@ -51,6 +55,7 @@ public class GameController : MonoBehaviour
     [Header("Player")]
     public UnityEngine.UI.Image playerPortrait;
     public TMPro.TMP_Text playerName;
+    [SerializeField] private UnityEngine.UI.Image playerBorder;
 
     [Header("Characters")]
     public PlayerCharacterData selectedCharacter;   // set this in the inspector, or via a select UI
@@ -149,6 +154,7 @@ public class GameController : MonoBehaviour
     public TMP_Text levelText;
 
     public int CurrentLevel => currentLevel;
+    public bool IsRoundActive => !isPaused && !gameOver && !levelWon;
 
     private CastleData currentCastleData;
 
@@ -187,6 +193,8 @@ public class GameController : MonoBehaviour
         {
             if (playerPortrait && selectedCharacter.portrait)
                 playerPortrait.sprite = selectedCharacter.portrait;
+            if (playerBorder && selectedCharacter.defaultBorder)
+                playerBorder.sprite = selectedCharacter.defaultBorder;
             if (playerName)
                 playerName.text = selectedCharacter.displayName;
         }
@@ -674,6 +682,14 @@ public class GameController : MonoBehaviour
         if (gameOver || levelWon) return;
         levelWon = true;
 
+        // Stop ongoing music/loop as soon as the round ends
+        if (AudioManager.I)
+        {
+            AudioManager.I.StopMusic(); // if your AudioManager uses a different method name, use that
+            if (roundWinClip)
+                AudioManager.I.PlaySFX(roundWinClip, roundWinClipVolume); // or PlaySFX(roundWinClip) if that's your signature
+        }
+
         if (nextPreview) nextPreview.ClearPreview();
 
         currentLevel++;
@@ -877,6 +893,10 @@ public class GameController : MonoBehaviour
         {
             if (playerPortrait && selectedCharacter.portrait)
                 playerPortrait.sprite = selectedCharacter.portrait;
+
+            if (playerBorder)
+                playerBorder.sprite = selectedCharacter.defaultBorder;
+
             if (playerName)
                 playerName.text = selectedCharacter.displayName;
         }

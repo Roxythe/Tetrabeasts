@@ -14,8 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterData
   displayName: Xel
   portrait: {fileID: -7843522028858346092, guid: edb7ad196a90bc8468a180ac5f46902e, type: 3}
+  defaultBorder: {fileID: 5534120206350630683, guid: e25362440f445c24882ab915496da119, type: 3}
   specialDescription: TBA
+  startsLocked: 1
+  unlockCost: 50
   ability: 0
   clearRows: 3
   cooldownSeconds: 0
   specialGaugeMax: 100
+  reviveAllVFXSprite: {fileID: 0}
+  sfxRestoreAll: {fileID: 0}
+  immunityDuration: 5
+  sfxImmunityOn: {fileID: 0}
+  sfxImmunityWarn: {fileID: 0}
+  sfxImmunityOff: {fileID: 0}

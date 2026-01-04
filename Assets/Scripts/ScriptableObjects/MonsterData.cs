@@ -8,6 +8,10 @@ public class MonsterData : ScriptableObject
     public Sprite portrait;
     public string monsterDescription;
 
+    [Header("Unlock")]
+    public bool startsLocked = false;
+    public int unlockCost = 10;
+
     [Header("Stats")]
     public float maxHealth = 1.0f; // Maximum health of the tile monster
     public float minHealth;

@@ -14,7 +14,12 @@ public class PlayerCharacterData : ScriptableObject
     [Header("Identity")]
     public string displayName = "Alyx";
     public Sprite portrait;
+    public Sprite defaultBorder;
     public string specialDescription;
+
+    [Header("Unlock")]
+    public bool startsLocked = false;
+    public int unlockCost = 10;
 
     [Header("Special")]
     public SpecialAbility ability = SpecialAbility.ClearBottomRows;

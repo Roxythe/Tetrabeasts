@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterData
   displayName: Grol
   portrait: {fileID: -7301860725011293664, guid: 557d5743c08a59d4e91513d92657dc80, type: 3}
+  defaultBorder: {fileID: -8134823479260487528, guid: 5c8bb2b486ca8ca4bb749ef4fad17337, type: 3}
   specialDescription: Tiles become immune to damage for 12 seconds.
+  startsLocked: 1
+  unlockCost: 40
   ability: 2
   clearRows: 3
   cooldownSeconds: 0

@@ -30,6 +30,7 @@ public class Board : MonoBehaviour
     public enum DamageSource { Generic, CastleProjectile } // for SFX differentiation
 
     // runtime
+    GameController _gc;
     RectTransform boardRect;         // the GameBoard panel
     Vector2 cellSize;            // size of one (square) cell in pixels
     Vector2 contentSize;         // total pixel size actually used by the grid (width*cell, height*cell)
@@ -200,6 +201,7 @@ public class Board : MonoBehaviour
     void Awake()
     {
         boardRect = GetComponent<RectTransform>();
+        _gc = FindFirstObjectByType<GameController>();
 
         // Always isolate spawned tiles/lines under a dedicated child of THIS Board
         if (!gridRoot || gridRoot.transform.parent != transform)
@@ -222,9 +224,10 @@ public class Board : MonoBehaviour
         // Healers pulse over time
         if (monsters.Count == 0 || healTimers.Count == 0) return;
 
-        var gc = FindFirstObjectByType<GameController>();
-        float healMult = (gc != null) ? gc.healPowerMult : 1f;
-        int rangeAdd = (gc != null) ? gc.healRangeAdd : 0;
+        if (_gc && !_gc.IsRoundActive) return; // No healing outside active rounds
+
+        float healMult = (_gc != null) ? _gc.healPowerMult : 1f;
+        int rangeAdd = (_gc != null) ? _gc.healRangeAdd : 0;
 
         var toKeys = new List<Vector2Int>(healTimers.Keys);
         foreach (var k in toKeys)

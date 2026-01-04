@@ -494,7 +494,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -4337318997203435395, guid: 0b6ed9acc06146e4bb0103810912d48b, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1635,7 +1635,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '%'
+  m_text: 100%
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6006,8 +6006,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 5534120206350630683, guid: e25362440f445c24882ab915496da119, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -6460,6 +6460,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 347f97c862e224641898291b159f0743, type: 2}
   - {fileID: 11400000, guid: e3344096f4bcc724c9a2efed9ccedc29, type: 2}
   - {fileID: 11400000, guid: fcd660acd77e3bf4c80a70c0f8d77d7a, type: 2}
+  roundWinClip: {fileID: 8300000, guid: 6efb33eb677e285438a67905542f871f, type: 3}
+  roundWinClipVolume: 1
   levelTimerText: {fileID: 754422045}
   startFallInterval: 1
   minFallInterval: 0.1
@@ -6609,6 +6611,7 @@ MonoBehaviour:
   closeRunModsButton: {fileID: 565378670}
   playerPortrait: {fileID: 73739976}
   playerName: {fileID: 458098584}
+  playerBorder: {fileID: 1936983063}
   selectedCharacter: {fileID: 0}
   roster: []
   fallbackMonsters:
@@ -6940,11 +6943,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 640
+      value: 750
       objectReference: {fileID: 0}
     - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 407.5
+      value: 475
       objectReference: {fileID: 0}
     - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

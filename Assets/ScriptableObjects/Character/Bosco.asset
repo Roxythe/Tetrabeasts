@@ -14,8 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterData
   displayName: Bosco
   portrait: {fileID: -5746821224976465101, guid: e84b3d9040ace1b46b20e1d35cbd036b, type: 3}
+  defaultBorder: {fileID: -8959656473859090931, guid: 986885f1f4df3a641bdf64e2c1cb2727, type: 3}
   specialDescription: Clear all tiles from the bottom 3 rows.
+  startsLocked: 1
+  unlockCost: 30
   ability: 0
   clearRows: 3
   cooldownSeconds: 0
   specialGaugeMax: 100
+  reviveAllVFXSprite: {fileID: 0}
+  sfxRestoreAll: {fileID: 0}
+  immunityDuration: 5
+  sfxImmunityOn: {fileID: 0}
+  sfxImmunityWarn: {fileID: 0}
+  sfxImmunityOff: {fileID: 0}

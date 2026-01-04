@@ -154,7 +154,18 @@ public class RoundRewardUI : MonoBehaviour
         return (int)r; // Common=0 .. Legendary=4
     }
 
-    RunModifierSO PickByRarityCurve(RunModifierSO[] pool, float luck, HashSet<RunModifierSO> exclude)
+    string GetGroupKey(RunModifierSO so)
+    {
+        // If it's your RunModifier type, group by the "effect identity"
+        if (so is RunModifier rm)
+            return $"{rm.stat}:{rm.op}";
+
+        // Fallback for any other RunModifierSO types:
+        return string.IsNullOrEmpty(so.displayName) ? so.name : so.displayName;
+    }
+
+    RunModifierSO PickByRarityCurve(RunModifierSO[] pool, float luck, HashSet<RunModifierSO> excludeAssets,
+                                    HashSet<string> excludeGroups)
     {
         if (pool == null || pool.Length == 0) return null;
 
@@ -166,7 +177,14 @@ public class RoundRewardUI : MonoBehaviour
         {
             var so = pool[i];
             if (!so) continue;
-            if (exclude != null && exclude.Contains(so)) continue;
+            if (excludeAssets != null && excludeAssets.Contains(so)) continue;
+
+            // NEW: prevent same effect-group showing multiple rarities in the same round
+            if (excludeGroups != null)
+            {
+                string key = GetGroupKey(so);
+                if (excludeGroups.Contains(key)) continue;
+            }
 
             int idx = RarityIndex(GetRarity(so));
             idx = Mathf.Clamp(idx, 0, 4);
@@ -203,16 +221,18 @@ public class RoundRewardUI : MonoBehaviour
     List<RunModifierSO> Pick3UniqueWeighted(RunModifierSO[] pool, float skew)
     {
         var results = new List<RunModifierSO>(3);
-        var used = new HashSet<RunModifierSO>();
+        var usedAssets = new HashSet<RunModifierSO>();
+        var usedGroups = new HashSet<string>();
 
         int safety = 100;
         while (results.Count < 3 && safety-- > 0)
         {
-            var pick = PickByRarityCurve(pool, skew, used);
+            var pick = PickByRarityCurve(pool, skew, usedAssets, usedGroups);
             if (!pick) break;
 
             results.Add(pick);
-            used.Add(pick);
+            usedAssets.Add(pick);
+            usedGroups.Add(GetGroupKey(pick));
         }
 
         return results;

@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterData
   displayName: Elise
   portrait: {fileID: -4337318997203435395, guid: 0b6ed9acc06146e4bb0103810912d48b, type: 3}
+  defaultBorder: {fileID: -4219142061602393782, guid: 0612e3136a37f4c4b9ff584bbe075938, type: 3}
   specialDescription: Heal all tiles back to full health
+  startsLocked: 0
+  unlockCost: 10
   ability: 1
   clearRows: 3
   cooldownSeconds: 0

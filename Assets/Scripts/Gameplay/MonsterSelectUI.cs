@@ -17,6 +17,7 @@ public class MonsterSelectUI : MonoBehaviour
     public TMP_Text previewStatText;             // Preview/PreviewStatText
     public TMP_Text counterText;                 // e.g., "Selected: 2 / 4"
     public Button startButton;                   // optional: disable until valid (2..4)
+    public CurrencyUI currencyUI;
 
     // runtime
     readonly Dictionary<MonsterData, Button> buttons = new();
@@ -28,6 +29,8 @@ public class MonsterSelectUI : MonoBehaviour
     [Header("Audio")]
     public AudioClip selectSFX;
     public AudioClip hoverSFX;
+    public AudioClip unlockSFX;
+    public AudioClip errorSFX;
 
     void Awake()
     {
@@ -73,8 +76,58 @@ public class MonsterSelectUI : MonoBehaviour
             if (txt) txt.text = md.monsterName;
             if (img && md.portrait) img.sprite = md.portrait;
 
+            bool unlocked = UnlockStore.IsUnlocked(md);
+
+            var lockedImgT = FindDeep(btn.transform, "Locked_Image");
+            if (lockedImgT) lockedImgT.gameObject.SetActive(!unlocked);
+
+            var unlockBtnT = FindDeep(btn.transform, "Unlock_Button");
+            var unlockBtn = unlockBtnT ? unlockBtnT.GetComponent<Button>() : null;
+            if (unlockBtnT) unlockBtnT.gameObject.SetActive(!unlocked);
+
+            // Prevent selecting locked monsters
             var captured = md; // closure
-            btn.onClick.AddListener(() => ToggleSelect(captured));
+            btn.interactable = true; // always clickable so we can play error SFX
+            btn.onClick.AddListener(() =>
+            {
+                if (!UnlockStore.IsUnlocked(captured))
+                {
+                    if (AudioManager.I && errorSFX) AudioManager.I.PlaySFX(errorSFX);
+                    return;
+                }
+                ToggleSelect(captured);
+            });
+
+            // Set cost text
+            var costTextT = unlockBtnT ? FindDeep(unlockBtnT, "Cur_Text (TMP)") : null;
+            var costText = costTextT ? costTextT.GetComponent<TMPro.TMP_Text>() : null;
+            if (costText) costText.text = $"x{md.unlockCost}";
+
+            if (unlockBtn)
+            {
+                unlockBtn.onClick.RemoveAllListeners();
+                unlockBtn.onClick.AddListener(() =>
+                {
+                    if (CurrencyStore.Total < md.unlockCost)
+                    {
+                        if (AudioManager.I && errorSFX)
+                            AudioManager.I.PlaySFX(errorSFX);
+                        return;
+                    }
+
+                    CurrencyStore.Add(-md.unlockCost);  // spend
+                    currencyUI?.Refresh();
+                    UnlockStore.Unlock(md);
+
+                    if (AudioManager.I && unlockSFX)
+                        AudioManager.I.PlaySFX(unlockSFX);
+
+                    // Update visuals immediately
+                    if (lockedImgT) lockedImgT.gameObject.SetActive(false);
+                    unlockBtnT.gameObject.SetActive(false);
+                    btn.interactable = true;
+                });
+            }
 
             // show details on hover/click (optional: click already handled above)
             var evt = btn.gameObject.AddComponent<UnityEngine.EventSystems.EventTrigger>();
@@ -115,7 +168,9 @@ public class MonsterSelectUI : MonoBehaviour
             }
             else
             {
-                // Optional: play a "bump" SFX or flash the counter
+                if (AudioManager.I && errorSFX)
+                    AudioManager.I.PlaySFX(errorSFX);
+                return; // don't play selectSFX / don't refresh
             }
         }
 
@@ -126,7 +181,6 @@ public class MonsterSelectUI : MonoBehaviour
         SelectedMonstersStore.Active = new List<MonsterData>(selected);
         RefreshAllUI();
     }
-
 
     void SeedDefaultsIfNeeded()
     {
@@ -233,6 +287,14 @@ public class MonsterSelectUI : MonoBehaviour
         SelectedMonstersStore.SaveNames(SelectedMonstersStore.Active); // Persist to PlayerPrefs
         RefreshAllUI();
         gameObject.SetActive(false);
+    }
+
+    static Transform FindDeep(Transform root, string name)
+    {
+        if (!root) return null;
+        foreach (Transform t in root.GetComponentsInChildren<Transform>(true))
+            if (t.name == name) return t;
+        return null;
     }
 
 }
