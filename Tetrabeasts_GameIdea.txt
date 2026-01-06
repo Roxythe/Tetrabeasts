@@ -9,6 +9,11 @@
 
 - Add locks to characters, monsters, and skins (for monsters, board/grid, and borders)
 
+- Increase grid size vertical +1 every 2nd round, increase grid size +1 horizontal every 3rd round accumulating throughout the run. Reset grid back to base size dimension on game start and restart.
+
+- Add boss fight mechanics and abilities
+
+- Add field obstacles (stone statues that obstruct bottom rows), poisioned/burning tiles that damage monsters in that space over time.
 
 Possible new loss condition - add limited count of total monster pieces, so when a monster dies it stays dead when a new piece is made with the same monster type. Exact same piece unnescessary, just keep track of total living monster groupings
 
