@@ -13,8 +13,17 @@ MonoBehaviour:
   m_Name: Celest
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   monsterName: Celest
-  portrait: {fileID: 21300000, guid: 8f69e6099d0cdfc48b0ca6d892164b68, type: 3}
+  portrait: {fileID: 21300000, guid: 60f3ffd19b40baf448ca7916afe71fe3, type: 3}
   monsterDescription: Healer with a large range but weak spells
+  startsLocked: 0
+  unlockCost: 10
+  skinPortraits:
+  - {fileID: 21300000, guid: 60f3ffd19b40baf448ca7916afe71fe3, type: 3}
+  - {fileID: 21300000, guid: 52b2dffc27523224ea269431cc031073, type: 3}
+  - {fileID: 21300000, guid: 08e65760392897341833d88789b7e504, type: 3}
+  - {fileID: 21300000, guid: 2d6cee189529f4046bd754c9284bb26b, type: 3}
+  - {fileID: 21300000, guid: 2051a6f0d7be5e54f8cca6824bf2df54, type: 3}
+  skinCosts: 00000000140000001e0000002800000032000000
   maxHealth: 1
   minHealth: 0
   currentHealth: 1
@@ -37,8 +46,3 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 41b3f34a39795c945a3ba5cc14bb02b9, type: 3}
   - {fileID: 8300000, guid: e93d0aeabb7cc5d4d8b70ff71393aaf2, type: 3}
   - {fileID: 8300000, guid: ebbc786614ed4ce40a6c4b8dd7150231, type: 3}
-  sfxHurt: {fileID: 8300000, guid: fccb4318ede48ff4db14c0d040030810, type: 3}
-  sfxHurtClips:
-  - {fileID: 8300000, guid: fccb4318ede48ff4db14c0d040030810, type: 3}
-  - {fileID: 8300000, guid: 6bf402a552edcc24291e706965866709, type: 3}
-  - {fileID: 8300000, guid: 23223cee22f6a6c4caceff40d1bcd1e6, type: 3}

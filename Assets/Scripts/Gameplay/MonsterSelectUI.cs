@@ -19,6 +19,14 @@ public class MonsterSelectUI : MonoBehaviour
     public Button startButton;                   // optional: disable until valid (2..4)
     public CurrencyUI currencyUI;
 
+    MonsterData previewMonster;
+    int previewSkinIndex = 0; // the skin currently being previewed (can be locked)
+
+    [Header("Preview Unlock UI")]
+    public Button previewUnlockButton;
+    public TMP_Text previewUnlockCostText;
+    public GameObject previewLockedImage; // optional overlay to show "locked"
+
     // runtime
     readonly Dictionary<MonsterData, Button> buttons = new();
     readonly HashSet<MonsterData> selected = new();
@@ -74,7 +82,7 @@ public class MonsterSelectUI : MonoBehaviour
             var img = btn.GetComponentInChildren<Image>();
 
             if (txt) txt.text = md.monsterName;
-            if (img && md.portrait) img.sprite = md.portrait;
+            if (img) img.sprite = MonsterSkinStore.GetPortrait(md, MonsterSkinStore.GetValidSelected(md));
 
             bool unlocked = UnlockStore.IsUnlocked(md);
 
@@ -137,13 +145,15 @@ public class MonsterSelectUI : MonoBehaviour
             {
                 eventID = UnityEngine.EventSystems.EventTriggerType.PointerEnter
             };
-            enter.callback.AddListener(_ => {
-                ShowPreview(captured);
-                if (AudioManager.I && hoverSFX) AudioManager.I.PlaySFX(hoverSFX);
+
+            enter.callback.AddListener(_ => 
+            {
+                if (AudioManager.I && hoverSFX) AudioManager.I.PlaySFX(hoverSFX); // play hover SFX
             });
             evt.triggers.Add(enter);
 
             buttons[captured] = btn;
+            SetupSkinButtons(btn, md);
             SetButtonHighlight(btn, false); // default off; we’ll enable for selected later
         }
     }
@@ -216,9 +226,22 @@ public class MonsterSelectUI : MonoBehaviour
         if (startButton)
             startButton.interactable = selected.Count >= MinSelect && selected.Count <= MaxSelect;
 
-        // Preview panel (show first selected or blank)
-        var first = GetAnySelected();
-        ShowPreview(first);
+        // Preview panel
+        if (previewMonster != null)
+            ShowPreview(previewMonster, previewSkinIndex); // keep what user is previewing
+        else
+            ShowPreview(GetAnySelected());
+
+        // Update all portraits to reflect current committed skin selection
+        foreach (var kv in buttons)
+        {
+            // update main portrait to valid skin
+            var img = kv.Value.GetComponentInChildren<Image>();
+            if (img) img.sprite = MonsterSkinStore.GetPortrait(kv.Key, MonsterSkinStore.GetValidSelected(kv.Key));
+
+            ApplyVariantOpacity(kv.Value, kv.Key);
+            ApplyVariantLockVisuals(kv.Value, kv.Key);
+        }
     }
 
     MonsterData GetAnySelected()
@@ -229,18 +252,33 @@ public class MonsterSelectUI : MonoBehaviour
 
     void ShowPreview(MonsterData md)
     {
-        if (!md)
-        {
-            if (previewImage) previewImage.sprite = null;
-            if (previewNameText) previewNameText.text = "";
-            if (previewStatText) previewStatText.text = "";
-            return;
-        }
+        // default behavior: show committed safe skin
+        if (!md) { ClearPreview(); return; }
 
-        if (previewImage && md.portrait) previewImage.sprite = md.portrait;
+        int idx = MonsterSkinStore.GetValidSelected(md);
+        previewMonster = md;
+        previewSkinIndex = idx;
+        ShowPreview(md, idx);
+    }
+
+    void ShowPreview(MonsterData md, int skinIdx)
+    {
+        if (!md) { ClearPreview(); return; }
+
+        if (previewImage)
+            previewImage.sprite = MonsterSkinStore.GetPortrait(md, skinIdx);
+
         if (previewNameText) previewNameText.text = md.monsterName;
-        if (previewStatText)
-            previewStatText.text = md.monsterDescription; // your “stat information” string
+        if (previewStatText) previewStatText.text = md.monsterDescription;
+
+        SetupPreviewUnlockUI(md, skinIdx);
+    }
+
+    void ClearPreview()
+    {
+        if (previewImage) previewImage.sprite = null;
+        if (previewNameText) previewNameText.text = "";
+        if (previewStatText) previewStatText.text = "";
     }
 
     void SetButtonHighlight(Button btn, bool on)
@@ -268,7 +306,6 @@ public class MonsterSelectUI : MonoBehaviour
             es.SetSelectedGameObject(null);
     }
 
-
     public void ConfirmAndClose()
     {
         // Ensure at least MinSelect by auto-filling from roster order
@@ -280,6 +317,13 @@ public class MonsterSelectUI : MonoBehaviour
                 if (md != null && !selected.Contains(md))
                     selected.Add(md);
             }
+        }
+
+        foreach (var md in selected)
+        {
+            // If selected skin is invalid/locked, force fallback to last valid or default
+            int valid = MonsterSkinStore.GetValidSelected(md);
+            MonsterSkinStore.SetSelectedAndLastValid(md, valid);
         }
 
         // Persist & refresh one last time, then hide panel
@@ -295,6 +339,137 @@ public class MonsterSelectUI : MonoBehaviour
         foreach (Transform t in root.GetComponentsInChildren<Transform>(true))
             if (t.name == name) return t;
         return null;
+    }
+
+    void SetupSkinButtons(Button monsterBtn, MonsterData md)
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            int idx = i;
+
+            var t = FindDeep(monsterBtn.transform, $"SkinVariant_Button{idx}");
+            if (!t) continue;
+
+            var b = t.GetComponent<Button>();
+            if (!b) continue;
+
+            
+            var icon = t.GetComponent<Image>(); // Prefer an Image directly on SkinVariant_ButtonX
+
+            // Optional fallback if a dedicated child image is added later
+            if (!icon)
+            {
+                var iconT = FindDeep(t, "Icon_Image"); // look for child named "Icon_Image"
+                icon = iconT ? iconT.GetComponent<Image>() : null;
+            }
+
+            if (icon)
+                icon.sprite = MonsterSkinStore.GetPortrait(md, idx);
+
+            b.onClick.RemoveAllListeners();
+            b.onClick.AddListener(() =>
+            {
+                // If monster itself is locked, do nothing but error sound
+                if (!UnlockStore.IsUnlocked(md))
+                {
+                    if (AudioManager.I && errorSFX) AudioManager.I.PlaySFX(errorSFX);
+                    return;
+                }
+
+                previewMonster = md;
+                previewSkinIndex = idx;
+
+                // Show preview using that skin (even if locked)
+                ShowPreview(md, idx);
+
+                // If the skin is already unlocked, commit selection immediately
+                if (MonsterSkinStore.IsUnlocked(md, idx))
+                {
+                    MonsterSkinStore.SetSelectedAndLastValid(md, idx);
+                    RefreshAllUI(); // will update list portrait + opacity states
+                }
+            });
+        }
+
+        ApplyVariantOpacity(monsterBtn, md);
+        ApplyVariantLockVisuals(monsterBtn, md);
+    }
+
+    void ApplyVariantOpacity(Button monsterBtn, MonsterData md)
+    {
+        int committed = MonsterSkinStore.GetValidSelected(md);
+
+        for (int i = 0; i < 5; i++)
+        {
+            var t = FindDeep(monsterBtn.transform, $"SkinVariant_Button{i}");
+            if (!t) continue;
+
+            var b = t.GetComponent<Button>();
+            if (!b) continue;
+
+            bool selected = (i == committed);
+            var colors = b.colors;
+            float a = selected ? 1f : 0.5f;
+            var c = new Color(1f, 1f, 1f, a);
+            colors.normalColor = c;
+            colors.highlightedColor = c;
+            colors.selectedColor = c;
+            colors.pressedColor = c;
+            b.colors = colors;
+        }
+    }
+
+    void SetupPreviewUnlockUI(MonsterData md, int skinIdx)
+    {
+        if (!previewUnlockButton) return;
+
+        bool unlocked = MonsterSkinStore.IsUnlocked(md, skinIdx);
+
+        // Default skin (0) is always unlocked -> hide unlock UI
+        bool showUnlock = !unlocked && skinIdx > 0;
+
+        previewUnlockButton.gameObject.SetActive(showUnlock);
+        if (previewLockedImage) previewLockedImage.SetActive(showUnlock);
+
+        if (!showUnlock) return;
+
+        int cost = MonsterSkinStore.GetCost(md, skinIdx);
+        if (previewUnlockCostText) previewUnlockCostText.text = $"x{cost}";
+
+        previewUnlockButton.onClick.RemoveAllListeners();
+        previewUnlockButton.onClick.AddListener(() =>
+        {
+            if (CurrencyStore.Total < cost)
+            {
+                if (AudioManager.I && errorSFX) AudioManager.I.PlaySFX(errorSFX);
+                return;
+            }
+
+            CurrencyStore.Add(-cost);
+            currencyUI?.Refresh();
+
+            MonsterSkinStore.Unlock(md, skinIdx);
+            MonsterSkinStore.SetSelectedAndLastValid(md, skinIdx); // commit after purchase
+
+            if (AudioManager.I && unlockSFX) AudioManager.I.PlaySFX(unlockSFX);
+
+            RefreshAllUI();
+            ShowPreview(md, skinIdx); // refresh preview to hide unlock button + keep skin displayed
+        });
+    }
+
+    void ApplyVariantLockVisuals(Button monsterBtn, MonsterData md)
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            var t = FindDeep(monsterBtn.transform, $"SkinVariant_Button{i}");
+            if (!t) continue;
+
+            bool unlocked = MonsterSkinStore.IsUnlocked(md, i);
+
+            var lockT = FindDeep(t, "Locked_Image");
+            if (lockT) lockT.gameObject.SetActive(!unlocked);
+        }
     }
 
 }

@@ -1,49 +1,37 @@
 fileFormatVersion: 2
-guid: d5e11407eb2f62149b1192c051abc4bf
+guid: dcf36f58d5e06dc4ca0c1a45481fd684
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6464568228531971279
-    second: EnemySprite1NBG_0
+      213: -5955511227862966647
+    second: UndineSprite_SilverVariant_0
   - first:
-      213: 2416943410148479091
-    second: EnemySprite1NBG_1
+      213: -1703708207013179230
+    second: UndineSprite_SilverVariant_1
   - first:
-      213: 2888992350746509695
-    second: EnemySprite1NBG_2
+      213: 9131519224684560457
+    second: UndineSprite_SilverVariant_2
   - first:
-      213: -3415729922384763785
-    second: EnemySprite1NBG_3
+      213: 3460808787027177945
+    second: UndineSprite_SilverVariant_3
   - first:
-      213: -8912750030336658064
-    second: EnemySprite1NBG_4
+      213: 6746734116023469537
+    second: UndineSprite_SilverVariant_4
   - first:
-      213: -5534661194026150186
-    second: EnemySprite1NBG_5
+      213: 6325153193251413908
+    second: UndineSprite_SilverVariant_5
   - first:
-      213: 3351617753277623773
-    second: EnemySprite1NBG_6
+      213: 8362129039208043236
+    second: UndineSprite_SilverVariant_6
   - first:
-      213: 5163703365311089771
-    second: EnemySprite1NBG_7
+      213: -6492343759185568558
+    second: UndineSprite_SilverVariant_7
   - first:
-      213: -7573278458811574283
-    second: EnemySprite1NBG_8
+      213: -4681921566673490814
+    second: UndineSprite_SilverVariant_8
   - first:
-      213: 5573855217151953549
-    second: EnemySprite1NBG_9
-  - first:
-      213: 589991582107769313
-    second: EnemySprite1NBG_10
-  - first:
-      213: -894073984625117721
-    second: EnemySprite1NBG_11
-  - first:
-      213: -7852274445738792811
-    second: EnemySprite1NBG_12
-  - first:
-      213: -7936570946452927890
-    second: EnemySprite1NBG_13
+      213: -6056338740724622667
+    second: UndineSprite_SilverVariant_9
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -178,255 +166,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: EnemySprite1NBG_0
+      name: UndineSprite_SilverVariant_0
       rect:
         serializedVersion: 2
-        x: 168
-        y: 230
-        width: 37
-        height: 28
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: fc4ace79d82c6b950800000000000000
-      internalID: 6464568228531971279
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: EnemySprite1NBG_1
-      rect:
-        serializedVersion: 2
-        x: 209
-        y: 3
-        width: 603
-        height: 992
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3701f1cd935ba8120800000000000000
-      internalID: 2416943410148479091
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: EnemySprite1NBG_2
-      rect:
-        serializedVersion: 2
-        x: 871
-        y: 238
-        width: 7
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f7101198c33c71820800000000000000
-      internalID: 2888992350746509695
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: EnemySprite1NBG_3
-      rect:
-        serializedVersion: 2
-        x: 190
-        y: 211
-        width: 14
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 774659f9bb3e890d0800000000000000
-      internalID: -3415729922384763785
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: EnemySprite1NBG_4
-      rect:
-        serializedVersion: 2
-        x: 115
-        y: 188
-        width: 18
-        height: 20
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0757ee5b11d8f4480800000000000000
-      internalID: -8912750030336658064
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: EnemySprite1NBG_5
-      rect:
-        serializedVersion: 2
-        x: 77
-        y: 120
-        width: 9
-        height: 20
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6d69ee9c7fee033b0800000000000000
-      internalID: -5534661194026150186
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: EnemySprite1NBG_6
-      rect:
-        serializedVersion: 2
-        x: 920
-        y: 135
-        width: 12
-        height: 10
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ddd6107c696538e20800000000000000
-      internalID: 3351617753277623773
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: EnemySprite1NBG_7
-      rect:
-        serializedVersion: 2
-        x: 200
-        y: 87
-        width: 9
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b6c4bde2ad829a740800000000000000
-      internalID: 5163703365311089771
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: EnemySprite1NBG_8
-      rect:
-        serializedVersion: 2
-        x: 821
-        y: 78
-        width: 17
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5f71b6ddd5f46e690800000000000000
-      internalID: -7573278458811574283
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: EnemySprite1NBG_9
-      rect:
-        serializedVersion: 2
-        x: 177
-        y: 66
-        width: 6
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d8accc7d9cf4a5d40800000000000000
-      internalID: 5573855217151953549
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: EnemySprite1NBG_10
-      rect:
-        serializedVersion: 2
-        x: 42
-        y: 22
-        width: 65
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 1e91100d732103800800000000000000
-      internalID: 589991582107769313
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: EnemySprite1NBG_11
-      rect:
-        serializedVersion: 2
-        x: 850
+        x: 17
         y: 0
-        width: 147
-        height: 27
+        width: 934
+        height: 1001
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -435,19 +181,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7e5708fa27c9793f0800000000000000
-      internalID: -894073984625117721
+      spriteID: 98e90678716c95da0800000000000000
+      internalID: -5955511227862966647
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: EnemySprite1NBG_12
+      name: UndineSprite_SilverVariant_1
       rect:
         serializedVersion: 2
-        x: 161
-        y: 0
-        width: 176
+        x: 951
+        y: 915
+        width: 10
         height: 13
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -457,20 +203,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 598acd6aefd170390800000000000000
-      internalID: -7852274445738792811
+      spriteID: 2a0df0099663b58e0800000000000000
+      internalID: -1703708207013179230
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: EnemySprite1NBG_13
+      name: UndineSprite_SilverVariant_2
       rect:
         serializedVersion: 2
-        x: 699
-        y: 0
-        width: 33
-        height: 15
+        x: 937
+        y: 882
+        width: 9
+        height: 7
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -479,8 +225,162 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e6accf126c2abd190800000000000000
-      internalID: -7936570946452927890
+      spriteID: 94049fe9a5ca9be70800000000000000
+      internalID: 9131519224684560457
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_SilverVariant_3
+      rect:
+        serializedVersion: 2
+        x: 968
+        y: 886
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d13e427143470030800000000000000
+      internalID: 3460808787027177945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_SilverVariant_4
+      rect:
+        serializedVersion: 2
+        x: 949
+        y: 854
+        width: 29
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e5869bcee631ad50800000000000000
+      internalID: 6746734116023469537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_SilverVariant_5
+      rect:
+        serializedVersion: 2
+        x: 957
+        y: 830
+        width: 37
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49f9da1315577c750800000000000000
+      internalID: 6325153193251413908
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_SilverVariant_6
+      rect:
+        serializedVersion: 2
+        x: 957
+        y: 807
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e259f38e004c0470800000000000000
+      internalID: 8362129039208043236
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_SilverVariant_7
+      rect:
+        serializedVersion: 2
+        x: 935
+        y: 744
+        width: 19
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2dc150abfbf86e5a0800000000000000
+      internalID: -6492343759185568558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_SilverVariant_8
+      rect:
+        serializedVersion: 2
+        x: 961
+        y: 751
+        width: 10
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28caf281429760fb0800000000000000
+      internalID: -4681921566673490814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_SilverVariant_9
+      rect:
+        serializedVersion: 2
+        x: 695
+        y: 9
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ba1cafc00093fba0800000000000000
+      internalID: -6056338740724622667
       vertices: []
       indices: 
       edges: []
@@ -499,20 +399,16 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      EnemySprite1NBG_0: 6464568228531971279
-      EnemySprite1NBG_1: 2416943410148479091
-      EnemySprite1NBG_10: 589991582107769313
-      EnemySprite1NBG_11: -894073984625117721
-      EnemySprite1NBG_12: -7852274445738792811
-      EnemySprite1NBG_13: -7936570946452927890
-      EnemySprite1NBG_2: 2888992350746509695
-      EnemySprite1NBG_3: -3415729922384763785
-      EnemySprite1NBG_4: -8912750030336658064
-      EnemySprite1NBG_5: -5534661194026150186
-      EnemySprite1NBG_6: 3351617753277623773
-      EnemySprite1NBG_7: 5163703365311089771
-      EnemySprite1NBG_8: -7573278458811574283
-      EnemySprite1NBG_9: 5573855217151953549
+      UndineSprite_SilverVariant_0: -5955511227862966647
+      UndineSprite_SilverVariant_1: -1703708207013179230
+      UndineSprite_SilverVariant_2: 9131519224684560457
+      UndineSprite_SilverVariant_3: 3460808787027177945
+      UndineSprite_SilverVariant_4: 6746734116023469537
+      UndineSprite_SilverVariant_5: 6325153193251413908
+      UndineSprite_SilverVariant_6: 8362129039208043236
+      UndineSprite_SilverVariant_7: -6492343759185568558
+      UndineSprite_SilverVariant_8: -4681921566673490814
+      UndineSprite_SilverVariant_9: -6056338740724622667
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

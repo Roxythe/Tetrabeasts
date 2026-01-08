@@ -1,0 +1,520 @@
+fileFormatVersion: 2
+guid: 8c39dd6b441013e44919f6aebc59f9bd
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -810518601471656931
+    second: VixenSprite1_BlueVariant_0
+  - first:
+      213: 6414948206607635534
+    second: VixenSprite1_BlueVariant_1
+  - first:
+      213: -4469298336797475719
+    second: VixenSprite1_BlueVariant_2
+  - first:
+      213: -1458291901670831299
+    second: VixenSprite1_BlueVariant_3
+  - first:
+      213: 2995420184676415289
+    second: VixenSprite1_BlueVariant_4
+  - first:
+      213: -8053789661888987661
+    second: VixenSprite1_BlueVariant_5
+  - first:
+      213: 6718863057891817064
+    second: VixenSprite1_BlueVariant_6
+  - first:
+      213: -3282396282299586263
+    second: VixenSprite1_BlueVariant_7
+  - first:
+      213: 5093848419701810260
+    second: VixenSprite1_BlueVariant_8
+  - first:
+      213: -6803924044333271325
+    second: VixenSprite1_BlueVariant_9
+  - first:
+      213: 2092216263484821816
+    second: VixenSprite1_BlueVariant_10
+  - first:
+      213: -9146525208075580506
+    second: VixenSprite1_BlueVariant_11
+  - first:
+      213: -6856167084183016984
+    second: VixenSprite1_BlueVariant_12
+  - first:
+      213: -8488531712998667640
+    second: VixenSprite1_BlueVariant_13
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: VixenSprite1_BlueVariant_0
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 230
+        width: 37
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1c7f6350a570c4f0800000000000000
+      internalID: -810518601471656931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_BlueVariant_1
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 3
+        width: 603
+        height: 992
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e449063f769760950800000000000000
+      internalID: 6414948206607635534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_BlueVariant_2
+      rect:
+        serializedVersion: 2
+        x: 871
+        y: 238
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97c31ff87dcd9f1c0800000000000000
+      internalID: -4469298336797475719
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_BlueVariant_3
+      rect:
+        serializedVersion: 2
+        x: 190
+        y: 211
+        width: 14
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3bc416ed3b13cbe0800000000000000
+      internalID: -1458291901670831299
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_BlueVariant_4
+      rect:
+        serializedVersion: 2
+        x: 115
+        y: 188
+        width: 18
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9373cac99ced19920800000000000000
+      internalID: 2995420184676415289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_BlueVariant_5
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 120
+        width: 9
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fdb46b29f03b3090800000000000000
+      internalID: -8053789661888987661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_BlueVariant_6
+      rect:
+        serializedVersion: 2
+        x: 920
+        y: 135
+        width: 12
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 866f2246a523e3d50800000000000000
+      internalID: 6718863057891817064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_BlueVariant_7
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 87
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 929687dd8f59272d0800000000000000
+      internalID: -3282396282299586263
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_BlueVariant_8
+      rect:
+        serializedVersion: 2
+        x: 821
+        y: 78
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 454e20c362cf0b640800000000000000
+      internalID: 5093848419701810260
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_BlueVariant_9
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 66
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e6b6c2612b9391a0800000000000000
+      internalID: -6803924044333271325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_BlueVariant_10
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 22
+        width: 65
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 831de4a4b9b090d10800000000000000
+      internalID: 2092216263484821816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_BlueVariant_11
+      rect:
+        serializedVersion: 2
+        x: 850
+        y: 0
+        width: 147
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6abcf7b98c3011180800000000000000
+      internalID: -9146525208075580506
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_BlueVariant_12
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 0
+        width: 176
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e9ab8acc500ad0a0800000000000000
+      internalID: -6856167084183016984
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_BlueVariant_13
+      rect:
+        serializedVersion: 2
+        x: 699
+        y: 0
+        width: 33
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88a8316916da23a80800000000000000
+      internalID: -8488531712998667640
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      VixenSprite1_BlueVariant_0: -810518601471656931
+      VixenSprite1_BlueVariant_1: 6414948206607635534
+      VixenSprite1_BlueVariant_10: 2092216263484821816
+      VixenSprite1_BlueVariant_11: -9146525208075580506
+      VixenSprite1_BlueVariant_12: -6856167084183016984
+      VixenSprite1_BlueVariant_13: -8488531712998667640
+      VixenSprite1_BlueVariant_2: -4469298336797475719
+      VixenSprite1_BlueVariant_3: -1458291901670831299
+      VixenSprite1_BlueVariant_4: 2995420184676415289
+      VixenSprite1_BlueVariant_5: -8053789661888987661
+      VixenSprite1_BlueVariant_6: 6718863057891817064
+      VixenSprite1_BlueVariant_7: -3282396282299586263
+      VixenSprite1_BlueVariant_8: 5093848419701810260
+      VixenSprite1_BlueVariant_9: -6803924044333271325
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

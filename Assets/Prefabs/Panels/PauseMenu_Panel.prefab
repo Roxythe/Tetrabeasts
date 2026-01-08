@@ -165,6 +165,7 @@ GameObject:
   - component: {fileID: 4696090612124771166}
   - component: {fileID: 1957930590131206470}
   - component: {fileID: 1800326939211939586}
+  - component: {fileID: 1391159003696357261}
   m_Layer: 5
   m_Name: Restart_Button
   m_TagString: Untagged
@@ -286,6 +287,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1391159003696357261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 831195955102704366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d98f32e2ecea5ef4396c2df0311d3ad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeselectOnPointerUp
 --- !u!1 &898811912835318357
 GameObject:
   m_ObjectHideFlags: 0
@@ -820,6 +833,7 @@ GameObject:
   - component: {fileID: 280608034574626429}
   - component: {fileID: 7428838476341867027}
   - component: {fileID: 2882313478382131373}
+  - component: {fileID: 4026572722020321378}
   m_Layer: 5
   m_Name: Close_Button
   m_TagString: Untagged
@@ -941,6 +955,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &4026572722020321378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3418728751932938059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d98f32e2ecea5ef4396c2df0311d3ad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeselectOnPointerUp
 --- !u!1 &3569929820920441550
 GameObject:
   m_ObjectHideFlags: 0
@@ -1449,6 +1475,7 @@ GameObject:
   - component: {fileID: 2159413155791534550}
   - component: {fileID: 5474175639181426870}
   - component: {fileID: 2910176665840014929}
+  - component: {fileID: 7827448580690296084}
   m_Layer: 5
   m_Name: ReturnToMenu_Button (1)
   m_TagString: Untagged
@@ -1570,6 +1597,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &7827448580690296084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4725898313908641476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d98f32e2ecea5ef4396c2df0311d3ad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeselectOnPointerUp
 --- !u!1 &4732213612179634250
 GameObject:
   m_ObjectHideFlags: 0
@@ -1809,6 +1848,7 @@ GameObject:
   - component: {fileID: 6320753396092412513}
   - component: {fileID: 7844997451739032569}
   - component: {fileID: 5763726318904705208}
+  - component: {fileID: 7411895888886419284}
   m_Layer: 5
   m_Name: VolumeMixer_Button
   m_TagString: Untagged
@@ -1943,6 +1983,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PanelOpener
   panel: {fileID: 4054324936886780482}
+--- !u!114 &7411895888886419284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5008078714305303720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d98f32e2ecea5ef4396c2df0311d3ad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeselectOnPointerUp
 --- !u!1 &5076054474857639338
 GameObject:
   m_ObjectHideFlags: 0
@@ -1955,6 +2007,7 @@ GameObject:
   - component: {fileID: 4371359171206552707}
   - component: {fileID: 4556402560893445752}
   - component: {fileID: 1332198757378613502}
+  - component: {fileID: 9028551098155484798}
   m_Layer: 5
   m_Name: ActiveRunMods_Button
   m_TagString: Untagged
@@ -2076,6 +2129,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &9028551098155484798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5076054474857639338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d98f32e2ecea5ef4396c2df0311d3ad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeselectOnPointerUp
 --- !u!1 &5146106765377893988
 GameObject:
   m_ObjectHideFlags: 0
@@ -2859,6 +2924,7 @@ GameObject:
   - component: {fileID: 693562437390709182}
   - component: {fileID: 6475016275470430510}
   - component: {fileID: 2295373856644971480}
+  - component: {fileID: 2114851857831069021}
   m_Layer: 5
   m_Name: Quit_Button
   m_TagString: Untagged
@@ -2980,6 +3046,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2114851857831069021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6967693924185092804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d98f32e2ecea5ef4396c2df0311d3ad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeselectOnPointerUp
 --- !u!1 &7209066333573496767
 GameObject:
   m_ObjectHideFlags: 0
@@ -3300,6 +3378,7 @@ GameObject:
   - component: {fileID: 1518887985613979772}
   - component: {fileID: 7896175337753827324}
   - component: {fileID: 9205527769008310175}
+  - component: {fileID: 1839735782208408561}
   m_Layer: 5
   m_Name: Resume_Button
   m_TagString: Untagged
@@ -3421,6 +3500,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1839735782208408561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8219303603780100695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d98f32e2ecea5ef4396c2df0311d3ad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeselectOnPointerUp
 --- !u!1 &8703310717032314569
 GameObject:
   m_ObjectHideFlags: 0

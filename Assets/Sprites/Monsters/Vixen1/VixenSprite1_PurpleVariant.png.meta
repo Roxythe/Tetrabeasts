@@ -1,37 +1,49 @@
 fileFormatVersion: 2
-guid: 9e77fd43c6f846c43a211b5267acc76a
+guid: 6a21bbb45c5e2e145b07fd68eac6ddd9
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8989046618814949602
-    second: HealerSprite_0
+      213: 5434091794166632421
+    second: VixenSprite1_PurpleVariant_0
   - first:
-      213: 8162952330356214056
-    second: HealerSprite_1
+      213: -5114254643109733746
+    second: VixenSprite1_PurpleVariant_1
   - first:
-      213: 3572910388358881003
-    second: HealerSprite_2
+      213: -7588841468502471525
+    second: VixenSprite1_PurpleVariant_2
   - first:
-      213: -6469061224487639192
-    second: HealerSprite_3
+      213: -6309294806143414582
+    second: VixenSprite1_PurpleVariant_3
   - first:
-      213: -636197538232348249
-    second: HealerSprite_4
+      213: -2109222048990886653
+    second: VixenSprite1_PurpleVariant_4
   - first:
-      213: -6298006670854059410
-    second: HealerSprite_5
+      213: 9026096630804051882
+    second: VixenSprite1_PurpleVariant_5
   - first:
-      213: 4925785345727362489
-    second: HealerSprite_6
+      213: -1896974795859982959
+    second: VixenSprite1_PurpleVariant_6
   - first:
-      213: -2830277810236147700
-    second: HealerSprite_7
+      213: -8439106676553559209
+    second: VixenSprite1_PurpleVariant_7
   - first:
-      213: 8246934649445223347
-    second: HealerSprite_8
+      213: -6450172482884888647
+    second: VixenSprite1_PurpleVariant_8
   - first:
-      213: -7022066746961555555
-    second: HealerSprite_9
+      213: 807923469275476252
+    second: VixenSprite1_PurpleVariant_9
+  - first:
+      213: -1300410276144301752
+    second: VixenSprite1_PurpleVariant_10
+  - first:
+      213: -408554611959691061
+    second: VixenSprite1_PurpleVariant_11
+  - first:
+      213: -7557449361241132681
+    second: VixenSprite1_PurpleVariant_12
+  - first:
+      213: 2497130763150276110
+    second: VixenSprite1_PurpleVariant_13
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -166,13 +178,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: HealerSprite_0
+      name: VixenSprite1_PurpleVariant_0
       rect:
         serializedVersion: 2
-        x: 17
-        y: 0
-        width: 934
-        height: 1001
+        x: 168
+        y: 230
+        width: 37
+        height: 28
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -181,20 +193,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e17db18e9bd704380800000000000000
-      internalID: -8989046618814949602
+      spriteID: 5efca2c12b5c96b40800000000000000
+      internalID: 5434091794166632421
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HealerSprite_1
+      name: VixenSprite1_PurpleVariant_1
       rect:
         serializedVersion: 2
-        x: 951
-        y: 915
-        width: 10
-        height: 13
+        x: 209
+        y: 3
+        width: 603
+        height: 992
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -203,19 +215,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 829445135e1a84170800000000000000
-      internalID: 8162952330356214056
+      spriteID: e8a5d82af748609b0800000000000000
+      internalID: -5114254643109733746
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HealerSprite_2
+      name: VixenSprite1_PurpleVariant_2
       rect:
         serializedVersion: 2
-        x: 937
-        y: 882
-        width: 9
+        x: 871
+        y: 238
+        width: 7
         height: 7
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -225,85 +237,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bee1f607117859130800000000000000
-      internalID: 3572910388358881003
+      spriteID: b9c082d44e40fa690800000000000000
+      internalID: -7588841468502471525
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HealerSprite_3
+      name: VixenSprite1_PurpleVariant_3
       rect:
         serializedVersion: 2
-        x: 968
-        y: 886
-        width: 10
-        height: 10
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 867292447174936a0800000000000000
-      internalID: -6469061224487639192
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: HealerSprite_4
-      rect:
-        serializedVersion: 2
-        x: 949
-        y: 854
-        width: 29
-        height: 19
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 7a1deaea5b5cb27f0800000000000000
-      internalID: -636197538232348249
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: HealerSprite_5
-      rect:
-        serializedVersion: 2
-        x: 957
-        y: 830
-        width: 37
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e6a04b61d4cf898a0800000000000000
-      internalID: -6298006670854059410
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: HealerSprite_6
-      rect:
-        serializedVersion: 2
-        x: 957
-        y: 807
-        width: 12
+        x: 190
+        y: 211
+        width: 14
         height: 9
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -313,20 +259,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9b577eb8ca7eb5440800000000000000
-      internalID: 4925785345727362489
+      spriteID: aceca984dc1e078a0800000000000000
+      internalID: -6309294806143414582
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HealerSprite_7
+      name: VixenSprite1_PurpleVariant_4
       rect:
         serializedVersion: 2
-        x: 935
-        y: 744
-        width: 19
-        height: 23
+        x: 115
+        y: 188
+        width: 18
+        height: 20
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -335,20 +281,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c083439b355d8b8d0800000000000000
-      internalID: -2830277810236147700
+      spriteID: 3050a79b8b98ab2e0800000000000000
+      internalID: -2109222048990886653
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HealerSprite_8
+      name: VixenSprite1_PurpleVariant_5
       rect:
         serializedVersion: 2
-        x: 961
-        y: 751
-        width: 10
-        height: 11
+        x: 77
+        y: 120
+        width: 9
+        height: 20
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -357,20 +303,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3bb0b0a9e5ff27270800000000000000
-      internalID: 8246934649445223347
+      spriteID: aa7fc6b3013234d70800000000000000
+      internalID: 9026096630804051882
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HealerSprite_9
+      name: VixenSprite1_PurpleVariant_6
       rect:
         serializedVersion: 2
-        x: 695
-        y: 9
-        width: 8
-        height: 7
+        x: 920
+        y: 135
+        width: 12
+        height: 10
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -379,8 +325,162 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d9f06468f7b9c8e90800000000000000
-      internalID: -7022066746961555555
+      spriteID: 19585e849779ca5e0800000000000000
+      internalID: -1896974795859982959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_PurpleVariant_7
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 87
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 753d562a03542ea80800000000000000
+      internalID: -8439106676553559209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_PurpleVariant_8
+      rect:
+        serializedVersion: 2
+        x: 821
+        y: 78
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b795a12d426c76a0800000000000000
+      internalID: -6450172482884888647
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_PurpleVariant_9
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 66
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c11bddf5d12563b00800000000000000
+      internalID: 807923469275476252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_PurpleVariant_10
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 22
+        width: 65
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 849b6246eb304fde0800000000000000
+      internalID: -1300410276144301752
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_PurpleVariant_11
+      rect:
+        serializedVersion: 2
+        x: 850
+        y: 0
+        width: 147
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc88bcabeb5845af0800000000000000
+      internalID: -408554611959691061
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_PurpleVariant_12
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 0
+        width: 176
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7713837d8db8e1790800000000000000
+      internalID: -7557449361241132681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_PurpleVariant_13
+      rect:
+        serializedVersion: 2
+        x: 699
+        y: 0
+        width: 33
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e06b54fd23797a220800000000000000
+      internalID: 2497130763150276110
       vertices: []
       indices: 
       edges: []
@@ -399,16 +499,20 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      HealerSprite_0: -8989046618814949602
-      HealerSprite_1: 8162952330356214056
-      HealerSprite_2: 3572910388358881003
-      HealerSprite_3: -6469061224487639192
-      HealerSprite_4: -636197538232348249
-      HealerSprite_5: -6298006670854059410
-      HealerSprite_6: 4925785345727362489
-      HealerSprite_7: -2830277810236147700
-      HealerSprite_8: 8246934649445223347
-      HealerSprite_9: -7022066746961555555
+      VixenSprite1_PurpleVariant_0: 5434091794166632421
+      VixenSprite1_PurpleVariant_1: -5114254643109733746
+      VixenSprite1_PurpleVariant_10: -1300410276144301752
+      VixenSprite1_PurpleVariant_11: -408554611959691061
+      VixenSprite1_PurpleVariant_12: -7557449361241132681
+      VixenSprite1_PurpleVariant_13: 2497130763150276110
+      VixenSprite1_PurpleVariant_2: -7588841468502471525
+      VixenSprite1_PurpleVariant_3: -6309294806143414582
+      VixenSprite1_PurpleVariant_4: -2109222048990886653
+      VixenSprite1_PurpleVariant_5: 9026096630804051882
+      VixenSprite1_PurpleVariant_6: -1896974795859982959
+      VixenSprite1_PurpleVariant_7: -8439106676553559209
+      VixenSprite1_PurpleVariant_8: -6450172482884888647
+      VixenSprite1_PurpleVariant_9: 807923469275476252
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

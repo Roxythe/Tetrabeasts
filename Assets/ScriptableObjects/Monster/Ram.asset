@@ -13,8 +13,17 @@ MonoBehaviour:
   m_Name: Ram
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   monsterName: Ram
-  portrait: {fileID: 21300000, guid: d5e11407eb2f62149b1192c051abc4bf, type: 3}
+  portrait: {fileID: 21300000, guid: 6787f75a011703f4baa32af492be2fa0, type: 3}
   monsterDescription: Default A
+  startsLocked: 0
+  unlockCost: 10
+  skinPortraits:
+  - {fileID: 21300000, guid: 6787f75a011703f4baa32af492be2fa0, type: 3}
+  - {fileID: 21300000, guid: 8c39dd6b441013e44919f6aebc59f9bd, type: 3}
+  - {fileID: 21300000, guid: 804b3e515aca69244bcd87ba1a6662ee, type: 3}
+  - {fileID: 21300000, guid: 15e31e8487ea91a4882e35463e4c8436, type: 3}
+  - {fileID: 21300000, guid: 6a21bbb45c5e2e145b07fd68eac6ddd9, type: 3}
+  skinCosts: 00000000140000001e0000002800000032000000
   maxHealth: 2
   minHealth: 0
   currentHealth: 2
@@ -33,8 +42,3 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 41b3f34a39795c945a3ba5cc14bb02b9, type: 3}
   - {fileID: 8300000, guid: e93d0aeabb7cc5d4d8b70ff71393aaf2, type: 3}
   - {fileID: 8300000, guid: ebbc786614ed4ce40a6c4b8dd7150231, type: 3}
-  sfxHurt: {fileID: 8300000, guid: 6bf402a552edcc24291e706965866709, type: 3}
-  sfxHurtClips:
-  - {fileID: 8300000, guid: fccb4318ede48ff4db14c0d040030810, type: 3}
-  - {fileID: 8300000, guid: 6bf402a552edcc24291e706965866709, type: 3}
-  - {fileID: 8300000, guid: 23223cee22f6a6c4caceff40d1bcd1e6, type: 3}

@@ -13,10 +13,17 @@ MonoBehaviour:
   m_Name: Bulrog
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   monsterName: Bulrog
-  portrait: {fileID: 21300000, guid: ece728398788f8c4490534d11882b9d6, type: 3}
+  portrait: {fileID: -5713861770949114686, guid: 17347e98cf283614d8cdf5bea68f8fec, type: 3}
   monsterDescription: Beefy boy that does little damage
   startsLocked: 0
   unlockCost: 10
+  skinPortraits:
+  - {fileID: -5713861770949114686, guid: 17347e98cf283614d8cdf5bea68f8fec, type: 3}
+  - {fileID: -4223279023541275457, guid: 4e0655872a88eda49a27d08f71eadc2a, type: 3}
+  - {fileID: -6359602901097175407, guid: 1d4345ecbdf08874484d9d39ea852f1d, type: 3}
+  - {fileID: -7729325893492415067, guid: c68905df12e6c4544ba60d55fa9e792c, type: 3}
+  - {fileID: 5458850292180187239, guid: 5a372d4556274034eb766517a84e4972, type: 3}
+  skinCosts: 0000000019000000190000001900000019000000
   maxHealth: 5
   minHealth: 0
   currentHealth: 5

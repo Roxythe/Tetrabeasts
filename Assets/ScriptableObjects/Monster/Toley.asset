@@ -13,10 +13,17 @@ MonoBehaviour:
   m_Name: Toley
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   monsterName: Toley
-  portrait: {fileID: 21300000, guid: 9c2c60045b5243747beea77636d2239f, type: 3}
+  portrait: {fileID: -1066822171247798340, guid: ad70377c34336dc4bbf5567c45944d87, type: 3}
   monsterDescription: Can take a hit and keep going
   startsLocked: 1
   unlockCost: 20
+  skinPortraits:
+  - {fileID: -1066822171247798340, guid: ad70377c34336dc4bbf5567c45944d87, type: 3}
+  - {fileID: 4741663511722139051, guid: 302a195f29e9b9c4c91fae686403f817, type: 3}
+  - {fileID: -389223029757091659, guid: 47413807e7072124a94366bdc85cb025, type: 3}
+  - {fileID: 1479112253172282689, guid: 4cd81262691f7ae43adced2e9a20631f, type: 3}
+  - {fileID: -5330551079072898556, guid: 08146e5945115a34b838e6a0832704c6, type: 3}
+  skinCosts: 00000000140000001e0000002800000032000000
   maxHealth: 4
   minHealth: 0
   currentHealth: 7
