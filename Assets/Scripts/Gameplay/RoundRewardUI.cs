@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
-using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 using UnityEngine.UI;
+
+#if UNITY_ANDROID && UNITY_EDITOR
+using Unity.Android.Gradle.Manifest;
+#endif
+
 
 public class RoundRewardUI : MonoBehaviour
 {

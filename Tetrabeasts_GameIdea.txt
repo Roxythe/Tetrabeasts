@@ -1,5 +1,11 @@
 ****** TODO ******
 
+- Create Toggle code to open shop.
+
+- Create persistent save for shop buff purchases and apply to monsters/gameplay
+
+- Add button click sfx to pause menu.
+
 - Play with the grid size and experiment with different grid sizes.
 - Create a setting for mixed tetrapieces or uniform monster pieces
 
@@ -17,6 +23,19 @@ Possible new loss condition - add limited count of total monster pieces, so when
 
 *** KNOWN BUGS ***
 
+- Cursor is too small, need to be able to increase size and set default size.
+
+- Add safe check to Character/Monster Select for first time game opened (no persistent saved data) to set monsters/character to defaults that are unlocked. Add safety check to deselect any characters that are locked.
+
+- Lock cursor during gameplay. Unlock on pause, re-lock cursor on unpause
+
+- Persistent save volume settings. Start volume settings on first play at master 0.75, sfx 1.0, music 1.0
+
+- Buff for special blocks common was so strong it made all blocks special blocks
+
+- Modifier panel in pause menu looks weird with modifiers in it, cut off at top.
+
+- Gameplay music plays for a moment after pressing return to main menu button from pause menu 
 
 *** PERSISTENT DATA ***
 
