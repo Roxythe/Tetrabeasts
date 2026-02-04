@@ -6,8 +6,7 @@ public abstract class RunModifierSO : ScriptableObject
     [TextArea] public string description;
     public Sprite icon;
 
-    public abstract void Apply(GameController gc); // Apply to the CURRENT run only
+    public abstract void Apply(GameController gc); // Apply to the current run only
 
-    // Used to remove mid-run
-    public virtual void Remove(GameController gc) { }
+    public virtual void Remove(GameController gc) { } // Used to remove mid-run
 }

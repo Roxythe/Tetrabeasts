@@ -9,9 +9,9 @@ public class CharacterSelectUI : MonoBehaviour
 
     [Header("UI")]
     public Transform listParent;
-    public Button characterButtonPrefab; // with child TMP_Text + Image
-    public TMP_Text selectedName;        // optional preview
-    public Image selectedPortrait;       // optional preview
+    public Button characterButtonPrefab; // Text + Image
+    public TMP_Text selectedName;        // Optional preview
+    public Image selectedPortrait;       // Optional preview
     public Image selectedBorder;
     public TMP_Text selectedSpecialDescription;
     public CurrencyUI currencyUI;
@@ -27,13 +27,30 @@ public class CharacterSelectUI : MonoBehaviour
         BuildList();
 
         var saved = SelectedCharacterStore.ResolveFromRoster(roster);
-        if (saved != null)
+        if (saved != null && UnlockStore.IsUnlocked(saved))
             SelectedCharacterStore.Current = saved;
 
-        if (SelectedCharacterStore.Current == null && roster != null && roster.Length > 0)
-            SetCurrent(roster[0]); // also saves to prefs via SetCurrent
+        if (SelectedCharacterStore.Current == null)
+        {
+            var fallback = GetFirstUnlockedCharacter();
+            if (fallback != null)
+            {
+                // Persist once so first-time players get a stable default.
+                SetCurrent(fallback);
+            }
+            else if (roster != null && roster.Length > 0)
+            {
+                SetCurrent(roster[0]); // Just pick first if none unlocked
+            }
+            else
+            {
+                RefreshPreview();
+            }
+        }
         else
+        {
             RefreshPreview();
+        }
     }
 
     void BuildList()
@@ -81,7 +98,7 @@ public class CharacterSelectUI : MonoBehaviour
                 unlockBtn.onClick.RemoveAllListeners();
                 unlockBtn.onClick.AddListener(() =>
                 {
-                    // Replace with your currency spend method
+                    // Check currency
                     if (CurrencyStore.Total < data.unlockCost)
                     {
                         if (AudioManager.I && errorSFX)
@@ -124,6 +141,17 @@ public class CharacterSelectUI : MonoBehaviour
             AudioManager.I.PlaySFX(selectSFX);
 
         RefreshPreview();
+    }
+
+    PlayerCharacterData GetFirstUnlockedCharacter()
+    {
+        if (roster == null) return null;
+        foreach (var c in roster)
+        {
+            if (c != null && UnlockStore.IsUnlocked(c))
+                return c;
+        }
+        return null;
     }
 
     public void RefreshPreview()

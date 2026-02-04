@@ -12,31 +12,33 @@ public class Board : MonoBehaviour
     public float verticalBufferCells = 0.25f;
 
     [Header("Refs")]
-    public RectTransform gridRoot;   // child under GameBoard
-    public Image tilePrefab;         // TileUI_Prefab (UI Image)
+    public RectTransform gridRoot;
+    public Image tilePrefab; 
 
     [Header("Tile Visuals")]
     public Color normalBorderColor = Color.black;
-    public Color immuneBorderColor = new Color(1f, 0.84f, 0f, 1f); // gold
+    public Color immuneBorderColor = new Color(1f, 0.84f, 0f, 1f); // Gold
 
-    public Sprite defaultDeadOverlaySprite;          // assign in Inspector
-    public Color deadOverlayTint = Color.white;     // keep white if your sprite has its own alpha
+    public Sprite defaultDeadOverlaySprite; 
+    public Color deadOverlayTint = Color.white; 
     public bool deadOverlayPreserveAspect = true;
 
     [Header("SFX")]
     public AudioClip sfxImmuneHit;
 
     bool tilesImmune = false;
-    public enum DamageSource { Generic, CastleProjectile } // for SFX differentiation
+    public enum DamageSource { Generic, CastleProjectile } 
 
-    // runtime
+    // Runtime
     GameController _gc;
-    RectTransform boardRect;         // the GameBoard panel
-    Vector2 cellSize;            // size of one (square) cell in pixels
-    Vector2 contentSize;         // total pixel size actually used by the grid (width*cell, height*cell)
-    readonly Transform[,] grid = null; // (not used for UI placement kept for logic)
+    RectTransform boardRect;  
+    Vector2 cellSize;  
+    Vector2 contentSize;  
+    readonly Transform[,] grid = null; // [x,y] grid of tile transforms
     Dictionary<Vector2Int, RectTransform> placed = new();
     readonly Dictionary<Vector2Int, float> healTimers = new();
+
+    public event Action<Vector2Int, MonsterData> TileDied; // Event called when a tile's HP reaches 0
 
     [System.Serializable]
     public struct MonsterInstance
@@ -47,7 +49,7 @@ public class Board : MonoBehaviour
         public MonsterInstance(MonsterData d) { data = d; hp = (d ? d.maxHealth : 0f); }
     }
 
-    // single-pixel white sprite for line drawing and Tile fills
+    // Single-pixel white sprite for line drawing and Tile fills
     static Sprite _onePx;
     static Sprite OnePx()
     {
@@ -58,7 +60,6 @@ public class Board : MonoBehaviour
         _onePx = Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
         return _onePx;
     }
-
 
     // ================= Inline Border (per-edge thickness) =================
     const float DEFAULT_BORDER = 2f;
@@ -203,7 +204,7 @@ public class Board : MonoBehaviour
         boardRect = GetComponent<RectTransform>();
         _gc = FindFirstObjectByType<GameController>();
 
-        // Always isolate spawned tiles/lines under a dedicated child of THIS Board
+        // Always isolate spawned tiles/lines under a dedicated child of this Board
         if (!gridRoot || gridRoot.transform.parent != transform)
         {
             var go = new GameObject("GridRoot", typeof(RectTransform));
@@ -216,7 +217,7 @@ public class Board : MonoBehaviour
     void Start()
     {
         RecomputeCellMetrics();
-        DrawGridOverlay(); // nice to have; remove if you dont want lines
+        DrawGridOverlay();
     }
 
     void Update()
@@ -249,7 +250,7 @@ public class Board : MonoBehaviour
             int range = Mathf.Clamp(Mathf.RoundToInt(md.healRange + rangeAdd), 0, 3);
             Vector2Int? best = null;
             int bestDist = int.MaxValue;
-            float bestFrac = 1f; // lower is better
+            float bestFrac = 1f; // Lower is better
 
             for (int y = Mathf.Max(0, k.y - range); y <= Mathf.Min(height - 1, k.y + range); y++)
                 for (int x = Mathf.Max(0, k.x - range); x <= Mathf.Min(width - 1, k.x + range); x++)
@@ -258,21 +259,21 @@ public class Board : MonoBehaviour
                     if (c == k) continue;
 
                     if (!monsters.TryGetValue(c, out var ally) || ally.data == null) continue;
-                    if (ally.hp <= 0f) continue;                          // cannot heal dead
-                    if (ally.hp >= ally.data.maxHealth) continue;         // already full
+                    if (ally.hp <= 0f) continue;                          // Cannot heal dead
+                    if (ally.hp >= ally.data.maxHealth) continue;         // Already full
 
                     int d = Mathf.Abs(c.x - k.x) + Mathf.Abs(c.y - k.y);
                     if (d > range) continue;
 
                     float frac = ally.hp / Mathf.Max(1f, ally.data.maxHealth);
 
-                    // pick nearest, then lowest hp fraction
+                    // Pick nearest, then lowest hp fraction
                     bool take = (d < bestDist) || (d == bestDist && frac < bestFrac);
 
                     if (take) { best = c; bestDist = d; bestFrac = frac; }
                 }
 
-            healTimers[k] = Time.time; // tick consumed (even if no target)
+            healTimers[k] = Time.time; // Tick consumed (even if no target)
 
             if (best.HasValue)
             {
@@ -333,9 +334,8 @@ public class Board : MonoBehaviour
         var baseImg = rt.GetComponent<UnityEngine.UI.Image>();
         baseImg.sprite = null;
         baseImg.raycastTarget = false;
-        baseImg.color = new Color(0f, 0f, 0f, 0f); // border is drawn by Edge_* children
+        baseImg.color = new Color(0f, 0f, 0f, 0f);
 
-        // Edge_* children handle border thickness + color
         SetInlineBorderColor(rt, TilesDamageImmune ? immuneBorderColor : normalBorderColor);
 
         // Back (gray)
@@ -343,20 +343,20 @@ public class Board : MonoBehaviour
         back.transform.SetParent(rt, false);
         var backRT = back.rectTransform;
         backRT.anchorMin = backRT.anchorMax = new Vector2(0.5f, 0.5f);
-        backRT.sizeDelta = rt.sizeDelta;   // fill the whole tile
+        backRT.sizeDelta = rt.sizeDelta;   // Fill the whole tile
         backRT.anchoredPosition = Vector2.zero;
-        back.sprite = OnePx(); // simple 1x1 white pixel
+        back.sprite = OnePx(); // Simple 1x1 white pixel
         back.type = UnityEngine.UI.Image.Type.Simple;
         back.color = new Color(0.6f, 0.6f, 0.6f, 1f);
 
-        // HealthFill (colored, filled horizontally)
+        // HealthFill
         var fill = new GameObject("HealthFill", typeof(UnityEngine.UI.Image)).GetComponent<UnityEngine.UI.Image>();
         fill.transform.SetParent(rt, false);
         var frt = fill.rectTransform;
         frt.anchorMin = frt.anchorMax = new Vector2(0.5f, 0.5f);
-        frt.sizeDelta = rt.sizeDelta;      // fill the whole tile
+        frt.sizeDelta = rt.sizeDelta;      // Fill the whole tile
         frt.anchoredPosition = Vector2.zero;
-        fill.sprite = OnePx(); // simple 1x1 white pixel
+        fill.sprite = OnePx(); // Simple 1x1 white pixel
         fill.type = UnityEngine.UI.Image.Type.Filled;
         fill.fillMethod = UnityEngine.UI.Image.FillMethod.Vertical;
         fill.fillOrigin = (int)UnityEngine.UI.Image.OriginVertical.Bottom;
@@ -394,26 +394,26 @@ public class Board : MonoBehaviour
         }
 
         {
-            // Add a DeadOverlay layer (initially hidden) that exactly covers the inner fill
+            // Add a DeadOverlay layer 
             var fillRT = (RectTransform)rt.Find("HealthFill");
             if (fillRT)
             {
                 var deadGO = new GameObject("DeadOverlay", typeof(UnityEngine.UI.Image));
                 var deadImg = deadGO.GetComponent<UnityEngine.UI.Image>();
                 deadImg.raycastTarget = false;
-                deadImg.sprite = defaultDeadOverlaySprite; // use your premade sprite
-                deadImg.color = deadOverlayTint;          // usually Color.white
+                deadImg.sprite = defaultDeadOverlaySprite; 
+                deadImg.color = deadOverlayTint; 
                 deadImg.preserveAspect = deadOverlayPreserveAspect;
-                deadImg.type = UnityEngine.UI.Image.Type.Simple; // or Sliced if your art is a 9-slice frame
+                deadImg.type = UnityEngine.UI.Image.Type.Simple; 
 
                 var drt = deadImg.rectTransform;
                 drt.SetParent(rt, false);
                 drt.anchorMin = drt.anchorMax = new Vector2(0.5f, 0.5f);
-                drt.sizeDelta = fillRT.sizeDelta;     // cover the inner area
+                drt.sizeDelta = fillRT.sizeDelta;     // Cover the inner area
                 drt.anchoredPosition = Vector2.zero;
 
-                deadGO.SetActive(false);              // hidden until HP == 0
-                drt.SetAsLastSibling();               // above portrait/fill
+                deadGO.SetActive(false);              // Hidden until HP == 0
+                drt.SetAsLastSibling();               // Above portrait/fill
             }
         }
 
@@ -428,7 +428,7 @@ public class Board : MonoBehaviour
 
         var img = fill.GetComponent<UnityEngine.UI.Image>();
         float amt = (max <= 0f) ? 0f : Mathf.Clamp01(current / max);
-        img.fillAmount = amt; // depleted area shows the gray base underneath
+        img.fillAmount = amt; // Depleted area shows the gray base underneath
 
         // Show/hide the dead overlay
         var dead = rt.Find("DeadOverlay");
@@ -493,8 +493,25 @@ public class Board : MonoBehaviour
         if (AudioManager.I && clip)
             AudioManager.I.PlaySFX(clip);
 
-        if (inst.hp <= 0f) Debug.Log($"Tile at {cell} ({inst.data.name}) died.");
+        if (inst.hp <= 0f)
+        {
+            Debug.Log($"Tile at {cell} ({inst.data.name}) died.");
+            TileDied?.Invoke(cell, inst.data);
+        }
+
         return inst.hp > 0f;
+    }
+
+    public int CountDeadTiles()
+    {
+        int count = 0;
+        foreach (var kv in monsters)
+        {
+            var inst = kv.Value;
+            if (inst.data == null) continue;
+            if (inst.hp <= 0f) count++;
+        }
+        return count;
     }
 
     public bool HealTile(Vector2Int cell, float amount)
@@ -591,10 +608,17 @@ public class Board : MonoBehaviour
                 {
                     if (inst.hp > 0f)
                     {
-                        dmgRow += Mathf.RoundToInt(inst.data.attackPower * (gc ? gc.monsterDamageMult : 1f));
-                        specialChargeFromMonsters += inst.data.specialGaugeGain * (gc ? gc.monsterSpecialGainMult : 1f);
+                        float dmgMult = (gc ? gc.monsterDamageMult : 1f);
+                        float gaugeMult = (gc ? gc.monsterSpecialGainMult : 1f);
+
+                        int dmg = Mathf.RoundToInt(inst.data.attackPower * dmgMult);
+                        dmgRow += Mathf.Max(1, dmg); // Alive monsters always contribute at least 1 damage
+
+                        float gauge = inst.data.specialGaugeGain * gaugeMult;
+                        specialChargeFromMonsters += Mathf.Max(1f, gauge); // Alive monsters always contribute at least 1 gauge
                     }
-                    // dominance count still counts presence
+
+                    // Count for dominant monster pick
                     if (!counts.ContainsKey(inst.data))
                         counts[inst.data] = 0;
 
@@ -605,7 +629,7 @@ public class Board : MonoBehaviour
             damageFromMonsters += dmgRow;
             rowDamage[y] = dmgRow;
 
-            // pick dominant (ties -> random among max)
+            // Pick dominant
             if (counts.Count > 0)
             {
                 int max = 0;
@@ -616,7 +640,7 @@ public class Board : MonoBehaviour
                 rowDominantMonster[y] = dominant;
             }
 
-            // remove this row 
+            // Remove this row 
             for (int x = 0; x < width; x++)
             {
                 var key = new Vector2Int(x, y);
@@ -631,7 +655,7 @@ public class Board : MonoBehaviour
                 }
             }
 
-            // shift down tiles + monsters above 
+            // Shift down tiles + monsters above 
             for (int yy = y + 1; yy < height; yy++)
             {
                 for (int x = 0; x < width; x++)
@@ -660,7 +684,7 @@ public class Board : MonoBehaviour
                 }
             }
 
-            y--; // re-check same row after shift
+            y--; // Re-check same row after shift
         }
 
         CleanOrphanedTiles();
@@ -689,7 +713,6 @@ public class Board : MonoBehaviour
             squaresCleared++;
         }
 
-        // Shift everything at y >= rows down by 'rows'
         // Move using a snapshot to avoid key-collision while iterating.
         var snapshot = new List<KeyValuePair<Vector2Int, RectTransform>>(placed);
         foreach (var kv in snapshot)
@@ -712,7 +735,7 @@ public class Board : MonoBehaviour
     {
         if (changedCells == null) changedCells = new List<Vector2Int>();
 
-        // SNAPSHOT the keys so we can safely write back into the dictionary
+        // Snapshot the keys so we can safely write back into the dictionary
         var keys = new List<Vector2Int>(monsters.Keys);
 
         foreach (var cell in keys)
@@ -720,14 +743,12 @@ public class Board : MonoBehaviour
             if (!monsters.TryGetValue(cell, out var inst) || inst.data == null) continue;
 
             float max = Mathf.Max(0f, inst.data.maxHealth);
-            if (inst.hp < max) // includes reviving from 0
+            if (inst.hp < max) // Includes reviving from 0
             {
                 inst.hp = max;
                 monsters[cell] = inst;
 
-                // just update the existing fill; don't add new layers
-                UpdateTileHPVisual(cell, inst.hp, max);
-
+                UpdateTileHPVisual(cell, inst.hp, max); // Update visual
                 changedCells.Add(cell);
             }
         }
@@ -743,13 +764,13 @@ public class Board : MonoBehaviour
 
     public void SetAllTileBorderColor(Color c)
     {
-        // 'placed' should be your Dictionary<Vector2Int, RectTransform> of inactive tiles.
+        // Apply to all placed tiles
         foreach (var kv in placed)
         {
             var rt = kv.Value;
             if (!rt) continue;
 
-            // Border is the Image on the root of the tile (do NOT use GetComponentsInChildren)
+            // Border is the Image on the root of the tile
             var img = rt.GetComponent<UnityEngine.UI.Image>();
             if (img) img.color = c;
         }
@@ -758,13 +779,12 @@ public class Board : MonoBehaviour
     public void StyleInlineBorder(RectTransform rt, Color c)
     {
         var img = rt ? rt.GetComponent<UnityEngine.UI.Image>() : null;
-        if (img) img.color = c;               // border only
+        if (img) img.color = c; // Border only
     }
 
-    // simple thin-line overlay
     void DrawGridOverlay()
     {
-        // Remove old grid lines by marker, not by name
+        // Remove old grid lines by marker
         if (gridRoot)
         {
             var olds = gridRoot.GetComponentsInChildren<BoardOwned>(true);
@@ -818,10 +838,19 @@ public class Board : MonoBehaviour
                 if (inst.data)
                 {
                     if (inst.hp > 0f)
-                        damageFromMonsters += Mathf.RoundToInt(inst.data.attackPower * (gc ? gc.monsterDamageMult : 1f));
+                    {
+                        float dmgMult = (gc ? gc.monsterDamageMult : 1f);
+                        float gaugeMult = (gc ? gc.monsterSpecialGainMult : 1f);
 
-                    specialChargeFromMonsters += inst.data.specialGaugeGain * (gc ? gc.monsterSpecialGainMult : 1f);
+                        int dmg = Mathf.RoundToInt(inst.data.attackPower * dmgMult);
+                        damageFromMonsters += Mathf.Max(1, dmg); // Alive monsters always contribute at least 1 damage
+
+                        float gauge = inst.data.specialGaugeGain * gaugeMult;
+                        specialChargeFromMonsters += Mathf.Max(1f, gauge); // Alive monsters always contribute at least 1 gauge
+                    }
+                    // dead monsters contribute 0 to damage/gauge
                 }
+
                 monsters.Remove(key);
             }
 
@@ -845,13 +874,13 @@ public class Board : MonoBehaviour
                     continue;
             }
 
-            // We already know which cells were removed; collect their rows for this x:
+            // Find removed rows in this column
             foreach (var rc in removedCells)
                 if (rc.x == x)
                     removedRows.Add(rc.y);
             if (removedRows.Count == 0)
                 continue;
-            removedRows.Sort(); // ascending
+            removedRows.Sort(); // Ascending order
 
             var moves = new List<(Vector2Int from, Vector2Int to, RectTransform rt)>();
             var monsterMoves = new List<(Vector2Int from, Vector2Int to, Board.MonsterInstance inst)>();
@@ -973,6 +1002,7 @@ public class Board : MonoBehaviour
     {
         if (boardRect == null) boardRect = GetComponent<RectTransform>();
         RecomputeCellMetrics();
+
         // Reposition any placed tiles
         var toFix = new List<KeyValuePair<Vector2Int, RectTransform>>(placed);
         foreach (var kv in toFix)
@@ -980,8 +1010,8 @@ public class Board : MonoBehaviour
         DrawGridOverlay();
     }
 
-    // helper so others can read cell size
-    public Vector2 GetCellSize() => cellSize;
+    
+    public Vector2 GetCellSize() => cellSize; // Helper so others can read cell size
 
     public void SetMonsterAt(Vector2Int cell, MonsterInstance inst)
     {
@@ -991,20 +1021,20 @@ public class Board : MonoBehaviour
         monsters[cell] = inst;
         UpdateTileHPVisual(cell, inst.hp, inst.data ? inst.data.maxHealth : 0f);
 
-        // initialize healer timer if needed
+        // Initialize healer timer if needed
         if (inst.data && inst.data.healAmount > 0f)
-            healTimers[cell] = Time.time; // next tick starts from now
+            healTimers[cell] = Time.time; // Next tick starts from now
     }
 
     void CleanOrphanedTiles()
     {
-        // Any child named "Tile_*" that isn't referenced by `placed` is an orphan ? destroy it.
+        // Remove any tiles in gridRoot that are not in placed[]
         var live = new HashSet<RectTransform>(placed.Values);
         for (int i = 0; i < gridRoot.childCount; i++)
         {
             var t = gridRoot.GetChild(i) as RectTransform;
             if (!t) continue;
-            if (!t.name.StartsWith("Tile_")) continue; // don't touch grid lines, flashes, etc.
+            if (!t.name.StartsWith("Tile_")) continue; // Only care about tiles
             if (!live.Contains(t)) Destroy(t.gameObject);
         }
     }
@@ -1031,15 +1061,16 @@ public class Board : MonoBehaviour
         var rt = img.rectTransform;
         rt.SetParent(gridRoot, false);
         rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
-        rt.sizeDelta = GetCellSize() - new Vector2(6f, 6f);  // slight inset
+        rt.sizeDelta = GetCellSize() - new Vector2(6f, 6f);  // Slight inset
         rt.anchoredPosition = CellToAnchoredPos(cell);
 
         float t = 0f;
         while (t < duration && img)
         {
             t += Time.deltaTime;
-            // quick pop-in/out if you want a little life
-            float a = 1f - Mathf.Abs((t / duration) * 2f - 1f); // triangle 0..1..0
+
+            // Quick pop-in/out 
+            float a = 1f - Mathf.Abs((t / duration) * 2f - 1f);
             img.color = new Color(1f, 1f, 1f, 0.35f + 0.65f * a);
             yield return null;
         }

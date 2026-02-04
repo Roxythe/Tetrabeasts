@@ -24,15 +24,15 @@ MonoBehaviour:
   - {fileID: 21300000, guid: dcf36f58d5e06dc4ca0c1a45481fd684, type: 3}
   - {fileID: 21300000, guid: 31e760f37eaf5014e81c4d14ce66bc62, type: 3}
   skinCosts: 00000000140000001e0000002800000032000000
-  maxHealth: 1
+  maxHealth: 10
   minHealth: 0
-  currentHealth: 1
+  currentHealth: 10
   attackPower: 1
   weightedSpawnRate: 1
-  healAmount: 3
+  healAmount: 20
   healRange: 1
   healSpeed: 6
-  specialGaugeGain: 2
+  specialGaugeGain: 3
   attackSprite: {fileID: 21300000, guid: d55993f5b15ca3a4d833192a9b95d2a2, type: 3}
   healSprite: {fileID: 21300000, guid: dc6ff6b0cfcef97419f4edc308db832a, type: 3}
   sfxHeal: {fileID: 8300000, guid: bc31d365dc5eea64bb7de00a218d259e, type: 3}

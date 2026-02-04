@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -76,5 +77,61 @@ public static class SelectedMonstersStore
                 { outList.Add(roster[i]); break; }
         }
         return outList;
+    }
+}
+
+// ============== Store data for settings (volume + cursor) ==============
+
+public static class SettingsStore
+{
+    // Keys
+    private const string KeyMaster = "Settings_MasterVol";
+    private const string KeyMusic = "Settings_MusicVol";
+    private const string KeySFX = "Settings_SFXVol";
+    private const string KeyCursor = "Settings_CursorScale";
+
+    // Defaults used when no saved data exists
+    public const float DefaultMaster = 0.5f;
+    public const float DefaultMusic = 1f;
+    public const float DefaultSFX = 1f;
+    public const float DefaultCursorScale = 1f;
+
+    // Events
+    public static event Action<float> CursorScaleChanged;
+    public static event Action<float, float, float> VolumesChanged;
+
+    // ----- Cursor -----
+    public static float LoadCursorScale() =>
+        PlayerPrefs.GetFloat(KeyCursor, DefaultCursorScale);
+
+    public static void SaveCursorScale(float scale)
+    {
+        PlayerPrefs.SetFloat(KeyCursor, scale);
+        PlayerPrefs.Save();
+        CursorScaleChanged?.Invoke(scale);
+    }
+
+    // ----- Volume -----
+    public static float LoadMaster() => PlayerPrefs.GetFloat(KeyMaster, DefaultMaster);
+    public static float LoadMusic() => PlayerPrefs.GetFloat(KeyMusic, DefaultMusic);
+    public static float LoadSFX() => PlayerPrefs.GetFloat(KeySFX, DefaultSFX);
+
+    public static void SaveVolumes(float master, float music, float sfx)
+    {
+        PlayerPrefs.SetFloat(KeyMaster, master);
+        PlayerPrefs.SetFloat(KeyMusic, music);
+        PlayerPrefs.SetFloat(KeySFX, sfx);
+        PlayerPrefs.Save();
+        VolumesChanged?.Invoke(master, music, sfx);
+    }
+
+    // Apply saved values to AudioManager
+    public static void ApplySavedVolumesToAudio()
+    {
+        if (!AudioManager.I) return;
+
+        AudioManager.I.SetMasterVolume(LoadMaster());
+        AudioManager.I.SetMusicVolume(LoadMusic());
+        AudioManager.I.SetSFXVolume(LoadSFX());
     }
 }

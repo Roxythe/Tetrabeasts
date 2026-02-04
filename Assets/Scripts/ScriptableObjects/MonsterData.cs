@@ -13,7 +13,7 @@ public class MonsterData : ScriptableObject
     public int unlockCost = 10;
 
     [Header("Skins")]
-    public Sprite[] skinPortraits = new Sprite[5]; // [0]=default (can be null to use portrait)
+    public Sprite[] skinPortraits = new Sprite[5]; // [0]=default 
     public int[] skinCosts = new int[5];           // [0]=0, [1..4]=prices
 
     [Header("Stats")]

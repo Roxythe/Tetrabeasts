@@ -136,7 +136,7 @@ public class NextPreviewUI : MonoBehaviour
 
         var previewSet = new HashSet<Vector2Int>(data.cells);
 
-        // match board outline color when immune (optional)
+        // Match board outline color when immune
         var gc = GetComponent<GameController>();
         var boardCmp = GetComponent<Board>();
         Color borderColor = Color.black;
@@ -162,11 +162,11 @@ public class NextPreviewUI : MonoBehaviour
                 Mathf.Round(origin.y + (cell.y - minY + 0.5f) * s)
             );
 
-            // Root image invisible; edges draw the border
+            // Root image invisible edges draw the border
             tileImg.color = new Color(0f, 0f, 0f, 0f);
             SetEdgeColor(rt, borderColor);
 
-            // inner fill (FIX: fillGO declared correctly)
+            // Inner fill
             var fillGO = new GameObject("PreviewFill", typeof(Image));
             var fill = fillGO.GetComponent<Image>();
             fill.sprite = OnePx();
@@ -177,11 +177,11 @@ public class NextPreviewUI : MonoBehaviour
             var frt = fill.rectTransform;
             frt.SetParent(rt, false);
             frt.anchorMin = frt.anchorMax = new Vector2(0.5f, 0.5f);
-            frt.sizeDelta = rt.sizeDelta;      // full tile fill (add this)
+            frt.sizeDelta = rt.sizeDelta;
             frt.anchoredPosition = Vector2.zero;
             frt.SetAsFirstSibling();
 
-            // shared-edge halving
+            // Shared-edge halving
             bool Ls = previewSet.Contains(cell + Vector2Int.left);
             bool Rs = previewSet.Contains(cell + Vector2Int.right);
             bool Us = previewSet.Contains(cell + Vector2Int.up);

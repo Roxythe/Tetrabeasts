@@ -3,7 +3,7 @@ using UnityEngine;
 public enum RunModStat
 {
     // Currency
-    CurrencyPerRoundWin,          // int-like (we'll round)
+    CurrencyPerRoundWin,
 
     // Enemy
     EnemyAttackIntervalMult,
@@ -34,8 +34,8 @@ public enum RunModStat
     HealRangeAdd,
 
     // UI / Hints
-    DisableNextPreview,          // bool-ish (use Add with 1/0)
-    DisableLandingHint,          // bool-ish
+    DisableNextPreview,
+    DisableLandingHint,
 
     // Currency drops from cleared lines
     LineClearCurrencyChanceAdd,  // +0.05 = +5%
@@ -50,7 +50,7 @@ public enum RunModRarity { Common, Uncommon, Rare, Epic, Legendary }
 public class RunModifier : RunModifierSO
 {
     [Header("Classification")]
-    public bool isBuff = true;                 // helps you sort pools if you want
+    public bool isBuff = true;
     public RunModRarity rarity = RunModRarity.Common;
 
     [Header("Effect")]
@@ -108,7 +108,6 @@ public class RunModifier : RunModifierSO
 
             // ---------------- Piece / specials ----------------
             case RunModStat.SpecialBlockChanceAdd:
-                // This one should almost always be Add
                 if (op == RunModOp.Add) gc.specialBlockChanceAdd += value;
                 else gc.specialBlockChanceAdd *= value;
                 break;
@@ -136,7 +135,7 @@ public class RunModifier : RunModifierSO
 
             // ---------------- Rarity Chance ----------------
             case RunModStat.LuckAdd:
-                // Typically Add only; Multiply supported if you want scaling mods later
+                // Typically Add only. Multiply supported for scaling mods later
                 if (op == RunModOp.Add) gc.luck += value;
                 else gc.luck *= value;
                 break;
@@ -152,16 +151,14 @@ public class RunModifier : RunModifierSO
                 break;
 
             case RunModStat.HealRangeAdd:
-                // usually Add
                 if (op == RunModOp.Add) gc.healRangeAdd += Mathf.RoundToInt(value);
                 else gc.healRangeAdd = Mathf.RoundToInt(gc.healRangeAdd * value);
                 break;
 
             // ---------------- UI / Hints ----------------
             case RunModStat.DisableNextPreview:
-                // treat value >= 0.5 as "true"
                 if (op == RunModOp.Add) gc.disableNextPreview = (value >= 0.5f) || gc.disableNextPreview;
-                else gc.disableNextPreview = (value >= 0.5f); // multiply not meaningful, but supported
+                else gc.disableNextPreview = (value >= 0.5f);
                 break;
 
             case RunModStat.DisableLandingHint:

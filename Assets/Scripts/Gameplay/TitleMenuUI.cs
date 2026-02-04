@@ -14,18 +14,20 @@ public class TitleMenuUI : MonoBehaviour
     public string gameplaySceneName = "GameplayScene";
 
     [Header("Panels (optional)")]
-    public GameObject highScorePanel;   // set if you have a HS panel in the title scene
-    public GameObject settingsPanel;    // reuse your Volume panel here if you like
+    public GameObject highScorePanel;
+    public GameObject settingsPanel;
+    public GameObject shopPanel;
+    public VolumePanelUI volumePanelUI;
     public MonsterSelectUI monsterSelectPanel;
     public HighScoreUI highScoreUI;
     public CharacterSelectUI characterSelectPanel;
 
-    [SerializeField] CharacterSelectUI characterSelectUI; // drag from scene
-    [SerializeField] MonsterSelectUI monsterSelectUI;   // drag from scene
+    [SerializeField] CharacterSelectUI characterSelectUI;
+    [SerializeField] MonsterSelectUI monsterSelectUI;
 
 
     [Header("Pause While Panels Open?")]
-    public bool pauseOnPanels = false;  // usually false for title screen
+    public bool pauseOnPanels = false;
 
     [Header("Defaults")]
     public PlayerCharacterData defaultCharacter;
@@ -33,41 +35,44 @@ public class TitleMenuUI : MonoBehaviour
     public MonsterData defaultB;
 
     [Header("Audio (Title)")]
-    public AudioClip titleBGM;   
+    public AudioClip titleBGM;
     [Range(0f, 1f)] public float titleBGMVolume = 0.5f;
 
     public AudioClip startGameSFX;
-    public AudioClip uiClickSFX; 
+    public AudioClip uiClickSFX;
     public AudioClip uiHoverSFX;
+
+    [Header("Cursor (Menu)")]
+    public UICursorController uiCursorController;
 
     void Awake()
     {
+        // --- Character ---
         if (characterSelectUI && characterSelectUI.roster != null && characterSelectUI.roster.Length > 0)
         {
             var savedChar = SelectedCharacterStore.ResolveFromRoster(characterSelectUI.roster);
-            if (savedChar != null)
+            if (savedChar != null && UnlockStore.IsUnlocked(savedChar))
+            {
                 SelectedCharacterStore.Current = savedChar;
+            }
             else
-                SelectedCharacterStore.Save(characterSelectUI.roster[0]); // write a default once
+            {
+                var fallback = GetFirstUnlockedCharacter(characterSelectUI.roster) ?? defaultCharacter ?? characterSelectUI.roster[0];
+                SelectedCharacterStore.Current = fallback;
+                SelectedCharacterStore.Save(fallback); // Persist so first launch has a stable default
+            }
 
             characterSelectUI.RefreshPreview();
         }
 
+        // --- Monsters (deck) ---
         if (monsterSelectUI && monsterSelectUI.roster != null && monsterSelectUI.roster.Length > 0)
         {
             var resolved = SelectedMonstersStore.ResolveFromRoster(monsterSelectUI.roster);
-            if (resolved != null && resolved.Count >= 2)
-            {
-                SelectedMonstersStore.Active = resolved;
-            }
-            else
-            {
-                var fallbacks = new List<MonsterData>();
-                if (monsterSelectUI.roster.Length >= 1 && monsterSelectUI.roster[0]) fallbacks.Add(monsterSelectUI.roster[0]);
-                if (monsterSelectUI.roster.Length >= 2 && monsterSelectUI.roster[1]) fallbacks.Add(monsterSelectUI.roster[1]);
-                SelectedMonstersStore.Active = fallbacks;
-                SelectedMonstersStore.SaveNames(fallbacks); // persist once so it sticks next run
-            }
+            var sanitized = SanitizeMonsterSelection(resolved, monsterSelectUI.roster);
+
+            SelectedMonstersStore.Active = sanitized;
+            SelectedMonstersStore.SaveNames(sanitized); // Persist sanitized defaults / locked removals
 
             monsterSelectUI.RefreshAllUI();
         }
@@ -78,14 +83,23 @@ public class TitleMenuUI : MonoBehaviour
         // Start title BGM
         if (AudioManager.I)
         {
-            var clip = titleBGM ? titleBGM : AudioManager.I.bgmLoop; // fallback to default loop
+            var clip = titleBGM ? titleBGM : AudioManager.I.bgmLoop; // Fallback to default loop
             AudioManager.I.PlayMusic(clip, loop: true, vol: titleBGMVolume);
         }
 
-        // Auto-hook all Buttons under this menu for click/hover sounds
-        HookAllButtonsForSFX();
-    }
+        SettingsStore.ApplySavedVolumesToAudio();
 
+        if (volumePanelUI && volumePanelUI.uiCursor)
+            volumePanelUI.uiCursor.SetScale(SettingsStore.LoadCursorScale());
+
+        // Setup cursor
+        volumePanelUI.uiCursor.SetScale(SettingsStore.LoadCursorScale());
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = false;
+
+        HookAllButtonsForSFX(); // Auto-hook all buttons under this menu for click/hover sounds
+    }
 
     // --- Button hooks ---
     public void OnStartGame()
@@ -95,30 +109,39 @@ public class TitleMenuUI : MonoBehaviour
         {
             var clip = startGameSFX ? startGameSFX : AudioManager.I.sfxRestart;
             AudioManager.I.PlaySFX(clip);
-            AudioManager.I.StopMusic(); // fade/stop title BGM
+            AudioManager.I.StopMusic();
         }
 
-        // Ensure we have a character before loading Gameplay
-        if (SelectedCharacterStore.Current == null)
+        // Ensure character exists (and is unlocked) before loading Gameplay
+        if (SelectedCharacterStore.Current == null || !UnlockStore.IsUnlocked(SelectedCharacterStore.Current))
         {
-            if (defaultCharacter != null)
-                SelectedCharacterStore.Current = defaultCharacter;
-            else if (characterSelectPanel != null &&
-                     characterSelectPanel.roster != null &&
-                     characterSelectPanel.roster.Length > 0)
-                SelectedCharacterStore.Current = characterSelectPanel.roster[0];
+            PlayerCharacterData fallback = null;
+
+            if (defaultCharacter != null && UnlockStore.IsUnlocked(defaultCharacter))
+                fallback = defaultCharacter;
+            else if (characterSelectPanel != null && characterSelectPanel.roster != null && characterSelectPanel.roster.Length > 0)
+                fallback = GetFirstUnlockedCharacter(characterSelectPanel.roster) ?? characterSelectPanel.roster[0];
+            else if (characterSelectUI != null && characterSelectUI.roster != null && characterSelectUI.roster.Length > 0)
+                fallback = GetFirstUnlockedCharacter(characterSelectUI.roster) ?? characterSelectUI.roster[0];
+
+            if (fallback != null)
+            {
+                SelectedCharacterStore.Current = fallback;
+                SelectedCharacterStore.Save(fallback);
+            }
             else
-                Debug.LogWarning("No character selected and no default/roster configured. Gameplay will use its own fallback if set.");
+            {
+                Debug.LogWarning("No character selected and no roster configured. Gameplay will use its own fallback if set.");
+            }
         }
 
-        if (SelectedMonstersStore.Active.Count < 2)
-        {
-            // Fall back to the first two defaults
-            SelectedMonstersStore.Active = new List<MonsterData> { defaultA, defaultB };
-        }
+        // Ensure monster deck is valid, unlocked, and within [2 to 4].
+        var rosterRef = (monsterSelectPanel && monsterSelectPanel.roster != null && monsterSelectPanel.roster.Length > 0)
+            ? monsterSelectPanel.roster
+            : (monsterSelectUI && monsterSelectUI.roster != null && monsterSelectUI.roster.Length > 0 ? monsterSelectUI.roster : null);
 
-        // Also truncate to 4 if user picked more.
-        while (SelectedMonstersStore.Active.Count > 4) SelectedMonstersStore.Active.RemoveAt(SelectedMonstersStore.Active.Count - 1);
+        SelectedMonstersStore.Active = SanitizeMonsterSelection(SelectedMonstersStore.Active, rosterRef);
+        SelectedMonstersStore.SaveNames(SelectedMonstersStore.Active);
 
         if (AudioManager.I) AudioManager.I.PlaySFX(AudioManager.I.sfxRestart);
 
@@ -138,7 +161,7 @@ public class TitleMenuUI : MonoBehaviour
         if (show)
         {
             HighScoreManager.EnsureInitialized(10);
-            highScoreUI?.ShowReadOnly();        // build & show table, no input
+            highScoreUI?.ShowReadOnly();
         }
 
         highScorePanel.SetActive(show);
@@ -154,7 +177,7 @@ public class TitleMenuUI : MonoBehaviour
         go.SetActive(show);
 
         if (show)
-            characterSelectPanel.RefreshPreview();  // show the currently stored pick
+            characterSelectPanel.RefreshPreview();  // Show the currently stored pick
 
         if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
     }
@@ -173,12 +196,22 @@ public class TitleMenuUI : MonoBehaviour
         if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
     }
 
-
     public void OnToggleSettings()
     {
         if (!settingsPanel) return;
         bool show = !settingsPanel.activeSelf;
         settingsPanel.SetActive(show);
+
+        if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
+    }
+
+    public void OnToggleShop()
+    {
+        if (!shopPanel) return;
+
+        bool show = !shopPanel.activeSelf;
+        shopPanel.SetActive(show);
+
         if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
     }
 
@@ -192,7 +225,7 @@ public class TitleMenuUI : MonoBehaviour
 #endif
     }
 
-    // Optional: ESC closes panels
+    // ESC closes panels
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -202,16 +235,78 @@ public class TitleMenuUI : MonoBehaviour
         }
     }
 
+
+    PlayerCharacterData GetFirstUnlockedCharacter(PlayerCharacterData[] roster)
+    {
+        if (roster == null) return null;
+        foreach (var c in roster)
+            if (c != null && UnlockStore.IsUnlocked(c))
+                return c;
+        return null;
+    }
+
+    List<MonsterData> SanitizeMonsterSelection(List<MonsterData> resolved, MonsterData[] roster)
+    {
+        var outList = new List<MonsterData>();
+
+        // Keep only unlocked, unique, and cap at 4.
+        if (resolved != null)
+        {
+            foreach (var md in resolved)
+            {
+                if (md == null) continue;
+                if (!UnlockStore.IsUnlocked(md)) continue;
+                if (outList.Contains(md)) continue;
+                outList.Add(md);
+                if (outList.Count >= 4) break;
+            }
+        }
+
+        // Ensure minimum of 2 selections.
+        if (outList.Count < 2)
+        {
+            // Prefer configured defaults if unlocked
+            if (defaultA != null && UnlockStore.IsUnlocked(defaultA) && !outList.Contains(defaultA))
+                outList.Add(defaultA);
+            if (outList.Count < 2 && defaultB != null && UnlockStore.IsUnlocked(defaultB) && !outList.Contains(defaultB))
+                outList.Add(defaultB);
+
+            // Fill remaining from roster in order (unlocked only)
+            if (roster != null)
+            {
+                for (int i = 0; i < roster.Length && outList.Count < 2; i++)
+                {
+                    var md = roster[i];
+                    if (md == null) continue;
+                    if (!UnlockStore.IsUnlocked(md)) continue;
+                    if (!outList.Contains(md)) outList.Add(md);
+                }
+            }
+        }
+
+        // If nothing is unlocked
+        if (outList.Count < 2 && roster != null)
+        {
+            for (int i = 0; i < roster.Length && outList.Count < 2; i++)
+            {
+                var md = roster[i];
+                if (md == null) continue;
+                if (!outList.Contains(md)) outList.Add(md);
+            }
+        }
+
+        return outList;
+    }
+
     // --- SFX hooking ---
     void HookAllButtonsForSFX()
     {
         var buttons = GetComponentsInChildren<Button>(includeInactive: true);
         foreach (var b in buttons)
         {
-            // click
             b.onClick.AddListener(() => { if (AudioManager.I) AudioManager.I.PlaySFX(uiClickSFX); });
 
-            // hover (optional)
+            // Hover
             var hover = b.gameObject.GetComponent<UIButtonSFX>();
             if (!hover) hover = b.gameObject.AddComponent<UIButtonSFX>();
             hover.hoverClip = uiHoverSFX;
@@ -226,4 +321,18 @@ public class TitleMenuUI : MonoBehaviour
             if (hoverClip && AudioManager.I) AudioManager.I.PlaySFX(hoverClip, 1f, 1f);
         }
     }
+
+    // --- Helper Functions ---
+    void OnApplicationFocus(bool hasFocus)
+    {
+        if (!hasFocus) return;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = false;
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto); // Clear any leftover hardware cursor
+
+        if (uiCursorController)
+            uiCursorController.SetVisible(true);
+    }
+
 }

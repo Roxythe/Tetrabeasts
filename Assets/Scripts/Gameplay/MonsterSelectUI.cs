@@ -7,27 +7,27 @@ using UnityEngine.UI;
 public class MonsterSelectUI : MonoBehaviour
 {
     [Header("Roster")]
-    public MonsterData[] roster;                 // drag all MonsterData assets here (title scene)
+    public MonsterData[] roster;
 
     [Header("UI")]
-    public Transform listParent;                 // Scroll View/Viewport/Content
-    public Button itemButtonPrefab;              // prefab with child Image (portrait) + TMP_Text (name) + optional Image "Highlight"
-    public Image previewImage;                   // Preview/Preview_Image
-    public TMP_Text previewNameText;             // Preview/PreviewName_Text
-    public TMP_Text previewStatText;             // Preview/PreviewStatText
-    public TMP_Text counterText;                 // e.g., "Selected: 2 / 4"
-    public Button startButton;                   // optional: disable until valid (2..4)
+    public Transform listParent;
+    public Button itemButtonPrefab;
+    public Image previewImage;
+    public TMP_Text previewNameText;
+    public TMP_Text previewStatText;
+    public TMP_Text counterText;
+    public Button startButton;
     public CurrencyUI currencyUI;
 
     MonsterData previewMonster;
-    int previewSkinIndex = 0; // the skin currently being previewed (can be locked)
+    int previewSkinIndex = 0; // The skin currently being previewed (can be locked)
 
     [Header("Preview Unlock UI")]
     public Button previewUnlockButton;
     public TMP_Text previewUnlockCostText;
-    public GameObject previewLockedImage; // optional overlay to show "locked"
+    public GameObject previewLockedImage; // Optional overlay to show "locked"
 
-    // runtime
+    // Runtime
     readonly Dictionary<MonsterData, Button> buttons = new();
     readonly HashSet<MonsterData> selected = new();
 
@@ -43,14 +43,21 @@ public class MonsterSelectUI : MonoBehaviour
     void Awake()
     {
         BuildList();
-        SeedDefaultsIfNeeded();    // ensure >= 2 selected (first two by default)
 
+        // Load saved picks, but ensure they still exist and are unlocked.
         var resolved = SelectedMonstersStore.ResolveFromRoster(roster);
-        if (resolved.Count > 0)
+        var sanitized = SanitizeSelection(resolved);
+
+        // First launch (no saved data) or saved data invalid/locked then pick safe defaults (unlocked)
+        if (sanitized.Count == 0)
         {
-            selected.Clear();
-            foreach (var md in resolved) if (md) selected.Add(md);
-            SelectedMonstersStore.Active = new List<MonsterData>(selected);
+            sanitized = BuildDefaultUnlockedSelection();
+            SelectedMonstersStore.Active = sanitized;
+            SelectedMonstersStore.SaveNames(sanitized); // Persist once so it sticks next run
+        }
+        else
+        {
+            SelectedMonstersStore.Active = sanitized;
         }
 
         SyncFromStore();
@@ -94,8 +101,8 @@ public class MonsterSelectUI : MonoBehaviour
             if (unlockBtnT) unlockBtnT.gameObject.SetActive(!unlocked);
 
             // Prevent selecting locked monsters
-            var captured = md; // closure
-            btn.interactable = true; // always clickable so we can play error SFX
+            var captured = md; // Closeure capture
+            btn.interactable = true;
             btn.onClick.AddListener(() =>
             {
                 if (!UnlockStore.IsUnlocked(captured))
@@ -123,7 +130,7 @@ public class MonsterSelectUI : MonoBehaviour
                         return;
                     }
 
-                    CurrencyStore.Add(-md.unlockCost);  // spend
+                    CurrencyStore.Add(-md.unlockCost);  // Spend
                     currencyUI?.Refresh();
                     UnlockStore.Unlock(md);
 
@@ -137,24 +144,24 @@ public class MonsterSelectUI : MonoBehaviour
                 });
             }
 
-            // show details on hover/click (optional: click already handled above)
+            // Show details on hover/click
             var evt = btn.gameObject.AddComponent<UnityEngine.EventSystems.EventTrigger>();
 
-            // HOVER: preview + sound
+            // Hover preview + sound
             var enter = new UnityEngine.EventSystems.EventTrigger.Entry
             {
                 eventID = UnityEngine.EventSystems.EventTriggerType.PointerEnter
             };
 
-            enter.callback.AddListener(_ => 
+            enter.callback.AddListener(_ =>
             {
-                if (AudioManager.I && hoverSFX) AudioManager.I.PlaySFX(hoverSFX); // play hover SFX
+                if (AudioManager.I && hoverSFX) AudioManager.I.PlaySFX(hoverSFX); // Play hover SFX
             });
             evt.triggers.Add(enter);
 
             buttons[captured] = btn;
             SetupSkinButtons(btn, md);
-            SetButtonHighlight(btn, false); // default off; we’ll enable for selected later
+            SetButtonHighlight(btn, false); // Default off
         }
     }
 
@@ -164,13 +171,13 @@ public class MonsterSelectUI : MonoBehaviour
 
         if (selected.Contains(md))
         {
-            // Allow deselecting freely (even if this makes it < MinSelect)
+            // Allow deselecting freely
             selected.Remove(md);
             changed = true;
         }
         else
         {
-            // Enforce MAX at click time
+            // Only allow selecting if under MaxSelect
             if (selected.Count < MaxSelect)
             {
                 selected.Add(md);
@@ -180,7 +187,7 @@ public class MonsterSelectUI : MonoBehaviour
             {
                 if (AudioManager.I && errorSFX)
                     AudioManager.I.PlaySFX(errorSFX);
-                return; // don't play selectSFX / don't refresh
+                return; // Don't play selectSFX / don't refresh
             }
         }
 
@@ -194,16 +201,67 @@ public class MonsterSelectUI : MonoBehaviour
 
     void SeedDefaultsIfNeeded()
     {
-        // If nothing selected in store and roster has at least two, pick first two.
         if (SelectedMonstersStore.Active == null) SelectedMonstersStore.Active = new List<MonsterData>();
         if (SelectedMonstersStore.Active.Count >= MinSelect) return;
 
-        if (roster != null && roster.Length >= MinSelect)
+        var defaults = BuildDefaultUnlockedSelection();
+        SelectedMonstersStore.Active = defaults;
+        SelectedMonstersStore.SaveNames(defaults);
+    }
+
+    List<MonsterData> BuildDefaultUnlockedSelection()
+    {
+        var outList = new List<MonsterData>();
+        if (roster == null) return outList;
+
+        for (int i = 0; i < roster.Length && outList.Count < MinSelect; i++)
         {
-            SelectedMonstersStore.Active.Clear();
-            SelectedMonstersStore.Active.Add(roster[0]);
-            SelectedMonstersStore.Active.Add(roster[1]);
+            var md = roster[i];
+            if (md == null) continue;
+            if (!UnlockStore.IsUnlocked(md)) continue;
+            if (!outList.Contains(md)) outList.Add(md);
         }
+
+        // If literally nothing is unlocked fall back to first entries so UI isn't empty
+        if (outList.Count < MinSelect)
+        {
+            for (int i = 0; i < roster.Length && outList.Count < MinSelect; i++)
+            {
+                var md = roster[i];
+                if (md == null) continue;
+                if (!outList.Contains(md)) outList.Add(md);
+            }
+        }
+
+        return outList;
+    }
+
+    List<MonsterData> SanitizeSelection(List<MonsterData> input)
+    {
+        var outList = new List<MonsterData>();
+        if (input == null) return outList;
+
+        foreach (var md in input)
+        {
+            if (md == null) continue;
+            if (!UnlockStore.IsUnlocked(md)) continue; // Strip locked monsters
+            if (outList.Contains(md)) continue;
+            outList.Add(md);
+            if (outList.Count >= MaxSelect) break;
+        }
+
+        // Ensure minimum selection by topping up with unlocked defaults
+        if (outList.Count < MinSelect)
+        {
+            var defaults = BuildDefaultUnlockedSelection();
+            foreach (var d in defaults)
+            {
+                if (outList.Count >= MinSelect) break;
+                if (d != null && !outList.Contains(d)) outList.Add(d);
+            }
+        }
+
+        return outList;
     }
 
     void SyncFromStore()
@@ -228,14 +286,14 @@ public class MonsterSelectUI : MonoBehaviour
 
         // Preview panel
         if (previewMonster != null)
-            ShowPreview(previewMonster, previewSkinIndex); // keep what user is previewing
+            ShowPreview(previewMonster, previewSkinIndex); // Keep what user is previewing
         else
             ShowPreview(GetAnySelected());
 
         // Update all portraits to reflect current committed skin selection
         foreach (var kv in buttons)
         {
-            // update main portrait to valid skin
+            // Update main portrait to valid skin
             var img = kv.Value.GetComponentInChildren<Image>();
             if (img) img.sprite = MonsterSkinStore.GetPortrait(kv.Key, MonsterSkinStore.GetValidSelected(kv.Key));
 
@@ -252,7 +310,7 @@ public class MonsterSelectUI : MonoBehaviour
 
     void ShowPreview(MonsterData md)
     {
-        // default behavior: show committed safe skin
+        // Show committed safe skin
         if (!md) { ClearPreview(); return; }
 
         int idx = MonsterSkinStore.GetValidSelected(md);
@@ -283,11 +341,11 @@ public class MonsterSelectUI : MonoBehaviour
 
     void SetButtonHighlight(Button btn, bool on)
     {
-        // Optional overlay toggle (kept if you use it)
+        // Optional overlay toggle 
         var frame = btn.transform.Find("Highlight")?.GetComponent<Image>();
         if (frame) frame.enabled = on;
 
-        // Force all states to same opacity so state machine can't fight you
+        // Force all states to same opacity
         var colors = btn.colors;
         Color onCol = new Color(1f, 1f, 1f, 1.0f);
         Color offCol = new Color(1f, 1f, 1f, 0.5f);
@@ -297,10 +355,10 @@ public class MonsterSelectUI : MonoBehaviour
         colors.normalColor = a;
         colors.highlightedColor = a;
         colors.selectedColor = a;
-        colors.pressedColor = a;   // keeps it consistent while mouse is down
+        colors.pressedColor = a;
         btn.colors = colors;
 
-        // Optional: clear UI selection if this button just turned OFF and remains "selected"
+        // Deselect in EventSystem if turning off
         var es = UnityEngine.EventSystems.EventSystem.current;
         if (!on && es && es.currentSelectedGameObject == btn.gameObject)
             es.SetSelectedGameObject(null);
@@ -353,13 +411,12 @@ public class MonsterSelectUI : MonoBehaviour
             var b = t.GetComponent<Button>();
             if (!b) continue;
 
-            
+
             var icon = t.GetComponent<Image>(); // Prefer an Image directly on SkinVariant_ButtonX
 
-            // Optional fallback if a dedicated child image is added later
             if (!icon)
             {
-                var iconT = FindDeep(t, "Icon_Image"); // look for child named "Icon_Image"
+                var iconT = FindDeep(t, "Icon_Image"); // Look for child
                 icon = iconT ? iconT.GetComponent<Image>() : null;
             }
 
@@ -379,14 +436,13 @@ public class MonsterSelectUI : MonoBehaviour
                 previewMonster = md;
                 previewSkinIndex = idx;
 
-                // Show preview using that skin (even if locked)
-                ShowPreview(md, idx);
+                ShowPreview(md, idx); // Show preview using that skin (even if locked)
 
                 // If the skin is already unlocked, commit selection immediately
                 if (MonsterSkinStore.IsUnlocked(md, idx))
                 {
                     MonsterSkinStore.SetSelectedAndLastValid(md, idx);
-                    RefreshAllUI(); // will update list portrait + opacity states
+                    RefreshAllUI(); 
                 }
             });
         }
@@ -425,7 +481,7 @@ public class MonsterSelectUI : MonoBehaviour
 
         bool unlocked = MonsterSkinStore.IsUnlocked(md, skinIdx);
 
-        // Default skin (0) is always unlocked -> hide unlock UI
+        // Default skin (0) is always unlocked hide unlock UI
         bool showUnlock = !unlocked && skinIdx > 0;
 
         previewUnlockButton.gameObject.SetActive(showUnlock);
@@ -449,12 +505,12 @@ public class MonsterSelectUI : MonoBehaviour
             currencyUI?.Refresh();
 
             MonsterSkinStore.Unlock(md, skinIdx);
-            MonsterSkinStore.SetSelectedAndLastValid(md, skinIdx); // commit after purchase
+            MonsterSkinStore.SetSelectedAndLastValid(md, skinIdx); // Commit after purchase
 
             if (AudioManager.I && unlockSFX) AudioManager.I.PlaySFX(unlockSFX);
 
             RefreshAllUI();
-            ShowPreview(md, skinIdx); // refresh preview to hide unlock button + keep skin displayed
+            ShowPreview(md, skinIdx); // Refresh preview to hide unlock button + keep skin displayed
         });
     }
 

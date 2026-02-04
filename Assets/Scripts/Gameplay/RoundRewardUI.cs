@@ -83,7 +83,7 @@ public class RoundRewardUI : MonoBehaviour
             var btn = Instantiate(optionButtonPrefab, container);
             btn.Bind(mod, selected =>
             {
-                // clear all highlights
+                // Clear all highlights
                 for (int i = 0; i < container.childCount; i++)
                     container.GetChild(i).GetComponent<RunModOptionButton>()?.SetSelected(false);
 
@@ -105,8 +105,7 @@ public class RoundRewardUI : MonoBehaviour
 
     float[] GetRarityProbsFromLuck(float luck)
     {
-        // Clamp to a reasonable design range; you can raise this later if you want.
-        float L = Mathf.Clamp(luck, 0f, 200f);
+        float L = Mathf.Clamp(luck, 0f, 200f); // Clamp luck to reasonable range
 
         // Anchor probability vectors: [Com, Uncom, Rare, Epic, Legndary]
         float[] p0 = { 0.60f, 0.25f, 0.10f, 0.04f, 0.01f }; // 0 luck (baseline)
@@ -129,8 +128,7 @@ public class RoundRewardUI : MonoBehaviour
         else if (L <= 150f) { a = p100; b = p150; t = Mathf.InverseLerp(100f, 150f, L); }
         else { a = p150; b = p200; t = Mathf.InverseLerp(150f, 200f, L); }
 
-        // Smoothstep makes the transition feel gradual even within each segment
-        t = t * t * (3f - 2f * t);
+        t = t * t * (3f - 2f * t); // Smoothstep makes the transition feel gradual even within each segment
 
         float[] p = new float[5];
         for (int i = 0; i < 5; i++)
@@ -155,16 +153,14 @@ public class RoundRewardUI : MonoBehaviour
 
     int RarityIndex(RunModRarity r)
     {
-        return (int)r; // Common=0 .. Legendary=4
+        return (int)r; // Assumes enum order matches index
     }
 
     string GetGroupKey(RunModifierSO so)
     {
-        // If it's your RunModifier type, group by the "effect identity"
         if (so is RunModifier rm)
             return $"{rm.stat}:{rm.op}";
 
-        // Fallback for any other RunModifierSO types:
         return string.IsNullOrEmpty(so.displayName) ? so.name : so.displayName;
     }
 
@@ -183,7 +179,7 @@ public class RoundRewardUI : MonoBehaviour
             if (!so) continue;
             if (excludeAssets != null && excludeAssets.Contains(so)) continue;
 
-            // NEW: prevent same effect-group showing multiple rarities in the same round
+            // Prevent same effect-group showing multiple rarities in the same round
             if (excludeGroups != null)
             {
                 string key = GetGroupKey(so);
@@ -200,8 +196,7 @@ public class RoundRewardUI : MonoBehaviour
         for (int i = 0; i < 5; i++) totalCount += buckets[i].Count;
         if (totalCount == 0) return null;
 
-        // Get target rarity probabilities for this luck value
-        float[] probs = GetRarityProbsFromLuck(luck);
+        float[] probs = GetRarityProbsFromLuck(luck); // Get target rarity probabilities for this luck value
 
         // Zero out rarities that have no available mods, then renormalize
         for (int i = 0; i < 5; i++)

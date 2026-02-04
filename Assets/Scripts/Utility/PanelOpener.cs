@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PanelOpener : MonoBehaviour
 {
-    public GameObject panel;          // Assign the panel to be opened here
+    public GameObject panel; // Assign the panel to be opened here
 
     public void Toggle()
     {

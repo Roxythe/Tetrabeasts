@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   monsterName: Ram
   portrait: {fileID: 21300000, guid: 6787f75a011703f4baa32af492be2fa0, type: 3}
-  monsterDescription: Default A
+  monsterDescription: A well rounded attacker unit
   startsLocked: 0
   unlockCost: 10
   skinPortraits:
@@ -24,9 +24,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 15e31e8487ea91a4882e35463e4c8436, type: 3}
   - {fileID: 21300000, guid: 6a21bbb45c5e2e145b07fd68eac6ddd9, type: 3}
   skinCosts: 00000000140000001e0000002800000032000000
-  maxHealth: 2
+  maxHealth: 20
   minHealth: 0
-  currentHealth: 2
+  currentHealth: 20
   attackPower: 2
   weightedSpawnRate: 2
   healAmount: 0

@@ -10,6 +10,8 @@ public class VolumePanelUI : MonoBehaviour
     public Slider masterSlider;
     public Slider musicSlider;
     public Slider sfxSlider;
+    public Slider cursorSizeSlider;
+    public UICursorController uiCursor;
     public Button closeButton;
 
     [Header("SFX Preview")]
@@ -31,11 +33,14 @@ public class VolumePanelUI : MonoBehaviour
         if (masterSlider) masterSlider.onValueChanged.AddListener(SetMaster);
         if (musicSlider) musicSlider.onValueChanged.AddListener(SetMusic);
         if (sfxSlider) sfxSlider.onValueChanged.AddListener(SetSFX);
+        if (cursorSizeSlider) cursorSizeSlider.onValueChanged.AddListener(SetCursorSize);
     }
 
     void OnEnable()
     {
-        // Snap sliders to current values from AudioManager
+        // Apply saved settings first then snap sliders
+        SettingsStore.ApplySavedVolumesToAudio();
+
         if (AudioManager.I)
         {
             masterSlider?.SetValueWithoutNotify(AudioManager.I.masterVolume);
@@ -43,8 +48,11 @@ public class VolumePanelUI : MonoBehaviour
             sfxSlider?.SetValueWithoutNotify(AudioManager.I.sfxVolume);
         }
 
+        // Cursor size uses SettingsStore
+        cursorSizeSlider?.SetValueWithoutNotify(SettingsStore.LoadCursorScale());
+
         if (pauseWhenOpen) Time.timeScale = 0f;
-        BringToFront();
+        //BringToFront();
         if (cg) { cg.alpha = 1f; cg.interactable = true; cg.blocksRaycasts = true; }
     }
 
@@ -53,17 +61,33 @@ public class VolumePanelUI : MonoBehaviour
         if (pauseWhenOpen) Time.timeScale = 1f;
     }
 
-    void SetMaster(float v) { if (AudioManager.I) AudioManager.I.SetMasterVolume(v); }
-    void SetMusic(float v) { if (AudioManager.I) AudioManager.I.SetMusicVolume(v); }
-    
+    void SetMaster(float v)
+    {
+        if (AudioManager.I) AudioManager.I.SetMasterVolume(v);
+        SettingsStore.SaveVolumes(v, SettingsStore.LoadMusic(), SettingsStore.LoadSFX());
+    }
+
+    void SetMusic(float v)
+    {
+        if (AudioManager.I) AudioManager.I.SetMusicVolume(v);
+        SettingsStore.SaveVolumes(SettingsStore.LoadMaster(), v, SettingsStore.LoadSFX());
+    }
+
     void SetSFX(float v)
     {
         if (AudioManager.I) AudioManager.I.SetSFXVolume(v);
+        SettingsStore.SaveVolumes(SettingsStore.LoadMaster(), SettingsStore.LoadMusic(), v);
 
         if (!previewOnChange) return;
-        // debounce: restart a short timer; play once after the slider settles
+
+        // Play once after the slider settles
         if (sfxPreviewCo != null) StopCoroutine(sfxPreviewCo);
         sfxPreviewCo = StartCoroutine(PreviewAfterDelay());
+    }
+
+    void SetCursorSize(float v)
+    {
+        uiCursor?.SetScale(v);
     }
 
     System.Collections.IEnumerator PreviewAfterDelay()
@@ -72,7 +96,7 @@ public class VolumePanelUI : MonoBehaviour
         yield return new WaitForSecondsRealtime(previewDelay);
 
         if (AudioManager.I)
-            AudioManager.I.PlayPreviewSFX();   // plays a random line-clear (or fallback)
+            AudioManager.I.PlayPreviewSFX();   // Plays a random line-clear 
     }
 
     void BringToFront() => transform.SetAsLastSibling();

@@ -24,9 +24,9 @@ MonoBehaviour:
   - {fileID: 1479112253172282689, guid: 4cd81262691f7ae43adced2e9a20631f, type: 3}
   - {fileID: -5330551079072898556, guid: 08146e5945115a34b838e6a0832704c6, type: 3}
   skinCosts: 00000000140000001e0000002800000032000000
-  maxHealth: 4
+  maxHealth: 30
   minHealth: 0
-  currentHealth: 7
+  currentHealth: 30
   attackPower: 1
   weightedSpawnRate: 2
   healAmount: 0

@@ -10,6 +10,10 @@ public class HighScoreUI : MonoBehaviour
     public TMP_InputField nameInput;
     public Button submitButton;
 
+    [Header("Post-Submit Buttons")]
+    public Button restartButton;
+    public Button mainMenuButton;
+
     [Header("Table")]
     public RectTransform tableRoot;
     public GameObject rowPrefab; // three TMP_Text children: Rank, Name, Score
@@ -29,12 +33,8 @@ public class HighScoreUI : MonoBehaviour
 
         bool qualifies = HighScoreManager.IsHighScore(score);
         ForceActivate();
-
-        // Bring to front so nothing covers it
-        //panel.transform.SetAsLastSibling();
-
-        if (nameInput) nameInput.gameObject.SetActive(qualifies);
-        if (submitButton) submitButton.gameObject.SetActive(qualifies);
+        SetSubmissionUIActive(qualifies); // Name submission UI
+        SetPostSubmitButtonsActive(!qualifies);
 
         Debug.Log($"[HS] TryShow: score={score}, qualifies={qualifies}, " +
                   $"panelActiveSelf={panel.activeSelf}, compGOActiveSelf={gameObject.activeSelf}, " +
@@ -43,11 +43,9 @@ public class HighScoreUI : MonoBehaviour
 
     void ForceActivate()
     {
-        // Activate the component's GO
         if (!gameObject.activeSelf) gameObject.SetActive(true);
         if (panel && !panel.activeSelf) panel.SetActive(true);
 
-        // If there's a CanvasGroup, make sure it's visible & clickable
         var cg = (panel ? panel : gameObject).GetComponent<CanvasGroup>();
         if (cg) { cg.alpha = 1f; cg.interactable = true; cg.blocksRaycasts = true; }
     }
@@ -56,15 +54,20 @@ public class HighScoreUI : MonoBehaviour
     {
         HighScoreManager.Add(nameInput ? nameInput.text : "Player", pendingScore);
         RefreshTable();
-        Show(false);
+        SetSubmissionUIActive(false);
+        SetPostSubmitButtonsActive(true);
     }
 
-    void Show(bool askForName)
+    void SetSubmissionUIActive(bool active)
     {
-        if (!panel) return;
-        panel.SetActive(true);
-        if (nameInput) nameInput.gameObject.SetActive(askForName);
-        if (submitButton) submitButton.gameObject.SetActive(askForName);
+        if (nameInput) nameInput.gameObject.SetActive(active);
+        if (submitButton) submitButton.gameObject.SetActive(active);
+    }
+
+    void SetPostSubmitButtonsActive(bool active)
+    {
+        if (restartButton) restartButton.gameObject.SetActive(active);
+        if (mainMenuButton) mainMenuButton.gameObject.SetActive(active);
     }
 
     public void Hide()
@@ -93,8 +96,9 @@ public class HighScoreUI : MonoBehaviour
     public void ShowReadOnly()
     {
         ForceActivate();
-        RefreshTable();                         // rebuild rows
-        if (nameInput) nameInput.gameObject.SetActive(false);
-        if (submitButton) submitButton.gameObject.SetActive(false);
+        RefreshTable();
+
+        SetSubmissionUIActive(false);
+        SetPostSubmitButtonsActive(true);
     }
 }
