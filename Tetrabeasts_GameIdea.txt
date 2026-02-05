@@ -16,12 +16,18 @@
 - Increase grid size vertical +1 every 2nd round, increase grid size +1 horizontal every 3rd round accumulating throughout the run. Reset grid back to base size dimension on game start and restart.
 
 - Add boss fight mechanics and abilities
+-- Large AOE attacks (Top 3 rows with set pieces medium damage, Full board attack with small damage, Lighting strike individual tiles at random doing high damage and creating hazard effect for 10 seconds)
+-- Spawn traps on board
+-- Small window of invulnarability
+-- Temp increase block gravity
+-- Armor/protective magic that requires the clearing of special spawned tiles on the board to remove
+
 
 - Add field obstacles (stone statues that obstruct bottom rows), poisioned/burning tiles that damage monsters in that space over time.
 
 *** KNOWN BUGS ***
 
-
+- Elise full revival special may not be healing to full health now with shop buff modiferes, check to make sure using instance maxhp from board and not data max hp from monsterdata
 
 *** PERSISTENT DATA ***
 

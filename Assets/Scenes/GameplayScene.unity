@@ -6162,6 +6162,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 696871bc1e728ff468a349898a912207, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Board
+  attackShopBuff: 0
+  hpShopBuff: 0
+  healPowerShopBuff: 0
   width: 10
   height: 16
   verticalBufferCells: 0.25
@@ -7986,7 +7989,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 750
+      value: 740
       objectReference: {fileID: 0}
     - target: {fileID: 7143499693363654434, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
       propertyPath: m_AnchoredPosition.y

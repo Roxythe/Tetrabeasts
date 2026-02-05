@@ -6,6 +6,11 @@ using UnityEngine.UI;
 
 public class Board : MonoBehaviour
 {
+    [Header("Shop Buff Monster Values")]
+    public int attackShopBuff;
+    public int hpShopBuff;
+    public int healPowerShopBuff;
+
     [Header("Grid Size")]
     public int width = 10;
     public int height = 20;
@@ -44,9 +49,60 @@ public class Board : MonoBehaviour
     public struct MonsterInstance
     {
         public MonsterData data;
+
+        // Current runtime HP
         public float hp;
 
-        public MonsterInstance(MonsterData d) { data = d; hp = (d ? d.maxHealth : 0f); }
+        // Buffed runtime stats (computed once from data + shop)
+        public float maxHp;         // +5 HP per shop level
+        public int attackBonus;     // +1 damage per shop level
+        public float healAmount;    // Buffed heal amount (only for healer monsters)
+        public float healRange;
+        public float healSpeed;
+
+        public MonsterInstance(MonsterData d)
+        {
+            data = d;
+
+            hp = 0f;
+            maxHp = 0f;
+            attackBonus = 0;
+            healAmount = 0f;
+            healRange = 0f;
+            healSpeed = 0f;
+
+            RecalcFromData(setHpToMax: true);
+        }
+
+        public void RecalcFromData(bool setHpToMax)
+        {
+            if (!data)
+            {
+                maxHp = 0f;
+                attackBonus = 0;
+                healAmount = 0f;
+                healRange = 0f;
+                healSpeed = 0f;
+                if (setHpToMax) hp = 0f;
+                return;
+            }
+
+            int hpBonus = ShopBuffStore.GetLevel(ShopBuffType.HpUp) * 5;
+            int atkBonus = ShopBuffStore.GetLevel(ShopBuffType.AttackUp) * 1;
+            int healBonus = ShopBuffStore.GetLevel(ShopBuffType.HealPower) * 2;
+
+            maxHp = data.maxHealth + hpBonus;
+            attackBonus = atkBonus;
+
+            // Healer stats increased only if healAmount > 0 originally
+            healAmount = (data.healAmount > 0f) ? (data.healAmount + healBonus) : 0f;
+
+            healRange = data.healRange;
+            healSpeed = data.healSpeed;
+
+            if (setHpToMax) hp = maxHp;
+            else hp = Mathf.Clamp(hp, 0f, maxHp);
+        }
     }
 
     // Single-pixel white sprite for line drawing and Tile fills
@@ -237,17 +293,13 @@ public class Board : MonoBehaviour
             { healTimers.Remove(k); continue; }
 
             var md = inst.data;
-            if (md.healAmount <= 0f || md.healSpeed <= 0f)
+            if (inst.healAmount <= 0f || inst.healSpeed <= 0f)
             { healTimers.Remove(k); continue; }
 
-            int finalHeal = Mathf.RoundToInt(md.healAmount * healMult);
+            int finalHeal = Mathf.RoundToInt(inst.healAmount * healMult);
+            float interval = inst.healSpeed;
 
-            float interval = md.healSpeed;
-            if (!healTimers.TryGetValue(k, out var last)) last = 0f;
-            if (Time.time - last < interval) continue;
-
-            // Build candidates in Manhattan range
-            int range = Mathf.Clamp(Mathf.RoundToInt(md.healRange + rangeAdd), 0, 3);
+            int range = Mathf.Clamp(Mathf.RoundToInt(inst.healRange + rangeAdd), 0, 99);
             Vector2Int? best = null;
             int bestDist = int.MaxValue;
             float bestFrac = 1f; // Lower is better
@@ -485,7 +537,7 @@ public class Board : MonoBehaviour
 
         inst.hp = Mathf.Max(0f, inst.hp - amount);
         monsters[cell] = inst;
-        UpdateTileHPVisual(cell, inst.hp, inst.data.maxHealth);
+        UpdateTileHPVisual(cell, inst.hp, inst.maxHp);
 
         // --- Choose and play a hurt SFX ---
         AudioClip clip = sfxOverride;
@@ -518,12 +570,12 @@ public class Board : MonoBehaviour
     {
         if (!monsters.TryGetValue(cell, out var inst) || inst.data == null) return false;
         if (inst.hp <= 0f) return false; // cannot heal dead tiles
-        float newHp = Mathf.Min(inst.data.maxHealth, inst.hp + amount);
+        float newHp = Mathf.Min(inst.maxHp, inst.hp + amount);
         if (Mathf.Approximately(newHp, inst.hp)) return false;
 
         inst.hp = newHp;
         monsters[cell] = inst;
-        UpdateTileHPVisual(cell, inst.hp, inst.data.maxHealth);
+        UpdateTileHPVisual(cell, inst.hp, inst.maxHp);
         return true;
     }
 
@@ -611,7 +663,7 @@ public class Board : MonoBehaviour
                         float dmgMult = (gc ? gc.monsterDamageMult : 1f);
                         float gaugeMult = (gc ? gc.monsterSpecialGainMult : 1f);
 
-                        int dmg = Mathf.RoundToInt(inst.data.attackPower * dmgMult);
+                        int dmg = Mathf.RoundToInt(inst.data.attackPower * dmgMult) + inst.attackBonus;
                         dmgRow += Mathf.Max(1, dmg); // Alive monsters always contribute at least 1 damage
 
                         float gauge = inst.data.specialGaugeGain * gaugeMult;
@@ -742,7 +794,7 @@ public class Board : MonoBehaviour
         {
             if (!monsters.TryGetValue(cell, out var inst) || inst.data == null) continue;
 
-            float max = Mathf.Max(0f, inst.data.maxHealth);
+            float max = Mathf.Max(0f, inst.maxHp);
             if (inst.hp < max) // Includes reviving from 0
             {
                 inst.hp = max;
@@ -842,7 +894,7 @@ public class Board : MonoBehaviour
                         float dmgMult = (gc ? gc.monsterDamageMult : 1f);
                         float gaugeMult = (gc ? gc.monsterSpecialGainMult : 1f);
 
-                        int dmg = Mathf.RoundToInt(inst.data.attackPower * dmgMult);
+                        int dmg = Mathf.RoundToInt(inst.data.attackPower * dmgMult) + inst.attackBonus;
                         damageFromMonsters += Mathf.Max(1, dmg); // Alive monsters always contribute at least 1 damage
 
                         float gauge = inst.data.specialGaugeGain * gaugeMult;
@@ -1015,15 +1067,21 @@ public class Board : MonoBehaviour
 
     public void SetMonsterAt(Vector2Int cell, MonsterInstance inst)
     {
-        if (inst.data && inst.hp <= 0f)
-            inst.hp = inst.data.maxHealth;
+        if (inst.data)
+        {
+            inst.RecalcFromData(setHpToMax: false); // Ensure runtime stats exist (and clamp hp to new max)
+
+            // If hp was not initialized, start at full.
+            if (inst.hp <= 0f)
+                inst.hp = inst.maxHp;
+        }
 
         monsters[cell] = inst;
-        UpdateTileHPVisual(cell, inst.hp, inst.data ? inst.data.maxHealth : 0f);
+        UpdateTileHPVisual(cell, inst.hp, inst.data ? inst.maxHp : 0f);
 
-        // Initialize healer timer if needed
-        if (inst.data && inst.data.healAmount > 0f)
-            healTimers[cell] = Time.time; // Next tick starts from now
+        // Initialize healer timer if needed (uses buffed healAmount)
+        if (inst.data && inst.healAmount > 0f)
+            healTimers[cell] = Time.time;
     }
 
     void CleanOrphanedTiles()

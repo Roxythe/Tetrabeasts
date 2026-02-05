@@ -28,16 +28,16 @@ public class GameController : MonoBehaviour
 
     [Header("Drop Speed Progression")]
     [SerializeField] TMP_Text levelTimerText;
-    [SerializeField] float startFallInterval = 1.0f;               // Level 1 Gravity baseline 
+    [SerializeField] float startFallInterval = 1.0f; 
 
     [SerializeField] float minFallInterval = 0.10f;                // Clamp (fastest allowed)
-    [SerializeField] float fallIntervalDecreasePerSecond = 0.01f;  // In-level ramp (shrinks interval over time)
+    [SerializeField] float fallIntervalDecreasePerSecond = 0.008f;  // In-level ramp (shrinks interval over time)
 
     // Smooth non-compounding per-level start speed
     [SerializeField] float baseLevelGravity = 1.0f;                // Level 1 gravity baseline
     [SerializeField] float gravityIncreasePerLevel = 0.15f;        // Added each new level 
 
-    // Runtime cache
+    // Runtime cache 
     float _level1FallInterval;        // Snapshot of Level 1 baseline interval
     float _levelTimer = 0f;
     float _thisLevelStartInterval;    // Computed at each level start
@@ -135,7 +135,7 @@ public class GameController : MonoBehaviour
     public TMP_Text unitLivesText;
     public Slider unitLivesSlider;
 
-    // -------- RUN MODIFIERS (reset each run) --------
+    // =========== Run Modifiers (reset each run) ===========
     [Header("Run Modifiers (runtime)")]
     public float enemyAttackIntervalMult = 1f;     // < 1 = attacks faster, > 1 = slower
     public float enemyProjectileDamageMult = 1f;   // > 1 = more damage
@@ -162,6 +162,14 @@ public class GameController : MonoBehaviour
     public float currencyPerRoundWinMult = 1f;
     public float lineClearCurrencyChanceAdd = 0f;
     public float lineClearCurrencyAmountMult = 1f;
+
+    // =========== Shop Buff Effective Values ===========
+    int EffectiveMaxUnitLives => maxUnitLives + ShopBuffEffects.UnitLivesBonus; // Unit Lives Up: +2 per level
+    float EffectivePieceGravityMult => Mathf.Max(0.01f, pieceGravityMult) * ShopBuffEffects.GravityMultiplier; // Gravity Down: slows falling (mult < 1 => slower because interval /= mult)
+    float EffectiveFallRampRateMult => Mathf.Max(0f, fallRampRateMult) * ShopBuffEffects.VelocityMultiplier; // Velocity Down: slows ramping (mult < 1 => slower ramp)
+    float EffectiveCurrencyChancePerClearedRow => // Gold Up: +2% chance per level
+        Mathf.Clamp01(currencyChancePerClearedRow + lineClearCurrencyChanceAdd + ShopBuffEffects.GoldChanceBonus);
+    float EffectiveLuck => luck + ShopBuffEffects.LuckBonus; // Luck Up: +10 per level 
 
     readonly Queue<TetrominoData> bag = new();
     public int score { get; private set; }
@@ -198,7 +206,7 @@ public class GameController : MonoBehaviour
         _level1FallInterval = startFallInterval; // Cache initial value
 
         // Initialize unit lives
-        unitLives = maxUnitLives;
+        unitLives = EffectiveMaxUnitLives;
         SetupUnitLivesUI();
 
         if (gameBoard != null)
@@ -241,8 +249,7 @@ public class GameController : MonoBehaviour
         if (closeRunModsButton)
             closeRunModsButton.onClick.AddListener(CloseRunModsPanel);
 
-        // Ensure it starts closed
-        if (runModsPanelRoot) runModsPanelRoot.SetActive(false);
+        if (runModsPanelRoot) runModsPanelRoot.SetActive(false); // Ensure it starts closed
 
         // Apply character special gauge max
         if (selectedCharacter && selectedCharacter.specialGaugeMax > 0f)
@@ -436,7 +443,7 @@ public class GameController : MonoBehaviour
 
         // Make sure there is a valid, non-null head before dequeue
         var head = PeekSafeHead();
-        if (head == null) { return; } // nothing valid to spawn; caller will try again later
+        if (head == null) { return; } // Nothing valid to spawn; caller will try again later
 
         // Dequeue the aligned pair
         var data = bag.Dequeue();
@@ -594,14 +601,18 @@ public class GameController : MonoBehaviour
             UpdateSpecialUI();
         }
 
-        // Chance-based currency drops: +1 per cleared row with probability
+        // Chance-based currency drops
         if (rowsCleared > 0)
         {
             for (int i = 0; i < rowsCleared; i++)
             {
-                if (Random.value <= currencyChancePerClearedRow)
+                float chance = EffectiveCurrencyChancePerClearedRow;
+
+                if (Random.value <= chance)
                 {
-                    CurrencyStore.Add(1);
+                    int amount = Mathf.Max(1, Mathf.RoundToInt(1f * lineClearCurrencyAmountMult));
+                    CurrencyStore.Add(amount);
+
                     if (currencyUI) currencyUI.Refresh();
 
                     // Pick a cleared row
@@ -685,7 +696,7 @@ public class GameController : MonoBehaviour
         if (!enemyCastleUI)
             enemyCastleUI = FindFirstObjectByType<EnemyCastleUI>(FindObjectsInactive.Include);
 
-        currentCastleData = data; // for external reference if needed
+        currentCastleData = data; // For external reference if needed
 
         if (enemyCastleUI && data)
         {
@@ -809,9 +820,8 @@ public class GameController : MonoBehaviour
 
         RunModsStore.EnemyCastleHpMult = enemyCastleHpMult;
 
-        RunModsStore.Luck = luck;
+        RunModsStore.Luck = EffectiveLuck;
         RunModsStore.Misfortune = misfortune;
-
     }
 
     void ContinueAfterRoundRewards()
@@ -821,7 +831,6 @@ public class GameController : MonoBehaviour
         else
             EndRunAsWin();
     }
-
 
     private System.Collections.IEnumerator CoStartNextLevel()
     {
@@ -919,7 +928,7 @@ public class GameController : MonoBehaviour
                     // Refund lives by number of dead units at cast time (cap at max)
                     if (deadBefore > 0)
                     {
-                        unitLives = Mathf.Clamp(unitLives + deadBefore, 0, maxUnitLives);
+                        unitLives = Mathf.Clamp(unitLives + deadBefore, 0, EffectiveMaxUnitLives);
                         UpdateUnitLivesUI();
                     }
 
@@ -1349,7 +1358,7 @@ public class GameController : MonoBehaviour
         ResetRunMods();
 
         // Reset Level 1 difficulty baseline + unit lives
-        unitLives = maxUnitLives;
+        unitLives = EffectiveMaxUnitLives;
         SetupUnitLivesUI();
 
         _lastLevelInitialized = -999;
@@ -1534,13 +1543,12 @@ public class GameController : MonoBehaviour
     float GetCurrentFallInterval()
     {
         // During the level, the interval shrinks over time => drops faster.
-        float ramp = fallIntervalDecreasePerSecond * Mathf.Max(0f, fallRampRateMult);
+        float ramp = fallIntervalDecreasePerSecond * EffectiveFallRampRateMult;
         float interval = _thisLevelStartInterval - (_levelTimer * ramp);
+  
+        interval /= EffectivePieceGravityMult; // Apply existing gravity modifier (>1 = faster, <1 = slower)
 
-        // Apply existing gravity modifier ( >1 = faster, <1 = slower )
-        interval /= Mathf.Max(0.01f, pieceGravityMult);
-
-        return Mathf.Max(minFallInterval, interval);
+        return Mathf.Max(minFallInterval, interval);  
     }
 
     void UpdateLevelTimerUI()
@@ -1558,7 +1566,7 @@ public class GameController : MonoBehaviour
         if (unitLivesSlider)
         {
             unitLivesSlider.minValue = 0;
-            unitLivesSlider.maxValue = maxUnitLives;
+            unitLivesSlider.maxValue = EffectiveMaxUnitLives;
         }
 
         UpdateUnitLivesUI();
@@ -1566,8 +1574,10 @@ public class GameController : MonoBehaviour
 
     void UpdateUnitLivesUI()
     {
+        int max = EffectiveMaxUnitLives;
+
         if (unitLivesText)
-            unitLivesText.text = $"{unitLives} / {maxUnitLives}";
+            unitLivesText.text = $"{unitLives} / {max}";
 
         if (unitLivesSlider)
             unitLivesSlider.value = unitLives;

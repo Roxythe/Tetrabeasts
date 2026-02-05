@@ -16,15 +16,15 @@ public class Piece : MonoBehaviour
     public float fallInterval = 0.8f;
     public float lockDelay = 0.3f;
 
-    [HideInInspector] public TetrominoData data;  // assigned by controller
+    [HideInInspector] public TetrominoData data; // Assigned by controller
     [HideInInspector] public Color color = Color.cyan;
 
-    Vector2Int origin;               // rotation/translation origin
+    Vector2Int origin; // Rotation/translation origin
     readonly List<Vector2Int> cells = new();
     readonly List<RectTransform> visuals = new();
     readonly List<MonsterData> monstersForCells = new();
     readonly List<RectTransform> hintOverlays = new();
-    static readonly Color hintColor = new Color(1f, 0f, 0f, 0.25f); // light red
+    static readonly Color hintColor = new Color(1f, 0f, 0f, 0.25f); // Light red
 
     float fallTimer = 0f, lockTimer;
 
@@ -51,11 +51,11 @@ public class Piece : MonoBehaviour
     {
         board.RecomputeCellMetrics();
 
-        // center top
+        // Center top
         origin = new Vector2Int(board.width / 2, board.height);
         foreach (var c in data.cells) cells.Add(origin + c);
 
-        // if blocked, try one row lower; else game over
+        // If blocked, try one row lower; else game over
         if (!board.Valid(cells.ToArray()))
         {
             Shift(Vector2Int.down);
@@ -76,7 +76,7 @@ public class Piece : MonoBehaviour
         if (gc != null && gc.IsPaused)
             return;
 
-        // INPUT
+        // Input handling
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
         if (Keyboard.current.leftArrowKey.wasPressedThisFrame)  TryMove(Vector2Int.left);
         if (Keyboard.current.rightArrowKey.wasPressedThisFrame) TryMove(Vector2Int.right);
@@ -106,7 +106,7 @@ public class Piece : MonoBehaviour
             return;
         }
 
-        // GRAVITY
+        // Gravity
         fallTimer += Time.deltaTime;
         if (fallTimer >= fallInterval)
         {
@@ -137,7 +137,7 @@ public class Piece : MonoBehaviour
         {
             var c = cells[i];
 
-            // Root = transparent container (border drawn by Edge_* children)
+            // Base tile
             var img = Instantiate(activeTilePrefab, board.gridRoot);
             var rt = img.rectTransform;
 
@@ -148,18 +148,18 @@ public class Piece : MonoBehaviour
             var anyOutline = img.GetComponent<UnityEngine.UI.Outline>();
             if (anyOutline) Destroy(anyOutline);
 
-            // size/position
+            // Size/position
             rt.sizeDelta = board.GetCellSize();
             rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
             rt.localScale = Vector3.one;
             rt.anchoredPosition = board.CellToAnchoredPos(c);
 
-            // pick outline color (gold while immune, otherwise black)
+            // Pick outline color (gold while immune, otherwise black)
             var gc = FindFirstObjectByType<GameController>();
             Color borderColor = (gc && gc.immunityActive) ? board.immuneBorderColor : board.normalBorderColor;
             board.SetInlineBorderColor(rt, borderColor);
 
-            // Build inner fill FIRST so ApplySharedEdges can resize it correctly on shared edges
+            // Build inner fill first so ApplySharedEdges can resize it correctly on shared edges
             var fillGO = new GameObject("ActiveFill", typeof(UnityEngine.UI.Image));
             var fill = fillGO.GetComponent<UnityEngine.UI.Image>();
             fill.raycastTarget = false;
@@ -172,9 +172,9 @@ public class Piece : MonoBehaviour
             frt.anchorMin = frt.anchorMax = new Vector2(0.5f, 0.5f);
             frt.sizeDelta = rt.sizeDelta;
             frt.anchoredPosition = Vector2.zero;
-            frt.SetAsFirstSibling(); // icons/portraits sit on top
+            frt.SetAsFirstSibling(); // Icons/portraits sit on top
 
-            // halve thickness on shared edges (active-active OR active-placed)
+            // Halve thickness on shared edges
             bool L = activeSet.Contains(c + Vector2Int.left) || (board.InBounds(c + Vector2Int.left) && !board.IsFree(c + Vector2Int.left));
             bool R = activeSet.Contains(c + Vector2Int.right) || (board.InBounds(c + Vector2Int.right) && !board.IsFree(c + Vector2Int.right));
             bool U = activeSet.Contains(c + Vector2Int.up) || (board.InBounds(c + Vector2Int.up) && !board.IsFree(c + Vector2Int.up));
@@ -182,7 +182,7 @@ public class Piece : MonoBehaviour
 
             board.ApplySharedEdges(rt, L, R, U, D);
 
-            // Portrait/special icon (parented to inner fill so it always matches varying border thickness)
+            // Portrait/special icon
             var innerRT = frt;
             if (isSpecial && data.specialSprite != null)
             {
@@ -232,11 +232,11 @@ public class Piece : MonoBehaviour
 
             visuals[i].anchoredPosition = board.CellToAnchoredPos(cells[i]);
 
-            // After we move/rotate, shared edges can change — recompute thickness per tile.
+            // Recompute per-edge border thickness
             var activeSet = new HashSet<Vector2Int>(cells);
             var c = cells[i];
 
-            // shared with other active cells OR with placed tiles
+            // Shared with other active cells or with placed tiles
             bool L = activeSet.Contains(c + Vector2Int.left) || (board.InBounds(c + Vector2Int.left) && !board.IsFree(c + Vector2Int.left));
             bool R = activeSet.Contains(c + Vector2Int.right) || (board.InBounds(c + Vector2Int.right) && !board.IsFree(c + Vector2Int.right));
             bool U = activeSet.Contains(c + Vector2Int.up) || (board.InBounds(c + Vector2Int.up) && !board.IsFree(c + Vector2Int.up));
@@ -271,7 +271,7 @@ public class Piece : MonoBehaviour
         var next = new Vector2Int[cells.Count];
         for (int i = 0; i < cells.Count; i++)
         {
-            var r = cells[i] - origin;             // around origin
+            var r = cells[i] - origin; // Around origin
             var rot = new Vector2Int(r.y, -r.x);
             next[i] = origin + rot;
         }
@@ -364,7 +364,7 @@ public class Piece : MonoBehaviour
                             }
                         }
 
-                        // If we found a monster type, remove all of that type (board-wide)
+                        // Mark all monsters of that type for removal
                         if (chosen)
                         {
                             for (int y = 0; y < board.height; y++)
@@ -403,10 +403,10 @@ public class Piece : MonoBehaviour
 
                 case SpecialType.Earthquake:
                     {
-                        // SFX (once)
+                        // SFX
                         if (AudioManager.I && data.specialSFX) AudioManager.I.PlaySFX(data.specialSFX);
 
-                        // Flash: whole board (or only occupied, based on SO flag)
+                        // Flash vfx on whole board (or only occupied, based on SO flag)
                         var affectedEQ = new List<Vector2Int>();
                         for (int y = 0; y < board.height; y++)
                             for (int x = 0; x < board.width; x++)
@@ -424,7 +424,7 @@ public class Piece : MonoBehaviour
 
                         enabled = false;
                         if (gc != null && gc.CanSpawnNewPiece()) gc.SpawnNextPiece();
-                        return; // <<< IMPORTANT: stop here so we don't run the common path below
+                        return; 
                     }
             }
 
@@ -498,7 +498,7 @@ public class Piece : MonoBehaviour
     {
         enabled = false;
 
-        // Remove only the active falling tile visuals we spawned
+        // Remove only the active falling tile visuals spawned
         for (int i = 0; i < visuals.Count; i++)
         {
             if (visuals[i] != null)
@@ -529,10 +529,9 @@ public class Piece : MonoBehaviour
         ClearHints();
         if (data.special == SpecialType.None) return;
 
-        // Compute the landing cell for the special center
-        var center = cells[0];
-        // drop until blocked (or bottom)
-        var dropY = center.y;
+        var center = cells[0]; // Compute the landing cell for the special center
+        var dropY = center.y; // Drop until blocked (or bottom)
+
         while (dropY > 0 && board.IsFree(new Vector2Int(center.x, dropY - 1))) dropY--;
         var landing = new Vector2Int(Mathf.Clamp(center.x, 0, board.width - 1),
                                      Mathf.Clamp(dropY, 0, board.height - 1));
@@ -612,14 +611,13 @@ public class Piece : MonoBehaviour
 
     List<Vector2Int> ComputeLandingCells()
     {
-        // Make a working copy of the current cells
-        var landing = new List<Vector2Int>(cells);
+        var landing = new List<Vector2Int>(cells); // Make a working copy of the current cells
 
         // Try dropping the copy straight down until it would collide
         bool canDrop = true;
         while (canDrop)
         {
-            // build next test
+            // Build next test
             var next = new Vector2Int[landing.Count];
             for (int i = 0; i < landing.Count; i++)
                 next[i] = landing[i] + Vector2Int.down;
@@ -649,7 +647,7 @@ public class Piece : MonoBehaviour
         ClearHints();
 
         if (gc != null && gc.disableLandingHint)
-            return; // skip if disabled by run mods
+            return; // Skip if disabled by run mods
 
         var landing = ComputeLandingCells();
         if (landing.Count == 0) return;
@@ -690,7 +688,7 @@ public class Piece : MonoBehaviour
         for (int i = 0; i < visuals.Count; i++)
         {
             var img = visuals[i] ? visuals[i].GetComponent<UnityEngine.UI.Image>() : null;
-            if (img) img.color = c;   // only the root (border)
+            if (img) img.color = c;
         }
     }
 

@@ -10,8 +10,8 @@ public class CharacterSelectUI : MonoBehaviour
     [Header("UI")]
     public Transform listParent;
     public Button characterButtonPrefab; // Text + Image
-    public TMP_Text selectedName;        // Optional preview
-    public Image selectedPortrait;       // Optional preview
+    public TMP_Text selectedName;        // Preview
+    public Image selectedPortrait;       // Preview
     public Image selectedBorder;
     public TMP_Text selectedSpecialDescription;
     public CurrencyUI currencyUI;
@@ -21,6 +21,8 @@ public class CharacterSelectUI : MonoBehaviour
     public AudioClip hoverSFX;
     public AudioClip unlockSFX;
     public AudioClip errorSFX;
+
+    PlayerCharacterData previewCharacter;
 
     void Awake()
     {
@@ -35,22 +37,17 @@ public class CharacterSelectUI : MonoBehaviour
             var fallback = GetFirstUnlockedCharacter();
             if (fallback != null)
             {
-                // Persist once so first-time players get a stable default.
                 SetCurrent(fallback);
             }
             else if (roster != null && roster.Length > 0)
             {
-                SetCurrent(roster[0]); // Just pick first if none unlocked
-            }
-            else
-            {
-                RefreshPreview();
+                SetCurrent(roster[0]);
             }
         }
-        else
-        {
-            RefreshPreview();
-        }
+
+        // Default preview is the current stored character
+        previewCharacter = SelectedCharacterStore.Current;
+        RefreshPreview();
     }
 
     void BuildList()
@@ -76,15 +73,19 @@ public class CharacterSelectUI : MonoBehaviour
             var unlockBtn = unlockBtnT ? unlockBtnT.GetComponent<Button>() : null;
             if (unlockBtnT) unlockBtnT.gameObject.SetActive(!unlocked);
 
-            // Block selecting locked characters
+            // Always preview on click
             btn.interactable = true;
             btn.onClick.AddListener(() =>
             {
+                previewCharacter = data;
+                RefreshPreview(); // Always show preview
+
                 if (!UnlockStore.IsUnlocked(data))
                 {
                     if (AudioManager.I && errorSFX) AudioManager.I.PlaySFX(errorSFX);
                     return;
                 }
+
                 SetCurrent(data);
             });
 
@@ -98,7 +99,6 @@ public class CharacterSelectUI : MonoBehaviour
                 unlockBtn.onClick.RemoveAllListeners();
                 unlockBtn.onClick.AddListener(() =>
                 {
-                    // Check currency
                     if (CurrencyStore.Total < data.unlockCost)
                     {
                         if (AudioManager.I && errorSFX)
@@ -116,6 +116,10 @@ public class CharacterSelectUI : MonoBehaviour
                     if (lockedImgT) lockedImgT.gameObject.SetActive(false);
                     unlockBtnT.gameObject.SetActive(false);
                     btn.interactable = true;
+
+                    // After purchase, auto-equip the character
+                    previewCharacter = data;
+                    SetCurrent(data);
                 });
             }
 
@@ -125,7 +129,8 @@ public class CharacterSelectUI : MonoBehaviour
             {
                 eventID = UnityEngine.EventSystems.EventTriggerType.PointerEnter
             };
-            enter.callback.AddListener(_ => {
+            enter.callback.AddListener(_ =>
+            {
                 if (hoverSFX && AudioManager.I) AudioManager.I.PlaySFX(hoverSFX);
             });
             evt.triggers.Add(enter);
@@ -134,6 +139,14 @@ public class CharacterSelectUI : MonoBehaviour
 
     void SetCurrent(PlayerCharacterData data)
     {
+        // Never set a locked character as current
+        if (!UnlockStore.IsUnlocked(data))
+        {
+            if (AudioManager.I && errorSFX)
+                AudioManager.I.PlaySFX(errorSFX);
+            return;
+        }
+
         SelectedCharacterStore.Save(data);
         SelectedCharacterStore.Current = data;
 
@@ -156,11 +169,13 @@ public class CharacterSelectUI : MonoBehaviour
 
     public void RefreshPreview()
     {
-        var cur = SelectedCharacterStore.Current;
+        // If nothing has been previewed yet, fall back to current selection
+        var cur = previewCharacter ? previewCharacter : SelectedCharacterStore.Current;
         if (!cur) return;
+
         if (selectedName) selectedName.text = cur.displayName;
         if (selectedPortrait && cur.portrait) selectedPortrait.sprite = cur.portrait;
-        if (selectedPortrait && cur.defaultBorder) selectedBorder.sprite = cur.defaultBorder;
+        if (selectedBorder && cur.defaultBorder) selectedBorder.sprite = cur.defaultBorder;
         if (selectedSpecialDescription) selectedSpecialDescription.text = cur.specialDescription;
     }
 
@@ -171,5 +186,4 @@ public class CharacterSelectUI : MonoBehaviour
             if (t.name == name) return t;
         return null;
     }
-
 }
