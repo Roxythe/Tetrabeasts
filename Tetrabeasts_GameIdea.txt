@@ -27,6 +27,9 @@
 
 *** KNOWN BUGS ***
 
+- When debuff selected on round won panel closes before gameplay level is reloaded showing previous board while loading occurs. Just leave panel open until gameplayscene loads for next level
+
+
 - Elise full revival special may not be healing to full health now with shop buff modiferes, check to make sure using instance maxhp from board and not data max hp from monsterdata
 
 *** PERSISTENT DATA ***

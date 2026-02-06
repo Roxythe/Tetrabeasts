@@ -24,6 +24,7 @@ public class AudioManager : MonoBehaviour
 
     private AudioSource musicSrc;
     private AudioSource sfxSrc;
+    AudioSource uiSfxSrc;
 
     const string K_Master = "vol_master";
     const string K_Music = "vol_music";
@@ -37,10 +38,14 @@ public class AudioManager : MonoBehaviour
 
         musicSrc = gameObject.AddComponent<AudioSource>();
         sfxSrc = gameObject.AddComponent<AudioSource>();
+        uiSfxSrc = gameObject.AddComponent<AudioSource>();
 
         musicSrc.loop = true;
         musicSrc.playOnAwake = false;
         sfxSrc.playOnAwake = false;
+        uiSfxSrc.ignoreListenerPause = true;
+
+        if (sfxGroup) uiSfxSrc.outputAudioMixerGroup = sfxGroup;
 
         musicSrc.spatialBlend = 0f;  // 2D
         sfxSrc.spatialBlend = 0f;
@@ -55,7 +60,7 @@ public class AudioManager : MonoBehaviour
 
     void Start()
     {
-        // Load saved volumes (default to inspector values)
+        // Load saved volumes
         if (PlayerPrefs.HasKey(K_Music)) SetMusicVolume(PlayerPrefs.GetFloat(K_Music, musicVolume));
         if (PlayerPrefs.HasKey(K_SFX)) SetSFXVolume(PlayerPrefs.GetFloat(K_SFX, sfxVolume));
         if (PlayerPrefs.HasKey(K_Master)) SetMasterVolume(PlayerPrefs.GetFloat(K_Master, masterVolume));
@@ -84,28 +89,34 @@ public class AudioManager : MonoBehaviour
 
     public void PlayPreviewSFX()
     {
-        // Prefer your random line-clear pool; fall back to any existing one-shot
-        if (sfxLineClears != null && sfxLineClears.Length > 0) { PlayRandomLineClear(); return; }
-        if (sfxRestart) { PlaySFX(sfxRestart); return; }
-        if (sfxGameOver) { PlaySFX(sfxGameOver); return; }
+        // Prefer your random line-clear pool, fall back to any existing one-shot
+        if (sfxLineClears != null && sfxLineClears.Length > 0)
+        {
+            var clip = PickRandom(sfxLineClears);
+            PlayUISFX(clip);
+            return;
+        }
+
+        if (sfxRestart) { PlayUISFX(sfxRestart); return; }
+        if (sfxGameOver) { PlayUISFX(sfxGameOver); return; }
     }
 
     bool MixerHasParam(string name)
     {
         if (!mixer) return false;
         float _;
-        return mixer.GetFloat(name, out _); // true only if param exists
+        return mixer.GetFloat(name, out _); // True only if param exists
     }
 
     public void SetMasterVolume(float linear)
     {
         masterVolume = Mathf.Clamp01(linear);
 
-        // If the MasterVolume exposed param exists, drive it; otherwise just scale the sources
+        // If the MasterVolume exposed param exists, drive it, otherwise just scale the sources
         if (mixer && MixerHasParam("MasterVolume"))
             mixer.SetFloat("MasterVolume", Mathf.Log10(Mathf.Max(0.0001f, masterVolume)) * 20f);
 
-        // Base-level scaling even when no mixer (or as an extra guard)
+        // Base-level scaling even when no mixer
         musicSrc.volume = masterVolume * musicVolume;
         sfxSrc.volume = masterVolume * sfxVolume;
 
@@ -117,7 +128,7 @@ public class AudioManager : MonoBehaviour
         musicVolume = Mathf.Clamp01(linear);
         if (mixer && musicGroup && MixerHasParam("MusicVolume"))
             mixer.SetFloat("MusicVolume", Mathf.Log10(Mathf.Max(0.0001f, musicVolume)) * 20f);
-        musicSrc.volume = masterVolume * musicVolume; // multiply by master
+        musicSrc.volume = masterVolume * musicVolume; // Multiply by master
         PlayerPrefs.SetFloat(K_Music, musicVolume); PlayerPrefs.Save();
     }
     public void SetSFXVolume(float linear)
@@ -125,7 +136,7 @@ public class AudioManager : MonoBehaviour
         sfxVolume = Mathf.Clamp01(linear);
         if (mixer && sfxGroup && MixerHasParam("SFXVolume"))
             mixer.SetFloat("SFXVolume", Mathf.Log10(Mathf.Max(0.0001f, sfxVolume)) * 20f);
-        sfxSrc.volume = masterVolume * sfxVolume;     // multiply by master
+        sfxSrc.volume = masterVolume * sfxVolume; // Multiply by master
         PlayerPrefs.SetFloat(K_SFX, sfxVolume); PlayerPrefs.Save();
     }
 
@@ -138,6 +149,19 @@ public class AudioManager : MonoBehaviour
     public void PlayRandomLineClear(float vol = 1f)
     {
         var clip = PickRandom(sfxLineClears);
-        PlaySFX(clip, vol);
+        PlayUISFX(clip, vol);
     }
+
+    public void PlayUISFX(AudioClip clip, float vol = 1f, float pitch = 1f, bool jitter = true)
+    {
+        if (!clip) return;
+
+        float p = pitch;
+        if (jitter) p += Random.Range(-sfxPitchJitter, sfxPitchJitter);
+
+        uiSfxSrc.pitch = Mathf.Clamp(p, 0.5f, 2f);
+        uiSfxSrc.PlayOneShot(clip, vol);
+        uiSfxSrc.pitch = 1f; // Reset
+    }
+
 }

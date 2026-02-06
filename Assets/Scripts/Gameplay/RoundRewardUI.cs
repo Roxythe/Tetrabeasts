@@ -28,10 +28,20 @@ public class RoundRewardUI : MonoBehaviour
     public RunModOptionButton optionButtonPrefab;
     public TMP_Text currnecyGained;
 
+    [Header("Hooked SFX")]
+    public GameplayUI_SFXHook _sfxHook;
+
     RunModifierSO _selectedBuff;
     RunModifierSO _selectedDebuff;
 
     Action<RunModifierSO, RunModifierSO> _onComplete;
+
+
+    void OnEnable()
+    {
+        _sfxHook = GetComponentInParent<GameplayUI_SFXHook>();
+        if (!_sfxHook) _sfxHook = FindFirstObjectByType<GameplayUI_SFXHook>();
+    }
 
     public void Show(RunModifierSO[] buffPool, RunModifierSO[] debuffPool, Action<RunModifierSO, RunModifierSO> onComplete,
                      int currencyGained)
@@ -81,6 +91,7 @@ public class RoundRewardUI : MonoBehaviour
         foreach (var mod in picks)
         {
             var btn = Instantiate(optionButtonPrefab, container);
+            _sfxHook?.HookButton(btn.GetComponent<Button>()); // Hook SFX onto the instantiated button
             btn.Bind(mod, selected =>
             {
                 // Clear all highlights

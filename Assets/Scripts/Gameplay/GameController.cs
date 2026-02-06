@@ -129,8 +129,8 @@ public class GameController : MonoBehaviour
     public bool IsPaused => isPaused;
 
     [Header("Unit Lives")]
-    public int maxUnitLives = 10;
-    [SerializeField] int unitLives = 10;
+    public int maxUnitLives = 10; // Base (starting unit lives)
+    [SerializeField] int unitLives = 20; // Current lives (Based on max + buffs)
 
     public TMP_Text unitLivesText;
     public Slider unitLivesSlider;

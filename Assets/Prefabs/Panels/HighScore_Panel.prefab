@@ -1320,6 +1320,8 @@ MonoBehaviour:
   panel: {fileID: 4582190956100820159}
   nameInput: {fileID: 7989424968699688014}
   submitButton: {fileID: 5252075410322615281}
+  restartButton: {fileID: 0}
+  mainMenuButton: {fileID: 0}
   tableRoot: {fileID: 2892557774589681352}
   rowPrefab: {fileID: 4050333934474277149, guid: c4df36534ac569b498fbe9c4b28fcb67, type: 3}
 --- !u!1 &5062140448683878761
