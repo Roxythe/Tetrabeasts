@@ -311,18 +311,10 @@ public class TitleMenuUI : MonoBehaviour
             b.onClick.AddListener(() => { if (AudioManager.I) AudioManager.I.PlaySFX(uiClickSFX); });
 
             // Hover
-            var hover = b.gameObject.GetComponent<UIButtonSFX>();
-            if (!hover) hover = b.gameObject.AddComponent<UIButtonSFX>();
+            var hover = b.gameObject.GetComponent<global::UIButtonSFX>();
+            if (!hover) hover = b.gameObject.AddComponent<global::UIButtonSFX>();
             hover.hoverClip = uiHoverSFX;
-        }
-    }
-
-    public sealed class UIButtonSFX : MonoBehaviour, IPointerEnterHandler
-    {
-        public AudioClip hoverClip;
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            if (hoverClip && AudioManager.I) AudioManager.I.PlaySFX(hoverClip, 1f, 1f);
+            hover.clickClip = uiClickSFX;
         }
     }
 

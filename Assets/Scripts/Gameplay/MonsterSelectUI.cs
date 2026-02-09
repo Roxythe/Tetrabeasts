@@ -366,7 +366,7 @@ public class MonsterSelectUI : MonoBehaviour
             healLine = "Heal: —";
         }
 
-        return $"{hpLine}\n{atkLine}\n{healLine}";
+        return $"Base Stats + (Shop Buff) = Total Stats\n{hpLine}\n{atkLine}\n{healLine}";
     }
 
     void ClearPreview()

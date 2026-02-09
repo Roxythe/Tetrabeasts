@@ -78,4 +78,29 @@ public static class MonsterSkinStore
 
         return md.portrait;
     }
+
+    public static Sprite GetAttackSprite(MonsterData md)
+    {
+        if (!md) return null;
+
+        int idx = GetValidSelected(md);
+
+        if (md.skinAttackSprites != null && idx < md.skinAttackSprites.Length && md.skinAttackSprites[idx])
+            return md.skinAttackSprites[idx];
+
+        return md.attackSprite ? md.attackSprite : md.portrait;
+    }
+
+    public static Sprite GetAttackAltSprite(MonsterData md)
+    {
+        if (!md) return null;
+
+        int idx = GetValidSelected(md);
+
+        if (md.skinAttackSpritesAlt != null && idx < md.skinAttackSpritesAlt.Length && md.skinAttackSpritesAlt[idx])
+            return md.skinAttackSpritesAlt[idx];
+
+        return md.attackSpriteAlt;
+    }
+
 }

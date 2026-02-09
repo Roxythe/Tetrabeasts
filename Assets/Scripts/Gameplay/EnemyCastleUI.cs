@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 using TMPro;
 
 public class EnemyCastleUI : MonoBehaviour
@@ -21,6 +22,19 @@ public class EnemyCastleUI : MonoBehaviour
     public Image bossOverlayImage;             // Drag your Boss_Image here
     public Vector2 bossOverlaySize = Vector2.zero; // Optional fixed size; leave (0,0) to inherit castle size
     public Vector2 bossOverlayOffset = Vector2.zero; // Fine-tune placement
+
+    [Header("Invulnerability VFX")]
+    public Image invulnShieldImageA;
+    public Image invulnShieldImageB; 
+    public Image healthBarFillImage;         // The Image component used to tint the health bar fill
+
+    [Tooltip("Health bar fill color while invulnerable (silver/gray).")]
+    public Color invulnHealthBarColor = new Color(0.75f, 0.75f, 0.75f, 1f);
+
+    bool _invulnerable = false;
+    Coroutine _invulnCR;
+    Color _normalHealthBarColor = Color.white;
+    bool _capturedHealthBarColor = false;
 
     CastleData sourceData;
     int _lastStageIndex = -1;
@@ -57,6 +71,9 @@ public class EnemyCastleUI : MonoBehaviour
             healthBarSlider.value = currentHP;
         }
 
+        CacheNormalHealthBarColorIfNeeded();
+        SetInvulnerabilityVFX(false);
+
         _lastStageIndex = -1;
         UpdateVisuals();
         SetupBossOverlay();
@@ -91,26 +108,32 @@ public class EnemyCastleUI : MonoBehaviour
             healthBarSlider.value = currentHP;
         }
 
+        CacheNormalHealthBarColorIfNeeded();
+        SetInvulnerabilityVFX(false);
+
         _lastStageIndex = -1;
         UpdateVisuals();
         SetupBossOverlay();
     }
 
-    // Call this whenever you deal damage to the castle
+    // Call this whenever damage to the castle occurs
     public void ApplyDamage(int dmg)
     {
         if (dmg <= 0 || sourceData == null) return;
 
+        if (_invulnerable)
+        {
+            // Play special invuln hit SFX (different from normal)
+            if (AudioManager.I && sourceData.bossInvulnHitSFX)
+                AudioManager.I.PlaySFX(sourceData.bossInvulnHitSFX);
+            return;
+        }
+
         currentHP = Mathf.Max(0, currentHP - dmg);
         UpdateVisuals();
 
-        // optional: hit sfx/flash here
-        // if (AudioManager.I) AudioManager.I.PlaySFX(AudioManager.I.sfxCastleHit);
-
         if (currentHP <= 0)
-        {
             OnCastleDestroyed();
-        }
     }
 
     void UpdateVisuals()
@@ -136,16 +159,13 @@ public class EnemyCastleUI : MonoBehaviour
             }
 
             _lastStageIndex = stageIndex;
-
-            // Update the sprite
-            castleImage.sprite = sourceData.GetSpriteForHealth(hpPercent);
+            castleImage.sprite = sourceData.GetSpriteForHealth(hpPercent); // Update the sprite
         }
     }
 
     void OnCastleDestroyed()
     {
-        // We'll let GameController decide what to do on win
-        Debug.Log("Castle destroyed! Player wins level.");
+        Debug.Log("Castle destroyed! Player wins level.");  // Let GameController decide what to do on win
     }
 
     void SetupBossOverlay()
@@ -168,5 +188,72 @@ public class EnemyCastleUI : MonoBehaviour
             brt.sizeDelta = bossOverlaySize;
     }
 
+
+    public void StartInvulnerability(float seconds)
+    {
+        if (seconds <= 0f) return;
+
+        if (_invulnCR != null) StopCoroutine(_invulnCR);
+        _invulnCR = StartCoroutine(InvulnRoutine(seconds));
+    }
+
+    IEnumerator InvulnRoutine(float seconds)
+    {
+        // Turn on invulnerability images
+        _invulnerable = true;
+
+        SetInvulnerabilityVFX(true);
+
+        yield return new WaitForSeconds(seconds);
+
+        _invulnerable = false;
+        SetInvulnerabilityVFX(false);
+        _invulnCR = null;
+    }
+
+    // ================= Invulnerability UI VFX =================
+
+    Image GetHealthFillImage()
+    {
+        if (healthBarFillImage) return healthBarFillImage;
+
+        if (healthBarSlider && healthBarSlider.fillRect)
+        {
+            var img = healthBarSlider.fillRect.GetComponent<Image>();
+            if (img)
+            {
+                healthBarFillImage = img; // cache for future
+                return img;
+            }
+        }
+
+        return null;
+    }
+
+    void CacheNormalHealthBarColorIfNeeded()
+    {
+        if (_capturedHealthBarColor) return;
+
+        var fill = GetHealthFillImage();
+        if (!fill) return;
+
+        _normalHealthBarColor = fill.color;
+        _capturedHealthBarColor = true;
+    }
+
+    void SetInvulnerabilityVFX(bool on)
+    {
+        // Turn on/off both shield images
+        if (invulnShieldImageA) invulnShieldImageA.enabled = on;
+        if (invulnShieldImageB) invulnShieldImageB.enabled = on;
+
+        // Tint health bar fill
+        var fill = GetHealthFillImage();
+        if (fill)
+        {
+            CacheNormalHealthBarColorIfNeeded();
+            fill.color = on ? invulnHealthBarColor : _normalHealthBarColor;
+        }
+    }
 
 }

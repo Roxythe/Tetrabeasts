@@ -35,6 +35,73 @@ public class CastleData : ScriptableObject
     public AudioClip levelBGM;
     [Range(0f, 1f)] public float levelBGMVolume = 0.5f;
 
+    [Header("Obstacle / Trap Overrides (Optional)")]
+    [Tooltip("If enabled, this CastleData can override the level's initial obstacle/trap counts.")]
+    public bool overrideInitialObstacles = false;
+
+    [Tooltip("Only apply overrides on Level 1 (recommended).")]
+    public bool overridesOnlyForLevel1 = true;
+
+    [Tooltip("Set to -1 to use ObstacleManager's normal formula.")]
+    public int overrideStoneCount = -1;
+
+    [Tooltip("Set to -1 to use ObstacleManager's normal formula.")]
+    public int overridePoisonCount = -1;
+
+    [Tooltip("Set to -1 to use ObstacleManager's normal formula.")]
+    public int overrideFireCount = -1;
+
+    [Tooltip("Set to -1 to use ObstacleManager's normal formula.")]
+    public int overrideSpikeCount = -1;
+
+    // ================= Boss Abilities =================
+    [Header("Boss Abilities - Toggles")]
+    public bool bossEnableRowBlast = true;
+    public bool bossEnableFullBoardBlast = false;
+    public bool bossEnableLightningStrike = true;
+    public bool bossEnableSpawnTraps = true;
+    public bool bossEnableInvulnerability = true;
+    public bool bossEnableGravityBoost = true;
+
+    [Header("Boss Abilities - Global Timing")]
+    [Min(0.25f)] public float bossAbilityIntervalMin = 4f;
+    [Min(0.25f)] public float bossAbilityIntervalMax = 7f;
+
+    [Header("Boss - Row Blast (Top 3 rows from highest monster)")]
+    [Min(0f)] public float bossRowBlastDamage = 2f;
+
+    [Header("Boss - Full Board Blast")]
+    [Min(0f)] public float bossFullBoardDamage = 1f;
+
+    [Header("Boss - Lightning Strike")]
+    public Sprite bossLightningWarningSprite;     // Indicator that flashes before strike
+    [Min(0.25f)] public float bossLightningWarningMin = 3f;
+    [Min(0.25f)] public float bossLightningWarningMax = 5f;
+    [Min(0.01f)] public float bossLightningInitialDamage = 2f;
+    [Min(0.01f)] public float bossLightningTickDamage = 1f;
+    [Min(0.05f)] public float bossLightningTickInterval = 0.5f;
+    [Min(0.25f)] public float bossLightningHazardDuration = 4f;
+
+    // Boss - Spawn Traps
+    public enum BossTrapKind { Spike, Stone, Poison, Fire }
+    public BossTrapKind bossTrapKind = BossTrapKind.Spike;
+
+    public enum BossTrapPattern { Single, Line4, Square2x2 }
+    public BossTrapPattern bossTrapPattern = BossTrapPattern.Single;
+
+    [Min(1)] public int bossTrapCountPerUse = 1; // How many clusters/singles per cast
+
+    [Header("Boss - Invulnerability")]
+    [Min(0.25f)] public float bossInvulnDuration = 3f;
+    public Sprite bossInvulnOverlaySprite;     // Optional overlay sprite 
+    public AudioClip bossInvulnHitSFX;         // Different hit SFX when invulnerable
+
+    [Header("Boss - Gravity Boost")]
+    [Min(0.1f)] public float bossGravityBonusMult = 2f; // "add +2 gravity" => multiplies fall speed by (1+2)=3x if you implement as additive
+    [Min(0.25f)] public float bossGravityDuration = 10f;
+
+
+
     public Sprite GetSpriteForHealth(float hpPercent)
     {
         // clamp

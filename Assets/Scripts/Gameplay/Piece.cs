@@ -337,8 +337,8 @@ public class Piece : MonoBehaviour
             center.x = Mathf.Clamp(center.x, 0, board.width - 1);
             center.y = Mathf.Clamp(center.y, 0, board.height - 1);
 
-            // This list is used by Death/Bomb/Bolt only
-            var toRemove = new List<Vector2Int>();
+            var toRemove = new List<Vector2Int>(); // This list is used by Death/Bomb/Bolt only
+            var envAffected = new List<Vector2Int>(); // This list is used to clear obstacles/traps even on empty cells
 
             switch (data.special)
             {
@@ -385,25 +385,30 @@ public class Piece : MonoBehaviour
                             for (int dx = -1; dx <= 1; dx++)
                             {
                                 var c = new Vector2Int(center.x + dx, center.y + dy);
-                                if (board.InBounds(c) && !board.IsFree(c)) toRemove.Add(c);
+                                if (!board.InBounds(c)) continue;
+
+                                envAffected.Add(c); // Always include for obstacle clearing
+                                if (!board.IsFree(c)) toRemove.Add(c);
                             }
                         break;
                     }
 
                 case SpecialType.Bolt:
                     {
-                        // All blocks strictly below in same column
-                        for (int y = center.y - 1; y >= 0; y--)
+                        // Entire column including empty cells (for spike clearing)
+                        for (int y = 0; y < board.height; y++)
                         {
                             var c = new Vector2Int(center.x, y);
-                            if (!board.IsFree(c)) toRemove.Add(c);
+                            if (!board.InBounds(c)) continue;
+
+                            envAffected.Add(c);
+                            if (!board.IsFree(c)) toRemove.Add(c); // Removes any occupied tiles in the column
                         }
                         break;
                     }
 
                 case SpecialType.Earthquake:
                     {
-                        // SFX
                         if (AudioManager.I && data.specialSFX) AudioManager.I.PlaySFX(data.specialSFX);
 
                         // Flash vfx on whole board (or only occupied, based on SO flag)
@@ -413,7 +418,7 @@ public class Piece : MonoBehaviour
                                 affectedEQ.Add(new Vector2Int(x, y));
                         board.FlashCells(affectedEQ, data.specialFlashSprite, data.flashOnlyOccupied);
 
-                        board.SettleAllColumns();
+                        board.SettleAllColumns(true);
 
                         board.ClearFullLines(out int rowsEQ, out var removedEQ, out int dmgEQ, out float chargeEQ,
                                              out var rowDamageEQ, out var rowDomEQ);
@@ -428,11 +433,30 @@ public class Piece : MonoBehaviour
                     }
             }
 
-            // SFX 
+            var affectedEnv = new List<Vector2Int>();
+
+            if (data.special == SpecialType.Bomb)
+            {
+                for (int dy = -1; dy <= 1; dy++)
+                    for (int dx = -1; dx <= 1; dx++)
+                    {
+                        var c = new Vector2Int(center.x + dx, center.y + dy);
+                        if (board.InBounds(c)) affectedEnv.Add(c);
+                    }
+            }
+            else if (data.special == SpecialType.Bolt)
+            {
+                for (int y = center.y - 1; y >= 0; y--)
+                {
+                    var c = new Vector2Int(center.x, y);
+                    if (board.InBounds(c)) affectedEnv.Add(c);
+                }
+            }
+
             if (AudioManager.I && data.specialSFX) AudioManager.I.PlaySFX(data.specialSFX);
 
-            // Flash on affected cells using data flags
-            board.FlashCells(toRemove, data.specialFlashSprite, data.flashOnlyOccupied);
+            board.ApplySpecialToEnvironment(envAffected, data.special);    
+            board.FlashCells(toRemove, data.specialFlashSprite, data.flashOnlyOccupied); // Flash on affected cells using data flags
 
             // Remove targets and make only the directly-above tiles fall sparsely
             board.RemoveCellsAndFall(toRemove, out var removedA, out int dmgA, out float chargeA);
@@ -461,6 +485,8 @@ public class Piece : MonoBehaviour
 
             MonsterData md = (i < monstersForCells.Count) ? monstersForCells[i] : null;
             board.SetMonsterAt(cells[i], new Board.MonsterInstance(md));
+
+            board.ApplyFloorEffectOnPlacement(cells[i]); // Apply any floor effects on the cell as the piece locks in, which may damage or heal the monster just placed
         }
 
         foreach (var v in visuals)
@@ -551,7 +577,7 @@ public class Piece : MonoBehaviour
                 break;
 
             case SpecialType.Bolt:
-                for (int y = landing.y - 1; y >= 0; y--)
+                for (int y = 0; y < board.height; y++)
                 {
                     var c = new Vector2Int(landing.x, y);
                     if (board.InBounds(c)) affected.Add(c);

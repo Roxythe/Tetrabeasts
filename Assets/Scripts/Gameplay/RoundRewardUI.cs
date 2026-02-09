@@ -78,7 +78,16 @@ public class RoundRewardUI : MonoBehaviour
         confirmDebuffButton.onClick.RemoveAllListeners();
         confirmDebuffButton.onClick.AddListener(() =>
         {
-            rootPanel.SetActive(false);
+            // Prevent extra clicks
+            confirmDebuffButton.interactable = false;
+            confirmBuffButton.interactable = false;
+
+            // Lock the whole panel while next level loads
+            var cg = rootPanel.GetComponent<CanvasGroup>();
+            if (!cg) cg = rootPanel.AddComponent<CanvasGroup>();
+            cg.interactable = false;
+            cg.blocksRaycasts = true;
+
             _onComplete?.Invoke(_selectedBuff, _selectedDebuff);
         });
     }
@@ -246,6 +255,21 @@ public class RoundRewardUI : MonoBehaviour
         }
 
         return results;
+    }
+
+    public void Hide()
+    {
+        if (!rootPanel) return;
+
+        // Re-enable for next time
+        var cg = rootPanel.GetComponent<CanvasGroup>();
+        if (cg)
+        {
+            cg.interactable = true;
+            cg.blocksRaycasts = true;
+        }
+
+        rootPanel.SetActive(false);
     }
 
 }

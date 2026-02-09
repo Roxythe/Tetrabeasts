@@ -43,15 +43,144 @@ public class Board : MonoBehaviour
     Dictionary<Vector2Int, RectTransform> placed = new();
     readonly Dictionary<Vector2Int, float> healTimers = new();
 
+    // ================= Obstacles & Floor Effects =================
+
+    [Header("Obstacle & Trap Sprites")]
+    public Sprite stoneUndamagedSprite;      // 0 hits taken
+    public Sprite stoneDamagedSprite;        // 1 hit taken
+    public Sprite stoneCriticalSprite;       // 2 hits taken
+
+    public Sprite poisonBorderSprite; 
+    public Sprite fireBorderSprite;  
+    public Sprite lightningBorderSprite;
+
+    public Sprite spikeSpriteLow;            // Spike frame A (lower)
+    public Sprite spikeSpriteHigh;           // Spike frame B (raised)
+    public float spikeAnimInterval = 0.35f;  // Seconds per toggle
+
+    [Header("Layer Roots (auto-created if empty)")]
+    public RectTransform underlayRoot; // Traps under blocks (spikes)
+    public RectTransform overlayRoot;  // Borders above blocks (fire/poison)
+
+    [Header("Monster Tick Damage Flash")]
+    public float monsterTickFlashDuration = 0.08f;
+    public Color burnTickFlashTint = new Color(1f, 0.25f, 0.25f, 1f);      // red
+    public Color poisonTickFlashTint = new Color(0.75f, 0.25f, 1f, 1f);    // purple
+    public Color lightningTickFlashTint = new Color(0.25f, 0.25f, 1f, 1f); // blue
+
+    readonly Dictionary<Vector2Int, Coroutine> _monsterFlashCo = new();
+
+    public enum ObstacleType { Stone }
+
+    [System.Serializable]
+    public struct ObstacleState
+    {
+        public ObstacleType type;
+        public int hitsRemaining; // Remaining hits until break
+        public int maxHits;       // Used to compute hits taken for sprite state
+
+        public ObstacleState(ObstacleType t, int hits)
+        {
+            type = t;
+            maxHits = Mathf.Max(1, hits);
+            hitsRemaining = maxHits;
+        }
+
+        public int HitsTaken => Mathf.Clamp(maxHits - hitsRemaining, 0, maxHits);
+    }
+
+    readonly Dictionary<Vector2Int, ObstacleState> obstacles = new();
+
+    public event Action<Vector2Int, ObstacleType> ObstacleDestroyed;
+
+    public enum FloorEffectType { Poison, Burn, Spike, Lightning }
+
+    public struct FloorEffectState
+    {
+        public FloorEffectType type;
+        public float damage;        // poison/burn tick damage OR spike one-shot damage
+        public float interval;      // poison/burn tick interval
+        public int ticksRemaining;  // -1 = infinite
+        public float nextTickTime;
+
+        public static FloorEffectState Poison(float dmg, float interval, int ticks)
+        {
+            return new FloorEffectState
+            {
+                type = FloorEffectType.Poison,
+                damage = Mathf.Max(0f, dmg),
+                interval = Mathf.Max(0.05f, interval),
+                ticksRemaining = ticks,
+                nextTickTime = Time.time + Mathf.Max(0.05f, interval)
+            };
+        }
+
+        public static FloorEffectState Burn(float dmg, float interval, int ticks)
+        {
+            return new FloorEffectState
+            {
+                type = FloorEffectType.Burn,
+                damage = Mathf.Max(0f, dmg),
+                interval = Mathf.Max(0.05f, interval),
+                ticksRemaining = ticks,
+                nextTickTime = Time.time + Mathf.Max(0.05f, interval)
+            };
+        }
+
+        // One-shot on placement (interval unused)
+        public static FloorEffectState Spike(float oneShotDamage)
+        {
+            return new FloorEffectState
+            {
+                type = FloorEffectType.Spike,
+                damage = Mathf.Max(0f, oneShotDamage),
+                interval = 1f,
+                ticksRemaining = 1,
+                nextTickTime = 0f
+            };
+        }
+
+        public static FloorEffectState Lightning(float dmg, float interval, int ticks)
+        {
+            return new FloorEffectState
+            {
+                type = FloorEffectType.Lightning,
+                damage = Mathf.Max(0f, dmg),
+                interval = Mathf.Max(0.05f, interval),
+                ticksRemaining = ticks,
+                nextTickTime = Time.time + Mathf.Max(0.05f, interval)
+            };
+        }
+    }
+
+    readonly Dictionary<Vector2Int, FloorEffectState> floorEffects = new();
+
+    // visuals
+    readonly Dictionary<Vector2Int, Image> poisonBorders = new();
+    readonly Dictionary<Vector2Int, Image> fireBorders = new();
+    readonly Dictionary<Vector2Int, Image> lightningBorders = new();
+
+    class SpikeVisual
+    {
+        public RectTransform root;
+        public Image low;
+        public Image high;
+        public bool highOn;
+        public float nextToggleTime;
+    }
+
+    readonly Dictionary<Vector2Int, SpikeVisual> spikeVisuals = new();
+
+    public bool HasFloorEffect(Vector2Int cell) => floorEffects.ContainsKey(cell);
+
+    // Events
     public event Action<Vector2Int, MonsterData> TileDied; // Event called when a tile's HP reaches 0
 
     [System.Serializable]
     public struct MonsterInstance
     {
         public MonsterData data;
-
-        // Current runtime HP
-        public float hp;
+        public float hp; // Current runtime HP
 
         // Buffed runtime stats (computed once from data + shop)
         public float maxHp;         // +5 HP per shop level
@@ -268,6 +397,40 @@ public class Board : MonoBehaviour
             rt.SetParent(transform, false);
             gridRoot = rt;
         }
+
+        // Ensure layer roots exist + share the same coordinate space as gridRoot
+        if (!underlayRoot || underlayRoot.transform.parent != transform)
+        {
+            var go = new GameObject("UnderlayRoot", typeof(RectTransform));
+            underlayRoot = go.GetComponent<RectTransform>();
+            underlayRoot.SetParent(transform, false);
+        }
+
+        if (!overlayRoot || overlayRoot.transform.parent != transform)
+        {
+            var go = new GameObject("OverlayRoot", typeof(RectTransform));
+            overlayRoot = go.GetComponent<RectTransform>();
+            overlayRoot.SetParent(transform, false);
+        }
+
+        // Stretch these roots to fill the board rect
+        void Stretch(RectTransform rt)
+        {
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = Vector2.one;
+            rt.offsetMin = Vector2.zero;
+            rt.offsetMax = Vector2.zero;
+            rt.anchoredPosition = Vector2.zero;
+            rt.localScale = Vector3.one;
+        }
+
+        Stretch(underlayRoot);
+        Stretch(gridRoot);
+        Stretch(overlayRoot);
+
+        underlayRoot.SetSiblingIndex(0);
+        gridRoot.SetSiblingIndex(1);
+        overlayRoot.SetAsLastSibling();
     }
 
     void Start()
@@ -278,10 +441,13 @@ public class Board : MonoBehaviour
 
     void Update()
     {
-        // Healers pulse over time
-        if (monsters.Count == 0 || healTimers.Count == 0) return;
+        if (_gc && !_gc.IsRoundActive) return; // Nothing should tick outside active rounds
 
-        if (_gc && !_gc.IsRoundActive) return; // No healing outside active rounds
+        TickFloorEffects();
+        AnimateSpikes();
+
+        // ================== Healers pulse over time ==================
+        if (monsters.Count == 0 || healTimers.Count == 0) return;
 
         float healMult = (_gc != null) ? _gc.healPowerMult : 1f;
         int rangeAdd = (_gc != null) ? _gc.healRangeAdd : 0;
@@ -298,6 +464,19 @@ public class Board : MonoBehaviour
 
             int finalHeal = Mathf.RoundToInt(inst.healAmount * healMult);
             float interval = inst.healSpeed;
+
+            // Accumulate timer for this healer
+            float t = 0f;
+            healTimers.TryGetValue(k, out t);
+            t += Time.deltaTime;
+
+            if (t < interval)
+            {
+                healTimers[k] = t;
+                continue;
+            }
+
+            healTimers[k] = 0f; // Consume one tick
 
             int range = Mathf.Clamp(Mathf.RoundToInt(inst.healRange + rangeAdd), 0, 99);
             Vector2Int? best = null;
@@ -321,20 +500,15 @@ public class Board : MonoBehaviour
 
                     // Pick nearest, then lowest hp fraction
                     bool take = (d < bestDist) || (d == bestDist && frac < bestFrac);
-
                     if (take) { best = c; bestDist = d; bestFrac = frac; }
                 }
 
-            healTimers[k] = Time.time; // Tick consumed (even if no target)
-
             if (best.HasValue)
             {
-                // perform one heal
                 if (HealTile(best.Value, finalHeal))
                 {
-                    PlayHealVFX(best.Value, md.healSprite, 0.5f); // VFX call
+                    PlayHealVFX(best.Value, md.healSprite, 0.5f);
 
-                    // Random heal SFX
                     if (AudioManager.I && md)
                     {
                         var clip = md.PickRandomHealSFX();
@@ -582,8 +756,6 @@ public class Board : MonoBehaviour
     public bool InBounds(Vector2Int c) =>
         c.x >= 0 && c.x < width && c.y >= 0 && c.y < height;
 
-    public bool IsFree(Vector2Int c) => InBounds(c) && !placed.ContainsKey(c);
-
     public bool Valid(Vector2Int[] cells)
     {
         for (int i = 0; i < cells.Length; i++)
@@ -612,26 +784,40 @@ public class Board : MonoBehaviour
     {
         placed.Clear();
         monsters.Clear();
+        obstacles.Clear();
+        floorEffects.Clear();
 
+        healTimers.Clear();
+
+        // Clear grid visuals
         if (gridRoot != null)
         {
             var owned = gridRoot.GetComponentsInChildren<BoardOwned>(true);
             for (int i = owned.Length - 1; i >= 0; i--)
-            {
                 Destroy(owned[i].gameObject);
-            }
         }
+
+        // Clear overlays (fire/poison borders)
+        foreach (var kv in poisonBorders) if (kv.Value) Destroy(kv.Value.gameObject);
+        poisonBorders.Clear();
+
+        foreach (var kv in fireBorders) if (kv.Value) Destroy(kv.Value.gameObject);
+        fireBorders.Clear();
+
+        // Clear spikes (underlay)
+        foreach (var kv in spikeVisuals) if (kv.Value != null && kv.Value.root) Destroy(kv.Value.root.gameObject);
+        spikeVisuals.Clear();
 
         RecomputeCellMetrics();
         DrawGridOverlay();
     }
 
     public void ClearFullLines(out int rowsCleared,
-                           out List<Vector2Int> removedCells,
-                           out int damageFromMonsters,
-                           out float specialChargeFromMonsters,
-                           out Dictionary<int, int> rowDamage,
-                           out Dictionary<int, MonsterData> rowDominantMonster)
+                       out List<Vector2Int> removedCells,
+                       out int damageFromMonsters,
+                       out float specialChargeFromMonsters,
+                       out Dictionary<int, int> rowDamage,
+                       out Dictionary<int, MonsterData> rowDominantMonster)
     {
         rowsCleared = 0;
         removedCells = new List<Vector2Int>();
@@ -639,104 +825,102 @@ public class Board : MonoBehaviour
         specialChargeFromMonsters = 0f;
         rowDamage = new Dictionary<int, int>();
         rowDominantMonster = new Dictionary<int, MonsterData>();
-        var gc = FindFirstObjectByType<GameController>(); // or cached reference
+        var gc = FindFirstObjectByType<GameController>();
 
-        for (int y = 0; y < height; y++)
+        bool clearedAny = true;
+        var stonesDamaged = new HashSet<Vector2Int>();
+
+        while (clearedAny)
         {
-            bool full = true;
-            for (int x = 0; x < width; x++)
-                if (!placed.ContainsKey(new Vector2Int(x, y))) { full = false; break; }
-            if (!full) continue;
+            clearedAny = false;
 
-            rowsCleared++;
-
-            // Tally this row BEFORE removal
-            int dmgRow = 0;
-            var counts = new Dictionary<MonsterData, int>();
-            for (int x = 0; x < width; x++)
+            for (int y = 0; y < height; y++)
             {
-                var key = new Vector2Int(x, y);
-                if (monsters.TryGetValue(key, out var inst) && inst.data)
-                {
-                    if (inst.hp > 0f)
-                    {
-                        float dmgMult = (gc ? gc.monsterDamageMult : 1f);
-                        float gaugeMult = (gc ? gc.monsterSpecialGainMult : 1f);
-
-                        int dmg = Mathf.RoundToInt(inst.data.attackPower * dmgMult) + inst.attackBonus;
-                        dmgRow += Mathf.Max(1, dmg); // Alive monsters always contribute at least 1 damage
-
-                        float gauge = inst.data.specialGaugeGain * gaugeMult;
-                        specialChargeFromMonsters += Mathf.Max(1f, gauge); // Alive monsters always contribute at least 1 gauge
-                    }
-
-                    // Count for dominant monster pick
-                    if (!counts.ContainsKey(inst.data))
-                        counts[inst.data] = 0;
-
-                    counts[inst.data] += 1;
-                }
-            }
-
-            damageFromMonsters += dmgRow;
-            rowDamage[y] = dmgRow;
-
-            // Pick dominant
-            if (counts.Count > 0)
-            {
-                int max = 0;
-                foreach (var kv in counts) if (kv.Value > max) max = kv.Value;
-                var candidates = new List<MonsterData>();
-                foreach (var kv in counts) if (kv.Value == max) candidates.Add(kv.Key);
-                var dominant = candidates[UnityEngine.Random.Range(0, candidates.Count)];
-                rowDominantMonster[y] = dominant;
-            }
-
-            // Remove this row 
-            for (int x = 0; x < width; x++)
-            {
-                var key = new Vector2Int(x, y);
-
-                if (monsters.ContainsKey(key)) monsters.Remove(key);
-
-                if (placed.TryGetValue(key, out var rt))
-                {
-                    UnityEngine.Object.Destroy(rt.gameObject);
-                    placed.Remove(key);
-                    removedCells.Add(key);
-                }
-            }
-
-            // Shift down tiles + monsters above 
-            for (int yy = y + 1; yy < height; yy++)
-            {
+                // Row is "full" if every cell is occupied by something (monster tile or obstacle tile)
+                bool full = true;
                 for (int x = 0; x < width; x++)
                 {
-                    var from = new Vector2Int(x, yy);
-                    var to = new Vector2Int(x, yy - 1);
-
-                    if (healTimers.TryGetValue(from, out var t))
+                    var c = new Vector2Int(x, y);
+                    if (!placed.TryGetValue(c, out var rt) || !rt)
                     {
-                        healTimers.Remove(from);
-                        healTimers[to] = t;
-                    }
-
-                    if (placed.TryGetValue(from, out var rt))
-                    {
-                        placed.Remove(from);
-                        placed[to] = rt;
-                        rt.anchoredPosition = CellToAnchoredPos(to);
-                    }
-
-                    if (monsters.TryGetValue(from, out var inst))
-                    {
-                        monsters.Remove(from);
-                        monsters[to] = inst;
+                        full = false;
+                        break;
                     }
                 }
-            }
 
-            y--; // Re-check same row after shift
+                if (!full) continue;
+
+                clearedAny = true;
+                rowsCleared++;
+
+                // ===== Tally row damage/special from MONSTERS ONLY =====
+                int dmgRow = 0;
+                var counts = new Dictionary<MonsterData, int>();
+
+                for (int x = 0; x < width; x++)
+                {
+                    var key = new Vector2Int(x, y);
+
+                    // Obstacles do not contribute
+                    if (obstacles.ContainsKey(key))
+                        continue;
+
+                    if (monsters.TryGetValue(key, out var inst) && inst.data)
+                    {
+                        if (inst.hp > 0f)
+                        {
+                            float dmgMult = (gc ? gc.monsterDamageMult : 1f);
+                            float gaugeMult = (gc ? gc.monsterSpecialGainMult : 1f);
+
+                            int dmg = Mathf.RoundToInt(inst.data.attackPower * dmgMult) + inst.attackBonus;
+                            dmgRow += Mathf.Max(1, dmg);
+
+                            float gauge = inst.data.specialGaugeGain * gaugeMult;
+                            specialChargeFromMonsters += Mathf.Max(1f, gauge);
+                        }
+
+                        if (!counts.ContainsKey(inst.data))
+                            counts[inst.data] = 0;
+                        counts[inst.data] += 1;
+                    }
+                }
+
+                damageFromMonsters += dmgRow;
+                rowDamage[y] = dmgRow;
+
+                if (counts.Count > 0)
+                {
+                    int max = 0;
+                    foreach (var kv in counts) if (kv.Value > max) max = kv.Value;
+                    var candidates = new List<MonsterData>();
+                    foreach (var kv in counts) if (kv.Value == max) candidates.Add(kv.Key);
+                    var dominant = candidates[UnityEngine.Random.Range(0, candidates.Count)];
+                    rowDominantMonster[y] = dominant;
+                }
+
+                // ===== Remove row contents =====
+                for (int x = 0; x < width; x++)
+                {
+                    var key = new Vector2Int(x, y);
+
+                    // Stone obstacles take 1 hit, update sprite, only destroy when hitsRemaining reaches 0
+                    if (TryDamageStoneAt(key, stonesDamaged, removedCells))
+                        continue;
+
+                    // Normal monster tile, remove completely
+                    monsters.Remove(key);
+
+                    if (placed.TryGetValue(key, out var rt))
+                    {
+                        UnityEngine.Object.Destroy(rt.gameObject);
+                        placed.Remove(key);
+                        removedCells.Add(key);
+                    }
+                }
+  
+                SettleAllColumns(false); // Let remaining tiles fall into gaps (stones remain as blockers)
+                y = -1; // Board changed, restart scanning from bottom
+            } 
         }
 
         CleanOrphanedTiles();
@@ -757,26 +941,55 @@ public class Board : MonoBehaviour
 
         foreach (var key in toDelete)
         {
-            if (placed.TryGetValue(key, out var rt))
+            // If this cell is a stone obstacle, destroy it via the proper path to keep dictionaries synced
+            if (obstacles.ContainsKey(key))
             {
-                Destroy(rt.gameObject);
+                DestroyObstacleImmediate(key);
+                squaresCleared++;
+                continue;
             }
+
+            if (placed.TryGetValue(key, out var rt))
+                Destroy(rt.gameObject);
+
             placed.Remove(key);
+            monsters.Remove(key);
+            healTimers.Remove(key);
+
             squaresCleared++;
         }
 
-        // Move using a snapshot to avoid key-collision while iterating.
+        // Move using a snapshot to avoid key-collision while iterating
         var snapshot = new List<KeyValuePair<Vector2Int, RectTransform>>(placed);
         foreach (var kv in snapshot)
         {
             var from = kv.Key;
-            if (from.y >= rows)
+            if (from.y < rows) continue;
+
+            var rt = kv.Value;
+            var to = new Vector2Int(from.x, from.y - rows);
+
+            placed.Remove(from);
+            placed[to] = rt;
+            rt.anchoredPosition = CellToAnchoredPos(to);
+
+            if (monsters.TryGetValue(from, out var inst))
             {
-                var rt = kv.Value;
-                var to = new Vector2Int(from.x, from.y - rows);
-                placed.Remove(from);
-                placed[to] = rt;
-                rt.anchoredPosition = CellToAnchoredPos(to);
+                monsters.Remove(from);
+                monsters[to] = inst;
+            }
+
+            if (healTimers.TryGetValue(from, out var t))
+            {
+                healTimers.Remove(from);
+                healTimers[to] = t;
+            }
+
+            // Keep obstacle dictionary synced if an obstacle tile moved
+            if (obstacles.TryGetValue(from, out var obs))
+            {
+                obstacles.Remove(from);
+                obstacles[to] = obs;
             }
         }
 
@@ -787,7 +1000,6 @@ public class Board : MonoBehaviour
     {
         if (changedCells == null) changedCells = new List<Vector2Int>();
 
-        // Snapshot the keys so we can safely write back into the dictionary
         var keys = new List<Vector2Int>(monsters.Keys);
 
         foreach (var cell in keys)
@@ -880,6 +1092,7 @@ public class Board : MonoBehaviour
         damageFromMonsters = 0;
         specialChargeFromMonsters = 0f;
         var gc = FindFirstObjectByType<GameController>();
+        var stonesDamaged = new HashSet<Vector2Int>();
 
         // Remove & tally
         var removeSet = new HashSet<Vector2Int>(toRemove);
@@ -895,16 +1108,18 @@ public class Board : MonoBehaviour
                         float gaugeMult = (gc ? gc.monsterSpecialGainMult : 1f);
 
                         int dmg = Mathf.RoundToInt(inst.data.attackPower * dmgMult) + inst.attackBonus;
-                        damageFromMonsters += Mathf.Max(1, dmg); // Alive monsters always contribute at least 1 damage
+                        damageFromMonsters += Mathf.Max(1, dmg);
 
                         float gauge = inst.data.specialGaugeGain * gaugeMult;
-                        specialChargeFromMonsters += Mathf.Max(1f, gauge); // Alive monsters always contribute at least 1 gauge
+                        specialChargeFromMonsters += Mathf.Max(1f, gauge);
                     }
-                    // dead monsters contribute 0 to damage/gauge
                 }
 
                 monsters.Remove(key);
             }
+
+            if (TryDamageStoneAt(key, stonesDamaged, removedCells))
+                continue;
 
             if (placed.TryGetValue(key, out var rt))
             {
@@ -914,89 +1129,54 @@ public class Board : MonoBehaviour
             }
         }
 
-        // Sparse drop only move tiles down by the count of removed rows below them
-        for (int x = 0; x < width; x++)
-        {
-            // Build a sorted list of removed rows in this column
-            var removedRows = new List<int>();
-            for (int y = 0; y < height; y++)
-            {
-                var key = new Vector2Int(x, y);
-                if (!placed.ContainsKey(key))
-                    continue;
-            }
+        var cols = new HashSet<int>();
+        foreach (var c in removeSet)
+            cols.Add(c.x);
 
-            // Find removed rows in this column
-            foreach (var rc in removedCells)
-                if (rc.x == x)
-                    removedRows.Add(rc.y);
-            if (removedRows.Count == 0)
-                continue;
-            removedRows.Sort(); // Ascending order
-
-            var moves = new List<(Vector2Int from, Vector2Int to, RectTransform rt)>();
-            var monsterMoves = new List<(Vector2Int from, Vector2Int to, Board.MonsterInstance inst)>();
-
-            for (int y = 0; y < height; y++)
-            {
-                var from = new Vector2Int(x, y);
-                if (!placed.TryGetValue(from, out var rt)) continue;
-
-                int drop = 0;
-                for (int i = 0; i < removedRows.Count; i++)
-                    if (removedRows[i] < y) drop++;
-                    else break;
-
-                if (drop > 0)
-                {
-                    var to = new Vector2Int(x, y - drop);
-                    moves.Add((from, to, rt));
-
-                    if (monsters.TryGetValue(from, out var inst))
-                        monsterMoves.Add((from, to, inst));
-
-                    if (healTimers.TryGetValue(from, out var t))
-                    {
-                        healTimers.Remove(from);
-                        healTimers[to] = t;
-                    }
-                }
-            }
-
-            // Apply moves
-            foreach (var m in moves)
-            {
-                placed.Remove(m.from);
-                placed[m.to] = m.rt;
-                m.rt.anchoredPosition = CellToAnchoredPos(m.to);
-            }
-            foreach (var mm in monsterMoves)
-            {
-                monsters.Remove(mm.from);
-                monsters[mm.to] = mm.inst;
-            }
-        }
-
+        SettleColumns(cols, false);
         CleanOrphanedTiles();
     }
 
-    public void SettleAllColumns()
+    public void SettleAllColumns() => SettleAllColumns(false);
+
+    public void SettleAllColumns(bool allowObstaclesToFall)
     {
         for (int x = 0; x < width; x++)
         {
             int writeY = 0;
+
             for (int y = 0; y < height; y++)
             {
                 var from = new Vector2Int(x, y);
-                if (placed.TryGetValue(from, out var rt))
+
+                // If obstacles are not allowed to fall, they are fixed blockers
+                if (!allowObstaclesToFall && obstacles.ContainsKey(from))
                 {
-                    var to = new Vector2Int(x, writeY);
-                    if (to != from)
-                    {
-                        placed.Remove(from);
-                        placed[to] = rt;
-                        rt.anchoredPosition = CellToAnchoredPos(to);
-                    }
+                    writeY = y + 1;
+                    continue;
+                }
+
+                if (!placed.TryGetValue(from, out var rt) || !rt)
+                    continue;
+
+                // Never move obstacle visuals in non-obstacle mode
+                if (!allowObstaclesToFall && obstacles.ContainsKey(from))
+                    continue;
+
+                // Don't write into obstacle cells when obstacles are fixed
+                if (!allowObstaclesToFall)
+                {
+                    while (writeY < height && obstacles.ContainsKey(new Vector2Int(x, writeY)))
+                        writeY++;
+                }
+
+                var to = new Vector2Int(x, writeY);
+
+                if (to != from)
+                {
+                    placed.Remove(from);
+                    placed[to] = rt;
+                    rt.anchoredPosition = CellToAnchoredPos(to);
 
                     if (monsters.TryGetValue(from, out var inst))
                     {
@@ -1010,8 +1190,86 @@ public class Board : MonoBehaviour
                         healTimers[to] = t;
                     }
 
-                    writeY++;
+                    // When obstacles are allowed to fall, keep obstacle state synced
+                    if (allowObstaclesToFall && obstacles.TryGetValue(from, out var obs))
+                    {
+                        obstacles.Remove(from);
+                        obstacles[to] = obs;
+                    }
                 }
+
+                writeY++;
+            }
+        }
+
+        CleanOrphanedTiles();
+    }
+
+    // Variant of SettleAllColumns that only processes specified columns for efficiency
+    public void SettleColumns(IEnumerable<int> columns, bool allowObstaclesToFall)
+    {
+        if (columns == null) return;
+
+        foreach (int x in columns)
+        {
+            if (x < 0 || x >= width) continue;
+
+            int writeY = 0;
+
+            for (int y = 0; y < height; y++)
+            {
+                var from = new Vector2Int(x, y);
+
+                // If obstacles are not allowed to fall, they are fixed blockers
+                if (!allowObstaclesToFall && obstacles.ContainsKey(from))
+                {
+                    writeY = y + 1;
+                    continue;
+                }
+
+                if (!placed.TryGetValue(from, out var rt) || !rt)
+                    continue;
+
+                // Never move obstacle visuals in non-obstacle mode
+                if (!allowObstaclesToFall && obstacles.ContainsKey(from))
+                    continue;
+
+                // Don't write into obstacle cells when obstacles are fixed
+                if (!allowObstaclesToFall)
+                {
+                    while (writeY < height && obstacles.ContainsKey(new Vector2Int(x, writeY)))
+                        writeY++;
+                }
+
+                var to = new Vector2Int(x, writeY);
+
+                if (to != from)
+                {
+                    placed.Remove(from);
+                    placed[to] = rt;
+                    rt.anchoredPosition = CellToAnchoredPos(to);
+
+                    if (monsters.TryGetValue(from, out var inst))
+                    {
+                        monsters.Remove(from);
+                        monsters[to] = inst;
+                    }
+
+                    if (healTimers.TryGetValue(from, out var t))
+                    {
+                        healTimers.Remove(from);
+                        healTimers[to] = t;
+                    }
+
+                    // When obstacles are allowed to fall, keep obstacle state synced
+                    if (allowObstaclesToFall && obstacles.TryGetValue(from, out var obs))
+                    {
+                        obstacles.Remove(from);
+                        obstacles[to] = obs;
+                    }
+                }
+
+                writeY++;
             }
         }
 
@@ -1058,11 +1316,13 @@ public class Board : MonoBehaviour
         // Reposition any placed tiles
         var toFix = new List<KeyValuePair<Vector2Int, RectTransform>>(placed);
         foreach (var kv in toFix)
-            kv.Value.anchoredPosition = CellToAnchoredPos(kv.Key);
+            if (kv.Value) kv.Value.anchoredPosition = CellToAnchoredPos(kv.Key);
+
+        RepositionEffectVisuals();
+
         DrawGridOverlay();
     }
 
-    
     public Vector2 GetCellSize() => cellSize; // Helper so others can read cell size
 
     public void SetMonsterAt(Vector2Int cell, MonsterInstance inst)
@@ -1071,7 +1331,7 @@ public class Board : MonoBehaviour
         {
             inst.RecalcFromData(setHpToMax: false); // Ensure runtime stats exist (and clamp hp to new max)
 
-            // If hp was not initialized, start at full.
+            // If hp was not initialized, start at full
             if (inst.hp <= 0f)
                 inst.hp = inst.maxHp;
         }
@@ -1134,4 +1394,470 @@ public class Board : MonoBehaviour
         }
         if (img) Destroy(img.gameObject);
     }
+
+    // ================= Public API for ObstacleManager / Piece =================
+
+    public bool HasObstacle(Vector2Int cell) => obstacles.ContainsKey(cell);
+    public bool IsFree(Vector2Int c) => InBounds(c) && !placed.ContainsKey(c);
+
+    public bool TrySpawnStoneObstacle(Vector2Int cell, int hitsToBreak = 3)
+    {
+        if (!InBounds(cell)) return false;
+        if (!IsFree(cell)) return false;
+
+        var rt = InstantiateTileUI(new Color(0.45f, 0.45f, 0.45f, 1f), stoneUndamagedSprite);
+        rt.anchoredPosition = CellToAnchoredPos(cell);
+        Place(cell, rt);
+
+        obstacles[cell] = new ObstacleState(ObstacleType.Stone, hitsToBreak);
+        UpdateStoneObstacleVisual(cell);
+        RefreshTileBordersAround(cell);
+        return true;
+    }
+
+    public bool SetFloorEffect(Vector2Int cell, FloorEffectType type, float damage, float interval, int ticks)
+    {
+        if (!InBounds(cell)) return false;
+
+        // Store state
+        switch (type)
+        {
+            case FloorEffectType.Poison:
+                floorEffects[cell] = FloorEffectState.Poison(damage, interval, ticks);
+                EnsureBorderOverlay(cell, poisonBorderSprite, poisonBorders);
+                break;
+
+            case FloorEffectType.Burn:
+                floorEffects[cell] = FloorEffectState.Burn(damage, interval, ticks);
+                EnsureBorderOverlay(cell, fireBorderSprite, fireBorders);
+                break;
+
+            case FloorEffectType.Spike:
+                floorEffects[cell] = FloorEffectState.Spike(damage);
+                EnsureSpikeUnderlay(cell);
+                break;
+
+            case FloorEffectType.Lightning:
+                floorEffects[cell] = FloorEffectState.Lightning(damage, interval, ticks);
+                EnsureBorderOverlay(cell, lightningBorderSprite, lightningBorders);
+                break;
+        }
+
+        return true;
+    }
+
+    public void ClearFloorEffect(Vector2Int cell)
+    {
+        floorEffects.Remove(cell);
+
+        if (poisonBorders.TryGetValue(cell, out var p) && p) Destroy(p.gameObject);
+        poisonBorders.Remove(cell);
+
+        if (fireBorders.TryGetValue(cell, out var f) && f) Destroy(f.gameObject);
+        fireBorders.Remove(cell);
+
+        if (spikeVisuals.TryGetValue(cell, out var sv) && sv != null && sv.root) Destroy(sv.root.gameObject);
+        spikeVisuals.Remove(cell);
+
+        if (lightningBorders.TryGetValue(cell, out var l) && l) Destroy(l.gameObject);
+        lightningBorders.Remove(cell);
+    }
+
+    public void ApplyFloorEffectOnPlacement(Vector2Int cell)
+    {
+        if (!floorEffects.TryGetValue(cell, out var fx)) return;
+
+        if (fx.type == FloorEffectType.Spike)
+        {
+            TryDamageMonsterFromFloorEffect(cell, fx.type, fx.damage);
+
+            ClearFloorEffect(cell);
+        }
+    }
+
+    public void ApplySpecialToEnvironment(IEnumerable<Vector2Int> affectedCells, SpecialType special)
+    {
+        if (affectedCells == null) return;
+
+        if (special == SpecialType.Bomb)
+        {
+            foreach (var c in affectedCells)
+            {
+                if (!InBounds(c)) continue;
+                if (obstacles.TryGetValue(c, out var obs) && obs.type == ObstacleType.Stone)
+                {
+                    DestroyObstacleImmediate(c);
+                }
+            }
+        }
+        else if (special == SpecialType.Bolt)
+        {
+            foreach (var c in affectedCells)
+            {
+                if (!InBounds(c)) continue;
+                if (floorEffects.TryGetValue(c, out var fx) && fx.type == FloorEffectType.Spike)
+                {
+                    ClearFloorEffect(c);
+                }
+            }
+        }
+    }
+
+    // ================= Visuals =================
+
+    void EnsureBorderOverlay(Vector2Int cell, Sprite sprite, Dictionary<Vector2Int, Image> dict)
+    {
+        if (!overlayRoot) return;
+
+        // If sprite not provided, just clear any existing
+        if (!sprite)
+        {
+            if (dict.TryGetValue(cell, out var old) && old) Destroy(old.gameObject);
+            dict.Remove(cell);
+            return;
+        }
+
+        if (dict.TryGetValue(cell, out var existing) && existing)
+        {
+            existing.sprite = sprite;
+            existing.rectTransform.sizeDelta = GetCellSize();
+            existing.rectTransform.anchoredPosition = CellToAnchoredPos(cell);
+            existing.rectTransform.SetAsLastSibling();
+            return;
+        }
+
+        var img = new GameObject($"Border_{cell.x}_{cell.y}", typeof(Image)).GetComponent<Image>();
+        img.sprite = sprite;
+        img.type = Image.Type.Simple;
+        img.preserveAspect = false;
+        img.raycastTarget = false;
+
+        var rt = img.rectTransform;
+        rt.SetParent(overlayRoot, false);
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.sizeDelta = GetCellSize();
+        rt.anchoredPosition = CellToAnchoredPos(cell);
+        rt.SetAsLastSibling(); // always above blocks
+
+        dict[cell] = img;
+    }
+
+    void EnsureSpikeUnderlay(Vector2Int cell)
+    {
+        if (!underlayRoot) return;
+
+        if (spikeVisuals.TryGetValue(cell, out var existing) && existing != null && existing.root)
+        {
+            // Update sizing/pos
+            existing.root.sizeDelta = GetCellSize();
+            existing.root.anchoredPosition = CellToAnchoredPos(cell);
+            return;
+        }
+
+        var root = new GameObject($"Spike_{cell.x}_{cell.y}", typeof(RectTransform)).GetComponent<RectTransform>();
+        root.SetParent(underlayRoot, false);
+        root.anchorMin = root.anchorMax = new Vector2(0.5f, 0.5f);
+        root.sizeDelta = GetCellSize();
+        root.anchoredPosition = CellToAnchoredPos(cell);
+
+        Image MakeFrame(string name, Sprite s, bool enabled)
+        {
+            var img = new GameObject(name, typeof(Image)).GetComponent<Image>();
+            img.transform.SetParent(root, false);
+            img.sprite = s;
+            img.type = Image.Type.Simple;
+            img.preserveAspect = false;
+            img.raycastTarget = false;
+
+            var rt = img.rectTransform;
+            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.sizeDelta = GetCellSize();
+            rt.anchoredPosition = Vector2.zero;
+
+            img.enabled = enabled;
+            return img;
+        }
+
+        var low = MakeFrame("SpikeLow", spikeSpriteLow, true);
+        var high = MakeFrame("SpikeHigh", spikeSpriteHigh, false);
+
+        spikeVisuals[cell] = new SpikeVisual
+        {
+            root = root,
+            low = low,
+            high = high,
+            highOn = false,
+            nextToggleTime = Time.time + spikeAnimInterval
+        };
+    }
+
+    void AnimateSpikes()
+    {
+        if (spikeVisuals.Count == 0) return;
+
+        float now = Time.time;
+        foreach (var kv in spikeVisuals)
+        {
+            var sv = kv.Value;
+            if (sv == null || !sv.root) continue;
+
+            if (now >= sv.nextToggleTime)
+            {
+                sv.highOn = !sv.highOn;
+                if (sv.low) sv.low.enabled = !sv.highOn;
+                if (sv.high) sv.high.enabled = sv.highOn;
+                sv.nextToggleTime = now + spikeAnimInterval;
+            }
+        }
+    }
+
+    // ================= Floor Effect Ticking =================
+
+    void TickFloorEffects()
+    {
+        if (floorEffects.Count == 0) return;
+
+        float now = Time.time;
+
+        // Snapshot keys to allow mutation
+        var keys = new List<Vector2Int>(floorEffects.Keys);
+        foreach (var cell in keys)
+        {
+            if (!floorEffects.TryGetValue(cell, out var fx)) continue;
+
+            if (fx.type == FloorEffectType.Spike)
+                continue; // Spikes are handled on placement only
+
+            // Keep border overlays on top
+            if (fx.type == FloorEffectType.Poison && poisonBorders.TryGetValue(cell, out var p) && p)
+                p.rectTransform.SetAsLastSibling();
+            else if (fx.type == FloorEffectType.Burn && fireBorders.TryGetValue(cell, out var f) && f)
+                f.rectTransform.SetAsLastSibling();
+            else if (fx.type == FloorEffectType.Lightning && lightningBorders.TryGetValue(cell, out var l) && l)
+                l.rectTransform.SetAsLastSibling();
+
+            if (now < fx.nextTickTime)
+                continue;
+
+            // Tick damage only if there's a living monster in this cell
+            TryDamageMonsterFromFloorEffect(cell, fx.type, fx.damage);
+
+            if (fx.ticksRemaining > 0)
+                fx.ticksRemaining--;
+
+            if (fx.ticksRemaining == 0)
+            {
+                ClearFloorEffect(cell);
+                continue;
+            }
+
+            fx.nextTickTime = now + fx.interval;
+            floorEffects[cell] = fx;
+        }
+    }
+
+    void FlashMonsterTick(Vector2Int cell, Color tint)
+    {
+        if (!placed.TryGetValue(cell, out var rt) || !rt) return;
+
+        // Prefer flashing the portrait if present, otherwise flash the tile back/fill
+        var portrait = rt.Find("MonsterPortrait")?.GetComponent<Image>();
+        var backFill = rt.Find("BackFill")?.GetComponent<Image>();
+        var healthFill = rt.Find("HealthFill")?.GetComponent<Image>();
+
+        if (!portrait && !backFill && !healthFill) return; // If nothing to flash, bail
+
+        // Restart if already flashing this cell
+        if (_monsterFlashCo.TryGetValue(cell, out var running) && running != null)
+            StopCoroutine(running);
+
+        _monsterFlashCo[cell] = StartCoroutine(CoFlashMonsterTick(cell, portrait, backFill, healthFill, tint));
+    }
+
+    IEnumerator CoFlashMonsterTick(Vector2Int cell, Image portrait, Image backFill, Image healthFill, Color tint)
+    {
+        // Cache originals
+        Color p0 = portrait ? portrait.color : Color.white;
+        Color b0 = backFill ? backFill.color : Color.white;
+        Color h0 = healthFill ? healthFill.color : Color.white;
+
+        // Apply tint
+        if (portrait) portrait.color = tint;
+        if (backFill) backFill.color = tint;
+        if (healthFill) healthFill.color = tint;
+
+        float t = 0f;
+        float dur = Mathf.Max(0.01f, monsterTickFlashDuration);
+
+        while (t < dur)
+        {
+            t += Time.unscaledDeltaTime; // Tick flashes should still work during pause/slow time
+            float a = t / dur;
+
+            if (portrait) portrait.color = Color.Lerp(tint, p0, a);
+            if (backFill) backFill.color = Color.Lerp(tint, b0, a);
+            if (healthFill) healthFill.color = Color.Lerp(tint, h0, a);
+
+            yield return null;
+        }
+
+        // Restore exact originals
+        if (portrait) portrait.color = p0;
+        if (backFill) backFill.color = b0;
+        if (healthFill) healthFill.color = h0;
+
+        _monsterFlashCo.Remove(cell);
+    }
+
+    bool TryDamageMonsterFromFloorEffect(Vector2Int cell, FloorEffectType fxType, float damage)
+    {
+        if (!monsters.TryGetValue(cell, out var inst) || inst.data == null || inst.hp <= 0f)
+            return false;
+
+        DamageTile(cell, damage, DamageSource.Generic);
+
+        // Tint flash
+        if (fxType == FloorEffectType.Burn)
+            FlashMonsterTick(cell, burnTickFlashTint);
+        else if (fxType == FloorEffectType.Poison)
+            FlashMonsterTick(cell, poisonTickFlashTint);
+        else if (fxType == FloorEffectType.Lightning)
+            FlashMonsterTick(cell, lightningTickFlashTint);
+
+        return true;
+    }
+
+    // ================= Obstacle destruction + sprite updates =================
+
+    void DestroyObstacleImmediate(Vector2Int cell)
+    {
+        if (placed.TryGetValue(cell, out var rt) && rt)
+            Destroy(rt.gameObject);
+
+        placed.Remove(cell);
+        monsters.Remove(cell);
+
+        obstacles.Remove(cell);
+
+        ObstacleDestroyed?.Invoke(cell, ObstacleType.Stone);
+
+        RefreshTileBordersAround(cell);
+    }
+
+    bool TryDamageStoneAt(Vector2Int cell, HashSet<Vector2Int> guard, List<Vector2Int> removedCells)
+    {
+        if (!obstacles.TryGetValue(cell, out var obs) || obs.type != ObstacleType.Stone)
+            return false;
+
+        if (guard != null && !guard.Add(cell))
+        {
+            // Already damaged this stone during this call, just ensure monsters aren't left behind
+            monsters.Remove(cell);
+            return true;
+        }
+
+        obs.hitsRemaining = Mathf.Max(0, obs.hitsRemaining - 1);
+
+        if (obs.hitsRemaining <= 0)
+        {
+            DestroyObstacleImmediate(cell);
+            removedCells?.Add(cell);
+        }
+        else
+        {
+            obstacles[cell] = obs;
+            UpdateStoneObstacleVisual(cell);
+        }
+
+        monsters.Remove(cell);
+        return true; // handled as stone obstacle
+    }
+
+    void UpdateStoneObstacleVisual(Vector2Int cell)
+    {
+        if (!obstacles.TryGetValue(cell, out var obs)) return;
+        if (obs.type != ObstacleType.Stone) return;
+
+        if (!placed.TryGetValue(cell, out var rt) || !rt) return;
+
+        var img = rt.Find("MonsterPortrait")?.GetComponent<Image>();
+        if (!img) return;
+
+        Sprite s = stoneUndamagedSprite;
+
+        // 0 hits -> undamaged, 1 hit -> damaged, 2+ hits -> critical
+        int taken = Mathf.Clamp(obs.HitsTaken, 0, 2);
+        if (taken == 0) s = stoneUndamagedSprite;
+        else if (taken == 1) s = stoneDamagedSprite ? stoneDamagedSprite : stoneUndamagedSprite;
+        else s = stoneCriticalSprite ? stoneCriticalSprite : (stoneDamagedSprite ? stoneDamagedSprite : stoneUndamagedSprite);
+
+        img.sprite = s;
+        img.enabled = (img.sprite != null);
+    }
+
+    // ================= Boss Warning Flashing =================
+
+    public Coroutine FlashWarningAtCell(Vector2Int cell, Sprite warningSprite, float seconds, float toggleInterval = 0.12f)
+    {
+        return StartCoroutine(FlashWarningRoutine(cell, warningSprite, seconds, toggleInterval));
+    }
+
+    IEnumerator FlashWarningRoutine(Vector2Int cell, Sprite warningSprite, float seconds, float toggleInterval)
+    {
+        if (!InBounds(cell) || warningSprite == null) yield break;
+
+        // Put warning in overlayRoot so it sits above tiles
+        if (!overlayRoot) overlayRoot = gridRoot;
+
+        var go = new GameObject("BossWarning");
+        go.transform.SetParent(overlayRoot, false);
+        var img = go.AddComponent<Image>();
+        img.sprite = warningSprite;
+        img.preserveAspect = true;
+        img.raycastTarget = false;
+
+        var rt = img.rectTransform;
+        rt.sizeDelta = cellSize;
+        rt.anchoredPosition = CellToAnchoredPos(cell);
+
+        float t = 0f;
+        float tog = 0f;
+        bool on = true;
+
+        while (t < seconds)
+        {
+            t += Time.deltaTime;
+            tog += Time.deltaTime;
+            if (tog >= toggleInterval)
+            {
+                tog = 0f;
+                on = !on;
+                img.enabled = on;
+            }
+            yield return null;
+        }
+
+        if (img) Destroy(img.gameObject);
+    }
+
+    // ================= Resize support =================
+
+    void RepositionEffectVisuals()
+    {
+        foreach (var kv in poisonBorders)
+            if (kv.Value) { kv.Value.rectTransform.sizeDelta = GetCellSize(); kv.Value.rectTransform.anchoredPosition = CellToAnchoredPos(kv.Key); kv.Value.rectTransform.SetAsLastSibling(); }
+
+        foreach (var kv in fireBorders)
+            if (kv.Value) { kv.Value.rectTransform.sizeDelta = GetCellSize(); kv.Value.rectTransform.anchoredPosition = CellToAnchoredPos(kv.Key); kv.Value.rectTransform.SetAsLastSibling(); }
+
+        foreach (var kv in spikeVisuals)
+            if (kv.Value != null && kv.Value.root)
+            {
+                kv.Value.root.sizeDelta = GetCellSize();
+                kv.Value.root.anchoredPosition = CellToAnchoredPos(kv.Key);
+                if (kv.Value.low) kv.Value.low.rectTransform.sizeDelta = GetCellSize();
+                if (kv.Value.high) kv.Value.high.rectTransform.sizeDelta = GetCellSize();
+            }
+    }
+    
 }

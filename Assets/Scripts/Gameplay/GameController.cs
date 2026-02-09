@@ -24,10 +24,10 @@ public class GameController : MonoBehaviour
 
     [Header("Round Win Audio")]
     public AudioClip roundWinClip;
-    [Range(0f, 1f)] public float roundWinClipVolume = 1f;
 
     [Header("Drop Speed Progression")]
     [SerializeField] TMP_Text levelTimerText;
+    [SerializeField] float fallRampStepSeconds = 2f; // 1 = every second, 2 = every other second, 3 = every 3rd second
     [SerializeField] float startFallInterval = 1.0f; 
 
     [SerializeField] float minFallInterval = 0.10f;                // Clamp (fastest allowed)
@@ -135,6 +135,19 @@ public class GameController : MonoBehaviour
     public TMP_Text unitLivesText;
     public Slider unitLivesSlider;
 
+    [Header("Obstacles & Traps")]
+    public ObstacleManager obstacleManager;
+
+    [Range(0f, 1f)]
+    public float stoneBuffDropChance = 0.25f; // chance to drop a run buff when stone breaks
+
+    // ================= Boss Ability Loop =================
+    CastleData _castleData;
+    float _bossAbilityTimer = 0f;
+    float _bossNextAbilityAt = 0f;
+    float _bossGravityBonusActive = 0f;
+    Coroutine _bossGravityCR;
+
     // =========== Run Modifiers (reset each run) ===========
     [Header("Run Modifiers (runtime)")]
     public float enemyAttackIntervalMult = 1f;     // < 1 = attacks faster, > 1 = slower
@@ -165,7 +178,12 @@ public class GameController : MonoBehaviour
 
     // =========== Shop Buff Effective Values ===========
     int EffectiveMaxUnitLives => maxUnitLives + ShopBuffEffects.UnitLivesBonus; // Unit Lives Up: +2 per level
-    float EffectivePieceGravityMult => Mathf.Max(0.01f, pieceGravityMult) * ShopBuffEffects.GravityMultiplier; // Gravity Down: slows falling (mult < 1 => slower because interval /= mult)
+
+    float EffectivePieceGravityMult =>
+    Mathf.Max(0.01f, pieceGravityMult) *
+    ShopBuffEffects.GravityMultiplier *
+    (1f + _bossGravityBonusActive); // Gravity Down: slows falling (mult < 1 => slower because interval /= mult)
+
     float EffectiveFallRampRateMult => Mathf.Max(0f, fallRampRateMult) * ShopBuffEffects.VelocityMultiplier; // Velocity Down: slows ramping (mult < 1 => slower ramp)
     float EffectiveCurrencyChancePerClearedRow => // Gold Up: +2% chance per level
         Mathf.Clamp01(currencyChancePerClearedRow + lineClearCurrencyChanceAdd + ShopBuffEffects.GoldChanceBonus);
@@ -203,6 +221,18 @@ public class GameController : MonoBehaviour
         if (!gameBoard) gameBoard = FindFirstObjectByType<Board>();
         if (!piece) piece = GetComponent<Piece>();
 
+        if (!obstacleManager)
+            obstacleManager = FindFirstObjectByType<ObstacleManager>(FindObjectsInactive.Include);
+
+        if (obstacleManager)
+            obstacleManager.Initialize(this, gameBoard);
+
+        if (gameBoard != null)
+        {
+            gameBoard.ObstacleDestroyed -= OnBoardObstacleDestroyed;
+            gameBoard.ObstacleDestroyed += OnBoardObstacleDestroyed;
+        }
+
         _level1FallInterval = startFallInterval; // Cache initial value
 
         // Initialize unit lives
@@ -211,7 +241,7 @@ public class GameController : MonoBehaviour
 
         if (gameBoard != null)
         {
-            gameBoard.TileDied -= OnBoardTileDied; // Prevents double-subscribe if Start re-runs
+            gameBoard.TileDied -= OnBoardTileDied;
             gameBoard.TileDied += OnBoardTileDied;
         }
 
@@ -344,6 +374,18 @@ public class GameController : MonoBehaviour
             {
                 _castleAttackTimer = 0f;
                 TrySpawnCastleDownshot();
+            }
+        }
+
+        // Boss abilities loop
+        if (!isPaused && !gameOver && !levelWon && gameBoard && _castleData != null && _castleData.isBossLevel)
+        {
+            _bossAbilityTimer += Time.deltaTime;
+            if (_bossAbilityTimer >= _bossNextAbilityAt)
+            {
+                _bossAbilityTimer = 0f;
+                _bossNextAbilityAt = Random.Range(_castleData.bossAbilityIntervalMin, _castleData.bossAbilityIntervalMax);
+                TryCastRandomBossAbility();
             }
         }
 
@@ -649,12 +691,18 @@ public class GameController : MonoBehaviour
 
                 // Use dominant monster for this row pick attack sprite
                 Sprite attackSprite = null;
+                Sprite attackSpriteAlt = null;
+                AttackAnimType animType = AttackAnimType.None;
                 MonsterData attackerMD = null;
 
                 if (rowDominantMonster != null && rowDominantMonster.TryGetValue(rowY, out var md) && md)
                 {
-                    attackerMD = md; // Remember for SFX on impact
-                    attackSprite = md.attackSprite ? md.attackSprite : md.portrait;
+                    attackerMD = md;
+                    animType = md.attackAnim;
+
+                    // Choose sprite based on selected skin
+                    attackSprite = MonsterSkinStore.GetAttackSprite(md);
+                    attackSpriteAlt = MonsterSkinStore.GetAttackAltSprite(md);
                 }
 
                 // Choose a start column from the last-placed piece's columns on this row
@@ -663,18 +711,22 @@ public class GameController : MonoBehaviour
                     col = cols[UnityEngine.Random.Range(0, cols.Count)];
 
                 Vector2 startBoard = gameBoard.CellToAnchoredPos(new Vector2Int(col, rowY));
-                Vector2 targetCastle = enemyCastleUI.castleImage.rectTransform.anchoredPosition;
 
-                // Convert both to the projectileRoot (UI_Canvas) space
+                // Convert start to projectileRoot space
                 var root = projectileRoot ? projectileRoot : gameBoard.gridRoot;
                 Vector2 start = LocalTo(root, gameBoard.gridRoot, startBoard);
-                Vector2 target = LocalTo(root, enemyCastleUI.castleImage.rectTransform, targetCastle);
 
-                SpawnAttackProjectile(attackSprite, start, target, dmg, attackerMD);
+                Vector3 castleBottomWorld = enemyCastleUI.castleImage.rectTransform.TransformPoint(
+                new Vector3(0f, -enemyCastleUI.castleImage.rectTransform.rect.height * 0.5f, 0f));
+
+                Vector2 castleBottomInRoot = root.InverseTransformPoint(castleBottomWorld);
+                Vector2 target = new Vector2(start.x, castleBottomInRoot.y);
+
+                SpawnAttackProjectile(attackSprite, attackSpriteAlt, animType, start, target, dmg, attackerMD);
             }
         }
 
-        // NO immediate ApplyDamage here; damage applies on impact
+        // No immediate damage, damage applies on impact
     }
 
     void InitLevel(int levelIndex)
@@ -702,6 +754,15 @@ public class GameController : MonoBehaviour
         {
             int levelNumber = levelIndex + 1;
             enemyCastleUI.InitCastle(data, levelNumber, enemyCastleHpMult);
+
+            _castleData = data;
+
+            if (_castleData != null && _castleData.isBossLevel)
+            {
+                _bossAbilityTimer = 0f;
+                _bossNextAbilityAt = Random.Range(_castleData.bossAbilityIntervalMin, _castleData.bossAbilityIntervalMax);
+            }
+
             castleProjectileSprite = data.projectileSprite;
 
             castleAttackInterval = data.projectileInterval * enemyAttackIntervalMult;
@@ -725,6 +786,11 @@ public class GameController : MonoBehaviour
             else
                 AudioManager.I.PlayMusic(AudioManager.I.bgmLoop, loop: true, vol: AudioManager.I.musicVolume);
         }
+
+        if (obstacleManager)
+        {
+            obstacleManager.OnLevelStart(levelIndex + 1, currentCastleData);
+        }
     }
 
     // Call this when castle HP has been reduced to 0
@@ -736,9 +802,9 @@ public class GameController : MonoBehaviour
         // Stop ongoing music/loop as soon as the round ends
         if (AudioManager.I)
         {
-            AudioManager.I.StopMusic(); // if your AudioManager uses a different method name, use that
+            AudioManager.I.StopMusic();
             if (roundWinClip)
-                AudioManager.I.PlaySFX(roundWinClip, roundWinClipVolume);
+                AudioManager.I.PlaySFX(roundWinClip);
         }
 
         if (nextPreview) nextPreview.ClearPreview();
@@ -856,6 +922,7 @@ public class GameController : MonoBehaviour
         EnterGameplayCursorMode();
 
         levelWon = false; // re-arm
+        if (roundRewardUI) roundRewardUI.Hide();
     }
 
     void EndRunAsWin()
@@ -1007,31 +1074,121 @@ public class GameController : MonoBehaviour
         if (activateSpecialGaugeText) activateSpecialGaugeText.gameObject.SetActive(full);
     }
 
-    void SpawnAttackProjectile(Sprite sprite, Vector2 startAnchored, Vector2 targetAnchored, int damage, MonsterData attackerMD)
+    void SpawnAttackProjectile(Sprite sprite, Sprite altSprite, AttackAnimType animType,
+                           Vector2 startAnchored, Vector2 targetAnchored, int damage, MonsterData attackerMD)
     {
+        if (!sprite) return;
         if (projectileRoot == null) projectileRoot = gameBoard.gridRoot;
 
-        var go = new GameObject("AttackProjectile", typeof(UnityEngine.UI.Image));
-        var img = go.GetComponent<UnityEngine.UI.Image>();
-        img.sprite = sprite;
-        img.preserveAspect = true;
-        img.raycastTarget = false;
+        Vector2 cellSize = gameBoard.GetCellSize();
 
-        var rt = img.rectTransform;
+        // Parent container
+        var go = new GameObject("AttackProjectile", typeof(RectTransform));
+        var rt = go.GetComponent<RectTransform>();
         rt.SetParent(projectileRoot, false);
         rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
-        rt.sizeDelta = gameBoard.GetCellSize();
+        rt.sizeDelta = cellSize;
         rt.anchoredPosition = startAnchored;
 
-        StartCoroutine(MoveProjectileAndHit(rt, targetAnchored, damage, attackerMD));
+        // Build visuals based on anim type
+        UnityEngine.UI.Image topImg = null;
+        UnityEngine.UI.Image botImg = null;
+
+        if (animType == AttackAnimType.MirrorToggle)
+        {
+            // Bottom mirrored image (always visible)
+            var bot = new GameObject("Bot", typeof(UnityEngine.UI.Image));
+            botImg = bot.GetComponent<UnityEngine.UI.Image>();
+            botImg.sprite = sprite;
+            botImg.preserveAspect = true;
+            botImg.raycastTarget = false;
+
+            var brt = botImg.rectTransform;
+            brt.SetParent(rt, false);
+            brt.anchorMin = brt.anchorMax = new Vector2(0.5f, 0.5f);
+            brt.sizeDelta = cellSize;
+            brt.anchoredPosition = Vector2.zero;
+            brt.localScale = Vector3.one;
+
+            // Top image (toggles on/off)
+            var top = new GameObject("Top", typeof(UnityEngine.UI.Image));
+            topImg = top.GetComponent<UnityEngine.UI.Image>();
+            topImg.sprite = altSprite ? altSprite : sprite;
+            topImg.preserveAspect = true;
+            topImg.raycastTarget = false;
+
+            var trt = topImg.rectTransform;
+            trt.SetParent(rt, false);
+            trt.anchorMin = trt.anchorMax = new Vector2(0.5f, 0.5f);
+            trt.sizeDelta = cellSize;
+            trt.anchoredPosition = Vector2.zero;
+        }
+        else
+        {
+            // Simple single image
+            var imgGO = new GameObject("Img", typeof(UnityEngine.UI.Image));
+            var img = imgGO.GetComponent<UnityEngine.UI.Image>();
+            img.sprite = sprite;
+            img.preserveAspect = true;
+            img.raycastTarget = false;
+
+            var irt = img.rectTransform;
+            irt.SetParent(rt, false);
+            irt.anchorMin = irt.anchorMax = new Vector2(0.5f, 0.5f);
+            irt.sizeDelta = cellSize;
+            irt.anchoredPosition = Vector2.zero;
+
+            topImg = img; // Use top Img var as the single image reference
+        }
+
+        StartCoroutine(MoveProjectileAndHit(rt, topImg, botImg, animType, targetAnchored, damage, attackerMD));
     }
 
-    System.Collections.IEnumerator MoveProjectileAndHit(RectTransform rt, Vector2 targetAnchored, int damage, MonsterData attackerMD)
+    System.Collections.IEnumerator MoveProjectileAndHit(RectTransform rt,
+    UnityEngine.UI.Image topImg, UnityEngine.UI.Image botImg,
+    AttackAnimType animType, Vector2 targetAnchored, int damage, MonsterData attackerMD)
     {
         float speed = Mathf.Max(10f, projectileSpeed);
+
+        // Animation timers
+        float toggleT = 0f;
+        float toggleInterval = (attackerMD ? Mathf.Max(0.03f, attackerMD.attackToggleInterval) : 0.08f);
+        float spinDPS = (attackerMD ? attackerMD.spinDegreesPerSecond : 720f);
+
+        bool topOn = true;
+
+        if (animType == AttackAnimType.MirrorToggle && topImg)
+        {
+            var c = topImg.color;
+            c.a = 1f;
+            topImg.color = c;
+        }
+
         while (rt && (rt.anchoredPosition - targetAnchored).sqrMagnitude > 9f)
         {
             rt.anchoredPosition = Vector2.MoveTowards(rt.anchoredPosition, targetAnchored, speed * Time.deltaTime);
+
+            // Animate
+            if (animType == AttackAnimType.MirrorToggle && topImg)
+            {
+                toggleT += Time.deltaTime;
+                if (toggleT >= toggleInterval)
+                {
+                    toggleT = 0f;
+                    topOn = !topOn;
+
+                    // Toggle by alpha so layout doesn't jump
+                    var c = topImg.color;
+                    c.a = topOn ? 1f : 0f;
+                    topImg.color = c;
+                }
+            }
+            else if (animType == AttackAnimType.SpinClockwise)
+            {
+                if (topImg)
+                    topImg.rectTransform.Rotate(0f, 0f, -spinDPS * Time.deltaTime);
+            }
+
             yield return null;
         }
 
@@ -1384,7 +1541,7 @@ public class GameController : MonoBehaviour
         EnsureMinBag(2);
         ShowNextPreview();
         SpawnNextPiece(); // Spawn fresh piece
-        if (restartButton) restartButton.gameObject.SetActive(false);
+        if (restartButton) restartButton.gameObject.SetActive(true);
         if (AudioManager.I) AudioManager.I.PlayMusic(AudioManager.I.bgmLoop);
     }
 
@@ -1542,13 +1699,16 @@ public class GameController : MonoBehaviour
 
     float GetCurrentFallInterval()
     {
-        // During the level, the interval shrinks over time => drops faster.
+        // During the level, the interval shrinks over time 
         float ramp = fallIntervalDecreasePerSecond * EffectiveFallRampRateMult;
-        float interval = _thisLevelStartInterval - (_levelTimer * ramp);
-  
-        interval /= EffectivePieceGravityMult; // Apply existing gravity modifier (>1 = faster, <1 = slower)
 
-        return Mathf.Max(minFallInterval, interval);  
+        float step = Mathf.Max(0.01f, fallRampStepSeconds);
+        float steppedTime = Mathf.Floor(_levelTimer / step) * step; // Only advances every 'step' seconds
+
+        float interval = _thisLevelStartInterval - (steppedTime * ramp);
+
+        interval /= EffectivePieceGravityMult; // >1 = faster, <1 = slower
+        return Mathf.Max(minFallInterval, interval);
     }
 
     void UpdateLevelTimerUI()
@@ -1623,6 +1783,246 @@ public class GameController : MonoBehaviour
             pauseCursor.SetVisible(true);
             pauseCursor.SetScale(SettingsStore.LoadCursorScale());
         }
+    }
+
+    // ================ Obstacle Destruction Buff Drop System ===================
+
+    void OnBoardObstacleDestroyed(Vector2Int cell, Board.ObstacleType type)
+    {
+        if (!IsRoundActive) return;
+        if (type != Board.ObstacleType.Stone) return;
+
+        if (buffPool == null || buffPool.Length == 0) return;
+
+        if (Random.value > stoneBuffDropChance) return;
+
+        // Apply a random buff instantly for this run
+        var buff = buffPool[Random.Range(0, buffPool.Length)];
+        if (!buff) return;
+
+        // Track + apply
+        // (This mirrors round rewards behavior, but happens mid-round)
+        RunModsStore.Buffs.Add(buff);
+        buff.Apply(this);
+
+        // Refresh UI if open
+        if (runModsPanelUI) runModsPanelUI.Refresh();
+    }
+
+    // ================ Boss Abilities ===================
+
+    void TryCastRandomBossAbility()
+    {
+        if (_castleData == null || gameBoard == null) return;
+
+        var picks = new List<System.Action>();
+
+        if (_castleData.bossEnableRowBlast) picks.Add(Boss_RowBlastTop3);
+        if (_castleData.bossEnableFullBoardBlast) picks.Add(Boss_FullBoardBlast);
+        if (_castleData.bossEnableLightningStrike) picks.Add(Boss_LightningStrike);
+        if (_castleData.bossEnableSpawnTraps) picks.Add(Boss_SpawnTraps);
+        if (_castleData.bossEnableInvulnerability) picks.Add(Boss_Invulnerability);
+        if (_castleData.bossEnableGravityBoost) picks.Add(Boss_GravityBoost);
+
+        if (picks.Count == 0) return;
+
+        var cast = picks[Random.Range(0, picks.Count)];
+        cast?.Invoke();
+    }
+
+    int GetHighestAliveMonsterRow()
+    {
+        int highest = -1;
+        for (int x = 0; x < gameBoard.width; x++)
+            for (int y = gameBoard.height - 1; y >= 0; y--)
+            {
+                var c = new Vector2Int(x, y);
+                if (gameBoard.TryGetMonster(c, out var mi) && mi.data && mi.hp > 0f)
+                {
+                    if (y > highest) highest = y;
+                    break; // Higher rows checked first per column
+                }
+            }
+        return highest;
+    }
+
+    void Boss_RowBlastTop3()
+    {
+        int highest = GetHighestAliveMonsterRow();
+
+        int yTop = (highest <= 1) ? 2 : highest;
+        int y0 = Mathf.Clamp(yTop, 0, gameBoard.height - 1);
+        int y1 = Mathf.Clamp(yTop - 1, 0, gameBoard.height - 1);
+        int y2 = Mathf.Clamp(yTop - 2, 0, gameBoard.height - 1);
+
+        float dmg = Mathf.Max(0f, _castleData.bossRowBlastDamage);
+
+        for (int x = 0; x < gameBoard.width; x++)
+        {
+            gameBoard.DamageTile(new Vector2Int(x, y0), dmg);
+            gameBoard.DamageTile(new Vector2Int(x, y1), dmg);
+            gameBoard.DamageTile(new Vector2Int(x, y2), dmg);
+        }
+    }
+
+    void Boss_FullBoardBlast()
+    {
+        float dmg = Mathf.Max(0f, _castleData.bossFullBoardDamage);
+
+        for (int x = 0; x < gameBoard.width; x++)
+            for (int y = 0; y < gameBoard.height; y++)
+                gameBoard.DamageTile(new Vector2Int(x, y), dmg);
+    }
+
+    void Boss_LightningStrike()
+    {
+        int highest = GetHighestAliveMonsterRow();
+        if (highest < 0) return;
+
+        int minY = Mathf.Max(0, highest - 2);
+        int maxY = Mathf.Min(gameBoard.height - 1, highest);
+
+        // pick an empty tile in that band
+        var candidates = new List<Vector2Int>();
+        for (int x = 0; x < gameBoard.width; x++)
+            for (int y = minY; y <= maxY; y++)
+            {
+                var c = new Vector2Int(x, y);
+                if (gameBoard.IsFree(c)) candidates.Add(c);
+            }
+        if (candidates.Count == 0) return;
+
+        var target = candidates[Random.Range(0, candidates.Count)];
+        float warn = Random.Range(_castleData.bossLightningWarningMin, _castleData.bossLightningWarningMax);
+
+        StartCoroutine(BossLightningRoutine(target, warn));
+    }
+
+    IEnumerator BossLightningRoutine(Vector2Int cell, float warningSeconds)
+    {
+        if (_castleData == null || gameBoard == null) yield break;
+
+        // Warning flash
+        if (_castleData.bossLightningWarningSprite)
+            gameBoard.FlashWarningAtCell(cell, _castleData.bossLightningWarningSprite, warningSeconds);
+
+        yield return new WaitForSeconds(warningSeconds);
+
+        // Initial impact damage if a monster is there now (even if it was empty when chosen)
+        float initial = Mathf.Max(0f, _castleData.bossLightningInitialDamage);
+        if (initial > 0f) gameBoard.DamageTile(cell, initial);
+
+        // Spawn temporary hazard (ticks) without destroying monsters
+        float tickDmg = Mathf.Max(0f, _castleData.bossLightningTickDamage);
+        float interval = Mathf.Max(0.05f, _castleData.bossLightningTickInterval);
+        float duration = Mathf.Max(0.05f, _castleData.bossLightningHazardDuration);
+
+        int ticks = Mathf.CeilToInt(duration / interval);
+        gameBoard.SetFloorEffect(cell, (Board.FloorEffectType)System.Enum.Parse(typeof(Board.FloorEffectType), "Lightning"),
+                                 tickDmg, interval, ticks);
+
+        yield return new WaitForSeconds(duration);
+
+        gameBoard.ClearFloorEffect(cell);
+    }
+
+    void Boss_SpawnTraps()
+    {
+        if (obstacleManager == null || gameBoard == null || _castleData == null) return;
+
+        int count = Mathf.Max(1, _castleData.bossTrapCountPerUse);
+
+        for (int i = 0; i < count; i++)
+        {
+            TrySpawnBossTrapCluster(_castleData.bossTrapKind, _castleData.bossTrapPattern);
+        }
+    }
+
+    void TrySpawnBossTrapCluster(CastleData.BossTrapKind kind, CastleData.BossTrapPattern pattern)
+    {
+        int attempts = 250; // Brute force attempts
+
+        for (int k = 0; k < attempts; k++)
+        {
+            var cells = MakePatternCells(pattern);
+            if (cells == null || cells.Count == 0) continue;
+
+            // Must all be in bounds and empty
+            bool ok = true;
+            foreach (var c in cells)
+            {
+                if (!gameBoard.InBounds(c) || !gameBoard.IsFree(c)) { ok = false; break; }
+            }
+            if (!ok) continue;
+
+            // Place
+            foreach (var c in cells)
+            {
+                switch (kind)
+                {
+                    case CastleData.BossTrapKind.Stone:
+                        gameBoard.TrySpawnStoneObstacle(c, obstacleManager.stoneHitsToBreak);
+                        break;
+                    case CastleData.BossTrapKind.Spike:
+                        gameBoard.SetFloorEffect(c, Board.FloorEffectType.Spike,
+                            obstacleManager.spikeOneShotDamage, 1f, 1);
+                        break;
+                    case CastleData.BossTrapKind.Poison:
+                        gameBoard.SetFloorEffect(c, Board.FloorEffectType.Poison,
+                            obstacleManager.poisonTickDamage, obstacleManager.poisonTickInterval, obstacleManager.poisonTicks);
+                        break;
+                    case CastleData.BossTrapKind.Fire:
+                        gameBoard.SetFloorEffect(c, Board.FloorEffectType.Burn,
+                            obstacleManager.fireTickDamage, obstacleManager.fireTickInterval, obstacleManager.fireTicks);
+                        break;
+                }
+            }
+
+            return;
+        }
+
+        List<Vector2Int> MakePatternCells(CastleData.BossTrapPattern pat)
+        {
+            // Choose a random anchor
+            int x = Random.Range(0, gameBoard.width);
+            int y = Random.Range(0, gameBoard.height);
+            var a = new Vector2Int(x, y);
+
+            if (pat == CastleData.BossTrapPattern.Single)
+                return new List<Vector2Int> { a };
+
+            if (pat == CastleData.BossTrapPattern.Line4)
+                return new List<Vector2Int> { a, a + Vector2Int.right, a + Vector2Int.right * 2, a + Vector2Int.right * 3 };
+
+            // Square2x2
+            return new List<Vector2Int> { a, a + Vector2Int.right, a + Vector2Int.up, a + Vector2Int.up + Vector2Int.right };
+        }
+    }
+
+    void Boss_Invulnerability()
+    {
+        if (enemyCastleUI == null || _castleData == null) return;
+        enemyCastleUI.StartInvulnerability(_castleData.bossInvulnDuration);
+    }
+
+    void Boss_GravityBoost()
+    {
+        if (_castleData == null) return;
+
+        if (_bossGravityCR != null) StopCoroutine(_bossGravityCR);
+        _bossGravityCR = StartCoroutine(BossGravityRoutine(_castleData.bossGravityBonusMult, _castleData.bossGravityDuration));
+    }
+
+    IEnumerator BossGravityRoutine(float bonusMult, float seconds)
+    {
+        float delta = Mathf.Max(0f, bonusMult);
+
+        _bossGravityBonusActive += delta;
+        yield return new WaitForSeconds(Mathf.Max(0.05f, seconds));
+        _bossGravityBonusActive -= delta;
+
+        if (_bossGravityBonusActive < 0f) _bossGravityBonusActive = 0f;
+        _bossGravityCR = null;
     }
 
     // ================== Helper/Utility ==================

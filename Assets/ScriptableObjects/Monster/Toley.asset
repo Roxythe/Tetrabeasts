@@ -33,8 +33,24 @@ MonoBehaviour:
   healRange: 1
   healSpeed: 10
   specialGaugeGain: 2
-  attackSprite: {fileID: 21300000, guid: d55993f5b15ca3a4d833192a9b95d2a2, type: 3}
+  attackAnim: 2
+  attackSprite: {fileID: 9119057616646160135, guid: f548168d71153424b8e3d0a4793b1b6b, type: 3}
+  attackSpriteAlt: {fileID: 9119057616646160135, guid: f548168d71153424b8e3d0a4793b1b6b, type: 3}
+  skinAttackSprites:
+  - {fileID: 9119057616646160135, guid: f548168d71153424b8e3d0a4793b1b6b, type: 3}
+  - {fileID: 8783701369283396564, guid: afce72556eee78343ab17c274297d0f7, type: 3}
+  - {fileID: -4810606183427590411, guid: edccc206dbff43d49ae88c730236dd0b, type: 3}
+  - {fileID: -7304348528781813729, guid: 4dbd4d2fa85397d499f5319eafe0ecf6, type: 3}
+  - {fileID: 6003345678334317906, guid: f8a707d782d40be4c888ed59bdbb658f, type: 3}
+  skinAttackSpritesAlt:
+  - {fileID: 9119057616646160135, guid: f548168d71153424b8e3d0a4793b1b6b, type: 3}
+  - {fileID: 8783701369283396564, guid: afce72556eee78343ab17c274297d0f7, type: 3}
+  - {fileID: -4810606183427590411, guid: edccc206dbff43d49ae88c730236dd0b, type: 3}
+  - {fileID: -7304348528781813729, guid: 4dbd4d2fa85397d499f5319eafe0ecf6, type: 3}
+  - {fileID: 6003345678334317906, guid: f8a707d782d40be4c888ed59bdbb658f, type: 3}
   healSprite: {fileID: 0}
+  attackToggleInterval: 0.08
+  spinDegreesPerSecond: 720
   sfxHeal: {fileID: 0}
   sfxHealClips: []
   sfxAttack: {fileID: 8300000, guid: ebbc786614ed4ce40a6c4b8dd7150231, type: 3}

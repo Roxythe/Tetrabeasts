@@ -1,5 +1,14 @@
 using UnityEngine;
 
+
+public enum AttackAnimType
+{
+    None = 0,
+
+    MirrorToggle = 1, // Flips horizontally back and forth while moving by toggling 2 layered sprites
+    SpinClockwise = 2 // Rotates clockwise continuously while moving
+}
+
 [CreateAssetMenu(menuName = "Run/Monster Piece", fileName = "NewMonsterPiece")]
 public class MonsterData : ScriptableObject
 {
@@ -32,8 +41,20 @@ public class MonsterData : ScriptableObject
     public float specialGaugeGain = 1.0f; // How much this monster adds to the gauge on line clear
 
     [Header("VFX")]
-    public Sprite attackSprite;
+    public AttackAnimType attackAnim = AttackAnimType.None;
+
+    public Sprite attackSprite; // Base attack sprite
+    public Sprite attackSpriteAlt; // Optional secondary sprite for toggle animation
+
+    // Per-skin attack sprites (match skinPortraits indexing: [0]=default)
+    public Sprite[] skinAttackSprites = new Sprite[5];
+    public Sprite[] skinAttackSpritesAlt = new Sprite[5];
+
     public Sprite healSprite;
+
+    // Animation tuning
+    [Range(0.03f, 0.25f)] public float attackToggleInterval = 0.08f;
+    public float spinDegreesPerSecond = 720f;
 
     [Header("SFX")]
     public AudioClip sfxHeal;    // Played when this healer successfully heals someone

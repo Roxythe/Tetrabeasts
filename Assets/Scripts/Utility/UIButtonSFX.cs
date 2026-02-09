@@ -35,7 +35,13 @@ public sealed class UIButtonSFX : MonoBehaviour, IPointerEnterHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        // Don't play hover SFX for disabled/unclickable buttons
+        if (!_button) return;
+        if (!_button.isActiveAndEnabled) return;
+        if (!_button.IsInteractable()) return;
+
         if (hoverClip && AudioManager.I)
             AudioManager.I.PlayUISFX(hoverClip, 1f, 1f);
     }
+
 }

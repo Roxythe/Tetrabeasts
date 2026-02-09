@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CastleData
   castleName: Starting Village
   damageStages:
-  - {fileID: -4570795205544323055, guid: 1f0ff268de0e76d4c91ac180ab7e6e6e, type: 3}
-  - {fileID: 3745522521326032154, guid: 9082ffe4cf1f7e146b700d31ac4725da, type: 3}
-  - {fileID: 5044524973614600863, guid: 72665c402bca98948ac42bedf1620070, type: 3}
-  - {fileID: 8856490401782157092, guid: 8ef84dac0848a8b4f81252dbc3fac646, type: 3}
+  - {fileID: 21300000, guid: 1f0ff268de0e76d4c91ac180ab7e6e6e, type: 3}
+  - {fileID: 21300000, guid: 9082ffe4cf1f7e146b700d31ac4725da, type: 3}
+  - {fileID: 21300000, guid: 72665c402bca98948ac42bedf1620070, type: 3}
+  - {fileID: 21300000, guid: 8ef84dac0848a8b4f81252dbc3fac646, type: 3}
   maxHP: 100
   projectileSprite: {fileID: 21300000, guid: ca7186951d5077d419fe7998de074c6d, type: 3}
   projectileInterval: 3
@@ -46,3 +46,9 @@ MonoBehaviour:
   bossBGMVolume: 0.6
   levelBGM: {fileID: 8300000, guid: 0101ed564f6324842a201a37504139b5, type: 3}
   levelBGMVolume: 0.5
+  overrideInitialObstacles: 0
+  overridesOnlyForLevel1: 1
+  overrideStoneCount: -1
+  overridePoisonCount: -1
+  overrideFireCount: -1
+  overrideSpikeCount: -1
