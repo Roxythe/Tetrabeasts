@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d53674e82a67d24eb4f78ba0f273f3a, type: 3}
-  m_Name: TestCastle 1
+  m_Name: TestBossLevel1
   m_EditorClassIdentifier: Assembly-CSharp::CastleData
-  castleName: Basic Town
+  castleName: City Champion
   damageStages:
   - {fileID: 21300000, guid: 1f0ff268de0e76d4c91ac180ab7e6e6e, type: 3}
   - {fileID: 21300000, guid: 9082ffe4cf1f7e146b700d31ac4725da, type: 3}
   - {fileID: 21300000, guid: 72665c402bca98948ac42bedf1620070, type: 3}
   - {fileID: 21300000, guid: 8ef84dac0848a8b4f81252dbc3fac646, type: 3}
-  maxHP: 300
+  maxHP: 400
   projectileSprite: {fileID: 21300000, guid: ca7186951d5077d419fe7998de074c6d, type: 3}
   projectileInterval: 3
   projectileSpeed: 800
-  projectileDamage: 12
+  projectileDamage: 15
   sfxProjectileHitTile: {fileID: 8300000, guid: 23223cee22f6a6c4caceff40d1bcd1e6, type: 3}
   sfxProjectileHitTileClips:
   - {fileID: 8300000, guid: fccb4318ede48ff4db14c0d040030810, type: 3}
@@ -40,50 +40,92 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 36168d0de03667d49b6b637203e675eb, type: 3}
   - {fileID: 8300000, guid: 212ba41b43c8a004ca231baaa67f9610, type: 3}
   - {fileID: 8300000, guid: 8990cdb32fd36a74c9df4c24a499b0a1, type: 3}
-  isBossLevel: 0
-  bossOverlaySprite: {fileID: 0}
-  bossBGM: {fileID: 8300000, guid: 6824fd3217be2fb4b9ff175138689e20, type: 3}
+  isBossLevel: 1
+  bossOverlaySprite: {fileID: 6749401395162231539, guid: b96f634bed2363a4695b770dd464ac60, type: 3}
+  bossBGM: {fileID: 8300000, guid: 5c14238e921d6304f8141213dcf2d153, type: 3}
   bossBGMVolume: 0.6
-  levelBGM: {fileID: 8300000, guid: ba77a72ce39268f4bb187135aca787ef, type: 3}
+  levelBGM: {fileID: 8300000, guid: 0101ed564f6324842a201a37504139b5, type: 3}
   levelBGMVolume: 0.5
-  overrideInitialObstacles: 0
-  overridesOnlyForLevel1: 1
-  overrideStoneCount: -1
-  overridePoisonCount: -1
-  overrideFireCount: -1
-  overrideSpikeCount: -1
+  overrideInitialObstacles: 1
+  overridesOnlyForLevel1: 0
+  overrideStoneCount: 3
+  overridePoisonCount: 1
+  overrideFireCount: 1
+  overrideSpikeCount: 1
   bossEnableRowBlast: 1
-  bossEnableFullBoardBlast: 0
+  bossEnableFullBoardBlast: 1
   bossEnableLightningStrike: 1
   bossEnableSpawnTraps: 1
   bossEnableInvulnerability: 1
   bossEnableGravityBoost: 1
-  bossAbilityIntervalMin: 4
-  bossAbilityIntervalMax: 7
-  bossRowBlastDamage: 2
-  bossFullBoardDamage: 1
-  bossLightningWarningSprite: {fileID: 0}
+  bossAbilityIntervalMin: 10
+  bossAbilityIntervalMax: 15
+  bossRowBlastDamage: 5
+  bossFullBoardDamage: 3
+  bossLightningWarningSprite: {fileID: -7430558899833497709, guid: fc848ad20e1533246a7e5adedce199b7, type: 3}
   bossLightningTargetsMin: 1
   bossLightningTargetsMax: 3
   bossLightningWarningMin: 3
-  bossLightningWarningMax: 5
-  bossLightningInitialDamage: 2
-  bossLightningTickDamage: 1
-  bossLightningTickInterval: 0.5
-  bossLightningHazardDuration: 4
+  bossLightningWarningMax: 6
+  bossLightningInitialDamage: 10
+  bossLightningTickDamage: 2
+  bossLightningTickInterval: 1
+  bossLightningHazardDuration: 10
   bossTrapKind: 0
   bossTrapPattern: 0
-  useBossTrapOptionPool: 0
-  bossTrapOptions: []
+  useBossTrapOptionPool: 1
+  bossTrapOptions:
+  - kind: 0
+    pattern: 2
+    weight: 1
+  - kind: 1
+    pattern: 5
+    weight: 1
+  - kind: 2
+    pattern: 2
+    weight: 1
+  - kind: 3
+    pattern: 5
+    weight: 1
+  - kind: 3
+    pattern: 0
+    weight: 1
+  - kind: 2
+    pattern: 0
+    weight: 1
   bossTrapCountPerUse: 4
   bossTrapCountPerClusterUse: 1
   useBossAbilityOptionPool: 1
-  bossAbilityOptions: []
-  bossInvulnDuration: 3
-  bossInvulnHitSFX: {fileID: 0}
+  bossAbilityOptions:
+  - kind: 0
+    weight: 1
+    allowRepeat: 0
+    cooldown: 20
+  - kind: 1
+    weight: 1
+    allowRepeat: 0
+    cooldown: 20
+  - kind: 2
+    weight: 1
+    allowRepeat: 1
+    cooldown: 12
+  - kind: 3
+    weight: 3
+    allowRepeat: 1
+    cooldown: 12
+  - kind: 4
+    weight: 1
+    allowRepeat: 0
+    cooldown: 30
+  - kind: 5
+    weight: 1
+    allowRepeat: 0
+    cooldown: 10
+  bossInvulnDuration: 10
+  bossInvulnHitSFX: {fileID: 8300000, guid: 872123507b80dd64ab56ef9159446175, type: 3}
   bossGravityBonusMult: 2
   bossGravityDuration: 10
   bossAbilityWarningSeconds: 3
   bossWarningToggleInterval: 0.16
-  bossRowBlastWarningSprite: {fileID: 0}
-  bossFullBoardWarningSprite: {fileID: 0}
+  bossRowBlastWarningSprite: {fileID: -4364613411904784052, guid: d7609c71eb781fd4caca65888f6f03b4, type: 3}
+  bossFullBoardWarningSprite: {fileID: 7805902445396465781, guid: 5bb3ce31ac7e6954584de0395ebea701, type: 3}

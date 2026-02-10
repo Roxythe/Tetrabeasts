@@ -199,9 +199,7 @@ public class EnemyCastleUI : MonoBehaviour
 
     IEnumerator InvulnRoutine(float seconds)
     {
-        // Turn on invulnerability images
         _invulnerable = true;
-
         SetInvulnerabilityVFX(true);
 
         yield return new WaitForSeconds(seconds);
@@ -244,8 +242,8 @@ public class EnemyCastleUI : MonoBehaviour
     void SetInvulnerabilityVFX(bool on)
     {
         // Turn on/off both shield images
-        if (invulnShieldImageA) invulnShieldImageA.enabled = on;
-        if (invulnShieldImageB) invulnShieldImageB.enabled = on;
+        if (invulnShieldImageA) invulnShieldImageA.gameObject.SetActive(on);
+        if (invulnShieldImageB) invulnShieldImageB.gameObject.SetActive(on);
 
         // Tint health bar fill
         var fill = GetHealthFillImage();

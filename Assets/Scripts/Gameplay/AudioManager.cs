@@ -15,6 +15,8 @@ public class AudioManager : MonoBehaviour
     public AudioClip sfxRestart;
     public AudioClip sfxGameOver;
     public AudioClip[] sfxLineClears;
+    public AudioClip[] sfxBossAbilityCasts;
+    public AudioClip sfxBossLightningStrike;
 
     [Header("Defaults")]
     [Range(0f, 1f)] public float masterVolume = 1f;
@@ -162,6 +164,27 @@ public class AudioManager : MonoBehaviour
         uiSfxSrc.pitch = Mathf.Clamp(p, 0.5f, 2f);
         uiSfxSrc.PlayOneShot(clip, vol);
         uiSfxSrc.pitch = 1f; // Reset
+    }
+
+    public void PlayBossAbilityCast(float vol = 1f)
+    {
+        if (sfxBossAbilityCasts == null || sfxBossAbilityCasts.Length == 0) return;
+
+        // Pick a non-null clip if possible
+        for (int tries = 0; tries < sfxBossAbilityCasts.Length; tries++)
+        {
+            var clip = sfxBossAbilityCasts[UnityEngine.Random.Range(0, sfxBossAbilityCasts.Length)];
+            if (!clip) continue;
+
+            PlaySFX(clip, vol);
+            return;
+        }
+    }
+
+    public void PlayBossLightningStrike(float vol = 1f)
+    {
+        if (!sfxBossLightningStrike) return;
+        PlaySFX(sfxBossLightningStrike, vol);
     }
 
 }

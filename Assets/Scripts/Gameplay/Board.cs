@@ -1797,16 +1797,15 @@ public class Board : MonoBehaviour
 
     // ================= Boss Warning Flashing =================
 
-    public Coroutine FlashWarningAtCell(Vector2Int cell, Sprite warningSprite, float seconds, float toggleInterval = 0.12f)
+    public Coroutine FlashWarningAtCell(Vector2Int cell, Sprite warningSprite, float seconds, float toggleInterval = 0.08f, float alpha = 0.65f)
     {
-        return StartCoroutine(FlashWarningRoutine(cell, warningSprite, seconds, toggleInterval));
+        return StartCoroutine(FlashWarningRoutine(cell, warningSprite, seconds, toggleInterval, alpha));
     }
 
-    IEnumerator FlashWarningRoutine(Vector2Int cell, Sprite warningSprite, float seconds, float toggleInterval)
+    IEnumerator FlashWarningRoutine(Vector2Int cell, Sprite warningSprite, float seconds, float toggleInterval, float alpha)
     {
         if (!InBounds(cell) || warningSprite == null) yield break;
 
-        // Put warning in overlayRoot so it sits above tiles
         if (!overlayRoot) overlayRoot = gridRoot;
 
         var go = new GameObject("BossWarning");
@@ -1815,6 +1814,10 @@ public class Board : MonoBehaviour
         img.sprite = warningSprite;
         img.preserveAspect = true;
         img.raycastTarget = false;
+
+        // NEW: slightly transparent
+        alpha = Mathf.Clamp01(alpha);
+        img.color = new Color(1f, 1f, 1f, alpha);
 
         var rt = img.rectTransform;
         rt.sizeDelta = cellSize;

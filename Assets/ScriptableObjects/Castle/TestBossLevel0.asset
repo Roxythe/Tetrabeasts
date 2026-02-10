@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d53674e82a67d24eb4f78ba0f273f3a, type: 3}
   m_Name: TestBossLevel0
   m_EditorClassIdentifier: Assembly-CSharp::CastleData
-  castleName: Starting Village
+  castleName: First Chieftain
   damageStages:
   - {fileID: 21300000, guid: 1f0ff268de0e76d4c91ac180ab7e6e6e, type: 3}
   - {fileID: 21300000, guid: 9082ffe4cf1f7e146b700d31ac4725da, type: 3}
@@ -46,9 +46,86 @@ MonoBehaviour:
   bossBGMVolume: 0.6
   levelBGM: {fileID: 8300000, guid: 0101ed564f6324842a201a37504139b5, type: 3}
   levelBGMVolume: 0.5
-  overrideInitialObstacles: 0
-  overridesOnlyForLevel1: 1
-  overrideStoneCount: -1
-  overridePoisonCount: -1
-  overrideFireCount: -1
-  overrideSpikeCount: -1
+  overrideInitialObstacles: 1
+  overridesOnlyForLevel1: 0
+  overrideStoneCount: 3
+  overridePoisonCount: 1
+  overrideFireCount: 1
+  overrideSpikeCount: 1
+  bossEnableRowBlast: 1
+  bossEnableFullBoardBlast: 1
+  bossEnableLightningStrike: 1
+  bossEnableSpawnTraps: 1
+  bossEnableInvulnerability: 1
+  bossEnableGravityBoost: 1
+  bossAbilityIntervalMin: 10
+  bossAbilityIntervalMax: 15
+  bossRowBlastDamage: 5
+  bossFullBoardDamage: 3
+  bossLightningWarningSprite: {fileID: -7430558899833497709, guid: fc848ad20e1533246a7e5adedce199b7, type: 3}
+  bossLightningTargetsMin: 1
+  bossLightningTargetsMax: 3
+  bossLightningWarningMin: 3
+  bossLightningWarningMax: 6
+  bossLightningInitialDamage: 10
+  bossLightningTickDamage: 2
+  bossLightningTickInterval: 1
+  bossLightningHazardDuration: 10
+  bossTrapKind: 0
+  bossTrapPattern: 0
+  useBossTrapOptionPool: 1
+  bossTrapOptions:
+  - kind: 0
+    pattern: 2
+    weight: 1
+  - kind: 1
+    pattern: 5
+    weight: 1
+  - kind: 2
+    pattern: 2
+    weight: 1
+  - kind: 3
+    pattern: 5
+    weight: 1
+  - kind: 3
+    pattern: 0
+    weight: 1
+  - kind: 2
+    pattern: 0
+    weight: 1
+  bossTrapCountPerUse: 4
+  bossTrapCountPerClusterUse: 1
+  useBossAbilityOptionPool: 1
+  bossAbilityOptions:
+  - kind: 0
+    weight: 1
+    allowRepeat: 0
+    cooldown: 20
+  - kind: 1
+    weight: 1
+    allowRepeat: 0
+    cooldown: 20
+  - kind: 2
+    weight: 1
+    allowRepeat: 1
+    cooldown: 12
+  - kind: 3
+    weight: 3
+    allowRepeat: 1
+    cooldown: 12
+  - kind: 4
+    weight: 1
+    allowRepeat: 0
+    cooldown: 30
+  - kind: 5
+    weight: 1
+    allowRepeat: 0
+    cooldown: 10
+  bossInvulnDuration: 10
+  bossInvulnHitSFX: {fileID: 8300000, guid: 872123507b80dd64ab56ef9159446175, type: 3}
+  bossGravityBonusMult: 2
+  bossGravityDuration: 10
+  bossAbilityWarningSeconds: 3
+  bossWarningToggleInterval: 0.16
+  bossRowBlastWarningSprite: {fileID: -4364613411904784052, guid: d7609c71eb781fd4caca65888f6f03b4, type: 3}
+  bossFullBoardWarningSprite: {fileID: 7805902445396465781, guid: 5bb3ce31ac7e6954584de0395ebea701, type: 3}

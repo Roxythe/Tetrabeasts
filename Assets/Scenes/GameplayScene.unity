@@ -2709,17 +2709,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 595899101}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 841500714}
+  m_Father: {fileID: 1543460685}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -750.68, y: 55}
-  m_SizeDelta: {x: 278.0962, y: 50.1319}
+  m_AnchoredPosition: {x: 34.06741, y: 75.72101}
+  m_SizeDelta: {x: 350, y: 50.1319}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &595899103
 MonoBehaviour:
@@ -3103,17 +3103,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 685653178}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 841500714}
+  m_Father: {fileID: 1543460685}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -750.68, y: 2.3996048}
-  m_SizeDelta: {x: 278.09, y: 55.0697}
+  m_AnchoredPosition: {x: 34.06741, y: 23.120613}
+  m_SizeDelta: {x: 350, y: 55.0697}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &686597564
 GameObject:
@@ -3488,17 +3488,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 754422042}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 841500714}
+  m_Father: {fileID: 1543460685}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -750.68, y: -50.134995}
-  m_SizeDelta: {x: 278.09, y: 50}
+  m_AnchoredPosition: {x: 34.06741, y: -29.413986}
+  m_SizeDelta: {x: 350, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &754422044
 CanvasRenderer:
@@ -3844,10 +3844,7 @@ RectTransform:
   - {fileID: 273515694}
   - {fileID: 819429984}
   - {fileID: 739010573}
-  - {fileID: 595899102}
-  - {fileID: 685653181}
-  - {fileID: 754422043}
-  - {fileID: 1021869455}
+  - {fileID: 1543460685}
   m_Father: {fileID: 2092384763}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -4600,17 +4597,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1021869454}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 841500714}
+  m_Father: {fileID: 1543460685}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -750.68, y: -96.50799}
-  m_SizeDelta: {x: 278.09, y: 50}
+  m_AnchoredPosition: {x: 34.067413, y: -75.78698}
+  m_SizeDelta: {x: 350, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1021869456
 MonoBehaviour:
@@ -6475,7 +6472,7 @@ MonoBehaviour:
   stoneCriticalSprite: {fileID: -8822111029399401767, guid: a2046d0780b221d48a775a3ba76c5567, type: 3}
   poisonBorderSprite: {fileID: -2150452836756340232, guid: dc0f4bc7092c40a40aecd2a1406b4a25, type: 3}
   fireBorderSprite: {fileID: -2737431570772258390, guid: 3f2b08c7023ae6045a1a36eda95861fd, type: 3}
-  lightningBorderSprite: {fileID: 0}
+  lightningBorderSprite: {fileID: -4774492201383427687, guid: 860ad36f38971b241b3613006f023743, type: 3}
   spikeSpriteLow: {fileID: -7474534166531757267, guid: 59afb05ab829e434785e507c432aaa87, type: 3}
   spikeSpriteHigh: {fileID: -332607259968299230, guid: d6e21328398368d47b3cb6a083dfb8f3, type: 3}
   spikeAnimInterval: 0.35
@@ -6484,7 +6481,7 @@ MonoBehaviour:
   monsterTickFlashDuration: 0.08
   burnTickFlashTint: {r: 1, g: 0.25, b: 0.25, a: 1}
   poisonTickFlashTint: {r: 0.75, g: 0.25, b: 1, a: 1}
-  lightningTickFlashTint: {r: 0.25, g: 0.25, b: 1, a: 1}
+  lightningTickFlashTint: {r: 0.25098038, g: 0.97904575, b: 1, a: 1}
 --- !u!224 &1488354586
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6580,6 +6577,45 @@ RectTransform:
   m_AnchorMax: {x: 0.75, y: 1}
   m_AnchoredPosition: {x: -2.302597, y: 4.9592}
   m_SizeDelta: {x: 404.61, y: -0.1122}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1543460684
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1543460685}
+  m_Layer: 5
+  m_Name: LevelTextComponents
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1543460685
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1543460684}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 595899102}
+  - {fileID: 685653181}
+  - {fileID: 754422043}
+  - {fileID: 1021869455}
+  m_Father: {fileID: 841500714}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -750.68, y: 25}
+  m_SizeDelta: {x: 278.0962, y: 201.57394}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1562077744
 GameObject:
@@ -7777,9 +7813,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7c91d608d59934d41ae40968e5a6aff1, type: 2}
   - {fileID: 11400000, guid: 347f97c862e224641898291b159f0743, type: 2}
   - {fileID: 11400000, guid: e3344096f4bcc724c9a2efed9ccedc29, type: 2}
+  - {fileID: 11400000, guid: 907541348bd579b4c901d9f8caf1dcd1, type: 2}
   - {fileID: 11400000, guid: fcd660acd77e3bf4c80a70c0f8d77d7a, type: 2}
   roundWinClip: {fileID: 8300000, guid: 6efb33eb677e285438a67905542f871f, type: 3}
   levelTimerText: {fileID: 754422045}
+  gravityText: {fileID: 1021869456}
+  gravityTextFormat: 'Gravity: {0:0.00}'
   fallRampStepSeconds: 2
   startFallInterval: 1.2
   minFallInterval: 0.1

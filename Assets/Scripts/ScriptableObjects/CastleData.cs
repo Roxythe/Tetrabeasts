@@ -31,7 +31,7 @@ public class CastleData : ScriptableObject
     public AudioClip bossBGM;
     [Range(0f, 1f)] public float bossBGMVolume = 0.6f;
 
-    // (optional) non-boss per-level music
+    [Header("Normal Level Music")]
     public AudioClip levelBGM;
     [Range(0f, 1f)] public float levelBGMVolume = 0.5f;
 
@@ -75,6 +75,8 @@ public class CastleData : ScriptableObject
 
     [Header("Boss - Lightning Strike")]
     public Sprite bossLightningWarningSprite;     // Indicator that flashes before strike
+    [Min(1)] public int bossLightningTargetsMin = 1;
+    [Min(1)] public int bossLightningTargetsMax = 3;
     [Min(0.25f)] public float bossLightningWarningMin = 3f;
     [Min(0.25f)] public float bossLightningWarningMax = 5f;
     [Min(0.01f)] public float bossLightningInitialDamage = 2f;
@@ -83,23 +85,70 @@ public class CastleData : ScriptableObject
     [Min(0.25f)] public float bossLightningHazardDuration = 4f;
 
     // Boss - Spawn Traps
-    public enum BossTrapKind { Spike, Stone, Poison, Fire }
+    public enum BossTrapKind { Spike, Stone, Poison, Fire, Lightning }
     public BossTrapKind bossTrapKind = BossTrapKind.Spike;
 
-    public enum BossTrapPattern { Single, Line4, Square2x2 }
+    public enum BossTrapPattern { Single, Line4, Square2x2, Line4_V, Line4_H, Line4_Random }
     public BossTrapPattern bossTrapPattern = BossTrapPattern.Single;
 
-    [Min(1)] public int bossTrapCountPerUse = 1; // How many clusters/singles per cast
+    [System.Serializable]
+    public struct BossTrapSpawnOption
+    {
+        public BossTrapKind kind;
+        public BossTrapPattern pattern;
+
+        [Min(1)] public int weight; // higher = more likely
+    }
+
+    [Header("Boss - Spawn Traps (Option Pool)")]
+    public bool useBossTrapOptionPool = false;
+    public BossTrapSpawnOption[] bossTrapOptions;
+
+    [Min(1)] public int bossTrapCountPerUse = 4; // Single cell traps per cast
+    [Min(1)] public int bossTrapCountPerClusterUse = 1; // Pattern clusters per cast
+
+    // ================= Boss Ability Pool =================
+
+    public enum BossAbilityKind
+    {
+        RowBlast,
+        FullBoardBlast,
+        LightningStrike,
+        SpawnTraps,
+        Invulnerability,
+        GravityBoost
+    }
+
+    [System.Serializable]
+    public struct BossAbilityOption
+    {
+        public BossAbilityKind kind;
+
+        [Min(1)] public int weight;          // higher = more likely
+
+        // Optional controls 
+        public bool allowRepeat;             // If false, don't pick twice in a row
+        [Min(0f)] public float cooldown;     // Seconds before this ability can be picked again
+    }
+
+    [Header("Boss - Ability Option Pool")]
+    public bool useBossAbilityOptionPool = true;
+    public BossAbilityOption[] bossAbilityOptions;
 
     [Header("Boss - Invulnerability")]
     [Min(0.25f)] public float bossInvulnDuration = 3f;
-    public Sprite bossInvulnOverlaySprite;     // Optional overlay sprite 
     public AudioClip bossInvulnHitSFX;         // Different hit SFX when invulnerable
 
     [Header("Boss - Gravity Boost")]
-    [Min(0.1f)] public float bossGravityBonusMult = 2f; // "add +2 gravity" => multiplies fall speed by (1+2)=3x if you implement as additive
+    [Min(0.1f)] public float bossGravityBonusMult = 2f; // Multiplier for gravity boost (base1 + 2bonusMult = 3x gravity)
     [Min(0.25f)] public float bossGravityDuration = 10f;
 
+    [Header("Boss Ability Warnings")]
+    [Min(0f)] public float bossAbilityWarningSeconds = 3f;
+    [Min(0.02f)] public float bossWarningToggleInterval = 0.16f;
+
+    public Sprite bossRowBlastWarningSprite;
+    public Sprite bossFullBoardWarningSprite;
 
 
     public Sprite GetSpriteForHealth(float hpPercent)
