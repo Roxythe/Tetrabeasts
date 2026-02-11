@@ -1419,7 +1419,8 @@ public class Board : MonoBehaviour
     {
         if (!InBounds(cell)) return false;
 
-        // Store state
+        if (HasFloorEffect(cell)) return false; // Never allow overlapping effects
+
         switch (type)
         {
             case FloorEffectType.Poison:

@@ -2194,38 +2194,33 @@ public class GameController : MonoBehaviour
 
     IEnumerator BossSpawnTrapsSplitWithWarningRoutine()
     {
-        int singles = Mathf.Max(0, _castleData.bossTrapCountPerUse);
-        int clusters = Mathf.Max(0, _castleData.bossTrapCountPerClusterUse);
         float warn = BossWarnSeconds();
 
-        var batches = new List<TrapSpawnBatch>(singles + clusters);
+        var reserved = new HashSet<Vector2Int>();
+        var batches = new List<TrapSpawnBatch>();
 
-        // ---- Singles ----
-        for (int i = 0; i < singles; i++)
+        // Roll ONE option for this entire cast (kind + pattern)
+        var castOpt = GetBossTrapOptionForThisSpawn();
+
+        // Decide how many placements based on the selected pattern
+        int count =
+            (castOpt.pattern == CastleData.BossTrapPattern.Single)
+            ? Mathf.Max(0, _castleData.bossTrapCountPerUse)
+            : Mathf.Max(0, _castleData.bossTrapCountPerClusterUse);
+
+        for (int i = 0; i < count; i++)
         {
-            var opt = GetBossTrapOptionForThisSpawn();
-
-            if (TryPickBossTrapClusterCells(CastleData.BossTrapPattern.Single, out var cells))
+            if (TryPickBossTrapClusterCells(castOpt.kind, castOpt.pattern, reserved, out var cells))
             {
-                batches.Add(new TrapSpawnBatch { kind = opt.kind, cells = cells });
-            }
-        }
-
-        // ---- Clusters ----
-        for (int i = 0; i < clusters; i++)
-        {
-            var opt = GetBossTrapOptionForThisSpawn();
-
-            if (TryPickBossTrapClusterCells(opt.pattern, out var cells))
-            {
-                batches.Add(new TrapSpawnBatch { kind = opt.kind, cells = cells });
+                foreach (var c in cells) reserved.Add(c);
+                batches.Add(new TrapSpawnBatch { kind = castOpt.kind, cells = cells });
             }
         }
 
         if (batches.Count == 0)
             yield break;
 
-        // Warning flash and SFX once
+        // Warning flash
         PlayBossAbilityWarningSFX();
 
         foreach (var b in batches)
@@ -2245,43 +2240,156 @@ public class GameController : MonoBehaviour
             PlaceBossTrapCells(b.kind, b.cells);
     }
 
-    bool TryPickBossTrapClusterCells(CastleData.BossTrapPattern pattern, out List<Vector2Int> cellsOut)
+    bool TryPickBossTrapClusterCells(
+    CastleData.BossTrapKind kind,
+    CastleData.BossTrapPattern pattern,
+    HashSet<Vector2Int> reserved,
+    out List<Vector2Int> cellsOut)
     {
         cellsOut = null;
         int attempts = 250;
+        int stoneTopBuffer = 7; // Number of rows from the top to avoid when spawning stone traps
+        int maxStoneY = Mathf.Max(0, gameBoard.height - 1 - stoneTopBuffer);
 
+        // Require free cells in the first pass to maximize fairness
         for (int k = 0; k < attempts; k++)
         {
-            var cells = MakePatternCells(pattern);
+            var cells = MakePatternCells(pattern, kind, maxStoneY);
             if (cells == null || cells.Count == 0) continue;
 
-            bool ok = true;
-            foreach (var c in cells)
+            if (AllCellsValid(cells, kind, reserved, requireFreeCells: true))
             {
-                if (!gameBoard.InBounds(c) || !gameBoard.IsFree(c)) { ok = false; break; }
+                cellsOut = cells;
+                return true;
             }
-            if (!ok) continue;
+        }
 
-            cellsOut = cells;
-            return true;
+        // Allowed to spawn on occupied cells in fallback pass, except stone traps (to avoid unfair insta-deaths)
+        bool allowOccupied = (kind != CastleData.BossTrapKind.Stone);
+
+        if (allowOccupied)
+        {
+            for (int k = 0; k < attempts; k++)
+            {
+                var cells = MakePatternCells(pattern, kind, maxStoneY);
+                if (cells == null || cells.Count == 0) continue;
+
+                if (AllCellsValid(cells, kind, reserved, requireFreeCells: false))
+                {
+                    cellsOut = cells;
+                    return true;
+                }
+            }
         }
 
         return false;
 
-        List<Vector2Int> MakePatternCells(CastleData.BossTrapPattern pat)
+        bool AllCellsValid(List<Vector2Int> cells, CastleData.BossTrapKind knd, HashSet<Vector2Int> res, bool requireFreeCells)
         {
-            int x = Random.Range(0, gameBoard.width);
-            int y = Random.Range(0, gameBoard.height);
-            var a = new Vector2Int(x, y);
+            foreach (var c in cells)
+            {
+                if (!gameBoard.InBounds(c)) return false;
+                if (res != null && res.Contains(c)) return false;
+                if (gameBoard.HasFloorEffect(c)) return false; // Never stack floor effects
 
-            if (pat == CastleData.BossTrapPattern.Single)
-                return new List<Vector2Int> { a };
+                // Stone obstacles must spawn into free cells 
+                if (knd == CastleData.BossTrapKind.Stone)
+                {
+                    if (!gameBoard.IsFree(c)) return false;
+                    if (c.y > maxStoneY) return false;
+                    continue;
+                }
 
-            if (pat == CastleData.BossTrapPattern.Line4)
-                return new List<Vector2Int> { a, a + Vector2Int.right, a + Vector2Int.right * 2, a + Vector2Int.right * 3 };
+                // Prefer empty first pass, allow occupied only in fallback pass
+                if (requireFreeCells && !gameBoard.IsFree(c))
+                    return false;
+            }
+            return true;
+        }
 
-            if (pat == CastleData.BossTrapPattern.Square2x2)
-                return new List<Vector2Int> { a, a + Vector2Int.right, a + Vector2Int.up, a + Vector2Int.up + Vector2Int.right };
+        List<Vector2Int> MakePatternCells(CastleData.BossTrapPattern pat, CastleData.BossTrapKind knd, int maxStoneRowY)
+        {
+            int maxY = (knd == CastleData.BossTrapKind.Stone) ? maxStoneRowY : (gameBoard.height - 1);
+            maxY = Mathf.Clamp(maxY, 0, gameBoard.height - 1);
+
+            // Bottom-biased random cell
+            Vector2Int PickOne()
+            {
+                int x = Random.Range(0, gameBoard.width);
+
+                int y = Mathf.FloorToInt(Mathf.Pow(Random.value, 2.0f) * (maxY + 1));
+                y = Mathf.Clamp(y, 0, maxY);
+
+                return new Vector2Int(x, y);
+            }
+
+            var a = PickOne(); // Anchor point
+
+            switch (pat)
+            {
+                case CastleData.BossTrapPattern.Single:
+                    return new List<Vector2Int> { a };
+
+                case CastleData.BossTrapPattern.Square2x2:
+                    return new List<Vector2Int>
+            {
+                a,
+                new Vector2Int(a.x + 1, a.y),
+                new Vector2Int(a.x, a.y + 1),
+                new Vector2Int(a.x + 1, a.y + 1),
+            };
+
+                case CastleData.BossTrapPattern.Line4_H:
+                    return new List<Vector2Int>
+            {
+                a,
+                new Vector2Int(a.x + 1, a.y),
+                new Vector2Int(a.x + 2, a.y),
+                new Vector2Int(a.x + 3, a.y),
+            };
+
+                case CastleData.BossTrapPattern.Line4_V:
+                    return new List<Vector2Int>
+            {
+                a,
+                new Vector2Int(a.x, a.y + 1),
+                new Vector2Int(a.x, a.y + 2),
+                new Vector2Int(a.x, a.y + 3),
+            };
+
+                case CastleData.BossTrapPattern.Line4:
+                    return (Random.value < 0.5f)
+                        ? new List<Vector2Int>
+                        {
+                    a,
+                    new Vector2Int(a.x + 1, a.y),
+                    new Vector2Int(a.x + 2, a.y),
+                    new Vector2Int(a.x + 3, a.y),
+                        }
+                        : new List<Vector2Int>
+                        {
+                    a,
+                    new Vector2Int(a.x, a.y + 1),
+                    new Vector2Int(a.x, a.y + 2),
+                    new Vector2Int(a.x, a.y + 3),
+                        };
+
+                case CastleData.BossTrapPattern.Line4_Random:
+                    {
+                        var cells = new List<Vector2Int>(4);
+                        var used = new HashSet<Vector2Int>();
+
+                        int tries = 0;
+                        while (cells.Count < 4 && tries++ < 50)
+                        {
+                            var c = PickOne();
+                            if (used.Add(c))
+                                cells.Add(c);
+                        }
+
+                        return (cells.Count == 4) ? cells : null;
+                    }
+            }
 
             return new List<Vector2Int> { a };
         }

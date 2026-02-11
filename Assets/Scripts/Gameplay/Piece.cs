@@ -196,17 +196,21 @@ public class Piece : MonoBehaviour
                 prt.sizeDelta = innerRT.sizeDelta - new Vector2(2f, 2f);
                 prt.anchoredPosition = Vector2.zero;
             }
-            else if (!isSpecial && i < monstersForCells.Count && monstersForCells[i] && monstersForCells[i].portrait)
+            else if (!isSpecial && i < monstersForCells.Count && monstersForCells[i])
             {
-                var go = new GameObject("MonsterPortrait", typeof(UnityEngine.UI.Image));
-                var p = go.GetComponent<UnityEngine.UI.Image>();
-                p.sprite = monstersForCells[i].portrait; p.preserveAspect = true;
-                p.raycastTarget = false;
+                var portrait = GetCurrentMonsterPortrait(monstersForCells[i]);
+                if (portrait)
+                {
+                    var go = new GameObject("MonsterPortrait", typeof(UnityEngine.UI.Image));
+                    var p = go.GetComponent<UnityEngine.UI.Image>();
+                    p.sprite = portrait; p.preserveAspect = true;
+                    p.raycastTarget = false;
 
-                var prt = p.rectTransform; prt.SetParent(innerRT, false);
-                prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
-                prt.sizeDelta = innerRT.sizeDelta - new Vector2(2f, 2f);
-                prt.anchoredPosition = Vector2.zero;
+                    var prt = p.rectTransform; prt.SetParent(innerRT, false);
+                    prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
+                    prt.sizeDelta = innerRT.sizeDelta - new Vector2(2f, 2f);
+                    prt.anchoredPosition = Vector2.zero;
+                }
             }
 
             visuals.Add(rt);
@@ -478,12 +482,12 @@ public class Piece : MonoBehaviour
         ClearHints();
         for (int i = 0; i < cells.Count; i++)
         {
-            var sprite = (i < monstersForCells.Count && monstersForCells[i]) ? monstersForCells[i].portrait : null;
+            MonsterData md = (i < monstersForCells.Count) ? monstersForCells[i] : null;
+            var sprite = GetCurrentMonsterPortrait(md);
             var placed = board.InstantiateTileUI(color, sprite);
+
             placed.anchoredPosition = board.CellToAnchoredPos(cells[i]);
             board.Place(cells[i], placed);
-
-            MonsterData md = (i < monstersForCells.Count) ? monstersForCells[i] : null;
             board.SetMonsterAt(cells[i], new Board.MonsterInstance(md));
 
             board.ApplyFloorEffectOnPlacement(cells[i]); // Apply any floor effects on the cell as the piece locks in, which may damage or heal the monster just placed
@@ -722,4 +726,12 @@ public class Piece : MonoBehaviour
     {
         SetInlineBorderColor(c);
     }
+
+    Sprite GetCurrentMonsterPortrait(MonsterData md)
+    {
+        if (!md) return null;
+        int skin = MonsterSkinStore.GetValidSelected(md);
+        return MonsterSkinStore.GetPortrait(md, skin);
+    }
+
 }
