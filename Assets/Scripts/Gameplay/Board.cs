@@ -869,10 +869,14 @@ public class Board : MonoBehaviour
                     {
                         if (inst.hp > 0f)
                         {
-                            float dmgMult = (gc ? gc.monsterDamageMult : 1f);
                             float gaugeMult = (gc ? gc.monsterSpecialGainMult : 1f);
 
-                            int dmg = Mathf.RoundToInt(inst.data.attackPower * dmgMult) + inst.attackBonus;
+                            float dmgMult = (gc ? gc.monsterDamageMult : 1f);
+                            float tempMult = (gc ? gc.PlayerMonsterAttackMult : 1f);
+
+                            float baseDmg = (inst.data.attackPower * dmgMult) + inst.attackBonus; // Includes run mods and shop buffs
+                            int dmg = Mathf.RoundToInt(baseDmg * tempMult);
+
                             dmgRow += Mathf.Max(1, dmg);
 
                             float gauge = inst.data.specialGaugeGain * gaugeMult;
@@ -927,6 +931,153 @@ public class Board : MonoBehaviour
     }
 
     // ================ Character Special Abilities ================
+
+    public int ClearBottomRowsWithCombat(
+    int rows,
+    out int totalMonsterDamage,
+    out float specialChargeFromMonsters,
+    out Dictionary<int, int> rowDamage,
+    out MonsterData dominantMonster,
+    out Dictionary<int, List<int>> colsByRow)
+    {
+        totalMonsterDamage = 0;
+        specialChargeFromMonsters = 0f;
+        rowDamage = new Dictionary<int, int>();
+        colsByRow = new Dictionary<int, List<int>>();
+        dominantMonster = null;
+
+        if (rows <= 0) return 0;
+        rows = Mathf.Min(rows, height);
+
+        var gc = FindFirstObjectByType<GameController>();
+        var counts = new Dictionary<MonsterData, int>(); // Track prevalence for dominant monster selection
+
+        // ===== Tally combat stats from bottom rows before deletion =====
+        for (int y = 0; y < rows; y++)
+        {
+            int dmgRow = 0;
+            for (int x = 0; x < width; x++)
+            {
+                var key = new Vector2Int(x, y);
+
+                if (!placed.ContainsKey(key))
+                    continue;
+
+                // Obstacles contribute nothing
+                if (obstacles.ContainsKey(key))
+                    continue;
+
+                if (monsters.TryGetValue(key, out var inst) && inst.data)
+                {
+                    // Count for dominant visuals
+                    if (!counts.ContainsKey(inst.data)) counts[inst.data] = 0;
+                    counts[inst.data] += 1;
+
+                    // Living monsters contribute damage/gauge
+                    if (inst.hp > 0f)
+                    {
+                        float gaugeMult = (gc ? gc.monsterSpecialGainMult : 1f);
+                        float dmgMult = (gc ? gc.monsterDamageMult : 1f);
+                        float tempMult = (gc ? gc.PlayerMonsterAttackMult : 1f);
+
+                        float baseDmg = (inst.data.attackPower * dmgMult) + inst.attackBonus;
+                        int dmg = Mathf.RoundToInt(baseDmg * tempMult);
+
+                        dmgRow += Mathf.Max(1, dmg);
+
+                        float gauge = inst.data.specialGaugeGain * gaugeMult;
+                        specialChargeFromMonsters += Mathf.Max(1f, gauge);
+                    }
+
+                    // Collect candidate start columns for this row’s projectile
+                    if (!colsByRow.TryGetValue(y, out var cols))
+                    {
+                        cols = new List<int>();
+                        colsByRow[y] = cols;
+                    }
+                    if (!cols.Contains(x)) cols.Add(x);
+                }
+            }
+
+            if (dmgRow > 0)
+            {
+                rowDamage[y] = dmgRow;
+                totalMonsterDamage += dmgRow;
+            }
+        }
+
+        // Choose dominant monster among destroyed units for visuals
+        if (counts.Count > 0)
+        {
+            int max = 0;
+            foreach (var kv in counts) if (kv.Value > max) max = kv.Value;
+
+            var candidates = new List<MonsterData>();
+            foreach (var kv in counts) if (kv.Value == max) candidates.Add(kv.Key);
+
+            if (candidates.Count > 0)
+                dominantMonster = candidates[UnityEngine.Random.Range(0, candidates.Count)];
+        }
+
+        // ===== Perform the actual clear and shift =====
+        int squaresCleared = 0;
+
+        var toDelete = new List<Vector2Int>();
+        foreach (var kv in placed)
+            if (kv.Key.y < rows) toDelete.Add(kv.Key);
+
+        foreach (var key in toDelete)
+        {
+            if (obstacles.ContainsKey(key))
+            {
+                DestroyObstacleImmediate(key);
+                squaresCleared++;
+                continue;
+            }
+
+            if (placed.TryGetValue(key, out var rt))
+                Destroy(rt.gameObject);
+
+            placed.Remove(key);
+            monsters.Remove(key);
+            healTimers.Remove(key);
+            squaresCleared++;
+        }
+
+        var snapshot = new List<KeyValuePair<Vector2Int, RectTransform>>(placed);
+        foreach (var kv in snapshot)
+        {
+            var from = kv.Key;
+            if (from.y < rows) continue;
+
+            var rt = kv.Value;
+            var to = new Vector2Int(from.x, from.y - rows);
+
+            placed.Remove(from);
+            placed[to] = rt;
+            rt.anchoredPosition = CellToAnchoredPos(to);
+
+            if (monsters.TryGetValue(from, out var inst))
+            {
+                monsters.Remove(from);
+                monsters[to] = inst;
+            }
+
+            if (healTimers.TryGetValue(from, out var t))
+            {
+                healTimers.Remove(from);
+                healTimers[to] = t;
+            }
+
+            if (obstacles.TryGetValue(from, out var obs))
+            {
+                obstacles.Remove(from);
+                obstacles[to] = obs;
+            }
+        }
+
+        return squaresCleared;
+    }
 
     public int ClearBottomRows(int rows)
     {
@@ -1083,6 +1234,28 @@ public class Board : MonoBehaviour
         }
     }
 
+    public void MultiplyAllMonsterHpAndMax(float mult)
+    {
+        if (mult <= 0f) return;
+
+        var keys = new List<Vector2Int>(monsters.Keys);
+        for (int i = 0; i < keys.Count; i++)
+        {
+            var cell = keys[i];
+
+            var inst = monsters[cell];
+            if (!inst.data) continue;
+
+            inst.maxHp *= mult;
+            inst.hp *= mult;
+
+            inst.hp = Mathf.Clamp(inst.hp, 0f, inst.maxHp);
+
+            monsters[cell] = inst;
+            UpdateTileHPVisual(cell, inst.hp, inst.maxHp);
+        }
+    }
+
     public void RemoveCellsAndFall(IEnumerable<Vector2Int> toRemove,
                                out List<Vector2Int> removedCells,
                                out int damageFromMonsters,
@@ -1104,10 +1277,13 @@ public class Board : MonoBehaviour
                 {
                     if (inst.hp > 0f)
                     {
-                        float dmgMult = (gc ? gc.monsterDamageMult : 1f);
                         float gaugeMult = (gc ? gc.monsterSpecialGainMult : 1f);
+                        float dmgMult = (gc ? gc.monsterDamageMult : 1f);
+                        float tempMult = (gc ? gc.PlayerMonsterAttackMult : 1f);
 
-                        int dmg = Mathf.RoundToInt(inst.data.attackPower * dmgMult) + inst.attackBonus;
+                        float baseDmg = (inst.data.attackPower * dmgMult) + inst.attackBonus;
+                        int dmg = Mathf.RoundToInt(baseDmg * tempMult);
+
                         damageFromMonsters += Mathf.Max(1, dmg);
 
                         float gauge = inst.data.specialGaugeGain * gaugeMult;

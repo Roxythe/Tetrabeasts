@@ -10,15 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eeee6209ccafb68438616e30a515b029, type: 3}
-  m_Name: Xel
+  m_Name: Grock
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterData
-  displayName: Xel
+  displayName: Grock
   portrait: {fileID: -7843522028858346092, guid: edb7ad196a90bc8468a180ac5f46902e, type: 3}
   defaultBorder: {fileID: 5534120206350630683, guid: e25362440f445c24882ab915496da119, type: 3}
-  specialDescription: TBA
+  specialAbilityName: Grock SMASH!
+  specialDescription: Let loose a war cry doubling all units on the boards health
+    and attack damage for 10 seconds.
   startsLocked: 1
   unlockCost: 50
-  ability: 0
+  ability: 4
   clearRows: 3
   cooldownSeconds: 0
   specialGaugeMax: 100
@@ -28,3 +30,8 @@ MonoBehaviour:
   sfxImmunityOn: {fileID: 0}
   sfxImmunityWarn: {fileID: 0}
   sfxImmunityOff: {fileID: 0}
+  reducedGravityDuration: 10
+  reducedGravityMultiplier: 0.333334
+  doubleStatsDuration: 10
+  sfxDoubleStatsOn: {fileID: 8300000, guid: beb4f45c4e542ee4e9e7d28791ca3b43, type: 3}
+  sfxDoubleStatsOff: {fileID: 8300000, guid: 6a179f98febd0384b8731a8f31634566, type: 3}

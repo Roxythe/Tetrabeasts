@@ -27,6 +27,7 @@ public class RoundRewardUI : MonoBehaviour
     [Header("Prefabs")]
     public RunModOptionButton optionButtonPrefab;
     public TMP_Text currnecyGained;
+    public TMP_Text reinforcementsGained;
 
     [Header("Hooked SFX")]
     public GameplayUI_SFXHook _sfxHook;
@@ -44,7 +45,7 @@ public class RoundRewardUI : MonoBehaviour
     }
 
     public void Show(RunModifierSO[] buffPool, RunModifierSO[] debuffPool, Action<RunModifierSO, RunModifierSO> onComplete,
-                     int currencyGained)
+                 int currencyGained, int reinforcementsReceived)
     {
         var gc = FindFirstObjectByType<GameController>();
         float luck = gc ? gc.luck : RunModsStore.Luck;
@@ -64,6 +65,14 @@ public class RoundRewardUI : MonoBehaviour
 
         if (currnecyGained)
             currnecyGained.text = $"+{currencyGained}";
+
+        if (reinforcementsGained)
+        {
+            // Only show reinforcements gained if it's >0, otherwise show maxed out text
+            reinforcementsGained.text = reinforcementsReceived > 0
+                ? $"+{reinforcementsReceived} Reinforcements"
+                : "+0 Unit Lives at Max Capacity";
+        }
 
         Populate(buffContainer, Pick3UniqueWeighted(buffPool, luck), isBuff: true);
         confirmBuffButton.onClick.RemoveAllListeners();

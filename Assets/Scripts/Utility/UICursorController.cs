@@ -7,12 +7,26 @@ public class UICursorController : MonoBehaviour
     public Canvas rootCanvas;
     public float baseSize = 64f;                 // Size at scale 1
     public Vector2 hotspotPixels = Vector2.zero; // (0,0) top-left
+    public bool forceLastSibling = true;
+    public bool cursorBlocksRaycasts = false; // Keep false so it never blocks dropdown clicks
 
     float _scale = 1f;
 
     void Awake()
     {
         if (!rootCanvas) rootCanvas = GetComponentInParent<Canvas>();
+
+        // Make sure the cursor never blocks UI interactions
+        if (cursorRect)
+        {
+            var img = cursorRect.GetComponent<Image>();
+            if (img) img.raycastTarget = cursorBlocksRaycasts;
+
+            var cg = cursorRect.GetComponent<CanvasGroup>();
+            if (!cg) cg = cursorRect.gameObject.AddComponent<CanvasGroup>();
+            cg.blocksRaycasts = cursorBlocksRaycasts;
+            cg.interactable = false;
+        }
     }
 
     void Update()
@@ -46,4 +60,13 @@ public class UICursorController : MonoBehaviour
     {
         if (cursorRect) cursorRect.gameObject.SetActive(visible);
     }
+
+    void LateUpdate()
+    {
+        if (!forceLastSibling) return;
+        if (!gameObject.activeInHierarchy) return;
+
+        transform.SetAsLastSibling();
+    }
+
 }

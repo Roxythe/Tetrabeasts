@@ -13,6 +13,7 @@ public class CharacterSelectUI : MonoBehaviour
     public TMP_Text selectedName;        // Preview
     public Image selectedPortrait;       // Preview
     public Image selectedBorder;
+    public TMP_Text selectedSpecialAbilityName;
     public TMP_Text selectedSpecialDescription;
     public CurrencyUI currencyUI;
 
@@ -176,7 +177,14 @@ public class CharacterSelectUI : MonoBehaviour
         if (selectedName) selectedName.text = cur.displayName;
         if (selectedPortrait && cur.portrait) selectedPortrait.sprite = cur.portrait;
         if (selectedBorder && cur.defaultBorder) selectedBorder.sprite = cur.defaultBorder;
-        if (selectedSpecialDescription) selectedSpecialDescription.text = cur.specialDescription;
+
+        if (selectedSpecialAbilityName)
+        {
+            selectedSpecialAbilityName.text = $"Special Ability: \"{cur.specialAbilityName}\"";
+        }
+
+        if (selectedSpecialDescription)
+            selectedSpecialDescription.text = cur.specialDescription;
     }
 
     static Transform FindDeep(Transform root, string name)

@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
@@ -13,6 +14,7 @@ public class VolumePanelUI : MonoBehaviour
     public Slider cursorSizeSlider;
     public UICursorController uiCursor;
     public Button closeButton;
+    public TMP_Dropdown musicModeDropdown; // 0=EDM, 1=Metal, 2=Both
 
     [Header("SFX Preview")]
     public bool previewOnChange = true;
@@ -34,6 +36,7 @@ public class VolumePanelUI : MonoBehaviour
         if (musicSlider) musicSlider.onValueChanged.AddListener(SetMusic);
         if (sfxSlider) sfxSlider.onValueChanged.AddListener(SetSFX);
         if (cursorSizeSlider) cursorSizeSlider.onValueChanged.AddListener(SetCursorSize);
+        if (musicModeDropdown) musicModeDropdown.onValueChanged.AddListener(SetMusicMode);
     }
 
     void OnEnable()
@@ -51,8 +54,11 @@ public class VolumePanelUI : MonoBehaviour
         // Cursor size uses SettingsStore
         cursorSizeSlider?.SetValueWithoutNotify(SettingsStore.LoadCursorScale());
 
+        if (musicModeDropdown && AudioManager.I)
+            musicModeDropdown.SetValueWithoutNotify((int)AudioManager.I.GetMusicMode());
+
         if (pauseWhenOpen) Time.timeScale = 0f;
-        //BringToFront();
+
         if (cg) { cg.alpha = 1f; cg.interactable = true; cg.blocksRaycasts = true; }
     }
 
@@ -88,6 +94,14 @@ public class VolumePanelUI : MonoBehaviour
     void SetCursorSize(float v)
     {
         uiCursor?.SetScale(v);
+    }
+
+    void SetMusicMode(int index)
+    {
+        if (!AudioManager.I) return;
+
+        var mode = (AudioManager.MusicMode)Mathf.Clamp(index, 0, 2);
+        AudioManager.I.SetMusicMode(mode);
     }
 
     System.Collections.IEnumerator PreviewAfterDelay()

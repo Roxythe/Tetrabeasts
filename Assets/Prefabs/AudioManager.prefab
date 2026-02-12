@@ -59,6 +59,31 @@ MonoBehaviour:
   - {fileID: 8300000, guid: bc29fa804b7ea9e419d200ebbe06e501, type: 3}
   - {fileID: 8300000, guid: 570c3151887490945bf1ef32a3f03220, type: 3}
   sfxBossLightningStrike: {fileID: 8300000, guid: 88ec6b8b9d8673540865aaf7b9ea8586, type: 3}
+  EDMGameplayMusic:
+  - {fileID: 8300000, guid: a02a4788845cc444b8b1e0baa846cdb5, type: 3}
+  - {fileID: 8300000, guid: c7e4825b4755dd04ebe292fac9e8ba5c, type: 3}
+  - {fileID: 8300000, guid: 444c2a3a8fa634748ba9c9acca8ad12d, type: 3}
+  - {fileID: 8300000, guid: fb0750550c57e33499ccaeeaea653c95, type: 3}
+  - {fileID: 8300000, guid: 20fa08b2b632c134b95e407a11a34e6d, type: 3}
+  - {fileID: 8300000, guid: 1e2114f4400293244bc274fe85996545, type: 3}
+  EDMBossMusic:
+  - {fileID: 8300000, guid: 1e2a69542a82a5b4fb089d4013832815, type: 3}
+  - {fileID: 8300000, guid: 72e40eb0b23b77d4e88505c7b40b0bce, type: 3}
+  - {fileID: 8300000, guid: 9e72a76e29b61464a9df7315951315f3, type: 3}
+  - {fileID: 8300000, guid: b4ee99e510244ad42bf630882577303c, type: 3}
+  MetalGameplayMusic:
+  - {fileID: 8300000, guid: 951dff102d03c5947bf6f9a4b9b77cc7, type: 3}
+  - {fileID: 8300000, guid: ba77a72ce39268f4bb187135aca787ef, type: 3}
+  - {fileID: 8300000, guid: 80741d7c33118d34fa6ca7b9063e5c74, type: 3}
+  - {fileID: 8300000, guid: 1dc96fd837891d449bff80e639adcd27, type: 3}
+  MetalBossMusic:
+  - {fileID: 8300000, guid: 5c14238e921d6304f8141213dcf2d153, type: 3}
+  - {fileID: 8300000, guid: cc3a84b963c69154984464b95c4af9fd, type: 3}
+  - {fileID: 8300000, guid: 23f8ad18ab3f33245ba379c07cdffd1a, type: 3}
+  EDMTitleMusic: {fileID: 8300000, guid: 72caf85e79d3b5245bcaeda17cfb4498, type: 3}
+  MetalTitleMusic: {fileID: 8300000, guid: d472bc17a6196c54bbb1d45824723c12, type: 3}
+  EDMPauseMusic: {fileID: 8300000, guid: 19133b00f7885494c80c038dc894da9d, type: 3}
+  MetalPauseMusic: {fileID: 8300000, guid: 34e5725356a597f4989f788be169e313, type: 3}
   masterVolume: 0.5
   musicVolume: 0.5
   sfxVolume: 1

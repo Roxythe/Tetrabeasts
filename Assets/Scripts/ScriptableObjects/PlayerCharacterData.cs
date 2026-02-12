@@ -4,8 +4,10 @@ using UnityEngine;
 public enum SpecialAbility
 {
     ClearBottomRows,    // Clear bottom x rows of tiles
-    RestoreAllToFull,   // Revive (hp>0) + heal to max for all inactive tiles
-    GlobalImmunity      // Tiles take no damage for a duration, with gold border + pulse
+    RestoreAllToFull,   // Revive (hp>0) and heal to max for all inactive tiles
+    GlobalImmunity,     // Tiles take no damage for a duration, with gold border + pulse
+    ReducedGravity,     // Temporarily reduce gravity by 1/3 for a duration
+    DoubleStats         // Temporarily double all tile stats for a duration
 }
 
 [CreateAssetMenu(menuName = "Run/Player Character", fileName = "NewPlayerCharacter")]
@@ -15,6 +17,7 @@ public class PlayerCharacterData : ScriptableObject
     public string displayName = "Alyx";
     public Sprite portrait;
     public Sprite defaultBorder;
+    public string specialAbilityName = "Ability Name";
     public string specialDescription;
 
     [Header("Unlock")]
@@ -35,5 +38,14 @@ public class PlayerCharacterData : ScriptableObject
     [Min(0.25f)] public float immunityDuration = 5f;
     public AudioClip sfxImmunityOn;  
     public AudioClip sfxImmunityWarn;  
-    public AudioClip sfxImmunityOff;    
+    public AudioClip sfxImmunityOff;
+
+    [Header("Reduced Gravity")]
+    [Min(0.25f)] public float reducedGravityDuration = 10f;
+    [Range(0.1f, 2f)] public float reducedGravityMultiplier = 0.333334f; // 1/3 = reduce by 2/3 of toal gravity
+
+    [Header("Double Stats (HP + Attack)")]
+    [Min(0.25f)] public float doubleStatsDuration = 10f;
+    public AudioClip sfxDoubleStatsOn;
+    public AudioClip sfxDoubleStatsOff;
 }

@@ -31,7 +31,7 @@ public class GameController : MonoBehaviour
     [SerializeField] string gravityTextFormat = "{0:0.0}";
 
     [SerializeField] float fallRampStepSeconds = 2f; // 1 = every second, 2 = every other second, 3 = every 3rd second
-    [SerializeField] float startFallInterval = 1.0f; 
+    [SerializeField] float startFallInterval = 1.0f;
 
     [SerializeField] float minFallInterval = 0.10f;                // Clamp (fastest allowed)
     [SerializeField] float fallIntervalDecreasePerSecond = 0.008f;  // In-level ramp (shrinks interval over time)
@@ -133,8 +133,9 @@ public class GameController : MonoBehaviour
     public bool IsPaused => isPaused;
 
     [Header("Unit Lives")]
-    public int maxUnitLives = 10; // Base (starting unit lives)
+    public int maxUnitLives = 20; // Base (starting unit lives)
     [SerializeField] int unitLives = 20; // Current lives (Based on max + buffs)
+    [SerializeField] int reinforcementsPerWin = 5;
 
     public TMP_Text unitLivesText;
     public Slider unitLivesSlider;
@@ -184,13 +185,22 @@ public class GameController : MonoBehaviour
     public float lineClearCurrencyChanceAdd = 0f;
     public float lineClearCurrencyAmountMult = 1f;
 
+    // ================= Player Special Timers =================
+    float _playerGravityMultActive = 1f;     // 1 = normal
+    Coroutine _playerGravityCR;
+
+    float _playerDoubleStatsAttackMult = 1f; // Multiplied into monster damage output
+    Coroutine _playerDoubleStatsCR;
+    public float PlayerMonsterAttackMult => _playerDoubleStatsAttackMult; // Exposed for monster damage calculations
+
     // =========== Shop Buff Effective Values ===========
     int EffectiveMaxUnitLives => maxUnitLives + ShopBuffEffects.UnitLivesBonus; // Unit Lives Up: +2 per level
 
     float EffectivePieceGravityMult =>
     Mathf.Max(0.01f, pieceGravityMult) *
     ShopBuffEffects.GravityMultiplier *
-    (1f + _bossGravityBonusActive); // Gravity Down: slows falling (mult < 1 => slower because interval /= mult)
+    _playerGravityMultActive *
+    (1f + _bossGravityBonusActive); // Slows falling (mult < 1 => slower because interval /= mult)
 
     float EffectiveFallRampRateMult => Mathf.Max(0f, fallRampRateMult) * ShopBuffEffects.VelocityMultiplier; // Velocity Down: slows ramping (mult < 1 => slower ramp)
     float EffectiveCurrencyChancePerClearedRow => // Gold Up: +2% chance per level
@@ -226,6 +236,7 @@ public class GameController : MonoBehaviour
             Debug.LogError("GameController: allTetrominoes is empty.");
             return;
         }
+
         if (!gameBoard) gameBoard = FindFirstObjectByType<Board>();
         if (!piece) piece = GetComponent<Piece>();
 
@@ -321,7 +332,6 @@ public class GameController : MonoBehaviour
         score = 0;
         if (scoreUI) scoreUI.Set(score);
         if (currencyUI) currencyUI.Refresh();
-        if (AudioManager.I) AudioManager.I.PlayMusic(AudioManager.I.bgmLoop, true, AudioManager.I.musicVolume);
 
         SettingsStore.ApplySavedVolumesToAudio();
 
@@ -536,7 +546,14 @@ public class GameController : MonoBehaviour
     {
         gameOver = true;
         Debug.Log("Game Over");
-        if (AudioManager.I) AudioManager.I.StopMusic();
+
+        if (AudioManager.I)
+        {
+            AudioManager.I.StopPauseMusic();
+            AudioManager.I.StopLevelMusic();
+        }
+        AudioListener.pause = false;
+
         if (AudioManager.I) AudioManager.I.PlaySFX(AudioManager.I.sfxGameOver);
 
         if (highScoreUI) highScoreUI.TryShow(score);
@@ -790,13 +807,7 @@ public class GameController : MonoBehaviour
 
         if (AudioManager.I && data != null)
         {
-            // Priority: bossBGM > levelBGM > global bgmLoop
-            if (data.isBossLevel && data.bossBGM)
-                AudioManager.I.PlayMusic(data.bossBGM, loop: true, vol: data.bossBGMVolume);
-            else if (data.levelBGM)
-                AudioManager.I.PlayMusic(data.levelBGM, loop: true, vol: data.levelBGMVolume);
-            else
-                AudioManager.I.PlayMusic(AudioManager.I.bgmLoop, loop: true, vol: AudioManager.I.musicVolume);
+            AudioManager.I.PlayLevelMusic(data.isBossLevel);
         }
 
         if (obstacleManager)
@@ -814,7 +825,8 @@ public class GameController : MonoBehaviour
         // Stop ongoing music/loop as soon as the round ends
         if (AudioManager.I)
         {
-            AudioManager.I.StopMusic();
+            AudioManager.I.StopLevelMusic();
+
             if (roundWinClip)
                 AudioManager.I.PlaySFX(roundWinClip);
         }
@@ -837,10 +849,20 @@ public class GameController : MonoBehaviour
         CurrencyStore.Add(gained);
         if (currencyUI) currencyUI.Refresh();
 
+        // Grant reinforcements (extra unit lives) on round win
+        int beforeLives = unitLives;
+        int maxLives = EffectiveMaxUnitLives;
+
+        int reinforcementsGranted = Mathf.Max(0, reinforcementsPerWin);
+        unitLives = Mathf.Clamp(unitLives + reinforcementsGranted, 0, maxLives);
+
+        int actualReinforcements = unitLives - beforeLives;
+        UpdateUnitLivesUI();
+
         // Show rewards before continuing
         if (roundRewardUI)
         {
-            roundRewardUI.Show(buffPool, debuffPool, OnRoundModsChosen, gained);
+            roundRewardUI.Show(buffPool, debuffPool, OnRoundModsChosen, gained, actualReinforcements);
         }
         else
         {
@@ -959,7 +981,14 @@ public class GameController : MonoBehaviour
             case SpecialAbility.ClearBottomRows:
                 {
                     int rows = Mathf.Max(1, selectedCharacter.clearRows);
-                    int squaresCleared = gameBoard.ClearBottomRows(rows);
+
+                    int squaresCleared = gameBoard.ClearBottomRowsWithCombat(
+                        rows,
+                        out int totalMonsterDamage,
+                        out float _specialChargeIgnored,
+                        out Dictionary<int, int> rowDamage,
+                        out MonsterData dominantMonster,
+                        out Dictionary<int, List<int>> colsByRow);
 
                     // Reset gauge on use
                     specialGauge = 0f;
@@ -968,20 +997,57 @@ public class GameController : MonoBehaviour
 
                     UpdateSpecialUI();
 
-                    if (squaresCleared > 0)
+                    // Score based on damage dealt
+                    if (totalMonsterDamage > 0)
                     {
-                        // 1 point / damage per square
-                        score += squaresCleared;
+                        score += totalMonsterDamage;
                         if (scoreUI) scoreUI.Set(score);
+                    }
 
-                        if (AudioManager.I) AudioManager.I.PlayRandomLineClear();
+                    if (squaresCleared > 0 && AudioManager.I)
+                        AudioManager.I.PlayRandomLineClear();
 
-                        if (enemyCastleUI && !levelWon)
+                    // Spawn one projectile per cleared row, using the dominant monster for visuals
+                    if (rowDamage != null && rowDamage.Count > 0 && gameBoard && enemyCastleUI && enemyCastleUI.castleImage && !levelWon)
+                    {
+                        Sprite attackSprite = null;
+                        Sprite attackSpriteAlt = null;
+                        AttackAnimType animType = AttackAnimType.None;
+                        MonsterData attackerMD = null;
+
+                        if (dominantMonster)
                         {
-                            enemyCastleUI.ApplyDamage(squaresCleared);
-                            if (enemyCastleUI.currentHP <= 0) OnCastleDestroyed();
+                            attackerMD = dominantMonster;
+                            animType = dominantMonster.attackAnim;
+                            attackSprite = MonsterSkinStore.GetAttackSprite(dominantMonster);
+                            attackSpriteAlt = MonsterSkinStore.GetAttackAltSprite(dominantMonster);
+                        }
+
+                        foreach (var kv in rowDamage)
+                        {
+                            int rowY = kv.Key;
+                            int dmg = Mathf.Max(0, kv.Value);
+                            if (dmg <= 0) continue;
+
+                            int col = UnityEngine.Random.Range(0, gameBoard.width);
+                            if (colsByRow != null && colsByRow.TryGetValue(rowY, out var cols) && cols != null && cols.Count > 0)
+                                col = cols[UnityEngine.Random.Range(0, cols.Count)];
+
+                            Vector2 startBoard = gameBoard.CellToAnchoredPos(new Vector2Int(col, rowY));
+
+                            var root = projectileRoot ? projectileRoot : gameBoard.gridRoot;
+                            Vector2 start = LocalTo(root, gameBoard.gridRoot, startBoard);
+
+                            Vector3 castleBottomWorld = enemyCastleUI.castleImage.rectTransform.TransformPoint(
+                                new Vector3(0f, -enemyCastleUI.castleImage.rectTransform.rect.height * 0.5f, 0f));
+
+                            Vector2 castleBottomInRoot = root.InverseTransformPoint(castleBottomWorld);
+                            Vector2 target = new Vector2(start.x, castleBottomInRoot.y);
+
+                            SpawnAttackProjectile(attackSprite, attackSpriteAlt, animType, start, target, dmg, attackerMD);
                         }
                     }
+
                     break;
                 }
 
@@ -1021,6 +1087,46 @@ public class GameController : MonoBehaviour
                 {
                     // Start the timer/pulse co-routine
                     StartCoroutine(GlobalImmunityCo(Mathf.Max(0.25f, selectedCharacter.immunityDuration)));
+
+                    specialGauge = 0f; // Reset gauge
+                    UpdateSpecialUI();
+                    break;
+                }
+
+            case SpecialAbility.ReducedGravity:
+                {
+                    float dur = (selectedCharacter != null) ? Mathf.Max(0.25f, selectedCharacter.reducedGravityDuration) : 10f;
+                    float mult = (selectedCharacter != null) ? Mathf.Clamp(selectedCharacter.reducedGravityMultiplier, 0.1f, 2f) : 0.6666667f;
+
+                    if (_playerGravityCR != null)
+                    {
+                        StopCoroutine(_playerGravityCR);
+                        _playerGravityCR = null;
+                        _playerGravityMultActive = 1f;
+                    }
+
+                    _playerGravityCR = StartCoroutine(PlayerReducedGravityCo(mult, dur));
+
+                    specialGauge = 0f; // Reset gauge
+                    UpdateSpecialUI();
+                    break;
+                }
+
+            case SpecialAbility.DoubleStats:
+                {
+                    float dur = (selectedCharacter != null) ? Mathf.Max(0.25f, selectedCharacter.doubleStatsDuration) : 10f;
+
+                    if (_playerDoubleStatsCR != null)
+                    {
+                        StopCoroutine(_playerDoubleStatsCR);
+                        _playerDoubleStatsCR = null;
+
+                        // Force revert before re-applying
+                        _playerDoubleStatsAttackMult = 1f;
+                        if (gameBoard) gameBoard.MultiplyAllMonsterHpAndMax(0.5f);
+                    }
+
+                    _playerDoubleStatsCR = StartCoroutine(PlayerDoubleStatsCo(dur));
 
                     // Reset gauge
                     specialGauge = 0f;
@@ -1503,7 +1609,9 @@ public class GameController : MonoBehaviour
         Time.timeScale = 0f;
         AudioListener.pause = true;  // Pause SFX/music globally
 
+        if (AudioManager.I) AudioManager.I.PlayPauseMusic(); // Play pause menu music if assigned
         if (pausePanel) pausePanel.SetActive(true);
+
         EnterUICursorMode();
         StartCoroutine(ReapplyUICursorNextFrame());
     }
@@ -1518,7 +1626,9 @@ public class GameController : MonoBehaviour
 
         ClosePauseSubPanels();
 
+        if (AudioManager.I) AudioManager.I.StopPauseMusic();
         if (AudioManager.I) AudioManager.I.PlaySFX(AudioManager.I.sfxRestart);
+
         if (piece) piece.ResetPiece(); // Stop the current drop
         if (gameBoard) gameBoard.ClearAll(); // Clear board tiles
 
@@ -1554,12 +1664,15 @@ public class GameController : MonoBehaviour
         ShowNextPreview();
         SpawnNextPiece(); // Spawn fresh piece
         if (restartButton) restartButton.gameObject.SetActive(true);
-        if (AudioManager.I) AudioManager.I.PlayMusic(AudioManager.I.bgmLoop);
+        if (currentCastleData && AudioManager.I)
+            AudioManager.I.PlayLevelMusic(currentCastleData.isBossLevel);
     }
 
     public void ResumeGame()
     {
         ClosePauseSubPanels();
+
+        if (AudioManager.I) AudioManager.I.StopPauseMusic();
 
         isPaused = false;
         Time.timeScale = 1f;
@@ -1575,7 +1688,12 @@ public class GameController : MonoBehaviour
         isPaused = false;
 
         // Stop music before loading main menu
-        if (AudioManager.I) AudioManager.I.StopMusic();
+        if (AudioManager.I)
+        {
+            AudioManager.I.StopPauseMusic();
+            AudioManager.I.StopLevelMusic();
+        }
+
         AudioListener.pause = false;
 
         if (!string.IsNullOrEmpty(titleSceneName))
@@ -2047,7 +2165,7 @@ public class GameController : MonoBehaviour
         PlayBossAbilityWarningSFX(); // SFX at warning start
 
         // Warning only where monsters exist
-        Sprite sprite = _castleData.bossFullBoardWarningSprite; 
+        Sprite sprite = _castleData.bossFullBoardWarningSprite;
         foreach (var c in targets)
             FlashBossWarning(c, sprite, warn);
 
@@ -2304,6 +2422,7 @@ public class GameController : MonoBehaviour
                 if (requireFreeCells && !gameBoard.IsFree(c))
                     return false;
             }
+
             return true;
         }
 
@@ -2485,15 +2604,49 @@ public class GameController : MonoBehaviour
         _bossGravityCR = null;
     }
 
+    // ================== Player Special Co-Routines ==================
+
+    System.Collections.IEnumerator PlayerReducedGravityCo(float mult, float seconds)
+    {
+        _playerGravityMultActive = mult;
+
+        yield return new WaitForSeconds(seconds);
+
+        _playerGravityMultActive = 1f;
+        _playerGravityCR = null;
+    }
+
+    System.Collections.IEnumerator PlayerDoubleStatsCo(float seconds)
+    {
+        if (selectedCharacter && selectedCharacter.sfxDoubleStatsOn && AudioManager.I)
+            AudioManager.I.PlaySFX(selectedCharacter.sfxDoubleStatsOn);
+        
+        if (gameBoard)
+            gameBoard.MultiplyAllMonsterHpAndMax(2f); // Double HP/MaxHP for all monsters currently on the board
+
+        _playerDoubleStatsAttackMult = 2f; // Double attack output
+
+        yield return new WaitForSeconds(seconds);
+
+        // Revert the HP changes by halving all current HP/MaxHP values
+        if (gameBoard) gameBoard.MultiplyAllMonsterHpAndMax(0.5f);
+        _playerDoubleStatsAttackMult = 1f;
+
+        if (selectedCharacter && selectedCharacter.sfxDoubleStatsOff && AudioManager.I)
+            AudioManager.I.PlaySFX(selectedCharacter.sfxDoubleStatsOff);
+
+        _playerDoubleStatsCR = null;
+    }
+
     // ================== Helper/Utility ==================
 
     Vector2 BoardRightGutterY(int rowY, float marginCells = 0.6f)
     {
-        // y from the row's cell center
+        // Y from the row's cell center
         float y = gameBoard.CellToAnchoredPos(new Vector2Int(0, rowY)).y;
 
-        // x = right edge of grid + margin
-        float halfW = gameBoard.gridRoot.rect.width * 0.5f;   // Right edge in anchored coords
+        // X = right edge of grid + margin
+        float halfW = gameBoard.gridRoot.rect.width * 0.5f; // Right edge in anchored coords
         float x = halfW + gameBoard.GetCellSize().x * marginCells;
 
         return new Vector2(x, y);

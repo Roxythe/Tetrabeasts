@@ -28,12 +28,6 @@ public class CastleData : ScriptableObject
     [Header("Boss Level")]
     public bool isBossLevel;
     public Sprite bossOverlaySprite;
-    public AudioClip bossBGM;
-    [Range(0f, 1f)] public float bossBGMVolume = 0.6f;
-
-    [Header("Normal Level Music")]
-    public AudioClip levelBGM;
-    [Range(0f, 1f)] public float levelBGMVolume = 0.5f;
 
     [Header("Obstacle / Trap Overrides (Optional)")]
     [Tooltip("If enabled, this CastleData can override the level's initial obstacle/trap counts.")]

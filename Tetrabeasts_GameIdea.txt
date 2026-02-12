@@ -1,19 +1,6 @@
 
 ****** TODO ******
 
-- Add player special ability Temporarily reduce gravity to base gravity for 10 seconds then return to previous gravity.
-
-- Add player special ability temporarily double all monster attack and hp for 10 seconds then return back to previous hp/attack (with modiferes from run and shop recalculated, do not just use the monsters base stats)
-
-- Add reinforcements after winning level, add a text component to Round Win panel
-
-- Add arrays to play random music clips for gameplay level and boss fights
-
-- Pause menu music
-
-- Add setting option to use metal/rock music or edm music arrays for gameplay/bosses
-
-
 - Play with the grid size and experiment with different grid sizes.
 
 - Create a setting for mixed tetrapieces or uniform monster pieces
@@ -23,10 +10,16 @@
 - Add boss fight mechanics and abilities
 -- Armor/protective magic that requires the clearing of special spawned tiles on the board to remove
 
+- Add visual identifier for when boss increases gravity and when it ends
+
+- Add help screen explaining basic mechanics, special blocks, Obstacles, Traps, and Floor effects
+
+- Add world leaderboard viewable in game (Take safety precautions to make sure data is secure and it can't be used for any malicious or nefarious purposes)
 
 *** KNOWN BUGS ***
+- Test Clear bottom 3 rows special to see if it deals damage to the enemy castle 
 
-
+- Clearing multiple rows with a single block seems to be only spawning a single attack and not calculating the damage correctly for each row that was cleared
 
 *** PERSISTENT DATA ***
 
@@ -36,8 +29,6 @@
 
 
 *** PLAYER SPECIAL ATTACKS ***
-
-Verify that damage is being calculated correctly when using special to clear rows/tile pieces based on the monster contained in the tile.
 
 Add more characters and character specials
 
@@ -53,9 +44,7 @@ Add color Variations for monsters
 
 *** SPECIAL BLOCKS ***
 
-On level clear, remove any red tints that might be left over if the level was cleared with a special block.
-
-Sometimes the death special block seems to land on a monster, but ends up removing all of another monster.
+- Tweak spawn rate of special blocks
 
 *** ENEMY ATTACK ***
 
@@ -63,18 +52,26 @@ Prevent players active tile from overlapping a tile occupied by an enemy attack
 
 *** ROUND WON BUFFS/DEBUFFS ***
 
-Add new end of round panel to select from one of 3 premade buffs to effect gameplay during run
+- Add new buffs for new mechanics
 
-Add new end of round panel to select from one of 3 premade Debuffs to effect gameplay during run
+- Add new debuffs for new mechanics
 
-Add sound effect for round won
+- Make it more common for buffs and debuffs to be a lower rarity afetr gameplay levels and higher after boss levels
+
+- Make rarity occurence lower in genral, too may unccommmon and rare buff appearances as rewards post lower level round wins
 
 *** REWARD SYSTEM ***
 
-- Add currency used to unlock characters, monsters, monster skin variations
-
 - Add achievements
+
+- Add Global leaderboard that can be viewed in game
+
+- Unlock a special golden border that can be used with each player character used to beat the game
+
+- Unlock a special monster skin for each unit used to beat the game
 
 *** CHALLENGE MODE ***
 
-- Add difficulty modifiers to increase/unlock rewards
+- Add difficulty modifiers to increase currency rewards and unlock unique rewards
+
+- Add endless boss fight level after last boss or as seperate game mode

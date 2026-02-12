@@ -10,27 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eeee6209ccafb68438616e30a515b029, type: 3}
-  m_Name: Elise
+  m_Name: Crono
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterData
-  displayName: Elise
-  portrait: {fileID: -4337318997203435395, guid: 0b6ed9acc06146e4bb0103810912d48b, type: 3}
-  defaultBorder: {fileID: -4219142061602393782, guid: 0612e3136a37f4c4b9ff584bbe075938, type: 3}
-  specialAbilityName: Natures Embrace
-  specialDescription: Heal all units on the board back to full health including those
-    that have died.
-  startsLocked: 0
-  unlockCost: 0
-  ability: 1
+  displayName: Crono
+  portrait: {fileID: -7226037058745236332, guid: 382a2b7182ea7e743983e78f076fb525, type: 3}
+  defaultBorder: {fileID: -4735880192303008778, guid: 6257d831b03235041a323b1d538682f5, type: 3}
+  specialAbilityName: Time Shift
+  specialDescription: Reduce unit fall speed by 1/3 of its current speed fo 15 seconds.
+  startsLocked: 1
+  unlockCost: 50
+  ability: 3
   clearRows: 3
   cooldownSeconds: 0
   specialGaugeMax: 100
-  reviveAllVFXSprite: {fileID: 21300000, guid: cad205a4202e77a4a92fbd7314efd68a, type: 3}
-  sfxRestoreAll: {fileID: 8300000, guid: 9820830a92651ee41acf7d44fe6f3bac, type: 3}
+  reviveAllVFXSprite: {fileID: 0}
+  sfxRestoreAll: {fileID: 0}
   immunityDuration: 5
   sfxImmunityOn: {fileID: 0}
   sfxImmunityWarn: {fileID: 0}
   sfxImmunityOff: {fileID: 0}
-  reducedGravityDuration: 10
+  reducedGravityDuration: 15
   reducedGravityMultiplier: 0.333334
   doubleStatsDuration: 10
   sfxDoubleStatsOn: {fileID: 0}

@@ -26,7 +26,6 @@ public class TitleMenuUI : MonoBehaviour
     [SerializeField] CharacterSelectUI characterSelectUI;
     [SerializeField] MonsterSelectUI monsterSelectUI;
 
-
     [Header("Pause While Panels Open?")]
     public bool pauseOnPanels = false;
 
@@ -83,10 +82,7 @@ public class TitleMenuUI : MonoBehaviour
     {
         // Start title BGM
         if (AudioManager.I)
-        {
-            var clip = titleBGM ? titleBGM : AudioManager.I.bgmLoop; // Fallback to default loop
-            AudioManager.I.PlayMusic(clip, loop: true, vol: titleBGMVolume);
-        }
+            AudioManager.I.PlayTitleMusic();
 
         SettingsStore.ApplySavedVolumesToAudio();
 
@@ -110,7 +106,8 @@ public class TitleMenuUI : MonoBehaviour
         {
             var clip = startGameSFX ? startGameSFX : AudioManager.I.sfxRestart;
             AudioManager.I.PlaySFX(clip);
-            AudioManager.I.StopMusic();
+            AudioManager.I.StopLevelMusic(); // Safe even if not playing level music
+            AudioManager.I.StopMusic();      // Stops title music source
         }
 
         // Ensure character exists (and is unlocked) before loading Gameplay
