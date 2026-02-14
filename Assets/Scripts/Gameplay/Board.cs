@@ -31,6 +31,9 @@ public class Board : MonoBehaviour
     [Header("SFX")]
     public AudioClip sfxImmuneHit;
 
+    [Header("Line Clear Timing")]
+    public float cascadeClearVisualDelay = 0.25f;
+
     bool tilesImmune = false;
     public enum DamageSource { Generic, CastleProjectile } 
 
@@ -836,7 +839,7 @@ public class Board : MonoBehaviour
 
             for (int y = 0; y < height; y++)
             {
-                // Row is "full" if every cell is occupied by something (monster tile or obstacle tile)
+                // Row is full if every cell is occupied by something (monster tile or obstacle tile)
                 bool full = true;
                 for (int x = 0; x < width; x++)
                 {
@@ -852,6 +855,9 @@ public class Board : MonoBehaviour
 
                 clearedAny = true;
                 rowsCleared++;
+
+                int clearIndex = rowsCleared - 1;
+                int rowKey = (clearIndex * 1000) + y;
 
                 // ===== Tally row damage/special from MONSTERS ONLY =====
                 int dmgRow = 0;
@@ -890,7 +896,7 @@ public class Board : MonoBehaviour
                 }
 
                 damageFromMonsters += dmgRow;
-                rowDamage[y] = dmgRow;
+                rowDamage[rowKey] = dmgRow;
 
                 if (counts.Count > 0)
                 {
@@ -899,7 +905,7 @@ public class Board : MonoBehaviour
                     var candidates = new List<MonsterData>();
                     foreach (var kv in counts) if (kv.Value == max) candidates.Add(kv.Key);
                     var dominant = candidates[UnityEngine.Random.Range(0, candidates.Count)];
-                    rowDominantMonster[y] = dominant;
+                    rowDominantMonster[rowKey] = dominant;
                 }
 
                 // ===== Remove row contents =====
@@ -930,6 +936,138 @@ public class Board : MonoBehaviour
         CleanOrphanedTiles();
     }
 
+    public void ClearFullLinesAnimated(
+    Action<int, List<Vector2Int>, int, float, Dictionary<int, int>, Dictionary<int, MonsterData>> onComplete,
+    float? overrideCascadeDelay = null)
+    {
+        float delay = overrideCascadeDelay ?? cascadeClearVisualDelay;
+        StartCoroutine(ClearFullLinesRoutine(delay, onComplete));
+    }
+
+    IEnumerator ClearFullLinesRoutine(
+        float cascadeDelay,
+        Action<int, List<Vector2Int>, int, float, Dictionary<int, int>, Dictionary<int, MonsterData>> onComplete)
+    {
+        int rowsCleared = 0;
+        var removedCells = new List<Vector2Int>();
+        int damageFromMonsters = 0;
+        float specialChargeFromMonsters = 0f;
+        var rowDamage = new Dictionary<int, int>();
+        var rowDominantMonster = new Dictionary<int, MonsterData>();
+        var gc = FindFirstObjectByType<GameController>();
+
+        bool clearedAny = true;
+        var stonesDamaged = new HashSet<Vector2Int>();
+
+        while (clearedAny)
+        {
+            clearedAny = false;
+
+            for (int y = 0; y < height; y++)
+            {
+                bool full = true;
+                for (int x = 0; x < width; x++)
+                {
+                    var c = new Vector2Int(x, y);
+                    if (!placed.TryGetValue(c, out var rt) || !rt)
+                    {
+                        full = false;
+                        break;
+                    }
+                }
+
+                if (!full) continue;
+
+                clearedAny = true;
+                rowsCleared++;
+
+                int clearIndex = rowsCleared - 1;
+                int rowKey = (clearIndex * 1000) + y;
+
+                // ===== Tally row damage/special from Monsters only =====
+                int dmgRow = 0;
+                var counts = new Dictionary<MonsterData, int>();
+
+                for (int x = 0; x < width; x++)
+                {
+                    var key = new Vector2Int(x, y);
+
+                    // Obstacles do not contribute
+                    if (obstacles.ContainsKey(key))
+                        continue;
+
+                    if (monsters.TryGetValue(key, out var inst) && inst.data)
+                    {
+                        if (inst.hp > 0f)
+                        {
+                            float gaugeMult = (gc ? gc.monsterSpecialGainMult : 1f);
+
+                            float dmgMult = (gc ? gc.monsterDamageMult : 1f);
+                            float tempMult = (gc ? gc.PlayerMonsterAttackMult : 1f);
+
+                            float baseDmg = (inst.data.attackPower * dmgMult) + inst.attackBonus;
+                            int dmg = Mathf.RoundToInt(baseDmg * tempMult);
+
+                            dmgRow += Mathf.Max(1, dmg);
+
+                            float gauge = inst.data.specialGaugeGain * gaugeMult;
+                            specialChargeFromMonsters += Mathf.Max(1f, gauge);
+                        }
+
+                        if (!counts.ContainsKey(inst.data))
+                            counts[inst.data] = 0;
+                        counts[inst.data] += 1;
+                    }
+                }
+
+                damageFromMonsters += dmgRow;
+                rowDamage[rowKey] = dmgRow;
+
+                if (counts.Count > 0)
+                {
+                    int max = 0;
+                    foreach (var kv in counts) if (kv.Value > max) max = kv.Value;
+                    var candidates = new List<MonsterData>();
+                    foreach (var kv in counts) if (kv.Value == max) candidates.Add(kv.Key);
+                    var dominant = candidates[UnityEngine.Random.Range(0, candidates.Count)];
+                    rowDominantMonster[rowKey] = dominant;
+                }
+
+                // ===== Remove row contents =====
+                for (int x = 0; x < width; x++)
+                {
+                    var key = new Vector2Int(x, y);
+
+                    if (TryDamageStoneAt(key, stonesDamaged, removedCells))
+                        continue;
+
+                    monsters.Remove(key);
+
+                    if (placed.TryGetValue(key, out var rt))
+                    {
+                        UnityEngine.Object.Destroy(rt.gameObject);
+                        placed.Remove(key);
+                        removedCells.Add(key);
+                    }
+                }
+
+                // Let remaining tiles fall into gaps (stones remain as blockers)
+                SettleAllColumns(false);
+
+                // Redraw at least one frame so cascade-created full rows are visible before being cleared
+                yield return null;
+                if (cascadeDelay > 0f)
+                    yield return new WaitForSecondsRealtime(cascadeDelay);
+
+                y = -1; // Board changed, restart scanning from bottom
+            }
+        }
+
+        CleanOrphanedTiles();
+
+        onComplete?.Invoke(rowsCleared, removedCells, damageFromMonsters, specialChargeFromMonsters, rowDamage, rowDominantMonster);
+    }
+
     // ================ Character Special Abilities ================
 
     public int ClearBottomRowsWithCombat(
@@ -937,25 +1075,28 @@ public class Board : MonoBehaviour
     out int totalMonsterDamage,
     out float specialChargeFromMonsters,
     out Dictionary<int, int> rowDamage,
-    out MonsterData dominantMonster,
+    out Dictionary<int, MonsterData> rowDominantMonster,
     out Dictionary<int, List<int>> colsByRow)
     {
         totalMonsterDamage = 0;
         specialChargeFromMonsters = 0f;
         rowDamage = new Dictionary<int, int>();
+        rowDominantMonster = new Dictionary<int, MonsterData>();
         colsByRow = new Dictionary<int, List<int>>();
-        dominantMonster = null;
 
         if (rows <= 0) return 0;
         rows = Mathf.Min(rows, height);
 
         var gc = FindFirstObjectByType<GameController>();
-        var counts = new Dictionary<MonsterData, int>(); // Track prevalence for dominant monster selection
 
         // ===== Tally combat stats from bottom rows before deletion =====
         for (int y = 0; y < rows; y++)
         {
             int dmgRow = 0;
+
+            // Count prevalence for dominant selection
+            var countsRow = new Dictionary<MonsterData, int>();
+
             for (int x = 0; x < width; x++)
             {
                 var key = new Vector2Int(x, y);
@@ -970,8 +1111,8 @@ public class Board : MonoBehaviour
                 if (monsters.TryGetValue(key, out var inst) && inst.data)
                 {
                     // Count for dominant visuals
-                    if (!counts.ContainsKey(inst.data)) counts[inst.data] = 0;
-                    counts[inst.data] += 1;
+                    if (!countsRow.ContainsKey(inst.data)) countsRow[inst.data] = 0;
+                    countsRow[inst.data] += 1;
 
                     // Living monsters contribute damage/gauge
                     if (inst.hp > 0f)
@@ -999,24 +1140,26 @@ public class Board : MonoBehaviour
                 }
             }
 
+            int rowKey = (y * 1000) + y;
+
             if (dmgRow > 0)
             {
-                rowDamage[y] = dmgRow;
+                rowDamage[rowKey] = dmgRow;
                 totalMonsterDamage += dmgRow;
             }
-        }
 
-        // Choose dominant monster among destroyed units for visuals
-        if (counts.Count > 0)
-        {
-            int max = 0;
-            foreach (var kv in counts) if (kv.Value > max) max = kv.Value;
+            // Pick dominant monster for this cleared row
+            if (countsRow.Count > 0)
+            {
+                int max = 0;
+                foreach (var kv in countsRow) if (kv.Value > max) max = kv.Value;
 
-            var candidates = new List<MonsterData>();
-            foreach (var kv in counts) if (kv.Value == max) candidates.Add(kv.Key);
+                var candidates = new List<MonsterData>();
+                foreach (var kv in countsRow) if (kv.Value == max) candidates.Add(kv.Key);
 
-            if (candidates.Count > 0)
-                dominantMonster = candidates[UnityEngine.Random.Range(0, candidates.Count)];
+                if (candidates.Count > 0)
+                    rowDominantMonster[rowKey] = candidates[UnityEngine.Random.Range(0, candidates.Count)];
+            }
         }
 
         // ===== Perform the actual clear and shift =====

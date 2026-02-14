@@ -180,7 +180,7 @@ public class CharacterSelectUI : MonoBehaviour
 
         if (selectedSpecialAbilityName)
         {
-            selectedSpecialAbilityName.text = $"Special Ability: \"{cur.specialAbilityName}\"";
+            selectedSpecialAbilityName.text = $"Special Ability: {cur.specialAbilityName}";
         }
 
         if (selectedSpecialDescription)

@@ -1,25 +1,27 @@
 
 ****** TODO ******
 
+*- Increase grid size vertical +1 every 2nd round, increase grid size +1 horizontal every 3rd round accumulating throughout the run. Reset grid back to base size dimension on game start and restart.
+
+*- Add boss fight mechanics and abilities
+-- I plan to add two new boss abilities that I didn’t have time to finish last week. One ability will create a magical shield on the boss and make the boss take reduced damage. The shield will stay active until the multiple single cell tiles (magical pylons) on the map are cleared either through normal line clears, special player abilities, or special blocks that destroy tiles like the lightning or bomb blocks.
+*-- The second special ability will be a new explosive type obstacle. The boss will spawn a single cell block that will detonate in 15 seconds after being placed reducing all surrounding monster units to 0 health. The player must clear the row with the explosive tile before time runs out. If the player succeeds, the explosive block will add significant additional to that row clear attack. Using special blocks like the bomb or lighting on the explosive will cause it to detonate immediately and damage any surrounding monster units
+*--- Explosive block background should be visually animated to change colors like an a round analogue clock. By that I mean when it is first spawn the background should be all one solid color and as timer runs the background should slowly be wiped a way in a clockwise wipe animation showing the grey background behind the fill background. When 3.25 seconds (1/4 of 15 seconds) have gone by the top right corner of the background should be fully grey. When 7.5 seconds (half of 15 seconds) have gone by the right half of the explosive tile block should be showing the grey background, 10.75 seconds ( 3/4 of 15 seconds) has gone by it should show the bottom left square and the right half of the tile as fully grey. When 15 seconds elapse the full explosive tile should be showing grey and explode. Essentially it should look like the fill background is being wiped away like a round analogue clocks second hand is moving and as it passes wipes away the fill color to reveal the grey background behind the explosive sprite. I would also like the tile to have a red flashing overlay that speeds up its flashing frequency as time runs out, pulsing only once at the 3.25 seconds, 7.5 sceonds, and 10.75 seconds. After 10.75 seconds it should start flashing consistently and accelerating to a higher frequency until time runs out.
+
+*- Add world leaderboard viewable in game (Take safety precautions to make sure data is secure and it can't be used for any malicious or nefarious purposes)
+
+*- Add visual identifier for when boss increases gravity and when it ends
+
+- Add help screen explaining basic mechanics, special blocks, Obstacles, Traps, and Floor effects
+
 - Play with the grid size and experiment with different grid sizes.
 
 - Create a setting for mixed tetrapieces or uniform monster pieces
 
-- Increase grid size vertical +1 every 2nd round, increase grid size +1 horizontal every 3rd round accumulating throughout the run. Reset grid back to base size dimension on game start and restart.
-
-- Add boss fight mechanics and abilities
--- Armor/protective magic that requires the clearing of special spawned tiles on the board to remove
-
-- Add visual identifier for when boss increases gravity and when it ends
-
-- Add help screen explaining basic mechanics, special blocks, Obstacles, Traps, and Floor effects
-
-- Add world leaderboard viewable in game (Take safety precautions to make sure data is secure and it can't be used for any malicious or nefarious purposes)
 
 *** KNOWN BUGS ***
-- Test Clear bottom 3 rows special to see if it deals damage to the enemy castle 
 
-- Clearing multiple rows with a single block seems to be only spawning a single attack and not calculating the damage correctly for each row that was cleared
+- If a row is cleared that would have had a monster or tile that would be hit by an enemy projectile, sometimes the enemy projectile will be destroyed in that cell instead of continuing further down the board to find a valid target (or be destroyed at the bottom of the board)
 
 *** PERSISTENT DATA ***
 

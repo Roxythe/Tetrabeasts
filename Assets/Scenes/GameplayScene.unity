@@ -6920,6 +6920,7 @@ MonoBehaviour:
   deadOverlayTint: {r: 1, g: 0, b: 0, a: 1}
   deadOverlayPreserveAspect: 1
   sfxImmuneHit: {fileID: 8300000, guid: 91a29aa9391039a4f96be5434d7b3676, type: 3}
+  cascadeClearVisualDelay: 0.1
   stoneUndamagedSprite: {fileID: 5140489583097488631, guid: e2fde54b94567a041b0c3c74f678b493, type: 3}
   stoneDamagedSprite: {fileID: -4139635074411779728, guid: 6de9e73b3b056de4ab4f209346a15b7f, type: 3}
   stoneCriticalSprite: {fileID: -8822111029399401767, guid: a2046d0780b221d48a775a3ba76c5567, type: 3}
@@ -8259,6 +8260,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d2d37792bd3897d458d808731e0176b7, type: 2}
   - {fileID: 11400000, guid: 753f83587d342c541ad9edfe4af1bde5, type: 2}
   - {fileID: 11400000, guid: 905d3693dd34dc6488c242898c76b7a6, type: 2}
+  cascadeSettlePauseSeconds: 0.18
   pauseCursor: {fileID: 1171653363}
   enemyCastleUI: {fileID: 841500717}
   castlesByLevel:

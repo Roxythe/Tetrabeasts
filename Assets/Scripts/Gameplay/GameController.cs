@@ -14,6 +14,9 @@ public class GameController : MonoBehaviour
     public NextPreviewUI nextPreview;
     public TetrominoData[] allTetrominoes;
 
+    [Header("Line Clear Visual Timing")]
+    public float cascadeSettlePauseSeconds = 0.18f;
+
     [Header("Cursor (Gameplay)")]
     public UICursorController pauseCursor;
 
@@ -711,12 +714,21 @@ public class GameController : MonoBehaviour
         }
 
         // Spawn one projectile per cleared row
-        if (rowsCleared > 0 && gameBoard && enemyCastleUI && enemyCastleUI.castleImage)
+        if (rowsCleared > 0 && gameBoard && enemyCastleUI && enemyCastleUI.castleImage && rowDamage != null)
         {
-            foreach (var kv in rowDamage)
+            // Sort by clearIndex so projectiles fire in the same order rows were cleared
+            var ordered = new List<KeyValuePair<int, int>>(rowDamage);
+            ordered.Sort((a, b) => (a.Key / 1000).CompareTo(b.Key / 1000));
+
+            var usedCols = new HashSet<int>();
+
+            foreach (var kv in ordered)
             {
-                int rowY = kv.Key;
-                int dmg = Mathf.Max(0, kv.Value);
+                int rowKey = kv.Key;
+                int rowY = rowKey % 1000;
+                rowY = Mathf.Clamp(rowY, 0, gameBoard.height - 1);
+               
+                int dmg = Mathf.Max(0, kv.Value); // Damage carried by this projectile only (per cleared row)
 
                 // Use dominant monster for this row pick attack sprite
                 Sprite attackSprite = null;
@@ -724,7 +736,7 @@ public class GameController : MonoBehaviour
                 AttackAnimType animType = AttackAnimType.None;
                 MonsterData attackerMD = null;
 
-                if (rowDominantMonster != null && rowDominantMonster.TryGetValue(rowY, out var md) && md)
+                if (rowDominantMonster != null && rowDominantMonster.TryGetValue(rowKey, out var md) && md)
                 {
                     attackerMD = md;
                     animType = md.attackAnim;
@@ -734,10 +746,26 @@ public class GameController : MonoBehaviour
                     attackSpriteAlt = MonsterSkinStore.GetAttackAltSprite(md);
                 }
 
-                // Choose a start column from the last-placed piece's columns on this row
-                int col = UnityEngine.Random.Range(0, gameBoard.width);
+                // Preferred start column: last-placed piece's columns on this visual row (if known)
+                int preferredCol = UnityEngine.Random.Range(0, gameBoard.width);
                 if (colsByRow != null && colsByRow.TryGetValue(rowY, out var cols) && cols != null && cols.Count > 0)
-                    col = cols[UnityEngine.Random.Range(0, cols.Count)];
+                    preferredCol = cols[UnityEngine.Random.Range(0, cols.Count)];
+
+                // If multiple projectiles would spawn in the same column, shift the later one to the nearest free column
+                int col = preferredCol;
+                if (usedCols.Contains(col))
+                {
+                    for (int step = 1; step < gameBoard.width; step++)
+                    {
+                        int r = preferredCol + step;
+                        if (r < gameBoard.width && !usedCols.Contains(r)) { col = r; break; }
+
+                        int l = preferredCol - step;
+                        if (l >= 0 && !usedCols.Contains(l)) { col = l; break; }
+                    }
+                }
+
+                usedCols.Add(col);
 
                 Vector2 startBoard = gameBoard.CellToAnchoredPos(new Vector2Int(col, rowY));
 
@@ -746,7 +774,7 @@ public class GameController : MonoBehaviour
                 Vector2 start = LocalTo(root, gameBoard.gridRoot, startBoard);
 
                 Vector3 castleBottomWorld = enemyCastleUI.castleImage.rectTransform.TransformPoint(
-                new Vector3(0f, -enemyCastleUI.castleImage.rectTransform.rect.height * 0.5f, 0f));
+                    new Vector3(0f, -enemyCastleUI.castleImage.rectTransform.rect.height * 0.5f, 0f));
 
                 Vector2 castleBottomInRoot = root.InverseTransformPoint(castleBottomWorld);
                 Vector2 target = new Vector2(start.x, castleBottomInRoot.y);
@@ -982,13 +1010,10 @@ public class GameController : MonoBehaviour
                 {
                     int rows = Mathf.Max(1, selectedCharacter.clearRows);
 
-                    int squaresCleared = gameBoard.ClearBottomRowsWithCombat(
-                        rows,
-                        out int totalMonsterDamage,
-                        out float _specialChargeIgnored,
-                        out Dictionary<int, int> rowDamage,
-                        out MonsterData dominantMonster,
-                        out Dictionary<int, List<int>> colsByRow);
+                    int squaresCleared = gameBoard.ClearBottomRowsWithCombat(rows, out int totalMonsterDamage,
+                                         out float _specialChargeIgnored, out Dictionary<int, int> rowDamage,
+                                         out Dictionary<int, MonsterData> rowDominantMonster,
+                                         out Dictionary<int, List<int>> colsByRow);
 
                     // Reset gauge on use
                     specialGauge = 0f;
@@ -1010,28 +1035,54 @@ public class GameController : MonoBehaviour
                     // Spawn one projectile per cleared row, using the dominant monster for visuals
                     if (rowDamage != null && rowDamage.Count > 0 && gameBoard && enemyCastleUI && enemyCastleUI.castleImage && !levelWon)
                     {
-                        Sprite attackSprite = null;
-                        Sprite attackSpriteAlt = null;
-                        AttackAnimType animType = AttackAnimType.None;
-                        MonsterData attackerMD = null;
+                        // Stable ordering
+                        var ordered = new List<KeyValuePair<int, int>>(rowDamage);
+                        ordered.Sort((a, b) => (a.Key / 1000).CompareTo(b.Key / 1000));
 
-                        if (dominantMonster)
-                        {
-                            attackerMD = dominantMonster;
-                            animType = dominantMonster.attackAnim;
-                            attackSprite = MonsterSkinStore.GetAttackSprite(dominantMonster);
-                            attackSpriteAlt = MonsterSkinStore.GetAttackAltSprite(dominantMonster);
-                        }
+                        var usedCols = new HashSet<int>();
 
-                        foreach (var kv in rowDamage)
+                        foreach (var kv in ordered)
                         {
-                            int rowY = kv.Key;
+                            int rowKey = kv.Key;
+                            int rowY = rowKey % 1000;
+                            rowY = Mathf.Clamp(rowY, 0, gameBoard.height - 1);
+
                             int dmg = Mathf.Max(0, kv.Value);
                             if (dmg <= 0) continue;
 
-                            int col = UnityEngine.Random.Range(0, gameBoard.width);
+                            // Per-row dominant visuals
+                            Sprite attackSprite = null;
+                            Sprite attackSpriteAlt = null;
+                            AttackAnimType animType = AttackAnimType.None;
+                            MonsterData attackerMD = null;
+
+                            if (rowDominantMonster != null && rowDominantMonster.TryGetValue(rowKey, out var md) && md)
+                            {
+                                attackerMD = md;
+                                animType = md.attackAnim;
+                                attackSprite = MonsterSkinStore.GetAttackSprite(md);
+                                attackSpriteAlt = MonsterSkinStore.GetAttackAltSprite(md);
+                            }
+
+                            // Choose a preferred start column from candidates on this row
+                            int preferredCol = UnityEngine.Random.Range(0, gameBoard.width);
                             if (colsByRow != null && colsByRow.TryGetValue(rowY, out var cols) && cols != null && cols.Count > 0)
-                                col = cols[UnityEngine.Random.Range(0, cols.Count)];
+                                preferredCol = cols[UnityEngine.Random.Range(0, cols.Count)];
+
+                            // Shift if another projectile already uses this column
+                            int col = preferredCol;
+                            if (usedCols.Contains(col))
+                            {
+                                for (int step = 1; step < gameBoard.width; step++)
+                                {
+                                    int r = preferredCol + step;
+                                    if (r < gameBoard.width && !usedCols.Contains(r)) { col = r; break; }
+
+                                    int l = preferredCol - step;
+                                    if (l >= 0 && !usedCols.Contains(l)) { col = l; break; }
+                                }
+                            }
+                            usedCols.Add(col);
 
                             Vector2 startBoard = gameBoard.CellToAnchoredPos(new Vector2Int(col, rowY));
 
@@ -1678,9 +1729,13 @@ public class GameController : MonoBehaviour
         Time.timeScale = 1f;
         AudioListener.pause = false;
 
+        if (AudioManager.I) // Handle music mode changes that were made while paused
+            AudioManager.I.ApplyPendingMusicModeAfterUnpause(); 
+
         if (pausePanel) pausePanel.SetActive(false);
         EnterGameplayCursorMode();
     }
+
 
     public void ReturnToMainMenu()
     {

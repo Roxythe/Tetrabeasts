@@ -76,15 +76,17 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ba77a72ce39268f4bb187135aca787ef, type: 3}
   - {fileID: 8300000, guid: 80741d7c33118d34fa6ca7b9063e5c74, type: 3}
   - {fileID: 8300000, guid: 1dc96fd837891d449bff80e639adcd27, type: 3}
+  - {fileID: 8300000, guid: d92c02d4c0fd75845b39c14e64de1c18, type: 3}
   MetalBossMusic:
   - {fileID: 8300000, guid: 5c14238e921d6304f8141213dcf2d153, type: 3}
   - {fileID: 8300000, guid: cc3a84b963c69154984464b95c4af9fd, type: 3}
   - {fileID: 8300000, guid: 23f8ad18ab3f33245ba379c07cdffd1a, type: 3}
+  - {fileID: 8300000, guid: 6824fd3217be2fb4b9ff175138689e20, type: 3}
   EDMTitleMusic: {fileID: 8300000, guid: 72caf85e79d3b5245bcaeda17cfb4498, type: 3}
   MetalTitleMusic: {fileID: 8300000, guid: d472bc17a6196c54bbb1d45824723c12, type: 3}
   EDMPauseMusic: {fileID: 8300000, guid: 19133b00f7885494c80c038dc894da9d, type: 3}
   MetalPauseMusic: {fileID: 8300000, guid: 34e5725356a597f4989f788be169e313, type: 3}
   masterVolume: 0.5
-  musicVolume: 0.5
+  musicVolume: 0.526
   sfxVolume: 1
-  sfxPitchJitter: 0.05
+  sfxPitchJitter: 0.1

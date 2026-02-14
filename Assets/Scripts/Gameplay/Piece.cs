@@ -424,16 +424,20 @@ public class Piece : MonoBehaviour
 
                         board.SettleAllColumns(true);
 
-                        board.ClearFullLines(out int rowsEQ, out var removedEQ, out int dmgEQ, out float chargeEQ,
-                                             out var rowDamageEQ, out var rowDomEQ);
-
-                        var emptyCols = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<int>>();
-
-                        gc.OnPieceLocked(rowsEQ, removedEQ, dmgEQ, chargeEQ, rowDamageEQ, rowDomEQ, emptyCols);
-
                         enabled = false;
-                        if (gc != null && gc.CanSpawnNewPiece()) gc.SpawnNextPiece();
-                        return; 
+                        int levelBeforeEQ = gc.CurrentLevel;
+
+                        board.ClearFullLinesAnimated((rowsEQ, removedEQ, dmgEQ, chargeEQ, rowDamageEQ, rowDomEQ) =>
+                        {
+                            var emptyCols = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<int>>();
+                            if (gc != null)
+                                gc.OnPieceLocked(rowsEQ, removedEQ, dmgEQ, chargeEQ, rowDamageEQ, rowDomEQ, emptyCols);
+
+                            if (gc != null && gc.CurrentLevel == levelBeforeEQ && gc.CanSpawnNewPiece())
+                                gc.SpawnNextPiece();
+                        });
+
+                        return;
                     }
             }
 
@@ -465,15 +469,20 @@ public class Piece : MonoBehaviour
             // Remove targets and make only the directly-above tiles fall sparsely
             board.RemoveCellsAndFall(toRemove, out var removedA, out int dmgA, out float chargeA);
 
-            board.ClearFullLines(out int rowsAfter, out var removedB, out int dmgB, out float chargeB,
-                                 out var rowDamageB, out var rowDomB);
-
-            var colsByRowSpecial = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<int>>();
-
-            gc.OnPieceLocked(rowsAfter, removedB, dmgA + dmgB, chargeA + chargeB, rowDamageB, rowDomB, colsByRowSpecial);
-
             enabled = false;
-            if (gc != null && gc.CanSpawnNewPiece()) gc.SpawnNextPiece();
+            int levelBeforeSpecial = gc.CurrentLevel;
+
+            board.ClearFullLinesAnimated((rowsAfter, removedB, dmgB, chargeB, rowDamageB, rowDomB) =>
+            {
+                var colsByRowSpecial = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<int>>();
+
+                if (gc != null)
+                    gc.OnPieceLocked(rowsAfter, removedB, dmgA + dmgB, chargeA + chargeB, rowDamageB, rowDomB, colsByRowSpecial);
+
+                if (gc != null && gc.CurrentLevel == levelBeforeSpecial && gc.CanSpawnNewPiece())
+                    gc.SpawnNextPiece();
+            });
+
             return;
         }
 
@@ -512,16 +521,17 @@ public class Piece : MonoBehaviour
         }
 
         // Call the extended Board method
-        board.ClearFullLines(out int rowsCleared, out var removedCells, out int damageFromMonsters,
-                             out float specialChargeFromMonsters, out var rowDamage, out var rowDominantMonster);
-
-        // Pass colsByRow forward 
-        int levelBefore = gc.CurrentLevel;
-        gc.OnPieceLocked(rowsCleared, removedCells, damageFromMonsters, specialChargeFromMonsters, rowDamage, rowDominantMonster, colsByRow);
-
         enabled = false;
-        if (gc != null && gc.CurrentLevel == levelBefore && gc.CanSpawnNewPiece())
-            gc.SpawnNextPiece();
+        int levelBefore = gc.CurrentLevel;
+
+        board.ClearFullLinesAnimated((rowsCleared, removedCells, damageFromMonsters, specialChargeFromMonsters, rowDamage, rowDominantMonster) =>
+        {
+            if (gc != null)
+                gc.OnPieceLocked(rowsCleared, removedCells, damageFromMonsters, specialChargeFromMonsters, rowDamage, rowDominantMonster, colsByRow);
+
+            if (gc != null && gc.CurrentLevel == levelBefore && gc.CanSpawnNewPiece())
+                gc.SpawnNextPiece();
+        });
     }
 
     public void ResetPiece()

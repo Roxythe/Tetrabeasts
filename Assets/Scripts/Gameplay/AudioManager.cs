@@ -52,6 +52,7 @@ public class AudioManager : MonoBehaviour
     MusicContext context = MusicContext.None;
     bool levelMusicActive = false;
     bool levelIsBoss = false;
+    bool restartContextOnUnpause = false;
 
     const string K_Master = "vol_master";
     const string K_Music = "vol_music";
@@ -238,14 +239,34 @@ public class AudioManager : MonoBehaviour
         PlayerPrefs.SetInt(K_MusicMode, (int)musicMode);
         PlayerPrefs.Save();
 
-        RestartContextMusic(); // Title/Level
+        if (AudioListener.pause)
+        {
+            restartContextOnUnpause = true;
 
-        // If game is paused and pause music is playing, refresh it immediately
+            if (pauseMusicSrc)
+            {
+                pauseMusicSrc.Stop();
+                PlayPauseMusic();
+            }
+
+            return;
+        }
+
+        RestartContextMusic();
+
         if (pauseMusicSrc && pauseMusicSrc.isPlaying)
         {
             pauseMusicSrc.Stop();
             PlayPauseMusic();
         }
+    }
+
+    public void ApplyPendingMusicModeAfterUnpause()
+    {
+        if (!restartContextOnUnpause) return;
+
+        restartContextOnUnpause = false;
+        RestartContextMusic();
     }
 
     public void PlayTitleMusic()
@@ -312,7 +333,8 @@ public class AudioManager : MonoBehaviour
 
     void RestartContextMusic()
     {
-        // If paused, leave pause music alone
+        if (AudioListener.pause) return;  // If paused, leave pause music alone
+
         switch (context)
         {
             case MusicContext.Title:

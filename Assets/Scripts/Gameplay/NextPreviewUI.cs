@@ -4,12 +4,11 @@ using System.Collections.Generic;
 
 public class NextPreviewUI : MonoBehaviour
 {
-    public RectTransform root;      // NextRoot
-    public Image tilePrefab;        // same Tile_UI prefab
+    public RectTransform root;
+    public Image tilePrefab;
     readonly List<RectTransform> tiles = new();
 
-    // Single-pixel white sprite for edge drawing
-    static Sprite _onePx;
+    static Sprite _onePx; // Single-pixel white sprite for edge drawing
 
     static Sprite OnePx()
     {
@@ -190,6 +189,7 @@ public class NextPreviewUI : MonoBehaviour
             float border = Mathf.Max(2f, Mathf.Round(s * 0.08f));
             ApplySharedEdges(rt, Ls, Rs, Us, Ds, border);
 
+            // Special icon or monster portrait
             if (isSpecial && data.specialSprite != null)
             {
                 var innerRT = (rt.Find("PreviewFill") as RectTransform) ?? rt;
@@ -206,13 +206,18 @@ public class NextPreviewUI : MonoBehaviour
                 prt.sizeDelta = innerRT.sizeDelta - new Vector2(2f, 2f);
                 prt.anchoredPosition = Vector2.zero;
             }
-            else if (monsters != null && i < monsters.Length && monsters[i] && monsters[i].portrait)
+            else if (monsters != null && i < monsters.Length && monsters[i])
             {
                 var innerRT = (rt.Find("PreviewFill") as RectTransform) ?? rt;
 
                 var go = new GameObject("MonsterPortrait", typeof(Image));
                 var portraitImg = go.GetComponent<Image>();
-                portraitImg.sprite = monsters[i].portrait;
+
+                // Use selected skin variant 
+                var portrait = GetCurrentMonsterPortrait(monsters[i]);
+                if (!portrait) portrait = monsters[i].portrait; // Fallback
+                portraitImg.sprite = portrait;
+
                 portraitImg.preserveAspect = true;
                 portraitImg.raycastTarget = false;
 
@@ -240,5 +245,12 @@ public class NextPreviewUI : MonoBehaviour
     {
         foreach (Transform c in root) Destroy(c.gameObject);
         tiles.Clear();
+    }
+
+    Sprite GetCurrentMonsterPortrait(MonsterData md)
+    {
+        if (!md) return null;
+        int skin = MonsterSkinStore.GetValidSelected(md);
+        return MonsterSkinStore.GetPortrait(md, skin);
     }
 }
