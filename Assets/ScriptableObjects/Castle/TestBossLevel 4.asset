@@ -1,0 +1,136 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d53674e82a67d24eb4f78ba0f273f3a, type: 3}
+  m_Name: TestBossLevel 4
+  m_EditorClassIdentifier: Assembly-CSharp::CastleData
+  castleName: Metropolis
+  damageStages:
+  - {fileID: 21300000, guid: 1f0ff268de0e76d4c91ac180ab7e6e6e, type: 3}
+  - {fileID: 21300000, guid: 9082ffe4cf1f7e146b700d31ac4725da, type: 3}
+  - {fileID: 21300000, guid: 72665c402bca98948ac42bedf1620070, type: 3}
+  - {fileID: 21300000, guid: 8ef84dac0848a8b4f81252dbc3fac646, type: 3}
+  maxHP: 1000
+  projectileSprite: {fileID: 21300000, guid: ca7186951d5077d419fe7998de074c6d, type: 3}
+  projectileInterval: 2
+  projectileSpeed: 800
+  projectileDamage: 25
+  sfxProjectileHitTile: {fileID: 8300000, guid: 23223cee22f6a6c4caceff40d1bcd1e6, type: 3}
+  sfxProjectileHitTileClips:
+  - {fileID: 8300000, guid: fccb4318ede48ff4db14c0d040030810, type: 3}
+  - {fileID: 8300000, guid: 6bf402a552edcc24291e706965866709, type: 3}
+  - {fileID: 8300000, guid: 23223cee22f6a6c4caceff40d1bcd1e6, type: 3}
+  sfxDamageStageClips:
+  - {fileID: 8300000, guid: 8ff6ce060d8e67b41b53c73f72237f0c, type: 3}
+  - {fileID: 8300000, guid: 371a4a17708185d49828361a722a5430, type: 3}
+  - {fileID: 8300000, guid: 81dc2fffeb5847f409aa65263d0b8138, type: 3}
+  - {fileID: 8300000, guid: 8759481d2f970e14498d13e322ffe788, type: 3}
+  sfxProjectileFired: {fileID: 8300000, guid: 212ba41b43c8a004ca231baaa67f9610, type: 3}
+  sfxProjectileFiredClips:
+  - {fileID: 8300000, guid: 0b408daecd92fb146a11de4451ab6af3, type: 3}
+  - {fileID: 8300000, guid: 23402266cd39763498457e9d3adc6932, type: 3}
+  - {fileID: 8300000, guid: 36168d0de03667d49b6b637203e675eb, type: 3}
+  - {fileID: 8300000, guid: 212ba41b43c8a004ca231baaa67f9610, type: 3}
+  - {fileID: 8300000, guid: 8990cdb32fd36a74c9df4c24a499b0a1, type: 3}
+  isBossLevel: 1
+  bossOverlaySprite: {fileID: 182416302934344096, guid: 154154f7a72e92640910742a799ff767, type: 3}
+  overrideInitialObstacles: 1
+  overridesOnlyForLevel1: 0
+  overrideStoneCount: 8
+  overridePoisonCount: 3
+  overrideFireCount: 3
+  overrideSpikeCount: 3
+  bossEnableRowBlast: 1
+  bossEnableFullBoardBlast: 1
+  bossEnableLightningStrike: 1
+  bossEnableSpawnTraps: 1
+  bossEnableInvulnerability: 1
+  bossEnableGravityBoost: 1
+  bossEnablePylonShield: 1
+  bossEnableMagicExplosive: 1
+  bossAbilityIntervalMin: 10
+  bossAbilityIntervalMax: 15
+  bossRowBlastDamage: 5
+  bossFullBoardDamage: 3
+  bossLightningWarningSprite: {fileID: -7430558899833497709, guid: fc848ad20e1533246a7e5adedce199b7, type: 3}
+  bossLightningTargetsMin: 1
+  bossLightningTargetsMax: 3
+  bossLightningWarningMin: 3
+  bossLightningWarningMax: 6
+  bossLightningInitialDamage: 10
+  bossLightningTickDamage: 2
+  bossLightningTickInterval: 1
+  bossLightningHazardDuration: 10
+  bossTrapKind: 0
+  bossTrapPattern: 0
+  useBossTrapOptionPool: 1
+  bossTrapOptions:
+  - kind: 0
+    pattern: 2
+    weight: 1
+  - kind: 1
+    pattern: 5
+    weight: 1
+  - kind: 2
+    pattern: 2
+    weight: 1
+  - kind: 3
+    pattern: 5
+    weight: 1
+  - kind: 3
+    pattern: 0
+    weight: 1
+  - kind: 2
+    pattern: 0
+    weight: 1
+  bossTrapCountPerUse: 4
+  bossTrapCountPerClusterUse: 1
+  useBossAbilityOptionPool: 1
+  bossAbilityOptions:
+  - kind: 0
+    weight: 1
+    allowRepeat: 0
+    cooldown: 20
+  - kind: 1
+    weight: 1
+    allowRepeat: 0
+    cooldown: 20
+  - kind: 2
+    weight: 1
+    allowRepeat: 1
+    cooldown: 12
+  - kind: 3
+    weight: 3
+    allowRepeat: 1
+    cooldown: 12
+  - kind: 4
+    weight: 1
+    allowRepeat: 0
+    cooldown: 30
+  - kind: 5
+    weight: 1
+    allowRepeat: 0
+    cooldown: 10
+  bossInvulnDuration: 10
+  bossInvulnHitSFX: {fileID: 8300000, guid: 872123507b80dd64ab56ef9159446175, type: 3}
+  bossGravityBonusMult: 2
+  bossGravityDuration: 10
+  bossAbilityWarningSeconds: 3
+  bossWarningToggleInterval: 0.16
+  bossRowBlastWarningSprite: {fileID: -4364613411904784052, guid: d7609c71eb781fd4caca65888f6f03b4, type: 3}
+  bossFullBoardWarningSprite: {fileID: 7805902445396465781, guid: 5bb3ce31ac7e6954584de0395ebea701, type: 3}
+  bossPylonCount: 2
+  bossPylonDamageMult: 0.5
+  bossPylonReducedHitSFX: {fileID: 8300000, guid: db2e890980a2aae4cab731b00a26786e, type: 3}
+  bossExplosiveFuseSeconds: 15
+  bossExplosiveRowClearBonusDamage: 25
+  bossExplosiveDetonateVFXSprite: {fileID: -603226286952671134, guid: 38316659f8b3fbf42ac6328e720b11ea, type: 3}
+  bossExplosiveDetonateSFX: {fileID: 8300000, guid: 66ed8055d3356f9428fe1d66bdb075d1, type: 3}

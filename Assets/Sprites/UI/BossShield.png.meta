@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 8fc5c83a8291dc849aadf61c2761876a
+guid: 82f62f80a25730a4abfca8ad55aa938a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1162641677629566088
-    second: GoblinUnitLivesUp_0
+      213: 4281088507053758753
+    second: BossShield_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -139,13 +139,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: GoblinUnitLivesUp_0
+      name: BossShield_0
       rect:
         serializedVersion: 2
-        x: 95
+        x: 0
         y: 0
-        width: 428
-        height: 654
+        width: 483
+        height: 460
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 88cac242278822010800000000000000
-      internalID: 1162641677629566088
+      spriteID: 12952f2a05b796b30800000000000000
+      internalID: 4281088507053758753
       vertices: []
       indices: 
       edges: []
@@ -174,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      GoblinUnitLivesUp_0: 1162641677629566088
+      BossShield_0: 4281088507053758753
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

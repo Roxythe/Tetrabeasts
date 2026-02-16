@@ -53,6 +53,32 @@ public class Board : MonoBehaviour
     public Sprite stoneDamagedSprite;        // 1 hit taken
     public Sprite stoneCriticalSprite;       // 2 hits taken
 
+    [Header("Boss Obstacles")]
+    public Sprite magicPylonSprite;
+    public Sprite magicExplosiveSprite;
+
+    [Header("Magic Explosive Visuals")]
+    public Color explosiveFillColor = new Color(0.25f, 0.65f, 1f, 1f); // starting fill
+    public Color explosiveBackColor = new Color(0.55f, 0.55f, 0.55f, 1f); // revealed background
+    public Color explosiveFlashColor = new Color(1f, 0.1f, 0.1f, 1f);
+
+    struct MagicExplosiveState
+    {
+        public float startTime;
+        public float fuseSeconds;
+        public int rowClearBonusDamage;
+
+        // flash/pulse state
+        public int pulseStage;          // 0=none, 1=after 25%, 2=after 50%, 3=after 75%
+        public float pulseUntil;        // time to keep pulse visible
+        public float nextToggleAt;
+        public bool flashOn;
+        public Sprite detonateVFXSprite;
+        public AudioClip detonateSFX;
+    }
+
+    readonly Dictionary<Vector2Int, MagicExplosiveState> magicExplosives = new();
+
     public Sprite poisonBorderSprite; 
     public Sprite fireBorderSprite;  
     public Sprite lightningBorderSprite;
@@ -73,7 +99,7 @@ public class Board : MonoBehaviour
 
     readonly Dictionary<Vector2Int, Coroutine> _monsterFlashCo = new();
 
-    public enum ObstacleType { Stone }
+    public enum ObstacleType { Stone, MagicPylon, MagicExplosive }
 
     [System.Serializable]
     public struct ObstacleState
@@ -448,6 +474,7 @@ public class Board : MonoBehaviour
 
         TickFloorEffects();
         AnimateSpikes();
+        TickMagicExplosives();
 
         // ================== Healers pulse over time ==================
         if (monsters.Count == 0 || healTimers.Count == 0) return;
@@ -895,6 +922,21 @@ public class Board : MonoBehaviour
                     }
                 }
 
+                // ===== Magic explosive bonus if player clears the row in time =====
+                int explosiveBonus = 0;
+                for (int x = 0; x < width; x++)
+                {
+                    var c = new Vector2Int(x, y);
+                    if (obstacles.TryGetValue(c, out var o) && o.type == ObstacleType.MagicExplosive)
+                    {
+                        if (magicExplosives.TryGetValue(c, out var ex))
+                            explosiveBonus += Mathf.Max(0, ex.rowClearBonusDamage);
+                    }
+                }
+
+                if (explosiveBonus > 0)
+                    dmgRow += explosiveBonus;
+
                 damageFromMonsters += dmgRow;
                 rowDamage[rowKey] = dmgRow;
 
@@ -914,11 +956,10 @@ public class Board : MonoBehaviour
                     var key = new Vector2Int(x, y);
 
                     // Stone obstacles take 1 hit, update sprite, only destroy when hitsRemaining reaches 0
-                    if (TryDamageStoneAt(key, stonesDamaged, removedCells))
+                    if (TryHandleObstacleAt(key, stonesDamaged, removedCells, detonateExplosive: false))
                         continue;
 
-                    // Normal monster tile, remove completely
-                    monsters.Remove(key);
+                    monsters.Remove(key); // Normal monster tile, remove completely
 
                     if (placed.TryGetValue(key, out var rt))
                     {
@@ -1020,6 +1061,21 @@ public class Board : MonoBehaviour
                     }
                 }
 
+                // ===== Magic explosive bonus if player clears the row in time =====
+                int explosiveBonus = 0;
+                for (int x = 0; x < width; x++)
+                {
+                    var c = new Vector2Int(x, y);
+                    if (obstacles.TryGetValue(c, out var o) && o.type == ObstacleType.MagicExplosive)
+                    {
+                        if (magicExplosives.TryGetValue(c, out var ex))
+                            explosiveBonus += Mathf.Max(0, ex.rowClearBonusDamage);
+                    }
+                }
+
+                if (explosiveBonus > 0)
+                    dmgRow += explosiveBonus;
+
                 damageFromMonsters += dmgRow;
                 rowDamage[rowKey] = dmgRow;
 
@@ -1038,7 +1094,7 @@ public class Board : MonoBehaviour
                 {
                     var key = new Vector2Int(x, y);
 
-                    if (TryDamageStoneAt(key, stonesDamaged, removedCells))
+                    if (TryHandleObstacleAt(key, stonesDamaged, removedCells, detonateExplosive: false))
                         continue;
 
                     monsters.Remove(key);
@@ -1051,8 +1107,7 @@ public class Board : MonoBehaviour
                     }
                 }
 
-                // Let remaining tiles fall into gaps (stones remain as blockers)
-                SettleAllColumns(false);
+                SettleAllColumns(false); // Let remaining tiles fall into gaps (stones remain as blockers)
 
                 // Redraw at least one frame so cascade-created full rows are visible before being cleared
                 yield return null;
@@ -1437,7 +1492,7 @@ public class Board : MonoBehaviour
                 monsters.Remove(key);
             }
 
-            if (TryDamageStoneAt(key, stonesDamaged, removedCells))
+            if (TryHandleObstacleAt(key, stonesDamaged, removedCells, detonateExplosive: true))
                 continue;
 
             if (placed.TryGetValue(key, out var rt))
@@ -1642,7 +1697,32 @@ public class Board : MonoBehaviour
         DrawGridOverlay();
     }
 
-    public Vector2 GetCellSize() => cellSize; // Helper so others can read cell size
+    public Vector2 GetCellSize() => cellSize; // Cell size getter
+
+    public void SetGridSize(int newWidth, int newHeight)
+    {
+        newWidth = Mathf.Max(1, newWidth);
+        newHeight = Mathf.Max(1, newHeight);
+
+        if (width == newWidth && height == newHeight)
+            return;
+
+        width = newWidth;
+        height = newHeight;
+
+        if (boardRect == null) boardRect = GetComponent<RectTransform>();
+
+        RecomputeCellMetrics();
+
+        // Reposition any placed tiles
+        var toFix = new List<KeyValuePair<Vector2Int, RectTransform>>(placed);
+        foreach (var kv in toFix)
+            if (kv.Value) kv.Value.anchoredPosition = CellToAnchoredPos(kv.Key);
+
+        RepositionEffectVisuals();
+        DrawGridOverlay();
+    }
+
 
     public void SetMonsterAt(Vector2Int cell, MonsterInstance inst)
     {
@@ -1719,6 +1799,31 @@ public class Board : MonoBehaviour
     public bool HasObstacle(Vector2Int cell) => obstacles.ContainsKey(cell);
     public bool IsFree(Vector2Int c) => InBounds(c) && !placed.ContainsKey(c);
 
+    public bool WouldCompleteRowIfFilled(Vector2Int cell)
+    {
+        if (!InBounds(cell)) return false;
+        if (!IsFree(cell)) return false;
+
+        int filled = 0;
+        for (int x = 0; x < width; x++)
+        {
+            var c = new Vector2Int(x, cell.y);
+            if (placed.ContainsKey(c))
+                filled++;
+        }
+
+        return filled >= (width - 1); // If all other cells are already filled
+    }
+
+    public int CountObstaclesOfType(ObstacleType t)
+    {
+        int count = 0;
+        foreach (var kv in obstacles)
+            if (kv.Value.type == t)
+                count++;
+        return count;
+    }
+
     public bool TrySpawnStoneObstacle(Vector2Int cell, int hitsToBreak = 3)
     {
         if (!InBounds(cell)) return false;
@@ -1732,6 +1837,239 @@ public class Board : MonoBehaviour
         UpdateStoneObstacleVisual(cell);
         RefreshTileBordersAround(cell);
         return true;
+    }
+
+    public bool TrySpawnMagicPylonObstacle(Vector2Int cell)
+    {
+        if (!InBounds(cell)) return false;
+        if (!IsFree(cell)) return false;
+        if (!magicPylonSprite) return false;
+
+        var rt = InstantiateTileUI(new Color(1f, 1f, 1f, 1f), magicPylonSprite);
+        rt.anchoredPosition = CellToAnchoredPos(cell);
+        Place(cell, rt);
+
+        obstacles[cell] = new ObstacleState(ObstacleType.MagicPylon, 1);
+        RefreshTileBordersAround(cell);
+        return true;
+    }
+
+    public bool TrySpawnMagicExplosiveObstacle(Vector2Int cell, float fuseSeconds, int rowClearBonusDamage,
+                                               Sprite detonateVFXSprite, AudioClip detonateSFX)
+    {
+        if (!InBounds(cell)) return false;
+        if (!IsFree(cell)) return false;
+        if (!magicExplosiveSprite) return false;
+
+        var rt = InstantiateTileUI(new Color(1f, 1f, 1f, 1f), magicExplosiveSprite);
+        rt.anchoredPosition = CellToAnchoredPos(cell);
+        Place(cell, rt);
+
+        obstacles[cell] = new ObstacleState(ObstacleType.MagicExplosive, 1);
+
+        // Visual setup (radial fill and red flash overlay)
+        ConfigureMagicExplosiveVisual(rt);
+
+        magicExplosives[cell] = new MagicExplosiveState
+        {
+            startTime = Time.time,
+            fuseSeconds = Mathf.Max(0.1f, fuseSeconds),
+            rowClearBonusDamage = Mathf.Max(0, rowClearBonusDamage),
+
+            detonateVFXSprite = detonateVFXSprite,
+            detonateSFX = detonateSFX,
+
+            pulseStage = 0,
+            pulseUntil = 0f,
+            nextToggleAt = 0f,
+            flashOn = false
+        };
+
+        RefreshTileBordersAround(cell);
+        return true;
+    }
+
+    public void SpawnCellOverlayVFX(Vector2Int cell, Sprite sprite, float seconds = 0.5f, float alpha = 0.95f)
+    {
+        if (!InBounds(cell) || sprite == null) return;
+
+        if (!overlayRoot) overlayRoot = gridRoot;
+
+        var go = new GameObject("CellVFX", typeof(Image));
+        go.transform.SetParent(overlayRoot, false);
+
+        var img = go.GetComponent<Image>();
+        img.sprite = sprite;
+        img.preserveAspect = true;
+        img.raycastTarget = false;
+        img.color = new Color(1f, 1f, 1f, alpha);
+
+        var rt = img.rectTransform;
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.sizeDelta = cellSize * 0.95f;
+        rt.anchoredPosition = CellToAnchoredPos(cell);
+
+        StartCoroutine(FadeAndDestroy(img, seconds));
+    }
+
+    void ConfigureMagicExplosiveVisual(RectTransform rt)
+    {
+        if (!rt) return;
+
+        var backFill = rt.Find("BackFill")?.GetComponent<Image>();
+        var fill = rt.Find("HealthFill")?.GetComponent<Image>();
+
+        if (backFill)
+        {
+            backFill.color = explosiveBackColor;
+            backFill.type = Image.Type.Simple;
+            backFill.fillAmount = 1f;
+        }
+
+        if (fill)
+        {
+            fill.color = explosiveFillColor;
+            fill.sprite = OnePx();
+            fill.type = Image.Type.Filled;
+            fill.fillMethod = Image.FillMethod.Radial360;
+            fill.fillOrigin = (int)Image.Origin360.Top;
+            fill.fillClockwise = false;
+            fill.fillAmount = 1f; // starts full, wipes to 0
+        }
+
+        // Flash overlay (red)
+        var flash = rt.Find("ExplosiveFlash")?.GetComponent<Image>();
+        if (!flash)
+        {
+            flash = new GameObject("ExplosiveFlash", typeof(Image)).GetComponent<Image>();
+            flash.transform.SetParent(rt, false);
+
+            var frt = flash.rectTransform;
+            frt.anchorMin = frt.anchorMax = new Vector2(0.5f, 0.5f);
+            frt.sizeDelta = rt.sizeDelta;
+            frt.anchoredPosition = Vector2.zero;
+
+            flash.sprite = OnePx();
+            flash.type = Image.Type.Simple;
+            flash.raycastTarget = false;
+        }
+
+        flash.color = new Color(explosiveFlashColor.r, explosiveFlashColor.g, explosiveFlashColor.b, 0f);
+    }
+
+    void TickMagicExplosives()
+    {
+        if (magicExplosives.Count == 0) return;
+
+        float now = Time.time;
+
+        var keys = new List<Vector2Int>(magicExplosives.Keys);
+        foreach (var cell in keys)
+        {
+            // If the tile is gone, cleanup
+            if (!placed.TryGetValue(cell, out var rt) || !rt || !obstacles.TryGetValue(cell, out var obs) || obs.type != ObstacleType.MagicExplosive)
+            {
+                magicExplosives.Remove(cell);
+                continue;
+            }
+
+            var st = magicExplosives[cell];
+
+            float t = Mathf.Clamp01((now - st.startTime) / Mathf.Max(0.1f, st.fuseSeconds));
+            float remaining = Mathf.Max(0f, st.fuseSeconds - (now - st.startTime));
+
+            // Radial wipe (1 to 0 over time)
+            var fill = rt.Find("HealthFill")?.GetComponent<Image>();
+            if (fill)
+                fill.fillAmount = 1f - t;
+
+            // Single pulses at 25%, 50%, 75%
+            float nextPulseT = (st.pulseStage == 0) ? 0.25f : (st.pulseStage == 1) ? 0.50f : (st.pulseStage == 2) ? 0.75f : 999f;
+            if (t >= nextPulseT && st.pulseStage < 3)
+            {
+                st.pulseStage += 1;
+                st.pulseUntil = now + 0.12f; // quick pulse
+            }
+
+            // After 75%, start accelerating flash toggles until detonation
+            if (t >= 0.75f)
+            {
+                // Frequency ramps from 2Hz at 75% to 10Hz at 100%
+                float ramp = Mathf.InverseLerp(0.75f, 1f, t);
+                float hz = Mathf.Lerp(2f, 10f, ramp);
+                float interval = 1f / Mathf.Max(0.1f, hz);
+
+                if (st.nextToggleAt <= 0f) st.nextToggleAt = now; // Start immediately
+
+                if (now >= st.nextToggleAt)
+                {
+                    st.flashOn = !st.flashOn;
+                    st.nextToggleAt = now + interval;
+                }
+            }
+            else
+            {
+                st.flashOn = false;
+                st.nextToggleAt = 0f;
+            }
+
+            var flash = rt.Find("ExplosiveFlash")?.GetComponent<Image>();
+            if (flash)
+            {
+                float a = 0f;
+
+                if (now <= st.pulseUntil) a = 0.55f; // Pulse wins
+
+                if (st.flashOn) a = Mathf.Max(a, 0.35f); // Accelerating flash
+
+                var c = flash.color;
+                c.a = a;
+                flash.color = c;
+            }
+
+            // Detonate when time is up
+            if (remaining <= 0f)
+            {
+                DetonateMagicExplosive(cell);
+                magicExplosives.Remove(cell);
+                continue;
+            }
+
+            magicExplosives[cell] = st;
+        }
+    }
+
+    public void DetonateMagicExplosive(Vector2Int cell)
+    {
+        Sprite vfxSprite = null;
+        AudioClip sfx = null;
+
+        if (magicExplosives.TryGetValue(cell, out var st))
+        {
+            vfxSprite = st.detonateVFXSprite;
+            sfx = st.detonateSFX;
+        }
+
+        // Play detonation SFX once
+        if (AudioManager.I && sfx)
+            AudioManager.I.PlaySFX(sfx);
+
+        // Affect surrounding cells (8 neighbors)
+        for (int dx = -1; dx <= 1; dx++)
+            for (int dy = -1; dy <= 1; dy++)
+            {
+                if (dx == 0 && dy == 0) continue;
+                var c = new Vector2Int(cell.x + dx, cell.y + dy);
+                if (!InBounds(c)) continue;
+
+                // VFX overlay on each affected cell
+                if (vfxSprite && monsters.TryGetValue(c, out var mi) && mi.hp >= 1f)
+                    SpawnCellOverlayVFX(c, vfxSprite, 1.0f);
+
+                DamageTile(c, 999999f); // Massive damage to ensure destruction, bypassing any immunities
+            }
+
+        DestroyObstacleImmediate(cell); // Destroy the explosive tile itself
     }
 
     public bool SetFloorEffect(Vector2Int cell, FloorEffectType type, float damage, float interval, int ticks)
@@ -2051,6 +2389,10 @@ public class Board : MonoBehaviour
 
     void DestroyObstacleImmediate(Vector2Int cell)
     {
+        ObstacleType type = ObstacleType.Stone;
+        if (obstacles.TryGetValue(cell, out var obs))
+            type = obs.type;
+
         if (placed.TryGetValue(cell, out var rt) && rt)
             Destroy(rt.gameObject);
 
@@ -2058,39 +2400,70 @@ public class Board : MonoBehaviour
         monsters.Remove(cell);
 
         obstacles.Remove(cell);
+        magicExplosives.Remove(cell);
 
-        ObstacleDestroyed?.Invoke(cell, ObstacleType.Stone);
+        ObstacleDestroyed?.Invoke(cell, type);
 
         RefreshTileBordersAround(cell);
     }
 
-    bool TryDamageStoneAt(Vector2Int cell, HashSet<Vector2Int> guard, List<Vector2Int> removedCells)
+    bool TryHandleObstacleAt(Vector2Int cell,
+                         HashSet<Vector2Int> stoneGuard,
+                         List<Vector2Int> removedCells,
+                         bool detonateExplosive)
     {
-        if (!obstacles.TryGetValue(cell, out var obs) || obs.type != ObstacleType.Stone)
+        if (!obstacles.TryGetValue(cell, out var obs))
             return false;
 
-        if (guard != null && !guard.Add(cell))
+        switch (obs.type)
         {
-            // Already damaged this stone during this call, just ensure monsters aren't left behind
-            monsters.Remove(cell);
-            return true;
+            case ObstacleType.Stone:
+                {
+                    if (stoneGuard != null && !stoneGuard.Add(cell))
+                    {
+                        monsters.Remove(cell);
+                        return true;
+                    }
+
+                    obs.hitsRemaining = Mathf.Max(0, obs.hitsRemaining - 1);
+
+                    if (obs.hitsRemaining <= 0)
+                    {
+                        DestroyObstacleImmediate(cell);
+                        removedCells?.Add(cell);
+                    }
+                    else
+                    {
+                        obstacles[cell] = obs;
+                        UpdateStoneObstacleVisual(cell);
+                    }
+
+                    monsters.Remove(cell);
+                    return true;
+                }
+
+            case ObstacleType.MagicPylon:
+                {
+                    DestroyObstacleImmediate(cell);
+                    removedCells?.Add(cell);
+                    return true;
+                }
+
+            case ObstacleType.MagicExplosive:
+                {
+                    // Row-clear success = no detonation
+                    // Special-block removal = detonate immediately
+                    if (detonateExplosive)
+                        DetonateMagicExplosive(cell);
+                    else
+                        DestroyObstacleImmediate(cell);
+
+                    removedCells?.Add(cell);
+                    return true;
+                }
         }
 
-        obs.hitsRemaining = Mathf.Max(0, obs.hitsRemaining - 1);
-
-        if (obs.hitsRemaining <= 0)
-        {
-            DestroyObstacleImmediate(cell);
-            removedCells?.Add(cell);
-        }
-        else
-        {
-            obstacles[cell] = obs;
-            UpdateStoneObstacleVisual(cell);
-        }
-
-        monsters.Remove(cell);
-        return true; // handled as stone obstacle
+        return false;
     }
 
     void UpdateStoneObstacleVisual(Vector2Int cell)

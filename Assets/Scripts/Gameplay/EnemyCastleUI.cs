@@ -26,7 +26,10 @@ public class EnemyCastleUI : MonoBehaviour
     [Header("Invulnerability VFX")]
     public Image invulnShieldImageA;
     public Image invulnShieldImageB; 
-    public Image healthBarFillImage;         // The Image component used to tint the health bar fill
+    public Image healthBarFillImage; // The Image component used to tint the health bar fill on invulnerability
+
+    [Header("Magic Shield (Pylons)")]
+    public Image magicShieldImage;
 
     [Tooltip("Health bar fill color while invulnerable (silver/gray).")]
     public Color invulnHealthBarColor = new Color(0.75f, 0.75f, 0.75f, 1f);
@@ -36,8 +39,17 @@ public class EnemyCastleUI : MonoBehaviour
     Color _normalHealthBarColor = Color.white;
     bool _capturedHealthBarColor = false;
 
+    bool _magicShield = false;
+    Coroutine _magicShieldCR;
+
     CastleData sourceData;
     int _lastStageIndex = -1;
+
+
+    private void Awake()
+    {
+        if (magicShieldImage) magicShieldImage.gameObject.SetActive(false);
+    }
 
     // Call this at the start of a level
     public void InitCastle(CastleData data)
@@ -129,6 +141,12 @@ public class EnemyCastleUI : MonoBehaviour
             return;
         }
 
+        if (_magicShield)
+        {
+            if (AudioManager.I && sourceData.bossPylonReducedHitSFX)
+                AudioManager.I.PlaySFX(sourceData.bossPylonReducedHitSFX);
+        }
+
         currentHP = Mathf.Max(0, currentHP - dmg);
         UpdateVisuals();
 
@@ -145,13 +163,13 @@ public class EnemyCastleUI : MonoBehaviour
         {
             float hpPercent = (float)currentHP / Mathf.Max(1, maxHP);
 
-            // Compute stage index exactly like CastleData.GetSpriteForHealth does
+            // Compute stage index
             int stageIndex =
                 (hpPercent >= 0.76f) ? 0 :
                 (hpPercent >= 0.51f) ? 1 :
                 (hpPercent >= 0.26f) ? 2 : 3;
 
-            // If stage changed (and not the very first initialization), play SFX
+            // If stage changed play SFX
             if (_lastStageIndex != -1 && stageIndex != _lastStageIndex)
             {
                 var clip = sourceData.PickRandom(sourceData.sfxDamageStageClips, null);
@@ -188,7 +206,6 @@ public class EnemyCastleUI : MonoBehaviour
             brt.sizeDelta = bossOverlaySize;
     }
 
-
     public void StartInvulnerability(float seconds)
     {
         if (seconds <= 0f) return;
@@ -208,6 +225,7 @@ public class EnemyCastleUI : MonoBehaviour
         SetInvulnerabilityVFX(false);
         _invulnCR = null;
     }
+
 
     // ================= Invulnerability UI VFX =================
 
@@ -252,6 +270,14 @@ public class EnemyCastleUI : MonoBehaviour
             CacheNormalHealthBarColorIfNeeded();
             fill.color = on ? invulnHealthBarColor : _normalHealthBarColor;
         }
+    }
+
+    public void SetMagicShieldActive(bool on)
+    {
+        _magicShield = on;
+
+        if (magicShieldImage)
+            magicShieldImage.gameObject.SetActive(on);
     }
 
 }

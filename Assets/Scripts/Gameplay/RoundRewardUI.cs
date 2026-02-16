@@ -32,11 +32,23 @@ public class RoundRewardUI : MonoBehaviour
     [Header("Hooked SFX")]
     public GameplayUI_SFXHook _sfxHook;
 
+    [Header("Round Win Blink")]
+    public GameObject blinkImage1;          // Starts on
+    public GameObject blinkImage2;          // Starts off
+    public float blinkIntervalSeconds = 0.25f;
+
+    Coroutine _blinkRoutine;
+
     RunModifierSO _selectedBuff;
     RunModifierSO _selectedDebuff;
 
     Action<RunModifierSO, RunModifierSO> _onComplete;
 
+
+    //private void Awake()
+    //{
+    //    StartBlink(); // Test blink animation in editor
+    //}
 
     void OnEnable()
     {
@@ -56,6 +68,7 @@ public class RoundRewardUI : MonoBehaviour
         rootPanel.SetActive(true);
         buffPanel.SetActive(true);
         debuffPanel.SetActive(false);
+        StartBlink();
 
         confirmBuffButton.interactable = false;
         confirmDebuffButton.interactable = false;
@@ -278,7 +291,48 @@ public class RoundRewardUI : MonoBehaviour
             cg.blocksRaycasts = true;
         }
 
+        StopBlink();
         rootPanel.SetActive(false);
+    }
+
+    // ========= Round Win Blink Logic =========
+
+    void StartBlink()
+    {
+        StopBlink();
+
+        if (!blinkImage1 || !blinkImage2)
+            return;
+
+        // Initial state: image1 ON, image2 OFF
+        blinkImage1.SetActive(true);
+        blinkImage2.SetActive(false);
+
+        _blinkRoutine = StartCoroutine(BlinkRoutine());
+    }
+
+    void StopBlink()
+    {
+        if (_blinkRoutine != null)
+        {
+            StopCoroutine(_blinkRoutine);
+            _blinkRoutine = null;
+        }
+    }
+
+    System.Collections.IEnumerator BlinkRoutine()
+    {
+        // Keep blinking while the panel is active
+        while (rootPanel && rootPanel.activeInHierarchy)
+        {
+            // swap
+            if (blinkImage1) blinkImage1.SetActive(!blinkImage1.activeSelf);
+            if (blinkImage2) blinkImage2.SetActive(!blinkImage2.activeSelf);
+
+            yield return new WaitForSeconds(blinkIntervalSeconds);
+        }
+
+        _blinkRoutine = null;
     }
 
 }

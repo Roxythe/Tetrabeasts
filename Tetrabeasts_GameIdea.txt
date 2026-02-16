@@ -1,23 +1,27 @@
 
 ****** TODO ******
 
-*- Increase grid size vertical +1 every 2nd round, increase grid size +1 horizontal every 3rd round accumulating throughout the run. Reset grid back to base size dimension on game start and restart.
-
-*- Add boss fight mechanics and abilities
--- I plan to add two new boss abilities that I didn’t have time to finish last week. One ability will create a magical shield on the boss and make the boss take reduced damage. The shield will stay active until the multiple single cell tiles (magical pylons) on the map are cleared either through normal line clears, special player abilities, or special blocks that destroy tiles like the lightning or bomb blocks.
-*-- The second special ability will be a new explosive type obstacle. The boss will spawn a single cell block that will detonate in 15 seconds after being placed reducing all surrounding monster units to 0 health. The player must clear the row with the explosive tile before time runs out. If the player succeeds, the explosive block will add significant additional to that row clear attack. Using special blocks like the bomb or lighting on the explosive will cause it to detonate immediately and damage any surrounding monster units
-*--- Explosive block background should be visually animated to change colors like an a round analogue clock. By that I mean when it is first spawn the background should be all one solid color and as timer runs the background should slowly be wiped a way in a clockwise wipe animation showing the grey background behind the fill background. When 3.25 seconds (1/4 of 15 seconds) have gone by the top right corner of the background should be fully grey. When 7.5 seconds (half of 15 seconds) have gone by the right half of the explosive tile block should be showing the grey background, 10.75 seconds ( 3/4 of 15 seconds) has gone by it should show the bottom left square and the right half of the tile as fully grey. When 15 seconds elapse the full explosive tile should be showing grey and explode. Essentially it should look like the fill background is being wiped away like a round analogue clocks second hand is moving and as it passes wipes away the fill color to reveal the grey background behind the explosive sprite. I would also like the tile to have a red flashing overlay that speeds up its flashing frequency as time runs out, pulsing only once at the 3.25 seconds, 7.5 sceonds, and 10.75 seconds. After 10.75 seconds it should start flashing consistently and accelerating to a higher frequency until time runs out.
-
-*- Add world leaderboard viewable in game (Take safety precautions to make sure data is secure and it can't be used for any malicious or nefarious purposes)
-
 *- Add visual identifier for when boss increases gravity and when it ends
 
-- Add help screen explaining basic mechanics, special blocks, Obstacles, Traps, and Floor effects
+*- Add help screen explaining basic mechanics, special blocks, Obstacles, Traps, and Floor effects
+
+*- Create a setting for mixed tetrapieces or uniform monster pieces
+
+*- When a new high score is added to high score table, change the text in gold instead of standard white text color
+
+*- Change how scoring works. instead of 10 score for a line clear make it 1 point per monster in row clear. Multiply point point value by N row clears for monsters in a cascading row clear (2nd row clear in cascade is 2 points per monster, 3 points per monster in the 3rd row clear of the same cascade). Reset point multiplier bonus when cascading row clears ends
+
+*- Make it more common for buffs and debuffs to be a lower rarity afetr gameplay levels and higher after boss levels
+
+*- Make rarity occurence lower in genral, too may unccommmon and rare buff appearances as rewards post lower level round wins
+
+- Add achievements
+
+- Unlocked characters, monsters, monster skin variations, challenge modes completed, achievments, and personal high score
+
+- Add world leaderboard viewable in game (Take safety precautions to make sure data is secure and it can't be used for any malicious or nefarious purposes)
 
 - Play with the grid size and experiment with different grid sizes.
-
-- Create a setting for mixed tetrapieces or uniform monster pieces
-
 
 *** KNOWN BUGS ***
 
@@ -26,8 +30,6 @@
 *** PERSISTENT DATA ***
 
 - Statistics (Number of lines cleared, monsters used, castles destroyed, bosses beaten, monsters destroyed with special pieces, monster health restored, dead monsters used in attack, etc)
-
-- Unlocked characters, monsters, monster skin variations, challenge modes completed, achievments, and personal high score
 
 
 *** PLAYER SPECIAL ATTACKS ***
@@ -58,13 +60,8 @@ Prevent players active tile from overlapping a tile occupied by an enemy attack
 
 - Add new debuffs for new mechanics
 
-- Make it more common for buffs and debuffs to be a lower rarity afetr gameplay levels and higher after boss levels
-
-- Make rarity occurence lower in genral, too may unccommmon and rare buff appearances as rewards post lower level round wins
 
 *** REWARD SYSTEM ***
-
-- Add achievements
 
 - Add Global leaderboard that can be viewed in game
 

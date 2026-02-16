@@ -25,6 +25,14 @@ public class GameController : MonoBehaviour
     public CastleData[] castlesByLevel;
     int currentLevel = 0;
 
+    [Header("Run Grid Growth")]
+    public bool enableRunGridGrowth = true;
+    public int growVerticalEveryNRounds = 2;   // +1 height every 2nd round
+    public int growHorizontalEveryNRounds = 3; // +1 width every 3rd round
+
+    int _baseBoardWidth = -1;
+    int _baseBoardHeight = -1;
+
     [Header("Round Win Audio")]
     public AudioClip roundWinClip;
 
@@ -147,7 +155,7 @@ public class GameController : MonoBehaviour
     public ObstacleManager obstacleManager;
 
     [Range(0f, 1f)]
-    public float stoneBuffDropChance = 0.25f; // chance to drop a run buff when stone breaks
+    public float stoneBuffDropChance = 0.25f; // Chance to drop a run buff when stone breaks
 
     // ================= Boss Ability Loop =================
     CastleData _castleData;
@@ -155,6 +163,24 @@ public class GameController : MonoBehaviour
     float _bossNextAbilityAt = 0f;
     float _bossGravityBonusActive = 0f;
     Coroutine _bossGravityCR;
+
+    [Header("Boss: Pylon Shield")]
+    public bool bossEnablePylonShield = true;
+    public int bossPylonCount = 2;
+    [Range(0.05f, 1f)]
+    public float bossPylonDamageMult = 0.5f; // Damage taken while pylons exist (0.5 = 50%)
+
+    bool _bossPylonShieldActive = false;
+
+    [Header("Boss: Magic Explosive")]
+    public bool bossEnableMagicExplosive = true;
+    public float bossExplosiveFuseSeconds = 15f;
+    public int bossExplosiveRowClearBonusDamage = 50;
+    public bool bossExplosivePreferUpperHalf = true;
+
+    public bool bossPreferLowerHalf = true;
+    public bool bossPreferAsLowAsPossible = true;
+    public bool bossAvoidCompletingRow = true; // Obstacles wont spawn in a cell that would complete a full row
 
     // ================= Boss Ability Pool runtime =================
     CastleData.BossAbilityKind _bossLastAbility = (CastleData.BossAbilityKind)(-1);
@@ -311,6 +337,10 @@ public class GameController : MonoBehaviour
         UpdateSpecialUI();
 
         ResetRunMods();
+
+        CacheBaseBoardSizeIfNeeded();
+        ApplyRunGridSize(currentLevel);
+
         InitLevel(currentLevel);
 
         // Pause menu defaults
@@ -972,6 +1002,7 @@ public class GameController : MonoBehaviour
         if (piece) piece.ResetPiece();
         if (gameBoard) gameBoard.ClearAll();
 
+        ApplyRunGridSize(currentLevel); // Adjust grid size if needed for this level
         InitLevel(currentLevel); // Sets castle to full HP and updates level text
 
         bag.Clear();
@@ -1374,6 +1405,21 @@ public class GameController : MonoBehaviour
                     AudioManager.I.PlaySFX(clip);
             }
 
+            // Pylon shield: boss takes reduced damage while any pylons remain
+            bool pylonsAlive = _bossPylonShieldActive && gameBoard && gameBoard.CountObstaclesOfType(Board.ObstacleType.MagicPylon) > 0;
+
+            if (pylonsAlive)
+            {
+                damage = Mathf.Max(1, Mathf.CeilToInt(damage * Mathf.Clamp(bossPylonDamageMult, 0.05f, 1f)));
+            }
+            else
+            {
+                _bossPylonShieldActive = false;
+            }
+
+            if (enemyCastleUI)
+                enemyCastleUI.SetMagicShieldActive(pylonsAlive);
+
             enemyCastleUI.ApplyDamage(damage);
 
             if (enemyCastleUI.currentHP <= 0 && !winQueued)
@@ -1694,6 +1740,8 @@ public class GameController : MonoBehaviour
         _lastLevelInitialized = -999;
 
         currentLevel = 0;
+        ResetRunGridToBase();
+        ApplyRunGridSize(currentLevel);
         InitLevel(currentLevel);
         gameOver = false;
 
@@ -1990,24 +2038,161 @@ public class GameController : MonoBehaviour
     void OnBoardObstacleDestroyed(Vector2Int cell, Board.ObstacleType type)
     {
         if (!IsRoundActive) return;
-        if (type != Board.ObstacleType.Stone) return;
 
-        if (buffPool == null || buffPool.Length == 0) return;
+        // Stone existing run buff drops
+        if (type == Board.ObstacleType.Stone)
+        {
+            if (buffPool == null || buffPool.Length == 0) return;
+            if (Random.value > stoneBuffDropChance) return;
 
-        if (Random.value > stoneBuffDropChance) return;
+            var buff = buffPool[Random.Range(0, buffPool.Length)];
+            if (!buff) return;
 
-        // Apply a random buff instantly for this run
-        var buff = buffPool[Random.Range(0, buffPool.Length)];
-        if (!buff) return;
+            RunModsStore.Buffs.Add(buff);
+            buff.Apply(this);
 
-        // Track and apply
-        RunModsStore.Buffs.Add(buff);
-        buff.Apply(this);
+            if (runModsPanelUI) runModsPanelUI.Refresh(); // Refresh UI if open
+            return;
+        }
 
-        if (runModsPanelUI) runModsPanelUI.Refresh(); // Refresh UI if open
+        // Pylon shield turns off once all pylons are gone
+        if (type == Board.ObstacleType.MagicPylon)
+        {
+            bool pylonsAlive = _bossPylonShieldActive && gameBoard && gameBoard.CountObstaclesOfType(Board.ObstacleType.MagicPylon) > 0;
+
+            if (!pylonsAlive)
+                _bossPylonShieldActive = false;
+
+            if (enemyCastleUI)
+                enemyCastleUI.SetMagicShieldActive(pylonsAlive);
+
+            return;
+        }
     }
 
     // ================ Boss Abilities ===================
+
+    bool TryGetRandomEmptyCellAnyRow(out Vector2Int cell, int minYInclusive, int maxYInclusive, int maxAttempts = 300)
+    {
+        cell = default;
+        if (!gameBoard) return false;
+
+        int minY = Mathf.Clamp(minYInclusive, 0, gameBoard.height - 1);
+        int maxY = Mathf.Clamp(maxYInclusive, 0, gameBoard.height - 1);
+        if (maxY < minY) (minY, maxY) = (maxY, minY);
+
+        for (int a = 0; a < maxAttempts; a++)
+        {
+            int x = Random.Range(0, gameBoard.width);
+            int y = Random.Range(minY, maxY + 1);
+            var c = new Vector2Int(x, y);
+            if (gameBoard.IsFree(c))
+            {
+                cell = c;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool TryPickBossObstacleCell(out Vector2Int cell)
+    {
+        cell = default;
+        if (!gameBoard) return false;
+
+        int minY = 0;
+        int maxY = gameBoard.height - 1;
+
+        if (bossPreferLowerHalf)
+            maxY = Mathf.Max(0, (gameBoard.height / 2) - 1); // lower half = smaller y values
+
+        // Scan y from bottom up and take the first row that has candidates.
+        if (bossPreferAsLowAsPossible)
+        {
+            for (int y = minY; y <= maxY; y++)
+            {
+                // Collect valid candidates for this y
+                var candidates = new List<int>();
+                for (int x = 0; x < gameBoard.width; x++)
+                {
+                    var c = new Vector2Int(x, y);
+                    if (!gameBoard.IsFree(c)) continue;
+
+                    if (bossAvoidCompletingRow && gameBoard.WouldCompleteRowIfFilled(c))
+                        continue;
+
+                    candidates.Add(x);
+                }
+
+                if (candidates.Count > 0)
+                {
+                    int xPick = candidates[Random.Range(0, candidates.Count)];
+                    cell = new Vector2Int(xPick, y);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        // Random attempts in the allowed range
+        for (int a = 0; a < 300; a++)
+        {
+            int x = Random.Range(0, gameBoard.width);
+            int y = Random.Range(minY, maxY + 1);
+            var c = new Vector2Int(x, y);
+
+            if (!gameBoard.IsFree(c)) continue;
+            if (bossAvoidCompletingRow && gameBoard.WouldCompleteRowIfFilled(c)) continue;
+
+            cell = c;
+            return true;
+        }
+
+        return false;
+    }
+
+    void Boss_PylonShield()
+    {
+        if (!bossEnablePylonShield) return;
+        if (!gameBoard) return;
+
+        PlayBossAbilityWarningSFX();
+
+        int want = Mathf.Max(1, _castleData.bossPylonCount);
+        int spawned = 0;
+
+        for (int i = 0; i < want; i++)
+        {
+            if (!TryPickBossObstacleCell(out var cell))
+                break;
+
+            if (gameBoard.TrySpawnMagicPylonObstacle(cell))
+                spawned++;
+        }
+
+        if (spawned > 0)
+            _bossPylonShieldActive = true;
+
+        // Update UI immediately
+        if (enemyCastleUI)
+            enemyCastleUI.SetMagicShieldActive(_bossPylonShieldActive && gameBoard.CountObstaclesOfType(Board.ObstacleType.MagicPylon) > 0);
+    }
+
+    void Boss_MagicExplosive()
+    {
+        if (!bossEnableMagicExplosive) return;
+        if (gameBoard == null) return;
+
+        PlayBossAbilityWarningSFX();
+
+        if (!TryPickBossObstacleCell(out var cell))
+            return;
+
+        gameBoard.TrySpawnMagicExplosiveObstacle(cell, _castleData.bossExplosiveFuseSeconds, _castleData.bossExplosiveRowClearBonusDamage,
+                                                 _castleData.bossExplosiveDetonateVFXSprite, _castleData.bossExplosiveDetonateSFX);
+    }
 
     void TryCastRandomBossAbility()
     {
@@ -2029,6 +2214,8 @@ public class GameController : MonoBehaviour
                 case CastleData.BossAbilityKind.SpawnTraps: Boss_SpawnTraps(); break;
                 case CastleData.BossAbilityKind.Invulnerability: Boss_Invulnerability(); break;
                 case CastleData.BossAbilityKind.GravityBoost: Boss_GravityBoost(); break;
+                case CastleData.BossAbilityKind.PylonShield: Boss_PylonShield(); break;
+                case CastleData.BossAbilityKind.MagicExplosive: Boss_MagicExplosive(); break;
             }
 
             return;
@@ -2043,6 +2230,8 @@ public class GameController : MonoBehaviour
         if (_castleData.bossEnableSpawnTraps) picks.Add(Boss_SpawnTraps);
         if (_castleData.bossEnableInvulnerability) picks.Add(Boss_Invulnerability);
         if (_castleData.bossEnableGravityBoost) picks.Add(Boss_GravityBoost);
+        if (_castleData.bossEnablePylonShield) picks.Add(Boss_PylonShield);
+        if (_castleData.bossEnableMagicExplosive) picks.Add(Boss_MagicExplosive);
 
         if (picks.Count == 0) return;
 
@@ -2108,6 +2297,8 @@ public class GameController : MonoBehaviour
             case CastleData.BossAbilityKind.SpawnTraps: return cd.bossEnableSpawnTraps;
             case CastleData.BossAbilityKind.Invulnerability: return cd.bossEnableInvulnerability;
             case CastleData.BossAbilityKind.GravityBoost: return cd.bossEnableGravityBoost;
+            case CastleData.BossAbilityKind.PylonShield: return cd.bossEnablePylonShield;
+            case CastleData.BossAbilityKind.MagicExplosive: return cd.bossEnableMagicExplosive;
             default: return false;
         }
     }
@@ -2341,6 +2532,10 @@ public class GameController : MonoBehaviour
     void Boss_SpawnTraps()
     {
         if (obstacleManager == null || gameBoard == null || _castleData == null) return;
+
+        if (bossEnableMagicExplosive)
+            Boss_MagicExplosive();
+
         StartCoroutine(BossSpawnTrapsSplitWithWarningRoutine());
     }
 
@@ -2623,7 +2818,7 @@ public class GameController : MonoBehaviour
             case CastleData.BossTrapKind.Spike: return gameBoard.spikeSpriteHigh;
             case CastleData.BossTrapKind.Poison: return gameBoard.poisonBorderSprite;
             case CastleData.BossTrapKind.Fire: return gameBoard.fireBorderSprite;
-            case CastleData.BossTrapKind.Lightning: return gameBoard.lightningBorderSprite; // if you have this kind
+            case CastleData.BossTrapKind.Lightning: return gameBoard.lightningBorderSprite;
             case CastleData.BossTrapKind.Stone: return gameBoard.stoneUndamagedSprite;
             default: return null;
         }
@@ -2631,7 +2826,15 @@ public class GameController : MonoBehaviour
 
     void Boss_Invulnerability()
     {
-        if (enemyCastleUI == null || _castleData == null) return;
+        if (_castleData == null) return;
+
+        if (bossEnablePylonShield)
+        {
+            Boss_PylonShield();
+            return;
+        }
+
+        if (enemyCastleUI == null) return;
 
         PlayBossAbilityWarningSFX();
         enemyCastleUI.StartInvulnerability(_castleData.bossInvulnDuration);
@@ -2691,6 +2894,46 @@ public class GameController : MonoBehaviour
             AudioManager.I.PlaySFX(selectedCharacter.sfxDoubleStatsOff);
 
         _playerDoubleStatsCR = null;
+    }
+
+    // ================== Grid Growth System ==================
+
+    void CacheBaseBoardSizeIfNeeded()
+    {
+        if (_baseBoardWidth > 0 && _baseBoardHeight > 0) return;
+        if (!gameBoard) return;
+
+        _baseBoardWidth = Mathf.Max(1, gameBoard.width);
+        _baseBoardHeight = Mathf.Max(1, gameBoard.height);
+    }
+
+    void ApplyRunGridSize(int levelIndex)
+    {
+        if (!enableRunGridGrowth) return;
+        if (!gameBoard) return;
+
+        CacheBaseBoardSizeIfNeeded();
+        if (_baseBoardWidth <= 0 || _baseBoardHeight <= 0) return;
+
+        int roundNumber = levelIndex + 1; // levelIndex 0 => Round 1
+
+        int addH = (growVerticalEveryNRounds > 0) ? (roundNumber / growVerticalEveryNRounds) : 0;
+        int addW = (growHorizontalEveryNRounds > 0) ? (roundNumber / growHorizontalEveryNRounds) : 0;
+
+        int newW = _baseBoardWidth + addW;
+        int newH = _baseBoardHeight + addH;
+
+        gameBoard.SetGridSize(newW, newH);
+    }
+
+    void ResetRunGridToBase()
+    {
+        if (!gameBoard) return;
+
+        CacheBaseBoardSizeIfNeeded();
+        if (_baseBoardWidth <= 0 || _baseBoardHeight <= 0) return;
+
+        gameBoard.SetGridSize(_baseBoardWidth, _baseBoardHeight);
     }
 
     // ================== Helper/Utility ==================

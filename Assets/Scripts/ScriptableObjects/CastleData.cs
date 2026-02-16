@@ -32,20 +32,12 @@ public class CastleData : ScriptableObject
     [Header("Obstacle / Trap Overrides (Optional)")]
     [Tooltip("If enabled, this CastleData can override the level's initial obstacle/trap counts.")]
     public bool overrideInitialObstacles = false;
-
-    [Tooltip("Only apply overrides on Level 1 (recommended).")]
     public bool overridesOnlyForLevel1 = true;
 
-    [Tooltip("Set to -1 to use ObstacleManager's normal formula.")]
+    // Set to -1 to use ObstacleManager's normal formula
     public int overrideStoneCount = -1;
-
-    [Tooltip("Set to -1 to use ObstacleManager's normal formula.")]
     public int overridePoisonCount = -1;
-
-    [Tooltip("Set to -1 to use ObstacleManager's normal formula.")]
     public int overrideFireCount = -1;
-
-    [Tooltip("Set to -1 to use ObstacleManager's normal formula.")]
     public int overrideSpikeCount = -1;
 
     // ================= Boss Abilities =================
@@ -56,6 +48,8 @@ public class CastleData : ScriptableObject
     public bool bossEnableSpawnTraps = true;
     public bool bossEnableInvulnerability = true;
     public bool bossEnableGravityBoost = true;
+    public bool bossEnablePylonShield = true;
+    public bool bossEnableMagicExplosive = true;
 
     [Header("Boss Abilities - Global Timing")]
     [Min(0.25f)] public float bossAbilityIntervalMin = 4f;
@@ -110,7 +104,9 @@ public class CastleData : ScriptableObject
         LightningStrike,
         SpawnTraps,
         Invulnerability,
-        GravityBoost
+        GravityBoost,
+        PylonShield,
+        MagicExplosive
     }
 
     [System.Serializable]
@@ -144,10 +140,20 @@ public class CastleData : ScriptableObject
     public Sprite bossRowBlastWarningSprite;
     public Sprite bossFullBoardWarningSprite;
 
+    [Header("Boss - Pylon Shield")]
+    [Min(1)] public int bossPylonCount = 2;
+    [Range(0.05f, 1f)] public float bossPylonDamageMult = 0.5f;
+    public AudioClip bossPylonReducedHitSFX;
+
+    [Header("Boss - Magic Explosive")]
+    [Min(0.1f)] public float bossExplosiveFuseSeconds = 15f;
+    [Min(0)] public int bossExplosiveRowClearBonusDamage = 50;
+    public Sprite bossExplosiveDetonateVFXSprite;
+    public AudioClip bossExplosiveDetonateSFX;
 
     public Sprite GetSpriteForHealth(float hpPercent)
     {
-        // clamp
+        // Clamp
         if (hpPercent < 0f) hpPercent = 0f;
         if (hpPercent > 1f) hpPercent = 1f;
 
@@ -160,7 +166,7 @@ public class CastleData : ScriptableObject
         if (damageStages != null && index >= 0 && index < damageStages.Length)
             return damageStages[index];
 
-        // safety fallback
+        // Fallback
         if (damageStages != null && damageStages.Length > 0)
             return damageStages[0];
 
@@ -171,7 +177,7 @@ public class CastleData : ScriptableObject
     {
         if (arr != null && arr.Length > 0)
         {
-            // Keep retrying until we hit a non-null element, up to a few tries
+            // Keep retrying until a non-null element (a few tries)
             for (int k = 0; k < 8; k++)
             {
                 var c = arr[Random.Range(0, arr.Length)];
