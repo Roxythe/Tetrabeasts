@@ -1,21 +1,21 @@
 
 ****** TODO ******
 
-*- Add visual identifier for when boss increases gravity and when it ends
+*- Add achievements
+
+*- Add a system to track player statistics and trigger achievements earned
 
 *- Add help screen explaining basic mechanics, special blocks, Obstacles, Traps, and Floor effects
 
-*- Create a setting for mixed tetrapieces or uniform monster pieces
-
-*- When a new high score is added to high score table, change the text in gold instead of standard white text color
-
 *- Change how scoring works. instead of 10 score for a line clear make it 1 point per monster in row clear. Multiply point point value by N row clears for monsters in a cascading row clear (2nd row clear in cascade is 2 points per monster, 3 points per monster in the 3rd row clear of the same cascade). Reset point multiplier bonus when cascading row clears ends
 
-*- Make it more common for buffs and debuffs to be a lower rarity afetr gameplay levels and higher after boss levels
+- Create a setting for mixed tetrapieces or uniform monster pieces
 
-*- Make rarity occurence lower in genral, too may unccommmon and rare buff appearances as rewards post lower level round wins
+- Make it more common for buffs and debuffs to be a lower rarity afetr gameplay levels and higher after boss levels
 
-- Add achievements
+- Make rarity occurence lower in genral, too may unccommmon and rare buff appearances as rewards post lower level round wins
+
+- Add visual identifier for when boss increases gravity and when it ends
 
 - Unlocked characters, monsters, monster skin variations, challenge modes completed, achievments, and personal high score
 
@@ -26,6 +26,12 @@
 *** KNOWN BUGS ***
 
 - If a row is cleared that would have had a monster or tile that would be hit by an enemy projectile, sometimes the enemy projectile will be destroyed in that cell instead of continuing further down the board to find a valid target (or be destroyed at the bottom of the board)
+
+- Add SFX to player character data for reduced gravity special ability
+
+- Add slight delay (0.5f seconds) after using earthquake special block before clearing any full lines created by using special block
+
+- Add special ability name for player chosen on gameplay scene under player character name
 
 *** PERSISTENT DATA ***
 

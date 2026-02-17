@@ -84,7 +84,7 @@ MonoBehaviour:
     weight: 1
   - kind: 3
     pattern: 5
-    weight: 1
+    weight: 5
   - kind: 3
     pattern: 0
     weight: 1
@@ -117,6 +117,14 @@ MonoBehaviour:
     cooldown: 30
   - kind: 5
     weight: 1
+    allowRepeat: 0
+    cooldown: 10
+  - kind: 7
+    weight: 3
+    allowRepeat: 0
+    cooldown: 10
+  - kind: 6
+    weight: 3
     allowRepeat: 0
     cooldown: 10
   bossInvulnDuration: 10

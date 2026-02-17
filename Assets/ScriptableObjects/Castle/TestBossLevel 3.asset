@@ -77,8 +77,8 @@ MonoBehaviour:
     pattern: 2
     weight: 1
   - kind: 1
-    pattern: 5
-    weight: 1
+    pattern: 2
+    weight: 5
   - kind: 2
     pattern: 2
     weight: 1
@@ -96,7 +96,7 @@ MonoBehaviour:
   useBossAbilityOptionPool: 1
   bossAbilityOptions:
   - kind: 0
-    weight: 1
+    weight: 5
     allowRepeat: 0
     cooldown: 20
   - kind: 1
@@ -117,6 +117,14 @@ MonoBehaviour:
     cooldown: 30
   - kind: 5
     weight: 1
+    allowRepeat: 0
+    cooldown: 10
+  - kind: 6
+    weight: 7
+    allowRepeat: 0
+    cooldown: 10
+  - kind: 7
+    weight: 7
     allowRepeat: 0
     cooldown: 10
   bossInvulnDuration: 10

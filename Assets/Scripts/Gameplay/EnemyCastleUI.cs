@@ -46,17 +46,6 @@ public class EnemyCastleUI : MonoBehaviour
     int _lastStageIndex = -1;
 
 
-    private void Awake()
-    {
-        if (magicShieldImage) magicShieldImage.gameObject.SetActive(false);
-    }
-
-    // Call this at the start of a level
-    public void InitCastle(CastleData data)
-    {
-        InitCastle(data, 1);
-    }
-
     // New overload that accepts the level number
     public void InitCastle(CastleData data, int levelNumber)
     {
@@ -85,6 +74,7 @@ public class EnemyCastleUI : MonoBehaviour
 
         CacheNormalHealthBarColorIfNeeded();
         SetInvulnerabilityVFX(false);
+        SetMagicShieldActive(false);
 
         _lastStageIndex = -1;
         UpdateVisuals();

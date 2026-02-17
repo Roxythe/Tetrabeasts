@@ -850,6 +850,7 @@ public class GameController : MonoBehaviour
                 _bossNextAbilityAt = Random.Range(_castleData.bossAbilityIntervalMin, _castleData.bossAbilityIntervalMax);
             }
 
+            enemyCastleUI.SetMagicShieldActive(false);
             castleProjectileSprite = data.projectileSprite;
 
             castleAttackInterval = data.projectileInterval * enemyAttackIntervalMult;
@@ -1965,7 +1966,7 @@ public class GameController : MonoBehaviour
         _lastShownFallInterval = currentInterval;
 
         float cellsPerSecond = (currentInterval > 0.0001f) ? (1f / currentInterval) : 0f;
-        gravityText.text = cellsPerSecond.ToString("0.0");
+        gravityText.text = $"Gravity: {cellsPerSecond:0.0}";
     }
 
     // ================ Unit Lives System ===================

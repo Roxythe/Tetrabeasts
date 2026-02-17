@@ -19,6 +19,11 @@ public class HighScoreUI : MonoBehaviour
     public GameObject rowPrefab; // three TMP_Text children: Rank, Name, Score
 
     int pendingScore = 0;
+    int _highlightRankIndex = -1;
+
+    [Header("Colors")]
+    public Color newHighScoreColor = new Color(1f, 0.84f, 0f, 1f); // Gold
+    public Color normalRowColor = Color.white;
 
     void Awake()
     {
@@ -29,6 +34,7 @@ public class HighScoreUI : MonoBehaviour
     public void TryShow(int score)
     {
         pendingScore = score;
+        _highlightRankIndex = -1;
         RefreshTable();
 
         bool qualifies = HighScoreManager.IsHighScore(score);
@@ -52,7 +58,7 @@ public class HighScoreUI : MonoBehaviour
 
     void Submit()
     {
-        HighScoreManager.Add(nameInput ? nameInput.text : "Player", pendingScore);
+        _highlightRankIndex = HighScoreManager.Add(nameInput ? nameInput.text : "Player", pendingScore);
         RefreshTable();
         SetSubmissionUIActive(false);
         SetPostSubmitButtonsActive(true);
@@ -89,6 +95,13 @@ public class HighScoreUI : MonoBehaviour
                 texts[0].text = (i + 1).ToString();        // Rank
                 texts[1].text = list[i].name;              // Name
                 texts[2].text = list[i].score.ToString();  // Score
+
+                bool highlight = (i == _highlightRankIndex);
+                var c = highlight ? newHighScoreColor : normalRowColor;
+
+                texts[0].color = c;
+                texts[1].color = c;
+                texts[2].color = c;
             }
         }
     }

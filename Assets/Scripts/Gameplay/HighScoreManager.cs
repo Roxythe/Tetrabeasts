@@ -31,13 +31,29 @@ public static class HighScoreManager
         return score > list[list.Count - 1].score;
     }
 
-    public static void Add(string name, int score, int max = 10)
+    public static int Add(string name, int score, int max = 10)
     {
         var list = Load();
-        list.Add(new HighScoreEntry { name = string.IsNullOrWhiteSpace(name) ? "Player" : name.Trim(), score = score, date = DateTime.Now.ToString("yyyy-MM-dd") });
-        list.Sort((a, b) => b.score.CompareTo(a.score)); // desc
-        if (list.Count > max) list.RemoveRange(max, list.Count - max);
+
+        var entry = new HighScoreEntry
+        {
+            name = string.IsNullOrWhiteSpace(name) ? "Player" : name.Trim(),
+            score = score,
+            date = DateTime.Now.ToString("yyyy-MM-dd")
+        };
+
+        list.Add(entry);
+        list.Sort((a, b) => b.score.CompareTo(a.score)); // Descending order
+
+        int rankIndex = list.IndexOf(entry);
+
+        if (list.Count > max)
+            list.RemoveRange(max, list.Count - max);
+
+        if (rankIndex >= max) rankIndex = -1; // If it got trimmed out don't highlight anything
+
         Save(list);
+        return rankIndex;
     }
 
     public static void EnsureInitialized(int max = 10)

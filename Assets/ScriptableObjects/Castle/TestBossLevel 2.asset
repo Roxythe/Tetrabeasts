@@ -75,13 +75,13 @@ MonoBehaviour:
   bossTrapOptions:
   - kind: 0
     pattern: 2
-    weight: 1
+    weight: 5
   - kind: 1
     pattern: 5
     weight: 1
   - kind: 2
     pattern: 2
-    weight: 1
+    weight: 5
   - kind: 3
     pattern: 5
     weight: 1
@@ -104,7 +104,7 @@ MonoBehaviour:
     allowRepeat: 0
     cooldown: 20
   - kind: 2
-    weight: 1
+    weight: 10
     allowRepeat: 1
     cooldown: 12
   - kind: 3
@@ -117,6 +117,14 @@ MonoBehaviour:
     cooldown: 30
   - kind: 5
     weight: 1
+    allowRepeat: 0
+    cooldown: 10
+  - kind: 6
+    weight: 5
+    allowRepeat: 0
+    cooldown: 10
+  - kind: 7
+    weight: 5
     allowRepeat: 0
     cooldown: 10
   bossInvulnDuration: 10
