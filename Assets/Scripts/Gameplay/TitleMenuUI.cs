@@ -17,6 +17,8 @@ public class TitleMenuUI : MonoBehaviour
     public GameObject highScorePanel;
     public GameObject settingsPanel;
     public GameObject shopPanel;
+    public GameObject helpPanel;
+    public HelpMenuUI helpMenuUI;
     public ShopPanelUI shopPanelUI;
     public VolumePanelUI volumePanelUI;
     public MonsterSelectUI monsterSelectPanel;
@@ -213,6 +215,14 @@ public class TitleMenuUI : MonoBehaviour
         if (show)
             shopPanelUI?.RefreshAll();
 
+        if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
+    }
+
+    public void OnToggleHelp()
+    {
+        if (!helpPanel) return;
+        bool show = !helpPanel.activeSelf;
+        helpPanel.SetActive(show);
         if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
     }
 

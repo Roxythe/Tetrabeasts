@@ -18,5 +18,5 @@ MonoBehaviour:
     the boss. A lightning special block or clearing a row containing a stone obstacle
     will deal one damage to it. Stone obstacle need to be damaged 3 times to be removed.
     \nException: Using a bomb special block will instantly destroy a stone obstacle."
-  image: {fileID: 0}
-  videoClip: {fileID: 0}
+  image: {fileID: 5140489583097488631, guid: e2fde54b94567a041b0c3c74f678b493, type: 3}
+  videoClip: {fileID: 32900000, guid: ccb3c674fe27a7545920456bcdb56976, type: 3}

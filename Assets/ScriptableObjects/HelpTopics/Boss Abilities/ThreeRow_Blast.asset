@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda4cdb9ac28a5642b5aa73bc1b714a2, type: 3}
+  m_Name: ThreeRow_Blast
+  m_EditorClassIdentifier: Assembly-CSharp::HelpTopicSO
+  category: Boss Abilities
+  title: Row Blast
+  description: The boss will target the top three rows the player has set monster
+    units. All monster units in the selected rows will recieve moderate damage from
+    this attack.
+  image: {fileID: -4364613411904784052, guid: d7609c71eb781fd4caca65888f6f03b4, type: 3}
+  videoClip: {fileID: 0}

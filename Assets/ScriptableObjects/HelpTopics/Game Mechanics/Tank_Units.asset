@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda4cdb9ac28a5642b5aa73bc1b714a2, type: 3}
+  m_Name: Tank_Units
+  m_EditorClassIdentifier: Assembly-CSharp::HelpTopicSO
+  category: Game Mechanics
+  title: Tank Units
+  description: Tank units tend to have significantly more health than other unit
+    types. They are best used to outlast enemy attacks and protect weaker units.
+    They cannot heal and tend to have low attack stats.
+  image: {fileID: -5713861770949114686, guid: 17347e98cf283614d8cdf5bea68f8fec, type: 3}
+  videoClip: {fileID: 0}

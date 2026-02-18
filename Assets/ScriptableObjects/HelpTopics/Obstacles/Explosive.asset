@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda4cdb9ac28a5642b5aa73bc1b714a2, type: 3}
+  m_Name: Explosive
+  m_EditorClassIdentifier: Assembly-CSharp::HelpTopicSO
+  category: Obstacles
+  title: Explosive
+  description: 'The explosive obstacle will explode after a period of time killing
+    all surrounding monster units. Can be safley disposed of by clearing its row.
+    When safley disposed of it add 25 damage to that row clears attack.
+
+    CAUTION:
+    Using a bomb or lightning special block on the explosive will cause it to detonate.'
+  image: {fileID: 21300000, guid: 769a4051cad8b3841828f0aa68867ab0, type: 3}
+  videoClip: {fileID: 32900000, guid: 6efeda7e739de8147902d5997656e9bc, type: 3}

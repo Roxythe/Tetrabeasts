@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda4cdb9ac28a5642b5aa73bc1b714a2, type: 3}
+  m_Name: Lightning_Strike
+  m_EditorClassIdentifier: Assembly-CSharp::HelpTopicSO
+  category: Boss Abilities
+  title: Lightning Strike
+  description: The boss will target 1-3 individual cells with lightning bolts that
+    will deal siginficant damage to any monster unit in that cell. Afterwards that
+    cell will have a lightning floor effect that does continuous damage to any monster
+    unit that occupies the tile.
+  image: {fileID: -4774492201383427687, guid: 860ad36f38971b241b3613006f023743, type: 3}
+  videoClip: {fileID: 32900000, guid: 3fe16dd0933907f48ae91b081525418b, type: 3}
