@@ -5,10 +5,6 @@
 
 *- Add a system to track player statistics and trigger achievements earned
 
-*- Add help screen explaining basic mechanics, special blocks, Obstacles, Traps, and Floor effects
-
-*- Change how scoring works. instead of 10 score for a line clear make it 1 point per monster in row clear. Multiply point point value by N row clears for monsters in a cascading row clear (2nd row clear in cascade is 2 points per monster, 3 points per monster in the 3rd row clear of the same cascade). Reset point multiplier bonus when cascading row clears ends
-
 - Create a setting for mixed tetrapieces or uniform monster pieces
 
 - Make it more common for buffs and debuffs to be a lower rarity afetr gameplay levels and higher after boss levels
@@ -33,7 +29,6 @@
 
 - Add special ability name for player chosen on gameplay scene under player character name
 
-- Lightning floor effects don't get removed when pressing restart button
 
 *** PERSISTENT DATA ***
 

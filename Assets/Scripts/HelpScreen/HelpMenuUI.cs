@@ -31,10 +31,7 @@ public class HelpMenuUI : MonoBehaviour
     void OnEnable()
     {
         RebuildSidebar();
-
-        // Auto load first topic
-        var first = topics.FirstOrDefault();
-        if (first) ShowTopic(first);
+        ShowDefault();
     }
 
     public void RebuildSidebar()
@@ -103,13 +100,39 @@ public class HelpMenuUI : MonoBehaviour
         bool hasVideo = topic.videoClip != null && videoPlayer != null && videoRawImage != null;
         if (videoRoot) videoRoot.SetActive(hasVideo);
 
-        if (hasVideo)
+        if (videoPlayer)
         {
             videoPlayer.Stop();
-            videoPlayer.clip = topic.videoClip;
-            videoPlayer.isLooping = true;
-            videoPlayer.renderMode = VideoRenderMode.RenderTexture; // Assumes a set targetTexture in inspector
-            videoPlayer.Play();
+            videoPlayer.clip = hasVideo ? topic.videoClip : null;
+
+            if (hasVideo)
+            {
+                videoPlayer.isLooping = true;
+                videoPlayer.renderMode = VideoRenderMode.RenderTexture;
+                videoPlayer.Play();
+            }
         }
     }
+
+    void ShowDefault()
+    {
+        if (titleText) titleText.text = "Help Menu";
+        if (descriptionText) descriptionText.text = "";
+
+        if (infoImage)
+        {
+            infoImage.sprite = null;
+            infoImage.enabled = false;
+        }
+
+        if (videoPlayer)
+        {
+            videoPlayer.Stop();
+            videoPlayer.clip = null;
+        }
+
+        if (videoRoot)
+            videoRoot.SetActive(false);
+    }
+
 }

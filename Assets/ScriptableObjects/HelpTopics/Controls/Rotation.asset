@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HelpTopicSO
   category: Controls
   title: Rotation
-  description: 'Q - Rotate the active piece 90 degrees counter-clockwise
+  description: 'Q - Rotate the active piece 90 degrees counter-clockwise.
 
-    E -
-    Rotate the active piece 90 degrees clockwise
+    E
+    - Rotate the active piece 90 degrees clockwise.
 
 '
-  image: {fileID: 0}
+  image: {fileID: -7679193447417157112, guid: 6a025b775ed45834f9a2f294e7dcd666, type: 3}
   videoClip: {fileID: 32900000, guid: b88f7d84a1ff50e42bbc609a20e5b26d, type: 3}

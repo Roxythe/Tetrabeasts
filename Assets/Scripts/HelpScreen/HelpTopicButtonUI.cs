@@ -8,6 +8,7 @@ public class HelpTopicButtonUI : MonoBehaviour
     public TMP_Text label;
     public Button button;
     public RectTransform indentRoot; // Assign this to the button's main container
+    public float indentPixels = 24f;
 
     public void SetTopic(HelpTopicSO topic, Action onClick)
     {
@@ -19,11 +20,21 @@ public class HelpTopicButtonUI : MonoBehaviour
             button.onClick.AddListener(() => onClick?.Invoke());
         }
 
-        // Indent for sub-items
         if (indentRoot)
         {
-            var p = indentRoot.anchoredPosition;
-            indentRoot.anchoredPosition = new Vector2(24f, p.y); // Adjust indent here
+            // If stretched horizontally, use offsets
+            if (indentRoot.anchorMin.x == 0f && indentRoot.anchorMax.x == 1f)
+            {
+                var min = indentRoot.offsetMin;
+                min.x = indentPixels;
+                indentRoot.offsetMin = min;
+            }
+            else
+            {
+                // Non-stretch fallback
+                var p = indentRoot.anchoredPosition;
+                indentRoot.anchoredPosition = new Vector2(indentPixels, p.y);
+            }
         }
     }
 }

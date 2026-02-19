@@ -14,12 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HelpTopicSO
   category: Controls
   title: Movement
-  description: 'A - shifts the active piece one column to the left
+  description: 'A - shifts the active piece one column to the left.
 
-    D - shifts
-    the active piece one column to the right
+    S - shifts
+    the active piece one row down.
 
-    S - shifts the active piece one
-    row down'
-  image: {fileID: 0}
-  videoClip: {fileID: 0}
+    D - shifts the active piece one column to
+    the right.
+
+'
+  image: {fileID: 8164305069906543686, guid: 66f33d20db096514fb63aa9d9fde0c70, type: 3}
+  videoClip: {fileID: 32900000, guid: a128efbb0ccb59b4dbea63303d8c4a26, type: 3}

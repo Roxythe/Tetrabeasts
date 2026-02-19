@@ -16,5 +16,5 @@ MonoBehaviour:
   title: Loss Condition 1
   description: If the unit reserve reaches 0, the run will end with your loss! The
     unit reserve is reduced by one for every monster unit that dies on the board.
-  image: {fileID: 0}
+  image: {fileID: -7435650732333553916, guid: af99b59b91e177f4eb066f33223d7028, type: 3}
   videoClip: {fileID: 32900000, guid: 8062a144c59f8bf469f821add32e5519, type: 3}

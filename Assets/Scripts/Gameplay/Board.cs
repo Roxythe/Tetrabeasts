@@ -827,12 +827,15 @@ public class Board : MonoBehaviour
                 Destroy(owned[i].gameObject);
         }
 
-        // Clear overlays (fire/poison borders)
+        // Clear overlays (fire/poison/lightning borders)
         foreach (var kv in poisonBorders) if (kv.Value) Destroy(kv.Value.gameObject);
         poisonBorders.Clear();
 
         foreach (var kv in fireBorders) if (kv.Value) Destroy(kv.Value.gameObject);
         fireBorders.Clear();
+
+        foreach (var kv in lightningBorders) if (kv.Value) Destroy(kv.Value.gameObject);
+        lightningBorders.Clear();
 
         // Clear spikes (underlay)
         foreach (var kv in spikeVisuals) if (kv.Value != null && kv.Value.root) Destroy(kv.Value.root.gameObject);
@@ -886,7 +889,7 @@ public class Board : MonoBehaviour
                 int clearIndex = rowsCleared - 1;
                 int rowKey = (clearIndex * 1000) + y;
 
-                // ===== Tally row damage/special from MONSTERS ONLY =====
+                // ===== Tally row damage/special from monsters only =====
                 int dmgRow = 0;
                 var counts = new Dictionary<MonsterData, int>();
 
@@ -936,6 +939,14 @@ public class Board : MonoBehaviour
 
                 if (explosiveBonus > 0)
                     dmgRow += explosiveBonus;
+
+                // ===== Combo scoring and combo damage bonus =====
+                int monstersInRow = 0;
+                foreach (var kv in counts)
+                    monstersInRow += kv.Value;
+
+                if (gc)
+                    gc.ApplyComboForRowClear(monstersInRow, ref dmgRow);
 
                 damageFromMonsters += dmgRow;
                 rowDamage[rowKey] = dmgRow;
@@ -1076,6 +1087,14 @@ public class Board : MonoBehaviour
                 if (explosiveBonus > 0)
                     dmgRow += explosiveBonus;
 
+                // ===== Combo scoring and combo damage bonus =====
+                int monstersInRow = 0;
+                foreach (var kv in counts)
+                    monstersInRow += kv.Value;
+
+                if (gc)
+                    gc.ApplyComboForRowClear(monstersInRow, ref dmgRow);
+
                 damageFromMonsters += dmgRow;
                 rowDamage[rowKey] = dmgRow;
 
@@ -1196,6 +1215,14 @@ public class Board : MonoBehaviour
             }
 
             int rowKey = (y * 1000) + y;
+
+            // ===== Combo scoring and combo damage bonus =====
+            int monstersInRow = 0;
+            foreach (var kv in countsRow)
+                monstersInRow += kv.Value;
+
+            if (gc)
+                gc.ApplyComboForRowClear(monstersInRow, ref dmgRow);
 
             if (dmgRow > 0)
             {

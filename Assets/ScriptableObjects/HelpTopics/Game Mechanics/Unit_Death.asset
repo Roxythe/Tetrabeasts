@@ -17,5 +17,5 @@ MonoBehaviour:
   description: When a monster units health drops to zero it dies. Dead units do not
     contribute their stats to an attack when their row is cleared or help fill up
     the players Special Gauge.
-  image: {fileID: 0}
-  videoClip: {fileID: 0}
+  image: {fileID: 9124524657465168264, guid: 1b47ad483f0f3884587b34e214aa06aa, type: 3}
+  videoClip: {fileID: 32900000, guid: b9fd80e6b939e3b46b028957a03b7094, type: 3}

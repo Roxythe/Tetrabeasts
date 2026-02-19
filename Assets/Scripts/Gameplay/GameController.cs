@@ -242,6 +242,11 @@ public class GameController : MonoBehaviour
     bool levelWon = false;
     private bool winQueued = false;
 
+    [Header("Combo Scoring")]
+    public float comboWindowSeconds = 5f;
+    int _comboCount = 0;
+    float _comboTimer = 0f;
+
     public ScoreUI scoreUI;
     public HighScoreUI highScoreUI;
     public TMP_Text levelText;
@@ -364,6 +369,9 @@ public class GameController : MonoBehaviour
 
         score = 0;
         if (scoreUI) scoreUI.Set(score);
+
+        ResetCombo();
+
         if (currencyUI) currencyUI.Refresh();
 
         SettingsStore.ApplySavedVolumesToAudio();
@@ -440,7 +448,7 @@ public class GameController : MonoBehaviour
             }
         }
 
-        // Level timer + fall speed ramp 
+        // Level timer and fall speed ramp 
         if (!isPaused && !gameOver && !levelWon)
         {
             _levelTimer += Time.deltaTime;
@@ -454,6 +462,18 @@ public class GameController : MonoBehaviour
                 UpdateGravityText(interval);
             }
         }
+
+        // Combo timer (clearing another row resets this timer)
+        if (!isPaused && !gameOver && !levelWon && _comboCount > 0)
+        {
+            _comboTimer -= Time.deltaTime;
+            if (_comboTimer <= 0f)
+                ResetCombo();
+        }
+
+        // Boss shield state
+        if (!isPaused && IsRoundActive && gameBoard)
+            RefreshPylonShieldState();
     }
 
     void OnDestroy()
@@ -690,11 +710,6 @@ public class GameController : MonoBehaviour
                           Dictionary<int, MonsterData> rowDominantMonster, Dictionary<int,
                               List<int>> colsByRow)
     {
-        // Score rule: rowsCleared × 10
-        int gained = Mathf.Max(0, rowsCleared) * 10;
-        score += gained;
-        if (scoreUI) scoreUI.Set(score);
-
         if (rowsCleared > 0 && AudioManager.I)
             AudioManager.I.PlayRandomLineClear();
 
@@ -815,6 +830,54 @@ public class GameController : MonoBehaviour
 
         // No immediate damage, damage applies on impact
     }
+
+    // ================= Combo scoring and damage bonus =================
+
+    public void ApplyComboForRowClear(int monstersClearedInRow, ref int rowDamage)
+    {
+        int combo = IncrementCombo();
+
+        // Score: 1 point per monster, multiplied by current combo count
+        int gained = Mathf.Max(0, monstersClearedInRow) * combo;
+        if (gained > 0)
+            AddScoreInternal(gained);
+
+        // Damage: +10% per combo step after the first, capped at 200%
+        float dmgMult = GetComboDamageMultiplier(combo);
+        rowDamage = Mathf.RoundToInt(rowDamage * dmgMult);
+    }
+
+    int IncrementCombo()
+    {
+        _comboCount = Mathf.Max(0, _comboCount) + 1;
+        _comboTimer = Mathf.Max(0.1f, comboWindowSeconds);
+
+        if (scoreUI)
+            scoreUI.SetCombo(_comboCount);
+
+        return _comboCount;
+    }
+
+    float GetComboDamageMultiplier(int combo)
+    {
+        float mult = 1f + (Mathf.Max(0, combo - 1) * 0.10f);
+        return Mathf.Min(2f, mult);
+    }
+
+    void ResetCombo()
+    {
+        _comboCount = 0;
+        _comboTimer = 0f;
+        if (scoreUI)
+            scoreUI.ClearCombo();
+    }
+
+    void AddScoreInternal(int points)
+    {
+        score += Mathf.Max(0, points);
+        if (scoreUI) scoreUI.Set(score);
+    }
+
 
     void InitLevel(int levelIndex)
     {
@@ -1053,13 +1116,6 @@ public class GameController : MonoBehaviour
                         activateSpecialGaugeText.gameObject.SetActive(false);
 
                     UpdateSpecialUI();
-
-                    // Score based on damage dealt
-                    if (totalMonsterDamage > 0)
-                    {
-                        score += totalMonsterDamage;
-                        if (scoreUI) scoreUI.Set(score);
-                    }
 
                     if (squaresCleared > 0 && AudioManager.I)
                         AudioManager.I.PlayRandomLineClear();
@@ -1407,20 +1463,17 @@ public class GameController : MonoBehaviour
             }
 
             // Pylon shield: boss takes reduced damage while any pylons remain
-            bool pylonsAlive = _bossPylonShieldActive && gameBoard && gameBoard.CountObstaclesOfType(Board.ObstacleType.MagicPylon) > 0;
+            bool pylonsAlive = gameBoard && gameBoard.CountObstaclesOfType(Board.ObstacleType.MagicPylon) > 0;
 
             if (pylonsAlive)
             {
                 damage = Mathf.Max(1, Mathf.CeilToInt(damage * Mathf.Clamp(bossPylonDamageMult, 0.05f, 1f)));
             }
-            else
-            {
-                _bossPylonShieldActive = false;
-            }
 
             if (enemyCastleUI)
                 enemyCastleUI.SetMagicShieldActive(pylonsAlive);
 
+            _bossPylonShieldActive = pylonsAlive;
             enemyCastleUI.ApplyDamage(damage);
 
             if (enemyCastleUI.currentHP <= 0 && !winQueued)
@@ -1754,6 +1807,8 @@ public class GameController : MonoBehaviour
 
         score = 0;
         if (scoreUI) scoreUI.Set(score);
+
+        ResetCombo();
         if (highScoreUI) highScoreUI.Hide(); // Close high-score panel if it was open
 
         // Reset bag and preview
@@ -2059,14 +2114,7 @@ public class GameController : MonoBehaviour
         // Pylon shield turns off once all pylons are gone
         if (type == Board.ObstacleType.MagicPylon)
         {
-            bool pylonsAlive = _bossPylonShieldActive && gameBoard && gameBoard.CountObstaclesOfType(Board.ObstacleType.MagicPylon) > 0;
-
-            if (!pylonsAlive)
-                _bossPylonShieldActive = false;
-
-            if (enemyCastleUI)
-                enemyCastleUI.SetMagicShieldActive(pylonsAlive);
-
+            RefreshPylonShieldState();
             return;
         }
     }
@@ -2157,42 +2205,138 @@ public class GameController : MonoBehaviour
     void Boss_PylonShield()
     {
         if (!bossEnablePylonShield) return;
-        if (!gameBoard) return;
+        if (!gameBoard || _castleData == null) return;
 
-        PlayBossAbilityWarningSFX();
+        StartCoroutine(Boss_PylonShieldRoutine());
+    }
 
-        int want = Mathf.Max(1, _castleData.bossPylonCount);
-        int spawned = 0;
+    void RefreshPylonShieldState()
+    {
+        bool pylonsAlive = gameBoard && gameBoard.CountObstaclesOfType(Board.ObstacleType.MagicPylon) > 0;
 
-        for (int i = 0; i < want; i++)
-        {
-            if (!TryPickBossObstacleCell(out var cell))
-                break;
+        _bossPylonShieldActive = pylonsAlive;
 
-            if (gameBoard.TrySpawnMagicPylonObstacle(cell))
-                spawned++;
-        }
-
-        if (spawned > 0)
-            _bossPylonShieldActive = true;
-
-        // Update UI immediately
         if (enemyCastleUI)
-            enemyCastleUI.SetMagicShieldActive(_bossPylonShieldActive && gameBoard.CountObstaclesOfType(Board.ObstacleType.MagicPylon) > 0);
+            enemyCastleUI.SetMagicShieldActive(pylonsAlive);
     }
 
     void Boss_MagicExplosive()
     {
         if (!bossEnableMagicExplosive) return;
-        if (gameBoard == null) return;
+        if (!gameBoard || _castleData == null) return;
 
-        PlayBossAbilityWarningSFX();
+        StartCoroutine(Boss_MagicExplosiveRoutine());
+    }
 
-        if (!TryPickBossObstacleCell(out var cell))
-            return;
+    bool TryPickBossObstacleCellExcluding(HashSet<Vector2Int> used, out Vector2Int cell, int maxTries = 250)
+    {
+        cell = default;
 
-        gameBoard.TrySpawnMagicExplosiveObstacle(cell, _castleData.bossExplosiveFuseSeconds, _castleData.bossExplosiveRowClearBonusDamage,
-                                                 _castleData.bossExplosiveDetonateVFXSprite, _castleData.bossExplosiveDetonateSFX);
+        for (int i = 0; i < maxTries; i++)
+        {
+            if (!TryPickBossObstacleCell(out cell))
+                return false;
+
+            if (used != null && used.Contains(cell))
+                continue;
+
+            return true;
+        }
+
+        cell = default;
+        return false;
+    }
+
+    IEnumerator Boss_PylonShieldRoutine()
+    {
+        float warn = BossWarnSeconds();
+        int want = Mathf.Max(1, _castleData.bossPylonCount);
+
+        var used = new HashSet<Vector2Int>();
+        int remaining = want;
+
+        // Safety cap to avoid infinite loops if board is too full
+        int batches = 0;
+        int maxBatches = Mathf.Max(5, want * 5);
+
+        while (remaining > 0 && batches < maxBatches)
+        {
+            batches++;
+
+            // Pick 'remaining' cells for this batch
+            var batchCells = new List<Vector2Int>(remaining);
+
+            for (int i = 0; i < remaining; i++)
+            {
+                if (!TryPickBossObstacleCellExcluding(used, out var c))
+                    break;
+
+                used.Add(c);
+                batchCells.Add(c);
+            }
+
+            if (batchCells.Count == 0)
+                break;
+
+            // Warn all at once
+            PlayBossAbilityWarningSFX();
+            for (int i = 0; i < batchCells.Count; i++)
+                FlashBossWarning(batchCells[i], gameBoard.magicPylonSprite, warn);
+
+            // Wait once
+            if (warn > 0f)
+                yield return new WaitForSeconds(warn);
+
+            // Spawn all at once 
+            int spawnedThisBatch = 0;
+            for (int i = 0; i < batchCells.Count; i++)
+            {
+                if (gameBoard.TrySpawnMagicPylonObstacle(batchCells[i]))
+                    spawnedThisBatch++;
+            }
+
+            RefreshPylonShieldState();
+
+            // If none spawned in this batch, don't loop forever
+            if (spawnedThisBatch == 0)
+                break;
+
+            remaining -= spawnedThisBatch; // Retry only for those that failed
+        }
+
+        RefreshPylonShieldState(); // Final state refresh in case some spawned late in the process
+    }
+
+    IEnumerator Boss_MagicExplosiveRoutine()
+    {
+        float warn = BossWarnSeconds();
+        var used = new HashSet<Vector2Int>(); // Used cells so retries don't keep flashing the same tile
+
+        // Safety cap so it won't loop forever
+        for (int attempts = 0; attempts < 10; attempts++)
+        {
+            if (!TryPickBossObstacleCellExcluding(used, out var cell))
+                yield break;
+
+            used.Add(cell);
+
+            PlayBossAbilityWarningSFX();
+            FlashBossWarning(cell, gameBoard.magicExplosiveSprite, warn);
+
+            if (warn > 0f)
+                yield return new WaitForSeconds(warn);
+
+            // If spawn fails (occupied), pick a new cell, flash again, and retry
+            if (gameBoard.TrySpawnMagicExplosiveObstacle(
+                    cell,
+                    _castleData.bossExplosiveFuseSeconds,
+                    _castleData.bossExplosiveRowClearBonusDamage,
+                    _castleData.bossExplosiveDetonateVFXSprite,
+                    _castleData.bossExplosiveDetonateSFX))
+            {
+                yield break;
+            }
+        }
     }
 
     void TryCastRandomBossAbility()
