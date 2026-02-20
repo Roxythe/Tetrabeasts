@@ -28,6 +28,8 @@ public class HelpMenuUI : MonoBehaviour
     readonly Dictionary<string, HelpCategoryHeaderUI> _headers = new();
     readonly Dictionary<string, List<HelpTopicButtonUI>> _topicButtonsByCategory = new();
 
+    string _openCategory = null;
+
     void OnEnable()
     {
         RebuildSidebar();
@@ -70,8 +72,8 @@ public class HelpMenuUI : MonoBehaviour
             // Hook expand/collapse
             header.SetOnToggle(() =>
             {
-                bool willShow = !_topicButtonsByCategory[g.Key].Any(b => b.gameObject.activeSelf);
-                SetCategoryExpanded(g.Key, willShow);
+                bool expandedNow = header.IsExpanded;
+                SetCategoryExpandedExclusive(g.Key, expandedNow);
             });
         }
     }
@@ -81,6 +83,37 @@ public class HelpMenuUI : MonoBehaviour
         if (!_topicButtonsByCategory.TryGetValue(category, out var buttons)) return;
         foreach (var b in buttons)
             b.gameObject.SetActive(expanded);
+    }
+
+    void SetCategoryExpandedExclusive(string category, bool expanded)
+    {
+        if (!expanded)
+        {
+            // Just collapse this category
+            SetCategoryExpanded(category, false);
+
+            if (_openCategory == category)
+                _openCategory = null;
+
+            if (_headers.TryGetValue(category, out var h))
+                h.SetExpanded(false);
+
+            return;
+        }
+
+        // Collapse all other categories first
+        foreach (var kvp in _topicButtonsByCategory)
+        {
+            string cat = kvp.Key;
+            bool isTarget = (cat == category);
+
+            SetCategoryExpanded(cat, isTarget);
+
+            if (_headers.TryGetValue(cat, out var header))
+                header.SetExpanded(isTarget);
+        }
+
+        _openCategory = category;
     }
 
     public void ShowTopic(HelpTopicSO topic)

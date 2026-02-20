@@ -23,6 +23,8 @@
 
 *** KNOWN BUGS ***
 
+- In help menu, close previously opened header category list when a new category list is selected to be opened.
+
 - If a row is cleared that would have had a monster or tile that would be hit by an enemy projectile, sometimes the enemy projectile will be destroyed in that cell instead of continuing further down the board to find a valid target (or be destroyed at the bottom of the board)
 
 - Add SFX to player character data for reduced gravity special ability
@@ -31,6 +33,7 @@
 
 - Add special ability name for player chosen on gameplay scene under player character name
 
+- Change lightning strike boss ability to target a cell currently occupied by a monster unit instead of an empty cell
 
 *** HELP ***
 

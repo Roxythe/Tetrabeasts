@@ -14,6 +14,15 @@ public class HelpCategoryHeaderUI : MonoBehaviour
     bool _expanded = false;
     Action _onToggle;
 
+
+    public bool IsExpanded => _expanded;
+
+    public void SetExpanded(bool expanded)
+    {
+        _expanded = expanded;
+        UpdateArrow();
+    }
+
     public void SetLabel(string text)
     {
         if (label) label.text = text;
