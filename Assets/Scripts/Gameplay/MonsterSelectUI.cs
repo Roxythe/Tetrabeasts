@@ -143,7 +143,15 @@ public class MonsterSelectUI : MonoBehaviour
 
                     CurrencyStore.Add(-md.unlockCost);
                     currencyUI?.Refresh();
+                    bool wasLocked = !UnlockStore.IsUnlocked(md);
                     UnlockStore.Unlock(md);
+
+                    // If this is the first time unlocking any monster, also grant the related achievement stats
+                    if (wasLocked && PlayerProgress.I)
+                    {
+                        PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.MonstersUnlocked, 1);
+                        PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunUnlockedAnyMonster, 1);
+                    }
 
                     if (AudioManager.I && unlockSFX)
                         AudioManager.I.PlaySFX(unlockSFX);
@@ -532,8 +540,16 @@ public class MonsterSelectUI : MonoBehaviour
 
             CurrencyStore.Add(-cost);
             currencyUI?.Refresh();
-
+            bool wasUnlocked = MonsterSkinStore.IsUnlocked(md, skinIdx); // Shouldn't happen, but just in case
             MonsterSkinStore.Unlock(md, skinIdx);
+
+            // If this is the first time unlocking this skin, also grant the related achievement stats
+            if (!wasUnlocked && PlayerProgress.I)
+            {
+                PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.SkinsUnlocked, 1);
+                PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunUnlockedAnySkin, 1);
+            }
+
             MonsterSkinStore.SetSelectedAndLastValid(md, skinIdx);
 
             if (AudioManager.I && unlockSFX) AudioManager.I.PlaySFX(unlockSFX);

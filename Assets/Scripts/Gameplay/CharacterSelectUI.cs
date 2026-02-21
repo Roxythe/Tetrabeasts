@@ -109,7 +109,15 @@ public class CharacterSelectUI : MonoBehaviour
 
                     CurrencyStore.Add(-data.unlockCost);
                     currencyUI?.Refresh();
+                    bool wasLocked = !UnlockStore.IsUnlocked(data);
                     UnlockStore.Unlock(data);
+
+                    // Only count the unlock if it was previously locked
+                    if (wasLocked && PlayerProgress.I)
+                    {
+                        PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.CharactersUnlocked, 1);
+                        PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunUnlockedAnyCharacter, 1);
+                    }
 
                     if (AudioManager.I && unlockSFX)
                         AudioManager.I.PlaySFX(unlockSFX);

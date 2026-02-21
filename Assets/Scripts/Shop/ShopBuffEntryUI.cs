@@ -15,6 +15,9 @@ public class ShopBuffEntryUI : MonoBehaviour
     public AudioClip successSFX;
     public AudioClip errorSFX;
 
+    const string K_RunPurchasedAnyShopUpgrade = AchievementSystem.Stat.RunPurchasedAnyShopUpgrade;
+    const string K_LifetimeShopLevelPrefix = "lt_shop_level_"; // + buffType
+
     private void OnEnable()
     {
         if (levelUpButton)
@@ -57,12 +60,24 @@ public class ShopBuffEntryUI : MonoBehaviour
             return;
         }
 
+        int beforeLevel = ShopBuffStore.GetLevel(buffType); // Capture pre-level to detect actual level change
         CurrencyStore.Add(-cost); // Deduct currency
 
         if (AudioManager.I && successSFX)
             AudioManager.I.PlaySFX(successSFX);
 
         ShopBuffStore.Increment(buffType);
+
+        int afterLevel = ShopBuffStore.GetLevel(buffType);
+
+        // Stats/Achievements: Purchase any shop upgrade and reach upgrade level X
+        if (PlayerProgress.I != null && afterLevel > beforeLevel)
+        {
+            PlayerProgress.I.AddRunInt(K_RunPurchasedAnyShopUpgrade, 1);
+            string levelKey = K_LifetimeShopLevelPrefix + buffType;
+            PlayerProgress.I.SetLifetimeBestInt(levelKey, afterLevel);
+        }
+
         shopPanel?.RefreshAll();
         Refresh();
     }

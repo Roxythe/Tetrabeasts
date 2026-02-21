@@ -2093,7 +2093,21 @@ public class Board : MonoBehaviour
                 if (vfxSprite && monsters.TryGetValue(c, out var mi) && mi.hp >= 1f)
                     SpawnCellOverlayVFX(c, vfxSprite, 1.0f);
 
+                float before = 0f;
+                bool hadLiving = false;
+                if (monsters.TryGetValue(c, out var inst) && inst.data != null && inst.hp > 0f)
+                {
+                    hadLiving = true;
+                    before = inst.hp;
+                }
+
                 DamageTile(c, 999999f); // Massive damage to ensure destruction, bypassing any immunities
+
+                if (hadLiving && monsters.TryGetValue(c, out var instAfter) && instAfter.hp <= 0f)
+                {
+                    if (PlayerProgress.I)
+                        PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.MagicExplosiveKills, 1);
+                }
             }
 
         DestroyObstacleImmediate(cell); // Destroy the explosive tile itself
@@ -2399,7 +2413,22 @@ public class Board : MonoBehaviour
         if (!monsters.TryGetValue(cell, out var inst) || inst.data == null || inst.hp <= 0f)
             return false;
 
+        float before = inst.hp;
+
         DamageTile(cell, damage, DamageSource.Generic);
+
+        float after = monsters.TryGetValue(cell, out var instAfter) ? instAfter.hp : 0f;
+        float applied = Mathf.Max(0f, before - after);
+
+        if (PlayerProgress.I && applied > 0f)
+        {
+            if (fxType == FloorEffectType.Poison)
+                PlayerProgress.I.AddLifetimeFloat(AchievementSystem.Stat.PoisonDamage, applied);
+            else if (fxType == FloorEffectType.Burn)
+                PlayerProgress.I.AddLifetimeFloat(AchievementSystem.Stat.FireDamage, applied);
+            else if (fxType == FloorEffectType.Spike)
+                PlayerProgress.I.AddLifetimeFloat(AchievementSystem.Stat.SpikeDamage, applied);
+        }
 
         // Tint flash
         if (fxType == FloorEffectType.Burn)
@@ -2428,6 +2457,10 @@ public class Board : MonoBehaviour
 
         obstacles.Remove(cell);
         magicExplosives.Remove(cell);
+
+        // Achievement tracking for stone destruction
+        if (type == ObstacleType.Stone && PlayerProgress.I)
+            PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.StoneDestroyed, 1);
 
         ObstacleDestroyed?.Invoke(cell, type);
 

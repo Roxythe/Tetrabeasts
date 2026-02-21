@@ -258,6 +258,16 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
+        // Ensure PlayerProgress exists (stats + achievements)
+        if (PlayerProgress.I == null)
+        {
+            var go = new GameObject("PlayerProgress");
+            go.AddComponent<PlayerProgress>();
+        }
+
+        // New run starts when gameplay scene starts
+        PlayerProgress.I.BeginRun();
+
         HighScoreManager.EnsureInitialized(10);
         if (!highScoreUI)
             highScoreUI = FindFirstObjectByType<HighScoreUI>(FindObjectsInactive.Include);
@@ -461,6 +471,11 @@ public class GameController : MonoBehaviour
                 piece.SetFallInterval(interval, resetAccumulator: false);
                 UpdateGravityText(interval);
             }
+
+            // Time spent at gravity cap
+            float intervalNow = GetCurrentFallInterval();
+            if (intervalNow <= (minFallInterval + 0.0001f) && PlayerProgress.I)
+                PlayerProgress.I.AddRunFloat(AchievementSystem.Stat.RunGravityCapSeconds, Time.deltaTime);
         }
 
         // Combo timer (clearing another row resets this timer)
@@ -600,6 +615,13 @@ public class GameController : MonoBehaviour
         gameOver = true;
         Debug.Log("Game Over");
 
+        // Update lifetime stats and end run
+        if (PlayerProgress.I)
+        {
+            PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.Losses, 1);
+            PlayerProgress.I.EndRun();
+        }
+
         if (AudioManager.I)
         {
             AudioManager.I.StopPauseMusic();
@@ -710,8 +732,11 @@ public class GameController : MonoBehaviour
                           Dictionary<int, MonsterData> rowDominantMonster, Dictionary<int,
                               List<int>> colsByRow)
     {
-        if (rowsCleared > 0 && AudioManager.I)
+        if (rowsCleared > 0 && AudioManager.I) // Only play if at least one row was cleared
             AudioManager.I.PlayRandomLineClear();
+
+        if (rowsCleared > 0 && PlayerProgress.I) // Track total row clears for achievements
+            PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.TotalRowClears, rowsCleared);
 
         // Special gauge
         if (specialChargeFromMonsters > 0f)
@@ -731,6 +756,9 @@ public class GameController : MonoBehaviour
                 {
                     int amount = Mathf.Max(1, Mathf.RoundToInt(1f * lineClearCurrencyAmountMult));
                     CurrencyStore.Add(amount);
+
+                    if (PlayerProgress.I && amount > 0) // Track total gold earned for achievements
+                        PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.GoldEarned, amount);
 
                     if (currencyUI) currencyUI.Refresh();
 
@@ -774,6 +802,9 @@ public class GameController : MonoBehaviour
                 rowY = Mathf.Clamp(rowY, 0, gameBoard.height - 1);
                
                 int dmg = Mathf.Max(0, kv.Value); // Damage carried by this projectile only (per cleared row)
+
+                if (PlayerProgress.I) // Track best single attack damage for achievements
+                    PlayerProgress.I.SetRunBestInt(AchievementSystem.Stat.RunMaxSingleAttackDmg, dmg);
 
                 // Use dominant monster for this row pick attack sprite
                 Sprite attackSprite = null;
@@ -854,6 +885,9 @@ public class GameController : MonoBehaviour
 
         if (scoreUI)
             scoreUI.SetCombo(_comboCount);
+
+        if (PlayerProgress.I)
+            PlayerProgress.I.SetRunBestInt(AchievementSystem.Stat.RunMaxCombo, _comboCount);
 
         return _comboCount;
     }
@@ -957,6 +991,23 @@ public class GameController : MonoBehaviour
 
         currentLevel++;
 
+
+        // Track level wins for achievements
+        if (PlayerProgress.I)
+        {
+            PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.LevelsWon, 1);
+            PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunLevelsWon, 1);
+
+            // Level time stats (for "win in X seconds" / "spend X seconds in a level")
+            PlayerProgress.I.SetRunBestFloatMin(AchievementSystem.Stat.RunBestLevelWinSeconds, _levelTimer);
+            PlayerProgress.I.SetRunBestFloatMin(AchievementSystem.Stat.RunBestLevelSeconds, _levelTimer);
+
+            // Perfect win: no units dead at end of level
+            int maxLivesNow = EffectiveMaxUnitLives;
+            if (unitLives >= maxLivesNow)
+                PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.PerfectLevelWins, 1);
+        }
+
         int roundsWon = currentLevel;
 
         // +5 every round, plus +5 more for each completed set of 3 rounds
@@ -1001,6 +1052,10 @@ public class GameController : MonoBehaviour
             _runBuffs.Add(buff);
             RunModsStore.Buffs.Add(buff);
             buff.Apply(this);
+
+            // Track first buff chosen for achievements
+            if (PlayerProgress.I && PlayerProgress.I.GetLifetimeInt(AchievementSystem.Stat.FirstBuffChosen) == 0)
+                PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.FirstBuffChosen, 1);
         }
 
         if (debuff)
@@ -1008,6 +1063,10 @@ public class GameController : MonoBehaviour
             _runDebuffs.Add(debuff);
             RunModsStore.Debuffs.Add(debuff);
             debuff.Apply(this);
+
+            // Track first debuff chosen for achievements
+            if (PlayerProgress.I && PlayerProgress.I.GetLifetimeInt(AchievementSystem.Stat.FirstDebuffChosen) == 0)
+                PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.FirstDebuffChosen, 1);
         }
 
         SyncRunModsToStore();
@@ -1085,6 +1144,14 @@ public class GameController : MonoBehaviour
     void EndRunAsWin()
     {
         gameOver = true;
+
+        // Track final level wins for achievements
+        if (PlayerProgress.I)
+        {
+            PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunBeatFinalLevel, 1);
+            PlayerProgress.I.EndRun();
+        }
+
         if (AudioManager.I) AudioManager.I.StopMusic();
         if (highScoreUI) highScoreUI.TryShow(score);
         if (restartButton) restartButton.gameObject.SetActive(true);
@@ -1098,6 +1165,15 @@ public class GameController : MonoBehaviour
 
         // Require full gauge
         if (specialGauge < specialGaugeMax) return;
+
+        if (PlayerProgress.I) // Track total special uses for achievements
+        {
+            PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.SpecialsUsedTotal, 1);
+
+            // Per-character special count (stable key based on asset name)
+            string charKey = selectedCharacter ? selectedCharacter.name : "Unknown";
+            PlayerProgress.I.AddLifetimeInt($"lt_specials_used_char_{charKey}", 1);
+        }
 
         switch (selectedCharacter.ability)
         {
@@ -1137,6 +1213,9 @@ public class GameController : MonoBehaviour
 
                             int dmg = Mathf.Max(0, kv.Value);
                             if (dmg <= 0) continue;
+
+                            if (PlayerProgress.I) // Track best single attack damage for achievements
+                                PlayerProgress.I.SetRunBestInt(AchievementSystem.Stat.RunMaxSingleAttackDmg, dmg);
 
                             // Per-row dominant visuals
                             Sprite attackSprite = null;
