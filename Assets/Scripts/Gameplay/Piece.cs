@@ -429,6 +429,9 @@ public class Piece : MonoBehaviour
 
                         board.ClearFullLinesAnimated((rowsEQ, removedEQ, dmgEQ, chargeEQ, rowDamageEQ, rowDomEQ) =>
                         {
+                            if (PlayerProgress.I != null && rowsEQ > 0)
+                                PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.EarthquakeRowClears, rowsEQ);
+
                             var emptyCols = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<int>>();
                             if (gc != null)
                                 gc.OnPieceLocked(rowsEQ, removedEQ, dmgEQ, chargeEQ, rowDamageEQ, rowDomEQ, emptyCols);
@@ -468,6 +471,10 @@ public class Piece : MonoBehaviour
 
             // Remove targets and make only the directly-above tiles fall sparsely
             board.RemoveCellsAndFall(toRemove, out var removedA, out int dmgA, out float chargeA);
+
+            // Track stats for Death special unit removal
+            if (data.special == SpecialType.Death && PlayerProgress.I != null && removedA != null && removedA.Count > 0)
+                PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.DeathblockUnitsRemoved, removedA.Count);
 
             enabled = false;
             int levelBeforeSpecial = gc.CurrentLevel;

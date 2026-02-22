@@ -73,6 +73,9 @@ public class ShopBuffEntryUI : MonoBehaviour
         // Stats/Achievements: Purchase any shop upgrade and reach upgrade level X
         if (PlayerProgress.I != null && afterLevel > beforeLevel)
         {
+            if (afterLevel >= 5 && PlayerProgress.I.GetLifetimeInt(AchievementSystem.Stat.AnyShopUpgradeReached5) == 0)
+                PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.AnyShopUpgradeReached5, 1);
+
             PlayerProgress.I.AddRunInt(K_RunPurchasedAnyShopUpgrade, 1);
             string levelKey = K_LifetimeShopLevelPrefix + buffType;
             PlayerProgress.I.SetLifetimeBestInt(levelKey, afterLevel);

@@ -146,6 +146,23 @@ public sealed class PlayerProgress : MonoBehaviour
         AchievementUnlocked?.Invoke(achievementId);
     }
 
+    public List<string> GetUnlockedAchievementIds()
+    {
+        return new List<string>(_data.unlockedAchievements);
+    }
+
+    public List<string> GetPendingExternalUnlockIds()
+    {
+        return new List<string>(_data.pendingExternalUnlocks);
+    }
+
+    public void ClearPendingExternalUnlock(string achievementId)
+    {
+        if (string.IsNullOrEmpty(achievementId)) return;
+        if (_data.pendingExternalUnlocks.Remove(achievementId))
+            Save();
+    }
+
     // ---------------- Save/Load ----------------
 
     void Load()

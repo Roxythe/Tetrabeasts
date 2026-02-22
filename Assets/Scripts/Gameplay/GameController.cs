@@ -236,6 +236,10 @@ public class GameController : MonoBehaviour
         Mathf.Clamp01(currencyChancePerClearedRow + lineClearCurrencyChanceAdd + ShopBuffEffects.GoldChanceBonus);
     float EffectiveLuck => luck + ShopBuffEffects.LuckBonus; // Luck Up: +10 per level 
 
+    // ======== Achievements helpers ========
+    [SerializeField] string[] achievementCharacterIds = new string[5]; // Set 5 character asset names
+    float _gravityCapAccumSeconds = 0f;
+
     readonly Queue<TetrominoData> bag = new();
     public int score { get; private set; }
     bool gameOver = false;
@@ -472,10 +476,32 @@ public class GameController : MonoBehaviour
                 UpdateGravityText(interval);
             }
 
-            // Time spent at gravity cap
+            // Gravity cap accumulator (only counts while gameplay is active and unpaused)
             float intervalNow = GetCurrentFallInterval();
-            if (intervalNow <= (minFallInterval + 0.0001f) && PlayerProgress.I)
-                PlayerProgress.I.AddRunFloat(AchievementSystem.Stat.RunGravityCapSeconds, Time.deltaTime);
+            if (intervalNow <= (minFallInterval + 0.0001f))
+                _gravityCapAccumSeconds += Time.deltaTime;
+
+            if (PlayerProgress.I != null)
+            {
+                if (_gravityCapAccumSeconds >= 30f && PlayerProgress.I.GetRunInt(AchievementSystem.Stat.RunGravityCap30) == 0)
+                    PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunGravityCap30, 1);
+
+                if (_gravityCapAccumSeconds >= 60f && PlayerProgress.I.GetRunInt(AchievementSystem.Stat.RunGravityCap60) == 0)
+                    PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunGravityCap60, 1);
+            }
+
+            // Time-based achievements (survive for X seconds in a level)
+            if (PlayerProgress.I != null)
+            {
+                if (_levelTimer >= 180f && PlayerProgress.I.GetRunInt(AchievementSystem.Stat.RunLevelTime180) == 0)
+                    PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunLevelTime180, 1);
+
+                if (_levelTimer >= 240f && PlayerProgress.I.GetRunInt(AchievementSystem.Stat.RunLevelTime240) == 0)
+                    PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunLevelTime240, 1);
+
+                if (_levelTimer >= 300f && PlayerProgress.I.GetRunInt(AchievementSystem.Stat.RunLevelTime300) == 0)
+                    PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunLevelTime300, 1);
+            }
         }
 
         // Combo timer (clearing another row resets this timer)
@@ -991,7 +1017,6 @@ public class GameController : MonoBehaviour
 
         currentLevel++;
 
-
         // Track level wins for achievements
         if (PlayerProgress.I)
         {
@@ -1018,8 +1043,11 @@ public class GameController : MonoBehaviour
         RunModsStore.Misfortune = misfortune; // Keep store in sync
 
         int gained = GetRoundWinCurrency();
-
         CurrencyStore.Add(gained);
+
+        if (PlayerProgress.I && gained > 0) // Track gold earned from round wins for achievements
+            PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.GoldEarned, gained);
+
         if (currencyUI) currencyUI.Refresh();
 
         // Grant reinforcements (extra unit lives) on round win
@@ -1053,9 +1081,12 @@ public class GameController : MonoBehaviour
             RunModsStore.Buffs.Add(buff);
             buff.Apply(this);
 
-            // Track first buff chosen for achievements
+            // Track buff round mod achievements
             if (PlayerProgress.I && PlayerProgress.I.GetLifetimeInt(AchievementSystem.Stat.FirstBuffChosen) == 0)
                 PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.FirstBuffChosen, 1);
+
+            if (PlayerProgress.I)
+                PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunBuffModsChosen, 1);
         }
 
         if (debuff)
@@ -1152,6 +1183,19 @@ public class GameController : MonoBehaviour
             PlayerProgress.I.EndRun();
         }
 
+        if (PlayerProgress.I != null)
+        {
+            string charId = selectedCharacter ? selectedCharacter.name : "";
+            if (!string.IsNullOrEmpty(charId))
+            {
+                string key = "lt_final_win_char_" + charId;
+                if (PlayerProgress.I.GetLifetimeInt(key) == 0)
+                    PlayerProgress.I.AddLifetimeInt(key, 1);
+            }
+
+            TryMarkFinalWinAllCharacters();
+        }
+
         if (AudioManager.I) AudioManager.I.StopMusic();
         if (highScoreUI) highScoreUI.TryShow(score);
         if (restartButton) restartButton.gameObject.SetActive(true);
@@ -1159,12 +1203,30 @@ public class GameController : MonoBehaviour
         EnterUICursorMode();
     }
 
+    void TryMarkFinalWinAllCharacters()
+    {
+        if (PlayerProgress.I == null) return;
+        if (PlayerProgress.I.GetLifetimeInt(AchievementSystem.Stat.FinalWinAllChars) != 0) return;
+
+        if (achievementCharacterIds == null || achievementCharacterIds.Length < 5) return;
+
+        for (int i = 0; i < achievementCharacterIds.Length; i++)
+        {
+            string id = achievementCharacterIds[i];
+            if (string.IsNullOrEmpty(id)) return;
+
+            if (PlayerProgress.I.GetLifetimeInt("lt_final_win_char_" + id) == 0)
+                return;
+        }
+
+        PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.FinalWinAllChars, 1);
+    }
+
     void ActivateSpecial()
     {
         if (gameOver || gameBoard == null || selectedCharacter == null) return;
 
-        // Require full gauge
-        if (specialGauge < specialGaugeMax) return;
+        if (specialGauge < specialGaugeMax) return; // Require full gauge
 
         if (PlayerProgress.I) // Track total special uses for achievements
         {
@@ -1173,6 +1235,10 @@ public class GameController : MonoBehaviour
             // Per-character special count (stable key based on asset name)
             string charKey = selectedCharacter ? selectedCharacter.name : "Unknown";
             PlayerProgress.I.AddLifetimeInt($"lt_specials_used_char_{charKey}", 1);
+
+            // Check "each character specials" thresholds (20 / 100)
+            TryMarkSpecialsEachCharacter(20, AchievementSystem.Stat.SpecialsEachChar_20);
+            TryMarkSpecialsEachCharacter(100, AchievementSystem.Stat.SpecialsEachChar_100);
         }
 
         switch (selectedCharacter.ability)
@@ -1352,6 +1418,26 @@ public class GameController : MonoBehaviour
                     break;
                 }
         }
+    }
+
+    void TryMarkSpecialsEachCharacter(int needed, string flagKey)
+    {
+        if (PlayerProgress.I == null) return;
+        if (PlayerProgress.I.GetLifetimeInt(flagKey) != 0) return;
+
+        // Must have all 5 ids set
+        if (achievementCharacterIds == null || achievementCharacterIds.Length < 5) return;
+
+        for (int i = 0; i < achievementCharacterIds.Length; i++)
+        {
+            string id = achievementCharacterIds[i];
+            if (string.IsNullOrEmpty(id)) return;
+
+            long v = PlayerProgress.I.GetLifetimeInt("lt_specials_used_char_" + id);
+            if (v < needed) return;
+        }
+
+        PlayerProgress.I.AddLifetimeInt(flagKey, 1); // All met
     }
 
     public void SetCharacter(PlayerCharacterData data)
@@ -2055,6 +2141,7 @@ public class GameController : MonoBehaviour
     void ResetLevelTimerAndDrop(int levelIndex)
     {
         _levelTimer = 0f;
+        _gravityCapAccumSeconds = 0f;
 
         // Level 1 => levelIndex 0
         float levelGravity = baseLevelGravity + (Mathf.Max(0, levelIndex) * gravityIncreasePerLevel);
