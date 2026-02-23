@@ -11,6 +11,7 @@ public class AudioManager : MonoBehaviour
     public AudioMixerGroup sfxGroup;
 
     [Header("Clips")]
+    public AudioClip sfxAchievementUnlocked;
     public AudioClip bgmLoop;
     public AudioClip sfxRestart;
     public AudioClip sfxGameOver;

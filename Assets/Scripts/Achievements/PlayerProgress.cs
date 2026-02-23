@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public sealed class PlayerProgress : MonoBehaviour
+[DisallowMultipleComponent]
+public class PlayerProgress : MonoBehaviour
 {
     public static PlayerProgress I { get; private set; }
 
@@ -27,14 +28,34 @@ public sealed class PlayerProgress : MonoBehaviour
 
     string SavePath => Path.Combine(Application.persistentDataPath, "tetrabeasts_progress.json");
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    static void Bootstrap()
+    {
+        // Only create during actual play mode
+        if (!Application.isPlaying) return;
+
+        if (I != null) return;
+
+        var go = new GameObject("PlayerProgress");
+        go.AddComponent<PlayerProgress>();
+    }
+
     void Awake()
     {
-        if (I != null && I != this) { Destroy(gameObject); return; }
+        if (I != null && I != this)
+        {
+#if UNITY_EDITOR
+            DestroyImmediate(gameObject);
+#else
+            Destroy(gameObject);
+#endif
+            return;
+        }
+
         I = this;
         DontDestroyOnLoad(gameObject);
 
         Load();
-        AchievementSystem.EnsureInitialized();
     }
 
     // ---------------- Run lifecycle ----------------
@@ -250,5 +271,19 @@ public sealed class PlayerProgress : MonoBehaviour
 
             return d;
         }
+    }
+
+    public void DEV_ClearAllProgress()
+    {
+        _data = new SaveData();
+
+        try
+        {
+            if (File.Exists(SavePath))
+                File.Delete(SavePath);
+        }
+        catch { }
+
+        Save();
     }
 }

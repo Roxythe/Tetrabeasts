@@ -18,6 +18,7 @@ public class TitleMenuUI : MonoBehaviour
     public GameObject settingsPanel;
     public GameObject shopPanel;
     public GameObject helpPanel;
+    public GameObject achievementPanel;
     public HelpMenuUI helpMenuUI;
     public ShopPanelUI shopPanelUI;
     public VolumePanelUI volumePanelUI;
@@ -88,11 +89,14 @@ public class TitleMenuUI : MonoBehaviour
 
         SettingsStore.ApplySavedVolumesToAudio();
 
+        // Apply saved cursor scale
+        float cursorScale = SettingsStore.LoadCursorScale();
         if (volumePanelUI && volumePanelUI.uiCursor)
-            volumePanelUI.uiCursor.SetScale(SettingsStore.LoadCursorScale());
+        {
+            volumePanelUI.uiCursor.SetScale(cursorScale);
+        }
 
         // Setup cursor
-        volumePanelUI.uiCursor.SetScale(SettingsStore.LoadCursorScale());
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = false;
@@ -146,6 +150,7 @@ public class TitleMenuUI : MonoBehaviour
         if (AudioManager.I) AudioManager.I.PlaySFX(AudioManager.I.sfxRestart);
 
         RunModsStore.ResetAll();
+        gameObject.SetActive(false);
 
         if (!string.IsNullOrEmpty(gameplaySceneName))
             UnityEngine.SceneManagement.SceneManager.LoadScene(gameplaySceneName);
@@ -221,8 +226,20 @@ public class TitleMenuUI : MonoBehaviour
     public void OnToggleHelp()
     {
         if (!helpPanel) return;
+
         bool show = !helpPanel.activeSelf;
         helpPanel.SetActive(show);
+
+        if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
+    }
+
+    public void OnToggleAchievement()
+    {
+        if (!achievementPanel) return;
+
+        bool show = !achievementPanel.activeSelf;
+        achievementPanel.SetActive(show);
+
         if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
     }
 

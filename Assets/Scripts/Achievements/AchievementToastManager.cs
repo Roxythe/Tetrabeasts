@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[DisallowMultipleComponent]
 public class AchievementToastManager : MonoBehaviour
 {
     public static AchievementToastManager I { get; private set; }
@@ -18,17 +19,26 @@ public class AchievementToastManager : MonoBehaviour
     public float fadeSeconds = 0.25f;
 
     [Header("Audio")]
-    public AudioClip unlockSfx;
-    public AudioSource sfxSource; // Reuse AudioManager
+    public float unlockSfxVolume = 1f;
 
     readonly Queue<string> _queue = new();
     bool _processing;
 
     void Awake()
     {
-        if (I != null && I != this) { Destroy(gameObject); return; }
+        if (I != null && I != this)
+        {
+#if UNITY_EDITOR
+            DestroyImmediate(gameObject);
+#else
+            Destroy(gameObject);
+#endif
+            return;
+        }
+
         I = this;
         DontDestroyOnLoad(gameObject);
+
         if (database) database.BuildLookup();
     }
 
@@ -61,11 +71,8 @@ public class AchievementToastManager : MonoBehaviour
             if (def == null) continue;
 
             // Play SFX
-            if (unlockSfx)
-            {
-                if (sfxSource) sfxSource.PlayOneShot(unlockSfx);
-                else if (AudioManager.I) AudioManager.I.PlaySFX(unlockSfx);
-            }
+            if (AudioManager.I && AudioManager.I.sfxAchievementUnlocked)
+                AudioManager.I.PlayUISFX(AudioManager.I.sfxAchievementUnlocked, unlockSfxVolume);
 
             // Spawn toast
             var toast = Instantiate(toastPrefab, toastParent);

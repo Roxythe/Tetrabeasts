@@ -175,7 +175,7 @@ public static class AchievementSystem
         Add(Ach.Rows_1000, Scope.LifetimeInt, Stat.TotalRowClears, 1000);
         Add(Ach.Rows_10000, Scope.LifetimeInt, Stat.TotalRowClears, 10000);
 
-        Add(Ach.AllCharsUnlocked, Scope.LifetimeInt, Stat.CharactersUnlocked, 4);
+        Add(Ach.AllCharsUnlocked, Scope.LifetimeInt, Stat.CharactersUnlocked, 4); // Number of unlockable Commanders 
 
         // Monster total varies by roster count
         Add(Ach.AllMonstersUnlocked, Scope.LifetimeInt, Stat.MonstersUnlocked, 4); // Number of unlockable monsters
