@@ -3415,7 +3415,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 30001
@@ -3730,6 +3730,7 @@ MonoBehaviour:
   helpPanel: {fileID: 1933119592}
   achievementPanel: {fileID: 1257397449}
   helpMenuUI: {fileID: 1933119596}
+  achievementPanelUI: {fileID: 0}
   shopPanelUI: {fileID: 419044404}
   volumePanelUI: {fileID: 499214995}
   monsterSelectPanel: {fileID: 1480193593}

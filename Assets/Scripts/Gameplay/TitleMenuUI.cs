@@ -10,7 +10,6 @@ using UnityEditor;
 public class TitleMenuUI : MonoBehaviour
 {
     [Header("Scenes")]
-    [Tooltip("Exact name of your gameplay scene (as it appears in Build Settings).")]
     public string gameplaySceneName = "GameplayScene";
 
     [Header("Panels (optional)")]
@@ -20,6 +19,7 @@ public class TitleMenuUI : MonoBehaviour
     public GameObject helpPanel;
     public GameObject achievementPanel;
     public HelpMenuUI helpMenuUI;
+    public AchievementPanelUI achievementPanelUI;
     public ShopPanelUI shopPanelUI;
     public VolumePanelUI volumePanelUI;
     public MonsterSelectUI monsterSelectPanel;
@@ -89,14 +89,11 @@ public class TitleMenuUI : MonoBehaviour
 
         SettingsStore.ApplySavedVolumesToAudio();
 
-        // Apply saved cursor scale
-        float cursorScale = SettingsStore.LoadCursorScale();
         if (volumePanelUI && volumePanelUI.uiCursor)
-        {
-            volumePanelUI.uiCursor.SetScale(cursorScale);
-        }
+            volumePanelUI.uiCursor.SetScale(SettingsStore.LoadCursorScale());
 
         // Setup cursor
+        volumePanelUI.uiCursor.SetScale(SettingsStore.LoadCursorScale());
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = false;
@@ -150,7 +147,6 @@ public class TitleMenuUI : MonoBehaviour
         if (AudioManager.I) AudioManager.I.PlaySFX(AudioManager.I.sfxRestart);
 
         RunModsStore.ResetAll();
-        gameObject.SetActive(false);
 
         if (!string.IsNullOrEmpty(gameplaySceneName))
             UnityEngine.SceneManagement.SceneManager.LoadScene(gameplaySceneName);

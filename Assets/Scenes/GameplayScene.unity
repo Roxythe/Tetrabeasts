@@ -8809,6 +8809,12 @@ MonoBehaviour:
   currencyPerRoundWinMult: 1
   lineClearCurrencyChanceAdd: 0
   lineClearCurrencyAmountMult: 1
+  achievementCharacterIds:
+  - Bosco
+  - Crono
+  - Elise
+  - Grock
+  - Liktor
   comboWindowSeconds: 5
   scoreUI: {fileID: 2092384766}
   highScoreUI: {fileID: 330590300}

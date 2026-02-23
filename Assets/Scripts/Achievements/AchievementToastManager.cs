@@ -26,19 +26,6 @@ public class AchievementToastManager : MonoBehaviour
 
     void Awake()
     {
-        if (I != null && I != this)
-        {
-#if UNITY_EDITOR
-            DestroyImmediate(gameObject);
-#else
-            Destroy(gameObject);
-#endif
-            return;
-        }
-
-        I = this;
-        DontDestroyOnLoad(gameObject);
-
         if (database) database.BuildLookup();
     }
 
