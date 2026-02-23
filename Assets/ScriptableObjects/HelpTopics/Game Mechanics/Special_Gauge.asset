@@ -15,6 +15,7 @@ MonoBehaviour:
   category: Game Mechanics
   title: Special Gauge
   description: Fills with every row cleared. When it reaches 100% the player can
-    use their unique special ability, resetting the special gauge back 0%.
+    use their Commander's unique special ability, resetting the special gauge back
+    0%.
   image: {fileID: 0}
   videoClip: {fileID: 32900000, guid: 83b545b9264c97b44b2151bb242971fb, type: 3}

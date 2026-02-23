@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AchievementDefSO
   achievementId: ACH_SPECIALS_1000
   steamApiName: 
-  title: More Special Than You Can Possibly Imagine
+  title: Certified Glue Eater
   description: Use a special 1000 times.
-  icon: {fileID: 0}
-  hiddenUntilUnlocked: 0
+  icon: {fileID: 21300000, guid: 0bcb272d35aec5c459173a107836a7e2, type: 3}
+  hiddenUntilUnlocked: 1
