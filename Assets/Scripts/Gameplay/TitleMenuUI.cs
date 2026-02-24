@@ -241,12 +241,37 @@ public class TitleMenuUI : MonoBehaviour
 
     public void OnQuitGame()
     {
+        PlayerProgress.I.DEV_ClearAllProgress();
+
         // Save anything needed, then quit
 #if UNITY_EDITOR
         EditorApplication.isPlaying = false;
 #else
         Application.Quit();
 #endif
+    }
+
+    public void DEV_ClearAchievementProgress()
+    {
+        if (PlayerProgress.I != null)
+            PlayerProgress.I.DEV_ClearAllProgress();
+    }
+
+    public void DEV_ClearAllPrefsAndProgress()
+    {
+        // Wipe PlayerPrefs
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
+
+        // Wipe achievement/stat file 
+        DEV_ClearAchievementProgress();
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Reload to reflect cleared progress
+    }
+
+    public void DEV_TestAchievementToast()
+    {
+        AchievementToastManager.I?.DEV_ShowToast(AchievementSystem.Ach.Gold_100);
     }
 
     // ESC closes panels

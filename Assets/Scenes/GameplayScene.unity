@@ -8429,6 +8429,7 @@ GameObject:
   - component: {fileID: 2092384764}
   - component: {fileID: 2092384766}
   - component: {fileID: 2092384767}
+  - component: {fileID: 2092384768}
   m_Layer: 5
   m_Name: UI_Canvas
   m_TagString: Untagged
@@ -8866,6 +8867,24 @@ MonoBehaviour:
   uiHoverSFX: {fileID: 8300000, guid: dae9f1364bb247044be20a7795e60123, type: 3}
   uiClickSFX: {fileID: 8300000, guid: 731b97b241116d84aa62d03a949ca0e8, type: 3}
   includeInactive: 1
+--- !u!114 &2092384768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2092384756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6a124628f1f1ca4e9ca83d799b84798, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AchievementToastManager
+  database: {fileID: 11400000, guid: efbb8b375e096c24bbe382e8ab8df90e, type: 2}
+  toastPrefab: {fileID: 7366655091301643722, guid: 7faedd7389953c54181ebd1a42408a23, type: 3}
+  toastParent: {fileID: 2092384763}
+  showSeconds: 3.5
+  fadeSeconds: 0.25
+  unlockSfxVolume: 1
 --- !u!1 &2140513931
 GameObject:
   m_ObjectHideFlags: 0

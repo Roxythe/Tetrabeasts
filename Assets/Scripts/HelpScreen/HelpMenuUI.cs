@@ -24,6 +24,7 @@ public class HelpMenuUI : MonoBehaviour
     public GameObject videoRoot;                  // Parent object to hide/show
     public RawImage videoRawImage;
     public VideoPlayer videoPlayer;
+    VideoClip _pendingClip;
 
     readonly Dictionary<string, HelpCategoryHeaderUI> _headers = new();
     readonly Dictionary<string, List<HelpTopicButtonUI>> _topicButtonsByCategory = new();
@@ -32,8 +33,14 @@ public class HelpMenuUI : MonoBehaviour
 
     void OnEnable()
     {
+        HookVideoEvents();
         RebuildSidebar();
         ShowDefault();
+    }
+
+    void OnDisable()
+    {
+        UnhookVideoEvents();
     }
 
     public void RebuildSidebar()
@@ -131,19 +138,14 @@ public class HelpMenuUI : MonoBehaviour
 
         // Video
         bool hasVideo = topic.videoClip != null && videoPlayer != null && videoRawImage != null;
-        if (videoRoot) videoRoot.SetActive(hasVideo);
 
-        if (videoPlayer)
+        if (!hasVideo)
         {
-            videoPlayer.Stop();
-            videoPlayer.clip = hasVideo ? topic.videoClip : null;
-
-            if (hasVideo)
-            {
-                videoPlayer.isLooping = true;
-                videoPlayer.renderMode = VideoRenderMode.RenderTexture;
-                videoPlayer.Play();
-            }
+            StopAndHideVideo(clearTexture: true);
+        }
+        else
+        {
+            StartVideo(topic.videoClip);
         }
     }
 
@@ -158,14 +160,96 @@ public class HelpMenuUI : MonoBehaviour
             infoImage.enabled = false;
         }
 
+        StopAndHideVideo(clearTexture: true);
+    }
+
+    void HookVideoEvents()
+    {
+        if (!videoPlayer) return;
+        videoPlayer.prepareCompleted -= OnVideoPrepared;
+        videoPlayer.prepareCompleted += OnVideoPrepared;
+    }
+
+    void UnhookVideoEvents()
+    {
+        if (!videoPlayer) return;
+        videoPlayer.prepareCompleted -= OnVideoPrepared;
+    }
+
+    void OnVideoPrepared(VideoPlayer vp)
+    {
+        if (_pendingClip != null && vp.clip != _pendingClip)
+            return;
+
+        vp.isLooping = true;
+        vp.Play();
+    }
+
+    void StopAndHideVideo(bool clearTexture)
+    {
         if (videoPlayer)
         {
             videoPlayer.Stop();
             videoPlayer.clip = null;
         }
 
-        if (videoRoot)
-            videoRoot.SetActive(false);
+        _pendingClip = null;
+
+        if (videoRawImage)
+        {
+            videoRawImage.enabled = false;
+
+            if (videoPlayer && videoPlayer.targetTexture != null)
+                videoRawImage.texture = videoPlayer.targetTexture;
+        }
+
+        if (clearTexture && videoPlayer && videoPlayer.targetTexture != null)
+        {
+            var rt = videoPlayer.targetTexture;
+            var prev = RenderTexture.active;
+            RenderTexture.active = rt;
+            GL.Clear(true, true, Color.clear);
+            RenderTexture.active = prev;
+        }
+
+        if (videoRoot) videoRoot.SetActive(false);
     }
 
+    void StartVideo(VideoClip clip)
+    {
+        if (!videoPlayer || !videoRawImage || clip == null)
+        {
+            StopAndHideVideo(clearTexture: false);
+            return;
+        }
+
+        // Keep the UI visible
+        if (videoRoot) videoRoot.SetActive(true);
+        videoRawImage.enabled = true;
+
+        if (videoPlayer.targetTexture != null)
+            videoRawImage.texture = videoPlayer.targetTexture;
+
+        bool comingFromNoVideo = (videoPlayer.clip == null);
+        if (comingFromNoVideo && videoPlayer.targetTexture != null)
+        {
+            var rt = videoPlayer.targetTexture;
+            var prev = RenderTexture.active;
+            RenderTexture.active = rt;
+            GL.Clear(true, true, Color.clear);
+            RenderTexture.active = prev;
+        }
+
+        // If already showing the same clip, do nothing
+        if (videoPlayer.clip == clip && (videoPlayer.isPlaying || videoPlayer.isPrepared))
+            return;
+
+        _pendingClip = clip;
+
+        videoPlayer.Stop();
+        videoPlayer.renderMode = VideoRenderMode.RenderTexture;
+        videoPlayer.clip = clip;
+
+        videoPlayer.Prepare();
+    }
 }

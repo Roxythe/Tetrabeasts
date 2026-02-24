@@ -26,6 +26,14 @@ public class AchievementToastManager : MonoBehaviour
 
     void Awake()
     {
+        if (I != null && I != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        I = this;
+
         if (database) database.BuildLookup();
     }
 
@@ -63,6 +71,8 @@ public class AchievementToastManager : MonoBehaviour
 
             // Spawn toast
             var toast = Instantiate(toastPrefab, toastParent);
+            toast.gameObject.SetActive(true);
+
             toast.Set(def);
 
             // Fade in/out
@@ -92,5 +102,15 @@ public class AchievementToastManager : MonoBehaviour
             yield return null;
         }
         cg.alpha = to;
+    }
+
+    public void DEV_ShowToast(string achievementId)
+    {
+        if (string.IsNullOrEmpty(achievementId)) return;
+
+        if (database) database.BuildLookup();
+
+        _queue.Enqueue(achievementId);
+        if (!_processing) StartCoroutine(ProcessQueue());
     }
 }

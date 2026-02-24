@@ -1,11 +1,7 @@
 
 ****** TODO ******
 
-*- Add achievements
-
-*- Add a system to track player statistics and trigger achievements earned
-
-*- Add help menu to pause menu
+- Add refund currency button in shop to refund all currency spent in shop on upgrades. Reste all upgrades back to level 0 and refund all currency to player that was spent in shop
 
 - Create a setting for mixed tetrapieces or uniform monster pieces
 
@@ -22,8 +18,6 @@
 - Play with the grid size and experiment with different grid sizes.
 
 *** KNOWN BUGS ***
-
-- In help menu, close previously opened header category list when a new category list is selected to be opened.
 
 - If a row is cleared that would have had a monster or tile that would be hit by an enemy projectile, sometimes the enemy projectile will be destroyed in that cell instead of continuing further down the board to find a valid target (or be destroyed at the bottom of the board)
 

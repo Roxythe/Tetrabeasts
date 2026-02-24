@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90562e4e9a0c7934aab92bcb4ad86cca, type: 3}
   m_Name: Debuff_MonAtk_0
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
-  displayName: Decrease Monster Atack
+  displayName: Decrease Monster Attack
   description: 'Slightly decreases the attack value for all monsters in your current
     roster '
   icon: {fileID: -3157723759101800247, guid: ee4af914b66acc1418e50185b0600fa4, type: 3}
