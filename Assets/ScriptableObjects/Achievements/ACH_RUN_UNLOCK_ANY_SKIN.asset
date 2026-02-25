@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AchievementDefSO
   achievementId: ACH_RUN_UNLOCK_ANY_SKIN
   steamApiName: 
-  title: Tell Me I'm Pretty (Fairly Odd Parents)
-  description: Unlock a skin monster units skin variant for the first time.
+  title: Tell Me I'm Pretty
+  description: Unlock a monster units skin variant for the first time.
   icon: {fileID: 21300000, guid: 3d41a5a9dd21ea14191886c60ee9497b, type: 3}
   hiddenUntilUnlocked: 0

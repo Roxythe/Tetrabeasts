@@ -241,13 +241,12 @@ public class TitleMenuUI : MonoBehaviour
 
     public void OnQuitGame()
     {
-        PlayerProgress.I.DEV_ClearAllProgress();
+        PlayerProgress.I?.EndRun();
 
-        // Save anything needed, then quit
 #if UNITY_EDITOR
         EditorApplication.isPlaying = false;
 #else
-        Application.Quit();
+    Application.Quit();
 #endif
     }
 
