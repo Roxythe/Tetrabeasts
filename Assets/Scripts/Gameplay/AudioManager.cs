@@ -32,9 +32,9 @@ public class AudioManager : MonoBehaviour
     public AudioClip MetalPauseMusic;
 
     [Header("Defaults")]
-    [Range(0f, 1f)] public float masterVolume = 1f;
-    [Range(0f, 1f)] public float musicVolume = 0.5f;
-    [Range(0f, 1f)] public float sfxVolume = 1f;
+    [Range(0f, 1f)] public float masterVolume = 0.5f;
+    [Range(0f, 1f)] public float musicVolume = 1.0f;
+    [Range(0f, 1f)] public float sfxVolume = 1.0f;
     [Range(0f, 0.25f)] public float sfxPitchJitter = 0.05f;
 
     private AudioSource musicSrc;
@@ -95,17 +95,31 @@ public class AudioManager : MonoBehaviour
         if (musicGroup) musicSrc.outputAudioMixerGroup = musicGroup;
         if (sfxGroup) sfxSrc.outputAudioMixerGroup = sfxGroup;
 
-        SetMasterVolume(masterVolume);
-        SetMusicVolume(musicVolume);
-        SetSFXVolume(sfxVolume);
+        // Use SettingsStore values
+        masterVolume = SettingsStore.LoadMaster();
+        musicVolume = SettingsStore.LoadMusic();
+        sfxVolume = SettingsStore.LoadSFX();
+
+        // Ensure first-time defaults exist in prefs
+        if (!PlayerPrefs.HasKey(K_Master)) PlayerPrefs.SetFloat(K_Master, 0.5f);
+        if (!PlayerPrefs.HasKey(K_Music)) PlayerPrefs.SetFloat(K_Music, 1.0f);
+        if (!PlayerPrefs.HasKey(K_SFX)) PlayerPrefs.SetFloat(K_SFX, 1.0f);
+        PlayerPrefs.Save();
+
+        // Load volumes
+        masterVolume = PlayerPrefs.GetFloat(K_Master, 0.5f);
+        musicVolume = PlayerPrefs.GetFloat(K_Music, 1.0f);
+        sfxVolume = PlayerPrefs.GetFloat(K_SFX, 1.0f);
+
+        // Apply without re-saving
+        SetMasterVolume(masterVolume, save: false);
+        SetMusicVolume(musicVolume, save: false);
+        SetSFXVolume(sfxVolume, save: false);
     }
 
     void Start()
     {
-        // Load saved volumes
-        if (PlayerPrefs.HasKey(K_Music)) SetMusicVolume(PlayerPrefs.GetFloat(K_Music, musicVolume));
-        if (PlayerPrefs.HasKey(K_SFX)) SetSFXVolume(PlayerPrefs.GetFloat(K_SFX, sfxVolume));
-        if (PlayerPrefs.HasKey(K_Master)) SetMasterVolume(PlayerPrefs.GetFloat(K_Master, masterVolume));
+
     }
 
     public void PlayMusic(AudioClip clip, bool loop = true, float vol = 1f)
@@ -151,40 +165,45 @@ public class AudioManager : MonoBehaviour
         return mixer.GetFloat(name, out _); // True only if param exists
     }
 
-    public void SetMasterVolume(float linear)
+    public void SetMasterVolume(float linear, bool save = true)
     {
         masterVolume = Mathf.Clamp01(linear);
 
-        // If the MasterVolume exposed param exists, drive it, otherwise just scale the sources
         if (mixer && MixerHasParam("MasterVolume"))
             mixer.SetFloat("MasterVolume", Mathf.Log10(Mathf.Max(0.0001f, masterVolume)) * 20f);
 
-        // Base-level scaling even when no mixer
         musicSrc.volume = masterVolume * musicVolume;
         sfxSrc.volume = masterVolume * sfxVolume;
         uiSfxSrc.volume = masterVolume * sfxVolume;
         pauseMusicSrc.volume = masterVolume * musicVolume;
 
-        PlayerPrefs.SetFloat(K_Master, masterVolume); PlayerPrefs.Save();
+        if (save) SettingsStore.SaveVolumes(masterVolume, musicVolume, sfxVolume);
     }
 
-    public void SetMusicVolume(float linear)
+    public void SetMusicVolume(float linear, bool save = true)
     {
         musicVolume = Mathf.Clamp01(linear);
+
         if (mixer && musicGroup && MixerHasParam("MusicVolume"))
             mixer.SetFloat("MusicVolume", Mathf.Log10(Mathf.Max(0.0001f, musicVolume)) * 20f);
-        musicSrc.volume = masterVolume * musicVolume; // Multiply by master
+
+        musicSrc.volume = masterVolume * musicVolume;
         pauseMusicSrc.volume = masterVolume * musicVolume;
-        PlayerPrefs.SetFloat(K_Music, musicVolume); PlayerPrefs.Save();
+
+        if (save) SettingsStore.SaveVolumes(masterVolume, musicVolume, sfxVolume);
     }
-    public void SetSFXVolume(float linear)
+
+    public void SetSFXVolume(float linear, bool save = true)
     {
         sfxVolume = Mathf.Clamp01(linear);
+
         if (mixer && sfxGroup && MixerHasParam("SFXVolume"))
             mixer.SetFloat("SFXVolume", Mathf.Log10(Mathf.Max(0.0001f, sfxVolume)) * 20f);
-        sfxSrc.volume = masterVolume * sfxVolume; // Multiply by master
+
+        sfxSrc.volume = masterVolume * sfxVolume;
         uiSfxSrc.volume = masterVolume * sfxVolume;
-        PlayerPrefs.SetFloat(K_SFX, sfxVolume); PlayerPrefs.Save();
+
+        if (save) SettingsStore.SaveVolumes(masterVolume, musicVolume, sfxVolume);
     }
 
     AudioClip PickRandom(AudioClip[] pool)

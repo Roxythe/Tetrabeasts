@@ -13,6 +13,7 @@ public class HighScoreUI : MonoBehaviour
     [Header("Post-Submit Buttons")]
     public Button restartButton;
     public Button mainMenuButton;
+    public Button closeButton;
 
     [Header("Table")]
     public RectTransform tableRoot;
@@ -41,6 +42,8 @@ public class HighScoreUI : MonoBehaviour
         ForceActivate();
         SetSubmissionUIActive(qualifies); // Name submission UI
         SetPostSubmitButtonsActive(!qualifies);
+
+        SetCloseButtonActive(false);
 
         Debug.Log($"[HS] TryShow: score={score}, qualifies={qualifies}, " +
                   $"panelActiveSelf={panel.activeSelf}, compGOActiveSelf={gameObject.activeSelf}, " +
@@ -111,7 +114,14 @@ public class HighScoreUI : MonoBehaviour
         ForceActivate();
         RefreshTable();
 
+        // Title menu read-only: no submit, no restart/main menu
         SetSubmissionUIActive(false);
-        SetPostSubmitButtonsActive(true);
+        SetPostSubmitButtonsActive(false);
+        SetCloseButtonActive(true);
+    }
+
+    void SetCloseButtonActive(bool active)
+    {
+        if (closeButton) closeButton.gameObject.SetActive(active);
     }
 }

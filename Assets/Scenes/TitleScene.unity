@@ -356,11 +356,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1076897612440379535, guid: 3b14f087e3986b04abf41ccbff2fe2e1, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -398.8
+      value: -456.10568
       objectReference: {fileID: 0}
     - target: {fileID: 1862023236176318648, guid: 3b14f087e3986b04abf41ccbff2fe2e1, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4582190956100820159, guid: 3b14f087e3986b04abf41ccbff2fe2e1, type: 3}
       propertyPath: m_Name
@@ -4155,6 +4155,10 @@ PrefabInstance:
       propertyPath: sfxRestart
       value: 
       objectReference: {fileID: 8300000, guid: 9b934f9e5161c1f4699da6b51d6f07d0, type: 3}
+    - target: {fileID: 588429713779898078, guid: e266400955faf8b4cba7769fe58d6b32, type: 3}
+      propertyPath: musicVolume
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 588429713779898078, guid: e266400955faf8b4cba7769fe58d6b32, type: 3}
       propertyPath: 'sfxLineClears.Array.data[0]'
       value: 
@@ -10366,6 +10370,14 @@ PrefabInstance:
     - target: {fileID: 4580115017672356599, guid: 06df6ae3b84dc4b4ba8f12d4a7f75f4e, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -520
+      objectReference: {fileID: 0}
+    - target: {fileID: 4858487566574261123, guid: 06df6ae3b84dc4b4ba8f12d4a7f75f4e, type: 3}
+      propertyPath: m_MovementType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4858487566574261123, guid: 06df6ae3b84dc4b4ba8f12d4a7f75f4e, type: 3}
+      propertyPath: m_ScrollSensitivity
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6077612238462329168, guid: 06df6ae3b84dc4b4ba8f12d4a7f75f4e, type: 3}
       propertyPath: m_AnchorMax.y

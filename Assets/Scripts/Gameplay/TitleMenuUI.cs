@@ -83,11 +83,11 @@ public class TitleMenuUI : MonoBehaviour
 
     void Start()
     {
+        SettingsStore.ApplySavedVolumesToAudio();
+
         // Start title BGM
         if (AudioManager.I)
             AudioManager.I.PlayTitleMusic();
-
-        SettingsStore.ApplySavedVolumesToAudio();
 
         if (volumePanelUI && volumePanelUI.uiCursor)
             volumePanelUI.uiCursor.SetScale(SettingsStore.LoadCursorScale());

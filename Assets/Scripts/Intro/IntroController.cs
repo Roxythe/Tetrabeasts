@@ -18,6 +18,12 @@ public class IntroController : MonoBehaviour
     public float fadeDuration = 0.6f;
     public float holdDuration = 0.15f;
 
+    public GameObject blackOverlay; 
+    public AudioSource videoAudioSource; 
+
+    bool _firstFrameShown = false;
+    float _savedVideoVolume = 1f;
+
     void Start()
     {
         if (pressAnyKeyText)
@@ -38,11 +44,29 @@ public class IntroController : MonoBehaviour
         videoPlayer.waitForFirstFrame = true;
         videoPlayer.skipOnDrop = true;
 
+        // Show black until video is ready
+        _firstFrameShown = false;
+        if (blackOverlay) blackOverlay.SetActive(true);
+
+        if (videoAudioSource)
+        {
+            _savedVideoVolume = videoAudioSource.volume;
+            videoAudioSource.volume = 0f;
+
+            videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
+            videoPlayer.EnableAudioTrack(0, true);
+            videoPlayer.SetTargetAudioSource(0, videoAudioSource);
+        }
+
         videoPlayer.prepareCompleted -= OnVideoPrepared;
         videoPlayer.prepareCompleted += OnVideoPrepared;
 
         videoPlayer.loopPointReached -= OnVideoFinished;
         videoPlayer.loopPointReached += OnVideoFinished;
+
+        videoPlayer.sendFrameReadyEvents = true;
+        videoPlayer.frameReady -= OnFrameReady;
+        videoPlayer.frameReady += OnFrameReady;
 
         videoPlayer.Prepare(); // Prepare video before playing
     }
@@ -82,7 +106,13 @@ public class IntroController : MonoBehaviour
         if (_pressTextFadeCR != null) StopCoroutine(_pressTextFadeCR);
 
         if (videoPlayer)
+        {
+            videoPlayer.frameReady -= OnFrameReady;
+            videoPlayer.sendFrameReadyEvents = false;
             videoPlayer.Stop();
+        }
+
+        if (blackOverlay) blackOverlay.SetActive(false);
 
         SceneManager.LoadScene(titleSceneName);
     }
@@ -124,5 +154,23 @@ public class IntroController : MonoBehaviour
     void OnVideoPrepared(VideoPlayer vp)
     {
         vp.Play();
+    }
+
+    void OnFrameReady(VideoPlayer vp, long frameIdx)
+    {
+        if (_firstFrameShown) return;
+        if (frameIdx < 1) return;
+
+        _firstFrameShown = true;
+
+        // Hide black overlay
+        if (blackOverlay) blackOverlay.SetActive(false);
+
+        // Unmute now that playback is stable
+        if (videoAudioSource)
+            videoAudioSource.volume = _savedVideoVolume;
+
+        vp.frameReady -= OnFrameReady;
+        vp.sendFrameReadyEvents = false;
     }
 }
