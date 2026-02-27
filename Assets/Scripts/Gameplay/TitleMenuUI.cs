@@ -270,7 +270,7 @@ public class TitleMenuUI : MonoBehaviour
 
     public void DEV_TestAchievementToast()
     {
-        AchievementToastManager.I?.DEV_ShowToast(AchievementSystem.Ach.Gold_100);
+        AchievementToastManager.I?.DEV_ShowToast(AchievementSystem.Ach.Skins_10);
     }
 
     // ESC closes panels

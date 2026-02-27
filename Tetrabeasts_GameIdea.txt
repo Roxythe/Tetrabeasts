@@ -19,6 +19,10 @@
 
 *** KNOWN BUGS ***
 
+- Prevent special blocks from being chosen as the very first piece of a level
+
+- Reduce special piece occcurence overall
+
 - Hitting escape while help menu is open closes pause screen, but if you press escape again to reopen pause menu, help panel wil still be set to active. Help menu should be set to inactive when pause menu is closed with escape key.
 
 - If a row is cleared that would have had a monster or tile that would be hit by an enemy projectile, sometimes the enemy projectile will be destroyed in that cell instead of continuing further down the board to find a valid target (or be destroyed at the bottom of the board)
