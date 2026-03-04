@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 557d5743c08a59d4e91513d92657dc80
+guid: 5187bfbeb6db20545a8dcbfb0ff07010
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7301860725011293664
-    second: Demon_1024(76)_0
+      213: 6560170130707699628
+    second: CastleWalkwayHedges_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -139,13 +139,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Demon_1024(76)_0
+      name: CastleWalkwayHedges_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1024
-        height: 1024
+        width: 987
+        height: 209
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 02a53568b549aaa90800000000000000
-      internalID: -7301860725011293664
+      spriteID: ca7d5f20af76a0b50800000000000000
+      internalID: 6560170130707699628
       vertices: []
       indices: 
       edges: []
@@ -174,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Demon_1024(76)_0: -7301860725011293664
+      CastleWalkwayHedges_0: 6560170130707699628
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

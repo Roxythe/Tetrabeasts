@@ -58,6 +58,15 @@ public class GameController : MonoBehaviour
     float _thisLevelStartInterval;      // Computed at each level start
     int _lastLevelInitialized = -999;   // Prevents double-applying
 
+    [Header("Boss Gravity Visuals")]
+    [SerializeField] Image bossGravityIncreasedImage; // Toggle/flash when boss gravity is active
+    [SerializeField] Color gravityTextDefaultColor = Color.white;
+    [SerializeField] Color gravityTextBossColor = new Color(0.80f, 0.25f, 1.0f, 1f); // Bright purple
+    [SerializeField] float bossGravityBlinkLeadSeconds = 3f;     // Start blinking this long before the effect ends
+    [SerializeField] float bossGravityBlinkIntervalSeconds = 0.25f;
+
+    Coroutine _bossGravityBlinkCR;
+
     [Header("Run Mods")]
     public RunModifierSO[] buffPool;
     public RunModifierSO[] debuffPool;
@@ -260,6 +269,9 @@ public class GameController : MonoBehaviour
 
     private CastleData currentCastleData;
 
+    // Used by reward UI and other systems that need to know what type of level just ended
+    public bool LastLevelWasBoss => currentCastleData != null && currentCastleData.isBossLevel;
+
     void Start()
     {
         // Ensure PlayerProgress exists (stats + achievements)
@@ -385,6 +397,7 @@ public class GameController : MonoBehaviour
         if (scoreUI) scoreUI.Set(score);
 
         ResetCombo();
+        ResetBossGravityVisuals();
 
         if (currencyUI) currencyUI.Refresh();
 
@@ -943,6 +956,7 @@ public class GameController : MonoBehaviour
     {
         levelWon = false;
         winQueued = false;
+        ResetBossGravityVisuals();
 
         // Only apply level-start logic once per level
         if (levelIndex != _lastLevelInitialized)
@@ -1947,6 +1961,10 @@ public class GameController : MonoBehaviour
 
         if (piece) piece.ResetPiece(); // Stop the current drop
         if (gameBoard) gameBoard.ClearAll(); // Clear board tiles
+
+        if (_bossGravityCR != null) { StopCoroutine(_bossGravityCR); _bossGravityCR = null; }
+        _bossGravityBonusActive = 0f;
+        ResetBossGravityVisuals();
 
         // Reset run state
         RunModsStore.ResetAll();
@@ -3164,13 +3182,80 @@ public class GameController : MonoBehaviour
     IEnumerator BossGravityRoutine(float bonusMult, float seconds)
     {
         float delta = Mathf.Max(0f, bonusMult);
+        float dur = Mathf.Max(0.05f, seconds);
 
         _bossGravityBonusActive += delta;
-        yield return new WaitForSeconds(Mathf.Max(0.05f, seconds));
+        SetBossGravityVisualsActive(true); // Turn on UI cues
+
+        // Start blinking shortly before the effect ends
+        if (_bossGravityBlinkCR != null) StopCoroutine(_bossGravityBlinkCR);
+        _bossGravityBlinkCR = StartCoroutine(BossGravityBlinkCo(dur));
+
+        yield return new WaitForSeconds(dur);
+
         _bossGravityBonusActive -= delta;
 
         if (_bossGravityBonusActive < 0f) _bossGravityBonusActive = 0f;
+
+        SetBossGravityVisualsActive(false); // Turn off UI cues
+
         _bossGravityCR = null;
+    }
+
+    void ResetBossGravityVisuals()
+    {
+        if (_bossGravityBlinkCR != null)
+        {
+            StopCoroutine(_bossGravityBlinkCR);
+            _bossGravityBlinkCR = null;
+        }
+
+        if (bossGravityIncreasedImage)
+            bossGravityIncreasedImage.enabled = false;
+
+        if (gravityText)
+            gravityText.color = gravityTextDefaultColor;
+    }
+
+    void SetBossGravityVisualsActive(bool active)
+    {
+        if (active)
+        {
+            if (bossGravityIncreasedImage)
+                bossGravityIncreasedImage.enabled = true;
+
+            if (gravityText)
+                gravityText.color = gravityTextBossColor;
+        }
+        else
+        {
+            ResetBossGravityVisuals();
+        }
+    }
+
+    IEnumerator BossGravityBlinkCo(float totalSeconds)
+    {
+        float lead = Mathf.Max(0f, bossGravityBlinkLeadSeconds);
+        float wait = Mathf.Max(0f, totalSeconds - lead);
+
+        // Wait until lead time begins
+        if (wait > 0f)
+            yield return new WaitForSeconds(wait);
+
+        // Blink for the final lead seconds
+        float t = 0f;
+        while (t < lead)
+        {
+            if (bossGravityIncreasedImage)
+                bossGravityIncreasedImage.enabled = !bossGravityIncreasedImage.enabled;
+
+            yield return new WaitForSeconds(Mathf.Max(0.05f, bossGravityBlinkIntervalSeconds));
+            t += bossGravityBlinkIntervalSeconds;
+        }
+
+        // Ensure it's on right up until the routine ends
+        if (bossGravityIncreasedImage)
+            bossGravityIncreasedImage.enabled = true;
     }
 
     // ================== Player Special Co-Routines ==================

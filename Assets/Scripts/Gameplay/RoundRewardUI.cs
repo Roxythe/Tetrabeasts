@@ -16,6 +16,15 @@ public class RoundRewardUI : MonoBehaviour
     public GameObject buffPanel;
     public GameObject debuffPanel;
 
+    [Header("Rarity Balancing")]
+    [Tooltip("Lower values = more common rewards during normal levels")]
+    [Range(0.25f, 1.5f)]
+    public float normalLevelRarityMultiplier = 0.65f;
+
+    [Tooltip("Higher values = better rewards after boss fights")]
+    [Range(0.5f, 2.5f)]
+    public float bossLevelRarityMultiplier = 1.35f;
+
     [Header("Buff UI")]
     public Transform buffContainer;
     public Button confirmBuffButton;
@@ -45,11 +54,6 @@ public class RoundRewardUI : MonoBehaviour
     Action<RunModifierSO, RunModifierSO> _onComplete;
 
 
-    //private void Awake()
-    //{
-    //    StartBlink(); // Test blink animation in editor
-    //}
-
     void OnEnable()
     {
         _sfxHook = GetComponentInParent<GameplayUI_SFXHook>();
@@ -62,6 +66,8 @@ public class RoundRewardUI : MonoBehaviour
         var gc = FindFirstObjectByType<GameController>();
         float luck = gc ? gc.luck : RunModsStore.Luck;
         float misfortune = gc ? gc.misfortune : RunModsStore.Misfortune;
+
+        bool wasBossLevel = gc && gc.LastLevelWasBoss;
 
         _onComplete = onComplete;
 
@@ -87,14 +93,14 @@ public class RoundRewardUI : MonoBehaviour
                 : "+0 Unit Lives at Max Capacity";
         }
 
-        Populate(buffContainer, Pick3UniqueWeighted(buffPool, luck), isBuff: true);
+        Populate(buffContainer, Pick3UniqueWeighted(buffPool, luck, wasBossLevel), isBuff: true);
         confirmBuffButton.onClick.RemoveAllListeners();
         confirmBuffButton.onClick.AddListener(() =>
         {
             buffPanel.SetActive(false);
             debuffPanel.SetActive(true);
 
-            Populate(debuffContainer, Pick3UniqueWeighted(debuffPool, misfortune), isBuff: false);
+            Populate(debuffContainer, Pick3UniqueWeighted(debuffPool, misfortune, wasBossLevel), isBuff: false);
         });
 
         confirmDebuffButton.onClick.RemoveAllListeners();
@@ -145,36 +151,65 @@ public class RoundRewardUI : MonoBehaviour
         }
     }
 
-    float[] GetRarityProbsFromLuck(float luck)
+    float[] GetRarityProbsFromLuck(float luck, bool wasBossLevel)
     {
-        float L = Mathf.Clamp(luck, 0f, 200f); // Clamp luck to reasonable range
+        float L = Mathf.Clamp(luck, 0f, 200f);
 
-        // Anchor probability vectors: [Com, Uncom, Rare, Epic, Legndary]
-        float[] p0 = { 0.60f, 0.25f, 0.10f, 0.04f, 0.01f }; // 0 luck (baseline)
-        float[] p25 = { 0.60f, 0.25f, 0.10f, 0.04f, 0.01f }; // keep new players basically baseline through 25
-        float[] p50 = { 0.20f, 0.40f, 0.25f, 0.10f, 0.05f }; // 26–50 guideline
-        float[] p75 = { 0.10f, 0.20f, 0.40f, 0.20f, 0.10f }; // 51–75 guideline
-        float[] p100 = { 0.05f, 0.10f, 0.30f, 0.40f, 0.15f }; // 75–100 guideline
+        // Index order: [Common, Uncommon, Rare, Epic, Legendary]
+        // Normal Levels are heavily Common-weighted 
+        float[] n0 = { 0.80f, 0.16f, 0.03f, 0.01f, 0.00f };
+        float[] n25 = { 0.80f, 0.16f, 0.03f, 0.01f, 0.00f };
+        float[] n50 = { 0.60f, 0.25f, 0.11f, 0.035f, 0.005f };
+        float[] n75 = { 0.45f, 0.28f, 0.18f, 0.075f, 0.015f };
+        float[] n100 = { 0.30f, 0.28f, 0.24f, 0.14f, 0.04f };
+        float[] n150 = { 0.18f, 0.22f, 0.25f, 0.25f, 0.10f };
+        float[] n200 = { 0.12f, 0.18f, 0.24f, 0.28f, 0.18f };
 
-        // Over 100 luck: start favoring Epic/Legendary more
-        float[] p150 = { 0.02f, 0.05f, 0.18f, 0.45f, 0.30f };
-        float[] p200 = { 0.01f, 0.03f, 0.10f, 0.40f, 0.46f };
+        // Boss Levels have noticeably higher rarity odds
+        float[] b0 = { 0.60f, 0.26f, 0.10f, 0.03f, 0.01f };
+        float[] b25 = { 0.60f, 0.26f, 0.10f, 0.03f, 0.01f };
+        float[] b50 = { 0.40f, 0.30f, 0.20f, 0.08f, 0.02f };
+        float[] b75 = { 0.25f, 0.27f, 0.26f, 0.16f, 0.06f };
+        float[] b100 = { 0.16f, 0.20f, 0.25f, 0.24f, 0.15f };
+        float[] b150 = { 0.10f, 0.15f, 0.22f, 0.28f, 0.25f };
+        float[] b200 = { 0.07f, 0.12f, 0.18f, 0.28f, 0.35f };
 
         float[] a, b;
         float t;
 
-        if (L <= 25f) { a = p0; b = p25; t = Mathf.InverseLerp(0f, 25f, L); }
-        else if (L <= 50f) { a = p25; b = p50; t = Mathf.InverseLerp(25f, 50f, L); }
-        else if (L <= 75f) { a = p50; b = p75; t = Mathf.InverseLerp(50f, 75f, L); }
-        else if (L <= 100f) { a = p75; b = p100; t = Mathf.InverseLerp(75f, 100f, L); }
-        else if (L <= 150f) { a = p100; b = p150; t = Mathf.InverseLerp(100f, 150f, L); }
-        else { a = p150; b = p200; t = Mathf.InverseLerp(150f, 200f, L); }
+        if (wasBossLevel)
+        {
+            if (L <= 25f) { a = b0; b = b25; t = Mathf.InverseLerp(0f, 25f, L); }
+            else if (L <= 50f) { a = b25; b = b50; t = Mathf.InverseLerp(25f, 50f, L); }
+            else if (L <= 75f) { a = b50; b = b75; t = Mathf.InverseLerp(50f, 75f, L); }
+            else if (L <= 100f) { a = b75; b = b100; t = Mathf.InverseLerp(75f, 100f, L); }
+            else if (L <= 150f) { a = b100; b = b150; t = Mathf.InverseLerp(100f, 150f, L); }
+            else { a = b150; b = b200; t = Mathf.InverseLerp(150f, 200f, L); }
+        }
+        else
+        {
+            if (L <= 25f) { a = n0; b = n25; t = Mathf.InverseLerp(0f, 25f, L); }
+            else if (L <= 50f) { a = n25; b = n50; t = Mathf.InverseLerp(25f, 50f, L); }
+            else if (L <= 75f) { a = n50; b = n75; t = Mathf.InverseLerp(50f, 75f, L); }
+            else if (L <= 100f) { a = n75; b = n100; t = Mathf.InverseLerp(75f, 100f, L); }
+            else if (L <= 150f) { a = n100; b = n150; t = Mathf.InverseLerp(100f, 150f, L); }
+            else { a = n150; b = n200; t = Mathf.InverseLerp(150f, 200f, L); }
+        }
 
-        t = t * t * (3f - 2f * t); // Smoothstep makes the transition feel gradual even within each segment
+        t = t * t * (3f - 2f * t); // Smoothstep for smoother transitions between curves
 
         float[] p = new float[5];
         for (int i = 0; i < 5; i++)
             p[i] = Mathf.Lerp(a[i], b[i], t);
+
+        // Extra global reduction for higher rarities on normal levels
+        if (!wasBossLevel)
+        {
+            p[1] *= 0.85f; // Uncommon
+            p[2] *= 0.60f; // Rare
+            p[3] *= 0.40f; // Epic
+            p[4] *= 0.30f; // Legendary
+        }
 
         NormalizeInPlace(p);
         return p;
@@ -206,8 +241,8 @@ public class RoundRewardUI : MonoBehaviour
         return string.IsNullOrEmpty(so.displayName) ? so.name : so.displayName;
     }
 
-    RunModifierSO PickByRarityCurve(RunModifierSO[] pool, float luck, HashSet<RunModifierSO> excludeAssets,
-                                    HashSet<string> excludeGroups)
+    RunModifierSO PickByRarityCurve(RunModifierSO[] pool, float luck, bool wasBossLevel, HashSet<RunModifierSO> excludeAssets,
+                                HashSet<string> excludeGroups)
     {
         if (pool == null || pool.Length == 0) return null;
 
@@ -238,11 +273,24 @@ public class RoundRewardUI : MonoBehaviour
         for (int i = 0; i < 5; i++) totalCount += buckets[i].Count;
         if (totalCount == 0) return null;
 
-        float[] probs = GetRarityProbsFromLuck(luck); // Get target rarity probabilities for this luck value
+        // Get base rarity probabilities from luck and level type
+        float[] probs = GetRarityProbsFromLuck(luck, wasBossLevel);
+
+        float rarityMultiplier = wasBossLevel ? bossLevelRarityMultiplier : normalLevelRarityMultiplier;
+        rarityMultiplier = Mathf.Max(0.01f, rarityMultiplier);
+
+        // Reduce or increase higher rarity appearance
+        probs[1] *= rarityMultiplier; // Uncommon
+        probs[2] *= rarityMultiplier; // Rare
+        probs[3] *= rarityMultiplier; // Epic
+        probs[4] *= rarityMultiplier; // Legendary
+
+        NormalizeInPlace(probs);
 
         // Zero out rarities that have no available mods, then renormalize
         for (int i = 0; i < 5; i++)
             if (buckets[i].Count == 0) probs[i] = 0f;
+
         NormalizeInPlace(probs);
 
         // Roll rarity
@@ -254,12 +302,25 @@ public class RoundRewardUI : MonoBehaviour
             if (roll <= 0f) { chosenR = i; break; }
         }
 
+        // If rolled rarity has no available mods fallback to closest available rarity
+        if (buckets[chosenR].Count == 0)
+        {
+            for (int i = 4; i >= 0; i--)
+            {
+                if (buckets[i].Count > 0)
+                {
+                    chosenR = i;
+                    break;
+                }
+            }
+        }
+
         // Pick random mod within that rarity bucket
         var list = buckets[chosenR];
         return list[UnityEngine.Random.Range(0, list.Count)];
     }
 
-    List<RunModifierSO> Pick3UniqueWeighted(RunModifierSO[] pool, float skew)
+    List<RunModifierSO> Pick3UniqueWeighted(RunModifierSO[] pool, float skew, bool wasBossLevel)
     {
         var results = new List<RunModifierSO>(3);
         var usedAssets = new HashSet<RunModifierSO>();
@@ -268,7 +329,7 @@ public class RoundRewardUI : MonoBehaviour
         int safety = 100;
         while (results.Count < 3 && safety-- > 0)
         {
-            var pick = PickByRarityCurve(pool, skew, usedAssets, usedGroups);
+            var pick = PickByRarityCurve(pool, skew, wasBossLevel, usedAssets, usedGroups);
             if (!pick) break;
 
             results.Add(pick);

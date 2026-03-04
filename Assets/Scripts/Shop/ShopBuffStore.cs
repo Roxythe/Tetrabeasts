@@ -4,6 +4,8 @@ public static class ShopBuffStore
 {
     private const string Prefix = "ShopBuff_";
 
+    public static ShopBuffType[] AllTypes => (ShopBuffType[])System.Enum.GetValues(typeof(ShopBuffType));
+
     public static int GetLevel(ShopBuffType type)
         => PlayerPrefs.GetInt(Prefix + type, 0);
 
@@ -48,5 +50,38 @@ public static class ShopBuffStore
             case ShopBuffType.GoldUp: return 60;
             default: return 50;
         }
+    }
+
+    // --- Refund / Reset ---
+    public static int GetTotalSpent(ShopBuffType type)
+    {
+        int level = GetLevel(type);
+        return GetTotalSpentForLevel(type, level);
+    }
+
+    public static int GetTotalSpentForLevel(ShopBuffType type, int level)
+    {
+        level = Mathf.Max(0, level);
+        long baseCost = GetBaseCost(type);
+        long l = level;
+        long sumSquares = (l * (l + 1L) * (2L * l + 1L)) / 6L;
+        long total = baseCost * sumSquares;
+        if (total > int.MaxValue) return int.MaxValue;
+        return (int)total;
+    }
+
+    public static int GetTotalRefundAll()
+    {
+        long total = 0;
+        foreach (var t in AllTypes)
+            total += GetTotalSpent(t);
+        if (total > int.MaxValue) return int.MaxValue;
+        return (int)total;
+    }
+
+    public static void ResetAllToZero()
+    {
+        foreach (var t in AllTypes)
+            SetLevel(t, 0);
     }
 }

@@ -24,6 +24,12 @@ public class IntroController : MonoBehaviour
     bool _firstFrameShown = false;
     float _savedVideoVolume = 1f;
 
+    [Header("Fail Safe")]
+    public float prepareTimeoutSeconds = 3f;
+
+    bool _loadingTitle = false;
+    Coroutine _prepareTimeoutCR;
+
     void Start()
     {
         if (pressAnyKeyText)
@@ -35,7 +41,8 @@ public class IntroController : MonoBehaviour
 
         if (!videoPlayer)
         {
-            Debug.LogError("IntroController: videoPlayer is not assigned.");
+            Debug.LogError("IntroController: videoPlayer is not assigned. Loading title scene.");
+            LoadTitle();
             return;
         }
 
@@ -43,6 +50,14 @@ public class IntroController : MonoBehaviour
         videoPlayer.playOnAwake = false;
         videoPlayer.waitForFirstFrame = true;
         videoPlayer.skipOnDrop = true;
+
+        // Fail-safe: if there's no assigned clip and no URL, skip intro
+        if (videoPlayer.clip == null && string.IsNullOrWhiteSpace(videoPlayer.url))
+        {
+            Debug.LogWarning("IntroController: No intro video clip or URL found. Loading title scene.");
+            LoadTitle();
+            return;
+        }
 
         // Show black until video is ready
         _firstFrameShown = false;
@@ -68,7 +83,14 @@ public class IntroController : MonoBehaviour
         videoPlayer.frameReady -= OnFrameReady;
         videoPlayer.frameReady += OnFrameReady;
 
+        videoPlayer.errorReceived -= OnVideoError;
+        videoPlayer.errorReceived += OnVideoError;
+
         videoPlayer.Prepare(); // Prepare video before playing
+
+        // Fail-safe: if Prepare never completes (bad file, missing resource, codec issue), skip intro
+        if (_prepareTimeoutCR != null) StopCoroutine(_prepareTimeoutCR);
+        _prepareTimeoutCR = StartCoroutine(PrepareTimeout());
     }
 
     void Update()
@@ -103,6 +125,9 @@ public class IntroController : MonoBehaviour
 
     void LoadTitle()
     {
+        if (_loadingTitle) return;
+        _loadingTitle = true;
+
         if (_pressTextFadeCR != null) StopCoroutine(_pressTextFadeCR);
 
         if (videoPlayer)
@@ -153,6 +178,12 @@ public class IntroController : MonoBehaviour
 
     void OnVideoPrepared(VideoPlayer vp)
     {
+        if (_prepareTimeoutCR != null)
+        {
+            StopCoroutine(_prepareTimeoutCR);
+            _prepareTimeoutCR = null;
+        }
+
         vp.Play();
     }
 
@@ -172,5 +203,31 @@ public class IntroController : MonoBehaviour
 
         vp.frameReady -= OnFrameReady;
         vp.sendFrameReadyEvents = false;
+    }
+
+    System.Collections.IEnumerator PrepareTimeout()
+    {
+        float t = 0f;
+
+        while (t < prepareTimeoutSeconds)
+        {
+            if (_loadingTitle) yield break;
+            if (videoPlayer == null) yield break;
+
+            // If it becomes prepared, stop timing out
+            if (videoPlayer.isPrepared) yield break;
+
+            t += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        Debug.LogWarning("IntroController: Video prepare timed out. Loading title scene.");
+        LoadTitle();
+    }
+
+    void OnVideoError(VideoPlayer vp, string message)
+    {
+        Debug.LogWarning($"IntroController: VideoPlayer error: {message}. Loading title scene.");
+        LoadTitle();
     }
 }
