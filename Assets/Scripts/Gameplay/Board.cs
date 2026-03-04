@@ -845,6 +845,33 @@ public class Board : MonoBehaviour
         DrawGridOverlay();
     }
 
+    // Centralized damage contribution calculation for a single monster instance.
+    int CalcMonsterDamageContribution(in MonsterInstance inst, GameController gc)
+    {
+        if (!inst.data) return 0;
+        if (inst.hp <= 0f) return 0;
+
+        float dmgMult = (gc ? gc.monsterDamageMult : 1f);
+        float tempMult = (gc ? gc.PlayerMonsterAttackMult : 1f);
+
+        float baseDmg = (inst.data.attackPower * dmgMult) + inst.attackBonus;
+        int dmg = Mathf.RoundToInt(baseDmg * tempMult);
+
+        return Mathf.Max(1, dmg);
+    }
+
+    // Centralized special gauge contribution for a single monster instance.
+    float CalcMonsterSpecialChargeContribution(in MonsterInstance inst, GameController gc)
+    {
+        if (!inst.data) return 0f;
+        if (inst.hp <= 0f) return 0f;
+
+        float gaugeMult = (gc ? gc.monsterSpecialGainMult : 1f);
+        float gauge = inst.data.specialGaugeGain * gaugeMult;
+
+        return Mathf.Max(1f, gauge);
+    }
+
     public void ClearFullLines(out int rowsCleared,
                        out List<Vector2Int> removedCells,
                        out int damageFromMonsters,

@@ -86,9 +86,14 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject runModsPanelRoot;
     [SerializeField] Button closeRunModsButton;
 
+    [SerializeField] GameObject helpPanelRoot;
+
     [Header("Player")]
     public UnityEngine.UI.Image playerPortrait;
     public TMPro.TMP_Text playerName;
+    public TMPro.TMP_Text playerSpecialName;
+    [SerializeField] Color specialTextDefaultColor = Color.white;
+    [SerializeField] Color specialTextChargedColor = new Color(0.80f, 0.1f, 0.1f, 1f); // Red
     [SerializeField] private UnityEngine.UI.Image playerBorder;
 
     [Header("Characters")]
@@ -115,6 +120,35 @@ public class GameController : MonoBehaviour
     public float specialGauge = 0f;
     public float specialGaugeMax = 100f;
     public TMP_Text activateSpecialGaugeText;
+
+    [SerializeField] bool specialUseFieryGradient = true;
+    [SerializeField] float specialPulseScale = 1.15f;
+    [SerializeField] float specialPulseSpeed = 2.25f;          // Pulses per second-ish
+    [SerializeField] float specialGradientShiftSpeed = 1.25f;  // How fast the gradient shifts
+
+    Coroutine _specialChargedCR;
+    class SpecialTextDefaults
+    {
+        public Vector3 scale;
+        public bool hadVertexGradient;
+        public VertexGradient gradient;
+        public Color color;
+    }
+
+    readonly System.Collections.Generic.Dictionary<TMP_Text, SpecialTextDefaults> _specialTextDefaults =
+        new System.Collections.Generic.Dictionary<TMP_Text, SpecialTextDefaults>();
+
+    [Header("Special Gauge Fiery Fill")]
+    [SerializeField] Slider specialGaugeSlider;          // Gauge slider
+    [SerializeField] Image specialGaugeFillImage;        // Fill image component
+
+    [SerializeField] bool specialGaugeUseFieryFill = true;
+    [SerializeField] float specialGaugeFillMinSpeed = 0.25f;  // at ~0%
+    [SerializeField] float specialGaugeFillMaxSpeed = 1.25f;  // at 100%
+    [SerializeField] float specialGaugeFillColorBoost = 1.0f; // 1 = normal, >1 brighter
+
+    float _specialFillPhase = 0f;
+    Coroutine _specialFillCR;
 
     [Header("Special Blocks")]
     public TetrominoData[] specialBlocks;
@@ -260,6 +294,9 @@ public class GameController : MonoBehaviour
     int _comboCount = 0;
     float _comboTimer = 0f;
 
+    [Header("Debug")]
+    public bool logRowDamageBreakdown = false;
+
     public ScoreUI scoreUI;
     public HighScoreUI highScoreUI;
     public TMP_Text levelText;
@@ -346,6 +383,8 @@ public class GameController : MonoBehaviour
                 playerBorder.sprite = selectedCharacter.defaultBorder;
             if (playerName)
                 playerName.text = selectedCharacter.displayName;
+            if (playerSpecialName)
+                playerSpecialName.text = selectedCharacter.specialAbilityName;
         }
 
         // Wire Run Mods panel buttons
@@ -358,14 +397,20 @@ public class GameController : MonoBehaviour
         if (closeRunModsButton)
             closeRunModsButton.onClick.AddListener(CloseRunModsPanel);
 
-        if (runModsPanelRoot) runModsPanelRoot.SetActive(false); // Ensure it starts closed
+        // Ensure pause menu sub panels start closed
+        if (runModsPanelRoot) runModsPanelRoot.SetActive(false); 
+        if (helpPanelRoot) helpPanelRoot.SetActive(false);
 
         // Apply character special gauge max
         if (selectedCharacter && selectedCharacter.specialGaugeMax > 0f)
             specialGaugeMax = selectedCharacter.specialGaugeMax;
 
-        specialGauge = 0f; // Initialize Special gauge. Start full for testing
+        specialGauge = 90f; // Initialize Special gauge
         UpdateSpecialUI();
+        ResetSpecialChargedVisuals();
+
+        if (_specialFillCR != null) StopCoroutine(_specialFillCR);
+        _specialFillCR = StartCoroutine(SpecialGaugeFillFieryCo());
 
         ResetRunMods();
 
@@ -428,15 +473,23 @@ public class GameController : MonoBehaviour
             }
             else
             {
-                // Close any sub-panels opened from pause
-                bool closedSomething = false;
+                bool closedSomething = false; // Close any sub-panels opened from pause
 
-                if (runModsPanelRoot && runModsPanelRoot.activeSelf)
+                // Close Help panel first 
+                if (helpPanelRoot && helpPanelRoot.activeSelf)
+                {
+                    helpPanelRoot.SetActive(false);
+                    closedSomething = true;
+                }
+
+                // Close Run Mods
+                if (!closedSomething && runModsPanelRoot && runModsPanelRoot.activeSelf)
                 {
                     runModsPanelRoot.SetActive(false);
                     closedSomething = true;
                 }
 
+                // Close Volume settings panel
                 if (!closedSomething && volumePanelInPause && volumePanelInPause.gameObject.activeSelf)
                 {
                     volumePanelInPause.Close();
@@ -905,6 +958,8 @@ public class GameController : MonoBehaviour
 
     public void ApplyComboForRowClear(int monstersClearedInRow, ref int rowDamage)
     {
+        int baseDamage = rowDamage;
+
         int combo = IncrementCombo();
 
         // Score: 1 point per monster, multiplied by current combo count
@@ -912,9 +967,21 @@ public class GameController : MonoBehaviour
         if (gained > 0)
             AddScoreInternal(gained);
 
-        // Damage: +10% per combo step after the first, capped at 200%
+        // Damage: +5% per combo step after the first, capped at 200%
         float dmgMult = GetComboDamageMultiplier(combo);
-        rowDamage = Mathf.RoundToInt(rowDamage * dmgMult);
+
+        int finalDamage = Mathf.RoundToInt(baseDamage * dmgMult);
+        int bonusDamage = finalDamage - baseDamage;
+
+        rowDamage = finalDamage;
+
+        if (logRowDamageBreakdown)
+        {
+            Debug.Log(
+                $"[RowClearDamage] Combo={combo} MonstersCleared={monstersClearedInRow} " +
+                $"Base={baseDamage} Mult={dmgMult:0.###} Bonus={bonusDamage} Final={finalDamage}"
+            );
+        }
     }
 
     int IncrementCombo()
@@ -933,7 +1000,7 @@ public class GameController : MonoBehaviour
 
     float GetComboDamageMultiplier(int combo)
     {
-        float mult = 1f + (Mathf.Max(0, combo - 1) * 0.10f);
+        float mult = 1f + (Mathf.Max(0, combo - 1) * 0.05f); // Increase damage by 5% per combo step after the first
         return Mathf.Min(2f, mult);
     }
 
@@ -1506,7 +1573,16 @@ public class GameController : MonoBehaviour
         if (specialText)
             specialText.text = $"{Mathf.RoundToInt(100f * Mathf.Clamp01(specialGauge / Mathf.Max(1f, specialGaugeMax)))}%";
 
-        bool full = specialGauge >= (specialGaugeMax - 0.001f); // Small tolerance
+        UpdateSpecialGaugeFieryFill();
+
+        bool full = specialGauge >= (specialGaugeMax - 0.001f);
+
+        SetSpecialChargedVisuals(full); // Apply visuals first
+
+        // Always show the special name text
+        if (playerSpecialName) playerSpecialName.gameObject.SetActive(true);
+
+        // Only show the "activate special" prompt when fully charged
         if (activateSpecialGaugeText) activateSpecialGaugeText.gameObject.SetActive(full);
     }
 
@@ -2069,6 +2145,10 @@ public class GameController : MonoBehaviour
 
     void ClosePauseSubPanels()
     {
+        // Close Help panel
+        if (helpPanelRoot && helpPanelRoot.activeSelf)
+            helpPanelRoot.SetActive(false);
+
         // Close Run Mods
         if (runModsPanelRoot && runModsPanelRoot.activeSelf)
             runModsPanelRoot.SetActive(false);
@@ -3211,7 +3291,7 @@ public class GameController : MonoBehaviour
         }
 
         if (bossGravityIncreasedImage)
-            bossGravityIncreasedImage.enabled = false;
+            bossGravityIncreasedImage.gameObject.SetActive(false);
 
         if (gravityText)
             gravityText.color = gravityTextDefaultColor;
@@ -3222,7 +3302,7 @@ public class GameController : MonoBehaviour
         if (active)
         {
             if (bossGravityIncreasedImage)
-                bossGravityIncreasedImage.enabled = true;
+                bossGravityIncreasedImage.gameObject.SetActive(true);
 
             if (gravityText)
                 gravityText.color = gravityTextBossColor;
@@ -3255,7 +3335,7 @@ public class GameController : MonoBehaviour
 
         // Ensure it's on right up until the routine ends
         if (bossGravityIncreasedImage)
-            bossGravityIncreasedImage.enabled = true;
+            bossGravityIncreasedImage.gameObject.SetActive(true);
     }
 
     // ================== Player Special Co-Routines ==================
@@ -3330,6 +3410,187 @@ public class GameController : MonoBehaviour
         if (_baseBoardWidth <= 0 || _baseBoardHeight <= 0) return;
 
         gameBoard.SetGridSize(_baseBoardWidth, _baseBoardHeight);
+    }
+
+    // ================== Special Gauge & Text Visuals ==================
+
+    void CacheSpecialDefaultsIfNeeded(TMP_Text t)
+    {
+        if (!t) return;
+        if (_specialTextDefaults.ContainsKey(t)) return;
+
+        var d = new SpecialTextDefaults
+        {
+            scale = t.rectTransform.localScale,
+            hadVertexGradient = t.enableVertexGradient,
+            gradient = t.colorGradient,
+            color = t.color
+        };
+
+        _specialTextDefaults.Add(t, d);
+    }
+
+    void ResetSpecialChargedVisuals()
+    {
+        if (_specialChargedCR != null)
+        {
+            StopCoroutine(_specialChargedCR);
+            _specialChargedCR = null;
+        }
+
+        ResetSpecialText(activateSpecialGaugeText);
+        ResetSpecialText(playerSpecialName);
+    }
+
+    void ResetSpecialText(TMP_Text t)
+    {
+        if (!t) return;
+
+        CacheSpecialDefaultsIfNeeded(t);
+        var d = _specialTextDefaults[t];
+
+        t.color = specialTextDefaultColor; // Force back to default
+        t.enableVertexGradient = d.hadVertexGradient;
+        t.colorGradient = d.gradient;
+        t.rectTransform.localScale = d.scale;
+
+        SafeUpdateTMPColors(t); // Ensure TMP refreshes visuals
+    }
+
+    void SetSpecialChargedVisuals(bool charged)
+    {
+        if (charged)
+        {
+            // Start coroutine once for both texts
+            if (_specialChargedCR == null)
+                _specialChargedCR = StartCoroutine(SpecialChargedPulseCo());
+        }
+        else
+        {
+            ResetSpecialChargedVisuals();
+        }
+    }
+
+    Color FireColor(float t)
+    {
+        // Loop red, orange, yellow, orange, red
+        t = Mathf.Repeat(t, 1f);
+        if (t < 0.25f) return Color.Lerp(new Color(0.80f, 0.10f, 0.10f, 1f), new Color(1.00f, 0.35f, 0.00f, 1f), t / 0.25f);
+        if (t < 0.50f) return Color.Lerp(new Color(1.00f, 0.35f, 0.00f, 1f), new Color(1.00f, 0.90f, 0.10f, 1f), (t - 0.25f) / 0.25f);
+        if (t < 0.75f) return Color.Lerp(new Color(1.00f, 0.90f, 0.10f, 1f), new Color(1.00f, 0.35f, 0.00f, 1f), (t - 0.50f) / 0.25f);
+        return Color.Lerp(new Color(1.00f, 0.35f, 0.00f, 1f), new Color(0.80f, 0.10f, 0.10f, 1f), (t - 0.75f) / 0.25f);
+    }
+
+    IEnumerator SpecialChargedPulseCo()
+    {
+        // Cache defaults once
+        CacheSpecialDefaultsIfNeeded(activateSpecialGaugeText);
+        CacheSpecialDefaultsIfNeeded(playerSpecialName);
+
+        while (true)
+        {
+            bool full = specialGauge >= (specialGaugeMax - 0.001f);
+            if (!full) yield break;
+
+            float time = Time.unscaledTime;
+
+            // Pulse scale
+            float s = 1f;
+            if (specialPulseScale > 1.001f)
+            {
+                float wave = 0.5f + 0.5f * Mathf.Sin(time * (specialPulseSpeed * 6.2831853f));
+                s = Mathf.Lerp(1f, specialPulseScale, wave);
+            }
+
+            ApplySpecialChargedVisualsToText(activateSpecialGaugeText, time, s);
+            ApplySpecialChargedVisualsToText(playerSpecialName, time, s);
+
+            yield return null;
+        }
+    }
+
+    void ApplySpecialChargedVisualsToText(TMP_Text t, float time, float scaleMul)
+    {
+        if (!t) return;
+
+        CacheSpecialDefaultsIfNeeded(t);
+        var d = _specialTextDefaults[t];
+
+        t.rectTransform.localScale = d.scale * scaleMul;
+
+        if (specialUseFieryGradient)
+        {
+            t.enableVertexGradient = true;
+
+            float tt = time * specialGradientShiftSpeed;
+            Color topL = FireColor(tt);
+            Color topR = FireColor(tt + 0.17f);
+            Color botL = Color.Lerp(FireColor(tt + 0.45f), new Color(0.55f, 0.05f, 0.05f, 1f), 0.45f);
+            Color botR = Color.Lerp(FireColor(tt + 0.62f), new Color(0.55f, 0.05f, 0.05f, 1f), 0.45f);
+
+            t.colorGradient = new VertexGradient(topL, topR, botL, botR);
+            t.color = Color.white;
+        }
+        else
+        {
+            t.enableVertexGradient = d.hadVertexGradient;
+            t.color = specialTextChargedColor;
+            t.colorGradient = d.gradient;
+        }
+
+        SafeUpdateTMPColors(t); // Force the vertex color refresh
+    }
+
+    void SafeUpdateTMPColors(TMP_Text t)
+    {
+        if (!t) return;
+
+        if (!t.isActiveAndEnabled) return;
+        if (!t.gameObject.activeInHierarchy) return;
+
+        t.ForceMeshUpdate(); // Ensure mesh data exists before pushing color updates
+
+        try
+        {
+            t.UpdateVertexData(TMP_VertexDataUpdateFlags.Colors32);
+        }
+        catch
+        {
+            // Wait a frame and try again
+        }
+    }
+
+    void UpdateSpecialGaugeFieryFill()
+    {
+        if (!specialGaugeUseFieryFill) return;
+        if (!specialGaugeFillImage) return;
+        if (specialGaugeMax <= 0f) return;
+
+        float pct = Mathf.Clamp01(specialGauge / specialGaugeMax);
+
+        // Speed scales with fullness: slow at 10%, normal at 100%
+        float speed = Mathf.Lerp(specialGaugeFillMinSpeed, specialGaugeFillMaxSpeed, pct);
+
+        _specialFillPhase += Time.unscaledDeltaTime * speed;
+
+        // Use the same FireColor(t) helper you already have (from TMP fiery gradient work)
+        Color c = FireColor(_specialFillPhase);
+
+        // Optional: slightly brighten near full
+        float boost = Mathf.Lerp(1f, specialGaugeFillColorBoost, pct);
+        c *= boost;
+        c.a = 1f;
+
+        specialGaugeFillImage.color = c;
+    }
+
+    IEnumerator SpecialGaugeFillFieryCo()
+    {
+        while (true)
+        {
+            UpdateSpecialGaugeFieryFill();
+            yield return null;
+        }
     }
 
     // ================== Helper/Utility ==================
