@@ -851,11 +851,8 @@ public class Board : MonoBehaviour
         if (!inst.data) return 0;
         if (inst.hp <= 0f) return 0;
 
-        float dmgMult = (gc ? gc.monsterDamageMult : 1f);
-        float tempMult = (gc ? gc.PlayerMonsterAttackMult : 1f);
-
-        float baseDmg = (inst.data.attackPower * dmgMult) + inst.attackBonus;
-        int dmg = Mathf.RoundToInt(baseDmg * tempMult);
+        float baseDmg = inst.data.attackPower + inst.attackBonus;
+        int dmg = Mathf.RoundToInt(baseDmg);
 
         return Mathf.Max(1, dmg);
     }
@@ -932,18 +929,13 @@ public class Board : MonoBehaviour
                     {
                         if (inst.hp > 0f)
                         {
-                            float gaugeMult = (gc ? gc.monsterSpecialGainMult : 1f);
+                            int dmg = CalcMonsterDamageContribution(in inst, gc);
+                            if (dmg > 0)
+                                dmgRow += dmg;
 
-                            float dmgMult = (gc ? gc.monsterDamageMult : 1f);
-                            float tempMult = (gc ? gc.PlayerMonsterAttackMult : 1f);
-
-                            float baseDmg = (inst.data.attackPower * dmgMult) + inst.attackBonus; // Includes run mods and shop buffs
-                            int dmg = Mathf.RoundToInt(baseDmg * tempMult);
-
-                            dmgRow += Mathf.Max(1, dmg);
-
-                            float gauge = inst.data.specialGaugeGain * gaugeMult;
-                            specialChargeFromMonsters += Mathf.Max(1f, gauge);
+                            float gauge = CalcMonsterSpecialChargeContribution(in inst, gc);
+                            if (gauge > 0f)
+                                specialChargeFromMonsters += gauge;
                         }
 
                         if (!counts.ContainsKey(inst.data))
@@ -1079,18 +1071,13 @@ public class Board : MonoBehaviour
                     {
                         if (inst.hp > 0f)
                         {
-                            float gaugeMult = (gc ? gc.monsterSpecialGainMult : 1f);
+                            int dmg = CalcMonsterDamageContribution(in inst, gc);
+                            if (dmg > 0)
+                                dmgRow += dmg;
 
-                            float dmgMult = (gc ? gc.monsterDamageMult : 1f);
-                            float tempMult = (gc ? gc.PlayerMonsterAttackMult : 1f);
-
-                            float baseDmg = (inst.data.attackPower * dmgMult) + inst.attackBonus;
-                            int dmg = Mathf.RoundToInt(baseDmg * tempMult);
-
-                            dmgRow += Mathf.Max(1, dmg);
-
-                            float gauge = inst.data.specialGaugeGain * gaugeMult;
-                            specialChargeFromMonsters += Mathf.Max(1f, gauge);
+                            float gauge = CalcMonsterSpecialChargeContribution(in inst, gc);
+                            if (gauge > 0f)
+                                specialChargeFromMonsters += gauge;
                         }
 
                         if (!counts.ContainsKey(inst.data))
@@ -1218,17 +1205,13 @@ public class Board : MonoBehaviour
                     // Living monsters contribute damage/gauge
                     if (inst.hp > 0f)
                     {
-                        float gaugeMult = (gc ? gc.monsterSpecialGainMult : 1f);
-                        float dmgMult = (gc ? gc.monsterDamageMult : 1f);
-                        float tempMult = (gc ? gc.PlayerMonsterAttackMult : 1f);
+                        int dmg = CalcMonsterDamageContribution(in inst, gc);
+                        if (dmg > 0)
+                            dmgRow += dmg;
 
-                        float baseDmg = (inst.data.attackPower * dmgMult) + inst.attackBonus;
-                        int dmg = Mathf.RoundToInt(baseDmg * tempMult);
-
-                        dmgRow += Mathf.Max(1, dmg);
-
-                        float gauge = inst.data.specialGaugeGain * gaugeMult;
-                        specialChargeFromMonsters += Mathf.Max(1f, gauge);
+                        float gauge = CalcMonsterSpecialChargeContribution(in inst, gc);
+                        if (gauge > 0f)
+                            specialChargeFromMonsters += gauge;
                     }
 
                     // Collect candidate start columns for this row’s projectile
@@ -1529,17 +1512,13 @@ public class Board : MonoBehaviour
                 {
                     if (inst.hp > 0f)
                     {
-                        float gaugeMult = (gc ? gc.monsterSpecialGainMult : 1f);
-                        float dmgMult = (gc ? gc.monsterDamageMult : 1f);
-                        float tempMult = (gc ? gc.PlayerMonsterAttackMult : 1f);
+                        int dmg = CalcMonsterDamageContribution(in inst, gc);
+                        if (dmg > 0)
+                            damageFromMonsters += dmg;
 
-                        float baseDmg = (inst.data.attackPower * dmgMult) + inst.attackBonus;
-                        int dmg = Mathf.RoundToInt(baseDmg * tempMult);
-
-                        damageFromMonsters += Mathf.Max(1, dmg);
-
-                        float gauge = inst.data.specialGaugeGain * gaugeMult;
-                        specialChargeFromMonsters += Mathf.Max(1f, gauge);
+                        float gauge = CalcMonsterSpecialChargeContribution(in inst, gc);
+                        if (gauge > 0f)
+                            specialChargeFromMonsters += gauge;
                     }
                 }
 

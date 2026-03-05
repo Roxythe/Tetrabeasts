@@ -1,11 +1,21 @@
 
 ****** TODO ******
 
+- Add scrolling text battle log for monster units Attack total, units take damage, units die, special ability activated, and castle destroyed to gameplay scene
+
+- Add option in setting to Show/hide battle log
+
+- Add underlay tint for floor effects visbile only when unoccupied by monster unit unlike border overlay which is always visible
+
+- Add fire image VFX under combo counter, grows larger and colors shift and become more vibrant as combo grows larger
+
+- Add pulsing vfx to combo counter on increment
+
 - Change gravity accelaration to a flat increase over time instead of ramping up over time. Instead of acceleration increasing at the start of each level, simply increases the flat increase by X amount each level
 
-- Create a setting for mixed tetrapieces or uniform monster pieces
+- Animate monster units in each tile for both active and inactive pieces
 
-- Add visual identifier for when boss increases gravity and when it ends
+- Create a setting for mixed tetrapieces or uniform monster pieces
 
 - Unlocked characters, monsters, monster skin variations, challenge modes completed, achievments, and personal high score
 
@@ -15,17 +25,17 @@
 
 *** KNOWN BUGS ***
 
-- Prevent special blocks from being chosen as the very first piece of a level
+- Restart doesn't reset buff rarity?
 
-- Reduce special piece occcurence overall
+- When Achievement Toast activated during gameplay my cursor was unlocked
+
+- Prevent special blocks from being chosen as the very first piece of a level
 
 - If a row is cleared that would have had a monster or tile that would be hit by an enemy projectile, sometimes the enemy projectile will be destroyed in that cell instead of continuing further down the board to find a valid target (or be destroyed at the bottom of the board)
 
 - Add SFX to player character data for reduced gravity special ability
 
 - Add slight delay (0.5f seconds) after using earthquake special block before clearing any full lines created by using special block
-
-- Add special ability name for player chosen on gameplay scene under player character name
 
 - Change lightning strike boss ability to target a cell currently occupied by a monster unit instead of an empty cell
 

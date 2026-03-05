@@ -295,7 +295,7 @@ public class GameController : MonoBehaviour
     float _comboTimer = 0f;
 
     [Header("Debug")]
-    public bool logRowDamageBreakdown = false;
+    public bool logRowDamageBreakdown = true;
 
     public ScoreUI scoreUI;
     public HighScoreUI highScoreUI;
@@ -405,7 +405,7 @@ public class GameController : MonoBehaviour
         if (selectedCharacter && selectedCharacter.specialGaugeMax > 0f)
             specialGaugeMax = selectedCharacter.specialGaugeMax;
 
-        specialGauge = 90f; // Initialize Special gauge
+        specialGauge = 0f; // Initialize Special gauge
         UpdateSpecialUI();
         ResetSpecialChargedVisuals();
 
@@ -947,6 +947,16 @@ public class GameController : MonoBehaviour
                 Vector2 castleBottomInRoot = root.InverseTransformPoint(castleBottomWorld);
                 Vector2 target = new Vector2(start.x, castleBottomInRoot.y);
 
+                // Debug output for attack damage and source monster
+                if (logRowDamageBreakdown)
+                {
+                    int clearIndex = rowKey / 1000;
+                    Debug.Log(
+                        $"[CastleAttack Spawn] clearIndex={clearIndex} rowY={rowY} " +
+                        $"dmg={dmg} attacker={(attackerMD ? attackerMD.name : "None")}"
+                    );
+                }
+
                 SpawnAttackProjectile(attackSprite, attackSpriteAlt, animType, start, target, dmg, attackerMD);
             }
         }
@@ -958,30 +968,36 @@ public class GameController : MonoBehaviour
 
     public void ApplyComboForRowClear(int monstersClearedInRow, ref int rowDamage)
     {
-        int baseDamage = rowDamage;
+        int baseRow = rowDamage; // Sum of per-monster attacks (+bonus)
 
         int combo = IncrementCombo();
 
-        // Score: 1 point per monster, multiplied by current combo count
+        // Apply shop/run buffs once here
+        float buffMult = monsterDamageMult * PlayerMonsterAttackMult; // Keep intended buffs
+        int afterBuffs = Mathf.RoundToInt(baseRow * buffMult);
+
+        // Apply combo (+5% per step after first)
+        float comboMult = GetComboDamageMultiplier(combo);
+        int finalDamage = Mathf.RoundToInt(afterBuffs * comboMult);
+
+        if (logRowDamageBreakdown)
+        {
+            int buffBonus = afterBuffs - baseRow;
+            int comboBonus = finalDamage - afterBuffs;
+
+            Debug.Log(
+                $"[RowClearDamage] Combo={combo} Monsters={monstersClearedInRow} " +
+                $"Base={baseRow} BuffMult={buffMult:0.###} (+{buffBonus}) " +
+                $"ComboMult={comboMult:0.###} (+{comboBonus}) Final={finalDamage}"
+            );
+        }
+
+        // Score 1 point per monster, multiplied by current combo count
         int gained = Mathf.Max(0, monstersClearedInRow) * combo;
         if (gained > 0)
             AddScoreInternal(gained);
 
-        // Damage: +5% per combo step after the first, capped at 200%
-        float dmgMult = GetComboDamageMultiplier(combo);
-
-        int finalDamage = Mathf.RoundToInt(baseDamage * dmgMult);
-        int bonusDamage = finalDamage - baseDamage;
-
         rowDamage = finalDamage;
-
-        if (logRowDamageBreakdown)
-        {
-            Debug.Log(
-                $"[RowClearDamage] Combo={combo} MonstersCleared={monstersClearedInRow} " +
-                $"Base={baseDamage} Mult={dmgMult:0.###} Bonus={bonusDamage} Final={finalDamage}"
-            );
-        }
     }
 
     int IncrementCombo()
@@ -1709,6 +1725,8 @@ public class GameController : MonoBehaviour
         // Apply damage on impact
         if (damage > 0 && enemyCastleUI && !levelWon && !gameOver)
         {
+            int originalDamage = damage;
+
             // Play the attacking monster's impact SFX 
             if (AudioManager.I && attackerMD)
             {
@@ -1723,6 +1741,14 @@ public class GameController : MonoBehaviour
             if (pylonsAlive)
             {
                 damage = Mathf.Max(1, Mathf.CeilToInt(damage * Mathf.Clamp(bossPylonDamageMult, 0.05f, 1f)));
+            }
+
+            if (logRowDamageBreakdown)
+            {
+                Debug.Log(
+                    $"[CastleAttack Impact] attacker={(attackerMD ? attackerMD.name : "None")} " +
+                    $"base={originalDamage} pylonsAlive={pylonsAlive} final={damage}"
+                );
             }
 
             if (enemyCastleUI)
