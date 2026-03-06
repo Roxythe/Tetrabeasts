@@ -20,6 +20,10 @@ public class MonsterSelectUI : MonoBehaviour
     public Button startButton;
     public CurrencyUI currencyUI;
 
+    [Header("Counter Colors")]
+    public Color counterValidColor = Color.green;
+    public Color counterInvalidColor = Color.red;
+
     MonsterData previewMonster;
     int previewSkinIndex = 0; // The skin currently being previewed (can be locked)
 
@@ -284,10 +288,17 @@ public class MonsterSelectUI : MonoBehaviour
         foreach (var kv in buttons)
             SetButtonHighlight(kv.Value, selected.Contains(kv.Key));
 
+        int count = selected.Count;
+        bool validCount = count >= MinSelect && count <= MaxSelect;
+
         if (counterText)
-            counterText.text = $"Selected: {selected.Count} / {MaxSelect}";
+        {
+            counterText.text = $"Selected: {count} / {MaxSelect}";
+            counterText.color = validCount ? counterValidColor : counterInvalidColor;
+        }
+
         if (startButton)
-            startButton.interactable = selected.Count >= MinSelect && selected.Count <= MaxSelect;
+            startButton.interactable = validCount;
 
         if (previewMonster != null)
             ShowPreview(previewMonster, previewSkinIndex);

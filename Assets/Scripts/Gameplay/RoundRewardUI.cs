@@ -34,7 +34,8 @@ public class RoundRewardUI : MonoBehaviour
     public Button confirmDebuffButton;
 
     [Header("Prefabs")]
-    public RunModOptionButton optionButtonPrefab;
+    public RunModOptionButton buffOptionButtonPrefab;
+    public RunModOptionButton debuffOptionButtonPrefab;
     public TMP_Text currnecyGained;
     public TMP_Text reinforcementsGained;
 
@@ -127,7 +128,15 @@ public class RoundRewardUI : MonoBehaviour
 
         foreach (var mod in picks)
         {
-            var btn = Instantiate(optionButtonPrefab, container);
+            var prefab = isBuff ? buffOptionButtonPrefab : debuffOptionButtonPrefab;
+            if (!prefab)
+            {
+                Debug.LogError($"RoundRewardUI: Missing {(isBuff ? "buff" : "debuff")} option button prefab.");
+                continue;
+            }
+
+            var btn = Instantiate(prefab, container);
+
             _sfxHook?.HookButton(btn.GetComponent<Button>()); // Hook SFX onto the instantiated button
             btn.Bind(mod, selected =>
             {

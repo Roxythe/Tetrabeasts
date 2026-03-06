@@ -590,7 +590,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1133639432444035616, guid: 5cc9386d88883c546b6970945c546acc, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 831
+      value: 563
       objectReference: {fileID: 0}
     - target: {fileID: 1133639432444035616, guid: 5cc9386d88883c546b6970945c546acc, type: 3}
       propertyPath: m_SizeDelta.y
@@ -614,7 +614,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7723585509254260498, guid: 5cc9386d88883c546b6970945c546acc, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 831
+      value: 563
       objectReference: {fileID: 0}
     - target: {fileID: 7723585509254260498, guid: 5cc9386d88883c546b6970945c546acc, type: 3}
       propertyPath: m_SizeDelta.y
@@ -6099,8 +6099,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00012207031, y: -0.48846436}
-  m_SizeDelta: {x: 177, y: 34.132}
+  m_AnchoredPosition: {x: -0.00012207031, y: 2.0115356}
+  m_SizeDelta: {x: 195, y: 39.132}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1007601398
 MonoBehaviour:
@@ -6831,8 +6831,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.13342285, y: -0.10687256}
-  m_SizeDelta: {x: 200, y: 34.677}
+  m_AnchoredPosition: {x: 0.13256836, y: 2.4454346}
+  m_SizeDelta: {x: 188, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1230628854
 MonoBehaviour:
@@ -6881,8 +6881,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
-  m_fontSizeBase: 32
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -7012,8 +7012,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00012207031, y: -0.55459595}
-  m_SizeDelta: {x: 181, y: 36}
+  m_AnchoredPosition: {x: 0.13256836, y: 2.445404}
+  m_SizeDelta: {x: 200, y: 42}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1281340434
 MonoBehaviour:
@@ -8262,6 +8262,8 @@ MonoBehaviour:
   counterText: {fileID: 1230628854}
   startButton: {fileID: 1814195750}
   currencyUI: {fileID: 540683043}
+  counterValidColor: {r: 0, g: 1, b: 0, a: 1}
+  counterInvalidColor: {r: 1, g: 0, b: 0, a: 1}
   previewUnlockButton: {fileID: 1156887936}
   previewUnlockCostText: {fileID: 1156887935}
   previewLockedImage: {fileID: 33526604}

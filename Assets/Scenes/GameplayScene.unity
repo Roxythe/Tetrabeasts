@@ -2746,13 +2746,14 @@ MonoBehaviour:
   rootPanel: {fileID: 450669737}
   buffPanel: {fileID: 1131187529}
   debuffPanel: {fileID: 1121565957}
-  normalLevelRarityMultiplier: 0.65
-  bossLevelRarityMultiplier: 1.35
+  normalLevelRarityMultiplier: 0.66
+  bossLevelRarityMultiplier: 1.33
   buffContainer: {fileID: 686597565}
   confirmBuffButton: {fileID: 277598729}
   debuffContainer: {fileID: 400737954}
   confirmDebuffButton: {fileID: 173915944}
-  optionButtonPrefab: {fileID: 7447676673276691927, guid: f8b4903d42580ba439d699222ba763d2, type: 3}
+  buffOptionButtonPrefab: {fileID: 7447676673276691927, guid: f8b4903d42580ba439d699222ba763d2, type: 3}
+  debuffOptionButtonPrefab: {fileID: 7447676673276691927, guid: d77db7f32fc9fd9408cb4485898ff821, type: 3}
   currnecyGained: {fileID: 1246385171}
   reinforcementsGained: {fileID: 584818677}
   _sfxHook: {fileID: 2092384767}
@@ -11026,9 +11027,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2092384763}
     m_Modifications:
+    - target: {fileID: 133000428698262790, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
+      propertyPath: buffRowPrefab
+      value: 
+      objectReference: {fileID: -540488350438470269, guid: e8559c360e2f3334fb21316abd1f0b9e, type: 3}
+    - target: {fileID: 133000428698262790, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
+      propertyPath: debuffRowPrefab
+      value: 
+      objectReference: {fileID: -540488350438470269, guid: 7959451fdada4764dbf02fe76064e6c8, type: 3}
+    - target: {fileID: 240745271608904878, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 440
+      objectReference: {fileID: 0}
     - target: {fileID: 240745271608904878, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
       propertyPath: m_SizeDelta.y
       value: 797
+      objectReference: {fileID: 0}
+    - target: {fileID: 240745271608904878, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 230
       objectReference: {fileID: 0}
     - target: {fileID: 240745271608904878, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -11267,8 +11284,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4677846856195254645, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 440
+      objectReference: {fileID: 0}
+    - target: {fileID: 4677846856195254645, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
       propertyPath: m_SizeDelta.y
       value: 797
+      objectReference: {fileID: 0}
+    - target: {fileID: 4677846856195254645, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -230
       objectReference: {fileID: 0}
     - target: {fileID: 4677846856195254645, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
       propertyPath: m_AnchoredPosition.y
