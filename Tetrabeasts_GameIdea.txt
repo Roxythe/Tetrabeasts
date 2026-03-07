@@ -1,17 +1,17 @@
 
 ****** TODO ******
 
-- Add scrolling text battle log for monster units Attack total, units take damage, units die, special ability activated, and castle destroyed to gameplay scene
+*- Add scrolling text battle log for monster units Attack total, units take damage, units die, special ability activated, and castle destroyed to gameplay scene
 
-- Add option in setting to Show/hide battle log
+*- Add option in setting to Show/hide battle log
 
-- Add underlay tint for floor effects visbile only when unoccupied by monster unit unlike border overlay which is always visible
+*- Add underlay tint for floor effects visbile only when unoccupied by monster unit unlike border overlay which is always visible
 
-- Add fire image VFX under combo counter, grows larger and colors shift and become more vibrant as combo grows larger
+*- Add fire image VFX under combo counter, grows larger and colors shift and become more vibrant as combo grows larger
 
-- Add pulsing vfx to combo counter on increment
+*- Add pulsing vfx to combo counter on increment
 
-- Run Modifier images shown in a row on the gameplay scene
+*- Run Modifier images shown in a row on the gameplay scene
 
 - Change gravity accelaration to a flat increase over time instead of ramping up over time. Instead of acceleration increasing at the start of each level, simply increases the flat increase by X amount each level
 

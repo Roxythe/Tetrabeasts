@@ -35,7 +35,17 @@ public class Board : MonoBehaviour
     public float cascadeClearVisualDelay = 0.25f;
 
     bool tilesImmune = false;
-    public enum DamageSource { Generic, CastleProjectile } 
+    public enum DamageSource
+    {
+        Generic,
+        CastleProjectile,
+        FloorPoison,
+        FloorBurn,
+        FloorSpike,
+        FloorLightning,
+        BossAbility,
+        MagicExplosive
+    }
 
     // Runtime
     GameController _gc;
@@ -204,6 +214,8 @@ public class Board : MonoBehaviour
 
     // Events
     public event Action<Vector2Int, MonsterData> TileDied; // Event called when a tile's HP reaches 0
+    public event Action<Vector2Int, MonsterData, float, DamageSource> TileDamaged;
+    public event Action<Vector2Int, MonsterData, float> TileHealed;
 
     [System.Serializable]
     public struct MonsterInstance
@@ -742,6 +754,7 @@ public class Board : MonoBehaviour
         inst.hp = Mathf.Max(0f, inst.hp - amount);
         monsters[cell] = inst;
         UpdateTileHPVisual(cell, inst.hp, inst.maxHp);
+        TileDamaged?.Invoke(cell, inst.data, amount, src);
 
         // --- Choose and play a hurt SFX ---
         AudioClip clip = sfxOverride;
@@ -774,12 +787,17 @@ public class Board : MonoBehaviour
     {
         if (!monsters.TryGetValue(cell, out var inst) || inst.data == null) return false;
         if (inst.hp <= 0f) return false; // cannot heal dead tiles
+
+        float before = inst.hp;
         float newHp = Mathf.Min(inst.maxHp, inst.hp + amount);
-        if (Mathf.Approximately(newHp, inst.hp)) return false;
+        float applied = newHp - before;
+        if (applied <= 0.0001f) return false;
 
         inst.hp = newHp;
         monsters[cell] = inst;
         UpdateTileHPVisual(cell, inst.hp, inst.maxHp);
+
+        TileHealed?.Invoke(cell, inst.data, applied);
         return true;
     }
 
@@ -2107,7 +2125,7 @@ public class Board : MonoBehaviour
                     before = inst.hp;
                 }
 
-                DamageTile(c, 999999f); // Massive damage to ensure destruction, bypassing any immunities
+                DamageTile(c, 999999f, DamageSource.MagicExplosive); // Massive damage to ensure destruction
 
                 if (hadLiving && monsters.TryGetValue(c, out var instAfter) && instAfter.hp <= 0f)
                 {
@@ -2421,7 +2439,16 @@ public class Board : MonoBehaviour
 
         float before = inst.hp;
 
-        DamageTile(cell, damage, DamageSource.Generic);
+        DamageSource src = fxType switch
+        {
+            FloorEffectType.Poison => DamageSource.FloorPoison,
+            FloorEffectType.Burn => DamageSource.FloorBurn,
+            FloorEffectType.Spike => DamageSource.FloorSpike,
+            FloorEffectType.Lightning => DamageSource.FloorLightning,
+            _ => DamageSource.Generic
+        };
+
+        DamageTile(cell, damage, src);
 
         float after = monsters.TryGetValue(cell, out var instAfter) ? instAfter.hp : 0f;
         float applied = Mathf.Max(0f, before - after);

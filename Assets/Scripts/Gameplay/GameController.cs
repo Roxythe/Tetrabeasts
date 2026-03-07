@@ -20,6 +20,9 @@ public class GameController : MonoBehaviour
     [Header("Cursor (Gameplay)")]
     public UICursorController pauseCursor;
 
+    [Header("Battle Log UI")]
+    [SerializeField] private BattleLogUI battleLog;
+
     [Header("Level Progression")]
     public EnemyCastleUI enemyCastleUI;
     public CastleData[] castlesByLevel;
@@ -359,6 +362,18 @@ public class GameController : MonoBehaviour
         {
             gameBoard.TileDied -= OnBoardTileDied;
             gameBoard.TileDied += OnBoardTileDied;
+        }
+
+        if (!battleLog)
+            battleLog = FindFirstObjectByType<BattleLogUI>(FindObjectsInactive.Include);
+
+        if (gameBoard != null)
+        {
+            gameBoard.TileDamaged -= OnBoardTileDamaged;
+            gameBoard.TileDamaged += OnBoardTileDamaged;
+
+            gameBoard.TileHealed -= OnBoardTileHealed;
+            gameBoard.TileHealed += OnBoardTileHealed;
         }
 
         // Resolve saved character selection if any
@@ -1256,6 +1271,8 @@ public class GameController : MonoBehaviour
         ApplyRunGridSize(currentLevel); // Adjust grid size if needed for this level
         InitLevel(currentLevel); // Sets castle to full HP and updates level text
 
+        if (battleLog) battleLog.Clear();
+
         bag.Clear();
         monstersBag.Clear();
         RefillBag();
@@ -1324,6 +1341,9 @@ public class GameController : MonoBehaviour
         if (gameOver || gameBoard == null || selectedCharacter == null) return;
 
         if (specialGauge < specialGaugeMax) return; // Require full gauge
+
+        if (battleLog && selectedCharacter)
+            battleLog.LogAbilityUse(selectedCharacter.displayName, selectedCharacter.specialAbilityName);
 
         if (PlayerProgress.I) // Track total special uses for achievements
         {
@@ -1755,6 +1775,14 @@ public class GameController : MonoBehaviour
                 enemyCastleUI.SetMagicShieldActive(pylonsAlive);
 
             _bossPylonShieldActive = pylonsAlive;
+
+            if (battleLog)
+            {
+                string attackerName = attackerMD ? attackerMD.name : "Unknown";
+                bool pylonsReduced = pylonsAlive && damage < originalDamage;
+                battleLog.LogCastleHit(attackerName, damage, pylonsReduced);
+            }
+
             enemyCastleUI.ApplyDamage(damage);
 
             if (enemyCastleUI.currentHP <= 0 && !winQueued)
@@ -2339,6 +2367,9 @@ public class GameController : MonoBehaviour
 
     void OnBoardTileDied(Vector2Int cell, MonsterData data)
     {
+        if (battleLog && data)
+            battleLog.LogDeath(data.name);
+
         if (gameOver) return;
 
         unitLives = Mathf.Max(0, unitLives - 1);
@@ -2347,6 +2378,97 @@ public class GameController : MonoBehaviour
         if (unitLives <= 0)
             GameOver();
     }
+
+    void OnBoardTileDamaged(Vector2Int cell, MonsterData data, float amount, Board.DamageSource src)
+    {
+        if (!battleLog || !data) return;
+
+        int v = Mathf.RoundToInt(Mathf.Max(0f, amount));
+        if (v <= 0) return;
+
+        GetDamageTextParts(src, out string damageTypeWord, out Color32? damageTypeColor, out string fromLabel);
+
+        battleLog.LogDamageDetailed(data.name, v, damageTypeWord, damageTypeColor, fromLabel);
+    }
+
+    string SourceLabel(Board.DamageSource src)
+    {
+        return src switch
+        {
+            Board.DamageSource.CastleProjectile => "Castle Projectile",
+            Board.DamageSource.Generic => "Damage",
+            _ => src.ToString()
+        };
+    }
+
+    void OnBoardTileHealed(Vector2Int cell, MonsterData data, float amount)
+    {
+        if (!battleLog || !data) return;
+
+        int v = Mathf.RoundToInt(Mathf.Max(0f, amount));
+        if (v <= 0) return;
+
+        battleLog.LogHeal(data.name, v);
+    }
+
+    void GetDamageTextParts(Board.DamageSource src, out string damageTypeWord, out Color32? damageTypeColor, out string fromLabel)
+    {
+        damageTypeWord = null;
+        damageTypeColor = null;
+        fromLabel = null;
+
+        switch (src)
+        {
+            case Board.DamageSource.FloorPoison:
+                damageTypeWord = "poison";
+                damageTypeColor = GetBattleLogPoisonColor();
+                fromLabel = "floor effect";
+                break;
+
+            case Board.DamageSource.FloorBurn:
+                damageTypeWord = "fire";
+                damageTypeColor = GetBattleLogFireColor();
+                fromLabel = "floor effect";
+                break;
+
+            case Board.DamageSource.FloorSpike:
+                fromLabel = "spikes";
+                break;
+
+            case Board.DamageSource.FloorLightning:
+                fromLabel = "lightning";
+                break;
+
+            case Board.DamageSource.CastleProjectile:
+                // This is your “Enemy archer” wording request.
+                fromLabel = "Enemy Archer";
+                break;
+
+            case Board.DamageSource.BossAbility:
+                fromLabel = "Boss";
+                break;
+
+            case Board.DamageSource.MagicExplosive:
+                fromLabel = "Magic Explosive";
+                break;
+
+            default:
+                fromLabel = null;
+                break;
+        }
+    }
+
+    Color32 GetBattleLogPoisonColor()
+    {
+        return battleLog ? GetPrivateColorOrFallback(new Color32(190, 90, 255, 255)) : new Color32(190, 90, 255, 255);
+    }
+
+    Color32 GetBattleLogFireColor()
+    {
+        return battleLog ? GetPrivateColorOrFallback(new Color32(255, 150, 40, 255)) : new Color32(255, 150, 40, 255);
+    }
+
+    Color32 GetPrivateColorOrFallback(Color32 fallback) => fallback;
 
     // ================ Cursor Scaling System ===================
 
@@ -2640,6 +2762,9 @@ public class GameController : MonoBehaviour
         {
             var pickedKind = PickBossAbilityKindFromPool(_castleData);
 
+            if (battleLog)
+                battleLog.LogBossAbility(pickedKind.ToString());
+
             // Execute the picked ability
             switch (pickedKind)
             {
@@ -2671,6 +2796,10 @@ public class GameController : MonoBehaviour
         if (picks.Count == 0) return;
 
         var cast = picks[Random.Range(0, picks.Count)];
+
+        if (battleLog)
+            battleLog.LogBossAbility(cast.Method.Name);
+
         cast?.Invoke();
     }
 
