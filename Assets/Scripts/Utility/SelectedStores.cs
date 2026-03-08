@@ -89,12 +89,14 @@ public static class SettingsStore
     private const string KeyMusic = "Settings_MusicVol";
     private const string KeySFX = "Settings_SFXVol";
     private const string KeyCursor = "Settings_CursorScale";
+    private const string KeyCombatLog = "Settings_CombatLogEnabled";
 
     // Defaults used when no saved data exists
     public const float DefaultMaster = 0.5f;
     public const float DefaultMusic = 1f;
     public const float DefaultSFX = 1f;
     public const float DefaultCursorScale = 1f;
+    public const bool DefaultCombatLogEnabled = true;
 
     // Events
     public static event Action<float> CursorScaleChanged;
@@ -133,5 +135,14 @@ public static class SettingsStore
         AudioManager.I.SetMasterVolume(LoadMaster());
         AudioManager.I.SetMusicVolume(LoadMusic());
         AudioManager.I.SetSFXVolume(LoadSFX());
+    }
+
+    public static bool LoadCombatLogEnabled() =>
+    PlayerPrefs.GetInt(KeyCombatLog, DefaultCombatLogEnabled ? 1 : 0) == 1;
+
+    public static void SaveCombatLogEnabled(bool enabled)
+    {
+        PlayerPrefs.SetInt(KeyCombatLog, enabled ? 1 : 0);
+        PlayerPrefs.Save();
     }
 }

@@ -92,7 +92,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8597452339301913430
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1148,7 +1148,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RunModsPanelUI
   buffsContainer: {fileID: 5047408149756272530}
   debuffsContainer: {fileID: 8406304695986993649}
-  rowPrefab: {fileID: -540488350438470269, guid: e8559c360e2f3334fb21316abd1f0b9e, type: 3}
+  buffRowPrefab: {fileID: 0}
+  debuffRowPrefab: {fileID: 0}
   refreshOnEnable: 1
 --- !u!1 &3579739261133004321
 GameObject:

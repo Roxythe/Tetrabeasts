@@ -19,6 +19,10 @@ public sealed class BattleLogAutoFitLine : MonoBehaviour
 
     public void Fit(float availableWidth)
     {
+        if (_tmp == null) _tmp = GetComponent<TMP_Text>();
+        if (_layout == null) _layout = GetComponent<LayoutElement>();
+        if (_tmp == null || _layout == null) return;
+
         var rt = (RectTransform)transform;
         rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, availableWidth);
 

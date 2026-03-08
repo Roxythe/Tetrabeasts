@@ -215,7 +215,7 @@ public class Board : MonoBehaviour
     // Events
     public event Action<Vector2Int, MonsterData> TileDied; // Event called when a tile's HP reaches 0
     public event Action<Vector2Int, MonsterData, float, DamageSource> TileDamaged;
-    public event Action<Vector2Int, MonsterData, float> TileHealed;
+    public event Action<Vector2Int, MonsterData, MonsterData, float> TileHealed;
 
     [System.Serializable]
     public struct MonsterInstance
@@ -547,7 +547,7 @@ public class Board : MonoBehaviour
 
             if (best.HasValue)
             {
-                if (HealTile(best.Value, finalHeal))
+                if (HealTile(best.Value, finalHeal, md))
                 {
                     PlayHealVFX(best.Value, md.healSprite, 0.5f);
 
@@ -783,7 +783,7 @@ public class Board : MonoBehaviour
         return count;
     }
 
-    public bool HealTile(Vector2Int cell, float amount)
+    public bool HealTile(Vector2Int cell, float amount, MonsterData source)
     {
         if (!monsters.TryGetValue(cell, out var inst) || inst.data == null) return false;
         if (inst.hp <= 0f) return false; // cannot heal dead tiles
@@ -797,7 +797,7 @@ public class Board : MonoBehaviour
         monsters[cell] = inst;
         UpdateTileHPVisual(cell, inst.hp, inst.maxHp);
 
-        TileHealed?.Invoke(cell, inst.data, applied);
+        TileHealed?.Invoke(cell, inst.data, source, applied);
         return true;
     }
 

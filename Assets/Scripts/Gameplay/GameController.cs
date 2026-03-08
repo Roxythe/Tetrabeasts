@@ -367,6 +367,9 @@ public class GameController : MonoBehaviour
         if (!battleLog)
             battleLog = FindFirstObjectByType<BattleLogUI>(FindObjectsInactive.Include);
 
+        if (battleLog)
+            battleLog.SetVisible(SettingsStore.LoadCombatLogEnabled());
+
         if (gameBoard != null)
         {
             gameBoard.TileDamaged -= OnBoardTileDamaged;
@@ -2401,14 +2404,14 @@ public class GameController : MonoBehaviour
         };
     }
 
-    void OnBoardTileHealed(Vector2Int cell, MonsterData data, float amount)
+    void OnBoardTileHealed(Vector2Int cell, MonsterData target, MonsterData source, float amount)
     {
-        if (!battleLog || !data) return;
+        if (!battleLog || !target || !source) return;
 
         int v = Mathf.RoundToInt(Mathf.Max(0f, amount));
         if (v <= 0) return;
 
-        battleLog.LogHeal(data.name, v);
+        battleLog.LogHealDetailed(source.name, v, target.name);
     }
 
     void GetDamageTextParts(Board.DamageSource src, out string damageTypeWord, out Color32? damageTypeColor, out string fromLabel)

@@ -9,6 +9,7 @@ public sealed class BattleLogUI : MonoBehaviour
     [SerializeField] private ScrollRect scrollRect;
     [SerializeField] private RectTransform contentRoot;
     [SerializeField] private TMP_Text linePrefab;
+    [SerializeField] private GameObject visualRoot;
 
     [Header("Behavior")]
     [SerializeField, Min(1)] private int maxLines = 80;
@@ -33,6 +34,7 @@ public sealed class BattleLogUI : MonoBehaviour
     private string PlayerAbility(string s) => $"<b>{C(s, playerAbility)}</b>";
 
     private readonly Queue<TMP_Text> _active = new();
+    private readonly Queue<string> _buffer = new();
 
     private void Awake()
     {
@@ -45,6 +47,9 @@ public sealed class BattleLogUI : MonoBehaviour
             enabled = false;
             return;
         }
+
+        if (!visualRoot && scrollRect)
+            visualRoot = scrollRect.gameObject;
 
         if (linePrefab.gameObject.activeSelf)
             linePrefab.gameObject.SetActive(false);
@@ -83,6 +88,11 @@ public sealed class BattleLogUI : MonoBehaviour
         AddLine($"{Unit(unitName)} took {C(amount.ToString(), damage)}{typePart} damage{fromPart}.");
     }
 
+    public void LogHealDetailed(string healSourceName, int healedAmount, string targetName)
+    {
+        AddLine($"{Unit(healSourceName)} restored {C(healedAmount.ToString(), heal)} health for {Unit(targetName)}.");
+    }
+
     private string ColorizeWord(string word, Color32? c)
     {
         if (string.IsNullOrWhiteSpace(word)) return string.Empty;
@@ -98,8 +108,20 @@ public sealed class BattleLogUI : MonoBehaviour
 
     private void AddLine(string richText)
     {
-        if (!enabled) return;
+        // Always store, even when hidden
+        _buffer.Enqueue(richText);
+        while (_buffer.Count > maxLines)
+            _buffer.Dequeue();
 
+        // If visuals hidden stop here
+        if (!visualRoot || !visualRoot.activeInHierarchy)
+            return;
+
+        AddLineVisualOnly(richText);
+    }
+
+    private void AddLineVisualOnly(string richText)
+    {
         var t = Instantiate(linePrefab, contentRoot);
         t.gameObject.SetActive(true);
         t.richText = true;
@@ -123,11 +145,8 @@ public sealed class BattleLogUI : MonoBehaviour
             if (old) Destroy(old.gameObject);
         }
 
-        if (autoScroll)
-        {
-            Canvas.ForceUpdateCanvases();
+        if (autoScroll && scrollRect)
             scrollRect.verticalNormalizedPosition = 0f;
-        }
     }
 
     private static string E(string s)
@@ -150,6 +169,8 @@ public sealed class BattleLogUI : MonoBehaviour
 
     public void Clear()
     {
+        _buffer.Clear();
+
         while (_active.Count > 0)
         {
             var t = _active.Dequeue();
@@ -183,5 +204,36 @@ public sealed class BattleLogUI : MonoBehaviour
         }
 
         return new string(chars.ToArray());
+    }
+
+    public void SetVisible(bool visible)
+    {
+        if (!visualRoot) return;
+
+        bool wasVisible = visualRoot.activeSelf;
+        visualRoot.SetActive(visible);
+
+        if (visible && !wasVisible)
+            RebuildVisualFromBuffer();
+    }
+
+    public bool IsVisible() => visualRoot && visualRoot.activeSelf;
+
+    private void RebuildVisualFromBuffer()
+    {
+        // Destroy existing visible lines
+        while (_active.Count > 0)
+        {
+            var t = _active.Dequeue();
+            if (t) Destroy(t.gameObject);
+        }
+
+        if (!visualRoot || !visualRoot.activeInHierarchy) return;
+
+        foreach (var line in _buffer)
+            AddLineVisualOnly(line);
+
+        if (autoScroll && scrollRect)
+            scrollRect.verticalNormalizedPosition = 0f;
     }
 }

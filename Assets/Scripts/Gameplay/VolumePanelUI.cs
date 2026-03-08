@@ -15,6 +15,8 @@ public class VolumePanelUI : MonoBehaviour
     public UICursorController uiCursor;
     public Button closeButton;
     public TMP_Dropdown musicModeDropdown; // 0=EDM, 1=Metal, 2=Both
+    public Toggle combatLogToggle;
+    public GameObject combatLogRoot;
 
     [Header("SFX Preview")]
     public bool previewOnChange = true;
@@ -37,6 +39,7 @@ public class VolumePanelUI : MonoBehaviour
         if (sfxSlider) sfxSlider.onValueChanged.AddListener(SetSFX);
         if (cursorSizeSlider) cursorSizeSlider.onValueChanged.AddListener(SetCursorSize);
         if (musicModeDropdown) musicModeDropdown.onValueChanged.AddListener(SetMusicMode);
+        if (combatLogToggle) combatLogToggle.onValueChanged.AddListener(SetCombatLogVisible);
     }
 
     void OnEnable()
@@ -60,6 +63,18 @@ public class VolumePanelUI : MonoBehaviour
         if (pauseWhenOpen) Time.timeScale = 0f;
 
         if (cg) { cg.alpha = 1f; cg.interactable = true; cg.blocksRaycasts = true; }
+
+        if (combatLogRoot)
+            combatLogRoot.SetActive(SettingsStore.LoadCombatLogEnabled());
+
+        if (!combatLogRoot)
+        {
+            var log = FindFirstObjectByType<BattleLogUI>(FindObjectsInactive.Include);
+            combatLogRoot = log ? log.gameObject : null;
+        }
+
+        if (combatLogToggle)
+            combatLogToggle.SetIsOnWithoutNotify(SettingsStore.LoadCombatLogEnabled());
     }
 
     void OnDisable()
@@ -122,6 +137,14 @@ public class VolumePanelUI : MonoBehaviour
     {
         if (gameObject.activeSelf) Close();
         else Open();
+    }
+
+    void SetCombatLogVisible(bool isOn)
+    {
+        SettingsStore.SaveCombatLogEnabled(isOn);
+
+        var log = FindFirstObjectByType<BattleLogUI>(FindObjectsInactive.Include);
+        if (log) log.SetVisible(isOn);
     }
 
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
