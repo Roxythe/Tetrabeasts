@@ -1,13 +1,15 @@
 
 ****** TODO ******
 
-*- Add underlay tint for floor effects visbile only when unoccupied by monster unit unlike border overlay which is always visible
+- Add setting to skip intro trailer when launching the game and directly load title in setttings to be saved persistenlty in player prefs
 
-*- Add fire image VFX under combo counter, grows larger and colors shift and become more vibrant as combo grows larger
+- Modifier buff/debuff text size is too small for description and spacing needs adjustments to look better
 
-*- Add pulsing vfx to combo counter on increment
+- Add an image in monster select screen behind monsters that are selected to join monster warband (red war flag BG Image)
 
 *- Run Modifier images shown in a row on the gameplay scene
+
+- Animate boss icons for casting ability, taking damage, and while low health
 
 - Change gravity accelaration to a flat increase over time instead of ramping up over time. Instead of acceleration increasing at the start of each level, simply increases the flat increase by X amount each level
 

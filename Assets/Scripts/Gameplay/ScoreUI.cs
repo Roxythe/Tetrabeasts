@@ -7,6 +7,10 @@ public class ScoreUI : MonoBehaviour
 
     [Header("Combo")]
     public TMP_Text comboText;
+    public TMP_Text staticComboText;
+    [SerializeField] private ComboPulse comboPulse;
+    [SerializeField] private ComboFireFX comboFireFX;
+    private int _lastCombo;
 
     public void Set(int value)
     {
@@ -17,21 +21,37 @@ public class ScoreUI : MonoBehaviour
     {
         if (!comboText) return;
 
+        bool increased = combo > _lastCombo;
+        _lastCombo = combo;
+
         if (combo <= 0)
         {
-            comboText.text = "";
-            comboText.gameObject.SetActive(false);
+            staticComboText.gameObject.SetActive(true);
+            comboText.gameObject.SetActive(true);
+            comboText.text = "x0";
+
+            if (comboFireFX) comboFireFX.SetCombo(0);
             return;
         }
 
+        staticComboText.gameObject.SetActive(true);
         comboText.gameObject.SetActive(true);
-        comboText.text = $"Combo x{combo}";
+        comboText.text = $"x{combo}";
+
+        if (increased && comboPulse) comboPulse.Pulse();
+        if (comboFireFX) comboFireFX.SetCombo(combo);
     }
 
     public void ClearCombo()
     {
+        _lastCombo = 0;
+
         if (!comboText) return;
-        comboText.text = "";
-        comboText.gameObject.SetActive(false);
+
+        staticComboText.gameObject.SetActive(true);
+        comboText.gameObject.SetActive(true);
+        comboText.text = "x0";
+
+        if (comboFireFX) comboFireFX.SetCombo(0);
     }
 }

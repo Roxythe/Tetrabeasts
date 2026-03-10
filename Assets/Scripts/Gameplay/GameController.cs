@@ -293,7 +293,7 @@ public class GameController : MonoBehaviour
     private bool winQueued = false;
 
     [Header("Combo Scoring")]
-    public float comboWindowSeconds = 5f;
+    public float comboWindowSeconds = 10f;
     int _comboCount = 0;
     float _comboTimer = 0f;
 
@@ -1059,6 +1059,8 @@ public class GameController : MonoBehaviour
         winQueued = false;
         ResetBossGravityVisuals();
 
+        ResetCombo();
+
         // Only apply level-start logic once per level
         if (levelIndex != _lastLevelInitialized)
         {
@@ -1273,6 +1275,8 @@ public class GameController : MonoBehaviour
 
         ApplyRunGridSize(currentLevel); // Adjust grid size if needed for this level
         InitLevel(currentLevel); // Sets castle to full HP and updates level text
+
+        ResetCombo();
 
         if (battleLog) battleLog.Clear();
 
@@ -3641,7 +3645,7 @@ public class GameController : MonoBehaviour
 
     IEnumerator SpecialChargedPulseCo()
     {
-        // Cache defaults once
+        // Cache defaults
         CacheSpecialDefaultsIfNeeded(activateSpecialGaugeText);
         CacheSpecialDefaultsIfNeeded(playerSpecialName);
 
@@ -3726,15 +3730,13 @@ public class GameController : MonoBehaviour
 
         float pct = Mathf.Clamp01(specialGauge / specialGaugeMax);
 
-        // Speed scales with fullness: slow at 10%, normal at 100%
+        // Speed scales with fullness, slow at 10%, normal at 100%
         float speed = Mathf.Lerp(specialGaugeFillMinSpeed, specialGaugeFillMaxSpeed, pct);
 
         _specialFillPhase += Time.unscaledDeltaTime * speed;
-
-        // Use the same FireColor(t) helper you already have (from TMP fiery gradient work)
         Color c = FireColor(_specialFillPhase);
 
-        // Optional: slightly brighten near full
+        // Slightly brighten near full
         float boost = Mathf.Lerp(1f, specialGaugeFillColorBoost, pct);
         c *= boost;
         c.a = 1f;

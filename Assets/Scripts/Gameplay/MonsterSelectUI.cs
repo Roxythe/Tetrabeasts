@@ -293,7 +293,7 @@ public class MonsterSelectUI : MonoBehaviour
 
         if (counterText)
         {
-            counterText.text = $"Selected: {count} / {MaxSelect}";
+            counterText.text = $"{count} / {MaxSelect}";
             counterText.color = validCount ? counterValidColor : counterInvalidColor;
         }
 
@@ -403,7 +403,7 @@ public class MonsterSelectUI : MonoBehaviour
 
         var colors = btn.colors;
         Color onCol = new Color(1f, 1f, 1f, 1.0f);
-        Color offCol = new Color(1f, 1f, 1f, 0.5f);
+        Color offCol = new Color(1f, 1f, 1f, 0.3f);
         Color a = on ? onCol : offCol;
 
         colors.normalColor = a;

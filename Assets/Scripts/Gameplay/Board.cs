@@ -107,6 +107,12 @@ public class Board : MonoBehaviour
     public Color poisonTickFlashTint = new Color(0.75f, 0.25f, 1f, 1f);    // purple
     public Color lightningTickFlashTint = new Color(0.25f, 0.25f, 1f, 1f); // blue
 
+    [Header("Floor Effect Underlay Tints (only visible when cell is empty)")]
+    [Range(0f, 1f)] public float floorUnderlayAlpha = 0.30f;
+    public Color poisonUnderlayTint = new Color(0.75f, 0.25f, 1f, 1f);      // purple
+    public Color fireUnderlayTint = new Color(1f, 0.55f, 0.15f, 1f);         // orange
+    public Color lightningUnderlayTint = new Color(0.25f, 0.95f, 1f, 1f);    // cyan
+
     readonly Dictionary<Vector2Int, Coroutine> _monsterFlashCo = new();
 
     public enum ObstacleType { Stone, MagicPylon, MagicExplosive }
@@ -198,6 +204,7 @@ public class Board : MonoBehaviour
     readonly Dictionary<Vector2Int, Image> poisonBorders = new();
     readonly Dictionary<Vector2Int, Image> fireBorders = new();
     readonly Dictionary<Vector2Int, Image> lightningBorders = new();
+    readonly Dictionary<Vector2Int, Image> floorTintUnderlays = new(); // poison/burn/lightning tints
 
     class SpikeVisual
     {
@@ -487,6 +494,7 @@ public class Board : MonoBehaviour
         TickFloorEffects();
         AnimateSpikes();
         TickMagicExplosives();
+        RefreshAllTintUnderlays();
 
         // ================== Healers pulse over time ==================
         if (monsters.Count == 0 || healTimers.Count == 0) return;
@@ -858,6 +866,9 @@ public class Board : MonoBehaviour
         // Clear spikes (underlay)
         foreach (var kv in spikeVisuals) if (kv.Value != null && kv.Value.root) Destroy(kv.Value.root.gameObject);
         spikeVisuals.Clear();
+
+        foreach (var kv in floorTintUnderlays) if (kv.Value) Destroy(kv.Value.gameObject);
+        floorTintUnderlays.Clear();
 
         RecomputeCellMetrics();
         DrawGridOverlay();
@@ -2148,11 +2159,13 @@ public class Board : MonoBehaviour
             case FloorEffectType.Poison:
                 floorEffects[cell] = FloorEffectState.Poison(damage, interval, ticks);
                 EnsureBorderOverlay(cell, poisonBorderSprite, poisonBorders);
+                EnsureTintUnderlay(cell, poisonUnderlayTint);
                 break;
 
             case FloorEffectType.Burn:
                 floorEffects[cell] = FloorEffectState.Burn(damage, interval, ticks);
                 EnsureBorderOverlay(cell, fireBorderSprite, fireBorders);
+                EnsureTintUnderlay(cell, fireUnderlayTint);
                 break;
 
             case FloorEffectType.Spike:
@@ -2163,6 +2176,7 @@ public class Board : MonoBehaviour
             case FloorEffectType.Lightning:
                 floorEffects[cell] = FloorEffectState.Lightning(damage, interval, ticks);
                 EnsureBorderOverlay(cell, lightningBorderSprite, lightningBorders);
+                EnsureTintUnderlay(cell, lightningUnderlayTint);
                 break;
         }
 
@@ -2184,6 +2198,9 @@ public class Board : MonoBehaviour
 
         if (lightningBorders.TryGetValue(cell, out var l) && l) Destroy(l.gameObject);
         lightningBorders.Remove(cell);
+
+        if (floorTintUnderlays.TryGetValue(cell, out var tint) && tint) Destroy(tint.gameObject);
+        floorTintUnderlays.Remove(cell);
     }
 
     public void ApplyFloorEffectOnPlacement(Vector2Int cell)
@@ -2627,6 +2644,51 @@ public class Board : MonoBehaviour
         }
 
         if (img) Destroy(img.gameObject);
+    }
+
+    // ================= Floor Tint Underlays =================
+
+    void EnsureTintUnderlay(Vector2Int cell, Color tint)
+    {
+        if (!underlayRoot) return;
+
+        // Create if missing
+        if (!floorTintUnderlays.TryGetValue(cell, out var img) || !img)
+        {
+            img = new GameObject("FloorTint", typeof(UnityEngine.UI.Image)).GetComponent<UnityEngine.UI.Image>();
+            img.raycastTarget = false;
+            img.sprite = OnePx();
+            img.type = UnityEngine.UI.Image.Type.Simple;
+
+            var rt = img.rectTransform;
+            rt.SetParent(underlayRoot, false);
+            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.sizeDelta = GetCellSize();
+            rt.anchoredPosition = CellToAnchoredPos(cell);
+
+            floorTintUnderlays[cell] = img;
+        }
+
+        // Apply tint + alpha
+        var c = tint;
+        c.a = floorUnderlayAlpha;
+        img.color = c;
+
+        // Only visible when empty
+        img.enabled = IsFree(cell);
+    }
+
+    void RefreshTintUnderlayVisibility(Vector2Int cell)
+    {
+        if (floorTintUnderlays.TryGetValue(cell, out var img) && img)
+            img.enabled = IsFree(cell);
+    }
+
+    void RefreshAllTintUnderlays()
+    {
+        if (floorTintUnderlays.Count == 0) return;
+        foreach (var kv in floorTintUnderlays)
+            if (kv.Value) kv.Value.enabled = IsFree(kv.Key);
     }
 
     // ================= Resize support =================
