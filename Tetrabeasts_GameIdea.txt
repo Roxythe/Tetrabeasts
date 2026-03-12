@@ -1,17 +1,15 @@
 
 ****** TODO ******
 
-- Add setting to skip intro trailer when launching the game and directly load title in setttings to be saved persistenlty in player prefs
+*- Add visual notification that a buff has been granted from stone obstacle destruction
 
-- Modifier buff/debuff text size is too small for description and spacing needs adjustments to look better
+*- More restrictivley regulate which buff rarities are gained from stone obstacle destruction
 
-- Add an image in monster select screen behind monsters that are selected to join monster warband (red war flag BG Image)
+*- Increases size of modifier panel so row prefab text isn't so scrunched
 
 *- Run Modifier images shown in a row on the gameplay scene
 
-- Animate boss icons for casting ability, taking damage, and while low health
-
-- Change gravity accelaration to a flat increase over time instead of ramping up over time. Instead of acceleration increasing at the start of each level, simply increases the flat increase by X amount each level
+*- Change gravity accelaration to a flat increase over time instead of ramping up over time. Instead of acceleration increasing at the start of each level, simply increases the flat increase by X amount each level
 
 - Animate monster units in each tile for both active and inactive pieces
 

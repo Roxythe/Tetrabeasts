@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: 154154f7a72e92640910742a799ff767
+guid: 07538376f979dc14ab8bde2ab1fbf6ca
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 182416302934344096
-    second: PopeKingBoss_Sprite_0
+      213: -7506153548713329016
+    second: KingBoss_Attack_Sprite_0
+  - first:
+      213: -9094451529574237176
+    second: KingBoss_Attack_Sprite_1
+  - first:
+      213: 955990538915078454
+    second: KingBoss_Attack_Sprite_2
+  - first:
+      213: -5626856277760870243
+    second: KingBoss_Attack_Sprite_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +55,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -139,13 +148,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PopeKingBoss_Sprite_0
+      name: KingBoss_Attack_Sprite_0
       rect:
         serializedVersion: 2
-        x: 115
-        y: 54
-        width: 868
-        height: 936
+        x: 0
+        y: 5
+        width: 904
+        height: 785
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +163,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0a144a939a2188200800000000000000
-      internalID: 182416302934344096
+      spriteID: 88e7763ed19c4d790800000000000000
+      internalID: -7506153548713329016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KingBoss_Attack_Sprite_1
+      rect:
+        serializedVersion: 2
+        x: 234
+        y: 786
+        width: 14
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80c38b0b4840ac180800000000000000
+      internalID: -9094451529574237176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KingBoss_Attack_Sprite_2
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 581
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 631eaa0845c544d00800000000000000
+      internalID: 955990538915078454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KingBoss_Attack_Sprite_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 554
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d98f2e9170469e1b0800000000000000
+      internalID: -5626856277760870243
       vertices: []
       indices: 
       edges: []
@@ -164,7 +239,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -174,7 +249,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      PopeKingBoss_Sprite_0: 182416302934344096
+      KingBoss_Attack_Sprite_0: -7506153548713329016
+      KingBoss_Attack_Sprite_1: -9094451529574237176
+      KingBoss_Attack_Sprite_2: 955990538915078454
+      KingBoss_Attack_Sprite_3: -5626856277760870243
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

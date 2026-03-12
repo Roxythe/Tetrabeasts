@@ -41,7 +41,17 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 212ba41b43c8a004ca231baaa67f9610, type: 3}
   - {fileID: 8300000, guid: 8990cdb32fd36a74c9df4c24a499b0a1, type: 3}
   isBossLevel: 1
-  bossOverlaySprite: {fileID: 21300000, guid: 355e534cb6048ae4d97faf19ff8c3517, type: 3}
+  bossOverlaySprite: {fileID: 21300000, guid: b4deb69631b6e694b8fe198e4f56a48c, type: 3}
+  bossAttackSprite: {fileID: 21300000, guid: 6b96453b695de8547bcc03c68d9f54f3, type: 3}
+  bossDamageTakenSprite: {fileID: 21300000, guid: 7017fd66fad75e548a77b77141b37567, type: 3}
+  bossCriticalIdleSprite: {fileID: 21300000, guid: 0c6bb883c9945c94d9ccaf5621fb75a4, type: 3}
+  bossCriticalDamageTakenSprite: {fileID: 21300000, guid: 0f2b9971b54aa0c48b79d3def318a7fa, type: 3}
+  bossCriticalAttackSprite: {fileID: 21300000, guid: 7b19b0a65d01da94ba1735eea611b47c, type: 3}
+  bossCriticalHpThreshold: 0.3
+  bossAttackShiftRight: 1
+  bossAttackShiftDistance: 20
+  bossAttackSpriteSeconds: 1.5
+  bossDamageSpriteSeconds: 0.5
   overrideInitialObstacles: 1
   overridesOnlyForLevel1: 0
   overrideStoneCount: 9

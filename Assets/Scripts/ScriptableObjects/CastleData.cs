@@ -27,9 +27,23 @@ public class CastleData : ScriptableObject
 
     [Header("Boss Level")]
     public bool isBossLevel;
-    public Sprite bossOverlaySprite;
+    public Sprite bossOverlaySprite; // Idle boss sprite
+    public Sprite bossAttackSprite;
+    public Sprite bossDamageTakenSprite;
+    public Sprite bossCriticalIdleSprite;
+    public Sprite bossCriticalDamageTakenSprite;
+    public Sprite bossCriticalAttackSprite;
 
-    [Header("Obstacle / Trap Overrides (Optional)")]
+    [Header("Boss Sprite Animation")]
+    [Range(0.05f, 0.9f)] public float bossCriticalHpThreshold = 0.30f;
+
+    [Tooltip("If true, attack sprite shifts right. If false, shifts left.")]
+    public bool bossAttackShiftRight = true;
+    [Min(0f)] public float bossAttackShiftDistance = 20f;
+    [Min(0.01f)] public float bossAttackSpriteSeconds = 0.25f;
+    [Min(0.01f)] public float bossDamageSpriteSeconds = 0.18f;
+
+    [Header("Obstacle / Trap Overrides")]
     [Tooltip("If enabled, this CastleData can override the level's initial obstacle/trap counts.")]
     public bool overrideInitialObstacles = false;
     public bool overridesOnlyForLevel1 = true;

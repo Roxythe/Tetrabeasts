@@ -20,9 +20,23 @@ public class MonsterSelectUI : MonoBehaviour
     public Button startButton;
     public CurrencyUI currencyUI;
 
+    [Header("Monster Button Portrait")]
+    public string portraitImageChildName = "MonsterIcon_Image";
+
+    [Header("Monster Button Banner")]
+    public string bannerImageChildName = "MonsterClassBackground_Image";
+    public Sprite attackBannerSprite;
+    public Sprite defenseBannerSprite;
+    public Sprite healerBannerSprite;
+
     [Header("Counter Colors")]
     public Color counterValidColor = Color.green;
     public Color counterInvalidColor = Color.red;
+
+    [Header("Selection Visuals")]
+    [Range(0f, 1f)] public float selectedAlpha = 1f;
+    [Range(0f, 1f)] public float deselectedAlpha = 0.9f;
+    [Range(0f, 1f)] public float deselectedBannerMultiplier = 0.9f;
 
     MonsterData previewMonster;
     int previewSkinIndex = 0; // The skin currently being previewed (can be locked)
@@ -95,7 +109,8 @@ public class MonsterSelectUI : MonoBehaviour
             bool monsterUnlocked = UnlockStore.IsUnlocked(md);
             int displaySkin = monsterUnlocked ? MonsterSkinStore.GetValidSelected(md) : 0;
 
-            if (img) img.sprite = MonsterSkinStore.GetPortrait(md, displaySkin);
+            var portrait = GetPortraitImage(btn);
+            if (portrait) portrait.sprite = MonsterSkinStore.GetPortrait(md, displaySkin);
 
             var lockedImgT = FindDeep(btn.transform, "Locked_Image");
             if (lockedImgT) lockedImgT.gameObject.SetActive(!monsterUnlocked);
@@ -105,6 +120,7 @@ public class MonsterSelectUI : MonoBehaviour
             if (unlockBtnT) unlockBtnT.gameObject.SetActive(!monsterUnlocked);
 
             var captured = md;
+            ApplyBanner(btn, md);
 
             // Always preview on click
             btn.interactable = true;
@@ -307,13 +323,14 @@ public class MonsterSelectUI : MonoBehaviour
 
         foreach (var kv in buttons)
         {
-            var img = kv.Value.GetComponentInChildren<Image>();
+            var portrait = GetPortraitImage(kv.Value);
             bool monsterUnlocked = UnlockStore.IsUnlocked(kv.Key);
             int skin = monsterUnlocked ? MonsterSkinStore.GetValidSelected(kv.Key) : 0;
-            if (img) img.sprite = MonsterSkinStore.GetPortrait(kv.Key, skin);
+            if (portrait) portrait.sprite = MonsterSkinStore.GetPortrait(kv.Key, skin);
 
             ApplyVariantOpacity(kv.Value, kv.Key);
             ApplyVariantLockVisuals(kv.Value, kv.Key);
+            ApplyBanner(kv.Value, kv.Key);
         }
     }
 
@@ -356,6 +373,9 @@ public class MonsterSelectUI : MonoBehaviour
     {
         if (!md) return "";
 
+        // Role line (explicit from ScriptableObject)
+        string roleLine = $"Role: {md.role}";
+
         int atkLvl = ShopBuffStore.GetLevel(ShopBuffType.AttackUp);
         int hpLvl = ShopBuffStore.GetLevel(ShopBuffType.HpUp);
         int healLvl = ShopBuffStore.GetLevel(ShopBuffType.HealPower);
@@ -372,20 +392,25 @@ public class MonsterSelectUI : MonoBehaviour
         string atkLine = $"Attack: {md.attackPower:0.#}  (+{atkLvl}) = {effectiveAttack:0.#}";
         string hpLine = $"Max HP: {md.maxHealth:0.#}  (+{hpLvl * 5}) = {effectiveMaxHp:0.#}";
 
-        string healLine;
+        string healBlock;
         if (md.healAmount > 0f)
         {
-            healLine =
+            healBlock =
                 $"Heal: {md.healAmount:0.#}  (+{healLvl * 2}) = {effectiveHeal:0.#}\n" +
                 $"Heal Range: {range:0.#}\n" +
                 $"Heal Speed: {speed:0.#}s";
         }
         else
         {
-            healLine = "Heal: —";
+            healBlock = "Heal: —";
         }
 
-        return $"Base Stats + (Shop Buff) = Total Stats\n{hpLine}\n{atkLine}\n{healLine}";
+        return
+            $"Base Stats + (Shop Buff) = Total Stats\n" +
+            $"{roleLine}\n" +
+            $"{hpLine}\n" +
+            $"{atkLine}\n" +
+            $"{healBlock}";
     }
 
     void ClearPreview()
@@ -398,19 +423,12 @@ public class MonsterSelectUI : MonoBehaviour
 
     void SetButtonHighlight(Button btn, bool on)
     {
+        if (!btn) return;
+
         var frame = btn.transform.Find("Highlight")?.GetComponent<Image>();
         if (frame) frame.enabled = on;
 
-        var colors = btn.colors;
-        Color onCol = new Color(1f, 1f, 1f, 1.0f);
-        Color offCol = new Color(1f, 1f, 1f, 0.3f);
-        Color a = on ? onCol : offCol;
-
-        colors.normalColor = a;
-        colors.highlightedColor = a;
-        colors.selectedColor = a;
-        colors.pressedColor = a;
-        btn.colors = colors;
+        ApplySelectionAlpha(btn, on);
 
         var es = UnityEngine.EventSystems.EventSystem.current;
         if (!on && es && es.currentSelectedGameObject == btn.gameObject)
@@ -447,6 +465,14 @@ public class MonsterSelectUI : MonoBehaviour
         foreach (Transform t in root.GetComponentsInChildren<Transform>(true))
             if (t.name == name) return t;
         return null;
+    }
+
+    Image GetPortraitImage(Button btn)
+    {
+        if (!btn) return null;
+
+        var t = FindDeep(btn.transform, portraitImageChildName);
+        return t ? t.GetComponent<Image>() : null;
     }
 
     void SetupSkinButtons(Button monsterBtn, MonsterData md)
@@ -582,5 +608,70 @@ public class MonsterSelectUI : MonoBehaviour
             var lockT = FindDeep(t, "Locked_Image");
             if (lockT) lockT.gameObject.SetActive(!unlocked);
         }
+    }
+
+    MonsterRole ResolveRole(MonsterData md)
+    {
+        return md ? md.role : MonsterRole.Attack;
+    }
+
+    Sprite GetBannerSpriteForRole(MonsterRole role)
+    {
+        return role switch
+        {
+            MonsterRole.Attack => attackBannerSprite,
+            MonsterRole.Defense => defenseBannerSprite,
+            MonsterRole.Healer => healerBannerSprite,
+            _ => null
+        };
+    }
+
+    void ApplyBanner(Button btn, MonsterData md)
+    {
+        if (!btn) return;
+
+        var bannerT = FindDeep(btn.transform, bannerImageChildName);
+        if (!bannerT) return;
+
+        var bannerImg = bannerT.GetComponent<Image>();
+        if (!bannerImg) return;
+
+        var sprite = GetBannerSpriteForRole(ResolveRole(md));
+        if (sprite)
+        {
+            bannerImg.sprite = sprite;
+            bannerImg.enabled = true;
+        }
+        else
+        {
+            bannerImg.enabled = false;
+        }
+    }
+
+    Image GetBannerImage(Button btn)
+    {
+        if (!btn) return null;
+
+        var t = FindDeep(btn.transform, bannerImageChildName);
+        return t ? t.GetComponent<Image>() : null;
+    }
+
+    static void SetImageAlpha(Image img, float alpha)
+    {
+        if (!img) return;
+
+        var c = img.color;
+        c.a = Mathf.Clamp01(alpha);
+        img.color = c;
+    }
+
+    void ApplySelectionAlpha(Button btn, bool selectedOn)
+    {
+        float a = selectedOn ? selectedAlpha : deselectedAlpha;
+
+        SetImageAlpha(GetPortraitImage(btn), a);
+
+        float bannerA = selectedOn ? selectedAlpha : (deselectedAlpha * deselectedBannerMultiplier);
+        SetImageAlpha(GetBannerImage(btn), bannerA);
     }
 }

@@ -15,6 +15,7 @@ MonoBehaviour:
   monsterName: Toley
   portrait: {fileID: -1066822171247798340, guid: ad70377c34336dc4bbf5567c45944d87, type: 3}
   monsterDescription: Can take a hit and keep going
+  role: 1
   startsLocked: 1
   unlockCost: 20
   skinPortraits:

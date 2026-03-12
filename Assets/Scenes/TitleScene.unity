@@ -3867,7 +3867,7 @@ MonoBehaviour:
   m_Padding:
     m_Left: 75
     m_Right: 0
-    m_Top: 25
+    m_Top: 35
     m_Bottom: 50
   m_ChildAlignment: 0
   m_StartCorner: 0
@@ -4928,8 +4928,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000037670005, y: -173.84616}
-  m_SizeDelta: {x: 616.0305, y: 238.338}
+  m_AnchoredPosition: {x: 0.000037670005, y: -202.34616}
+  m_SizeDelta: {x: 616.0305, y: 295.338}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &829605484
 CanvasRenderer:
@@ -6638,6 +6638,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Unlock_Button
       objectReference: {fileID: 0}
+    - target: {fileID: 3788764890587112686, guid: 9329f6ebc1ad1114b92e5524b79cc64b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5862917387663241501, guid: 9329f6ebc1ad1114b92e5524b79cc64b, type: 3}
       propertyPath: m_SizeDelta.x
       value: -18.5713
@@ -8270,8 +8274,16 @@ MonoBehaviour:
   counterText: {fileID: 1230628854}
   startButton: {fileID: 1814195750}
   currencyUI: {fileID: 540683043}
+  portraitImageChildName: MonsterIcon_Image
+  bannerImageChildName: MonsterClassBackground_Image
+  attackBannerSprite: {fileID: -4906429432241931371, guid: 0cccefe96b81dcd4488c04012a2f3967, type: 3}
+  defenseBannerSprite: {fileID: -8104999780292509229, guid: 6ae5524f541dd2a458f54ea1d543364d, type: 3}
+  healerBannerSprite: {fileID: -8981282176087736287, guid: b500a29f02468c24b98d8aebf4993c50, type: 3}
   counterValidColor: {r: 0, g: 1, b: 0, a: 1}
   counterInvalidColor: {r: 1, g: 0, b: 0, a: 1}
+  selectedAlpha: 1
+  deselectedAlpha: 0.7
+  deselectedBannerMultiplier: 0
   previewUnlockButton: {fileID: 1156887936}
   previewUnlockCostText: {fileID: 1156887935}
   previewLockedImage: {fileID: 33526604}
@@ -10155,8 +10167,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 64.30005}
-  m_SizeDelta: {x: 682.54, y: 734.6001}
+  m_AnchoredPosition: {x: 0, y: 36.554565}
+  m_SizeDelta: {x: 682.54, y: 790.09}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1950126294
 MonoBehaviour:

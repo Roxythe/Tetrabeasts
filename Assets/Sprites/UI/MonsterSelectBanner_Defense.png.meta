@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7016d7e9103892c479ddc8b4ea3dca5f
+guid: 6ae5524f541dd2a458f54ea1d543364d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2311437191288037494
-    second: VillageChiefBoss_Sprite_0
+      213: -8104999780292509229
+    second: MonsterSelectBanner_Defense_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -139,13 +139,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: VillageChiefBoss_Sprite_0
+      name: MonsterSelectBanner_Defense_0
       rect:
         serializedVersion: 2
-        x: 164
-        y: 54
-        width: 762
-        height: 898
+        x: 0
+        y: 13
+        width: 804
+        height: 1160
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 670a95301efd31020800000000000000
-      internalID: 2311437191288037494
+      spriteID: 3d1cb0754a1458f80800000000000000
+      internalID: -8104999780292509229
       vertices: []
       indices: 
       edges: []
@@ -174,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      VillageChiefBoss_Sprite_0: 2311437191288037494
+      MonsterSelectBanner_Defense_0: -8104999780292509229
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

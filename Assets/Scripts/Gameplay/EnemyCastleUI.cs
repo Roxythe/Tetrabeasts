@@ -6,11 +6,11 @@ using TMPro;
 public class EnemyCastleUI : MonoBehaviour
 {
     [Header("UI Refs")]
-    public Image castleImage;          // Castle_Image
-    public TMP_Text castleNameText;    // CastleName_Text
-    public Slider healthBarSlider;     // HealthBar_Slider
-    public TMP_Text healthBarText;     // HealthBar_Text
-    public TMP_Text levelNameText;     // (optional portrait label)
+    public Image castleImage; 
+    public TMP_Text castleNameText; 
+    public Slider healthBarSlider; 
+    public TMP_Text healthBarText;  
+    public TMP_Text levelNameText; 
 
     [Header("Runtime State (read-only for other scripts)")]
     public int maxHP { get; private set; }
@@ -19,14 +19,14 @@ public class EnemyCastleUI : MonoBehaviour
     public int levelNumber { get; private set; }
 
     [Header("Boss Overlay")]
-    public Image bossOverlayImage;             // Drag your Boss_Image here
-    public Vector2 bossOverlaySize = Vector2.zero; // Optional fixed size; leave (0,0) to inherit castle size
-    public Vector2 bossOverlayOffset = Vector2.zero; // Fine-tune placement
+    public Image bossOverlayImage;            
+    public Vector2 bossOverlaySize = Vector2.zero; 
+    public Vector2 bossOverlayOffset = Vector2.zero; 
 
     [Header("Invulnerability VFX")]
     public Image invulnShieldImageA;
     public Image invulnShieldImageB; 
-    public Image healthBarFillImage; // The Image component used to tint the health bar fill on invulnerability
+    public Image healthBarFillImage; 
 
     [Header("Magic Shield (Pylons)")]
     public Image magicShieldImage;
@@ -45,6 +45,9 @@ public class EnemyCastleUI : MonoBehaviour
     CastleData sourceData;
     int _lastStageIndex = -1;
 
+    Coroutine _bossSpriteCR;
+    Vector2 _bossOverlayBaseAnchoredPos;
+    bool _bossOverlayBaseCaptured = false;
 
     // New overload that accepts the level number
     public void InitCastle(CastleData data, int levelNumber)
@@ -140,6 +143,8 @@ public class EnemyCastleUI : MonoBehaviour
         currentHP = Mathf.Max(0, currentHP - dmg);
         UpdateVisuals();
 
+        TriggerBossDamageTakenSprite(); // Show damage sprite briefly, then return to correct idle
+
         if (currentHP <= 0)
             OnCastleDestroyed();
     }
@@ -173,7 +178,7 @@ public class EnemyCastleUI : MonoBehaviour
 
     void OnCastleDestroyed()
     {
-        Debug.Log("Castle destroyed! Player wins level.");  // Let GameController decide what to do on win
+        Debug.Log("Castle destroyed! Player wins level.");  // GameController decides what to do on win
     }
 
     void SetupBossOverlay()
@@ -182,18 +187,32 @@ public class EnemyCastleUI : MonoBehaviour
 
         bool on = (sourceData != null && sourceData.isBossLevel);
         bossOverlayImage.enabled = on;
-        if (!on) return;
 
-        if (sourceData.bossOverlaySprite)
-            bossOverlayImage.sprite = sourceData.bossOverlaySprite;
+        if (!on)
+        {
+            StopBossSpriteRoutineIfAny();
+            return;
+        }
 
         var brt = bossOverlayImage.rectTransform;
+
+        if (!_bossOverlayBaseCaptured)
+        {
+            _bossOverlayBaseAnchoredPos = brt.anchoredPosition;
+            _bossOverlayBaseCaptured = true;
+        }
+
         bossOverlayImage.preserveAspect = true;
         bossOverlayImage.raycastTarget = false;
 
-        // Optional size override (safe)
+        // Size override 
         if (bossOverlaySize != Vector2.zero)
             brt.sizeDelta = bossOverlaySize;
+
+        // Always start in the correct idle 
+        ResetBossOverlayPosition();
+        var idle = GetBossIdleSprite();
+        if (idle) bossOverlayImage.sprite = idle;
     }
 
     public void StartInvulnerability(float seconds)
@@ -270,4 +289,134 @@ public class EnemyCastleUI : MonoBehaviour
             magicShieldImage.gameObject.SetActive(on);
     }
 
+    // ================= Boss Sprite Routines (attack shift, damage flash) =================
+
+    void StopBossSpriteRoutineIfAny()
+    {
+        if (_bossSpriteCR != null)
+        {
+            StopCoroutine(_bossSpriteCR);
+            _bossSpriteCR = null;
+        }
+    }
+
+    bool IsBossLevelActive()
+    {
+        return sourceData != null && sourceData.isBossLevel && bossOverlayImage != null && bossOverlayImage.enabled;
+    }
+
+    bool IsBossCriticalHP()
+    {
+        if (sourceData == null) return false;
+
+        float t = Mathf.Clamp01(sourceData.bossCriticalHpThreshold <= 0f ? 0.30f : sourceData.bossCriticalHpThreshold);
+        int cutoff = Mathf.CeilToInt(maxHP * t);
+        return currentHP <= cutoff;
+    }
+
+    Sprite GetBossIdleSprite()
+    {
+        if (sourceData == null) return null;
+
+        if (IsBossCriticalHP() && sourceData.bossCriticalIdleSprite)
+            return sourceData.bossCriticalIdleSprite;
+
+        return sourceData.bossOverlaySprite;
+    }
+
+    Sprite GetBossAttackSprite()
+    {
+        if (sourceData == null) return null;
+
+        if (IsBossCriticalHP() && sourceData.bossCriticalAttackSprite)
+            return sourceData.bossCriticalAttackSprite;
+
+        return sourceData.bossAttackSprite;
+    }
+
+    Sprite GetBossDamageTakenSprite()
+    {
+        if (sourceData == null) return null;
+
+        if (IsBossCriticalHP() && sourceData.bossCriticalDamageTakenSprite)
+            return sourceData.bossCriticalDamageTakenSprite;
+
+        return sourceData.bossDamageTakenSprite;
+    }
+
+    void ResetBossOverlayPosition()
+    {
+        if (!bossOverlayImage) return;
+
+        var brt = bossOverlayImage.rectTransform;
+        if (!_bossOverlayBaseCaptured)
+        {
+            _bossOverlayBaseAnchoredPos = brt.anchoredPosition;
+            _bossOverlayBaseCaptured = true;
+        }
+
+        brt.anchoredPosition = _bossOverlayBaseAnchoredPos;
+    }
+
+    void SetBossOverlaySprite(Sprite sprite)
+    {
+        if (!bossOverlayImage || sprite == null) return;
+        bossOverlayImage.sprite = sprite;
+    }
+
+    public void PlayBossAttackSprite()
+    {
+        if (!IsBossLevelActive()) return;
+
+        var sprite = GetBossAttackSprite();
+        if (sprite == null) return;
+
+        StopBossSpriteRoutineIfAny();
+        _bossSpriteCR = StartCoroutine(BossAttackRoutine(sprite));
+    }
+
+    void TriggerBossDamageTakenSprite()
+    {
+        if (!IsBossLevelActive()) return;
+
+        var sprite = GetBossDamageTakenSprite();
+        if (sprite == null) return;
+
+        // Damage should interrupt attack 
+        StopBossSpriteRoutineIfAny();
+        _bossSpriteCR = StartCoroutine(BossDamageRoutine(sprite));
+    }
+
+    IEnumerator BossAttackRoutine(Sprite sprite)
+    {
+        ResetBossOverlayPosition();
+        SetBossOverlaySprite(sprite);
+
+        float dir = (sourceData != null && sourceData.bossAttackShiftRight) ? 1f : -1f;
+        float dist = (sourceData != null) ? sourceData.bossAttackShiftDistance : 20f;
+
+        var brt = bossOverlayImage.rectTransform;
+        brt.anchoredPosition = _bossOverlayBaseAnchoredPos + new Vector2(dir * dist, 0f);
+
+        float seconds = (sourceData != null && sourceData.bossAttackSpriteSeconds > 0f) ? sourceData.bossAttackSpriteSeconds : 0.25f;
+        yield return new WaitForSeconds(seconds);
+
+        // Snap back and return to correct idle
+        ResetBossOverlayPosition();
+        SetBossOverlaySprite(GetBossIdleSprite());
+        _bossSpriteCR = null;
+    }
+
+    IEnumerator BossDamageRoutine(Sprite sprite)
+    {
+        ResetBossOverlayPosition();
+        SetBossOverlaySprite(sprite);
+
+        float seconds = (sourceData != null && sourceData.bossDamageSpriteSeconds > 0f) ? sourceData.bossDamageSpriteSeconds : 0.18f;
+        yield return new WaitForSeconds(seconds);
+
+        ResetBossOverlayPosition();
+        SetBossOverlaySprite(GetBossIdleSprite());
+        _bossSpriteCR = null;
+    }
 }

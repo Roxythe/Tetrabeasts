@@ -17,6 +17,7 @@ public class VolumePanelUI : MonoBehaviour
     public TMP_Dropdown musicModeDropdown; // 0=EDM, 1=Metal, 2=Both
     public Toggle combatLogToggle;
     public GameObject combatLogRoot;
+    public Toggle skipIntroToggle;
 
     [Header("SFX Preview")]
     public bool previewOnChange = true;
@@ -40,6 +41,7 @@ public class VolumePanelUI : MonoBehaviour
         if (cursorSizeSlider) cursorSizeSlider.onValueChanged.AddListener(SetCursorSize);
         if (musicModeDropdown) musicModeDropdown.onValueChanged.AddListener(SetMusicMode);
         if (combatLogToggle) combatLogToggle.onValueChanged.AddListener(SetCombatLogVisible);
+        if (skipIntroToggle) skipIntroToggle.onValueChanged.AddListener(SetSkipIntroEnabled);
     }
 
     void OnEnable()
@@ -75,6 +77,9 @@ public class VolumePanelUI : MonoBehaviour
 
         if (combatLogToggle)
             combatLogToggle.SetIsOnWithoutNotify(SettingsStore.LoadCombatLogEnabled());
+
+        if (skipIntroToggle)
+            skipIntroToggle.SetIsOnWithoutNotify(SettingsStore.LoadSkipIntroEnabled());
     }
 
     void OnDisable()
@@ -145,6 +150,11 @@ public class VolumePanelUI : MonoBehaviour
 
         var log = FindFirstObjectByType<BattleLogUI>(FindObjectsInactive.Include);
         if (log) log.SetVisible(isOn);
+    }
+
+    void SetSkipIntroEnabled(bool isOn)
+    {
+        SettingsStore.SaveSkipIntroEnabled(isOn);
     }
 
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER

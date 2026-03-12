@@ -2760,7 +2760,7 @@ public class GameController : MonoBehaviour
 
     void TryCastRandomBossAbility()
     {
-        if (_castleData == null || gameBoard == null) return;
+        if (_castleData == null || !_castleData.isBossLevel) return;
 
         // --- Weighted option pool path ---
         if (_castleData.useBossAbilityOptionPool &&
@@ -2771,6 +2771,9 @@ public class GameController : MonoBehaviour
 
             if (battleLog)
                 battleLog.LogBossAbility(pickedKind.ToString());
+
+            // Play attack for ANY boss special cast
+            if (enemyCastleUI) enemyCastleUI.PlayBossAttackSprite();
 
             // Execute the picked ability
             switch (pickedKind)
@@ -2806,6 +2809,9 @@ public class GameController : MonoBehaviour
 
         if (battleLog)
             battleLog.LogBossAbility(cast.Method.Name);
+
+        // Play attack for any boss special cast
+        if (enemyCastleUI) enemyCastleUI.PlayBossAttackSprite();
 
         cast?.Invoke();
     }

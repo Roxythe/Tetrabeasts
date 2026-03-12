@@ -32,6 +32,14 @@ public class IntroController : MonoBehaviour
 
     void Start()
     {
+        bool hasSelections = SelectedCharacterStore.HasSavedSelection() || SelectedMonstersStore.HasSavedSelection();
+
+        if (SettingsStore.LoadSkipIntroEnabled() && hasSelections)
+        {
+            LoadTitle();
+            return;
+        }
+
         if (pressAnyKeyText)
         {
             Color c = pressAnyKeyText.color;
@@ -51,7 +59,7 @@ public class IntroController : MonoBehaviour
         videoPlayer.waitForFirstFrame = true;
         videoPlayer.skipOnDrop = true;
 
-        // Fail-safe: if there's no assigned clip and no URL, skip intro
+        // If there's no assigned clip and no URL, skip intro
         if (videoPlayer.clip == null && string.IsNullOrWhiteSpace(videoPlayer.url))
         {
             Debug.LogWarning("IntroController: No intro video clip or URL found. Loading title scene.");
@@ -88,7 +96,7 @@ public class IntroController : MonoBehaviour
 
         videoPlayer.Prepare(); // Prepare video before playing
 
-        // Fail-safe: if Prepare never completes (bad file, missing resource, codec issue), skip intro
+        // Skip intro
         if (_prepareTimeoutCR != null) StopCoroutine(_prepareTimeoutCR);
         _prepareTimeoutCR = StartCoroutine(PrepareTimeout());
     }

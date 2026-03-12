@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: 355e534cb6048ae4d97faf19ff8c3517
+guid: 6ec8a5311cfcab94798a19458199476a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7378191739304645766
-    second: ArchMage_Sprite_0
-  - first:
-      213: -2637905241018798337
-    second: ArchMage_Sprite_1
+      213: -4625548890514744513
+    second: FemaleCleric_CriticalIdle_Sprite_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -142,13 +139,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ArchMage_Sprite_0
+      name: FemaleCleric_CriticalIdle_Sprite_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 2
-        width: 977
-        height: 1061
+        x: 14
+        y: 0
+        width: 1008
+        height: 919
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -157,30 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a7b660654b56b9990800000000000000
-      internalID: -7378191739304645766
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ArchMage_Sprite_1
-      rect:
-        serializedVersion: 2
-        x: 122
-        y: 1044
-        width: 12
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ffeeee5d827446bd0800000000000000
-      internalID: -2637905241018798337
+      spriteID: f3b9aa19acfbecfb0800000000000000
+      internalID: -4625548890514744513
       vertices: []
       indices: 
       edges: []
@@ -199,8 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ArchMage_Sprite_0: -7378191739304645766
-      ArchMage_Sprite_1: -2637905241018798337
+      FemaleCleric_CriticalIdle_Sprite_0: -4625548890514744513
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

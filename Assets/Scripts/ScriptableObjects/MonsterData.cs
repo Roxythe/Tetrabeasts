@@ -9,6 +9,13 @@ public enum AttackAnimType
     SpinClockwise = 2 // Rotates clockwise continuously while moving
 }
 
+public enum MonsterRole
+{
+    Attack = 0,
+    Defense = 1,
+    Healer = 2
+}
+
 [CreateAssetMenu(menuName = "Run/Monster Piece", fileName = "NewMonsterPiece")]
 public class MonsterData : ScriptableObject
 {
@@ -16,6 +23,9 @@ public class MonsterData : ScriptableObject
     public string monsterName = "Devil";
     public Sprite portrait;
     public string monsterDescription;
+
+    [Header("Role")]
+    public MonsterRole role = MonsterRole.Attack;
 
     [Header("Unlock")]
     public bool startsLocked = false;

@@ -31,6 +31,11 @@ public static class SelectedCharacterStore
                 return roster[i];
         return null;
     }
+
+    public static bool HasSavedSelection()
+    {
+        return !string.IsNullOrEmpty(PlayerPrefs.GetString(Key, ""));
+    }
 }
 
 // ============== Store data for selected monster pieces ==============
@@ -78,6 +83,11 @@ public static class SelectedMonstersStore
         }
         return outList;
     }
+
+    public static bool HasSavedSelection()
+    {
+        return !string.IsNullOrEmpty(PlayerPrefs.GetString(Key, ""));
+    }
 }
 
 // ============== Store data for settings (volume + cursor) ==============
@@ -90,6 +100,7 @@ public static class SettingsStore
     private const string KeySFX = "Settings_SFXVol";
     private const string KeyCursor = "Settings_CursorScale";
     private const string KeyCombatLog = "Settings_CombatLogEnabled";
+    private const string KeySkipIntro = "Settings_SkipIntro";
 
     // Defaults used when no saved data exists
     public const float DefaultMaster = 0.5f;
@@ -143,6 +154,17 @@ public static class SettingsStore
     public static void SaveCombatLogEnabled(bool enabled)
     {
         PlayerPrefs.SetInt(KeyCombatLog, enabled ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+    public const bool DefaultSkipIntro = false;
+
+    public static bool LoadSkipIntroEnabled() =>
+        PlayerPrefs.GetInt(KeySkipIntro, DefaultSkipIntro ? 1 : 0) == 1;
+
+    public static void SaveSkipIntroEnabled(bool enabled)
+    {
+        PlayerPrefs.SetInt(KeySkipIntro, enabled ? 1 : 0);
         PlayerPrefs.Save();
     }
 }
