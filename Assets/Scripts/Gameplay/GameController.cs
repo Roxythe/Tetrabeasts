@@ -200,9 +200,6 @@ public class GameController : MonoBehaviour
     [Header("Obstacles & Traps")]
     public ObstacleManager obstacleManager;
 
-    [Range(0f, 1f)]
-    public float stoneBuffDropChance = 0.25f; // Chance to drop a run buff when stone breaks
-
     // ================= Boss Ability Loop =================
     CastleData _castleData;
     float _bossAbilityTimer = 0f;
@@ -260,7 +257,7 @@ public class GameController : MonoBehaviour
     public float lineClearCurrencyChanceAdd = 0f;
     public float lineClearCurrencyAmountMult = 1f;
 
-    // ================= Player Special Timers =================
+    // =========== Player Special Timers ===========
     float _playerGravityMultActive = 1f;     // 1 = normal
     Coroutine _playerGravityCR;
 
@@ -311,6 +308,33 @@ public class GameController : MonoBehaviour
 
     // Used by reward UI and other systems that need to know what type of level just ended
     public bool LastLevelWasBoss => currentCastleData != null && currentCastleData.isBossLevel;
+
+    // ========== Stone Block Buffs ==========
+
+    [Header("Stone Buff Popup")]
+    [Range(0f, 1f)] public float stoneBuffDropChance = 0.10f; // Chance to drop a run buff when stone breaks
+    public bool showStoneBuffPopup = true;
+    public BuffPopupStyleSO stoneBuffPopupStyle;
+    public AudioClip sfxStoneBuffGranted;
+
+    [Header("Stone Buff Pools By Rarity (Optional)")]
+    public RunModifierSO[] stoneBuffPoolCommon;
+    public RunModifierSO[] stoneBuffPoolUncommon;
+    public RunModifierSO[] stoneBuffPoolRare;
+    public RunModifierSO[] stoneBuffPoolEpic;
+    public RunModifierSO[] stoneBuffPoolLegendary;
+
+    [Header("Stone Buff Rarity Weights By Level")]
+    [Tooltip("Levels 1-3")]
+    public Vector4 stoneWeights_L1_3 = new Vector4(0.90f, 0.10f, 0.00f, 0.00f); // C,U,R,E (no legendary here)
+    [Tooltip("Levels 4-6")]
+    public Vector4 stoneWeights_L4_6 = new Vector4(0.70f, 0.25f, 0.05f, 0.00f);
+    [Tooltip("Levels 7-9")]
+    public Vector4 stoneWeights_L7_9 = new Vector4(0.55f, 0.30f, 0.12f, 0.03f);
+    [Tooltip("Levels 10+")]
+    public Vector4 stoneWeights_L10P = new Vector4(0.40f, 0.30f, 0.20f, 0.10f);
+
+    [Range(0f, 0.20f)] public float stoneLegendaryChance_L10P = 0.02f; // taken out of common at level 10+
 
     void Start()
     {
@@ -2517,16 +2541,24 @@ public class GameController : MonoBehaviour
         // Stone existing run buff drops
         if (type == Board.ObstacleType.Stone)
         {
-            if (buffPool == null || buffPool.Length == 0) return;
             if (Random.value > stoneBuffDropChance) return;
 
-            var buff = buffPool[Random.Range(0, buffPool.Length)];
-            if (!buff) return;
+            int levelNumber = Mathf.Max(1, currentLevel + 1);
+
+            if (!TryPickStoneBuffForLevel(levelNumber, out var buff, out var rarity)) return;
 
             RunModsStore.Buffs.Add(buff);
             buff.Apply(this);
 
-            if (runModsPanelUI) runModsPanelUI.Refresh(); // Refresh UI if open
+            if (AudioManager.I)
+            {
+                var clip = sfxStoneBuffGranted ? sfxStoneBuffGranted : AudioManager.I.sfxStoneBuffGranted;
+                if (clip) AudioManager.I.PlayUISFX(clip);
+            }
+
+            if (runModsPanelUI) runModsPanelUI.Refresh();
+
+            ShowStoneBuffGrantedPopup(cell, buff, rarity);
             return;
         }
 
@@ -2538,33 +2570,125 @@ public class GameController : MonoBehaviour
         }
     }
 
-    // ================ Boss Abilities ===================
-
-    bool TryGetRandomEmptyCellAnyRow(out Vector2Int cell, int minYInclusive, int maxYInclusive, int maxAttempts = 300)
+    Vector4 GetStoneWeightsForLevel(int levelNumber)
     {
-        cell = default;
-        if (!gameBoard) return false;
+        if (levelNumber <= 3) return stoneWeights_L1_3;
+        if (levelNumber <= 6) return stoneWeights_L4_6;
+        if (levelNumber <= 9) return stoneWeights_L7_9;
+        return stoneWeights_L10P;
+    }
 
-        int minY = Mathf.Clamp(minYInclusive, 0, gameBoard.height - 1);
-        int maxY = Mathf.Clamp(maxYInclusive, 0, gameBoard.height - 1);
-        if (maxY < minY) (minY, maxY) = (maxY, minY);
-
-        for (int a = 0; a < maxAttempts; a++)
+    static RunModifierSO PickRandomNonNull(RunModifierSO[] pool)
+    {
+        if (pool == null || pool.Length == 0) return null;
+        for (int i = 0; i < 12; i++)
         {
-            int x = Random.Range(0, gameBoard.width);
-            int y = Random.Range(minY, maxY + 1);
-            var c = new Vector2Int(x, y);
-            if (gameBoard.IsFree(c))
+            var b = pool[Random.Range(0, pool.Length)];
+            if (b) return b;
+        }
+        return null;
+    }
+
+    bool TryPickStoneBuffForLevel(int levelNumber, out RunModifierSO buff, out RunModRarity rarity)
+    {
+        buff = null;
+        rarity = RunModRarity.Common;
+
+        bool hasAnyRarityPools =
+            (stoneBuffPoolCommon != null && stoneBuffPoolCommon.Length > 0) ||
+            (stoneBuffPoolUncommon != null && stoneBuffPoolUncommon.Length > 0) ||
+            (stoneBuffPoolRare != null && stoneBuffPoolRare.Length > 0) ||
+            (stoneBuffPoolEpic != null && stoneBuffPoolEpic.Length > 0) ||
+            (stoneBuffPoolLegendary != null && stoneBuffPoolLegendary.Length > 0);
+
+        if (!hasAnyRarityPools)
+        {
+            buff = PickRandomNonNull(buffPool);
+            rarity = GetRaritySafe(buff, RunModRarity.Common);
+            return buff != null;
+        }
+
+        if (levelNumber >= 10 && stoneBuffPoolLegendary != null && stoneBuffPoolLegendary.Length > 0)
+        {
+            float pLeg = Mathf.Clamp01(stoneLegendaryChance_L10P);
+            if (Random.value < pLeg)
             {
-                cell = c;
-                return true;
+                buff = PickRandomNonNull(stoneBuffPoolLegendary);
+                rarity = RunModRarity.Legendary;
+                return buff != null;
             }
         }
 
-        return false;
+        Vector4 w = GetStoneWeightsForLevel(levelNumber);
+        float wc = Mathf.Max(0f, w.x);
+        float wu = Mathf.Max(0f, w.y);
+        float wr = Mathf.Max(0f, w.z);
+        float we = Mathf.Max(0f, w.w);
+
+        if (stoneBuffPoolCommon == null || stoneBuffPoolCommon.Length == 0) wc = 0f;
+        if (stoneBuffPoolUncommon == null || stoneBuffPoolUncommon.Length == 0) wu = 0f;
+        if (stoneBuffPoolRare == null || stoneBuffPoolRare.Length == 0) wr = 0f;
+        if (stoneBuffPoolEpic == null || stoneBuffPoolEpic.Length == 0) we = 0f;
+
+        float sum = wc + wu + wr + we;
+        if (sum <= 0.0001f)
+        {
+            buff = PickRandomNonNull(buffPool);
+            rarity = GetRaritySafe(buff, RunModRarity.Common);
+            return buff != null;
+        }
+
+        float roll = Random.value * sum;
+
+        if (roll < wc)
+        {
+            buff = PickRandomNonNull(stoneBuffPoolCommon);
+            rarity = RunModRarity.Common;
+            return buff != null;
+        }
+        roll -= wc;
+
+        if (roll < wu)
+        {
+            buff = PickRandomNonNull(stoneBuffPoolUncommon);
+            rarity = RunModRarity.Uncommon;
+            return buff != null;
+        }
+        roll -= wu;
+
+        if (roll < wr)
+        {
+            buff = PickRandomNonNull(stoneBuffPoolRare);
+            rarity = RunModRarity.Rare;
+            return buff != null;
+        }
+
+        buff = PickRandomNonNull(stoneBuffPoolEpic);
+        rarity = RunModRarity.Epic;
+        return buff != null;
     }
 
-    bool TryPickBossObstacleCell(out Vector2Int cell)
+    void ShowStoneBuffGrantedPopup(Vector2Int cell, RunModifierSO buff, RunModRarity rarity)
+    {
+        if (!showStoneBuffPopup) return;
+        if (!gameBoard || !buff) return;
+        if (!stoneBuffPopupStyle || !stoneBuffPopupStyle.popupPrefab) return;
+
+        string shownName = !string.IsNullOrWhiteSpace(buff.displayName) ? buff.displayName : buff.name;
+        string msg = $"{shownName}";
+
+        gameBoard.ShowBuffPopupAtCell(cell, msg, stoneBuffPopupStyle, rarity);
+    }
+
+    static RunModRarity GetRaritySafe(RunModifierSO buff, RunModRarity fallback)
+    {
+        if (buff is RunModifier rm) return rm.rarity;
+        return fallback;
+    }
+
+    // ================ Boss Abilities ===================
+
+    bool TryPickBossObstacleCell(out Vector2Int cell, int avoidLastNEmptyInRow = 0)
     {
         cell = default;
         if (!gameBoard) return false;
@@ -2573,13 +2697,18 @@ public class GameController : MonoBehaviour
         int maxY = gameBoard.height - 1;
 
         if (bossPreferLowerHalf)
-            maxY = Mathf.Max(0, (gameBoard.height / 2) - 1); // lower half = smaller y values
+            maxY = Mathf.Max(0, (gameBoard.height / 2) - 1); // Lower half = smaller y values
 
-        // Scan y from bottom up and take the first row that has candidates.
+        int minFreeInRowExclusive = Mathf.Max(0, avoidLastNEmptyInRow);
+
+        // Scan y from bottom up and take the first row that has candidates
         if (bossPreferAsLowAsPossible)
         {
             for (int y = minY; y <= maxY; y++)
             {
+                if (minFreeInRowExclusive > 0 && gameBoard.CountFreeCellsInRow(y) <= minFreeInRowExclusive)
+                    continue;
+
                 // Collect valid candidates for this y
                 var candidates = new List<int>();
                 for (int x = 0; x < gameBoard.width; x++)
@@ -2609,6 +2738,10 @@ public class GameController : MonoBehaviour
         {
             int x = Random.Range(0, gameBoard.width);
             int y = Random.Range(minY, maxY + 1);
+
+            if (minFreeInRowExclusive > 0 && gameBoard.CountFreeCellsInRow(y) <= minFreeInRowExclusive)
+                continue;
+
             var c = new Vector2Int(x, y);
 
             if (!gameBoard.IsFree(c)) continue;
@@ -2647,16 +2780,20 @@ public class GameController : MonoBehaviour
         StartCoroutine(Boss_MagicExplosiveRoutine());
     }
 
-    bool TryPickBossObstacleCellExcluding(HashSet<Vector2Int> used, out Vector2Int cell, int maxTries = 250)
+    bool TryPickBossObstacleCellExcluding(HashSet<Vector2Int> used, HashSet<int> usedRows,
+                                       out Vector2Int cell, int avoidLastNEmptyInRow = 0, int maxTries = 250)
     {
         cell = default;
 
         for (int i = 0; i < maxTries; i++)
         {
-            if (!TryPickBossObstacleCell(out cell))
+            if (!TryPickBossObstacleCell(out cell, avoidLastNEmptyInRow))
                 return false;
 
             if (used != null && used.Contains(cell))
+                continue;
+
+            if (usedRows != null && usedRows.Contains(cell.y))
                 continue;
 
             return true;
@@ -2682,15 +2819,21 @@ public class GameController : MonoBehaviour
         {
             batches++;
 
-            // Pick 'remaining' cells for this batch
+            // Pick remaining cells for this batch
             var batchCells = new List<Vector2Int>(remaining);
+            var usedRowsThisBatch = new HashSet<int>();
 
             for (int i = 0; i < remaining; i++)
             {
-                if (!TryPickBossObstacleCellExcluding(used, out var c))
+                // Prefer different rows
+                bool picked = TryPickBossObstacleCellExcluding(used, usedRowsThisBatch, out var c, want)
+                              || TryPickBossObstacleCellExcluding(used, null, out c, want);
+
+                if (!picked)
                     break;
 
                 used.Add(c);
+                usedRowsThisBatch.Add(c.y);
                 batchCells.Add(c);
             }
 
@@ -2706,7 +2849,7 @@ public class GameController : MonoBehaviour
             if (warn > 0f)
                 yield return new WaitForSeconds(warn);
 
-            // Spawn all at once 
+            // Spawn all at once
             int spawnedThisBatch = 0;
             for (int i = 0; i < batchCells.Count; i++)
             {
@@ -2734,7 +2877,7 @@ public class GameController : MonoBehaviour
         // Safety cap so it won't loop forever
         for (int attempts = 0; attempts < 10; attempts++)
         {
-            if (!TryPickBossObstacleCellExcluding(used, out var cell))
+            if (!TryPickBossObstacleCellExcluding(used, null, out var cell, 1))
                 yield break;
 
             used.Add(cell);
@@ -2745,7 +2888,7 @@ public class GameController : MonoBehaviour
             if (warn > 0f)
                 yield return new WaitForSeconds(warn);
 
-            // If spawn fails (occupied), pick a new cell, flash again, and retry
+            // If spawn fails, pick a new cell, flash again, and retry
             if (gameBoard.TrySpawnMagicExplosiveObstacle(
                     cell,
                     _castleData.bossExplosiveFuseSeconds,

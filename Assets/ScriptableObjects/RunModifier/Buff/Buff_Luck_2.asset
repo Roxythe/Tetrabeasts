@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90562e4e9a0c7934aab92bcb4ad86cca, type: 3}
   m_Name: Buff_Luck_2
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
-  displayName: Increase Luck
+  displayName: Luck Up
   description: Moderatley increase luck raising the chance of getting higher rarity
     buffs
   icon: {fileID: -3420943125301509092, guid: 9334548252c4c074797343cc387c4128, type: 3}

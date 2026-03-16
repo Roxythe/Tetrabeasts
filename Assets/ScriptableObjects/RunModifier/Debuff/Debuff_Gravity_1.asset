@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90562e4e9a0c7934aab92bcb4ad86cca, type: 3}
   m_Name: Debuff_Gravity_1
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
-  displayName: Increase Block Speed
+  displayName: Gravity SPD Up
   description: Modestly increases the initial falling speed of blocks
   icon: {fileID: 5050173363409499257, guid: 90a5271ed2b6c9f41b73bb0ebef9c720, type: 3}
   isBuff: 0

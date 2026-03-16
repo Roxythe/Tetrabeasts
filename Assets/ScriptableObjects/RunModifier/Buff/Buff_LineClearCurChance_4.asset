@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90562e4e9a0c7934aab92bcb4ad86cca, type: 3}
   m_Name: Buff_LineClearCurChance_4
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
-  displayName: Increase Line Clear Currency Chance
+  displayName: Currency Drop Chance Up
   description: Massivley increase the chance currency will be earned when clearing
     lines
   icon: {fileID: 5757762182431888231, guid: 06c9a8c3a29e56849931de0bd1a53431, type: 3}

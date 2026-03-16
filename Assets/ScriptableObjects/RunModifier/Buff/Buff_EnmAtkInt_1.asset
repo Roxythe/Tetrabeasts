@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90562e4e9a0c7934aab92bcb4ad86cca, type: 3}
   m_Name: Buff_EnmAtkInt_1
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
-  displayName: Decrease Enemy Attack Speed
+  displayName: Enemy ATK SPD Down
   description: Modestly increases the amount of time between enemy attacks (Bosses
     Excluded)
   icon: {fileID: -1001501741529972743, guid: 37b7a28419e4ad24197e175e7ac73717, type: 3}

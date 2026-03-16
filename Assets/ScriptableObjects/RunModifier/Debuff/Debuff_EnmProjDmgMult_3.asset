@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90562e4e9a0c7934aab92bcb4ad86cca, type: 3}
   m_Name: Debuff_EnmProjDmgMult_3
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
-  displayName: Increase Enemy Damage
+  displayName: Enemy ATK Up
   description: Significantly incecrease the damage of enemy projectiles
   icon: {fileID: -6283755927373232298, guid: 303170548954a444588745045673da73, type: 3}
   isBuff: 0

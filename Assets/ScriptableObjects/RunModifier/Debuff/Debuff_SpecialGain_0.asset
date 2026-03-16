@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90562e4e9a0c7934aab92bcb4ad86cca, type: 3}
   m_Name: Debuff_SpecialGain_0
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
-  displayName: Decrease Special Gauge Gain
+  displayName: All Special Gauge Down
   description: Slightly decrease the amount of special gained from all sources
   icon: {fileID: 8049609212935770668, guid: fa2870466c816de4dbecf650db64d5f7, type: 3}
   isBuff: 0

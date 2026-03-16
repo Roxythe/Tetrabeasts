@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90562e4e9a0c7934aab92bcb4ad86cca, type: 3}
   m_Name: Debuff_MonHPMult_0
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
-  displayName: Decrease Monster HP
+  displayName: HP Down
   description: Slightly decrease friendly monster pieces maximum Hit Points
   icon: {fileID: 21300000, guid: 2e36ef1a5a498784c9ccd5c452a3ab4f, type: 3}
   isBuff: 0

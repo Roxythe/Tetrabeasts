@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90562e4e9a0c7934aab92bcb4ad86cca, type: 3}
   m_Name: Debuff_Misfortune_0
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
-  displayName: Increase Misfortune
+  displayName: Misfortune Up
   description: Slightly increases the likelihood of finding higher rarity debuffs
   icon: {fileID: -6126958129149628037, guid: 069f870ed62476944a4570eb914263a7, type: 3}
   isBuff: 0

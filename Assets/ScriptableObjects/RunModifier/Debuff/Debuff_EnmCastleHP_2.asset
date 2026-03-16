@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90562e4e9a0c7934aab92bcb4ad86cca, type: 3}
   m_Name: Debuff_EnmCastleHP_2
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
-  displayName: Increase Enemy Fortification HP
+  displayName: Enemy HP Up
   description: Moderatley increase the Hit Points of all future Enemy Fortifications
   icon: {fileID: -6725218688472879248, guid: 80a52c010ae9a7e4198e9dc41e1e4e94, type: 3}
   isBuff: 0

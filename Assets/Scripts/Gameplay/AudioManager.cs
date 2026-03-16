@@ -18,6 +18,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip[] sfxLineClears;
     public AudioClip[] sfxBossAbilityCasts;
     public AudioClip sfxBossLightningStrike;
+    public AudioClip sfxStoneBuffGranted;
 
     [Header("Music Pools (Gameplay)")]
     public AudioClip[] EDMGameplayMusic;

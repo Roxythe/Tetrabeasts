@@ -1,15 +1,13 @@
 
 ****** TODO ******
 
-*- Add visual notification that a buff has been granted from stone obstacle destruction
-
-*- More restrictivley regulate which buff rarities are gained from stone obstacle destruction
-
-*- Increases size of modifier panel so row prefab text isn't so scrunched
-
 *- Run Modifier images shown in a row on the gameplay scene
 
 *- Change gravity accelaration to a flat increase over time instead of ramping up over time. Instead of acceleration increasing at the start of each level, simply increases the flat increase by X amount each level
+
+- Make unit reserve flash red when a unit dies
+
+- Add unit death sfx's
 
 - Animate monster units in each tile for both active and inactive pieces
 
@@ -21,7 +19,31 @@
 
 - Play with the grid size and experiment with different grid sizes.
 
+- Add level up mechanic for monster data for units used in that level
+
+-- 1 Stat increase for each level up
+
+--- Attackers stat order increase attack, hp, attack, and special gain. Repeat order after every complete cycle
+
+--- Defenders stat order increase Hp, attack, Hp, special gain, Hp, and attack. Repeat order after every complete cycle
+
+--- Healers stat order increase Heal power, hp, special gain, Heal power, HP, special gain, Heal range. Repeat order after every complete cycle
+
+-- XP for next level always 100
+
+-- Max level 100
+
+-- XP gained after each level based on monster units current level (reduce xp for higher level monsters at lower game levels)
+
+-- Bonus xp based on win conditions like level completion time, Units lost, Largest combo that level, # of obstacles cleared, etc
+
+-- Add Monster level to monster button prefab and code in monster select UI
+
 *** KNOWN BUGS ***
+
+- Boss sometimes finishes a row by spawning two magic pylons in the last two open spots (should never happen)
+
+- borderlines between tiles are not updating sometimes leading to some outlines being thicker or thinner than they should be. (check after tile destruction from boss bombs or after rows are sttled from cascading row clear)
 
 - Restart doesn't reset buff rarity?
 

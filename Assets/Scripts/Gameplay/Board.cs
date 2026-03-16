@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Board : MonoBehaviour
 {
@@ -223,6 +224,7 @@ public class Board : MonoBehaviour
     public event Action<Vector2Int, MonsterData> TileDied; // Event called when a tile's HP reaches 0
     public event Action<Vector2Int, MonsterData, float, DamageSource> TileDamaged;
     public event Action<Vector2Int, MonsterData, MonsterData, float> TileHealed;
+    readonly List<RectTransform> _activeBuffPopups = new();
 
     [System.Serializable]
     public struct MonsterInstance
@@ -1859,7 +1861,21 @@ public class Board : MonoBehaviour
     // ================= Public API for ObstacleManager / Piece =================
 
     public bool HasObstacle(Vector2Int cell) => obstacles.ContainsKey(cell);
+
     public bool IsFree(Vector2Int c) => InBounds(c) && !placed.ContainsKey(c);
+
+    public int CountFreeCellsInRow(int y)
+    {
+        if (y < 0 || y >= height) return 0;
+
+        int free = 0;
+        for (int x = 0; x < width; x++)
+        {
+            if (IsFree(new Vector2Int(x, y)))
+                free++;
+        }
+        return free;
+    }
 
     public bool WouldCompleteRowIfFilled(Vector2Int cell)
     {
@@ -1929,7 +1945,7 @@ public class Board : MonoBehaviour
 
         obstacles[cell] = new ObstacleState(ObstacleType.MagicExplosive, 1);
 
-        // Visual setup (radial fill and red flash overlay)
+        // Visual setup
         ConfigureMagicExplosiveVisual(rt);
 
         magicExplosives[cell] = new MagicExplosiveState
@@ -2710,5 +2726,189 @@ public class Board : MonoBehaviour
                 if (kv.Value.high) kv.Value.high.rectTransform.sizeDelta = GetCellSize();
             }
     }
-    
+
+    // ================= Buff Popup (Prefab-based) =================
+
+    public Coroutine ShowBuffPopupAtCell(Vector2Int cell, string message, BuffPopupStyleSO style, RunModRarity rarity)
+    {
+        if (!InBounds(cell)) return null;
+        if (string.IsNullOrWhiteSpace(message)) return null;
+        if (!style || !style.popupPrefab) return null;
+
+        if (!overlayRoot) overlayRoot = gridRoot;
+
+        var instance = Instantiate(style.popupPrefab, overlayRoot);
+        var view = instance.GetComponent<BuffPopupView>();
+        if (!view || !view.IsValid)
+        {
+            Destroy(instance);
+            return null;
+        }
+
+        var rootRT = view.RectTransform;
+        rootRT.anchorMin = rootRT.anchorMax = new Vector2(0.5f, 0.5f);
+        rootRT.localScale = Vector3.one;
+
+        // Size first so overlap resolution can use real popup height
+        Vector2 cellSize = GetCellSize();
+        rootRT.sizeDelta = new Vector2(cellSize.x * style.sizeMultiplier.x, cellSize.y * style.sizeMultiplier.y);
+
+        Vector2 desired = CellToAnchoredPos(cell);
+        rootRT.anchoredPosition = ResolveBuffPopupPosition(desired, style, rootRT.sizeDelta.y);
+        RegisterBuffPopup(rootRT);
+
+        view.mainText.text = message;
+        view.shadowText.text = message;
+
+        var shadowRT = view.shadowText.rectTransform;
+        shadowRT.anchorMin = shadowRT.anchorMax = new Vector2(0.5f, 0.5f);
+        shadowRT.anchoredPosition = style.shadowOffset;
+
+        var colors = style.GetColors(rarity);
+        view.mainText.color = colors.textA;
+        view.shadowText.color = colors.shadowA;
+
+        Vector3 baseMainScale = view.mainText.rectTransform.localScale;
+        Vector3 baseShadowScale = view.shadowText.rectTransform.localScale;
+
+        return StartCoroutine(BuffPopupPrefabRoutine(
+            rootRT,
+            view.mainText,
+            view.shadowText,
+            style,
+            colors,
+            baseMainScale,
+            baseShadowScale));
+    }
+
+    System.Collections.IEnumerator BuffPopupPrefabRoutine(
+    RectTransform rootRT,
+    TMPro.TMP_Text main,
+    TMPro.TMP_Text shadow,
+    BuffPopupStyleSO style,
+    BuffPopupStyleSO.RarityColorPair colors,
+    Vector3 baseMainScale,
+    Vector3 baseShadowScale)
+    {
+        float dur = Mathf.Max(0.05f, style.duration);
+        float floatPx = Mathf.Max(0f, style.floatPixels);
+        float flash = Mathf.Max(0.03f, style.flashInterval);
+
+        // Pulse config
+        float amp = Mathf.Max(0f, style.pulseScaleAmplitude);
+        float hz = Mathf.Max(0f, style.pulseSpeedHz);
+
+        Vector2 start = rootRT.anchoredPosition;
+        Vector2 end = start + new Vector2(0f, floatPx);
+
+        float t = 0f;
+        float flashT = 0f;
+        bool useA = true;
+
+        float mainAlpha0 = main.color.a;
+        float shadowAlpha0 = shadow.color.a;
+
+        while (rootRT && t < dur)
+        {
+            t += Time.deltaTime;
+            flashT += Time.deltaTime;
+
+            float p = Mathf.Clamp01(t / dur);
+
+            rootRT.anchoredPosition = Vector2.Lerp(start, end, p); // Float up
+
+            // Flash colors
+            if (flashT >= flash)
+            {
+                flashT = 0f;
+                useA = !useA;
+            }
+
+            // Pulse scale
+            if (amp > 0f && hz > 0f)
+            {
+                float s = 1f + (Mathf.Sin(t * (Mathf.PI * 2f) * hz) * amp);
+                main.rectTransform.localScale = baseMainScale * s;
+                shadow.rectTransform.localScale = baseShadowScale * s;
+            }
+
+            Color mc = useA ? colors.textA : colors.textB;
+            Color sc = useA ? colors.shadowA : colors.shadowB;
+
+            // Fade out
+            float fade = 1f - p;
+            mc.a = mainAlpha0 * fade;
+            sc.a = shadowAlpha0 * fade;
+
+            main.color = mc;
+            shadow.color = sc;
+
+            yield return null;
+        }
+
+        if (rootRT) UnregisterBuffPopup(rootRT);
+        if (rootRT) Destroy(rootRT.gameObject);
+    }
+
+    void CleanupDeadBuffPopups()
+    {
+        for (int i = _activeBuffPopups.Count - 1; i >= 0; i--)
+            if (!_activeBuffPopups[i])
+                _activeBuffPopups.RemoveAt(i);
+    }
+
+    Vector2 ResolveBuffPopupPosition(Vector2 desired, BuffPopupStyleSO style, float popupHeight)
+    {
+        if (!style || !style.avoidOverlap) return desired;
+
+        CleanupDeadBuffPopups();
+
+        float minX = Mathf.Max(0f, style.overlapMinX);
+        float minY = Mathf.Max(Mathf.Max(0f, style.overlapMinY), popupHeight * 0.95f);
+
+        // Step should be at least the min gap
+        float stepY = Mathf.Max(Mathf.Max(0f, style.overlapStepY), minY);
+
+        int max = Mathf.Max(0, style.overlapMaxShifts);
+
+        Vector2 pos = desired;
+
+        for (int attempt = 0; attempt <= max; attempt++)
+        {
+            bool overlaps = false;
+
+            for (int i = 0; i < _activeBuffPopups.Count; i++)
+            {
+                var other = _activeBuffPopups[i];
+                if (!other) continue;
+
+                Vector2 o = other.anchoredPosition;
+
+                if (Mathf.Abs(pos.x - o.x) < minX && Mathf.Abs(pos.y - o.y) < minY)
+                {
+                    overlaps = true;
+                    break;
+                }
+            }
+
+            if (!overlaps)
+                return pos;
+
+            pos.y += stepY;
+        }
+
+        return pos;
+    }
+
+    void RegisterBuffPopup(RectTransform rt)
+    {
+        if (!rt) return;
+        _activeBuffPopups.Add(rt);
+    }
+
+    void UnregisterBuffPopup(RectTransform rt)
+    {
+        if (!rt) return;
+        _activeBuffPopups.Remove(rt);
+    }
 }

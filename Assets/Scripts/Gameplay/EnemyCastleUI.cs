@@ -21,7 +21,8 @@ public class EnemyCastleUI : MonoBehaviour
     [Header("Boss Overlay")]
     public Image bossOverlayImage;            
     public Vector2 bossOverlaySize = Vector2.zero; 
-    public Vector2 bossOverlayOffset = Vector2.zero; 
+    public Vector2 bossOverlayOffset = Vector2.zero;
+    public UISweep bossIdleSweep;
 
     [Header("Invulnerability VFX")]
     public Image invulnShieldImageA;
@@ -191,6 +192,7 @@ public class EnemyCastleUI : MonoBehaviour
         if (!on)
         {
             StopBossSpriteRoutineIfAny();
+            SetBossIdleMotionPaused(true);
             return;
         }
 
@@ -213,6 +215,8 @@ public class EnemyCastleUI : MonoBehaviour
         ResetBossOverlayPosition();
         var idle = GetBossIdleSprite();
         if (idle) bossOverlayImage.sprite = idle;
+
+        SetBossIdleMotionPaused(false);
     }
 
     public void StartInvulnerability(float seconds)
@@ -349,13 +353,14 @@ public class EnemyCastleUI : MonoBehaviour
         if (!bossOverlayImage) return;
 
         var brt = bossOverlayImage.rectTransform;
+
         if (!_bossOverlayBaseCaptured)
         {
             _bossOverlayBaseAnchoredPos = brt.anchoredPosition;
             _bossOverlayBaseCaptured = true;
         }
 
-        brt.anchoredPosition = _bossOverlayBaseAnchoredPos;
+        brt.anchoredPosition = brt.anchoredPosition + bossOverlayOffset;
     }
 
     void SetBossOverlaySprite(Sprite sprite)
@@ -372,6 +377,7 @@ public class EnemyCastleUI : MonoBehaviour
         if (sprite == null) return;
 
         StopBossSpriteRoutineIfAny();
+        SetBossIdleMotionPaused(true);
         _bossSpriteCR = StartCoroutine(BossAttackRoutine(sprite));
     }
 
@@ -384,39 +390,76 @@ public class EnemyCastleUI : MonoBehaviour
 
         // Damage should interrupt attack 
         StopBossSpriteRoutineIfAny();
+        SetBossIdleMotionPaused(true);
         _bossSpriteCR = StartCoroutine(BossDamageRoutine(sprite));
     }
 
     IEnumerator BossAttackRoutine(Sprite sprite)
     {
-        ResetBossOverlayPosition();
+        var brt = bossOverlayImage.rectTransform;
+        Vector2 startPos = brt.anchoredPosition;
+
         SetBossOverlaySprite(sprite);
 
         float dir = (sourceData != null && sourceData.bossAttackShiftRight) ? 1f : -1f;
         float dist = (sourceData != null) ? sourceData.bossAttackShiftDistance : 20f;
 
-        var brt = bossOverlayImage.rectTransform;
-        brt.anchoredPosition = _bossOverlayBaseAnchoredPos + new Vector2(dir * dist, 0f);
+        brt.anchoredPosition = startPos + new Vector2(dir * dist, 0f);
 
-        float seconds = (sourceData != null && sourceData.bossAttackSpriteSeconds > 0f) ? sourceData.bossAttackSpriteSeconds : 0.25f;
+        float seconds = (sourceData != null && sourceData.bossAttackSpriteSeconds > 0f)
+            ? sourceData.bossAttackSpriteSeconds
+            : 0.25f;
+
         yield return new WaitForSeconds(seconds);
 
-        // Snap back and return to correct idle
-        ResetBossOverlayPosition();
+        brt.anchoredPosition = startPos;
         SetBossOverlaySprite(GetBossIdleSprite());
+
         _bossSpriteCR = null;
+        SetBossIdleMotionPaused(false);
     }
 
     IEnumerator BossDamageRoutine(Sprite sprite)
     {
-        ResetBossOverlayPosition();
+        var brt = bossOverlayImage.rectTransform;
+
+        Vector2 startPos = brt.anchoredPosition;
+
         SetBossOverlaySprite(sprite);
 
-        float seconds = (sourceData != null && sourceData.bossDamageSpriteSeconds > 0f) ? sourceData.bossDamageSpriteSeconds : 0.18f;
+        float seconds = (sourceData != null && sourceData.bossDamageSpriteSeconds > 0f)
+            ? sourceData.bossDamageSpriteSeconds
+            : 0.18f;
+
         yield return new WaitForSeconds(seconds);
 
-        ResetBossOverlayPosition();
+        brt.anchoredPosition = startPos;
         SetBossOverlaySprite(GetBossIdleSprite());
+
         _bossSpriteCR = null;
+        SetBossIdleMotionPaused(false);
+    }
+
+    void SetBossIdleMotionPaused(bool paused)
+    {
+        if (!bossIdleSweep && bossOverlayImage)
+            bossIdleSweep = bossOverlayImage.GetComponent<UISweep>();
+
+        if (!bossIdleSweep) return;
+
+        if (!paused)
+            UpdateBossIdleSpeedForCurrentHP();
+
+        bossIdleSweep.SetPaused(paused);
+    }
+
+    void UpdateBossIdleSpeedForCurrentHP()
+    {
+        if (!bossIdleSweep) return;
+
+        bool critical = IsBossCriticalHP();
+
+        bossIdleSweep.SetCriticalHobble(critical);
+        bossIdleSweep.SetSpeedMultiplier(1f);
     }
 }
