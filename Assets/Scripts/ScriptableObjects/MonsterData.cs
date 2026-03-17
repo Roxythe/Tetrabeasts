@@ -33,7 +33,7 @@ public class MonsterData : ScriptableObject
 
     [Header("Skins")]
     public Sprite[] skinPortraits = new Sprite[5]; // [0]=default 
-    public int[] skinCosts = new int[5];           // [0]=0, [1..4]=prices
+    public int[] skinCosts = new int[5];           // [0]=0, [1-4]=prices
 
     [Header("Stats")]
     public float maxHealth = 1.0f; // Maximum health of the tile monster
@@ -56,7 +56,7 @@ public class MonsterData : ScriptableObject
     public Sprite attackSprite; // Base attack sprite
     public Sprite attackSpriteAlt; // Optional secondary sprite for toggle animation
 
-    // Per-skin attack sprites (match skinPortraits indexing: [0]=default)
+    // Per-skin attack sprites 
     public Sprite[] skinAttackSprites = new Sprite[5];
     public Sprite[] skinAttackSpritesAlt = new Sprite[5];
 
