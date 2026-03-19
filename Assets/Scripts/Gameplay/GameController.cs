@@ -294,11 +294,17 @@ public class GameController : MonoBehaviour
     int _comboCount = 0;
     float _comboTimer = 0f;
 
+    [Header("Level Performance Tracking - Bonus XP")]
+    int _maxComboThisLevel = 0;
+    int _obstaclesDestroyedThisLevel = 0;
+    int _levelStartMaxLives = 0;
+
     [Header("Debug")]
     public bool logRowDamageBreakdown = true;
 
     public ScoreUI scoreUI;
     public HighScoreUI highScoreUI;
+    [SerializeField] XpAwardUI xpAwardUI;
     public TMP_Text levelText;
 
     public int CurrentLevel => currentLevel;
@@ -460,6 +466,7 @@ public class GameController : MonoBehaviour
         ApplyRunGridSize(currentLevel);
 
         InitLevel(currentLevel);
+        RunMonsterProgress.BeginRun(GetActiveMonsterRoster());
 
         // Pause menu defaults
         if (pausePanel) pausePanel.SetActive(false);
@@ -749,13 +756,6 @@ public class GameController : MonoBehaviour
         gameOver = true;
         Debug.Log("Game Over");
 
-        // Update lifetime stats and end run
-        if (PlayerProgress.I)
-        {
-            PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.Losses, 1);
-            PlayerProgress.I.EndRun();
-        }
-
         if (AudioManager.I)
         {
             AudioManager.I.StopPauseMusic();
@@ -765,10 +765,39 @@ public class GameController : MonoBehaviour
 
         if (AudioManager.I) AudioManager.I.PlaySFX(AudioManager.I.sfxGameOver);
 
-        if (highScoreUI) highScoreUI.TryShow(score);
-        if (restartButton) restartButton.gameObject.SetActive(true);
+        if (PlayerProgress.I)
+        {
+            PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.Losses, 1);
+            PlayerProgress.I.EndRun();
+        }
 
-        EnterUICursorMode();
+        void ShowHighScore()
+        {
+            if (highScoreUI) highScoreUI.TryShow(score);
+            if (restartButton) restartButton.gameObject.SetActive(true);
+
+            EnterUICursorMode();
+        }
+
+        var roster = GetActiveMonsterRoster();
+        if (xpAwardUI)
+        {
+            OpenXpUiMode();
+
+            xpAwardUI.ShowRunEndCommit(roster, 0.10f, () =>
+                {
+                    CloseXpUiMode();
+                    ShowHighScore();
+                });
+
+            return;
+        }
+
+        var kept = RunMonsterProgress.EndRunAndComputeKeptXp(0.10f);
+        foreach (var kv in kept)
+            MonsterProgressStore.AddPermanentXp(kv.Key, kv.Value);
+
+        ShowHighScore();
     }
 
     void RefillBag()
@@ -1045,6 +1074,10 @@ public class GameController : MonoBehaviour
     int IncrementCombo()
     {
         _comboCount = Mathf.Max(0, _comboCount) + 1;
+
+        if (_comboCount > _maxComboThisLevel)
+            _maxComboThisLevel = _comboCount; // Update max combo for bonus XP tracking
+
         _comboTimer = Mathf.Max(0.1f, comboWindowSeconds);
 
         if (scoreUI)
@@ -1084,6 +1117,11 @@ public class GameController : MonoBehaviour
         ResetBossGravityVisuals();
 
         ResetCombo();
+
+        // Reset level performance tracking
+        _maxComboThisLevel = 0;
+        _obstaclesDestroyedThisLevel = 0;
+        _levelStartMaxLives = EffectiveMaxUnitLives;
 
         // Only apply level-start logic once per level
         if (levelIndex != _lastLevelInitialized)
@@ -1140,12 +1178,11 @@ public class GameController : MonoBehaviour
     }
 
     // Call this when castle HP has been reduced to 0
-    public void OnCastleDestroyed()
+    void OnCastleDestroyed()
     {
         if (gameOver || levelWon) return;
         levelWon = true;
 
-        // Stop ongoing music/loop as soon as the round ends
         if (AudioManager.I)
         {
             AudioManager.I.StopLevelMusic();
@@ -1156,6 +1193,39 @@ public class GameController : MonoBehaviour
 
         if (nextPreview) nextPreview.ClearPreview();
 
+        int completedLevelNumber = currentLevel + 1;
+
+        // Calculate XP now, but grant via UI
+        var roster = GetActiveMonsterRoster();
+        var computed = ComputeRoundWinXp(completedLevelNumber);
+
+        void ContinueToRewards()
+        {
+            ContinueAfterRoundWinRewards();
+        }
+
+        if (xpAwardUI)
+        {
+            OpenXpUiMode();
+
+            xpAwardUI.ShowRoundWin(computed.breakdown, roster, computed.perMonsterAwardXp, () =>
+                {
+                    CloseXpUiMode();
+                    ContinueToRewards();
+                });
+
+            return;
+        }
+
+        // Grant immediately if UI missing
+        foreach (var kv in computed.perMonsterAwardXp)
+            RunMonsterProgress.AddRunXp(kv.Key, kv.Value);
+
+        ContinueAfterRoundWinRewards();
+    }
+
+    void ContinueAfterRoundWinRewards()
+    {
         currentLevel++;
 
         // Track level wins for achievements
@@ -1164,11 +1234,9 @@ public class GameController : MonoBehaviour
             PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.LevelsWon, 1);
             PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunLevelsWon, 1);
 
-            // Level time stats (for "win in X seconds" / "spend X seconds in a level")
             PlayerProgress.I.SetRunBestFloatMin(AchievementSystem.Stat.RunBestLevelWinSeconds, _levelTimer);
             PlayerProgress.I.SetRunBestFloatMin(AchievementSystem.Stat.RunBestLevelSeconds, _levelTimer);
 
-            // Perfect win: no units dead at end of level
             int maxLivesNow = EffectiveMaxUnitLives;
             if (unitLives >= maxLivesNow)
                 PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.PerfectLevelWins, 1);
@@ -1176,22 +1244,20 @@ public class GameController : MonoBehaviour
 
         int roundsWon = currentLevel;
 
-        // +5 every round, plus +5 more for each completed set of 3 rounds
         int bonusSteps = roundsWon / 3;
         float misfortuneGain = 5f + (5f * bonusSteps);
 
         misfortune += misfortuneGain;
-        RunModsStore.Misfortune = misfortune; // Keep store in sync
+        RunModsStore.Misfortune = misfortune;
 
         int gained = GetRoundWinCurrency();
         CurrencyStore.Add(gained);
 
-        if (PlayerProgress.I && gained > 0) // Track gold earned from round wins for achievements
+        if (PlayerProgress.I && gained > 0)
             PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.GoldEarned, gained);
 
         if (currencyUI) currencyUI.Refresh();
 
-        // Grant reinforcements (extra unit lives) on round win
         int beforeLives = unitLives;
         int maxLives = EffectiveMaxUnitLives;
 
@@ -1201,7 +1267,6 @@ public class GameController : MonoBehaviour
         int actualReinforcements = unitLives - beforeLives;
         UpdateUnitLivesUI();
 
-        // Show rewards before continuing
         if (roundRewardUI)
         {
             roundRewardUI.Show(buffPool, debuffPool, OnRoundModsChosen, gained, actualReinforcements);
@@ -1321,7 +1386,6 @@ public class GameController : MonoBehaviour
     {
         gameOver = true;
 
-        // Track final level wins for achievements
         if (PlayerProgress.I)
         {
             PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunBeatFinalLevel, 1);
@@ -1341,11 +1405,33 @@ public class GameController : MonoBehaviour
             TryMarkFinalWinAllCharacters();
         }
 
-        if (AudioManager.I) AudioManager.I.StopMusic();
-        if (highScoreUI) highScoreUI.TryShow(score);
-        if (restartButton) restartButton.gameObject.SetActive(true);
+        void ShowHighScore()
+        {
+            if (AudioManager.I) AudioManager.I.StopMusic();
+            if (highScoreUI) highScoreUI.TryShow(score);
+            if (restartButton) restartButton.gameObject.SetActive(true);
+            EnterUICursorMode();
+        }
 
-        EnterUICursorMode();
+        var roster = GetActiveMonsterRoster();
+        if (xpAwardUI)
+        {
+            OpenXpUiMode();
+
+            xpAwardUI.ShowRunEndCommit(roster, 0.10f, () =>
+            {
+                CloseXpUiMode();
+                ShowHighScore();
+            });
+
+            return;
+        }
+
+        var kept = RunMonsterProgress.EndRunAndComputeKeptXp(0.10f);
+        foreach (var kv in kept)
+            MonsterProgressStore.AddPermanentXp(kv.Key, kv.Value);
+
+        ShowHighScore();
     }
 
     void TryMarkFinalWinAllCharacters()
@@ -2537,6 +2623,8 @@ public class GameController : MonoBehaviour
     void OnBoardObstacleDestroyed(Vector2Int cell, Board.ObstacleType type)
     {
         if (!IsRoundActive) return;
+
+        _obstaclesDestroyedThisLevel += 1;
 
         // Stone existing run buff drops
         if (type == Board.ObstacleType.Stone)
@@ -3900,6 +3988,92 @@ public class GameController : MonoBehaviour
             UpdateSpecialGaugeFieryFill();
             yield return null;
         }
+    }
+
+    // ================== Level Win XP Granting ==================
+
+    struct ComputedRoundXp
+    {
+        public XpAwardUI.RoundXpBreakdown breakdown;
+        public Dictionary<string, float> perMonsterAwardXp;
+    }
+
+    ComputedRoundXp ComputeRoundWinXp(int gameLevelNumber)
+    {
+        int baseXp = 3 * Mathf.Max(1, gameLevelNumber);
+
+        int clearTimeBonus = Mathf.RoundToInt(40f - _levelTimer);
+
+        int maxReserve = _levelStartMaxLives > 0 ? _levelStartMaxLives : EffectiveMaxUnitLives;
+        int unitsLost = Mathf.Max(0, maxReserve - unitLives);
+        int unitsLostBonus = 5 - unitsLost;
+
+        int comboBonus = Mathf.Max(0, _maxComboThisLevel);
+        int obstacleBonus = Mathf.Max(0, _obstaclesDestroyedThisLevel);
+
+        int totalBeforeReduction = Mathf.Max(0, baseXp + clearTimeBonus + unitsLostBonus + comboBonus + obstacleBonus);
+
+        var roster = GetActiveMonsterRoster();
+        var perMonster = new Dictionary<string, float>();
+
+        if (roster != null)
+        {
+            foreach (var md in roster)
+            {
+                if (!md) continue;
+
+                int monsterLevel = RunMonsterProgress.GetCurrentLevel(md.monsterName);
+
+                int diff = monsterLevel - gameLevelNumber;
+                int steps = diff > 0 ? (diff / 5) : 0;
+
+                float reduction = Mathf.Clamp01(steps * 0.10f);
+                reduction = Mathf.Min(reduction, 0.90f);
+
+                float finalXp = totalBeforeReduction * (1f - reduction);
+                perMonster[md.monsterName] = Mathf.Max(0f, finalXp);
+            }
+        }
+
+        return new ComputedRoundXp
+        {
+            breakdown = new XpAwardUI.RoundXpBreakdown
+            {
+                gameLevelNumber = gameLevelNumber,
+                baseXp = baseXp,
+                levelClearTime = _levelTimer,
+                clearTimeBonus = clearTimeBonus,
+                maxReserve = maxReserve,
+                currentReserve = unitLives,
+                unitsLostBonus = unitsLostBonus,
+                comboBonus = comboBonus,
+                obstacleBonus = obstacleBonus,
+                totalBeforeReduction = totalBeforeReduction
+            },
+            perMonsterAwardXp = perMonster
+        };
+    }
+
+    void OpenXpUiMode()
+    {
+        isPaused = true;
+
+        // Ensure pause menu itself is not shown
+        if (pausePanel) pausePanel.SetActive(false);
+
+        if (xpAwardUI && !xpAwardUI.gameObject.activeInHierarchy)
+            xpAwardUI.gameObject.SetActive(true);
+
+        EnterUICursorMode();
+        StartCoroutine(ReapplyUICursorNextFrame());
+    }
+
+    void CloseXpUiMode()
+    {
+        isPaused = false;
+
+        EnterUICursorMode();
+        StartCoroutine(ReapplyUICursorNextFrame());
     }
 
     // ================== Helper/Utility ==================

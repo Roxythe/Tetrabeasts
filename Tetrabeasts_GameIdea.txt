@@ -1,6 +1,17 @@
 
 ****** TODO ******
 
+- Restart and main menu button from pause menu should bring up awardXPUI and drain run instance monsters and then transfer xp to permanent data stores like ending a run on a loss condition.
+
+- When ending a run on a loss condition (specifically when setting a piece above the top row of the board) awardXPUI triggers correctly, but there seems to be a 1-2 second window where a slightly transparent black overlay is on and then gets turn off. The screen looks slightly darker than it should and then brightens up. 
+
+- A lot of my bonus XP is dropping heavily into negative terrirtory (especially run time and units lost) for fresh games plays making it too hard to level up. I would like to reduce the rate at which points are deducted for poor performance and putting a hard cap at -5 for each bonus for now.
+
+
+- Add game over background music for both generes. triggers on round loss at the same time game over sfx plays. Stop music after high score screen button choice is pressed for return to main menu or restart game.
+
+- Add round won background Music for both generes. Start music when round won SFX is triggered and stop music when debuff panel continue button is pressed.
+
 *- Make unit reserve flash red when a unit dies
 
 *- Add unit death sfx's
@@ -25,6 +36,8 @@
 -- Bonus xp based on win conditions like level completion time, Units lost, Largest combo that level, # of obstacles cleared, etc
 
 -- Add Monster level to monster button prefab and code in monster select UI
+
+- Make sure instanced monster unit uses leveled monster stats as its base before adding multipliers/additive from shop buffs and run modifier buffs and not the monsters base stats.
 
 
 

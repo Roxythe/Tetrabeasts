@@ -17,6 +17,7 @@ public class MonsterSelectUI : MonoBehaviour
     public TMP_Text previewDescriptionText;
     public TMP_Text previewStatsText;
     public TMP_Text counterText;
+    public TMP_Text counterTextShadow;
     public Button startButton;
     public CurrencyUI currencyUI;
 
@@ -100,17 +101,20 @@ public class MonsterSelectUI : MonoBehaviour
             if (!md) continue;
 
             var btn = Instantiate(itemButtonPrefab, listParent);
-            var txt = btn.GetComponentInChildren<TMP_Text>();
-            var img = btn.GetComponentInChildren<Image>();
 
-            if (txt) txt.text = md.monsterName;
+            var view = btn.GetComponent<MonsterButtonView>();
+            if (view)
+            {
+                if (view.nameText) view.nameText.text = md.monsterName;
+                if (view.nameShadowText) view.nameShadowText.text = md.monsterName;
+            }
 
             // If unlocked, show committed valid skin. If locked, show default (0)
             bool monsterUnlocked = UnlockStore.IsUnlocked(md);
             int displaySkin = monsterUnlocked ? MonsterSkinStore.GetValidSelected(md) : 0;
 
-            var portrait = GetPortraitImage(btn);
-            if (portrait) portrait.sprite = MonsterSkinStore.GetPortrait(md, displaySkin);
+            if (view && view.portraitImage)
+                view.portraitImage.sprite = MonsterSkinStore.GetPortrait(md, displaySkin);
 
             var lockedImgT = FindDeep(btn.transform, "Locked_Image");
             if (lockedImgT) lockedImgT.gameObject.SetActive(!monsterUnlocked);
@@ -166,7 +170,7 @@ public class MonsterSelectUI : MonoBehaviour
                     bool wasLocked = !UnlockStore.IsUnlocked(md);
                     UnlockStore.Unlock(md);
 
-                    // If this is the first time unlocking any monster, also grant the related achievement stats
+                    // If this is the first time unlocking any monster, unlock the related achievement 
                     if (wasLocked && PlayerProgress.I)
                     {
                         PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.MonstersUnlocked, 1);
@@ -307,10 +311,17 @@ public class MonsterSelectUI : MonoBehaviour
         int count = selected.Count;
         bool validCount = count >= MinSelect && count <= MaxSelect;
 
+        string counterStr = $"{count}/{MaxSelect}";
+
         if (counterText)
         {
-            counterText.text = $"{count} / {MaxSelect}";
+            counterText.text = counterStr;
             counterText.color = validCount ? counterValidColor : counterInvalidColor;
+        }
+
+        if (counterTextShadow)
+        {
+            counterTextShadow.text = counterStr;
         }
 
         if (startButton)
@@ -323,14 +334,47 @@ public class MonsterSelectUI : MonoBehaviour
 
         foreach (var kv in buttons)
         {
-            var portrait = GetPortraitImage(kv.Value);
+            var view = kv.Value.GetComponent<MonsterButtonView>();
             bool monsterUnlocked = UnlockStore.IsUnlocked(kv.Key);
             int skin = monsterUnlocked ? MonsterSkinStore.GetValidSelected(kv.Key) : 0;
-            if (portrait) portrait.sprite = MonsterSkinStore.GetPortrait(kv.Key, skin);
+
+            if (view && view.portraitImage)
+                view.portraitImage.sprite = MonsterSkinStore.GetPortrait(kv.Key, skin);
 
             ApplyVariantOpacity(kv.Value, kv.Key);
             ApplyVariantLockVisuals(kv.Value, kv.Key);
             ApplyBanner(kv.Value, kv.Key);
+            ApplyLevelBadge(kv.Value, kv.Key);
+        }
+    }
+
+    void ApplyLevelBadge(Button btn, MonsterData md)
+    {
+        if (!btn || !md) return;
+
+        var view = btn.GetComponent<MonsterButtonView>();
+        if (!view) return;
+
+        bool unlocked = UnlockStore.IsUnlocked(md);
+        int lvl = MonsterProgressStore.GetPermanentLevel(md.monsterName);
+
+        if (view.levelBg)
+        {
+            view.levelBg.SetActive(view.LevelBgDefaultActive && unlocked); // Respect prefab default
+        }
+
+        string s = unlocked ? $"{lvl}" : "";
+
+        if (view.levelText)
+        {
+            view.levelText.gameObject.SetActive(unlocked);
+            view.levelText.text = s;
+        }
+
+        if (view.levelShadowText)
+        {
+            view.levelShadowText.gameObject.SetActive(unlocked);
+            view.levelShadowText.text = s;
         }
     }
 
@@ -357,9 +401,13 @@ public class MonsterSelectUI : MonoBehaviour
         if (previewImage)
             previewImage.sprite = MonsterSkinStore.GetPortrait(md, skinIdx);
 
-        if (previewNameText) previewNameText.text = md.monsterName;
+        if (previewNameText)
+        {
+            bool unlocked = UnlockStore.IsUnlocked(md);
+            int lvl = MonsterProgressStore.GetPermanentLevel(md.monsterName);
+            previewNameText.text = unlocked ? $"{md.monsterName}  Lv.{lvl}" : md.monsterName;
+        }
 
-        // Keep your description where it already is
         if (previewDescriptionText) previewDescriptionText.text = md.monsterDescription;
 
         // Show effective stats (base + shop buffs)
@@ -373,43 +421,53 @@ public class MonsterSelectUI : MonoBehaviour
     {
         if (!md) return "";
 
-        // Role line (explicit from ScriptableObject)
-        string roleLine = $"Role: {md.role}";
+        int lvl = MonsterProgressStore.GetPermanentLevel(md.monsterName);
+        float xpInto = MonsterProgressStore.GetPermanentXpIntoLevel(md.monsterName);
+
+        var baseStats = MonsterLeveling.GetLeveledStats(md, lvl);
 
         int atkLvl = ShopBuffStore.GetLevel(ShopBuffType.AttackUp);
         int hpLvl = ShopBuffStore.GetLevel(ShopBuffType.HpUp);
         int healLvl = ShopBuffStore.GetLevel(ShopBuffType.HealPower);
 
-        float effectiveAttack = md.attackPower + atkLvl;          // +1 per level
-        float effectiveMaxHp = md.maxHealth + (hpLvl * 5f);       // +5 per level
+        float baseAttack = baseStats.attackPower;
+        float baseMaxHp = baseStats.maxHealth;
+        float baseHeal = baseStats.healAmount;
+        float baseRange = baseStats.healRange;
+        float baseSpeed = baseStats.healSpeed;
+        float baseSpecial = baseStats.specialGaugeGain;
 
-        // Only healers should benefit from heal power
-        float effectiveHeal = (md.healAmount > 0f) ? (md.healAmount + (healLvl * 2f)) : 0f;
+        float totalAttack = baseAttack + atkLvl;
+        float totalMaxHp = baseMaxHp + (hpLvl * 5f);
+        float totalHeal = (baseHeal > 0f) ? (baseHeal + (healLvl * 2f)) : 0f;
 
-        float range = md.healRange;
-        float speed = md.healSpeed;
+        string roleLine = $"Role: {md.role}";
+        string levelLine = $"Level: {lvl}  ({xpInto:0.#}/{MonsterLeveling.XpPerLevel})";
 
-        string atkLine = $"Attack: {md.attackPower:0.#}  (+{atkLvl}) = {effectiveAttack:0.#}";
-        string hpLine = $"Max HP: {md.maxHealth:0.#}  (+{hpLvl * 5}) = {effectiveMaxHp:0.#}";
+        string hpLine = $"Max HP: {baseMaxHp:0.#}  (+{hpLvl * 5}) = {totalMaxHp:0.#}";
+        string atkLine = $"Attack: {baseAttack:0.#}  (+{atkLvl}) = {totalAttack:0.#}";
+        string specialLine = $"Special Gain: {baseSpecial:0.#}";
 
         string healBlock;
-        if (md.healAmount > 0f)
+        if (baseHeal > 0f)
         {
             healBlock =
-                $"Heal: {md.healAmount:0.#}  (+{healLvl * 2}) = {effectiveHeal:0.#}\n" +
-                $"Heal Range: {range:0.#}\n" +
-                $"Heal Speed: {speed:0.#}s";
+                $"Heal: {baseHeal:0.#}  (+{healLvl * 2}) = {totalHeal:0.#}\n" +
+                $"Heal Range: {baseRange:0.#}\n" +
+                $"Heal Speed: {baseSpeed:0.#}s";
         }
         else
         {
-            healBlock = "Heal: —";
+            healBlock = "Heal: -";
         }
 
         return
-            $"Base Stats + (Shop Buff) = Total Stats\n" +
+            $"Base Stats + Shop Buff = Total Stats\n" +
             $"{roleLine}\n" +
+            $"{levelLine}\n" +
             $"{hpLine}\n" +
             $"{atkLine}\n" +
+            $"{specialLine}\n" +
             $"{healBlock}";
     }
 
@@ -500,7 +558,7 @@ public class MonsterSelectUI : MonoBehaviour
             b.onClick.RemoveAllListeners();
             b.onClick.AddListener(() =>
             {
-                // Always allow preview (even if monster is locked)
+                // Allow preview even if monster is locked
                 previewMonster = md;
                 previewSkinIndex = idx;
                 ShowPreview(md, idx);
@@ -577,10 +635,10 @@ public class MonsterSelectUI : MonoBehaviour
 
             CurrencyStore.Add(-cost);
             currencyUI?.Refresh();
-            bool wasUnlocked = MonsterSkinStore.IsUnlocked(md, skinIdx); // Shouldn't happen, but just in case
+            bool wasUnlocked = MonsterSkinStore.IsUnlocked(md, skinIdx);
             MonsterSkinStore.Unlock(md, skinIdx);
 
-            // If this is the first time unlocking this skin, also grant the related achievement stats
+            // If this is the first time unlocking this skin, unlock the related achievement stats
             if (!wasUnlocked && PlayerProgress.I)
             {
                 PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.SkinsUnlocked, 1);

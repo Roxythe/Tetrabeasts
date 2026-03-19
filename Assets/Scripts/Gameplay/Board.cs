@@ -230,14 +230,16 @@ public class Board : MonoBehaviour
     public struct MonsterInstance
     {
         public MonsterData data;
-        public float hp; // Current runtime HP
+        public float hp;
 
-        // Buffed runtime stats (computed once from data + shop)
-        public float maxHp;         // +5 HP per shop level
-        public int attackBonus;     // +1 damage per shop level
-        public float healAmount;    // Buffed heal amount (only for healer monsters)
-        public float healRange;
+        // Buffed runtime stats computed once from leveled data + shop + run mods
+        public float maxHp;
+        public float attackPower;       // leveled base attackPower used for damage
+        public int attackBonus;         // shop additive
+        public float healAmount;        // leveled base heal
+        public float healRange;         // leveled base healRange
         public float healSpeed;
+        public float specialGaugeGain;  // leveled base specialGain used for gauge
 
         public MonsterInstance(MonsterData d)
         {
@@ -245,10 +247,12 @@ public class Board : MonoBehaviour
 
             hp = 0f;
             maxHp = 0f;
+            attackPower = 0f;
             attackBonus = 0;
             healAmount = 0f;
             healRange = 0f;
             healSpeed = 0f;
+            specialGaugeGain = 0f;
 
             RecalcFromData(setHpToMax: true);
         }
@@ -258,26 +262,37 @@ public class Board : MonoBehaviour
             if (!data)
             {
                 maxHp = 0f;
+                attackPower = 0f;
                 attackBonus = 0;
                 healAmount = 0f;
                 healRange = 0f;
                 healSpeed = 0f;
+                specialGaugeGain = 0f;
                 if (setHpToMax) hp = 0f;
                 return;
             }
+
+            int level = RunMonsterProgress.GetCurrentLevel(data.monsterName);
+            var leveled = MonsterLeveling.GetLeveledStats(data, level);
 
             int hpBonus = ShopBuffStore.GetLevel(ShopBuffType.HpUp) * 5;
             int atkBonus = ShopBuffStore.GetLevel(ShopBuffType.AttackUp) * 1;
             int healBonus = ShopBuffStore.GetLevel(ShopBuffType.HealPower) * 2;
 
-            maxHp = data.maxHealth + hpBonus;
+            float runMaxHpMult = RunModsStore.MonsterMaxHpMult;
+            float runHealMult = RunModsStore.HealPowerMult;
+            int runHealRangeAdd = RunModsStore.HealRangeAdd;
+
+            maxHp = (leveled.maxHealth + hpBonus) * runMaxHpMult;
+
+            attackPower = leveled.attackPower;
             attackBonus = atkBonus;
 
-            // Healer stats increased only if healAmount > 0 originally
-            healAmount = (data.healAmount > 0f) ? (data.healAmount + healBonus) : 0f;
+            healAmount = (leveled.healAmount > 0f) ? ((leveled.healAmount + healBonus) * runHealMult) : 0f;
+            healRange = leveled.healRange + runHealRangeAdd;
+            healSpeed = leveled.healSpeed;
 
-            healRange = data.healRange;
-            healSpeed = data.healSpeed;
+            specialGaugeGain = leveled.specialGaugeGain;
 
             if (setHpToMax) hp = maxHp;
             else hp = Mathf.Clamp(hp, 0f, maxHp);
@@ -876,26 +891,24 @@ public class Board : MonoBehaviour
         DrawGridOverlay();
     }
 
-    // Centralized damage contribution calculation for a single monster instance.
     int CalcMonsterDamageContribution(in MonsterInstance inst, GameController gc)
     {
         if (!inst.data) return 0;
         if (inst.hp <= 0f) return 0;
 
-        float baseDmg = inst.data.attackPower + inst.attackBonus;
+        float baseDmg = inst.attackPower + inst.attackBonus;
         int dmg = Mathf.RoundToInt(baseDmg);
 
         return Mathf.Max(1, dmg);
     }
 
-    // Centralized special gauge contribution for a single monster instance.
     float CalcMonsterSpecialChargeContribution(in MonsterInstance inst, GameController gc)
     {
         if (!inst.data) return 0f;
         if (inst.hp <= 0f) return 0f;
 
         float gaugeMult = (gc ? gc.monsterSpecialGainMult : 1f);
-        float gauge = inst.data.specialGaugeGain * gaugeMult;
+        float gauge = inst.specialGaugeGain * gaugeMult;
 
         return Mathf.Max(1f, gauge);
     }
