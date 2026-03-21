@@ -20,6 +20,11 @@ public class AudioManager : MonoBehaviour
     public AudioClip sfxBossLightningStrike;
     public AudioClip sfxStoneBuffGranted;
 
+    public AudioClip sfxXpTick;
+    public AudioClip sfxXpGainOrb;
+    public AudioClip sfxXpDrainOrb;
+    public AudioClip sfxLevelUp;
+
     [Header("Music Pools (Gameplay)")]
     public AudioClip[] EDMGameplayMusic;
     public AudioClip[] EDMBossMusic;
@@ -31,6 +36,12 @@ public class AudioManager : MonoBehaviour
     public AudioClip MetalTitleMusic;
     public AudioClip EDMPauseMusic;
     public AudioClip MetalPauseMusic;
+
+    [Header("Single Tracks (Intermission)")]
+    public AudioClip EDMIntermissionWinMusic;
+    public AudioClip MetalIntermissionWinMusic;
+    public AudioClip EDMIntermissionLoseMusic;
+    public AudioClip MetalIntermissionLoseMusic;
 
     [Header("Defaults")]
     [Range(0f, 1f)] public float masterVolume = 0.5f;
@@ -410,12 +421,61 @@ public class AudioManager : MonoBehaviour
         return EDMPauseMusic ? EDMPauseMusic : MetalPauseMusic;
     }
 
+    AudioClip PickIntermissionWinClipByMode()
+    {
+        if (musicMode == MusicMode.EDM) return EDMIntermissionWinMusic;
+        if (musicMode == MusicMode.Metal) return MetalIntermissionWinMusic;
+
+        // Both
+        if (EDMIntermissionWinMusic && MetalIntermissionWinMusic)
+            return (Random.value < 0.5f) ? EDMIntermissionWinMusic : MetalIntermissionWinMusic;
+
+        return EDMIntermissionWinMusic ? EDMIntermissionWinMusic : MetalIntermissionWinMusic;
+    }
+
+    AudioClip PickIntermissionLoseClipByMode()
+    {
+        if (musicMode == MusicMode.EDM) return EDMIntermissionLoseMusic;
+        if (musicMode == MusicMode.Metal) return MetalIntermissionLoseMusic;
+
+        // Both
+        if (EDMIntermissionLoseMusic && MetalIntermissionLoseMusic)
+            return (Random.value < 0.5f) ? EDMIntermissionLoseMusic : MetalIntermissionLoseMusic;
+
+        return EDMIntermissionLoseMusic ? EDMIntermissionLoseMusic : MetalIntermissionLoseMusic;
+    }
+
+    public void PlayIntermissionWinMusic()
+    {
+        var clip = PickIntermissionWinClipByMode();
+        PlayIntermission(clip);
+    }
+
+    public void PlayIntermissionLoseMusic()
+    {
+        var clip = PickIntermissionLoseClipByMode();
+        PlayIntermission(clip);
+    }
+
+    void PlayIntermission(AudioClip clip)
+    {
+        if (!clip) return;
+
+        // Intermission should replace gameplay/pause music cleanly
+        context = MusicContext.None;
+        levelMusicActive = false;
+
+        StopPauseMusic();
+        StopLevelMusicInternal();
+
+        PlayMusic(clip, loop: true, vol: 1f);
+    }
+
     System.Collections.IEnumerator MusicChainRoutine()
     {
-        // Snapshot boss flag for this chain (in case another level starts mid-routine)
-        bool isBoss = levelIsBoss;
+        bool isBoss = levelIsBoss; // Snapshot boss flag for this chain
 
-        // Pull last-clip state for this context so we avoid repeating across levels
+        // Pull last-clip state for this context to avoid repeating across levels
         AudioClip lastClip = isBoss ? lastBossClip : lastGameplayClip;
 
         while (levelMusicActive && currentPool != null && currentPool.Length > 0)

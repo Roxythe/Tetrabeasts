@@ -4805,22 +4805,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 588429713779898078, guid: e266400955faf8b4cba7769fe58d6b32, type: 3}
-      propertyPath: sfxRestart
-      value: 
-      objectReference: {fileID: 8300000, guid: 9b934f9e5161c1f4699da6b51d6f07d0, type: 3}
-    - target: {fileID: 588429713779898078, guid: e266400955faf8b4cba7769fe58d6b32, type: 3}
-      propertyPath: musicVolume
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 588429713779898078, guid: e266400955faf8b4cba7769fe58d6b32, type: 3}
-      propertyPath: 'sfxLineClears.Array.data[0]'
-      value: 
-      objectReference: {fileID: 8300000, guid: 4ceffb438abbea1468771745cd9d8fec, type: 3}
-    - target: {fileID: 588429713779898078, guid: e266400955faf8b4cba7769fe58d6b32, type: 3}
-      propertyPath: 'sfxLineClears.Array.data[1]'
-      value: 
-      objectReference: {fileID: 8300000, guid: 15fdf873adb28aa49887361e123756a9, type: 3}
     - target: {fileID: 1150672262309858253, guid: e266400955faf8b4cba7769fe58d6b32, type: 3}
       propertyPath: m_Name
       value: AudioManager

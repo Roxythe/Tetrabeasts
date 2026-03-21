@@ -1563,7 +1563,7 @@ GameObject:
   - component: {fileID: 2910176665840014929}
   - component: {fileID: 7827448580690296084}
   m_Layer: 5
-  m_Name: ReturnToMenu_Button (1)
+  m_Name: ReturnToMenu_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4199,6 +4199,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8597452339301913430}
     m_Modifications:
+    - target: {fileID: 44341542986195640, guid: f44477c3a1d199548a834a1f933e0cba, type: 3}
+      propertyPath: m_Name
+      value: BorderFrame_Image
+      objectReference: {fileID: 0}
     - target: {fileID: 212205524967110817, guid: f44477c3a1d199548a834a1f933e0cba, type: 3}
       propertyPath: m_AnchorMax.x
       value: 1

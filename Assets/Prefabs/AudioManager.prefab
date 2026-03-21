@@ -60,6 +60,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: bc29fa804b7ea9e419d200ebbe06e501, type: 3}
   - {fileID: 8300000, guid: 570c3151887490945bf1ef32a3f03220, type: 3}
   sfxBossLightningStrike: {fileID: 8300000, guid: 88ec6b8b9d8673540865aaf7b9ea8586, type: 3}
+  sfxStoneBuffGranted: {fileID: 8300000, guid: 4afd5121a23bbec46990836550fc7d86, type: 3}
+  sfxXpTick: {fileID: 8300000, guid: 6ba621102380c9b4c8793d9f1e2d6c8b, type: 3}
+  sfxXpGainOrb: {fileID: 8300000, guid: 294e4909eb1acfc4f9e89c6ce1656c8c, type: 3}
+  sfxXpDrainOrb: {fileID: 8300000, guid: 9ef1f5962c0948e409610ccf9b2901ce, type: 3}
+  sfxLevelUp: {fileID: 8300000, guid: b1cbdc6b978097d49aebc2c69f20d3d2, type: 3}
   EDMGameplayMusic:
   - {fileID: 8300000, guid: a02a4788845cc444b8b1e0baa846cdb5, type: 3}
   - {fileID: 8300000, guid: c7e4825b4755dd04ebe292fac9e8ba5c, type: 3}
@@ -80,6 +85,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 80741d7c33118d34fa6ca7b9063e5c74, type: 3}
   - {fileID: 8300000, guid: 1dc96fd837891d449bff80e639adcd27, type: 3}
   - {fileID: 8300000, guid: d92c02d4c0fd75845b39c14e64de1c18, type: 3}
+  - {fileID: 8300000, guid: 5c0b274ffd7b32147967c72a73b47001, type: 3}
+  - {fileID: 8300000, guid: 55b37d69f91fe8647accffbfe845699d, type: 3}
   MetalBossMusic:
   - {fileID: 8300000, guid: 5c14238e921d6304f8141213dcf2d153, type: 3}
   - {fileID: 8300000, guid: cc3a84b963c69154984464b95c4af9fd, type: 3}
@@ -89,7 +96,11 @@ MonoBehaviour:
   MetalTitleMusic: {fileID: 8300000, guid: d472bc17a6196c54bbb1d45824723c12, type: 3}
   EDMPauseMusic: {fileID: 8300000, guid: 19133b00f7885494c80c038dc894da9d, type: 3}
   MetalPauseMusic: {fileID: 8300000, guid: 34e5725356a597f4989f788be169e313, type: 3}
+  EDMIntermissionWinMusic: {fileID: 8300000, guid: 4f1472f30ad420c459c88cad72bb807c, type: 3}
+  MetalIntermissionWinMusic: {fileID: 8300000, guid: cc1be8d4e65da1f43ae248a75ce5cfcf, type: 3}
+  EDMIntermissionLoseMusic: {fileID: 8300000, guid: 3dc0443c230f3d64c8e06cd964c51ee1, type: 3}
+  MetalIntermissionLoseMusic: {fileID: 8300000, guid: 3a7d5ba3b8528ad418a719f8b5a96955, type: 3}
   masterVolume: 0.5
-  musicVolume: 0.527
+  musicVolume: 1
   sfxVolume: 1
   sfxPitchJitter: 0.2

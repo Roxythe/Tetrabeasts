@@ -14,6 +14,9 @@ public class GameController : MonoBehaviour
     public NextPreviewUI nextPreview;
     public TetrominoData[] allTetrominoes;
 
+    [Header("XP Tuning")]
+    [SerializeField] int baseXpPerLevel = 3;
+
     [Header("Line Clear Visual Timing")]
     public float cascadeSettlePauseSeconds = 0.18f;
 
@@ -251,6 +254,7 @@ public class GameController : MonoBehaviour
 
     public bool disableNextPreview = false;
     public bool disableLandingHint = false;
+    bool _pendingMainMenuAfterXp = false;
 
     public int currencyPerRoundWinAdd = 0;
     public float currencyPerRoundWinMult = 1f;
@@ -298,6 +302,7 @@ public class GameController : MonoBehaviour
     int _maxComboThisLevel = 0;
     int _obstaclesDestroyedThisLevel = 0;
     int _levelStartMaxLives = 0;
+    int _levelStartReserveUnits = 0;
 
     [Header("Debug")]
     public bool logRowDamageBreakdown = true;
@@ -475,10 +480,24 @@ public class GameController : MonoBehaviour
 
         EnterGameplayCursorMode(); // Lock cursor at start
 
-        // Wire pause buttons once
-        if (resumeButton) resumeButton.onClick.AddListener(ResumeGame);
-        if (mainMenuButton) mainMenuButton.onClick.AddListener(ReturnToMainMenu);
-        if (quitButton) quitButton.onClick.AddListener(QuitGame);
+        // Wire pause buttons
+        if (resumeButton)
+        {
+            resumeButton.onClick.RemoveAllListeners();
+            resumeButton.onClick.AddListener(ResumeGame);
+        }
+
+        if (mainMenuButton)
+        {
+            mainMenuButton.onClick.RemoveAllListeners();
+            mainMenuButton.onClick.AddListener(ReturnToMainMenu);
+        }
+
+        if (quitButton)
+        {
+            quitButton.onClick.RemoveAllListeners();
+            quitButton.onClick.AddListener(QuitGame);
+        }
 
         if (volumePanelInPause) volumePanelInPause.pauseWhenOpen = false;
 
@@ -783,6 +802,8 @@ public class GameController : MonoBehaviour
         if (xpAwardUI)
         {
             OpenXpUiMode();
+
+            if (AudioManager.I) AudioManager.I.PlayIntermissionLoseMusic();
 
             xpAwardUI.ShowRunEndCommit(roster, 0.10f, () =>
                 {
@@ -1122,6 +1143,7 @@ public class GameController : MonoBehaviour
         _maxComboThisLevel = 0;
         _obstaclesDestroyedThisLevel = 0;
         _levelStartMaxLives = EffectiveMaxUnitLives;
+        _levelStartReserveUnits = unitLives;
 
         // Only apply level-start logic once per level
         if (levelIndex != _lastLevelInitialized)
@@ -1207,6 +1229,8 @@ public class GameController : MonoBehaviour
         if (xpAwardUI)
         {
             OpenXpUiMode();
+
+            if (AudioManager.I) AudioManager.I.PlayIntermissionWinMusic();
 
             xpAwardUI.ShowRoundWin(computed.breakdown, roster, computed.perMonsterAwardXp, () =>
                 {
@@ -1417,6 +1441,8 @@ public class GameController : MonoBehaviour
         if (xpAwardUI)
         {
             OpenXpUiMode();
+
+            if (AudioManager.I) AudioManager.I.PlayIntermissionWinMusic();
 
             xpAwardUI.ShowRunEndCommit(roster, 0.10f, () =>
             {
@@ -2195,6 +2221,42 @@ public class GameController : MonoBehaviour
 
     public void RestartGame()
     {
+        // If still on level 1 (no run XP earned yet), restart immediately
+        if (currentLevel == 0)
+        {
+            DoRestartGameNow();
+            RunMonsterProgress.BeginRun(GetActiveMonsterRoster());
+            return;
+        }
+
+        // Treat restart like a loss
+        if (xpAwardUI && RunMonsterProgress.RunActive)
+        {
+            OpenXpUiMode();
+
+            if (AudioManager.I) AudioManager.I.PlayIntermissionLoseMusic();
+
+            xpAwardUI.ShowRunEndCommit(
+                GetActiveMonsterRoster(),
+                0.10f,
+                () =>
+                {
+                    CloseXpUiMode();
+                    DoRestartGameNow();
+
+                    // New run starts from updated permanent progression
+                    RunMonsterProgress.BeginRun(GetActiveMonsterRoster());
+                });
+
+            return;
+        }
+
+        DoRestartGameNow();
+        RunMonsterProgress.BeginRun(GetActiveMonsterRoster());
+    }
+
+    void DoRestartGameNow()
+    {
         // Unpause if needed
         Time.timeScale = 1f;
         AudioListener.pause = false;
@@ -2270,13 +2332,49 @@ public class GameController : MonoBehaviour
         EnterGameplayCursorMode();
     }
 
-
     public void ReturnToMainMenu()
     {
+        if (currentLevel == 0)
+        {
+            Debug.LogError("Return to main menu now  current level is 0");
+            _pendingMainMenuAfterXp = false;
+            DoReturnToMainMenuNow();
+            return;
+        }
+
+        if (xpAwardUI && RunMonsterProgress.RunActive)
+        {
+            _pendingMainMenuAfterXp = true;
+
+            OpenXpUiMode();
+            if (AudioManager.I) AudioManager.I.PlayIntermissionLoseMusic();
+
+            xpAwardUI.ShowRunEndCommit(
+                GetActiveMonsterRoster(),
+                0.10f,
+                () =>
+                {
+                    Debug.LogError("Return to main menu now called");
+                    _pendingMainMenuAfterXp = false;
+                    CloseXpUiMode();
+                    DoReturnToMainMenuNow();
+                });
+
+            return;
+        }
+
+        _pendingMainMenuAfterXp = false;
+        DoReturnToMainMenuNow();
+    }
+
+    void DoReturnToMainMenuNow()
+    {
+        if (_pendingMainMenuAfterXp && xpAwardUI && xpAwardUI.gameObject.activeInHierarchy)
+            return;
+
         Time.timeScale = 1f;
         isPaused = false;
 
-        // Stop music before loading main menu
         if (AudioManager.I)
         {
             AudioManager.I.StopPauseMusic();
@@ -4000,18 +4098,28 @@ public class GameController : MonoBehaviour
 
     ComputedRoundXp ComputeRoundWinXp(int gameLevelNumber)
     {
-        int baseXp = 3 * Mathf.Max(1, gameLevelNumber);
+        int baseXp = Mathf.Max(0, baseXpPerLevel) * Mathf.Max(1, gameLevelNumber);
 
-        int clearTimeBonus = Mathf.RoundToInt(40f - _levelTimer);
+        // Clamp each bonus to a minimum of -5 
+        int clearTimeBonusRaw = Mathf.RoundToInt(40f - _levelTimer);
+        int clearTimeBonus = Mathf.Max(-5, clearTimeBonusRaw);
 
+        // Unit reserve bonus parameters
+        int startReserve = _levelStartReserveUnits;
+        int endReserve = unitLives;
+        int reserveBonusRaw = 5 + (endReserve - startReserve);
+        int unitsLostBonus = Mathf.Max(-5, reserveBonusRaw);
         int maxReserve = _levelStartMaxLives > 0 ? _levelStartMaxLives : EffectiveMaxUnitLives;
-        int unitsLost = Mathf.Max(0, maxReserve - unitLives);
-        int unitsLostBonus = 5 - unitsLost;
 
         int comboBonus = Mathf.Max(0, _maxComboThisLevel);
         int obstacleBonus = Mathf.Max(0, _obstaclesDestroyedThisLevel);
 
-        int totalBeforeReduction = Mathf.Max(0, baseXp + clearTimeBonus + unitsLostBonus + comboBonus + obstacleBonus);
+        // Base XP is never reduced by negative bonuses
+        // Bonuses can net out below 0, but the bonus-bucket has a floor of 0
+        int bonusSum = clearTimeBonus + unitsLostBonus + comboBonus + obstacleBonus;
+        int bonusBucket = Mathf.Max(0, bonusSum);
+
+        int totalBeforeReduction = baseXp + bonusBucket;
 
         var roster = GetActiveMonsterRoster();
         var perMonster = new Dictionary<string, float>();
@@ -4043,9 +4151,9 @@ public class GameController : MonoBehaviour
                 baseXp = baseXp,
                 levelClearTime = _levelTimer,
                 clearTimeBonus = clearTimeBonus,
-                maxReserve = maxReserve,
-                currentReserve = unitLives,
-                unitsLostBonus = unitsLostBonus,
+                startReserve = _levelStartReserveUnits,
+                endReserve = unitLives,
+                reserveBonus = unitsLostBonus,
                 comboBonus = comboBonus,
                 obstacleBonus = obstacleBonus,
                 totalBeforeReduction = totalBeforeReduction

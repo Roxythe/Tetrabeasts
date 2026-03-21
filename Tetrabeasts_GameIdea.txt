@@ -1,44 +1,16 @@
 
 ****** TODO ******
 
-- Restart and main menu button from pause menu should bring up awardXPUI and drain run instance monsters and then transfer xp to permanent data stores like ending a run on a loss condition.
-
-- When ending a run on a loss condition (specifically when setting a piece above the top row of the board) awardXPUI triggers correctly, but there seems to be a 1-2 second window where a slightly transparent black overlay is on and then gets turn off. The screen looks slightly darker than it should and then brightens up. 
-
-- A lot of my bonus XP is dropping heavily into negative terrirtory (especially run time and units lost) for fresh games plays making it too hard to level up. I would like to reduce the rate at which points are deducted for poor performance and putting a hard cap at -5 for each bonus for now.
+- Main menu button takes the player back to the main menu immediatley and does not exp drain/permanent transfer.
 
 
-- Add game over background music for both generes. triggers on round loss at the same time game over sfx plays. Stop music after high score screen button choice is pressed for return to main menu or restart game.
+-? Use an SFX array for exp gain or add jitter?
 
-- Add round won background Music for both generes. Start music when round won SFX is triggered and stop music when debuff panel continue button is pressed.
+- Add background images and borders for XP Award panels
 
 *- Make unit reserve flash red when a unit dies
 
 *- Add unit death sfx's
-
-
-*- Add level up mechanic for monster data for units used in that level
-
--- 1 Stat increase for each level up
-
---- Attackers stat order increase attack, hp, attack, and special gain. Repeat order after every complete cycle
-
---- Defenders stat order increase Hp, attack, Hp, special gain, Hp, and attack. Repeat order after every complete cycle
-
---- Healers stat order increase Heal power, hp, special gain, Heal power, HP, special gain, Heal range. Repeat order after every complete cycle
-
--- XP for next level always 100
-
--- Max level 100
-
--- XP gained after each level based on monster units current level (reduce xp for higher level monsters at lower game levels)
-
--- Bonus xp based on win conditions like level completion time, Units lost, Largest combo that level, # of obstacles cleared, etc
-
--- Add Monster level to monster button prefab and code in monster select UI
-
-- Make sure instanced monster unit uses leveled monster stats as its base before adding multipliers/additive from shop buffs and run modifier buffs and not the monsters base stats.
-
 
 
 - Run Modifier images shown in a row on the gameplay scene
@@ -55,9 +27,12 @@
 
 - Play with the grid size and experiment with different grid sizes.
 
+- Monster units have different passive abilities when used on team. Upgrade every 10th level
+
 *** KNOWN BUGS ***
 
-- Boss sometimes finishes a row by spawning two magic pylons in the last two open spots (should never happen)
+- When boss summons magic pylons and player blocks both pylon spawns, the boss is not attempting to spawn two new magic pylons. He will reattempt to spawn a new pylon if one is blocked, but if both are blocked then he is not re attempting (which is incorrect)
+
 
 - borderlines between tiles are not updating sometimes leading to some outlines being thicker or thinner than they should be. (check after tile destruction from boss bombs or after rows are sttled from cascading row clear)
 

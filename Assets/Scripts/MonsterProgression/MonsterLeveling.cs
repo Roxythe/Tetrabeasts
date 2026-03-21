@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class MonsterLeveling
@@ -93,7 +94,7 @@ public static class MonsterLeveling
             switch (step)
             {
                 case StatStep.Hp:
-                    s.maxHealth += 1f;
+                    s.maxHealth += 5f;
                     break;
                 case StatStep.Attack:
                     s.attackPower += 1f;
@@ -109,5 +110,130 @@ public static class MonsterLeveling
                     break;
             }
         }
+    }
+
+    public static string GetStatIncreaseSummary(MonsterData data, int fromLevel, int toLevel)
+    {
+        if (!data) return "";
+        fromLevel = Mathf.Clamp(fromLevel, 1, MaxLevel);
+        toLevel = Mathf.Clamp(toLevel, 1, MaxLevel);
+        if (toLevel <= fromLevel) return "";
+
+        int hp = 0, atk = 0, sp = 0, heal = 0, range = 0;
+
+        var cycle = GetCycleForRole(data.role);
+        int n = cycle.Length;
+
+        for (int newLevel = fromLevel + 1; newLevel <= toLevel; newLevel++)
+        {
+            int stepIndex = (newLevel - 2) % n;
+            switch (cycle[stepIndex])
+            {
+                case StatStep.Hp: hp++; break;
+                case StatStep.Attack: atk++; break;
+                case StatStep.SpecialGain: sp++; break;
+                case StatStep.HealPower: heal++; break;
+                case StatStep.HealRange: range++; break;
+            }
+        }
+
+        // Build compact UI string
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+        void Add(string label, int v)
+        {
+            if (v <= 0) return;
+            if (sb.Length > 0) sb.Append(", ");
+            sb.Append(label).Append(" +").Append(v);
+        }
+
+        Add("HP", hp);
+        Add("ATK", atk);
+        Add("Special", sp);
+        Add("Heal", heal);
+        Add("Range", range);
+
+        return sb.ToString();
+    }
+
+    static StatStep[] GetCycleForRole(MonsterRole role)
+    {
+        switch (role)
+        {
+            case MonsterRole.Attack:
+                return new[]
+                {
+                StatStep.Attack,
+                StatStep.Hp,
+                StatStep.Attack,
+                StatStep.SpecialGain
+            };
+
+            case MonsterRole.Defense:
+                return new[]
+                {
+                StatStep.Hp,
+                StatStep.Attack,
+                StatStep.Hp,
+                StatStep.SpecialGain,
+                StatStep.Hp,
+                StatStep.Attack
+            };
+
+            case MonsterRole.Healer:
+                return new[]
+                {
+                StatStep.HealPower,
+                StatStep.Hp,
+                StatStep.SpecialGain,
+                StatStep.HealPower,
+                StatStep.Hp,
+                StatStep.SpecialGain,
+                StatStep.HealRange
+            };
+
+            default:
+                return new[] { StatStep.Hp };
+        }
+    }
+
+    public static List<string> GetOrderedStatStepLines(MonsterData data, int fromLevel, int toLevel)
+    {
+        var lines = new List<string>();
+        if (!data) return lines;
+
+        fromLevel = Mathf.Clamp(fromLevel, 1, MaxLevel);
+        toLevel = Mathf.Clamp(toLevel, 1, MaxLevel);
+        if (toLevel <= fromLevel) return lines;
+
+        var cycle = GetCycleForRole(data.role);
+        int n = cycle.Length;
+
+        for (int newLevel = fromLevel + 1; newLevel <= toLevel; newLevel++)
+        {
+            int stepIndex = (newLevel - 2) % n;
+            var step = cycle[stepIndex];
+
+            switch (step)
+            {
+                case StatStep.Hp:
+                    lines.Add("+ 5 HP");
+                    break;
+                case StatStep.Attack:
+                    lines.Add("+ 1 Attack");
+                    break;
+                case StatStep.SpecialGain:
+                    lines.Add("+ 1 Special");
+                    break;
+                case StatStep.HealPower:
+                    lines.Add("+ 5 Heal");
+                    break;
+                case StatStep.HealRange:
+                    lines.Add("+ 1 Range");
+                    break;
+            }
+        }
+
+        return lines;
     }
 }
