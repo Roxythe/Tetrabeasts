@@ -18,7 +18,7 @@ MonoBehaviour:
   specialAbilityName: Time Shift
   specialDescription: Reduce unit fall speed by 1/3 of its current speed fo 15 seconds.
   startsLocked: 1
-  unlockCost: 50
+  unlockCost: 100
   ability: 3
   clearRows: 3
   cooldownSeconds: 0

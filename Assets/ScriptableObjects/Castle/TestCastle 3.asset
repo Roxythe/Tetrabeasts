@@ -18,7 +18,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 9082ffe4cf1f7e146b700d31ac4725da, type: 3}
   - {fileID: 21300000, guid: 72665c402bca98948ac42bedf1620070, type: 3}
   - {fileID: 21300000, guid: 8ef84dac0848a8b4f81252dbc3fac646, type: 3}
-  maxHP: 700
+  maxHP: 800
   projectileSprite: {fileID: 21300000, guid: ca7186951d5077d419fe7998de074c6d, type: 3}
   projectileInterval: 1
   projectileSpeed: 800
@@ -66,16 +66,16 @@ MonoBehaviour:
   bossEnableGravityBoost: 1
   bossEnablePylonShield: 1
   bossEnableMagicExplosive: 1
-  bossAbilityIntervalMin: 4
+  bossAbilityIntervalMin: 3
   bossAbilityIntervalMax: 7
-  bossRowBlastDamage: 2
-  bossFullBoardDamage: 1
+  bossRowBlastDamage: 25
+  bossFullBoardDamage: 10
   bossLightningWarningSprite: {fileID: 0}
   bossLightningTargetsMin: 1
   bossLightningTargetsMax: 3
   bossLightningWarningMin: 3
   bossLightningWarningMax: 5
-  bossLightningInitialDamage: 2
+  bossLightningInitialDamage: 25
   bossLightningTickDamage: 1
   bossLightningTickInterval: 0.5
   bossLightningHazardDuration: 4

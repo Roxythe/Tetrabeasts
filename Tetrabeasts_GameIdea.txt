@@ -1,15 +1,6 @@
 
 ****** TODO ******
 
--? Use an SFX array for exp gain or add jitter?
-
-- Add background images and borders for XP Award panels
-
-*- Make unit reserve flash red when a unit dies
-
-*- Add unit death sfx's
-
-
 - Run Modifier images shown in a row on the gameplay scene
 
 - Change gravity accelaration to a flat increase over time instead of ramping up over time. Instead of acceleration increasing at the start of each level, simply increases the flat increase by X amount each level
@@ -28,26 +19,22 @@
 
 - Add cracked glass overlay and severly cracked glass overlay for unit reserve and glass cracking SFX
 
-*** KNOWN BUGS ***
+- New buff modifier increase stone obstacle buff drop chance
 
-- When boss summons magic pylons and player blocks both pylon spawns, the boss is not attempting to spawn two new magic pylons. He will reattempt to spawn a new pylon if one is blocked, but if both are blocked then he is not re attempting (which is incorrect)
-
-
-- borderlines between tiles are not updating sometimes leading to some outlines being thicker or thinner than they should be. (check after tile destruction from boss bombs or after rows are sttled from cascading row clear)
-
-- Restart doesn't reset buff rarity?
-
-- When Achievement Toast activated during gameplay my cursor was unlocked
-
-- Prevent special blocks from being chosen as the very first piece of a level
-
-- If a row is cleared that would have had a monster or tile that would be hit by an enemy projectile, sometimes the enemy projectile will be destroyed in that cell instead of continuing further down the board to find a valid target (or be destroyed at the bottom of the board)
+- Add setting toggle in setting menu or monster select to use any unlocked skin at random when creating monster sprite for monster pieces
 
 - Add SFX to player character data for reduced gravity special ability
 
-- Add slight delay (0.5f seconds) after using earthquake special block before clearing any full lines created by using special block
+*** KNOWN BUGS ***
 
-- Change lightning strike boss ability to target a cell currently occupied by a monster unit instead of an empty cell
+-? Restart doesn't reset buff rarity?
+
+-? When Achievement Toast activated during gameplay my cursor was unlocked
+
+-? Prevent special blocks from being chosen as the very first piece of a level
+
+- If a row is cleared that would have had a monster or tile that would be hit by an enemy projectile, sometimes the enemy projectile will be destroyed in that cell instead of continuing further down the board to find a valid target (or be destroyed at the bottom of the board)
+
 
 *** HELP ***
 

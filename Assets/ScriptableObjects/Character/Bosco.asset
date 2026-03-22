@@ -19,7 +19,7 @@ MonoBehaviour:
   specialDescription: Send all units from the bottom 3 rows to attack immediatley,
     no need for fully formed lines. Damage based on the number of units cleared.
   startsLocked: 1
-  unlockCost: 50
+  unlockCost: 100
   ability: 0
   clearRows: 3
   cooldownSeconds: 0

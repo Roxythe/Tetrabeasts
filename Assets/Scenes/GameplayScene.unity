@@ -16996,7 +16996,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d2d37792bd3897d458d808731e0176b7, type: 2}
   - {fileID: 11400000, guid: 753f83587d342c541ad9edfe4af1bde5, type: 2}
   - {fileID: 11400000, guid: 905d3693dd34dc6488c242898c76b7a6, type: 2}
-  baseXpPerLevel: 300
+  baseXpPerLevel: 25
   cascadeSettlePauseSeconds: 0.18
   pauseCursor: {fileID: 1171653363}
   battleLog: {fileID: 1041077125}
@@ -17214,8 +17214,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 76d1cbaa83a0dd040b55b04bd2932b37, type: 2}
   - {fileID: 11400000, guid: 3b2b178012d4e3f45a1be4fffc5b8def, type: 2}
   - {fileID: 11400000, guid: 83208262cc66a7143b101ba8cdb0d548, type: 2}
-  specialChancePerEnqueue: 0.08
-  maxSpecialChance: 0.33
+  specialChancePerEnqueue: 0.06
+  maxSpecialChance: 0.25
   projectileRoot: {fileID: 304730603}
   projectileSpeed: 1000
   minBagPieces: 2
@@ -17238,6 +17238,9 @@ MonoBehaviour:
   unitLivesSlider: {fileID: 1132580156}
   unitLivesFlashColor: {r: 1, g: 0.15, b: 0.15, a: 1}
   unitLivesFlashSeconds: 0.3
+  unitLivesShakeSeconds: 0.15
+  unitLivesShakeAmplitude: 6
+  unitLivesShakeHz: 26
   obstacleManager: {fileID: 995641950}
   bossEnablePylonShield: 1
   bossPylonCount: 2
@@ -17566,6 +17569,7 @@ MonoBehaviour:
   maxOrbSfxPerSecondEnd: 40
   minOrbSfxIntervalStartSeconds: 0.05
   minOrbSfxIntervalEndSeconds: 0.008
+  orbSfxPitchJitter: 0.08
   breakdownStartDelaySeconds: 0.5
   breakdownTickStartSeconds: 0.12
   breakdownTickEndSeconds: 0.01

@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using System.Collections;
+
 
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
 using UnityEngine.InputSystem;
@@ -427,18 +429,7 @@ public class Piece : MonoBehaviour
                         enabled = false;
                         int levelBeforeEQ = gc.CurrentLevel;
 
-                        board.ClearFullLinesAnimated((rowsEQ, removedEQ, dmgEQ, chargeEQ, rowDamageEQ, rowDomEQ) =>
-                        {
-                            if (PlayerProgress.I != null && rowsEQ > 0)
-                                PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.EarthquakeRowClears, rowsEQ);
-
-                            var emptyCols = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<int>>();
-                            if (gc != null)
-                                gc.OnPieceLocked(rowsEQ, removedEQ, dmgEQ, chargeEQ, rowDamageEQ, rowDomEQ, emptyCols);
-
-                            if (gc != null && gc.CurrentLevel == levelBeforeEQ && gc.CanSpawnNewPiece())
-                                gc.SpawnNextPiece();
-                        });
+                        gc.StartCoroutine(CoEarthquakeDelayedClear(board, gc, levelBeforeEQ));
 
                         return;
                     }
@@ -726,6 +717,29 @@ public class Piece : MonoBehaviour
             fallTimer = 0f;
             lockTimer = 0f;
         }
+    }
+
+    IEnumerator CoEarthquakeDelayedClear(Board boardRef, GameController gcRef, int levelBeforeEQ)
+    {
+        if (!boardRef) yield break;
+
+        // Same timing used for cascade clear visuals
+        yield return null;
+        if (boardRef.cascadeClearVisualDelay > 0f)
+            yield return new WaitForSecondsRealtime(boardRef.cascadeClearVisualDelay);
+
+        boardRef.ClearFullLinesAnimated((rowsEQ, removedEQ, dmgEQ, chargeEQ, rowDamageEQ, rowDomEQ) =>
+        {
+            if (PlayerProgress.I != null && rowsEQ > 0)
+                PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.EarthquakeRowClears, rowsEQ);
+
+            var emptyCols = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<int>>();
+            if (gcRef != null)
+                gcRef.OnPieceLocked(rowsEQ, removedEQ, dmgEQ, chargeEQ, rowDamageEQ, rowDomEQ, emptyCols);
+
+            if (gcRef != null && gcRef.CurrentLevel == levelBeforeEQ && gcRef.CanSpawnNewPiece())
+                gcRef.SpawnNextPiece();
+        });
     }
 
     // ========== Inline Border Color Change ==========

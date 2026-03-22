@@ -18,7 +18,7 @@ MonoBehaviour:
   specialAbilityName: Immutable Bulwark
   specialDescription: All units become immune to damage for 12 seconds.
   startsLocked: 1
-  unlockCost: 50
+  unlockCost: 100
   ability: 2
   clearRows: 3
   cooldownSeconds: 0

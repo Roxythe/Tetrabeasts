@@ -447,6 +447,15 @@ public class Board : MonoBehaviour
         if (InBounds(cell + Vector2Int.down)) RefreshTileBordersAt(cell + Vector2Int.down);
     }
 
+    public void RefreshAllTileBorders()
+    {
+        foreach (var kv in placed)
+        {
+            if (!kv.Value) continue;
+            RefreshTileBordersAt(kv.Key);
+        }
+    }
+
     private readonly Dictionary<Vector2Int, MonsterInstance> monsters = new();
 
     void Awake()
@@ -1423,6 +1432,8 @@ public class Board : MonoBehaviour
             }
         }
 
+        RefreshAllTileBorders();
+
         return squaresCleared;
     }
 
@@ -1653,6 +1664,7 @@ public class Board : MonoBehaviour
             }
         }
 
+        RefreshAllTileBorders();
         CleanOrphanedTiles();
     }
 
@@ -1724,6 +1736,7 @@ public class Board : MonoBehaviour
             }
         }
 
+        RefreshAllTileBorders();
         CleanOrphanedTiles();
     }
 

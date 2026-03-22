@@ -17,14 +17,14 @@ MonoBehaviour:
   monsterDescription: Healer with short range, but powerful spells
   role: 2
   startsLocked: 1
-  unlockCost: 30
+  unlockCost: 50
   skinPortraits:
   - {fileID: 21300000, guid: 6dfe1e06c67c67d40990364fed164c34, type: 3}
   - {fileID: 21300000, guid: bae06bb8ddada6e4895c353ae6ef8eb4, type: 3}
   - {fileID: 21300000, guid: e8fd4be630ea7104f86a3a4c9818633c, type: 3}
   - {fileID: 21300000, guid: dcf36f58d5e06dc4ca0c1a45481fd684, type: 3}
   - {fileID: 21300000, guid: 31e760f37eaf5014e81c4d14ce66bc62, type: 3}
-  skinCosts: 00000000140000001e0000002800000032000000
+  skinCosts: 0000000064000000640000006400000064000000
   maxHealth: 10
   minHealth: 0
   currentHealth: 10

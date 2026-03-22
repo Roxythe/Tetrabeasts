@@ -90,6 +90,9 @@ public class XpAwardUI : MonoBehaviour
     public float minOrbSfxIntervalStartSeconds = 0.05f;
     public float minOrbSfxIntervalEndSeconds = 0.008f;
 
+    [Header("Orb SFX Pitch Jitter")]
+    [Range(0f, 0.25f)] public float orbSfxPitchJitter = 0.08f;
+
     [Header("Breakdown Count-Up")]
     public float breakdownStartDelaySeconds = 1.0f;
     public float breakdownTickStartSeconds = 0.12f;
@@ -923,10 +926,18 @@ public class XpAwardUI : MonoBehaviour
         lastTime = now;
         count += 1;
 
+        float pitch = 1f;
+
+        if (orbSfxPitchJitter > 0f)
+        {
+            float j = orbSfxPitchJitter;
+            pitch = 1f + UnityEngine.Random.Range(-j, j);
+        }
+
         if (gain && AudioManager.I.sfxXpGainOrb)
-            AudioManager.I.PlayUISFX(AudioManager.I.sfxXpGainOrb);
+            AudioManager.I.PlayUISFX(AudioManager.I.sfxXpGainOrb, vol: 1f, pitch: pitch, jitter: false);
         else if (!gain && AudioManager.I.sfxXpDrainOrb)
-            AudioManager.I.PlayUISFX(AudioManager.I.sfxXpDrainOrb);
+            AudioManager.I.PlayUISFX(AudioManager.I.sfxXpDrainOrb, vol: 1f, pitch: pitch, jitter: false);
     }
 
     void TryPlayLevelUpSfxOncePerFrame()

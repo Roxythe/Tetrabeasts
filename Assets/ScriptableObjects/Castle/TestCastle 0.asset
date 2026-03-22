@@ -67,15 +67,15 @@ MonoBehaviour:
   bossEnablePylonShield: 1
   bossEnableMagicExplosive: 1
   bossAbilityIntervalMin: 4
-  bossAbilityIntervalMax: 7
-  bossRowBlastDamage: 2
-  bossFullBoardDamage: 1
+  bossAbilityIntervalMax: 9
+  bossRowBlastDamage: 5
+  bossFullBoardDamage: 2
   bossLightningWarningSprite: {fileID: 0}
   bossLightningTargetsMin: 1
   bossLightningTargetsMax: 3
   bossLightningWarningMin: 3
   bossLightningWarningMax: 5
-  bossLightningInitialDamage: 2
+  bossLightningInitialDamage: 10
   bossLightningTickDamage: 1
   bossLightningTickInterval: 0.5
   bossLightningHazardDuration: 4

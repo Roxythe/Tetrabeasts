@@ -3425,7 +3425,8 @@ public class GameController : MonoBehaviour
             for (int y = minY; y <= maxY; y++)
             {
                 var c = new Vector2Int(x, y);
-                if (gameBoard.IsFree(c)) candidates.Add(c);
+                if (!gameBoard.IsFree(c) && gameBoard.TryGetMonster(c, out var inst) && inst.data != null && inst.hp > 0f)
+                    candidates.Add(c);
             }
         }
 
