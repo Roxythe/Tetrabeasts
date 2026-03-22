@@ -2647,7 +2647,7 @@ public class Board : MonoBehaviour
         img.preserveAspect = true;
         img.raycastTarget = false;
 
-        // NEW: slightly transparent
+        // Slightly transparent
         alpha = Mathf.Clamp01(alpha);
         img.color = new Color(1f, 1f, 1f, alpha);
 

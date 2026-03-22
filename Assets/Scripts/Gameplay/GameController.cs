@@ -3129,7 +3129,7 @@ public class GameController : MonoBehaviour
 
             // If none spawned in this batch, don't loop forever
             if (spawnedThisBatch == 0)
-                break;
+                continue;
 
             remaining -= spawnedThisBatch; // Retry only for those that failed
         }
