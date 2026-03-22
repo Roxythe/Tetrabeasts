@@ -42,10 +42,16 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 8990cdb32fd36a74c9df4c24a499b0a1, type: 3}
   isBossLevel: 0
   bossOverlaySprite: {fileID: 0}
-  bossBGM: {fileID: 8300000, guid: 6824fd3217be2fb4b9ff175138689e20, type: 3}
-  bossBGMVolume: 0.6
-  levelBGM: {fileID: 8300000, guid: 951dff102d03c5947bf6f9a4b9b77cc7, type: 3}
-  levelBGMVolume: 0.5
+  bossAttackSprite: {fileID: 0}
+  bossDamageTakenSprite: {fileID: 0}
+  bossCriticalIdleSprite: {fileID: 0}
+  bossCriticalDamageTakenSprite: {fileID: 0}
+  bossCriticalAttackSprite: {fileID: 0}
+  bossCriticalHpThreshold: 0.3
+  bossAttackShiftRight: 1
+  bossAttackShiftDistance: 20
+  bossAttackSpriteSeconds: 0.25
+  bossDamageSpriteSeconds: 0.18
   overrideInitialObstacles: 0
   overridesOnlyForLevel1: 1
   overrideStoneCount: -1
@@ -58,6 +64,8 @@ MonoBehaviour:
   bossEnableSpawnTraps: 1
   bossEnableInvulnerability: 1
   bossEnableGravityBoost: 1
+  bossEnablePylonShield: 1
+  bossEnableMagicExplosive: 1
   bossAbilityIntervalMin: 4
   bossAbilityIntervalMax: 7
   bossRowBlastDamage: 2
@@ -87,3 +95,10 @@ MonoBehaviour:
   bossWarningToggleInterval: 0.16
   bossRowBlastWarningSprite: {fileID: 0}
   bossFullBoardWarningSprite: {fileID: 0}
+  bossPylonCount: 2
+  bossPylonDamageMult: 0.5
+  bossPylonReducedHitSFX: {fileID: 0}
+  bossExplosiveFuseSeconds: 15
+  bossExplosiveRowClearBonusDamage: 50
+  bossExplosiveDetonateVFXSprite: {fileID: 0}
+  bossExplosiveDetonateSFX: {fileID: 0}

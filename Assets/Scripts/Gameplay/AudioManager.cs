@@ -24,6 +24,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip sfxXpGainOrb;
     public AudioClip sfxXpDrainOrb;
     public AudioClip sfxLevelUp;
+    public AudioClip sfxMonsterDie;
 
     [Header("Music Pools (Gameplay)")]
     public AudioClip[] EDMGameplayMusic;
@@ -98,6 +99,8 @@ public class AudioManager : MonoBehaviour
         musicSrc.playOnAwake = false;
         sfxSrc.playOnAwake = false;
         uiSfxSrc.ignoreListenerPause = true;
+        uiSfxSrc.playOnAwake = false;
+        uiSfxSrc.spatialBlend = 0f;
 
         if (sfxGroup) uiSfxSrc.outputAudioMixerGroup = sfxGroup;
 
@@ -521,4 +524,15 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void PlayMonsterDieSFX(float vol = 1f)
+    {
+        if (!sfxMonsterDie)
+        {
+            Debug.LogWarning("AudioManager: sfxMonsterDie is not assigned.");
+            return;
+        }
+
+        uiSfxSrc.volume = masterVolume * sfxVolume;
+        PlayUISFX(sfxMonsterDie, vol: vol, pitch: 1f, jitter: true);
+    }
 }

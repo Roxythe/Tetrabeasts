@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d53674e82a67d24eb4f78ba0f273f3a, type: 3}
   m_Name: TestCastle 5
   m_EditorClassIdentifier: Assembly-CSharp::CastleData
-  castleName: Dukedom
+  castleName: Grand Dukedom
   damageStages:
   - {fileID: 21300000, guid: 1f0ff268de0e76d4c91ac180ab7e6e6e, type: 3}
   - {fileID: 21300000, guid: 9082ffe4cf1f7e146b700d31ac4725da, type: 3}
@@ -42,6 +42,16 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 8990cdb32fd36a74c9df4c24a499b0a1, type: 3}
   isBossLevel: 0
   bossOverlaySprite: {fileID: 0}
+  bossAttackSprite: {fileID: 0}
+  bossDamageTakenSprite: {fileID: 0}
+  bossCriticalIdleSprite: {fileID: 0}
+  bossCriticalDamageTakenSprite: {fileID: 0}
+  bossCriticalAttackSprite: {fileID: 0}
+  bossCriticalHpThreshold: 0.3
+  bossAttackShiftRight: 1
+  bossAttackShiftDistance: 20
+  bossAttackSpriteSeconds: 0.25
+  bossDamageSpriteSeconds: 0.18
   overrideInitialObstacles: 0
   overridesOnlyForLevel1: 1
   overrideStoneCount: -1

@@ -200,6 +200,23 @@ public class GameController : MonoBehaviour
     public TMP_Text unitLivesText;
     public Slider unitLivesSlider;
 
+    [Header("Unit Lives UI Flash")]
+    public Color unitLivesFlashColor = new Color(1f, 0.15f, 0.15f, 1f);
+    public float unitLivesFlashSeconds = 0.12f;
+
+    Image _unitLivesFillImg;
+    Color _unitLivesFillDefaultColor;
+    Coroutine _unitLivesFlashCR;
+
+    [Header("Unit Lives UI Shake")]
+    public float unitLivesShakeSeconds = 0.15f;
+    public float unitLivesShakeAmplitude = 6f; 
+    public float unitLivesShakeHz = 26f;
+
+    RectTransform _unitLivesBarRect;
+    Vector2 _unitLivesBarDefaultPos;
+    Coroutine _unitLivesShakeCR;
+
     [Header("Obstacles & Traps")]
     public ObstacleManager obstacleManager;
 
@@ -2362,9 +2379,6 @@ public class GameController : MonoBehaviour
 
             return;
         }
-
-        _pendingMainMenuAfterXp = false;
-        DoReturnToMainMenuNow();
     }
 
     void DoReturnToMainMenuNow()
@@ -2558,15 +2572,76 @@ public class GameController : MonoBehaviour
     }
 
     // ================ Unit Lives System ===================
+    
     void SetupUnitLivesUI()
     {
         if (unitLivesSlider)
         {
             unitLivesSlider.minValue = 0;
             unitLivesSlider.maxValue = EffectiveMaxUnitLives;
+
+            // Cache fill image for flashing on death
+            _unitLivesFillImg = unitLivesSlider.fillRect ? unitLivesSlider.fillRect.GetComponent<Image>() : null;
+            if (_unitLivesFillImg)
+                _unitLivesFillDefaultColor = _unitLivesFillImg.color;
+
+            _unitLivesBarRect = unitLivesSlider.GetComponent<RectTransform>();
+            if (_unitLivesBarRect)
+                _unitLivesBarDefaultPos = _unitLivesBarRect.anchoredPosition;
         }
 
         UpdateUnitLivesUI();
+    }
+
+    void FlashUnitLivesFill()
+    {
+        if (!_unitLivesFillImg) return;
+
+        if (_unitLivesFlashCR != null)
+            StopCoroutine(_unitLivesFlashCR);
+
+        _unitLivesFlashCR = StartCoroutine(CoFlashUnitLivesFill());
+    }
+
+    IEnumerator CoFlashUnitLivesFill()
+    {
+        _unitLivesFillImg.color = unitLivesFlashColor;
+        yield return new WaitForSecondsRealtime(Mathf.Max(0.01f, unitLivesFlashSeconds));
+        _unitLivesFillImg.color = _unitLivesFillDefaultColor;
+        _unitLivesFlashCR = null;
+    }
+
+    void ShakeUnitLivesBar()
+    {
+        if (!_unitLivesBarRect) return;
+
+        if (_unitLivesShakeCR != null)
+            StopCoroutine(_unitLivesShakeCR);
+
+        _unitLivesShakeCR = StartCoroutine(CoShakeUnitLivesBar());
+    }
+
+    IEnumerator CoShakeUnitLivesBar()
+    {
+        float dur = Mathf.Max(0.01f, unitLivesShakeSeconds);
+        float amp = Mathf.Max(0f, unitLivesShakeAmplitude);
+        float hz = Mathf.Max(1f, unitLivesShakeHz);
+
+        float t = 0f;
+        while (t < dur)
+        {
+            t += Time.unscaledDeltaTime;
+            float phase = t * (Mathf.PI * 2f) * hz;
+
+            float x = Mathf.Sin(phase) * amp;
+            float y = Mathf.Cos(phase * 0.97f) * amp * 0.6f;
+
+            _unitLivesBarRect.anchoredPosition = _unitLivesBarDefaultPos + new Vector2(x, y);
+            yield return null;
+        }
+
+        _unitLivesBarRect.anchoredPosition = _unitLivesBarDefaultPos;
+        _unitLivesShakeCR = null;
     }
 
     void UpdateUnitLivesUI()
@@ -2587,8 +2662,15 @@ public class GameController : MonoBehaviour
 
         if (gameOver) return;
 
+        // Death SFX
+        if (AudioManager.I)
+            AudioManager.I.PlayMonsterDieSFX(vol: 1.8f);
+
         unitLives = Mathf.Max(0, unitLives - 1);
         UpdateUnitLivesUI();
+
+        FlashUnitLivesFill(); // Flash reserve slider fill red briefly
+        ShakeUnitLivesBar();  // Shake whole reserve bar briefly
 
         if (unitLives <= 0)
             GameOver();

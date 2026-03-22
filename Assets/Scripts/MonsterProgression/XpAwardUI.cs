@@ -98,8 +98,10 @@ public class XpAwardUI : MonoBehaviour
     public float breakdownTickJitterSeconds = 0.05f;
 
     const float XpPerLevel = 100f;
+    float _permanentXpConversion = 0.10f;
 
     readonly List<XpMonsterRowUI> _rows = new();
+    readonly List<GameObject> _activeOrbGos = new();
     Coroutine _breakdownCountCR;
 
     bool _breakdownAnimating;
@@ -172,6 +174,7 @@ public class XpAwardUI : MonoBehaviour
         root.SetActive(true);
 
         var runSnap = RunMonsterProgress.GetSnapshot();
+        _permanentXpConversion = Mathf.Clamp01(keepFraction);
         var keptXp = RunMonsterProgress.EndRunAndComputeKeptXp(keepFraction);
 
         StartCoroutine(CoRunDrainThenCommit(roster, runSnap, keptXp, onContinueToHighScore));
@@ -362,6 +365,8 @@ public class XpAwardUI : MonoBehaviour
         }
 
         yield return new WaitUntil(() => proceedToCommit);
+
+        ClearActiveOrbs();
 
         if (runDrainPanel) runDrainPanel.SetActive(false);
         if (runCommitPanel) runCommitPanel.SetActive(true);
@@ -581,6 +586,29 @@ public class XpAwardUI : MonoBehaviour
 
         while (true)
         {
+            if (_skipRequested)
+            {
+                // Stop all VFX immediately
+                ClearActiveOrbs();
+
+                for (int r = 0; r < roster.Count && r < _rows.Count; r++)
+                {
+                    var md = roster[r];
+                    if (!md) continue;
+
+                    // Total run XP from snapshot
+                    float totalRunXp = 0f;
+                    if (runSnap.TryGetValue(md.monsterName, out var st))
+                        totalRunXp = ((st.level - 1) * XpPerLevel) + st.xpInto;
+
+                    float preserved = totalRunXp * _permanentXpConversion; // Preserved = totalRunXp * conversion
+                    _rows[r].InitXpState(1, 0f, XpPerLevel); // Visually drain monster XP to level 1 / 0
+                    _rows[r].ShowXpDrainPreserved(preserved); // Set preserved text to the final value
+                }
+ 
+                break; // End immediately
+            }
+
             int any = 0;
             for (int i = 0; i < remaining.Length; i++) any += remaining[i];
             if (any <= 0) break;
@@ -621,8 +649,10 @@ public class XpAwardUI : MonoBehaviour
                 StartCoroutine(CoSpawnOrbArc(start, end, gain: false, travelSeconds: travelSeconds, accel01: accel,
                                              onArrive: () =>
                                                 {
-                                                  preservedShown[rowIndex] += 0.1f;
-                                                  rowRef.ShowXpDrainPreserved(preservedShown[rowIndex]);
+                                                    rowRef.SubtractXpFromOrb(1f, XpPerLevel);
+
+                                                    preservedShown[rowIndex] += _permanentXpConversion;
+                                                    rowRef.ShowXpDrainPreserved(preservedShown[rowIndex]);
                                                 }));
             }
 
@@ -635,6 +665,7 @@ public class XpAwardUI : MonoBehaviour
     IEnumerator CoSpawnOrbArc(RectTransform start, RectTransform end, bool gain, float travelSeconds, float accel01, System.Action onArrive)
     {
         var orb = Instantiate(xpOrbPrefab, vfxRoot);
+        _activeOrbGos.Add(orb.gameObject);
         orb.gameObject.SetActive(true);
 
         var orbRect = orb.rectTransform;
@@ -663,6 +694,7 @@ public class XpAwardUI : MonoBehaviour
         orbRect.anchoredPosition = p2;
         TryPlayOrbSfx(gain, accel01); // Ramps with accel
         onArrive?.Invoke(); // Invoke after SFX to sync with XP display changes
+        _activeOrbGos.Remove(orb.gameObject);
         Destroy(orb.gameObject);
     }
 
@@ -904,5 +936,15 @@ public class XpAwardUI : MonoBehaviour
 
         _levelUpSfxFrame = Time.frameCount;
         AudioManager.I.PlayUISFX(AudioManager.I.sfxLevelUp);
+    }
+
+    void ClearActiveOrbs()
+    {
+        for (int i = _activeOrbGos.Count - 1; i >= 0; i--)
+        {
+            var go = _activeOrbGos[i];
+            if (go) Destroy(go);
+        }
+        _activeOrbGos.Clear();
     }
 }

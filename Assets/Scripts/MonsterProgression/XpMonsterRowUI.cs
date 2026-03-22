@@ -300,6 +300,53 @@ public class XpMonsterRowUI : MonoBehaviour
         return levelsGained;
     }
 
+    public int SubtractXpFromOrb(float deltaXp, float xpPerLevel = 100f)
+    {
+        int steps = Mathf.Max(0, Mathf.FloorToInt(deltaXp));
+        if (steps <= 0) return 0;
+
+        int levelsLost = 0;
+
+        for (int s = 0; s < steps; s++)
+        {
+            // Already fully drained
+            if (_uiLevel <= 1 && _uiXpInto <= 0f)
+            {
+                _uiLevel = 1;
+                _uiXpInto = 0f;
+                break;
+            }
+
+            // Normal decrement within current level
+            if (_uiXpInto > 0f)
+            {
+                _uiXpInto -= 1f;
+                if (_uiXpInto < 0f) _uiXpInto = 0f;
+            }
+            else
+            {
+                // At 0/100 drop a level and set to 99/100
+                if (_uiLevel > 1)
+                {
+                    _uiLevel -= 1;
+                    levelsLost += 1;
+                    _uiXpInto = xpPerLevel - 1f; // 99 for 100-based XP
+                }
+                else
+                {
+                    _uiLevel = 1;
+                    _uiXpInto = 0f;
+                    break;
+                }
+            }
+        }
+
+        SetLevel(_uiLevel);
+        SetXp(_uiXpInto, xpPerLevel);
+
+        return levelsLost;
+    }
+
     public int GetUiLevel() => _uiLevel;
     public float GetUiXpInto() => _uiXpInto;
 
