@@ -16996,7 +16996,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d2d37792bd3897d458d808731e0176b7, type: 2}
   - {fileID: 11400000, guid: 753f83587d342c541ad9edfe4af1bde5, type: 2}
   - {fileID: 11400000, guid: 905d3693dd34dc6488c242898c76b7a6, type: 2}
-  baseXpPerLevel: 25
+  baseXpPerLevel: 50
   cascadeSettlePauseSeconds: 0.18
   pauseCursor: {fileID: 1171653363}
   battleLog: {fileID: 1041077125}
@@ -17284,7 +17284,7 @@ MonoBehaviour:
   highScoreUI: {fileID: 330590300}
   xpAwardUI: {fileID: 2112539615}
   levelText: {fileID: 685653179}
-  stoneBuffDropChance: 0.1
+  stoneBuffDropChance: 1
   showStoneBuffPopup: 1
   stoneBuffPopupStyle: {fileID: 11400000, guid: 20ecda5cbfd5e0647ac5e0455eaf850f, type: 2}
   sfxStoneBuffGranted: {fileID: 8300000, guid: 4afd5121a23bbec46990836550fc7d86, type: 3}
@@ -17364,11 +17364,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a1c3752fe0751724b94a4a84bdfeb391, type: 2}
   - {fileID: 11400000, guid: 8e6ac92f957ef6d4089163c9230d9edb, type: 2}
   - {fileID: 11400000, guid: e01ce0c7a416ead40b0a80420cf56833, type: 2}
-  stoneWeights_L1_3: {x: 0.9, y: 0.1, z: 0, w: 0}
+  stoneWeights_L1_3: {x: 0.4, y: 0.2, z: 0.2, w: 0.2}
   stoneWeights_L4_6: {x: 0.7, y: 0.25, z: 0.05, w: 0}
   stoneWeights_L7_9: {x: 0.55, y: 0.3, z: 0.12, w: 0.03}
   stoneWeights_L10P: {x: 0.4, y: 0.3, z: 0.2, w: 0.1}
-  stoneLegendaryChance_L10P: 0.02
+  stoneLegendaryChance_L10P: 0.2
 --- !u!114 &2092384765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17575,6 +17575,7 @@ MonoBehaviour:
   breakdownTickEndSeconds: 0.01
   breakdownAccelPower: 1.6
   breakdownTickJitterSeconds: 0.02
+  breakdownSkipInputDelaySeconds: 0.5
 --- !u!1 &2130418750
 GameObject:
   m_ObjectHideFlags: 0
@@ -18151,14 +18152,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 588429713779898078, guid: e266400955faf8b4cba7769fe58d6b32, type: 3}
-      propertyPath: sfxMonsterDie
-      value: 
-      objectReference: {fileID: 8300000, guid: fb7b322080d67a64daa251abc42133dc, type: 3}
-    - target: {fileID: 588429713779898078, guid: e266400955faf8b4cba7769fe58d6b32, type: 3}
-      propertyPath: sfxStoneBuffGranted
-      value: 
-      objectReference: {fileID: 8300000, guid: 4afd5121a23bbec46990836550fc7d86, type: 3}
     - target: {fileID: 1150672262309858253, guid: e266400955faf8b4cba7769fe58d6b32, type: 3}
       propertyPath: m_Name
       value: AudioManager

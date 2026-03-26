@@ -25,7 +25,15 @@
 
 - Add SFX to player character data for reduced gravity special ability
 
+- Add basic tutorial
+
 *** KNOWN BUGS ***
+
+**- EXP drain conversion is not working correctly. It should only drain the run instance monster to the current permanent monster EXP level. So if a player starts a run and the base monsters EXP is level 2 with 37/100 exp then when the drain happens if it is level 5 with 48/100 EXP then it should only drain the instance copy of the monster back to that point, level 2 with 37/100 exp, which would mean 311 EXP was drained. Monsters drained/converted EXP should not be effected by any level difference formula either. The level difference reduction should only effect the EXP earned on the EXP breakdown panel for a run instance monster. The drain should only be effected by the drain conversion factor. SO if the drain conversion is 10% and the run instance has 311 EXP drained from it, it should convert to 31.1 EXP and then added to the permananet monster EXP store.
+
+- Button press SFX missing from roundWin panel buttons (continue button and buff/debuff button prefabs)
+
+- Skip text for intro trailer should disappear after a few seconds of not pressing another button and reset trigger conditions
 
 -? Restart doesn't reset buff rarity?
 

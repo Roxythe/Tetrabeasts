@@ -29,8 +29,16 @@ public class XpMonsterRowUI : MonoBehaviour
     public RunModRarity levelUpRarity = RunModRarity.Common;
     [Min(0.1f)] public float statCycleSeconds = 1.0f;
 
+    [Header("Level Up Stat Pulse")]
+    [Min(1.01f)] public float levelUpStatPulseScale = 1.12f;
+    [Min(0.01f)] public float levelUpStatPulseUpSeconds = 0.08f;
+    [Min(0.01f)] public float levelUpStatPulseDownSeconds = 0.10f;
+
     Coroutine _statsCycleCR;
     Coroutine _pulseCR;
+
+    Vector3 _statScale0;
+    Coroutine _statPulseCR;
 
     readonly List<string> _statLines = new();
     int _levelUpCount = 0;
@@ -98,6 +106,9 @@ public class XpMonsterRowUI : MonoBehaviour
         if (levelUpStatsText)
             levelUpStatsText.text = "";
 
+        if (levelUpStatsText)
+            _statScale0 = levelUpStatsText.transform.localScale;
+
         if (levelUpStyle && (levelUpText || levelUpShadowText))
             _pulseCR = StartCoroutine(CoPulseAndFlash());
     }
@@ -118,7 +129,10 @@ public class XpMonsterRowUI : MonoBehaviour
         if (levelUpStatsText)
         {
             if (_statLines.Count == 1)
+            {
                 levelUpStatsText.text = _statLines[0];
+                PulseLevelUpStatsOnce();
+            }
         }
 
         if (_statLines.Count > 1 && _statsCycleCR == null)
@@ -156,6 +170,10 @@ public class XpMonsterRowUI : MonoBehaviour
     {
         if (_statsCycleCR != null) { StopCoroutine(_statsCycleCR); _statsCycleCR = null; }
         if (_pulseCR != null) { StopCoroutine(_pulseCR); _pulseCR = null; }
+        if (_statPulseCR != null) { StopCoroutine(_statPulseCR); _statPulseCR = null; }
+
+        if (levelUpStatsText)
+            levelUpStatsText.transform.localScale = _statScale0 == default ? Vector3.one : _statScale0;
 
         // Restore defaults if cached
         if (levelUpText)
@@ -182,6 +200,8 @@ public class XpMonsterRowUI : MonoBehaviour
 
             levelUpStatsText.text = _statLines[idx % _statLines.Count];
             idx++;
+
+            PulseLevelUpStatsOnce();
 
             yield return new WaitForSecondsRealtime(Mathf.Max(0.1f, statCycleSeconds));
         }
@@ -237,30 +257,6 @@ public class XpMonsterRowUI : MonoBehaviour
         }
     }
 
-    static void BuildStatLinesFromSummary(string summary, List<string> outLines)
-    {
-        if (string.IsNullOrWhiteSpace(summary)) return;
-
-        var parts = summary.Split(',');
-        foreach (var raw in parts)
-        {
-            var p = raw.Trim();
-            if (string.IsNullOrEmpty(p)) continue;
-
-            int plusIdx = p.IndexOf('+');
-            if (plusIdx <= 0 || plusIdx >= p.Length - 1)
-            {
-                outLines.Add(p);
-                continue;
-            }
-
-            string label = p.Substring(0, plusIdx).Trim();
-            string num = p.Substring(plusIdx + 1).Trim();
-
-            outLines.Add($"+ {num} {label}");
-        }
-    }
-
     static string FormatXp(float xp)
     {
         float r = Mathf.Round(xp);
@@ -270,6 +266,8 @@ public class XpMonsterRowUI : MonoBehaviour
 
     public void InitXpState(int level, float xpInto, float xpPerLevel = 100f)
     {
+        HideLevelUps(); // Reset level-up display 
+
         _uiLevel = Mathf.Max(1, level);
         _uiXpInto = Mathf.Clamp(xpInto, 0f, xpPerLevel - 0.0001f);
 
@@ -345,6 +343,51 @@ public class XpMonsterRowUI : MonoBehaviour
         SetXp(_uiXpInto, xpPerLevel);
 
         return levelsLost;
+    }
+
+    void PulseLevelUpStatsOnce()
+    {
+        if (!levelUpStatsText) return;
+
+        if (_statPulseCR != null)
+            StopCoroutine(_statPulseCR);
+
+        _statPulseCR = StartCoroutine(CoPulseLevelUpStatsOnce());
+    }
+
+    IEnumerator CoPulseLevelUpStatsOnce()
+    {
+        if (!levelUpStatsText) yield break;
+
+        if (_statScale0 == default)
+            _statScale0 = levelUpStatsText.transform.localScale;
+
+        Vector3 from = _statScale0;
+        Vector3 to = _statScale0 * Mathf.Max(1.01f, levelUpStatPulseScale);
+
+        float up = Mathf.Max(0.01f, levelUpStatPulseUpSeconds);
+        float down = Mathf.Max(0.01f, levelUpStatPulseDownSeconds);
+
+        float t = 0f;
+        while (t < up)
+        {
+            t += Time.unscaledDeltaTime;
+            float a = Mathf.Clamp01(t / up);
+            levelUpStatsText.transform.localScale = Vector3.Lerp(from, to, a);
+            yield return null;
+        }
+
+        t = 0f;
+        while (t < down)
+        {
+            t += Time.unscaledDeltaTime;
+            float a = Mathf.Clamp01(t / down);
+            levelUpStatsText.transform.localScale = Vector3.Lerp(to, from, a);
+            yield return null;
+        }
+
+        levelUpStatsText.transform.localScale = from;
+        _statPulseCR = null;
     }
 
     public int GetUiLevel() => _uiLevel;

@@ -53,6 +53,17 @@ public static class MonsterProgressStore
 
     public static void ClearAll()
     {
+        var roster = Resources.FindObjectsOfTypeAll<MonsterData>();
+        if (roster != null)
+        {
+            foreach (var md in roster)
+            {
+                if (!md) continue;
+                if (string.IsNullOrEmpty(md.monsterName)) continue;
+                PlayerPrefs.DeleteKey(KeyTotalXp(md.monsterName));
+            }
+        }
 
+        PlayerPrefs.Save();
     }
 }

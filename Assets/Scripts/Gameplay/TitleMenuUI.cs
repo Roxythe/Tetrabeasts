@@ -262,8 +262,7 @@ public class TitleMenuUI : MonoBehaviour
         PlayerPrefs.DeleteAll();
         PlayerPrefs.Save();
 
-        // Wipe achievement/stat file 
-        DEV_ClearAchievementProgress();
+        DEV_ClearAchievementProgress(); // Wipe achievement/stat file 
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Reload to reflect cleared progress
     }
@@ -271,6 +270,17 @@ public class TitleMenuUI : MonoBehaviour
     public void DEV_TestAchievementToast()
     {
         AchievementToastManager.I?.DEV_ShowToast(AchievementSystem.Ach.Skins_10);
+    }
+
+    public void DEV_ResetAllMonsterXp()
+    {
+        MonsterProgressStore.ClearAll();
+
+        RunMonsterProgress.BeginRun(SelectedMonstersStore.Active);
+
+        // Refresh monster UI
+        monsterSelectUI?.RefreshAllUI();
+        monsterSelectPanel?.RefreshAllUI();
     }
 
     // ESC closes panels

@@ -65,7 +65,7 @@ MonoBehaviour:
   sfxXpGainOrb: {fileID: 8300000, guid: 294e4909eb1acfc4f9e89c6ce1656c8c, type: 3}
   sfxXpDrainOrb: {fileID: 8300000, guid: 9ef1f5962c0948e409610ccf9b2901ce, type: 3}
   sfxLevelUp: {fileID: 8300000, guid: b1cbdc6b978097d49aebc2c69f20d3d2, type: 3}
-  sfxMonsterDie: {fileID: 0}
+  sfxMonsterDie: {fileID: 8300000, guid: fb7b322080d67a64daa251abc42133dc, type: 3}
   EDMGameplayMusic:
   - {fileID: 8300000, guid: a02a4788845cc444b8b1e0baa846cdb5, type: 3}
   - {fileID: 8300000, guid: c7e4825b4755dd04ebe292fac9e8ba5c, type: 3}

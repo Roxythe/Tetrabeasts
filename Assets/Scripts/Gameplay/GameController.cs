@@ -2353,7 +2353,6 @@ public class GameController : MonoBehaviour
     {
         if (currentLevel == 0)
         {
-            Debug.LogError("Return to main menu now  current level is 0");
             _pendingMainMenuAfterXp = false;
             DoReturnToMainMenuNow();
             return;
@@ -2371,11 +2370,12 @@ public class GameController : MonoBehaviour
                 0.10f,
                 () =>
                 {
-                    Debug.LogError("Return to main menu now called");
                     _pendingMainMenuAfterXp = false;
-                    CloseXpUiMode();
+
+                    // Keep XP UI visible to avoid flashing the gameplay scene again
                     DoReturnToMainMenuNow();
-                });
+                }, 
+                hideOnFinalContinue: false);
 
             return;
         }

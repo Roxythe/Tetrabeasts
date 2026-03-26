@@ -100,6 +100,9 @@ public class XpAwardUI : MonoBehaviour
     [Min(0.1f)] public float breakdownAccelPower = 1.6f;
     public float breakdownTickJitterSeconds = 0.05f;
 
+    [Header("Breakdown Skip Cushion")]
+    public float breakdownSkipInputDelaySeconds = 0.5f;
+
     const float XpPerLevel = 100f;
     float _permanentXpConversion = 0.10f;
 
@@ -110,6 +113,8 @@ public class XpAwardUI : MonoBehaviour
     bool _breakdownAnimating;
     bool _orbAnimating;
     bool _skipRequested;
+    bool _hideOnRunEndFinalContinue = true;
+    float _breakdownSkipAllowedAt = 0f;
 
     int _levelUpSfxFrame = -1;
 
@@ -130,9 +135,13 @@ public class XpAwardUI : MonoBehaviour
         if (!root || !root.activeSelf) return;
         if (!_breakdownAnimating && !_orbAnimating) return;
 
-        // Any key or mouse click instantly finishes the current animation
-        if (Input.anyKeyDown || Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
-            _skipRequested = true;
+        if (!(Input.anyKeyDown || Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)))
+            return;
+
+        if (_breakdownAnimating && Time.unscaledTime < _breakdownSkipAllowedAt)
+            return;
+
+        _skipRequested = true;
     }
 
     public void HideAll()
@@ -167,7 +176,7 @@ public class XpAwardUI : MonoBehaviour
         }
     }
 
-    public void ShowRunEndCommit(List<MonsterData> roster, float keepFraction, Action onContinueToHighScore)
+    public void ShowRunEndCommit(List<MonsterData> roster, float keepFraction, Action onContinueToHighScore, bool hideOnFinalContinue = true)
     {
         if (!gameObject.activeSelf)
             gameObject.SetActive(true);
@@ -175,6 +184,7 @@ public class XpAwardUI : MonoBehaviour
         if (!root) return;
 
         root.SetActive(true);
+        _hideOnRunEndFinalContinue = hideOnFinalContinue;
 
         var runSnap = RunMonsterProgress.GetSnapshot();
         _permanentXpConversion = Mathf.Clamp01(keepFraction);
@@ -217,6 +227,7 @@ public class XpAwardUI : MonoBehaviour
 
         _skipRequested = false;
         _breakdownAnimating = true;
+        _breakdownSkipAllowedAt = Time.unscaledTime + Mathf.Max(0f, breakdownSkipInputDelaySeconds);
 
         if (_breakdownCountCR != null) { StopCoroutine(_breakdownCountCR); _breakdownCountCR = null; }
         _breakdownCountCR = StartCoroutine(CoBreakdownCountUp(b.totalBeforeReduction));
@@ -421,11 +432,15 @@ public class XpAwardUI : MonoBehaviour
         if (runCommitContinueButton)
         {
             runCommitContinueButton.onClick.RemoveAllListeners();
+
             runCommitContinueButton.onClick.AddListener(() =>
             {
-                HideAll();
+                if (_hideOnRunEndFinalContinue)
+                    HideAll();
+
                 onContinueToHighScore?.Invoke();
             });
+
             runCommitContinueButton.interactable = true;
         }
     }
@@ -573,15 +588,13 @@ public class XpAwardUI : MonoBehaviour
             if (runSnap.TryGetValue(md.monsterName, out var st))
             {
                 float totalRunXp = ((st.level - 1) * XpPerLevel) + st.xpInto;
-                int count = Mathf.Max(0, Mathf.FloorToInt(totalRunXp));
+                int count = Mathf.Max(0, Mathf.CeilToInt(totalRunXp));
                 remaining[i] = count;
                 total += count;
             }
 
             preservedShown[i] = 0f;
-
-            // Start display at 0 preserved
-            _rows[i].ShowXpDrainPreserved(0f);
+            _rows[i].ShowXpDrainPreserved(0f); // Start display at 0 preserved
         }
 
         int processed = 0;
@@ -591,8 +604,7 @@ public class XpAwardUI : MonoBehaviour
         {
             if (_skipRequested)
             {
-                // Stop all VFX immediately
-                ClearActiveOrbs();
+                ClearActiveOrbs(); // Stop all VFX immediately
 
                 for (int r = 0; r < roster.Count && r < _rows.Count; r++)
                 {
