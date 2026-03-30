@@ -130,6 +130,11 @@ public class XpAwardUI : MonoBehaviour
         HideAll();
     }
 
+    void OnDisable()
+    {
+        HardStopAndClearAllVfx();
+    }
+
     void Update()
     {
         if (!root || !root.activeSelf) return;
@@ -146,6 +151,8 @@ public class XpAwardUI : MonoBehaviour
 
     public void HideAll()
     {
+        HardStopAndClearAllVfx();
+
         if (root) root.SetActive(false);
 
         if (roundBreakdownPanel) roundBreakdownPanel.SetActive(false);
@@ -153,6 +160,18 @@ public class XpAwardUI : MonoBehaviour
 
         if (runDrainPanel) runDrainPanel.SetActive(false);
         if (runCommitPanel) runCommitPanel.SetActive(false);
+    }
+
+    void HardStopAndClearAllVfx()
+    {
+        StopAllCoroutines();
+        _breakdownCountCR = null;
+
+        _skipRequested = false;
+        _breakdownAnimating = false;
+        _orbAnimating = false;
+
+        ClearActiveOrbs();
     }
 
     public void ShowRoundWin(RoundXpBreakdown breakdown, List<MonsterData> roster, Dictionary<string, float> perMonsterAwardXp,
@@ -163,6 +182,18 @@ public class XpAwardUI : MonoBehaviour
 
         if (!root) return;
 
+        var sfxHook = GetComponentInParent<GameplayUI_SFXHook>();
+        if (!sfxHook) sfxHook = FindFirstObjectByType<GameplayUI_SFXHook>();
+        if (sfxHook)
+        {
+            sfxHook.HookButton(breakdownContinueButton);
+            sfxHook.HookButton(roundDistributeContinueButton);
+            sfxHook.HookButton(runDrainContinueButton);
+            sfxHook.HookButton(runCommitContinueButton);
+        }
+
+        HardStopAndClearAllVfx();
+
         root.SetActive(true);
         ShowBreakdown(breakdown);
 
@@ -171,6 +202,7 @@ public class XpAwardUI : MonoBehaviour
             breakdownContinueButton.onClick.RemoveAllListeners();
             breakdownContinueButton.onClick.AddListener(() =>
             {
+                HardStopAndClearAllVfx();
                 StartCoroutine(CoRoundDistribute(roster, perMonsterAwardXp, onContinueToRewards));
             });
         }
@@ -182,6 +214,18 @@ public class XpAwardUI : MonoBehaviour
             gameObject.SetActive(true);
 
         if (!root) return;
+
+        var sfxHook = GetComponentInParent<GameplayUI_SFXHook>();
+        if (!sfxHook) sfxHook = FindFirstObjectByType<GameplayUI_SFXHook>();
+        if (sfxHook)
+        {
+            sfxHook.HookButton(breakdownContinueButton);
+            sfxHook.HookButton(roundDistributeContinueButton);
+            sfxHook.HookButton(runDrainContinueButton);
+            sfxHook.HookButton(runCommitContinueButton);
+        }
+
+        HardStopAndClearAllVfx();
 
         root.SetActive(true);
         _hideOnRunEndFinalContinue = hideOnFinalContinue;
@@ -207,7 +251,6 @@ public class XpAwardUI : MonoBehaviour
 
         if (breakdownTitleShadowText)
             breakdownTitleShadowText.text = titleStr;
-
 
         string linesStr =
             $"Base XP: {b.baseXp}\n\n" +
@@ -286,6 +329,8 @@ public class XpAwardUI : MonoBehaviour
 
         yield return StartCoroutine(CoOrbDistributeGainAndFillUi(roster, perMonsterAwardXp, startLevels));
 
+        ClearActiveOrbs();
+
         _orbAnimating = false;
         _skipRequested = false;
 
@@ -295,6 +340,7 @@ public class XpAwardUI : MonoBehaviour
             roundDistributeContinueButton.onClick.RemoveAllListeners();
             roundDistributeContinueButton.onClick.AddListener(() =>
             {
+                HardStopAndClearAllVfx();
                 HideAll();
                 onContinue?.Invoke();
             });
@@ -305,16 +351,6 @@ public class XpAwardUI : MonoBehaviour
             if (!md) continue;
             if (!perMonsterAwardXp.TryGetValue(md.monsterName, out var award)) continue;
             RunMonsterProgress.AddRunXp(md.monsterName, award);
-        }
-
-        var endLevels = new Dictionary<string, int>();
-        var endInto = new Dictionary<string, float>();
-
-        foreach (var md in roster)
-        {
-            if (!md) continue;
-            endLevels[md.monsterName] = RunMonsterProgress.GetCurrentLevel(md.monsterName);
-            endInto[md.monsterName] = RunMonsterProgress.GetCurrentXpIntoLevel(md.monsterName);
         }
 
         for (int i = 0; i < roster.Count && i < _rows.Count; i++)
@@ -366,6 +402,8 @@ public class XpAwardUI : MonoBehaviour
 
         yield return StartCoroutine(CoOrbDrainRun(roster, runSnap));
 
+        ClearActiveOrbs();
+
         _orbAnimating = false;
         _skipRequested = false;
 
@@ -411,6 +449,8 @@ public class XpAwardUI : MonoBehaviour
 
         yield return StartCoroutine(CoOrbDistributeGainAndFillUi(roster, keptXp, startLevels: null));
 
+        ClearActiveOrbs(); // Ensure  no orbs can remain after commit gain ends
+
         foreach (var md in roster)
         {
             if (!md) continue;
@@ -435,6 +475,8 @@ public class XpAwardUI : MonoBehaviour
 
             runCommitContinueButton.onClick.AddListener(() =>
             {
+                HardStopAndClearAllVfx();
+
                 if (_hideOnRunEndFinalContinue)
                     HideAll();
 
@@ -532,12 +574,10 @@ public class XpAwardUI : MonoBehaviour
                 ? UnityEngine.Random.Range(0f, breakdownTickJitterSeconds)
                 : 0f;
 
-            // Accel shaping
             float progress = finalTotal > 0 ? (float)current / finalTotal : 1f;
             float a = Mathf.Pow(progress, Mathf.Max(0.1f, breakdownAccelPower));
             float shapedTick = Mathf.Lerp(breakdownTickStartSeconds, breakdownTickEndSeconds, a);
 
-            // Budget shaping
             float remainingTime = Mathf.Max(0.01f, breakdownMaxSeconds - elapsed);
             int remainingTicks = Mathf.Max(1, finalTotal - current);
             float budgetTick = remainingTime / remainingTicks;
@@ -577,6 +617,7 @@ public class XpAwardUI : MonoBehaviour
 
         var remaining = new int[_rows.Count];
         var preservedShown = new float[_rows.Count];
+        var drainXpPerRow = new float[_rows.Count];
 
         int total = 0;
 
@@ -587,14 +628,18 @@ public class XpAwardUI : MonoBehaviour
 
             if (runSnap.TryGetValue(md.monsterName, out var st))
             {
-                float totalRunXp = ((st.level - 1) * XpPerLevel) + st.xpInto;
-                int count = Mathf.Max(0, Mathf.CeilToInt(totalRunXp));
+                float runTotalXp = ((st.level - 1) * XpPerLevel) + st.xpInto;
+                float permanentTotalXp = MonsterProgressStore.GetPermanentTotalXp(md.monsterName);
+                float drainXp = Mathf.Max(0f, runTotalXp - permanentTotalXp);
+
+                drainXpPerRow[i] = drainXp;
+                int count = Mathf.Max(0, Mathf.CeilToInt(drainXp));
                 remaining[i] = count;
                 total += count;
             }
 
             preservedShown[i] = 0f;
-            _rows[i].ShowXpDrainPreserved(0f); // Start display at 0 preserved
+            _rows[i].ShowXpDrainPreserved(0f);
         }
 
         int processed = 0;
@@ -604,24 +649,22 @@ public class XpAwardUI : MonoBehaviour
         {
             if (_skipRequested)
             {
-                ClearActiveOrbs(); // Stop all VFX immediately
+                ClearActiveOrbs();
 
                 for (int r = 0; r < roster.Count && r < _rows.Count; r++)
                 {
                     var md = roster[r];
                     if (!md) continue;
 
-                    // Total run XP from snapshot
-                    float totalRunXp = 0f;
-                    if (runSnap.TryGetValue(md.monsterName, out var st))
-                        totalRunXp = ((st.level - 1) * XpPerLevel) + st.xpInto;
+                    int permLevel = MonsterProgressStore.GetPermanentLevel(md.monsterName);
+                    float permXpInto = MonsterProgressStore.GetPermanentXpIntoLevel(md.monsterName);
+                    float preserved = drainXpPerRow[r] * _permanentXpConversion;
 
-                    float preserved = totalRunXp * _permanentXpConversion; // Preserved = totalRunXp * conversion
-                    _rows[r].InitXpState(1, 0f, XpPerLevel); // Visually drain monster XP to level 1 / 0
-                    _rows[r].ShowXpDrainPreserved(preserved); // Set preserved text to the final value
+                    _rows[r].InitXpState(permLevel, permXpInto, XpPerLevel);
+                    _rows[r].ShowXpDrainPreserved(preserved);
                 }
- 
-                break; // End immediately
+
+                break;
             }
 
             int any = 0;
@@ -663,12 +706,12 @@ public class XpAwardUI : MonoBehaviour
 
                 StartCoroutine(CoSpawnOrbArc(start, end, gain: false, travelSeconds: travelSeconds, accel01: accel,
                                              onArrive: () =>
-                                                {
-                                                    rowRef.SubtractXpFromOrb(1f, XpPerLevel);
+                                             {
+                                                 rowRef.SubtractXpFromOrb(1f, XpPerLevel);
 
-                                                    preservedShown[rowIndex] += _permanentXpConversion;
-                                                    rowRef.ShowXpDrainPreserved(preservedShown[rowIndex]);
-                                                }));
+                                                 preservedShown[rowIndex] += _permanentXpConversion;
+                                                 rowRef.ShowXpDrainPreserved(preservedShown[rowIndex]);
+                                             }));
             }
 
             float wait = Mathf.Max(0.001f, spawnInterval);
@@ -677,7 +720,7 @@ public class XpAwardUI : MonoBehaviour
         }
     }
 
-    IEnumerator CoSpawnOrbArc(RectTransform start, RectTransform end, bool gain, float travelSeconds, float accel01, System.Action onArrive)
+    IEnumerator CoSpawnOrbArc(RectTransform start, RectTransform end, bool gain, float travelSeconds, float accel01, Action onArrive)
     {
         var orb = Instantiate(xpOrbPrefab, vfxRoot);
         _activeOrbGos.Add(orb.gameObject);
@@ -685,11 +728,9 @@ public class XpAwardUI : MonoBehaviour
 
         var orbRect = orb.rectTransform;
 
-        // Place at start position in vfxRoot space
         Vector2 p0 = WorldToLocal(vfxRoot, start.position);
         Vector2 p2 = WorldToLocal(vfxRoot, end.position);
 
-        // Arc midpoint
         Vector2 mid = (p0 + p2) * 0.5f;
         Vector2 p1 = mid + Vector2.up * orbArcHeight;
 
@@ -697,6 +738,8 @@ public class XpAwardUI : MonoBehaviour
 
         while (t < travelSeconds)
         {
+            if (!orb) yield break;
+
             t += Time.unscaledDeltaTime;
             float a = Mathf.Clamp01(t / Mathf.Max(0.001f, travelSeconds));
 
@@ -706,9 +749,12 @@ public class XpAwardUI : MonoBehaviour
             yield return null;
         }
 
+        if (!orb) yield break;
+
         orbRect.anchoredPosition = p2;
-        TryPlayOrbSfx(gain, accel01); // Ramps with accel
-        onArrive?.Invoke(); // Invoke after SFX to sync with XP display changes
+        TryPlayOrbSfx(gain, accel01);
+        onArrive?.Invoke();
+
         _activeOrbGos.Remove(orb.gameObject);
         Destroy(orb.gameObject);
     }
@@ -731,12 +777,11 @@ public class XpAwardUI : MonoBehaviour
     }
 
     IEnumerator CoOrbDistributeGainAndFillUi(List<MonsterData> roster, Dictionary<string, float> perMonsterXp,
-                                         Dictionary<string, int> startLevels)
+                                             Dictionary<string, int> startLevels)
     {
         if (!vfxRoot || !xpOrbPrefab || roster == null || perMonsterXp == null)
             yield break;
 
-        // Remaining integer XP orbs per row
         var remaining = new int[_rows.Count];
         var total = 0;
 
@@ -753,7 +798,6 @@ public class XpAwardUI : MonoBehaviour
             }
         }
 
-        // Track per-row next stat-step lines in correct order
         var stepLines = new List<string>[_rows.Count];
         var stepIdx = new int[_rows.Count];
 
@@ -781,7 +825,8 @@ public class XpAwardUI : MonoBehaviour
         {
             if (_skipRequested)
             {
-                // Instantly apply remaining XP to each row without spawning orbs
+                ClearActiveOrbs();
+
                 for (int r = 0; r < roster.Count && r < _rows.Count; r++)
                 {
                     var md = roster[r];
@@ -793,7 +838,6 @@ public class XpAwardUI : MonoBehaviour
                     remaining[r] = 0;
                     _rows[r].ShowXpDist(0f);
 
-                    // Apply XP immediately in bulk: update UI + trigger level-ups
                     for (int k = 0; k < toApply; k++)
                     {
                         int gained = _rows[r].AddXpFromOrb(1f, XpPerLevel);
@@ -828,7 +872,6 @@ public class XpAwardUI : MonoBehaviour
             for (int i = 0; i < remaining.Length; i++) any += remaining[i];
             if (any <= 0) break;
 
-            // Acceleration factor based on global progress
             float p = total > 0 ? (float)processed / total : 1f;
             float a = Mathf.Pow(p, Mathf.Max(0.1f, orbAccelPower));
 
@@ -871,8 +914,7 @@ public class XpAwardUI : MonoBehaviour
                     {
                         for (int k = 0; k < gained; k++)
                         {
-                            if (AudioManager.I && AudioManager.I.sfxLevelUp)
-                                TryPlayLevelUpSfxOncePerFrame();
+                            TryPlayLevelUpSfxOncePerFrame();
 
                             if (stepLines[rowIndex] == null)
                                 stepLines[rowIndex] = new List<string>();
@@ -899,11 +941,12 @@ public class XpAwardUI : MonoBehaviour
             yield return new WaitForSecondsRealtime(wait);
             elapsedSpawn += wait;
         }
+
+        ClearActiveOrbs();
     }
 
     static int EstimateLevelsGainedFromXp(float startInto, int xpOrbs)
     {
-        // Conservative estimate for step line list sizing.
         int total = Mathf.FloorToInt(startInto) + Mathf.Max(0, xpOrbs);
         return total / MonsterLeveling.XpPerLevel;
     }

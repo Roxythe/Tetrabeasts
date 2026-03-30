@@ -3,45 +3,42 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [DisallowMultipleComponent]
-public sealed class UIButtonSFX : MonoBehaviour, IPointerEnterHandler
+public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
 {
-    [Header("Clips")]
+    [Header("Assigned by GameplayUI_SFXHook")]
     public AudioClip hoverClip;
     public AudioClip clickClip;
 
-    Button _button;
-    bool _clickWired;
+    [Header("Options")]
+    [Range(0f, 1f)] public float hoverVolume = 1f;
+    [Range(0f, 1f)] public float clickVolume = 1f;
+
+    [Tooltip("If true, ignores clicks when the Button is not interactable.")]
+    public bool requireInteractable = true;
+
+    Button _btn;
 
     void Awake()
     {
-        _button = GetComponent<Button>();
-    }
-
-    void OnEnable()
-    {
-        // Wire click once per instance
-        if (_button && !_clickWired)
-        {
-            _button.onClick.AddListener(PlayClick);
-            _clickWired = true;
-        }
-    }
-
-    void PlayClick()
-    {
-        if (clickClip && AudioManager.I)
-            AudioManager.I.PlayUISFX(clickClip);
+        _btn = GetComponent<Button>();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        // Don't play hover SFX for disabled/unclickable buttons
-        if (!_button) return;
-        if (!_button.isActiveAndEnabled) return;
-        if (!_button.IsInteractable()) return;
+        if (!AudioManager.I || !hoverClip) return;
+        if (requireInteractable && _btn && !_btn.interactable) return;
 
-        if (hoverClip && AudioManager.I)
-            AudioManager.I.PlayUISFX(hoverClip, 1f, 1f);
+        AudioManager.I.PlayUISFX(hoverClip, vol: hoverVolume);
     }
 
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (!AudioManager.I || !clickClip) return;
+        if (requireInteractable && _btn && !_btn.interactable) return;
+
+        // Left click / primary tap only
+        if (eventData.button != PointerEventData.InputButton.Left) return;
+
+        AudioManager.I.PlayUISFX(clickClip, vol: clickVolume);
+    }
 }

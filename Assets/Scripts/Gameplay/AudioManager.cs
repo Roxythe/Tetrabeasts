@@ -18,6 +18,8 @@ public class AudioManager : MonoBehaviour
     public AudioClip[] sfxLineClears;
     public AudioClip[] sfxBossAbilityCasts;
     public AudioClip sfxBossLightningStrike;
+    public AudioClip sfxBossRowBlastHit;
+    public AudioClip sfxBossBoardBlastHit;
     public AudioClip sfxStoneBuffGranted;
 
     public AudioClip sfxXpTick;
@@ -534,5 +536,17 @@ public class AudioManager : MonoBehaviour
 
         uiSfxSrc.volume = masterVolume * sfxVolume;
         PlayUISFX(sfxMonsterDie, vol: vol, pitch: 1f, jitter: true);
+    }
+
+    public void PlayBossRowBlastHit(float vol = 1f)
+    {
+        if (!sfxBossRowBlastHit) return;
+        PlaySFX(sfxBossRowBlastHit, vol);
+    }
+
+    public void PlayBossBoardBlastHit(float vol = 1f)
+    {
+        if (!sfxBossBoardBlastHit) return;
+        PlaySFX(sfxBossBoardBlastHit, vol);
     }
 }

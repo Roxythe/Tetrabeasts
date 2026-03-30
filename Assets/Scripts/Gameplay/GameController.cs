@@ -1783,14 +1783,13 @@ public class GameController : MonoBehaviour
     }
 
     void SpawnAttackProjectile(Sprite sprite, Sprite altSprite, AttackAnimType animType,
-                           Vector2 startAnchored, Vector2 targetAnchored, int damage, MonsterData attackerMD)
+                               Vector2 startAnchored, Vector2 targetAnchored, int damage, MonsterData attackerMD)
     {
         if (!sprite) return;
         if (projectileRoot == null) projectileRoot = gameBoard.gridRoot;
 
         Vector2 cellSize = gameBoard.GetCellSize();
 
-        // Parent container
         var go = new GameObject("AttackProjectile", typeof(RectTransform));
         var rt = go.GetComponent<RectTransform>();
         rt.SetParent(projectileRoot, false);
@@ -1798,13 +1797,11 @@ public class GameController : MonoBehaviour
         rt.sizeDelta = cellSize;
         rt.anchoredPosition = startAnchored;
 
-        // Build visuals based on anim type
         UnityEngine.UI.Image topImg = null;
         UnityEngine.UI.Image botImg = null;
 
         if (animType == AttackAnimType.MirrorToggle)
         {
-            // Bottom mirrored image (always visible)
             var bot = new GameObject("Bot", typeof(UnityEngine.UI.Image));
             botImg = bot.GetComponent<UnityEngine.UI.Image>();
             botImg.sprite = sprite;
@@ -1818,7 +1815,6 @@ public class GameController : MonoBehaviour
             brt.anchoredPosition = Vector2.zero;
             brt.localScale = Vector3.one;
 
-            // Top image (toggles on/off)
             var top = new GameObject("Top", typeof(UnityEngine.UI.Image));
             topImg = top.GetComponent<UnityEngine.UI.Image>();
             topImg.sprite = altSprite ? altSprite : sprite;
@@ -1833,7 +1829,6 @@ public class GameController : MonoBehaviour
         }
         else
         {
-            // Simple single image
             var imgGO = new GameObject("Img", typeof(UnityEngine.UI.Image));
             var img = imgGO.GetComponent<UnityEngine.UI.Image>();
             img.sprite = sprite;
@@ -1846,19 +1841,21 @@ public class GameController : MonoBehaviour
             irt.sizeDelta = cellSize;
             irt.anchoredPosition = Vector2.zero;
 
-            topImg = img; // Use top Img var as the single image reference
+            topImg = img;
         }
 
-        StartCoroutine(MoveProjectileAndHit(rt, topImg, botImg, animType, targetAnchored, damage, attackerMD));
+        // Lock-in the clip once, at spawn time
+        AudioClip impactClip = attackerMD ? attackerMD.PickRandomAttackSFX() : null;
+
+        StartCoroutine(MoveProjectileAndHit(rt, topImg, botImg, animType, targetAnchored, damage, attackerMD, impactClip));
     }
 
-    System.Collections.IEnumerator MoveProjectileAndHit(RectTransform rt,
-    UnityEngine.UI.Image topImg, UnityEngine.UI.Image botImg,
-    AttackAnimType animType, Vector2 targetAnchored, int damage, MonsterData attackerMD)
+    System.Collections.IEnumerator MoveProjectileAndHit(RectTransform rt, UnityEngine.UI.Image topImg,
+        UnityEngine.UI.Image botImg, AttackAnimType animType, Vector2 targetAnchored, int damage,
+        MonsterData attackerMD, AudioClip impactClip)
     {
         float speed = Mathf.Max(10f, projectileSpeed);
 
-        // Animation timers
         float toggleT = 0f;
         float toggleInterval = (attackerMD ? Mathf.Max(0.03f, attackerMD.attackToggleInterval) : 0.08f);
         float spinDPS = (attackerMD ? attackerMD.spinDegreesPerSecond : 720f);
@@ -1876,7 +1873,6 @@ public class GameController : MonoBehaviour
         {
             rt.anchoredPosition = Vector2.MoveTowards(rt.anchoredPosition, targetAnchored, speed * Time.deltaTime);
 
-            // Animate
             if (animType == AttackAnimType.MirrorToggle && topImg)
             {
                 toggleT += Time.deltaTime;
@@ -1884,8 +1880,6 @@ public class GameController : MonoBehaviour
                 {
                     toggleT = 0f;
                     topOn = !topOn;
-
-                    // Toggle by alpha so layout doesn't jump
                     var c = topImg.color;
                     c.a = topOn ? 1f : 0f;
                     topImg.color = c;
@@ -1902,34 +1896,17 @@ public class GameController : MonoBehaviour
 
         if (rt) Destroy(rt.gameObject);
 
-        // Apply damage on impact
         if (damage > 0 && enemyCastleUI && !levelWon && !gameOver)
         {
             int originalDamage = damage;
 
-            // Play the attacking monster's impact SFX 
-            if (AudioManager.I && attackerMD)
-            {
-                var clip = attackerMD.PickRandomAttackSFX();
-                if (clip)
-                    AudioManager.I.PlaySFX(clip);
-            }
+            // Play impact SFX when damage is applied
+            if (AudioManager.I && impactClip)
+                AudioManager.I.PlaySFX(impactClip);
 
-            // Pylon shield: boss takes reduced damage while any pylons remain
             bool pylonsAlive = gameBoard && gameBoard.CountObstaclesOfType(Board.ObstacleType.MagicPylon) > 0;
-
             if (pylonsAlive)
-            {
                 damage = Mathf.Max(1, Mathf.CeilToInt(damage * Mathf.Clamp(bossPylonDamageMult, 0.05f, 1f)));
-            }
-
-            if (logRowDamageBreakdown)
-            {
-                Debug.Log(
-                    $"[CastleAttack Impact] attacker={(attackerMD ? attackerMD.name : "None")} " +
-                    $"base={originalDamage} pylonsAlive={pylonsAlive} final={damage}"
-                );
-            }
 
             if (enemyCastleUI)
                 enemyCastleUI.SetMagicShieldActive(pylonsAlive);
@@ -1948,7 +1925,7 @@ public class GameController : MonoBehaviour
             if (enemyCastleUI.currentHP <= 0 && !winQueued)
             {
                 winQueued = true;
-                StartCoroutine(CoWinAfterDelay(0.25f)); // Slight delay to allow multiple projectiles to land
+                StartCoroutine(CoWinAfterDelay(0.25f));
                 yield break;
             }
         }
@@ -2372,8 +2349,7 @@ public class GameController : MonoBehaviour
                 {
                     _pendingMainMenuAfterXp = false;
 
-                    // Keep XP UI visible to avoid flashing the gameplay scene again
-                    DoReturnToMainMenuNow();
+                    DoReturnToMainMenuNow(); // Keep XP UI visible to avoid flashing the gameplay scene
                 }, 
                 hideOnFinalContinue: false);
 
@@ -3353,7 +3329,6 @@ public class GameController : MonoBehaviour
 
         float dmg = Mathf.Max(0f, _castleData.bossRowBlastDamage);
 
-        // Build target cells
         var targets = new List<Vector2Int>();
         for (int x = 0; x < gameBoard.width; x++)
         {
@@ -3362,7 +3337,7 @@ public class GameController : MonoBehaviour
             targets.Add(new Vector2Int(x, y2));
         }
 
-        StartCoroutine(BossDelayedDamageRoutine(
+        StartCoroutine(BossRowBlastWarnThenDamage(
             targets,
             dmg,
             PickWarningSprite(_castleData.bossRowBlastWarningSprite)
@@ -3394,18 +3369,39 @@ public class GameController : MonoBehaviour
         StartCoroutine(BossFullBoardBlastWarnThenDamage(targets, dmg, warn));
     }
 
+    IEnumerator BossRowBlastWarnThenDamage(List<Vector2Int> targets, float damage, Sprite warningSprite)
+    {
+        float warn = BossWarnSeconds();
+
+        if (warningSprite != null)
+        {
+            PlayBossAbilityWarningSFX();
+            foreach (var c in targets)
+                if (gameBoard.InBounds(c))
+                    FlashBossWarning(c, warningSprite, warn);
+        }
+
+        yield return new WaitForSeconds(warn);
+
+        if (AudioManager.I) AudioManager.I.PlayBossRowBlastHit();
+
+        foreach (var c in targets)
+            if (gameBoard.InBounds(c))
+                gameBoard.DamageTile(c, damage);
+    }
+
     IEnumerator BossFullBoardBlastWarnThenDamage(List<Vector2Int> targets, float dmg, float warn)
     {
         PlayBossAbilityWarningSFX(); // SFX at warning start
 
-        // Warning only where monsters exist
         Sprite sprite = _castleData.bossFullBoardWarningSprite;
         foreach (var c in targets)
             FlashBossWarning(c, sprite, warn);
 
         yield return new WaitForSeconds(warn);
 
-        // Damage only where monsters exist
+        if (AudioManager.I) AudioManager.I.PlayBossBoardBlastHit();
+
         foreach (var c in targets)
             gameBoard.DamageTile(c, dmg);
     }

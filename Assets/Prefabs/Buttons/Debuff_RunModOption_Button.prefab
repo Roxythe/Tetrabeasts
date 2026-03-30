@@ -578,10 +578,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RunModOptionButton
   button: {fileID: 3971138751131615089}
+  backgroundImage: {fileID: 525355891944253040}
   icon: {fileID: 856707843274440850}
   nameText: {fileID: 4207872807279646451}
   descText: {fileID: 8862253447905925466}
   highlightOutline: {fileID: 7548400664462000278}
+  hoverTintMult: 1.3
+  selectedTintMult: 1
+  useSelectedOverrideColor: 1
+  selectedOverrideColor: {r: 0.7176471, g: 0.25490198, b: 0.21176471, a: 1}
+  forceButtonTransitionNone: 1
   commonNameColor: {r: 0.8509804, g: 0.8509804, b: 0.8509804, a: 1}
   uncommonNameColor: {r: 0.10457456, g: 0.8867924, b: 0.10457456, a: 1}
   rareNameColor: {r: 0.3, g: 0.6, b: 1, a: 1}
@@ -650,14 +656,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.6862745}
+  m_Color: {r: 0.4245283, g: 0.22184752, b: 0.20625669, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 4097194154108683856, guid: b2e2a03a92000fa48b3bba0d293a62a6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

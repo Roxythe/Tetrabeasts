@@ -83,6 +83,10 @@ public class RoundRewardUI : MonoBehaviour
         _selectedBuff = null;
         _selectedDebuff = null;
 
+        // Ensure panel buttons also get UIButtonSFX
+        _sfxHook?.HookButton(confirmBuffButton);
+        _sfxHook?.HookButton(confirmDebuffButton);
+
         if (currnecyGained)
             currnecyGained.text = $"+{currencyGained}";
 

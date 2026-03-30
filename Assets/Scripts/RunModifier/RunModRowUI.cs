@@ -22,15 +22,24 @@ public class RunModRowUI : MonoBehaviour
     public Color epicDescColor = new Color(0.75f, 0.3f, 1f);
     public Color legendaryDescColor = new Color(1f, 0.75f, 0.2f);
 
-    public void Bind(RunModifierSO mod)
+    public void Bind(RunModifierSO mod) => Bind(mod, 1);
+
+    public void Bind(RunModifierSO mod, int copies)
     {
         if (!mod) return;
 
+        copies = Mathf.Max(1, copies);
+
         if (icon) icon.sprite = mod.icon;
-        if (nameText) nameText.text = mod.displayName;
+
+        if (nameText)
+        {
+            nameText.text = copies > 1 ? $"{mod.displayName} x{copies}" : mod.displayName;
+        }
+
         if (descText) descText.text = mod.description;
 
-        // Optional: copy the rarity coloring behavior you already use
+        // Color by rarity if it's a generic mod, otherwise use common colors
         if (mod is RunModifier generic)
         {
             var nameCol = GetNameColor(generic.rarity);

@@ -60,6 +60,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: bc29fa804b7ea9e419d200ebbe06e501, type: 3}
   - {fileID: 8300000, guid: 570c3151887490945bf1ef32a3f03220, type: 3}
   sfxBossLightningStrike: {fileID: 8300000, guid: 88ec6b8b9d8673540865aaf7b9ea8586, type: 3}
+  sfxBossRowBlastHit: {fileID: 8300000, guid: c8386498aa8554741a37ec5187a0af6b, type: 3}
+  sfxBossBoardBlastHit: {fileID: 8300000, guid: a8ba237affb21384a83853133e1acf56, type: 3}
   sfxStoneBuffGranted: {fileID: 8300000, guid: 4afd5121a23bbec46990836550fc7d86, type: 3}
   sfxXpTick: {fileID: 8300000, guid: 6ba621102380c9b4c8793d9f1e2d6c8b, type: 3}
   sfxXpGainOrb: {fileID: 8300000, guid: 294e4909eb1acfc4f9e89c6ce1656c8c, type: 3}

@@ -10,9 +10,18 @@ public class GameplayUI_SFXHook : MonoBehaviour
     [Header("Options")]
     public bool includeInactive = true;
 
+    [Tooltip("If true, hooks again when this object is enabled")]
+    public bool rehookOnEnable = true;
+
     void Awake()
     {
         HookAllButtonsForSFX();
+    }
+
+    void OnEnable()
+    {
+        if (rehookOnEnable)
+            HookAllButtonsForSFX();
     }
 
     [ContextMenu("Rehook All Buttons")]
@@ -24,7 +33,6 @@ public class GameplayUI_SFXHook : MonoBehaviour
         {
             if (!b) continue;
 
-            // If button already has UIButtonSFX, just update clips
             var sfx = b.GetComponent<UIButtonSFX>();
             if (!sfx) sfx = b.gameObject.AddComponent<UIButtonSFX>();
 

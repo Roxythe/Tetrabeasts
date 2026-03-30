@@ -106,11 +106,11 @@ MonoBehaviour:
   useBossAbilityOptionPool: 1
   bossAbilityOptions:
   - kind: 0
-    weight: 3
+    weight: 100
     allowRepeat: 0
     cooldown: 20
   - kind: 1
-    weight: 3
+    weight: 100
     allowRepeat: 0
     cooldown: 20
   - kind: 2
@@ -130,11 +130,11 @@ MonoBehaviour:
     allowRepeat: 0
     cooldown: 10
   - kind: 6
-    weight: 100
+    weight: 5
     allowRepeat: 0
     cooldown: 10
   - kind: 7
-    weight: 100
+    weight: 5
     allowRepeat: 0
     cooldown: 10
   bossInvulnDuration: 10

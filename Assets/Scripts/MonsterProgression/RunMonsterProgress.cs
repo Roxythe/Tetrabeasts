@@ -52,8 +52,10 @@ public static class RunMonsterProgress
             string monsterName = kv.Key;
             var st = kv.Value;
 
+            float permanentTotalXp = MonsterProgressStore.GetPermanentTotalXp(monsterName);
             float runTotalXp = ((st.level - 1) * XpPerLevel) + st.xpInto;
-            float keepXp = runTotalXp * keepFraction;
+            float drainedXp = Mathf.Max(0f, runTotalXp - permanentTotalXp);
+            float keepXp = drainedXp * keepFraction;
 
             if (keepXp > 0f)
                 MonsterProgressStore.AddPermanentXp(monsterName, keepXp);
@@ -138,8 +140,10 @@ public static class RunMonsterProgress
             string monsterName = kv.Key;
             var st = kv.Value;
 
+            float permanentTotalXp = MonsterProgressStore.GetPermanentTotalXp(monsterName);
             float runTotalXp = ((st.level - 1) * XpPerLevel) + st.xpInto;
-            float keepXp = runTotalXp * keepFraction;
+            float drainedXp = Mathf.Max(0f, runTotalXp - permanentTotalXp);
+            float keepXp = drainedXp * keepFraction;
             kept[monsterName] = Mathf.Max(0f, keepXp);
         }
 

@@ -18,8 +18,12 @@ public class IntroController : MonoBehaviour
     public float fadeDuration = 0.6f;
     public float holdDuration = 0.15f;
 
-    public GameObject blackOverlay; 
-    public AudioSource videoAudioSource; 
+    [Header("Skip Prompt Auto-Hide")]
+    public float skipPromptIdleHideSeconds = 2.5f;
+    float _lastInputTime = -999f;
+
+    public GameObject blackOverlay;
+    public AudioSource videoAudioSource;
 
     bool _firstFrameShown = false;
     float _savedVideoVolume = 1f;
@@ -40,12 +44,7 @@ public class IntroController : MonoBehaviour
             return;
         }
 
-        if (pressAnyKeyText)
-        {
-            Color c = pressAnyKeyText.color;
-            c.a = 0f;
-            pressAnyKeyText.color = c;
-        }
+        HideSkipPromptInstant();
 
         if (!videoPlayer)
         {
@@ -54,12 +53,10 @@ public class IntroController : MonoBehaviour
             return;
         }
 
-        // Reduce first-second hitching
         videoPlayer.playOnAwake = false;
         videoPlayer.waitForFirstFrame = true;
         videoPlayer.skipOnDrop = true;
 
-        // If there's no assigned clip and no URL, skip intro
         if (videoPlayer.clip == null && string.IsNullOrWhiteSpace(videoPlayer.url))
         {
             Debug.LogWarning("IntroController: No intro video clip or URL found. Loading title scene.");
@@ -67,7 +64,6 @@ public class IntroController : MonoBehaviour
             return;
         }
 
-        // Show black until video is ready
         _firstFrameShown = false;
         if (blackOverlay) blackOverlay.SetActive(true);
 
@@ -94,25 +90,34 @@ public class IntroController : MonoBehaviour
         videoPlayer.errorReceived -= OnVideoError;
         videoPlayer.errorReceived += OnVideoError;
 
-        videoPlayer.Prepare(); // Prepare video before playing
+        videoPlayer.Prepare();
 
-        // Skip intro
         if (_prepareTimeoutCR != null) StopCoroutine(_prepareTimeoutCR);
         _prepareTimeoutCR = StartCoroutine(PrepareTimeout());
     }
 
     void Update()
     {
+        // Auto-hide and reset skip prompt if idle for too long after first input
+        if (firstInputShown && !_loadingTitle)
+        {
+            if (Time.unscaledTime - _lastInputTime >= Mathf.Max(0.1f, skipPromptIdleHideSeconds))
+            {
+                ResetSkipPromptState(); // Hides and resets conditions
+            }
+        }
+
         if (!Input.anyKeyDown)
             return;
 
-        // First key pressto show text
+        _lastInputTime = Time.unscaledTime; // Refresh idle timer on any key
+
+        // First key press: show skip prompt
         if (!firstInputShown)
         {
             firstInputShown = true;
             skippingEnabled = true;
 
-            // Start pulsing fade loop
             if (_pressTextFadeCR != null) StopCoroutine(_pressTextFadeCR);
             _pressTextFadeCR = StartCoroutine(FadePressAnyKeyLoop());
 
@@ -126,17 +131,38 @@ public class IntroController : MonoBehaviour
         }
     }
 
-    void OnVideoFinished(VideoPlayer vp)
+    void ResetSkipPromptState()
     {
-        LoadTitle();
+        firstInputShown = false;
+        skippingEnabled = false;
+        _lastInputTime = -999f;
+        HideSkipPromptInstant();
     }
+
+    void HideSkipPromptInstant()
+    {
+        if (_pressTextFadeCR != null)
+        {
+            StopCoroutine(_pressTextFadeCR);
+            _pressTextFadeCR = null;
+        }
+
+        if (pressAnyKeyText)
+        {
+            var c = pressAnyKeyText.color;
+            c.a = 0f;
+            pressAnyKeyText.color = c;
+        }
+    }
+
+    void OnVideoFinished(VideoPlayer vp) => LoadTitle();
 
     void LoadTitle()
     {
         if (_loadingTitle) return;
         _loadingTitle = true;
 
-        if (_pressTextFadeCR != null) StopCoroutine(_pressTextFadeCR);
+        HideSkipPromptInstant(); // Ensures prompt/coroutine fully stops
 
         if (videoPlayer)
         {
@@ -154,13 +180,11 @@ public class IntroController : MonoBehaviour
     {
         while (true)
         {
-            // Fade in
             yield return FadeTextAlpha(0f, 1f, fadeDuration);
-            yield return new WaitForSeconds(holdDuration);
+            yield return new WaitForSecondsRealtime(holdDuration);
 
-            // Fade out
             yield return FadeTextAlpha(1f, 0f, fadeDuration);
-            yield return new WaitForSeconds(holdDuration);
+            yield return new WaitForSecondsRealtime(holdDuration);
         }
     }
 
@@ -202,10 +226,8 @@ public class IntroController : MonoBehaviour
 
         _firstFrameShown = true;
 
-        // Hide black overlay
         if (blackOverlay) blackOverlay.SetActive(false);
 
-        // Unmute now that playback is stable
         if (videoAudioSource)
             videoAudioSource.volume = _savedVideoVolume;
 
@@ -221,21 +243,19 @@ public class IntroController : MonoBehaviour
         {
             if (_loadingTitle) yield break;
             if (videoPlayer == null) yield break;
-
-            // If it becomes prepared, stop timing out
             if (videoPlayer.isPrepared) yield break;
 
             t += Time.unscaledDeltaTime;
             yield return null;
         }
 
-        Debug.LogWarning("IntroController: Video prepare timed out. Loading title scene.");
+        Debug.LogWarning("Video prepare timed out. Loading title scene.");
         LoadTitle();
     }
 
     void OnVideoError(VideoPlayer vp, string message)
     {
-        Debug.LogWarning($"IntroController: VideoPlayer error: {message}. Loading title scene.");
+        Debug.LogWarning($"VideoPlayer error: {message}. Loading title scene.");
         LoadTitle();
     }
 }
