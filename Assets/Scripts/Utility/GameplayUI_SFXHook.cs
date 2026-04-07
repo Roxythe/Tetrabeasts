@@ -32,6 +32,7 @@ public class GameplayUI_SFXHook : MonoBehaviour
         foreach (var b in buttons)
         {
             if (!b) continue;
+            if (b.GetComponent<IgnoreGameplayUIButtonSFX>()) continue;
 
             var sfx = b.GetComponent<UIButtonSFX>();
             if (!sfx) sfx = b.gameObject.AddComponent<UIButtonSFX>();
@@ -44,6 +45,7 @@ public class GameplayUI_SFXHook : MonoBehaviour
     public void HookButton(Button b)
     {
         if (!b) return;
+        if (b.GetComponent<IgnoreGameplayUIButtonSFX>()) return;
 
         var sfx = b.GetComponent<UIButtonSFX>();
         if (!sfx) sfx = b.gameObject.AddComponent<UIButtonSFX>();

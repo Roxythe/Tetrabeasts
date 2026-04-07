@@ -45,7 +45,12 @@ public class Board : MonoBehaviour
         FloorSpike,
         FloorLightning,
         BossAbility,
-        MagicExplosive
+        MagicExplosive,
+        Overgrowth,
+        Contagion,
+        Rations,
+        DeathExplosion,
+        RearAmbush
     }
 
     // Runtime
@@ -104,19 +109,22 @@ public class Board : MonoBehaviour
 
     [Header("Monster Tick Damage Flash")]
     public float monsterTickFlashDuration = 0.08f;
-    public Color burnTickFlashTint = new Color(1f, 0.25f, 0.25f, 1f);      // red
-    public Color poisonTickFlashTint = new Color(0.75f, 0.25f, 1f, 1f);    // purple
-    public Color lightningTickFlashTint = new Color(0.25f, 0.25f, 1f, 1f); // blue
+    public Color burnTickFlashTint = new Color(1f, 0.25f, 0.25f, 1f);       // red
+    public Color poisonTickFlashTint = new Color(0.75f, 0.25f, 1f, 1f);     // purple
+    public Color lightningTickFlashTint = new Color(0.25f, 0.25f, 1f, 1f);  // blue
+    public Color contagionTickFlashTint = new Color(1f, 0.10f, 0.65f, 1f);  // hot pink
 
     [Header("Floor Effect Underlay Tints (only visible when cell is empty)")]
     [Range(0f, 1f)] public float floorUnderlayAlpha = 0.30f;
-    public Color poisonUnderlayTint = new Color(0.75f, 0.25f, 1f, 1f);      // purple
+    [Range(0f, 1f)] public float floorSecondaryUnderlayAlpha = 0.18f;
+    public Color poisonUnderlayTint = new Color(0.75f, 0.25f, 1f, 1f);       // purple
     public Color fireUnderlayTint = new Color(1f, 0.55f, 0.15f, 1f);         // orange
     public Color lightningUnderlayTint = new Color(0.25f, 0.95f, 1f, 1f);    // cyan
+    public Color contagionSecondaryUnderlayTint = new Color(1f, 0.10f, 0.65f, 1f); // hot pink
 
     readonly Dictionary<Vector2Int, Coroutine> _monsterFlashCo = new();
 
-    public enum ObstacleType { Stone, MagicPylon, MagicExplosive }
+    public enum ObstacleType { Stone, MagicPylon, MagicExplosive, SoldierWall, Overgrowth }
 
     [System.Serializable]
     public struct ObstacleState
@@ -124,12 +132,14 @@ public class Board : MonoBehaviour
         public ObstacleType type;
         public int hitsRemaining; // Remaining hits until break
         public int maxHits;       // Used to compute hits taken for sprite state
+        public bool indestructible;
 
-        public ObstacleState(ObstacleType t, int hits)
+        public ObstacleState(ObstacleType t, int hits, bool isIndestructible = false)
         {
             type = t;
             maxHits = Mathf.Max(1, hits);
             hitsRemaining = maxHits;
+            indestructible = isIndestructible;
         }
 
         public int HitsTaken => Mathf.Clamp(maxHits - hitsRemaining, 0, maxHits);
@@ -206,6 +216,7 @@ public class Board : MonoBehaviour
     readonly Dictionary<Vector2Int, Image> fireBorders = new();
     readonly Dictionary<Vector2Int, Image> lightningBorders = new();
     readonly Dictionary<Vector2Int, Image> floorTintUnderlays = new(); // poison/burn/lightning tints
+    readonly Dictionary<Vector2Int, Image> floorSecondaryTintUnderlays = new();
 
     class SpikeVisual
     {
@@ -240,6 +251,11 @@ public class Board : MonoBehaviour
         public float healRange;         // leveled base healRange
         public float healSpeed;
         public float specialGaugeGain;  // leveled base specialGain used for gauge
+        public int soulLinkGroupId;
+        public bool contagionInfected;
+        public float contagionPercentPerTick;
+        public float contagionTickTimer;
+        public float contagionSpreadTimer;
 
         public MonsterInstance(MonsterData d)
         {
@@ -253,6 +269,11 @@ public class Board : MonoBehaviour
             healRange = 0f;
             healSpeed = 0f;
             specialGaugeGain = 0f;
+            soulLinkGroupId = 0;
+            contagionInfected = false;
+            contagionPercentPerTick = 0f;
+            contagionTickTimer = 0f;
+            contagionSpreadTimer = 0f;
 
             RecalcFromData(setHpToMax: true);
         }
@@ -268,6 +289,11 @@ public class Board : MonoBehaviour
                 healRange = 0f;
                 healSpeed = 0f;
                 specialGaugeGain = 0f;
+                soulLinkGroupId = 0;
+                contagionInfected = false;
+                contagionPercentPerTick = 0f;
+                contagionTickTimer = 0f;
+                contagionSpreadTimer = 0f;
                 if (setHpToMax) hp = 0f;
                 return;
             }
@@ -785,6 +811,10 @@ public class Board : MonoBehaviour
         if (inst.hp <= 0f)
             return false;
 
+        if (_gc && _gc.levelModifierController)
+            amount = _gc.levelModifierController.ModifyIncomingDamage(cell, inst.data, amount, src);
+
+        amount = Mathf.Max(0f, amount);
         inst.hp = Mathf.Max(0f, inst.hp - amount);
         monsters[cell] = inst;
         UpdateTileHPVisual(cell, inst.hp, inst.maxHp);
@@ -896,6 +926,9 @@ public class Board : MonoBehaviour
         foreach (var kv in floorTintUnderlays) if (kv.Value) Destroy(kv.Value.gameObject);
         floorTintUnderlays.Clear();
 
+        foreach (var kv in floorSecondaryTintUnderlays) if (kv.Value) Destroy(kv.Value.gameObject);
+        floorSecondaryTintUnderlays.Clear();
+
         RecomputeCellMetrics();
         DrawGridOverlay();
     }
@@ -947,18 +980,8 @@ public class Board : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 // Row is full if every cell is occupied by something (monster tile or obstacle tile)
-                bool full = true;
-                for (int x = 0; x < width; x++)
-                {
-                    var c = new Vector2Int(x, y);
-                    if (!placed.TryGetValue(c, out var rt) || !rt)
-                    {
-                        full = false;
-                        break;
-                    }
-                }
-
-                if (!full) continue;
+                if (!IsClearableOccupiedRow(y))
+                    continue;
 
                 clearedAny = true;
                 rowsCleared++;
@@ -1089,18 +1112,8 @@ public class Board : MonoBehaviour
 
             for (int y = 0; y < height; y++)
             {
-                bool full = true;
-                for (int x = 0; x < width; x++)
-                {
-                    var c = new Vector2Int(x, y);
-                    if (!placed.TryGetValue(c, out var rt) || !rt)
-                    {
-                        full = false;
-                        break;
-                    }
-                }
-
-                if (!full) continue;
+                if (!IsClearableOccupiedRow(y))
+                    continue;
 
                 clearedAny = true;
                 rowsCleared++;
@@ -1267,7 +1280,7 @@ public class Board : MonoBehaviour
                             specialChargeFromMonsters += gauge;
                     }
 
-                    // Collect candidate start columns for this row’s projectile
+                    // Collect candidate start columns for this rowï¿½s projectile
                     if (!colsByRow.TryGetValue(y, out var cols))
                     {
                         cols = new List<int>();
@@ -1316,8 +1329,11 @@ public class Board : MonoBehaviour
 
         foreach (var key in toDelete)
         {
-            if (obstacles.ContainsKey(key))
+            if (obstacles.TryGetValue(key, out var obstacle))
             {
+                if (obstacle.type == ObstacleType.SoldierWall || obstacle.type == ObstacleType.Overgrowth)
+                    continue;
+
                 DestroyObstacleImmediate(key);
                 squaresCleared++;
                 continue;
@@ -1332,37 +1348,7 @@ public class Board : MonoBehaviour
             squaresCleared++;
         }
 
-        var snapshot = new List<KeyValuePair<Vector2Int, RectTransform>>(placed);
-        foreach (var kv in snapshot)
-        {
-            var from = kv.Key;
-            if (from.y < rows) continue;
-
-            var rt = kv.Value;
-            var to = new Vector2Int(from.x, from.y - rows);
-
-            placed.Remove(from);
-            placed[to] = rt;
-            rt.anchoredPosition = CellToAnchoredPos(to);
-
-            if (monsters.TryGetValue(from, out var inst))
-            {
-                monsters.Remove(from);
-                monsters[to] = inst;
-            }
-
-            if (healTimers.TryGetValue(from, out var t))
-            {
-                healTimers.Remove(from);
-                healTimers[to] = t;
-            }
-
-            if (obstacles.TryGetValue(from, out var obs))
-            {
-                obstacles.Remove(from);
-                obstacles[to] = obs;
-            }
-        }
+        SettleAllColumns(false);
 
         return squaresCleared;
     }
@@ -1381,8 +1367,11 @@ public class Board : MonoBehaviour
         foreach (var key in toDelete)
         {
             // If this cell is a stone obstacle, destroy it via the proper path to keep dictionaries synced
-            if (obstacles.ContainsKey(key))
+            if (obstacles.TryGetValue(key, out var obstacle))
             {
+                if (obstacle.type == ObstacleType.SoldierWall || obstacle.type == ObstacleType.Overgrowth)
+                    continue;
+
                 DestroyObstacleImmediate(key);
                 squaresCleared++;
                 continue;
@@ -1398,41 +1387,7 @@ public class Board : MonoBehaviour
             squaresCleared++;
         }
 
-        // Move using a snapshot to avoid key-collision while iterating
-        var snapshot = new List<KeyValuePair<Vector2Int, RectTransform>>(placed);
-        foreach (var kv in snapshot)
-        {
-            var from = kv.Key;
-            if (from.y < rows) continue;
-
-            var rt = kv.Value;
-            var to = new Vector2Int(from.x, from.y - rows);
-
-            placed.Remove(from);
-            placed[to] = rt;
-            rt.anchoredPosition = CellToAnchoredPos(to);
-
-            if (monsters.TryGetValue(from, out var inst))
-            {
-                monsters.Remove(from);
-                monsters[to] = inst;
-            }
-
-            if (healTimers.TryGetValue(from, out var t))
-            {
-                healTimers.Remove(from);
-                healTimers[to] = t;
-            }
-
-            // Keep obstacle dictionary synced if an obstacle tile moved
-            if (obstacles.TryGetValue(from, out var obs))
-            {
-                obstacles.Remove(from);
-                obstacles[to] = obs;
-            }
-        }
-
-        RefreshAllTileBorders();
+        SettleAllColumns(false);
 
         return squaresCleared;
     }
@@ -1668,6 +1623,68 @@ public class Board : MonoBehaviour
         CleanOrphanedTiles();
     }
 
+    public void ShiftBoardUpOneRowAndFillBottom(Sprite soldierSprite)
+    {
+        var snapshot = new List<Vector2Int>(placed.Keys);
+        snapshot.Sort((a, b) => b.y.CompareTo(a.y));
+
+        for (int i = 0; i < snapshot.Count; i++)
+        {
+            Vector2Int from = snapshot[i];
+            if (!placed.TryGetValue(from, out var rt) || !rt)
+                continue;
+
+            Vector2Int to = from + Vector2Int.up;
+            if (!InBounds(to))
+            {
+                if (monsters.TryGetValue(from, out var inst) && inst.data != null && inst.hp > 0f)
+                    ForceKillMonsterAndRemove(from, DamageSource.RearAmbush);
+                else
+                    RemovePlacedCellImmediate(from);
+
+                continue;
+            }
+
+            placed.Remove(from);
+            placed[to] = rt;
+            rt.anchoredPosition = CellToAnchoredPos(to);
+
+            if (monsters.TryGetValue(from, out var movedMonster))
+            {
+                monsters.Remove(from);
+                monsters[to] = movedMonster;
+            }
+
+            if (healTimers.TryGetValue(from, out var healTimer))
+            {
+                healTimers.Remove(from);
+                healTimers[to] = healTimer;
+            }
+
+            if (obstacles.TryGetValue(from, out var obs))
+            {
+                obstacles.Remove(from);
+                obstacles[to] = obs;
+            }
+
+            if (magicExplosives.TryGetValue(from, out var explosive))
+            {
+                magicExplosives.Remove(from);
+                magicExplosives[to] = explosive;
+            }
+        }
+
+        for (int x = 0; x < width; x++)
+        {
+            Vector2Int bottom = new Vector2Int(x, 0);
+            if (IsFree(bottom))
+                TrySpawnCustomObstacle(bottom, ObstacleType.SoldierWall, soldierSprite, 1, true);
+        }
+
+        RefreshAllTileBorders();
+        CleanOrphanedTiles();
+    }
+
     // Variant of SettleAllColumns that only processes specified columns for efficiency
     public void SettleColumns(IEnumerable<int> columns, bool allowObstaclesToFall)
     {
@@ -1830,23 +1847,90 @@ public class Board : MonoBehaviour
 
         // Initialize healer timer if needed (uses buffed healAmount)
         if (inst.data && inst.healAmount > 0f)
-            healTimers[cell] = Time.time;
+        {
+            if (!healTimers.ContainsKey(cell))
+                healTimers[cell] = 0f;
+        }
+        else
+        {
+            healTimers.Remove(cell);
+        }
     }
 
     void CleanOrphanedTiles()
     {
-        // Remove any tiles in gridRoot that are not in placed[]
         var live = new HashSet<RectTransform>(placed.Values);
-        for (int i = 0; i < gridRoot.childCount; i++)
+
+        for (int i = gridRoot.childCount - 1; i >= 0; i--)
         {
             var t = gridRoot.GetChild(i) as RectTransform;
             if (!t) continue;
-            if (!t.name.StartsWith("Tile_")) continue; // Only care about tiles
-            if (!live.Contains(t)) Destroy(t.gameObject);
+
+            if (!t.GetComponent<BoardOwned>()) // Not a tile or grid line, ignore
+                continue;
+
+            if (!t.name.StartsWith("Tile_")) // Grid line exception
+                continue;
+
+            if (!live.Contains(t))
+                Destroy(t.gameObject);
         }
     }
 
     public bool TryGetMonster(Vector2Int cell, out MonsterInstance inst) => monsters.TryGetValue(cell, out inst);
+
+    public List<Vector2Int> GetMonsterCells(bool includeDead = false)
+    {
+        var result = new List<Vector2Int>();
+        foreach (var kv in monsters)
+        {
+            if (kv.Value.data == null)
+                continue;
+
+            if (!includeDead && kv.Value.hp <= 0f)
+                continue;
+
+            result.Add(kv.Key);
+        }
+
+        return result;
+    }
+
+    public void RemovePlacedCellImmediate(Vector2Int cell)
+    {
+        if (obstacles.ContainsKey(cell))
+        {
+            DestroyObstacleImmediate(cell);
+            return;
+        }
+
+        if (placed.TryGetValue(cell, out var rt) && rt)
+            Destroy(rt.gameObject);
+
+        placed.Remove(cell);
+        monsters.Remove(cell);
+        healTimers.Remove(cell);
+        magicExplosives.Remove(cell);
+
+        RefreshTileBordersAround(cell);
+    }
+
+    public bool ForceKillMonsterAndRemove(Vector2Int cell, DamageSource src)
+    {
+        bool hadMonster = monsters.TryGetValue(cell, out var inst) && inst.data != null;
+        if (hadMonster && inst.hp > 0f)
+        {
+            float applied = inst.hp;
+            inst.hp = 0f;
+            monsters[cell] = inst;
+            UpdateTileHPVisual(cell, inst.hp, inst.maxHp);
+            TileDamaged?.Invoke(cell, inst.data, applied, src);
+            TileDied?.Invoke(cell, inst.data);
+        }
+
+        RemovePlacedCellImmediate(cell);
+        return hadMonster;
+    }
 
     // ======== Healing VFX ========
 
@@ -1926,6 +2010,20 @@ public class Board : MonoBehaviour
             if (kv.Value.type == t)
                 count++;
         return count;
+    }
+
+    public bool TrySpawnCustomObstacle(Vector2Int cell, ObstacleType type, Sprite sprite, int hitsToBreak = 1, bool indestructible = false)
+    {
+        if (!InBounds(cell)) return false;
+        if (!IsFree(cell)) return false;
+
+        var rt = InstantiateTileUI(Color.white, sprite);
+        rt.anchoredPosition = CellToAnchoredPos(cell);
+        Place(cell, rt);
+
+        obstacles[cell] = new ObstacleState(type, hitsToBreak, indestructible);
+        RefreshTileBordersAround(cell);
+        return true;
     }
 
     public bool TrySpawnStoneObstacle(Vector2Int cell, int hitsToBreak = 3)
@@ -2283,6 +2381,9 @@ public class Board : MonoBehaviour
                 }
             }
         }
+
+        if (_gc && _gc.levelModifierController)
+            _gc.levelModifierController.OnSpecialEnvironmentHit(affectedCells, special);
     }
 
     // ================= Visuals =================
@@ -2438,7 +2539,7 @@ public class Board : MonoBehaviour
         }
     }
 
-    void FlashMonsterTick(Vector2Int cell, Color tint)
+    public void FlashMonsterTick(Vector2Int cell, Color tint)
     {
         if (!placed.TryGetValue(cell, out var rt) || !rt) return;
 
@@ -2571,6 +2672,12 @@ public class Board : MonoBehaviour
         {
             case ObstacleType.Stone:
                 {
+                    if (obs.indestructible)
+                    {
+                        monsters.Remove(cell);
+                        return true;
+                    }
+
                     if (stoneGuard != null && !stoneGuard.Add(cell))
                     {
                         monsters.Remove(cell);
@@ -2613,6 +2720,27 @@ public class Board : MonoBehaviour
                     removedCells?.Add(cell);
                     return true;
                 }
+
+            case ObstacleType.SoldierWall:
+                {
+                    monsters.Remove(cell);
+                    return true;
+                }
+
+            case ObstacleType.Overgrowth:
+                {
+                    if (detonateExplosive)
+                    {
+                        DestroyObstacleImmediate(cell);
+                        removedCells?.Add(cell);
+                    }
+                    else
+                    {
+                        monsters.Remove(cell);
+                    }
+
+                    return true;
+                }
         }
 
         return false;
@@ -2638,6 +2766,21 @@ public class Board : MonoBehaviour
 
         img.sprite = s;
         img.enabled = (img.sprite != null);
+    }
+
+    public void SetContagionFloorUnderlays(Vector2Int cell, Color mainTint, Color secondaryTint)
+    {
+        EnsureTintUnderlay(cell, mainTint);
+        EnsureSecondaryTintUnderlay(cell, secondaryTint);
+    }
+
+    public void ClearContagionFloorUnderlays(Vector2Int cell)
+    {
+        if (floorTintUnderlays.TryGetValue(cell, out var img) && img)
+            Destroy(img.gameObject);
+
+        floorTintUnderlays.Remove(cell);
+        ClearSecondaryTintUnderlay(cell);
     }
 
     // ================= Boss Warning Flashing =================
@@ -2720,16 +2863,57 @@ public class Board : MonoBehaviour
         img.enabled = IsFree(cell);
     }
 
-    void RefreshTintUnderlayVisibility(Vector2Int cell)
+    void EnsureSecondaryTintUnderlay(Vector2Int cell, Color tint)
     {
-        if (floorTintUnderlays.TryGetValue(cell, out var img) && img)
+        if (!InBounds(cell)) return;
+
+        if (!floorSecondaryTintUnderlays.TryGetValue(cell, out var img) || !img)
+        {
+            img = new GameObject($"FloorSecondaryTint_{cell.x}_{cell.y}",
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(UnityEngine.UI.Image)).GetComponent<UnityEngine.UI.Image>();
+
+            img.raycastTarget = false;
+            img.sprite = OnePx();
+            img.type = UnityEngine.UI.Image.Type.Simple;
+
+            var rt = img.rectTransform;
+            rt.SetParent(underlayRoot, false);
+            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.sizeDelta = GetCellSize();
+            rt.anchoredPosition = CellToAnchoredPos(cell);
+
+            floorSecondaryTintUnderlays[cell] = img;
+        }
+
+        var c = tint;
+        c.a = floorSecondaryUnderlayAlpha;
+        img.color = c;
+
+        img.enabled = IsFree(cell);
+    }
+
+    void ClearSecondaryTintUnderlay(Vector2Int cell)
+    {
+        if (floorSecondaryTintUnderlays.TryGetValue(cell, out var img) && img)
+            Destroy(img.gameObject);
+
+        floorSecondaryTintUnderlays.Remove(cell);
+    }
+
+    void RefreshSecondaryTintUnderlayVisibility(Vector2Int cell)
+    {
+        if (floorSecondaryTintUnderlays.TryGetValue(cell, out var img) && img)
             img.enabled = IsFree(cell);
     }
 
     void RefreshAllTintUnderlays()
     {
-        if (floorTintUnderlays.Count == 0) return;
         foreach (var kv in floorTintUnderlays)
+            if (kv.Value) kv.Value.enabled = IsFree(kv.Key);
+
+        foreach (var kv in floorSecondaryTintUnderlays)
             if (kv.Value) kv.Value.enabled = IsFree(kv.Key);
     }
 
@@ -2936,5 +3120,32 @@ public class Board : MonoBehaviour
     {
         if (!rt) return;
         _activeBuffPopups.Remove(rt);
+    }
+
+    bool IsClearableOccupiedRow(int y)
+    {
+        bool full = true;
+        bool hasClearableContent = false;
+
+        for (int x = 0; x < width; x++)
+        {
+            var c = new Vector2Int(x, y);
+            if (!placed.TryGetValue(c, out var rt) || !rt)
+            {
+                full = false;
+                break;
+            }
+
+            if (!obstacles.TryGetValue(c, out var obs))
+            {
+                hasClearableContent = true;
+                continue;
+            }
+
+            if (obs.type != ObstacleType.SoldierWall)
+                hasClearableContent = true;
+        }
+
+        return full && hasClearableContent;
     }
 }

@@ -13,7 +13,7 @@ public class CastleData : ScriptableObject
     public int maxHP = 100;
 
     [Header("Projectile Attack")]
-    public Sprite projectileSprite;          // arrow sprite, etc.
+    public Sprite projectileSprite;
     [Min(0.1f)] public float projectileInterval = 3f;
     [Min(1f)] public float projectileSpeed = 800f;
     [Min(1)] public int projectileDamage = 1;
@@ -27,7 +27,7 @@ public class CastleData : ScriptableObject
 
     [Header("Boss Level")]
     public bool isBossLevel;
-    public Sprite bossOverlaySprite; // Idle boss sprite
+    public Sprite bossOverlaySprite;
     public Sprite bossAttackSprite;
     public Sprite bossDamageTakenSprite;
     public Sprite bossCriticalIdleSprite;
@@ -48,13 +48,19 @@ public class CastleData : ScriptableObject
     public bool overrideInitialObstacles = false;
     public bool overridesOnlyForLevel1 = true;
 
-    // Set to -1 to use ObstacleManager's normal formula
     public int overrideStoneCount = -1;
     public int overridePoisonCount = -1;
     public int overrideFireCount = -1;
     public int overrideSpikeCount = -1;
 
-    // ================= Boss Abilities =================
+    [Header("Level Modifiers")]
+    [Tooltip("If enabled on a normal level, the game will randomly select a single level modifier before gameplay starts.")]
+    public bool enableLevelModifierSelection = false;
+
+    [Tooltip("Shared database containing all level modifiers.")]
+    public LevelModifierDatabaseSO levelModifierDatabase;
+    public LevelModifierKind[] allowedLevelModifierKinds;
+
     [Header("Boss Abilities - Toggles")]
     public bool bossEnableRowBlast = true;
     public bool bossEnableFullBoardBlast = false;
@@ -76,7 +82,7 @@ public class CastleData : ScriptableObject
     [Min(0f)] public float bossFullBoardDamage = 1f;
 
     [Header("Boss - Lightning Strike")]
-    public Sprite bossLightningWarningSprite;     // Indicator that flashes before strike
+    public Sprite bossLightningWarningSprite;
     [Min(1)] public int bossLightningTargetsMin = 1;
     [Min(1)] public int bossLightningTargetsMax = 3;
     [Min(0.25f)] public float bossLightningWarningMin = 3f;
@@ -86,7 +92,6 @@ public class CastleData : ScriptableObject
     [Min(0.05f)] public float bossLightningTickInterval = 0.5f;
     [Min(0.25f)] public float bossLightningHazardDuration = 4f;
 
-    // Boss - Spawn Traps
     public enum BossTrapKind { Spike, Stone, Poison, Fire, Lightning }
     public BossTrapKind bossTrapKind = BossTrapKind.Spike;
 
@@ -98,18 +103,15 @@ public class CastleData : ScriptableObject
     {
         public BossTrapKind kind;
         public BossTrapPattern pattern;
-
-        [Min(1)] public int weight; // higher = more likely
+        [Min(1)] public int weight;
     }
 
     [Header("Boss - Spawn Traps (Option Pool)")]
     public bool useBossTrapOptionPool = false;
     public BossTrapSpawnOption[] bossTrapOptions;
 
-    [Min(1)] public int bossTrapCountPerUse = 4; // Single cell traps per cast
-    [Min(1)] public int bossTrapCountPerClusterUse = 1; // Pattern clusters per cast
-
-    // ================= Boss Ability Pool =================
+    [Min(1)] public int bossTrapCountPerUse = 4;
+    [Min(1)] public int bossTrapCountPerClusterUse = 1;
 
     public enum BossAbilityKind
     {
@@ -127,12 +129,9 @@ public class CastleData : ScriptableObject
     public struct BossAbilityOption
     {
         public BossAbilityKind kind;
-
-        [Min(1)] public int weight;          // higher = more likely
-
-        // Optional controls 
-        public bool allowRepeat;             // If false, don't pick twice in a row
-        [Min(0f)] public float cooldown;     // Seconds before this ability can be picked again
+        [Min(1)] public int weight;
+        public bool allowRepeat;
+        [Min(0f)] public float cooldown;
     }
 
     [Header("Boss - Ability Option Pool")]
@@ -141,10 +140,10 @@ public class CastleData : ScriptableObject
 
     [Header("Boss - Invulnerability")]
     [Min(0.25f)] public float bossInvulnDuration = 3f;
-    public AudioClip bossInvulnHitSFX;         // Different hit SFX when invulnerable
+    public AudioClip bossInvulnHitSFX;
 
     [Header("Boss - Gravity Boost")]
-    [Min(0.1f)] public float bossGravityBonusMult = 2f; // Multiplier for gravity boost (base1 + 2bonusMult = 3x gravity)
+    [Min(0.1f)] public float bossGravityBonusMult = 2f;
     [Min(0.25f)] public float bossGravityDuration = 10f;
 
     [Header("Boss Ability Warnings")]
@@ -167,20 +166,18 @@ public class CastleData : ScriptableObject
 
     public Sprite GetSpriteForHealth(float hpPercent)
     {
-        // Clamp
         if (hpPercent < 0f) hpPercent = 0f;
         if (hpPercent > 1f) hpPercent = 1f;
 
         int index;
-        if (hpPercent >= 0.76f) index = 0; // 100-76%
-        else if (hpPercent >= 0.51f) index = 1; // 75-51%
-        else if (hpPercent >= 0.26f) index = 2; // 50-26%
-        else index = 3; // 25-0%
+        if (hpPercent >= 0.76f) index = 0;
+        else if (hpPercent >= 0.51f) index = 1;
+        else if (hpPercent >= 0.26f) index = 2;
+        else index = 3;
 
         if (damageStages != null && index >= 0 && index < damageStages.Length)
             return damageStages[index];
 
-        // Fallback
         if (damageStages != null && damageStages.Length > 0)
             return damageStages[0];
 
@@ -191,13 +188,13 @@ public class CastleData : ScriptableObject
     {
         if (arr != null && arr.Length > 0)
         {
-            // Keep retrying until a non-null element (a few tries)
             for (int k = 0; k < 8; k++)
             {
                 var c = arr[Random.Range(0, arr.Length)];
                 if (c) return c;
             }
         }
+
         return fallback;
     }
 }

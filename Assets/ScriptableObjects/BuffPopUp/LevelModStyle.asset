@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fd5fdc0d87dd5c46a139375452add7b, type: 3}
+  m_Name: LevelModStyle
+  m_EditorClassIdentifier: Assembly-CSharp::BuffPopupStyleSO
+  popupPrefab: {fileID: 4911539687238431656, guid: de29db3a49adad945a4a7eef1a4ce24b, type: 3}
+  sizeMultiplier: {x: 1.15, y: 1.15}
+  shadowOffset: {x: 2, y: -2}
+  duration: 9999999
+  floatPixels: 0
+  flashInterval: 0.23
+  pulseScaleAmplitude: 0.2
+  pulseSpeedHz: 1.8
+  avoidOverlap: 1
+  overlapMinX: 500
+  overlapMinY: 50
+  overlapStepY: 50
+  overlapMaxShifts: 10
+  common:
+    textA: {r: 1, g: 1, b: 1, a: 1}
+    textB: {r: 0, g: 0, b: 0, a: 1}
+    shadowA: {r: 0, g: 0, b: 0, a: 0.85}
+    shadowB: {r: 0.05, g: 0.05, b: 0.05, a: 0.85}
+  uncommon:
+    textA: {r: 0.24857599, g: 0.9245283, b: 0.24857599, a: 1}
+    textB: {r: 0.3915094, g: 1, b: 0.7820221, a: 1}
+    shadowA: {r: 0, g: 0, b: 0, a: 0.85}
+    shadowB: {r: 0.05, g: 0.05, b: 0.05, a: 0.85}
+  rare:
+    textA: {r: 0, g: 0.5, b: 1, a: 1}
+    textB: {r: 0.3504361, g: 0.86933994, b: 0.990566, a: 1}
+    shadowA: {r: 0, g: 0, b: 0, a: 0.85}
+    shadowB: {r: 0.05, g: 0.05, b: 0.05, a: 0.85}
+  epic:
+    textA: {r: 0.518669, g: 0.11792451, b: 1, a: 1}
+    textB: {r: 0.990566, g: 0.4438857, b: 0.94972205, a: 1}
+    shadowA: {r: 0, g: 0, b: 0, a: 0.85}
+    shadowB: {r: 0.05, g: 0.05, b: 0.05, a: 0.85}
+  legendary:
+    textA: {r: 1, g: 0.65, b: 0.15, a: 1}
+    textB: {r: 1, g: 0.95, b: 0.25, a: 1}
+    shadowA: {r: 0, g: 0, b: 0, a: 0.9}
+    shadowB: {r: 0.05, g: 0.05, b: 0.05, a: 0.9}

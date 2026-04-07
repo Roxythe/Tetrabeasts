@@ -1,0 +1,1664 @@
+fileFormatVersion: 2
+guid: f7f86d7150bd2e74b878e21500ae651d
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3018440624524364753
+    second: Contagion_Overlay_0
+  - first:
+      213: 5620618717936742522
+    second: Contagion_Overlay_1
+  - first:
+      213: 9092519688961969580
+    second: Contagion_Overlay_2
+  - first:
+      213: 130305837181899887
+    second: Contagion_Overlay_3
+  - first:
+      213: 4251116931453473097
+    second: Contagion_Overlay_4
+  - first:
+      213: -6014052493052091881
+    second: Contagion_Overlay_5
+  - first:
+      213: -5792126709207344185
+    second: Contagion_Overlay_6
+  - first:
+      213: 1479629986287919712
+    second: Contagion_Overlay_7
+  - first:
+      213: 6640292119317554888
+    second: Contagion_Overlay_8
+  - first:
+      213: 6185831138344219708
+    second: Contagion_Overlay_9
+  - first:
+      213: -6566078899914737826
+    second: Contagion_Overlay_10
+  - first:
+      213: 1575528084569468477
+    second: Contagion_Overlay_11
+  - first:
+      213: 8275512179327522797
+    second: Contagion_Overlay_12
+  - first:
+      213: -2911757867077873186
+    second: Contagion_Overlay_13
+  - first:
+      213: 1154128828957128751
+    second: Contagion_Overlay_14
+  - first:
+      213: 8157847099721262688
+    second: Contagion_Overlay_15
+  - first:
+      213: 579722659630610546
+    second: Contagion_Overlay_16
+  - first:
+      213: -1029731193694234452
+    second: Contagion_Overlay_17
+  - first:
+      213: -2039496846651720397
+    second: Contagion_Overlay_18
+  - first:
+      213: -7532570945719765558
+    second: Contagion_Overlay_19
+  - first:
+      213: -7040113013072230373
+    second: Contagion_Overlay_20
+  - first:
+      213: 863220522427638762
+    second: Contagion_Overlay_21
+  - first:
+      213: -9108721683916474606
+    second: Contagion_Overlay_22
+  - first:
+      213: 4025765711635840792
+    second: Contagion_Overlay_23
+  - first:
+      213: -2593396151902742326
+    second: Contagion_Overlay_24
+  - first:
+      213: 8283157360526366821
+    second: Contagion_Overlay_25
+  - first:
+      213: -6883905075878817238
+    second: Contagion_Overlay_26
+  - first:
+      213: -2753268745484920843
+    second: Contagion_Overlay_27
+  - first:
+      213: 7837055264717015112
+    second: Contagion_Overlay_28
+  - first:
+      213: -2726370386925706778
+    second: Contagion_Overlay_29
+  - first:
+      213: 1786766335963225431
+    second: Contagion_Overlay_30
+  - first:
+      213: 4200779387745988112
+    second: Contagion_Overlay_31
+  - first:
+      213: 3578629456209095955
+    second: Contagion_Overlay_32
+  - first:
+      213: -3568069606140154639
+    second: Contagion_Overlay_33
+  - first:
+      213: -5102879058214804726
+    second: Contagion_Overlay_34
+  - first:
+      213: 4336709859230018172
+    second: Contagion_Overlay_35
+  - first:
+      213: -6310056357298880892
+    second: Contagion_Overlay_36
+  - first:
+      213: -1478193501456494484
+    second: Contagion_Overlay_37
+  - first:
+      213: 1150530955340451347
+    second: Contagion_Overlay_38
+  - first:
+      213: 5796528098387301137
+    second: Contagion_Overlay_39
+  - first:
+      213: -2646809375062934574
+    second: Contagion_Overlay_40
+  - first:
+      213: 497166715295418068
+    second: Contagion_Overlay_41
+  - first:
+      213: -7076130993580136583
+    second: Contagion_Overlay_42
+  - first:
+      213: -6000376654392078481
+    second: Contagion_Overlay_43
+  - first:
+      213: -2674310621368653989
+    second: Contagion_Overlay_44
+  - first:
+      213: -8881028366122915118
+    second: Contagion_Overlay_45
+  - first:
+      213: 1172141594038637505
+    second: Contagion_Overlay_46
+  - first:
+      213: 1330975137827980532
+    second: Contagion_Overlay_47
+  - first:
+      213: 853515136765889082
+    second: Contagion_Overlay_48
+  - first:
+      213: 2445186148060802195
+    second: Contagion_Overlay_49
+  - first:
+      213: 3628092736808322400
+    second: Contagion_Overlay_50
+  - first:
+      213: -4531834989465636781
+    second: Contagion_Overlay_51
+  - first:
+      213: 7389861612664101212
+    second: Contagion_Overlay_52
+  - first:
+      213: 145809997201834309
+    second: Contagion_Overlay_53
+  - first:
+      213: -5867682740981113671
+    second: Contagion_Overlay_54
+  - first:
+      213: 6441578304774244264
+    second: Contagion_Overlay_55
+  - first:
+      213: -6317582311342343929
+    second: Contagion_Overlay_56
+  - first:
+      213: 2808703137190134323
+    second: Contagion_Overlay_57
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Contagion_Overlay_0
+      rect:
+        serializedVersion: 2
+        x: 205
+        y: 731
+        width: 18
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f24fd9f8e385c16d0800000000000000
+      internalID: -3018440624524364753
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_1
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 694
+        width: 45
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a70f784d1f2700e40800000000000000
+      internalID: 5620618717936742522
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_2
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 662
+        width: 73
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cadc2dd9b7e1f2e70800000000000000
+      internalID: 9092519688961969580
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_3
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 478
+        width: 256
+        height: 243
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f641361f770fec100800000000000000
+      internalID: 130305837181899887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_4
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 711
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 941dee563500ffa30800000000000000
+      internalID: 4251116931453473097
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_5
+      rect:
+        serializedVersion: 2
+        x: 544
+        y: 693
+        width: 20
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 712e3131f1bc98ca0800000000000000
+      internalID: -6014052493052091881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_6
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 627
+        width: 71
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7cbd4ab227b3e9fa0800000000000000
+      internalID: -5792126709207344185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_7
+      rect:
+        serializedVersion: 2
+        x: 575
+        y: 633
+        width: 19
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06225b312a3b88410800000000000000
+      internalID: 1479629986287919712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_8
+      rect:
+        serializedVersion: 2
+        x: 588
+        y: 652
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c6afb0308e072c50800000000000000
+      internalID: 6640292119317554888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_9
+      rect:
+        serializedVersion: 2
+        x: 653
+        y: 630
+        width: 74
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c34be8975ac78d550800000000000000
+      internalID: 6185831138344219708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_10
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 604
+        width: 27
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e57f463770a90e4a0800000000000000
+      internalID: -6566078899914737826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_11
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 614
+        width: 21
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3e2a6602766dd510800000000000000
+      internalID: 1575528084569468477
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_12
+      rect:
+        serializedVersion: 2
+        x: 453
+        y: 321
+        width: 292
+        height: 294
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de75c374b7688d270800000000000000
+      internalID: 8275512179327522797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_13
+      rect:
+        serializedVersion: 2
+        x: 749
+        y: 558
+        width: 65
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed1dfd4a5ab5797d0800000000000000
+      internalID: -2911757867077873186
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_14
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 593
+        width: 21
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f28f60b1e0a440010800000000000000
+      internalID: 1154128828957128751
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_15
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 567
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06626de07be763170800000000000000
+      internalID: 8157847099721262688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_16
+      rect:
+        serializedVersion: 2
+        x: 427
+        y: 573
+        width: 17
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 278f68bffa69b0800800000000000000
+      internalID: 579722659630610546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_17
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 534
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca857b16fe8a5b1f0800000000000000
+      internalID: -1029731193694234452
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_18
+      rect:
+        serializedVersion: 2
+        x: 752
+        y: 518
+        width: 17
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33d7bc67c6042b3e0800000000000000
+      internalID: -2039496846651720397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_19
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 442
+        width: 84
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac5f1f652aee67790800000000000000
+      internalID: -7532570945719765558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_20
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 466
+        width: 19
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b188935c38e7c4e90800000000000000
+      internalID: -7040113013072230373
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_21
+      rect:
+        serializedVersion: 2
+        x: 387
+        y: 483
+        width: 37
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae3602add76cafb00800000000000000
+      internalID: 863220522427638762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_22
+      rect:
+        serializedVersion: 2
+        x: 783
+        y: 462
+        width: 48
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 217b24873e1579180800000000000000
+      internalID: -9108721683916474606
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_23
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 381
+        width: 73
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81f7007d5946ed730800000000000000
+      internalID: 4025765711635840792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_24
+      rect:
+        serializedVersion: 2
+        x: 228
+        y: 425
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac8d8f3b0f7620cd0800000000000000
+      internalID: -2593396151902742326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_25
+      rect:
+        serializedVersion: 2
+        x: 307
+        y: 376
+        width: 70
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56816dcbbbfa3f270800000000000000
+      internalID: 8283157360526366821
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_26
+      rect:
+        serializedVersion: 2
+        x: 760
+        y: 403
+        width: 31
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a221cb45ec47770a0800000000000000
+      internalID: -6883905075878817238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_27
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 385
+        width: 24
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f79f26d9ac6ac9d0800000000000000
+      internalID: -2753268745484920843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_28
+      rect:
+        serializedVersion: 2
+        x: 248
+        y: 366
+        width: 20
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8480092ad30d2cc60800000000000000
+      internalID: 7837055264717015112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_29
+      rect:
+        serializedVersion: 2
+        x: 413
+        y: 382
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e12629f39cf92ad0800000000000000
+      internalID: -2726370386925706778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_30
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 326
+        width: 70
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75dd6bf048edbc810800000000000000
+      internalID: 1786766335963225431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_31
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 339
+        width: 41
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01ee162b89a2c4a30800000000000000
+      internalID: 4200779387745988112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_32
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 98
+        width: 289
+        height: 263
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31da710b788d9a130800000000000000
+      internalID: 3578629456209095955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_33
+      rect:
+        serializedVersion: 2
+        x: 385
+        y: 354
+        width: 19
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1fce520099bab7ec0800000000000000
+      internalID: -3568069606140154639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_34
+      rect:
+        serializedVersion: 2
+        x: 403
+        y: 274
+        width: 82
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a03a353688eee29b0800000000000000
+      internalID: -5102879058214804726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_35
+      rect:
+        serializedVersion: 2
+        x: 328
+        y: 289
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7ae65dd3a61f2c30800000000000000
+      internalID: 4336709859230018172
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_36
+      rect:
+        serializedVersion: 2
+        x: 532
+        y: 219
+        width: 79
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 48e3186dc2d2e68a0800000000000000
+      internalID: -6310056357298880892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_37
+      rect:
+        serializedVersion: 2
+        x: 681
+        y: 239
+        width: 79
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c60156c97d66c7be0800000000000000
+      internalID: -1478193501456494484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_38
+      rect:
+        serializedVersion: 2
+        x: 358
+        y: 242
+        width: 36
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31e8820eec187ff00800000000000000
+      internalID: 1150530955340451347
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_39
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 254
+        width: 19
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11312fa1897617050800000000000000
+      internalID: 5796528098387301137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_40
+      rect:
+        serializedVersion: 2
+        x: 378
+        y: 167
+        width: 69
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2db333395e4a44bd0800000000000000
+      internalID: -2646809375062934574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_41
+      rect:
+        serializedVersion: 2
+        x: 481
+        y: 223
+        width: 22
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d6c4535e7a46e600800000000000000
+      internalID: 497166715295418068
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_42
+      rect:
+        serializedVersion: 2
+        x: 769
+        y: 204
+        width: 20
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 977268f2a588ccd90800000000000000
+      internalID: -7076130993580136583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_43
+      rect:
+        serializedVersion: 2
+        x: 786
+        y: 222
+        width: 22
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6fc96469316abca0800000000000000
+      internalID: -6000376654392078481
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_44
+      rect:
+        serializedVersion: 2
+        x: 526
+        y: 178
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b576442b8a0f2ead0800000000000000
+      internalID: -2674310621368653989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_45
+      rect:
+        serializedVersion: 2
+        x: 571
+        y: 46
+        width: 188
+        height: 173
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2da631531cf30c480800000000000000
+      internalID: -8881028366122915118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_46
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 85
+        width: 68
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c3122bc198444010800000000000000
+      internalID: 1172141594038637505
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_47
+      rect:
+        serializedVersion: 2
+        x: 469
+        y: 142
+        width: 37
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f40d1706d2987210800000000000000
+      internalID: 1330975137827980532
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_48
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 142
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3a8959ae7b48db00800000000000000
+      internalID: 853515136765889082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_49
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 14
+        width: 72
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39caed4b8db0fe120800000000000000
+      internalID: 2445186148060802195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_50
+      rect:
+        serializedVersion: 2
+        x: 424
+        y: 30
+        width: 91
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06582a52f13995230800000000000000
+      internalID: 3628092736808322400
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_51
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 86
+        width: 17
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 350f6387610bb11c0800000000000000
+      internalID: -4531834989465636781
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_52
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 30
+        width: 47
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c59932acbff0e8660800000000000000
+      internalID: 7389861612664101212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_53
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 46
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5418aef7b65060200800000000000000
+      internalID: 145809997201834309
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_54
+      rect:
+        serializedVersion: 2
+        x: 348
+        y: 38
+        width: 22
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9bc5129a2adc19ea0800000000000000
+      internalID: -5867682740981113671
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_55
+      rect:
+        serializedVersion: 2
+        x: 544
+        y: 37
+        width: 21
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a78ee8d655156950800000000000000
+      internalID: 6441578304774244264
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_56
+      rect:
+        serializedVersion: 2
+        x: 560
+        y: 54
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 709f52d1c507358a0800000000000000
+      internalID: -6317582311342343929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contagion_Overlay_57
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 19
+        width: 18
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3324eb34f948af620800000000000000
+      internalID: 2808703137190134323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Contagion_Overlay_0: -3018440624524364753
+      Contagion_Overlay_1: 5620618717936742522
+      Contagion_Overlay_10: -6566078899914737826
+      Contagion_Overlay_11: 1575528084569468477
+      Contagion_Overlay_12: 8275512179327522797
+      Contagion_Overlay_13: -2911757867077873186
+      Contagion_Overlay_14: 1154128828957128751
+      Contagion_Overlay_15: 8157847099721262688
+      Contagion_Overlay_16: 579722659630610546
+      Contagion_Overlay_17: -1029731193694234452
+      Contagion_Overlay_18: -2039496846651720397
+      Contagion_Overlay_19: -7532570945719765558
+      Contagion_Overlay_2: 9092519688961969580
+      Contagion_Overlay_20: -7040113013072230373
+      Contagion_Overlay_21: 863220522427638762
+      Contagion_Overlay_22: -9108721683916474606
+      Contagion_Overlay_23: 4025765711635840792
+      Contagion_Overlay_24: -2593396151902742326
+      Contagion_Overlay_25: 8283157360526366821
+      Contagion_Overlay_26: -6883905075878817238
+      Contagion_Overlay_27: -2753268745484920843
+      Contagion_Overlay_28: 7837055264717015112
+      Contagion_Overlay_29: -2726370386925706778
+      Contagion_Overlay_3: 130305837181899887
+      Contagion_Overlay_30: 1786766335963225431
+      Contagion_Overlay_31: 4200779387745988112
+      Contagion_Overlay_32: 3578629456209095955
+      Contagion_Overlay_33: -3568069606140154639
+      Contagion_Overlay_34: -5102879058214804726
+      Contagion_Overlay_35: 4336709859230018172
+      Contagion_Overlay_36: -6310056357298880892
+      Contagion_Overlay_37: -1478193501456494484
+      Contagion_Overlay_38: 1150530955340451347
+      Contagion_Overlay_39: 5796528098387301137
+      Contagion_Overlay_4: 4251116931453473097
+      Contagion_Overlay_40: -2646809375062934574
+      Contagion_Overlay_41: 497166715295418068
+      Contagion_Overlay_42: -7076130993580136583
+      Contagion_Overlay_43: -6000376654392078481
+      Contagion_Overlay_44: -2674310621368653989
+      Contagion_Overlay_45: -8881028366122915118
+      Contagion_Overlay_46: 1172141594038637505
+      Contagion_Overlay_47: 1330975137827980532
+      Contagion_Overlay_48: 853515136765889082
+      Contagion_Overlay_49: 2445186148060802195
+      Contagion_Overlay_5: -6014052493052091881
+      Contagion_Overlay_50: 3628092736808322400
+      Contagion_Overlay_51: -4531834989465636781
+      Contagion_Overlay_52: 7389861612664101212
+      Contagion_Overlay_53: 145809997201834309
+      Contagion_Overlay_54: -5867682740981113671
+      Contagion_Overlay_55: 6441578304774244264
+      Contagion_Overlay_56: -6317582311342343929
+      Contagion_Overlay_57: 2808703137190134323
+      Contagion_Overlay_6: -5792126709207344185
+      Contagion_Overlay_7: 1479629986287919712
+      Contagion_Overlay_8: 6640292119317554888
+      Contagion_Overlay_9: 6185831138344219708
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

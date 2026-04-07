@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa95fd3b1a2105b4d9181e23011ea316, type: 3}
+  m_Name: LevelModifier_Database
+  m_EditorClassIdentifier: Assembly-CSharp::LevelModifierDatabaseSO
+  modifiers:
+  - modifier: {fileID: 11400000, guid: 7536c7497647dde4398048c56c8b3e09, type: 2}
+    weight: 1
+  - modifier: {fileID: 11400000, guid: c26437c6d666f1f479dfddd9628d7bea, type: 2}
+    weight: 1
+  - modifier: {fileID: 11400000, guid: 8efe0361eea10ae408ef227d1dab2f31, type: 2}
+    weight: 1
+  - modifier: {fileID: 11400000, guid: 4144b12220f6f0f42a1f9863dec7a9a2, type: 2}
+    weight: 1
+  - modifier: {fileID: 11400000, guid: 919983cc97d619e488e91a55689e0dae, type: 2}
+    weight: 1
+  - modifier: {fileID: 11400000, guid: d8c47ceec4956bd40b3594c44640bcc8, type: 2}
+    weight: 1
+  - modifier: {fileID: 11400000, guid: da8d89f1359bf9143858a4bd10bef95b, type: 2}
+    weight: 1
+  - modifier: {fileID: 11400000, guid: 3a1eb159d022b404f8c5f16b5860ee31, type: 2}
+    weight: 1
+  - modifier: {fileID: 11400000, guid: 0bf50b0680ee070489f92f1cb76d0014, type: 2}
+    weight: 1
+  - modifier: {fileID: 11400000, guid: 67ebde621c5a89e4b8e9a6498e406ea1, type: 2}
+    weight: 1
+  - modifier: {fileID: 11400000, guid: 1c7c45102297ae6439e681700ced0c5f, type: 2}
+    weight: 1
+  - modifier: {fileID: 11400000, guid: ce1bdf867fcfee44f885c0ef4debdf45, type: 2}
+    weight: 1
+  - modifier: {fileID: 11400000, guid: eccf835889241f2469f2102f8018ae56, type: 2}
+    weight: 1
+  - modifier: {fileID: 11400000, guid: da969e3a7e283ae41802b06f71d59c66, type: 2}
+    weight: 1
+  - modifier: {fileID: 11400000, guid: c7197fb6040818f44a6b6a8b9058342b, type: 2}
+    weight: 1
+  - modifier: {fileID: 11400000, guid: 146c5091f98169e4da428a1afe219f4d, type: 2}
+    weight: 1000

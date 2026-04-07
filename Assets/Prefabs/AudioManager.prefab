@@ -68,6 +68,11 @@ MonoBehaviour:
   sfxXpDrainOrb: {fileID: 8300000, guid: 9ef1f5962c0948e409610ccf9b2901ce, type: 3}
   sfxLevelUp: {fileID: 8300000, guid: b1cbdc6b978097d49aebc2c69f20d3d2, type: 3}
   sfxMonsterDie: {fileID: 8300000, guid: fb7b322080d67a64daa251abc42133dc, type: 3}
+  sfxSlotLever: {fileID: 8300000, guid: 7d748877cda234540b441633a7498879, type: 3}
+  sfxSlotSpinLoop: {fileID: 8300000, guid: f5364dad5a34983409602c4ebbdf3ca0, type: 3}
+  sfxSlotStop: {fileID: 8300000, guid: f7aa88aed26bb524a8f3443e2c32f2d9, type: 3}
+  sfxSlotReveal: {fileID: 8300000, guid: 58df67d980004eb4383fd06921eb9b60, type: 3}
+  sfxRainLoop: {fileID: 8300000, guid: 3e2108a975a188a4c8b6e6074f7e124f, type: 3}
   EDMGameplayMusic:
   - {fileID: 8300000, guid: a02a4788845cc444b8b1e0baa846cdb5, type: 3}
   - {fileID: 8300000, guid: c7e4825b4755dd04ebe292fac9e8ba5c, type: 3}

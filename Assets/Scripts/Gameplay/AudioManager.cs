@@ -28,6 +28,15 @@ public class AudioManager : MonoBehaviour
     public AudioClip sfxLevelUp;
     public AudioClip sfxMonsterDie;
 
+    [Header("Slot Machine UI")]
+    public AudioClip sfxSlotLever;
+    public AudioClip sfxSlotSpinLoop;
+    public AudioClip sfxSlotStop;
+    public AudioClip sfxSlotReveal;
+
+    [Header("Weather Ambience")]
+    public AudioClip sfxRainLoop;
+
     [Header("Music Pools (Gameplay)")]
     public AudioClip[] EDMGameplayMusic;
     public AudioClip[] EDMBossMusic;
@@ -55,6 +64,8 @@ public class AudioManager : MonoBehaviour
     private AudioSource musicSrc;
     private AudioSource sfxSrc;
     AudioSource uiSfxSrc;
+    AudioSource uiLoopSfxSrc;
+    AudioSource ambienceLoopSrc;
     AudioSource pauseMusicSrc;
 
     public MusicMode musicMode { get; private set; } = MusicMode.Both;
@@ -87,6 +98,8 @@ public class AudioManager : MonoBehaviour
         musicSrc = gameObject.AddComponent<AudioSource>();
         sfxSrc = gameObject.AddComponent<AudioSource>();
         uiSfxSrc = gameObject.AddComponent<AudioSource>();
+        uiLoopSfxSrc = gameObject.AddComponent<AudioSource>();
+        ambienceLoopSrc = gameObject.AddComponent<AudioSource>();
         pauseMusicSrc = gameObject.AddComponent<AudioSource>();
 
         pauseMusicSrc.playOnAwake = false;
@@ -100,11 +113,24 @@ public class AudioManager : MonoBehaviour
         musicSrc.loop = false; // Change manually
         musicSrc.playOnAwake = false;
         sfxSrc.playOnAwake = false;
+
         uiSfxSrc.ignoreListenerPause = true;
         uiSfxSrc.playOnAwake = false;
         uiSfxSrc.spatialBlend = 0f;
 
+        uiLoopSfxSrc.ignoreListenerPause = true;
+        uiLoopSfxSrc.playOnAwake = false;
+        uiLoopSfxSrc.loop = true;
+        uiLoopSfxSrc.spatialBlend = 0f;
+
+        ambienceLoopSrc.ignoreListenerPause = false;
+        ambienceLoopSrc.playOnAwake = false;
+        ambienceLoopSrc.loop = true;
+        ambienceLoopSrc.spatialBlend = 0f;
+
         if (sfxGroup) uiSfxSrc.outputAudioMixerGroup = sfxGroup;
+        if (sfxGroup) uiLoopSfxSrc.outputAudioMixerGroup = sfxGroup;
+        if (sfxGroup) ambienceLoopSrc.outputAudioMixerGroup = sfxGroup;
 
         musicSrc.spatialBlend = 0f;  // 2D
         sfxSrc.spatialBlend = 0f;
@@ -192,6 +218,8 @@ public class AudioManager : MonoBehaviour
         musicSrc.volume = masterVolume * musicVolume;
         sfxSrc.volume = masterVolume * sfxVolume;
         uiSfxSrc.volume = masterVolume * sfxVolume;
+        uiLoopSfxSrc.volume = masterVolume * sfxVolume;
+        ambienceLoopSrc.volume = masterVolume * sfxVolume;
         pauseMusicSrc.volume = masterVolume * musicVolume;
 
         if (save) SettingsStore.SaveVolumes(masterVolume, musicVolume, sfxVolume);
@@ -219,8 +247,61 @@ public class AudioManager : MonoBehaviour
 
         sfxSrc.volume = masterVolume * sfxVolume;
         uiSfxSrc.volume = masterVolume * sfxVolume;
+        uiLoopSfxSrc.volume = masterVolume * sfxVolume;
+        ambienceLoopSrc.volume = masterVolume * sfxVolume;
 
         if (save) SettingsStore.SaveVolumes(masterVolume, musicVolume, sfxVolume);
+    }
+
+    public void PlayLoopingUISFX(AudioClip clip, float vol = 1f, float pitch = 1f)
+    {
+        if (!clip || !uiLoopSfxSrc) return;
+
+        if (uiLoopSfxSrc.isPlaying && uiLoopSfxSrc.clip == clip)
+            return;
+
+        uiLoopSfxSrc.Stop();
+        uiLoopSfxSrc.clip = clip;
+        uiLoopSfxSrc.loop = true;
+        uiLoopSfxSrc.pitch = Mathf.Clamp(pitch, 0.5f, 2f);
+        uiLoopSfxSrc.volume = masterVolume * sfxVolume * Mathf.Clamp01(vol);
+        uiLoopSfxSrc.Play();
+    }
+
+    public void StopLoopingUISFX()
+    {
+        if (!uiLoopSfxSrc) return;
+
+        uiLoopSfxSrc.Stop();
+        uiLoopSfxSrc.clip = null;
+        uiLoopSfxSrc.pitch = 1f;
+    }
+
+    public void PlayRainAmbience(float vol = 1f, float pitch = 1f)
+    {
+        if (!sfxRainLoop || !ambienceLoopSrc) return;
+
+        if (ambienceLoopSrc.isPlaying && ambienceLoopSrc.clip == sfxRainLoop)
+            return;
+
+        ambienceLoopSrc.Stop();
+        ambienceLoopSrc.clip = sfxRainLoop;
+        ambienceLoopSrc.loop = true;
+        ambienceLoopSrc.pitch = Mathf.Clamp(pitch, 0.5f, 2f);
+        ambienceLoopSrc.volume = masterVolume * sfxVolume * Mathf.Clamp01(vol);
+        ambienceLoopSrc.Play();
+    }
+
+    public void StopRainAmbience()
+    {
+        if (!ambienceLoopSrc) return;
+
+        if (ambienceLoopSrc.clip == sfxRainLoop)
+        {
+            ambienceLoopSrc.Stop();
+            ambienceLoopSrc.clip = null;
+            ambienceLoopSrc.pitch = 1f;
+        }
     }
 
     AudioClip PickRandom(AudioClip[] pool)
@@ -245,6 +326,35 @@ public class AudioManager : MonoBehaviour
         uiSfxSrc.pitch = Mathf.Clamp(p, 0.5f, 2f);
         uiSfxSrc.PlayOneShot(clip, vol);
         uiSfxSrc.pitch = 1f; // Reset
+    }
+
+    public void PlaySlotLever(float vol = 4f)
+    {
+        if (!sfxSlotLever) return;
+        PlayUISFX(sfxSlotLever, vol);
+    }
+
+    public void PlaySlotSpinLoop(float vol = 1f, float pitch = 1f)
+    {
+        if (!sfxSlotSpinLoop) return;
+        PlayLoopingUISFX(sfxSlotSpinLoop, vol, pitch);
+    }
+
+    public void StopSlotSpinLoop()
+    {
+        StopLoopingUISFX();
+    }
+
+    public void PlaySlotStop(float vol = 1f)
+    {
+        if (!sfxSlotStop) return;
+        PlayUISFX(sfxSlotStop, vol, pitch: 1f, jitter: false);
+    }
+
+    public void PlaySlotReveal(float vol = 1f)
+    {
+        if (!sfxSlotReveal) return;
+        PlayUISFX(sfxSlotReveal, vol);
     }
 
     public void PlayBossAbilityCast(float vol = 1f)

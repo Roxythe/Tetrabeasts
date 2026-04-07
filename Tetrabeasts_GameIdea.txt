@@ -1,71 +1,6 @@
 
+
 ****** TODO ******
-
-- Add level modifiers for normal levels
-
--- Chosen via randomized vertical spinning (like a single row of a slot machine) at the start of any designated level in castle data
-
---- Gameplay should be paused while choosing level modifier
-
---- All 3 columns should land on the same image (determined by the scriptable object for a level modifier) when a modifier is chosen at random stopping one column at a time
-
--- Example modifiers: Damage dealt and recieved is doubled for this level
-
--- Example modifiers: Overgrowth builds up over time on the lowest 3 rows first and increases the number of rows that can be affected after every 6 cells that become fully over grown
-
---- If the player has a monster unit in a cell that becomes fully overgrown, the monster unit is destroyed and unit reserve is decremented as one (counts as a unit death)
-
---- Over growth can only be destoryed by bomb/lightning special blocks. Normal row clears will not destroy overgrowth obstacles.
-
---- Overgrowth contributes no special gauge or damage during row clear calculations
-
---- Overgrowth will have 3 image components (initial creep, Partial growth, and fully formed overgrowth). Initial creep should be shown as an overlay on the cell as soon as it is designated as a target for overgrowth. Partial growth will appear after 5 seconds (changeable in inspector). Full Overgrowth will occur after 10 seconds from when the growth first starts (changeable in inspector)
-
---- Overgrowth can be destroyed while growing if the row is cleared that contains that overgrowth cell. Bombs and lightning special blocks can also destroy overgrowth while growing if used on affected cells
-
--- Example modifiers: Stormy weather with lightining strikes on the board periodically similar to boss ability. Can strike randomly in lower rows in a cross formation or individual cells dealing damage to any monster units in the affected cells. Cells hit by lightning strike should leave behind a lightning floor effect temporarily (x-x seconds set in inspector) that deals damage over time to any units that occupy the cell
-
---- I would like to add some kind of rain animation overlay (behind the grid/pieces but in front of the background image) and change the background image for the map when this level modifier is active
-
--- Example modifiers: Ambush from the rear. Every X Seconds (changable in inspector) every set piece is shifted up one row and the bottom row of the board has each cell filled with a human solider obstacle (Human knight image with shield up). These new obstacles cannot be removed or destroyed making the board slowly fill up with rows of soldiers limiting the players area to create rows of monster units
-
---- (Edge case) if an active piece has not been set and would overlap with a set (inactive) piece shifted up on the board from the human soldier row shift, move the active piece up a single row and set it in place so that it is not accidently locked in place overlapping another piece.
-
--- Example modifiers: Rations running low. Deal damage over time to all monster units proportionally based on the number of current reserve units, with a higher damage over time with more units
-
---- Deal negligible damage when current reserve units are low (less than or equal to 5)
-
--- Example modifiers: Contagion. When a piece is set (made inactive) each unit that makes up that piece has a chance of being infected with a contagious disease that deals increasing damage over time as long as the unit is on the board.
-
---- Infected damage is percentage based
-
---- Disease has a small chance to spread to other units directly touching it every few seconds (adjacent left, right, above, and below)
-
---- If a unit dies with the contagion it creates a floor effect on that cell that will infect any unit that is placed there
-
---- Any units directly adjacent (left, right, above, and below) to the contagion floor effect cell have the same chance of becoming infected as if a monster with the cantagion is occupying that cell
-
--- Example modifiers: Special Lock. Prevents the player from using their special that level and resets special gauge to 0.
-
--- Example modifiers: Units explode on death dealing damage to surrounding units (including diagonals)
-
--- Example modifiers: Swamp. Every other row has each cell filled with the poison floor effect across the entire board starting with row 2
-
--- Example modifiers: Auto rotate active piece at a consistent pace. Player can't manually rotate pieces.
-
--- Example modifiers: Auto shift active piece at a consistent pace to the right until it reashes the edge of the board, pause, and then start auto shifting one column at a time to the left. Player can't manually shift pieces left or right.
-
--- Example modifiers: Combo gated. Only attacks at combo X+ will deal full damage, other attacks deal 20% damage
-
--- Example modifiers: Combo Shield. Only attacks at combo X+ will deal full damage and will remove 1 of X shields, other attacks deal 10% damage until all shields are removed
-
--- Example modifiers: No Special pieces spawn during this level
-
--- Example modifiers: All monster units start with current health set at 50% max health
-
--- Example modifiers: Soul link. All four monster units that make up a pieces share a single health pool. If one takes damage, the other three monster units take the same damage. If one unit is healed, the other three units are healed.
-
-
 
 - Run Modifier images shown in a row on the gameplay scene
 
@@ -81,6 +16,8 @@
 
 - Play with the grid size and experiment with different grid sizes.
 
+
+
 - Monster units have different passive abilities when used on team. Upgrade every 10th level
 
 - Add cracked glass overlay and severly cracked glass overlay for unit reserve and glass cracking SFX
@@ -92,6 +29,12 @@
 - Add SFX to player character data for reduced gravity special ability
 
 - Add basic tutorial
+
+- Add Star system difficulty to main menu and rewards
+
+- Per star difficulty: 100% increase to enemy HP, 100% increase enemy damage, and increased misfortune by 20. 20% Decrease to special gauge gain. Increase exp gain by 50% 
+
+- Add reroll mechanic for level modifier selection
 
 *** KNOWN BUGS ***
 

@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcae7d88244247b6a7e32226574b936e, type: 3}
+  m_Name: Overgrowth
+  m_EditorClassIdentifier: Assembly-CSharp::LevelModifierSO
+  kind: 2
+  displayName: Overgrowth
+  description: Overgrowth has taken over the area consuming tiles and monsters. Overgrowth
+    becomes more resilent to destruction once fully grown. Defeat the enemy before
+    your army becomes mulch!
+  icon: {fileID: 21300000, guid: 77627285617ea0b4eb546860a991950c, type: 3}
+  backgroundOverrideSprite: {fileID: 21300000, guid: 18650169a22c0b14b8b3cbc3b8e211c5, type: 3}
+  enableRainOverlay: 0
+  rainDrops: 44
+  rainSpeed: 140
+  rainDropLength: 16
+  rainDropWidth: 2
+  rainAngle: -18
+  rainTint: {r: 0.85, g: 0.93, b: 1, a: 0.55}
+  dealtDamageMultiplier: 2
+  receivedDamageMultiplier: 2
+  overgrowthTargetInterval: 3.5
+  overgrowthInitialTargetRows: 3
+  overgrowthCellsPerExtraRow: 6
+  overgrowthPartialSeconds: 6
+  overgrowthFullSeconds: 12
+  overgrowthInitialSprite: {fileID: 21300000, guid: f2646a56c26fee84faa25f484e2f3897, type: 3}
+  overgrowthPartialSprite: {fileID: 21300000, guid: 512cf970532c2124c9924142e3b067c5, type: 3}
+  overgrowthFullSprite: {fileID: 21300000, guid: b43b7ccd4aebaf3408e7826e1ef6c5c0, type: 3}
+  overgrowthTint: {r: 1, g: 1, b: 1, a: 1}
+  stormStrikeIntervalMin: 5
+  stormStrikeIntervalMax: 8
+  stormTargetsMin: 1
+  stormTargetsMax: 2
+  stormCrossChance: 0.6
+  stormLowerRowsOnlyCount: 8
+  stormInitialStrikeDamage: 2
+  stormFloorTickDamage: 1
+  stormFloorTickInterval: 0.5
+  stormFloorDuration: 4
+  rearAmbushInterval: 10
+  rearAmbushSoldierSprite: {fileID: 21300000, guid: b83d91c9e2e79da41a07bee6c9bc0e03, type: 3}
+  lowRationsTickInterval: 3
+  lowRationsNegligibleReserveThreshold: 5
+  lowRationsNegligibleDamage: 0.1
+  lowRationsDamageAtMaxReserve: 1.35
+  contagionInfectionChanceOnPieceSet: 0.3
+  contagionTickInterval: 3
+  contagionPercentDamagePerTick: 0.04
+  contagionPercentIncreasePerTick: 0.02
+  contagionSpreadInterval: 4
+  contagionSpreadChance: 0.15
+  contagionUnitOverlaySprite: {fileID: 21300000, guid: f7f86d7150bd2e74b878e21500ae651d, type: 3}
+  contagionFloorSprite: {fileID: 21300000, guid: 73885b1784c4bc944aed3861777e71c5, type: 3}
+  contagionUnitTint: {r: 0.26669225, g: 0, b: 0.38679248, a: 0.60784316}
+  contagionFloorTint: {r: 0, g: 0, b: 0, a: 0.6156863}
+  deathExplosionMaxHpPercent: 0.3
+  swampPoisonDamage: 1
+  swampPoisonInterval: 1
+  swampPoisonTicks: -1
+  autoRotateInterval: 0.75
+  autoShiftInterval: 0.4
+  autoShiftEdgePauseSeconds: 0.6
+  comboThreshold: 3
+  comboBelowThresholdDamageMultiplier: 0.2
+  comboShieldThreshold: 4
+  comboShieldCount: 3
+  comboShieldBlockedDamageMultiplier: 0.1
+  startingHealthFraction: 0.5

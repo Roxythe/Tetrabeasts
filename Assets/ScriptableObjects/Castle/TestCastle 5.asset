@@ -58,6 +58,9 @@ MonoBehaviour:
   overridePoisonCount: -1
   overrideFireCount: -1
   overrideSpikeCount: -1
+  enableLevelModifierSelection: 0
+  levelModifierDatabase: {fileID: 11400000, guid: cf975b393a28f7643ad5e410f648b770, type: 2}
+  allowedLevelModifierKinds: 
   bossEnableRowBlast: 1
   bossEnableFullBoardBlast: 0
   bossEnableLightningStrike: 1

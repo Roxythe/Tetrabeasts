@@ -10,6 +10,7 @@ public sealed class ComboFireFX : MonoBehaviour
     [SerializeField] private float baseScale = 1.0f;
     [SerializeField] private float scalePerCombo = 0.06f;
     [SerializeField, Min(0)] private int showAtCombo = 2;
+    [SerializeField] private float maxScale = 2.5f;
 
     [Header("Color Flicker")]
     [SerializeField] private float baseColorFlickerSpeed = 2.0f;
@@ -90,6 +91,7 @@ public sealed class ComboFireFX : MonoBehaviour
 
         int effective = Mathf.Max(0, _combo - showAtCombo);
         float s = baseScale + (effective * scalePerCombo);
+        s = Mathf.Min(s, Mathf.Max(baseScale, maxScale));
 
         root.localScale = new Vector3(s, s, 1f);
         root.localRotation = Quaternion.identity;

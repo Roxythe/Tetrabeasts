@@ -26,7 +26,7 @@ public class Piece : MonoBehaviour
     readonly List<RectTransform> visuals = new();
     readonly List<MonsterData> monstersForCells = new();
     readonly List<RectTransform> hintOverlays = new();
-    static readonly Color hintColor = new Color(1f, 0f, 0f, 0.25f); // Light red
+    static readonly Color hintColor = new Color(1f, 0f, 0f, 0.5f); // Light red
 
     float fallTimer = 0f, lockTimer;
 
@@ -75,31 +75,37 @@ public class Piece : MonoBehaviour
     {
         // Pause check
         var gc = FindFirstObjectByType<GameController>();
-        if (gc != null && gc.IsPaused)
+        if (gc != null && gc.IsGameplaySuspended)
             return;
+
+        bool blockHorizontal = gc != null && gc.levelModifierController && gc.levelModifierController.BlocksManualHorizontalShift;
+        bool blockRotation = gc != null && gc.levelModifierController && gc.levelModifierController.BlocksManualRotation;
 
         // Input handling
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
-        if (Keyboard.current.leftArrowKey.wasPressedThisFrame)  TryMove(Vector2Int.left);
-        if (Keyboard.current.rightArrowKey.wasPressedThisFrame) TryMove(Vector2Int.right);
+        if (!blockHorizontal && Keyboard.current.leftArrowKey.wasPressedThisFrame)  TryMove(Vector2Int.left);
+        if (!blockHorizontal && Keyboard.current.rightArrowKey.wasPressedThisFrame) TryMove(Vector2Int.right);
         if (Keyboard.current.downArrowKey.wasPressedThisFrame)  SoftDrop();
-        if (Keyboard.current.upArrowKey.wasPressedThisFrame)    RotateCW();
-        if (Keyboard.current.zKey.wasPressedThisFrame)          RotateCCW();
+        if (!blockRotation && Keyboard.current.upArrowKey.wasPressedThisFrame)    RotateCW();
+        if (!blockRotation && Keyboard.current.zKey.wasPressedThisFrame)          RotateCCW();
         if (Keyboard.current.spaceKey.wasPressedThisFrame)      HardDrop();
 #else
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) TryMove(Vector2Int.left);
-        if (Input.GetKeyDown(KeyCode.RightArrow)) TryMove(Vector2Int.right);
+        if (!blockHorizontal && Input.GetKeyDown(KeyCode.LeftArrow)) TryMove(Vector2Int.left);
+        if (!blockHorizontal && Input.GetKeyDown(KeyCode.RightArrow)) TryMove(Vector2Int.right);
         if (Input.GetKeyDown(KeyCode.DownArrow)) SoftDrop();
-        if (Input.GetKeyDown(KeyCode.UpArrow)) RotateCW();
+        if (!blockRotation && Input.GetKeyDown(KeyCode.UpArrow)) RotateCW();
 
-        if (Input.GetKeyDown(KeyCode.A)) TryMove(Vector2Int.left);
-        if (Input.GetKeyDown(KeyCode.D)) TryMove(Vector2Int.right);
+        if (!blockHorizontal && Input.GetKeyDown(KeyCode.A)) TryMove(Vector2Int.left);
+        if (!blockHorizontal && Input.GetKeyDown(KeyCode.D)) TryMove(Vector2Int.right);
         if (Input.GetKeyDown(KeyCode.S)) SoftDrop();
 
-        if (Input.GetKeyDown(KeyCode.E)) RotateCW();
-        if (Input.GetKeyDown(KeyCode.Q)) RotateCCW();
+        if (!blockRotation && Input.GetKeyDown(KeyCode.E)) RotateCW();
+        if (!blockRotation && Input.GetKeyDown(KeyCode.Q)) RotateCCW();
         if (Input.GetKeyDown(KeyCode.Space)) HardDrop();
 #endif
+
+        if (gc != null && gc.levelModifierController)
+            gc.levelModifierController.HandlePieceAutomation(this, Time.deltaTime);
 
         if (cells.Count == 0 || visuals.Count == 0)
         {
@@ -496,9 +502,12 @@ public class Piece : MonoBehaviour
             placed.anchoredPosition = board.CellToAnchoredPos(cells[i]);
             board.Place(cells[i], placed);
             board.SetMonsterAt(cells[i], new Board.MonsterInstance(md));
-
-            board.ApplyFloorEffectOnPlacement(cells[i]); // Apply any floor effects on the cell as the piece locks in, which may damage or heal the monster just placed
         }
+
+        gc?.levelModifierController?.OnNormalPiecePlaced(cells);
+
+        for (int i = 0; i < cells.Count; i++)
+            board.ApplyFloorEffectOnPlacement(cells[i]); // Apply any floor effects on the cell as the piece locks in, which may damage or heal the monster just placed
 
         foreach (var v in visuals)
 
@@ -547,6 +556,45 @@ public class Piece : MonoBehaviour
         cells.Clear();
         fallTimer = 0f;
         lockTimer = 0f;
+    }
+
+    public bool HasActiveCells => enabled && cells.Count > 0;
+
+    public bool TryTranslate(Vector2Int delta, bool resetLockTimer)
+    {
+        bool moved = TryMove(delta);
+        if (moved && resetLockTimer)
+            lockTimer = 0f;
+
+        return moved;
+    }
+
+    public void RotateClockwiseExternal()
+    {
+        RotateCW();
+    }
+
+    public void ForceLockImmediate()
+    {
+        Lock();
+    }
+
+    public bool OverlapsPlacedCells()
+    {
+        for (int i = 0; i < cells.Count; i++)
+        {
+            Vector2Int cell = cells[i];
+            if (cell.y >= board.height)
+                continue;
+
+            if (cell.y < 0)
+                return true;
+
+            if (!board.IsFree(cell))
+                return true;
+        }
+
+        return false;
     }
 
     public void SetMonsters(MonsterData[] arr)
@@ -763,6 +811,14 @@ public class Piece : MonoBehaviour
         if (!md) return null;
         int skin = MonsterSkinStore.GetValidSelected(md);
         return MonsterSkinStore.GetPortrait(md, skin);
+    }
+
+    public void RefreshVisualsExternal()
+    {
+        if (cells.Count == 0)
+            return;
+
+        SyncVisuals();
     }
 
 }

@@ -42,6 +42,9 @@ public class GameController : MonoBehaviour
     [Header("Round Win Audio")]
     public AudioClip roundWinClip;
 
+    [Header("Victory Flow")]
+    [SerializeField] float victorySequenceDelaySeconds = 0.25f;
+
     [Header("Gravity UI")]
     [SerializeField] TMP_Text levelTimerText;
     [SerializeField] TMP_Text gravityText; // Displays current fall interval / speed
@@ -314,6 +317,7 @@ public class GameController : MonoBehaviour
     public float comboWindowSeconds = 10f;
     int _comboCount = 0;
     float _comboTimer = 0f;
+    float comboDamMult = 0.05f; // 5% per combo count (e.g. 20 combo = +100% damage)
 
     [Header("Level Performance Tracking - Bonus XP")]
     int _maxComboThisLevel = 0;
@@ -328,9 +332,14 @@ public class GameController : MonoBehaviour
     public HighScoreUI highScoreUI;
     [SerializeField] XpAwardUI xpAwardUI;
     public TMP_Text levelText;
+    [HideInInspector] public LevelModifierController levelModifierController;
+    bool _levelStartBlocked = false;
 
     public int CurrentLevel => currentLevel;
-    public bool IsRoundActive => !isPaused && !gameOver && !levelWon;
+    public int CurrentReserveUnits => unitLives;
+    public int MaxReserveUnits => EffectiveMaxUnitLives;
+    public bool IsGameplaySuspended => isPaused || _levelStartBlocked || (levelModifierController && levelModifierController.IsSelectionRunning);
+    public bool IsRoundActive => !IsGameplaySuspended && !gameOver && !levelWon;
 
     private CastleData currentCastleData;
 
@@ -391,6 +400,8 @@ public class GameController : MonoBehaviour
 
         if (!gameBoard) gameBoard = FindFirstObjectByType<Board>();
         if (!piece) piece = GetComponent<Piece>();
+        if (!levelModifierController) levelModifierController = GetComponent<LevelModifierController>();
+        if (!levelModifierController) levelModifierController = gameObject.AddComponent<LevelModifierController>();
 
         if (!obstacleManager)
             obstacleManager = FindFirstObjectByType<ObstacleManager>(FindObjectsInactive.Include);
@@ -518,10 +529,7 @@ public class GameController : MonoBehaviour
 
         if (volumePanelInPause) volumePanelInPause.pauseWhenOpen = false;
 
-        if (bag.Count == 0) RefillBag();
-        EnsureMinBag(3);
-        ShowNextPreview();
-        SpawnNextPiece();
+        StartCoroutine(BeginCurrentLevelSequence());
 
         score = 0;
         if (scoreUI) scoreUI.Set(score);
@@ -591,7 +599,7 @@ public class GameController : MonoBehaviour
         }
 
         // Periodic castle projectile
-        if (!gameOver && !levelWon && gameBoard)
+        if (IsRoundActive && gameBoard)
         {
             _castleAttackTimer += Time.deltaTime;
             if (_castleAttackTimer >= castleAttackInterval)
@@ -602,7 +610,7 @@ public class GameController : MonoBehaviour
         }
 
         // Boss abilities loop
-        if (!isPaused && !gameOver && !levelWon && gameBoard && _castleData != null && _castleData.isBossLevel)
+        if (IsRoundActive && gameBoard && _castleData != null && _castleData.isBossLevel)
         {
             _bossAbilityTimer += Time.deltaTime;
             if (_bossAbilityTimer >= _bossNextAbilityAt)
@@ -614,7 +622,7 @@ public class GameController : MonoBehaviour
         }
 
         // Level timer and fall speed ramp 
-        if (!isPaused && !gameOver && !levelWon)
+        if (IsRoundActive)
         {
             _levelTimer += Time.deltaTime;
             UpdateLevelTimerUI();
@@ -656,7 +664,7 @@ public class GameController : MonoBehaviour
         }
 
         // Combo timer (clearing another row resets this timer)
-        if (!isPaused && !gameOver && !levelWon && _comboCount > 0)
+        if (IsRoundActive && _comboCount > 0)
         {
             _comboTimer -= Time.deltaTime;
             if (_comboTimer <= 0f)
@@ -664,7 +672,7 @@ public class GameController : MonoBehaviour
         }
 
         // Boss shield state
-        if (!isPaused && IsRoundActive && gameBoard)
+        if (IsRoundActive && gameBoard)
             RefreshPylonShieldState();
     }
 
@@ -744,7 +752,7 @@ public class GameController : MonoBehaviour
             nextPreview.SyncBorderToImmunity(immunityActive, gameBoard.immuneBorderColor, gameBoard.normalBorderColor);
     }
 
-    public bool CanSpawnNewPiece() => !gameOver && !levelWon;
+    public bool CanSpawnNewPiece() => !gameOver && !levelWon && !_levelStartBlocked;
 
     public void SpawnNextPiece()
     {
@@ -785,6 +793,26 @@ public class GameController : MonoBehaviour
         // Keep bags topped and refresh preview after consuming one
         EnsureMinBag(3);
         ShowNextPreview();
+    }
+
+    IEnumerator BeginCurrentLevelSequence()
+    {
+        _levelStartBlocked = true;
+
+        bag.Clear();
+        monstersBag.Clear();
+
+        if (levelModifierController)
+            yield return levelModifierController.BeginLevel(currentCastleData);
+
+        RefillBag();
+        EnsureMinBag(3);
+        ShowNextPreview();
+
+        _levelStartBlocked = false;
+
+        if (CanSpawnNewPiece())
+            SpawnNextPiece();
     }
 
     public void GameOver()
@@ -851,7 +879,7 @@ public class GameController : MonoBehaviour
             return;
         }
 
-        // Fisher–Yates shuffle
+        // Fisher Yates shuffle
         for (int i = normals.Count - 1; i > 0; i--)
         {
             int j = Random.Range(0, i + 1);
@@ -876,7 +904,9 @@ public class GameController : MonoBehaviour
             TetrominoData use = d;
 
             // Chance to swap in a special block
-            if (specialsAvailable && Random.value < chance)
+            if (specialsAvailable &&
+                !(levelModifierController && levelModifierController.BlocksSpecialPieceSpawns) &&
+                Random.value < chance)
             {
                 float r = Random.Range(0f, specialTotal);
                 for (int k = 0; k < specialBlocks.Length; k++)
@@ -908,7 +938,10 @@ public class GameController : MonoBehaviour
         }
 
         // Guarantee at least one special per refill batch
-        if (forceOneSpecialPerRefill && specialsAvailable && specialsAddedThisRefill == 0)
+        if (forceOneSpecialPerRefill &&
+            specialsAvailable &&
+            specialsAddedThisRefill == 0 &&
+            !(levelModifierController && levelModifierController.BlocksSpecialPieceSpawns))
         {
             // Append one extra special at end of queues
             float r = Random.Range(0f, specialTotal);
@@ -940,11 +973,16 @@ public class GameController : MonoBehaviour
             PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.TotalRowClears, rowsCleared);
 
         // Special gauge
+        if (levelModifierController)
+            specialChargeFromMonsters = levelModifierController.ModifySpecialGaugeGain(specialChargeFromMonsters);
+
         if (specialChargeFromMonsters > 0f)
         {
             specialGauge = Mathf.Min(specialGaugeMax, specialGauge + specialChargeFromMonsters);
             UpdateSpecialUI();
         }
+
+        levelModifierController?.OnRowsResolved(rowDamage);
 
         // Chance-based currency drops
         if (rowsCleared > 0)
@@ -1089,6 +1127,9 @@ public class GameController : MonoBehaviour
         float comboMult = GetComboDamageMultiplier(combo);
         int finalDamage = Mathf.RoundToInt(afterBuffs * comboMult);
 
+        if (levelModifierController)
+            finalDamage = levelModifierController.ModifyOutgoingDamage(finalDamage, combo);
+
         if (logRowDamageBreakdown)
         {
             int buffBonus = afterBuffs - baseRow;
@@ -1129,7 +1170,7 @@ public class GameController : MonoBehaviour
 
     float GetComboDamageMultiplier(int combo)
     {
-        float mult = 1f + (Mathf.Max(0, combo - 1) * 0.05f); // Increase damage by 5% per combo step after the first
+        float mult = 1f + (Mathf.Max(0, combo - 1) * comboDamMult); // Increase damage by 5% per combo step after the first
         return Mathf.Min(2f, mult);
     }
 
@@ -1222,6 +1263,11 @@ public class GameController : MonoBehaviour
         if (gameOver || levelWon) return;
         levelWon = true;
 
+        StartCoroutine(CoHandleCastleDestroyedVictory());
+    }
+
+    IEnumerator CoHandleCastleDestroyedVictory()
+    {
         if (AudioManager.I)
         {
             AudioManager.I.StopLevelMusic();
@@ -1230,11 +1276,15 @@ public class GameController : MonoBehaviour
                 AudioManager.I.PlaySFX(roundWinClip);
         }
 
-        if (nextPreview) nextPreview.ClearPreview();
+        if (nextPreview)
+            nextPreview.ClearPreview();
+
+        float delay = Mathf.Max(0f, victorySequenceDelaySeconds);
+        if (delay > 0f)
+            yield return new WaitForSeconds(delay);
 
         int completedLevelNumber = currentLevel + 1;
 
-        // Calculate XP now, but grant via UI
         var roster = GetActiveMonsterRoster();
         var computed = ComputeRoundWinXp(completedLevelNumber);
 
@@ -1247,18 +1297,18 @@ public class GameController : MonoBehaviour
         {
             OpenXpUiMode();
 
-            if (AudioManager.I) AudioManager.I.PlayIntermissionWinMusic();
+            if (AudioManager.I)
+                AudioManager.I.PlayIntermissionWinMusic();
 
             xpAwardUI.ShowRoundWin(computed.breakdown, roster, computed.perMonsterAwardXp, () =>
-                {
-                    CloseXpUiMode();
-                    ContinueToRewards();
-                });
+            {
+                CloseXpUiMode();
+                ContinueToRewards();
+            });
 
-            return;
+            yield break;
         }
 
-        // Grant immediately if UI missing
         foreach (var kv in computed.perMonsterAwardXp)
             RunMonsterProgress.AddRunXp(kv.Key, kv.Value);
 
@@ -1410,17 +1460,11 @@ public class GameController : MonoBehaviour
 
         if (battleLog) battleLog.Clear();
 
-        bag.Clear();
-        monstersBag.Clear();
-        RefillBag();
-        EnsureMinBag(3);
-        ShowNextPreview();
-        SpawnNextPiece();
-
         EnterGameplayCursorMode();
 
         levelWon = false; // re-arm
         if (roundRewardUI) roundRewardUI.Hide();
+        StartCoroutine(BeginCurrentLevelSequence());
     }
 
     void EndRunAsWin()
@@ -1499,6 +1543,11 @@ public class GameController : MonoBehaviour
     void ActivateSpecial()
     {
         if (gameOver || gameBoard == null || selectedCharacter == null) return;
+        if (levelModifierController && levelModifierController.BlocksSpecialUsage)
+        {
+            SetSpecialGaugeImmediate(0f);
+            return;
+        }
 
         if (specialGauge < specialGaugeMax) return; // Require full gauge
 
@@ -1782,6 +1831,12 @@ public class GameController : MonoBehaviour
         if (activateSpecialGaugeText) activateSpecialGaugeText.gameObject.SetActive(full);
     }
 
+    public void SetSpecialGaugeImmediate(float value)
+    {
+        specialGauge = Mathf.Clamp(value, 0f, specialGaugeMax);
+        UpdateSpecialUI();
+    }
+
     void SpawnAttackProjectile(Sprite sprite, Sprite altSprite, AttackAnimType animType,
                                Vector2 startAnchored, Vector2 targetAnchored, int damage, MonsterData attackerMD)
     {
@@ -1920,6 +1975,8 @@ public class GameController : MonoBehaviour
                 battleLog.LogCastleHit(attackerName, damage, pylonsReduced);
             }
 
+            levelModifierController?.OnCastleProjectileImpact();
+
             enemyCastleUI.ApplyDamage(damage);
 
             if (enemyCastleUI.currentHP <= 0 && !winQueued)
@@ -2039,7 +2096,7 @@ public class GameController : MonoBehaviour
 
             if (gameBoard.TryGetMonster(c, out var inst) && inst.data && inst.hp > 0f)
             { hitCell = c; break; }
-            // else: dead tile — projectile should pass through
+            // else: dead tile ï¿½ projectile should pass through
         }
 
         // Compute start/end positions in board/grid space
@@ -2201,7 +2258,7 @@ public class GameController : MonoBehaviour
 
     public void PauseGame()
     {
-        if (gameOver || levelWon) return;
+        if (gameOver || levelWon || _levelStartBlocked) return;
         isPaused = true;
         Time.timeScale = 0f;
         AudioListener.pause = true;  // Pause SFX/music globally
@@ -2298,15 +2355,8 @@ public class GameController : MonoBehaviour
         if (highScoreUI) highScoreUI.Hide(); // Close high-score panel if it was open
 
         // Reset bag and preview
-        bag.Clear();
-        monstersBag.Clear();
-        RefillBag();
-        EnsureMinBag(2);
-        ShowNextPreview();
-        SpawnNextPiece(); // Spawn fresh piece
+        StartCoroutine(BeginCurrentLevelSequence());
         if (restartButton) restartButton.gameObject.SetActive(true);
-        if (currentCastleData && AudioManager.I)
-            AudioManager.I.PlayLevelMusic(currentCastleData.isBossLevel);
     }
 
     public void ResumeGame()
@@ -2636,6 +2686,8 @@ public class GameController : MonoBehaviour
         if (battleLog && data)
             battleLog.LogDeath(data.name);
 
+        levelModifierController?.OnTileDied(cell, data);
+
         if (gameOver) return;
 
         // Death SFX
@@ -2654,6 +2706,8 @@ public class GameController : MonoBehaviour
 
     void OnBoardTileDamaged(Vector2Int cell, MonsterData data, float amount, Board.DamageSource src)
     {
+        levelModifierController?.OnTileDamaged(cell, data, amount, src);
+
         if (!battleLog || !data) return;
 
         int v = Mathf.RoundToInt(Mathf.Max(0f, amount));
@@ -2676,6 +2730,8 @@ public class GameController : MonoBehaviour
 
     void OnBoardTileHealed(Vector2Int cell, MonsterData target, MonsterData source, float amount)
     {
+        levelModifierController?.OnTileHealed(cell, target, source, amount);
+
         if (!battleLog || !target || !source) return;
 
         int v = Mathf.RoundToInt(Mathf.Max(0f, amount));
@@ -2713,7 +2769,7 @@ public class GameController : MonoBehaviour
                 break;
 
             case Board.DamageSource.CastleProjectile:
-                // This is your “Enemy archer” wording request.
+
                 fromLabel = "Enemy Archer";
                 break;
 
@@ -2723,6 +2779,27 @@ public class GameController : MonoBehaviour
 
             case Board.DamageSource.MagicExplosive:
                 fromLabel = "Magic Explosive";
+                break;
+
+            case Board.DamageSource.Overgrowth:
+                fromLabel = "Overgrowth";
+                break;
+
+            case Board.DamageSource.Contagion:
+                damageTypeWord = "contagion";
+                fromLabel = "infection";
+                break;
+
+            case Board.DamageSource.Rations:
+                fromLabel = "low rations";
+                break;
+
+            case Board.DamageSource.DeathExplosion:
+                fromLabel = "death burst";
+                break;
+
+            case Board.DamageSource.RearAmbush:
+                fromLabel = "rear ambush";
                 break;
 
             default:
