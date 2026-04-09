@@ -21644,6 +21644,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: XPMonsterRow_Prefab
       objectReference: {fileID: 0}
+    - target: {fileID: 8782758919340130495, guid: bc0ffb396bdbb75468db3e565db1b0ed, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

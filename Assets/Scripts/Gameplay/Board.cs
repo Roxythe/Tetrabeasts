@@ -814,6 +814,9 @@ public class Board : MonoBehaviour
         if (_gc && _gc.levelModifierController)
             amount = _gc.levelModifierController.ModifyIncomingDamage(cell, inst.data, amount, src);
 
+        if (_gc)
+            amount *= _gc.AllyMonsterDamageTakenMultiplier;
+
         amount = Mathf.Max(0f, amount);
         inst.hp = Mathf.Max(0f, inst.hp - amount);
         monsters[cell] = inst;

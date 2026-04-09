@@ -21,6 +21,9 @@ public class MonsterSelectUI : MonoBehaviour
     public Button startButton;
     public CurrencyUI currencyUI;
 
+    [Header("Preview Toggle")]
+    public Button previewToggleButton;
+
     [Header("Monster Button Portrait")]
     public string portraitImageChildName = "MonsterIcon_Image";
 
@@ -40,14 +43,14 @@ public class MonsterSelectUI : MonoBehaviour
     [Range(0f, 1f)] public float deselectedBannerMultiplier = 0.9f;
 
     MonsterData previewMonster;
-    int previewSkinIndex = 0; // The skin currently being previewed (can be locked)
+    int previewSkinIndex = 0;
+    bool showPreviewDescription = true;
 
     [Header("Preview Unlock UI")]
     public Button previewUnlockButton;
     public TMP_Text previewUnlockCostText;
-    public GameObject previewLockedImage; // Overlay to show "locked"
+    public GameObject previewLockedImage;
 
-    // Runtime
     readonly Dictionary<MonsterData, Button> buttons = new();
     readonly HashSet<MonsterData> selected = new();
 
@@ -62,6 +65,13 @@ public class MonsterSelectUI : MonoBehaviour
 
     void Awake()
     {
+        if (previewToggleButton)
+        {
+            previewToggleButton.onClick.RemoveAllListeners();
+            previewToggleButton.onClick.AddListener(TogglePreviewText);
+        }
+
+        ApplyPreviewTextVisibility();
         BuildList();
 
         var resolved = SelectedMonstersStore.ResolveFromRoster(roster);
@@ -88,6 +98,21 @@ public class MonsterSelectUI : MonoBehaviour
         RefreshAllUI();
     }
 
+    void TogglePreviewText()
+    {
+        showPreviewDescription = !showPreviewDescription;
+        ApplyPreviewTextVisibility();
+    }
+
+    void ApplyPreviewTextVisibility()
+    {
+        if (previewDescriptionText)
+            previewDescriptionText.gameObject.SetActive(showPreviewDescription);
+
+        if (previewStatsText)
+            previewStatsText.gameObject.SetActive(!showPreviewDescription);
+    }
+
     void BuildList()
     {
         for (int i = listParent.childCount - 1; i >= 0; i--)
@@ -109,7 +134,6 @@ public class MonsterSelectUI : MonoBehaviour
                 if (view.nameShadowText) view.nameShadowText.text = md.monsterName;
             }
 
-            // If unlocked, show committed valid skin. If locked, show default (0)
             bool monsterUnlocked = UnlockStore.IsUnlocked(md);
             int displaySkin = monsterUnlocked ? MonsterSkinStore.GetValidSelected(md) : 0;
 
@@ -126,18 +150,16 @@ public class MonsterSelectUI : MonoBehaviour
             var captured = md;
             ApplyBanner(btn, md);
 
-            // Always preview on click
             btn.interactable = true;
             btn.onClick.AddListener(() =>
             {
                 previewMonster = captured;
 
-                // If locked, default preview skin 0. If unlocked, use committed valid skin
                 previewSkinIndex = UnlockStore.IsUnlocked(captured)
                     ? MonsterSkinStore.GetValidSelected(captured)
                     : 0;
 
-                ShowPreview(captured, previewSkinIndex); // Always show preview
+                ShowPreview(captured, previewSkinIndex);
 
                 if (!UnlockStore.IsUnlocked(captured))
                 {
@@ -148,9 +170,8 @@ public class MonsterSelectUI : MonoBehaviour
                 ToggleSelect(captured);
             });
 
-            // Set cost text
             var costTextT = unlockBtnT ? FindDeep(unlockBtnT, "Cur_Text (TMP)") : null;
-            var costText = costTextT ? costTextT.GetComponent<TMPro.TMP_Text>() : null;
+            var costText = costTextT ? costTextT.GetComponent<TMP_Text>() : null;
             if (costText) costText.text = $"x{md.unlockCost}";
 
             if (unlockBtn)
@@ -170,7 +191,6 @@ public class MonsterSelectUI : MonoBehaviour
                     bool wasLocked = !UnlockStore.IsUnlocked(md);
                     UnlockStore.Unlock(md);
 
-                    // If this is the first time unlocking any monster, unlock the related achievement 
                     if (wasLocked && PlayerProgress.I)
                     {
                         PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.MonstersUnlocked, 1);
@@ -184,7 +204,6 @@ public class MonsterSelectUI : MonoBehaviour
                     unlockBtnT.gameObject.SetActive(false);
                     btn.interactable = true;
 
-                    // After unlocking, refresh portrait + preview stays on this monster
                     previewMonster = md;
                     previewSkinIndex = MonsterSkinStore.GetValidSelected(md);
                     RefreshAllUI();
@@ -192,7 +211,6 @@ public class MonsterSelectUI : MonoBehaviour
                 });
             }
 
-            // Hover SFX
             var evt = btn.gameObject.AddComponent<UnityEngine.EventSystems.EventTrigger>();
             var enter = new UnityEngine.EventSystems.EventTrigger.Entry
             {
@@ -332,6 +350,8 @@ public class MonsterSelectUI : MonoBehaviour
         else
             ShowPreview(GetAnySelected());
 
+        ApplyPreviewTextVisibility();
+
         foreach (var kv in buttons)
         {
             var view = kv.Value.GetComponent<MonsterButtonView>();
@@ -360,7 +380,7 @@ public class MonsterSelectUI : MonoBehaviour
 
         if (view.levelBg)
         {
-            view.levelBg.SetActive(view.LevelBgDefaultActive && unlocked); // Respect prefab default
+            view.levelBg.SetActive(view.LevelBgDefaultActive && unlocked);
         }
 
         string s = unlocked ? $"{lvl}" : "";
@@ -408,13 +428,27 @@ public class MonsterSelectUI : MonoBehaviour
             previewNameText.text = unlocked ? $"{md.monsterName}  Lv.{lvl}" : md.monsterName;
         }
 
-        if (previewDescriptionText) previewDescriptionText.text = md.monsterDescription;
+        if (previewDescriptionText)
+            previewDescriptionText.text = BuildPreviewDescription(md);
 
-        // Show effective stats (base + shop buffs)
-        if (previewStatsText) previewStatsText.text = BuildPreviewStatsString(md);
+        if (previewStatsText)
+            previewStatsText.text = BuildPreviewStatsString(md);
 
+        ApplyPreviewTextVisibility();
         SetupPreviewUnlockUI(md, skinIdx);
+    }
 
+    string BuildPreviewDescription(MonsterData md)
+    {
+        if (!md) return "";
+
+        int lvl = MonsterProgressStore.GetPermanentLevel(md.monsterName);
+        string passiveBlock = MonsterPassiveSystem.GetPassivePreviewBlock(md, lvl);
+
+        if (string.IsNullOrEmpty(passiveBlock))
+            return md.monsterDescription;
+
+        return $"{md.monsterDescription}\n\n{passiveBlock}";
     }
 
     string BuildPreviewStatsString(MonsterData md)
@@ -477,6 +511,7 @@ public class MonsterSelectUI : MonoBehaviour
         if (previewNameText) previewNameText.text = "";
         if (previewDescriptionText) previewDescriptionText.text = "";
         if (previewStatsText) previewStatsText.text = "";
+        ApplyPreviewTextVisibility();
     }
 
     void SetButtonHighlight(Button btn, bool on)
@@ -558,12 +593,10 @@ public class MonsterSelectUI : MonoBehaviour
             b.onClick.RemoveAllListeners();
             b.onClick.AddListener(() =>
             {
-                // Allow preview even if monster is locked
                 previewMonster = md;
                 previewSkinIndex = idx;
                 ShowPreview(md, idx);
 
-                // Only allow selection if both monster and skin are unlocked
                 if (UnlockStore.IsUnlocked(md) && MonsterSkinStore.IsUnlocked(md, idx))
                 {
                     MonsterSkinStore.SetSelectedAndLastValid(md, idx);
@@ -602,7 +635,6 @@ public class MonsterSelectUI : MonoBehaviour
 
     void SetupPreviewUnlockUI(MonsterData md, int skinIdx)
     {
-        // If the monster itself is locked allow preview, but do not allow buying skins here
         if (!UnlockStore.IsUnlocked(md))
         {
             if (previewUnlockButton) previewUnlockButton.gameObject.SetActive(false);
@@ -638,7 +670,6 @@ public class MonsterSelectUI : MonoBehaviour
             bool wasUnlocked = MonsterSkinStore.IsUnlocked(md, skinIdx);
             MonsterSkinStore.Unlock(md, skinIdx);
 
-            // If this is the first time unlocking this skin, unlock the related achievement stats
             if (!wasUnlocked && PlayerProgress.I)
             {
                 PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.SkinsUnlocked, 1);

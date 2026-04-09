@@ -290,7 +290,12 @@ public class GameController : MonoBehaviour
     public float PlayerMonsterAttackMult => _playerDoubleStatsAttackMult; // Exposed for monster damage calculations
 
     // =========== Shop Buff Effective Values ===========
-    int EffectiveMaxUnitLives => maxUnitLives + ShopBuffEffects.UnitLivesBonus; // Unit Lives Up: +2 per level
+    int EffectiveMaxUnitLives => maxUnitLives + ShopBuffEffects.UnitLivesBonus + _partyPassiveBonuses.startingReserveUnits;
+    float CurrentComboWindowSeconds => comboWindowSeconds + _partyPassiveBonuses.comboDurationSeconds;
+    float CurrentStoneBuffDropChance => Mathf.Clamp01(stoneBuffDropChance + _partyPassiveBonuses.stoneBuffDropChance);
+    int CurrentReinforcementsPerWin => Mathf.Max(0, reinforcementsPerWin + _partyPassiveBonuses.reserveUnitsRestoredOnWin);
+    float AllyMonsterOutgoingDamageMultiplier => Mathf.Max(0f, 1f - _partyPassiveBonuses.allyMonsterDamageDoneReduction);
+    public float AllyMonsterDamageTakenMultiplier => Mathf.Max(0f, 1f - _partyPassiveBonuses.allyMonsterDamageTakenReduction);
 
     float EffectivePieceGravityMult =>
     Mathf.Max(0.01f, pieceGravityMult) *
@@ -324,6 +329,7 @@ public class GameController : MonoBehaviour
     int _obstaclesDestroyedThisLevel = 0;
     int _levelStartMaxLives = 0;
     int _levelStartReserveUnits = 0;
+    MonsterPassiveBonuses _partyPassiveBonuses;
 
     [Header("Debug")]
     public bool logRowDamageBreakdown = true;
@@ -417,10 +423,6 @@ public class GameController : MonoBehaviour
 
         _level1FallInterval = startFallInterval; // Cache initial value
 
-        // Initialize unit lives
-        unitLives = EffectiveMaxUnitLives;
-        SetupUnitLivesUI();
-
         if (gameBoard != null)
         {
             gameBoard.TileDied -= OnBoardTileDied;
@@ -494,6 +496,10 @@ public class GameController : MonoBehaviour
         _specialFillCR = StartCoroutine(SpecialGaugeFillFieryCo());
 
         ResetRunMods();
+        RefreshActiveMonsterPassives(applyStartingReserveDelta: false);
+
+        unitLives = EffectiveMaxUnitLives;
+        SetupUnitLivesUI();
 
         CacheBaseBoardSizeIfNeeded();
         ApplyRunGridSize(currentLevel);
@@ -712,6 +718,22 @@ public class GameController : MonoBehaviour
         lineClearCurrencyAmountMult = RunModsStore.LineClearCurrencyAmountMult;
 
         enemyCastleHpMult = RunModsStore.EnemyCastleHpMult;
+    }
+
+    void RefreshActiveMonsterPassives(bool applyStartingReserveDelta)
+    {
+        int previousStartingReserveBonus = _partyPassiveBonuses.startingReserveUnits;
+        _partyPassiveBonuses = MonsterPassiveSystem.GetCombinedBonuses(GetActiveMonsterRoster());
+
+        if (!applyStartingReserveDelta)
+            return;
+
+        int delta = _partyPassiveBonuses.startingReserveUnits - previousStartingReserveBonus;
+        if (delta > 0)
+            unitLives += delta;
+
+        unitLives = Mathf.Clamp(unitLives, 0, EffectiveMaxUnitLives);
+        UpdateUnitLivesUI();
     }
 
     void ShowNextPreview()
@@ -1120,7 +1142,7 @@ public class GameController : MonoBehaviour
         int combo = IncrementCombo();
 
         // Apply shop/run buffs once here
-        float buffMult = monsterDamageMult * PlayerMonsterAttackMult; // Keep intended buffs
+        float buffMult = monsterDamageMult * AllyMonsterOutgoingDamageMultiplier * PlayerMonsterAttackMult;
         int afterBuffs = Mathf.RoundToInt(baseRow * buffMult);
 
         // Apply combo (+5% per step after first)
@@ -1154,10 +1176,13 @@ public class GameController : MonoBehaviour
     {
         _comboCount = Mathf.Max(0, _comboCount) + 1;
 
+        if (_partyPassiveBonuses.bonusComboChance > 0f && Random.value <= _partyPassiveBonuses.bonusComboChance)
+            _comboCount += 1;
+
         if (_comboCount > _maxComboThisLevel)
             _maxComboThisLevel = _comboCount; // Update max combo for bonus XP tracking
 
-        _comboTimer = Mathf.Max(0.1f, comboWindowSeconds);
+        _comboTimer = Mathf.Max(0.1f, CurrentComboWindowSeconds);
 
         if (scoreUI)
             scoreUI.SetCombo(_comboCount);
@@ -1333,6 +1358,8 @@ public class GameController : MonoBehaviour
                 PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.PerfectLevelWins, 1);
         }
 
+        RefreshActiveMonsterPassives(applyStartingReserveDelta: true);
+
         int roundsWon = currentLevel;
 
         int bonusSteps = roundsWon / 3;
@@ -1352,7 +1379,7 @@ public class GameController : MonoBehaviour
         int beforeLives = unitLives;
         int maxLives = EffectiveMaxUnitLives;
 
-        int reinforcementsGranted = Mathf.Max(0, reinforcementsPerWin);
+        int reinforcementsGranted = CurrentReinforcementsPerWin;
         unitLives = Mathf.Clamp(unitLives + reinforcementsGranted, 0, maxLives);
 
         int actualReinforcements = unitLives - beforeLives;
@@ -2329,6 +2356,7 @@ public class GameController : MonoBehaviour
         // Reset run state
         RunModsStore.ResetAll();
         ResetRunMods();
+        RefreshActiveMonsterPassives(applyStartingReserveDelta: false);
 
         // Reset Level 1 difficulty baseline + unit lives
         unitLives = EffectiveMaxUnitLives;
@@ -2678,7 +2706,10 @@ public class GameController : MonoBehaviour
             unitLivesText.text = $"{unitLives} / {max}";
 
         if (unitLivesSlider)
+        {
+            unitLivesSlider.maxValue = max;
             unitLivesSlider.value = unitLives;
+        }
     }
 
     void OnBoardTileDied(Vector2Int cell, MonsterData data)
@@ -2862,7 +2893,7 @@ public class GameController : MonoBehaviour
         // Stone existing run buff drops
         if (type == Board.ObstacleType.Stone)
         {
-            if (Random.value > stoneBuffDropChance) return;
+            if (Random.value > CurrentStoneBuffDropChance) return;
 
             int levelNumber = Mathf.Max(1, currentLevel + 1);
 

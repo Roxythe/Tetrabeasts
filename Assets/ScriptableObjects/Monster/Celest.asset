@@ -15,6 +15,7 @@ MonoBehaviour:
   monsterName: Celest
   portrait: {fileID: 21300000, guid: 60f3ffd19b40baf448ca7916afe71fe3, type: 3}
   monsterDescription: Healer with a large range but weak spells
+  passiveType: 3
   role: 2
   startsLocked: 0
   unlockCost: 10

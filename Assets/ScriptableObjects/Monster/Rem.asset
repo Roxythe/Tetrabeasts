@@ -16,6 +16,7 @@ MonoBehaviour:
   portrait: {fileID: 21300000, guid: e5ca9e6396ae8bf4191bb26cbd3e9401, type: 3}
   monsterDescription: A specialized attacker unit with higher damage and lower base
     health
+  passiveType: 1
   role: 0
   startsLocked: 1
   unlockCost: 50

@@ -16,6 +16,17 @@ public enum MonsterRole
     Healer = 2
 }
 
+public enum MonsterPassiveType
+{
+    None = 0,
+    ComboDuration = 1,
+    BonusComboChance = 2,
+    StoneBuffDropChance = 3,
+    StartingReserveUnits = 4,
+    ReserveUnitsRestoredOnWin = 5,
+    AllyMonsterBulwark = 6
+}
+
 [CreateAssetMenu(menuName = "Run/Monster Piece", fileName = "NewMonsterPiece")]
 public class MonsterData : ScriptableObject
 {
@@ -23,6 +34,9 @@ public class MonsterData : ScriptableObject
     public string monsterName = "Devil";
     public Sprite portrait;
     public string monsterDescription;
+
+    [Header("Passive")]
+    public MonsterPassiveType passiveType = MonsterPassiveType.None;
 
     [Header("Role")]
     public MonsterRole role = MonsterRole.Attack;
@@ -82,6 +96,7 @@ public class MonsterData : ScriptableObject
                 if (c) return c;
             }
         }
+
         return fallback;
     }
 
