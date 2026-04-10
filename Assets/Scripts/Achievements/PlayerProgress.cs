@@ -19,6 +19,9 @@ public class PlayerProgress : MonoBehaviour
 
         public HashSet<string> unlockedAchievements = new();
         public HashSet<string> pendingExternalUnlocks = new();
+
+        public int selectedStarDifficulty = 0;
+        public int maxUnlockedStarDifficulty = 0;
     }
 
     SaveData _data = new SaveData();
@@ -177,6 +180,38 @@ public class PlayerProgress : MonoBehaviour
         return new List<string>(_data.pendingExternalUnlocks);
     }
 
+    public int GetSelectedStarDifficulty()
+    {
+        return _data.selectedStarDifficulty;
+    }
+
+    public int GetMaxUnlockedStarDifficulty()
+    {
+        return _data.maxUnlockedStarDifficulty;
+    }
+
+    public void SetSelectedStarDifficulty(int stars)
+    {
+        stars = Mathf.Clamp(stars, 0, _data.maxUnlockedStarDifficulty);
+        if (_data.selectedStarDifficulty == stars)
+            return;
+
+        _data.selectedStarDifficulty = stars;
+        Save();
+    }
+
+    public bool TryUnlockStarDifficulty(int stars)
+    {
+        stars = StarDifficultySystem.ClampStars(stars);
+        if (stars <= _data.maxUnlockedStarDifficulty)
+            return false;
+
+        _data.maxUnlockedStarDifficulty = stars;
+        _data.selectedStarDifficulty = Mathf.Clamp(_data.selectedStarDifficulty, 0, _data.maxUnlockedStarDifficulty);
+        Save();
+        return true;
+    }
+
     public void ClearPendingExternalUnlock(string achievementId)
     {
         if (string.IsNullOrEmpty(achievementId)) return;
@@ -198,6 +233,7 @@ public class PlayerProgress : MonoBehaviour
 
             string json = File.ReadAllText(SavePath);
             _data = JsonUtility.FromJson<SaveDataWrapper>(json)?.ToData() ?? new SaveData();
+            SanitizeStarDifficultyState();
         }
         catch
         {
@@ -209,6 +245,7 @@ public class PlayerProgress : MonoBehaviour
     {
         try
         {
+            SanitizeStarDifficultyState();
             var wrapper = SaveDataWrapper.FromData(_data);
             string json = JsonUtility.ToJson(wrapper, prettyPrint: true);
             File.WriteAllText(SavePath, json);
@@ -235,6 +272,9 @@ public class PlayerProgress : MonoBehaviour
         public List<string> unlocked = new();
         public List<string> pending = new();
 
+        public int selectedStarDifficulty = 0;
+        public int maxUnlockedStarDifficulty = 0;
+
         public static SaveDataWrapper FromData(SaveData d)
         {
             var w = new SaveDataWrapper();
@@ -246,6 +286,8 @@ public class PlayerProgress : MonoBehaviour
 
             w.unlocked.AddRange(d.unlockedAchievements);
             w.pending.AddRange(d.pendingExternalUnlocks);
+            w.selectedStarDifficulty = d.selectedStarDifficulty;
+            w.maxUnlockedStarDifficulty = d.maxUnlockedStarDifficulty;
 
             return w;
         }
@@ -268,9 +310,17 @@ public class PlayerProgress : MonoBehaviour
 
             d.unlockedAchievements = new HashSet<string>(unlocked);
             d.pendingExternalUnlocks = new HashSet<string>(pending);
+            d.selectedStarDifficulty = selectedStarDifficulty;
+            d.maxUnlockedStarDifficulty = maxUnlockedStarDifficulty;
 
             return d;
         }
+    }
+
+    void SanitizeStarDifficultyState()
+    {
+        _data.maxUnlockedStarDifficulty = StarDifficultySystem.ClampStars(_data.maxUnlockedStarDifficulty);
+        _data.selectedStarDifficulty = Mathf.Clamp(_data.selectedStarDifficulty, 0, _data.maxUnlockedStarDifficulty);
     }
 
     public void DEV_ClearAllProgress()

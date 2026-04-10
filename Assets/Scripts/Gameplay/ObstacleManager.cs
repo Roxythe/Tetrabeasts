@@ -115,19 +115,24 @@ public class ObstacleManager : MonoBehaviour
         switch (type)
         {
             case Board.FloorEffectType.Poison:
-                _board.SetFloorEffect(cell, type, poisonTickDamage, poisonTickInterval, poisonTicks);
+                _board.SetFloorEffect(cell, type, GetScaledEnemyDamage(poisonTickDamage), poisonTickInterval, poisonTicks);
                 return true;
 
             case Board.FloorEffectType.Burn:
-                _board.SetFloorEffect(cell, type, fireTickDamage, fireTickInterval, fireTicks);
+                _board.SetFloorEffect(cell, type, GetScaledEnemyDamage(fireTickDamage), fireTickInterval, fireTicks);
                 return true;
 
             case Board.FloorEffectType.Spike:
-                _board.SetFloorEffect(cell, type, spikeOneShotDamage, 1f, 1);
+                _board.SetFloorEffect(cell, type, GetScaledEnemyDamage(spikeOneShotDamage), 1f, 1);
                 return true;
         }
 
         return false;
+    }
+
+    float GetScaledEnemyDamage(float amount)
+    {
+        return _gc ? _gc.GetScaledEnemyDamage(amount) : Mathf.Max(0f, amount);
     }
 
     void SpawnRandomStones(int count)
@@ -180,7 +185,7 @@ public class ObstacleManager : MonoBehaviour
 
             if (!_board.InBounds(c)) continue; // Skip out of bounds
 
-            if (_board.HasFloorEffect(c)) continue; // Don’t stack multiple effects on the same cell
+            if (_board.HasFloorEffect(c)) continue; // Don't stack multiple effects on the same cell
 
             // Spikes only appear on empty cells
             // if (!_board.IsFree(c)) continue;

@@ -48,6 +48,8 @@ public class TitleMenuUI : MonoBehaviour
     [Header("Cursor (Menu)")]
     public UICursorController uiCursorController;
 
+    TitleStarDifficultyUI _starDifficultyUI;
+
     void Awake()
     {
         // --- Character ---
@@ -98,6 +100,7 @@ public class TitleMenuUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = false;
 
+        EnsureStarDifficultyUI();
         HookAllButtonsForSFX(); // Auto-hook all buttons under this menu for click/hover sounds
     }
 
@@ -254,6 +257,8 @@ public class TitleMenuUI : MonoBehaviour
     {
         if (PlayerProgress.I != null)
             PlayerProgress.I.DEV_ClearAllProgress();
+
+        _starDifficultyUI?.RefreshNow();
     }
 
     public void DEV_ClearAllPrefsAndProgress()
@@ -281,6 +286,20 @@ public class TitleMenuUI : MonoBehaviour
         // Refresh monster UI
         monsterSelectUI?.RefreshAllUI();
         monsterSelectPanel?.RefreshAllUI();
+    }
+
+    void EnsureStarDifficultyUI()
+    {
+        if (!_starDifficultyUI)
+            _starDifficultyUI = GetComponentInChildren<TitleStarDifficultyUI>(true);
+
+        if (!_starDifficultyUI)
+        {
+            Debug.LogWarning("TitleMenuUI: No TitleStarDifficultyUI found in children. Add one to your title canvas and wire its references in the inspector.");
+            return;
+        }
+
+        _starDifficultyUI.Initialize();
     }
 
     // ESC closes panels

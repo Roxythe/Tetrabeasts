@@ -23,6 +23,9 @@ public class XpAwardUI : MonoBehaviour
         public int comboBonus;
         public int obstacleBonus;
 
+        public int difficultyStars;
+        public int difficultyBonus;
+        public int totalBeforeDifficulty;
         public int totalBeforeReduction;
     }
 
@@ -258,6 +261,11 @@ public class XpAwardUI : MonoBehaviour
             $"Reserve Change = {b.endReserve - b.startReserve}  =>  {b.reserveBonus}\n\n" +
             $"Largest Combo: {b.comboBonus}\n\n" +
             $"Obstacles Cleared: {b.obstacleBonus}";
+
+        if (b.difficultyStars > 0 && b.difficultyBonus > 0)
+        {
+            linesStr += $"\n\nStar Difficulty ({b.difficultyStars}): +{b.difficultyBonus}";
+        }
 
         if (breakdownLinesText)
             breakdownLinesText.text = linesStr;

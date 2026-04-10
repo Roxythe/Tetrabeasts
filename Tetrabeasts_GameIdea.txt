@@ -31,34 +31,6 @@
 
 
 
-- Add Star system difficulty to main menu and rewards
-
--- Per star difficulty modifier stats: 100% increase to enemy HP, 100% increase enemy damage, and increased misfortune by 20. 20% Decrease to special gauge gain. Increase exp gain by 50%, increased score gain by 50%
-
--- Two arrow buttons used to raise and lower difficulty
-
--- Two star images one filled for active star difficulty and one empty star image for inactive. Fill stars from left to right when raising difficulty. 1 Star is normal unmodified difficulty
-
--- Tooltip when hovering over each star with description of difficulty modifier stats
-
-
-
-- Add reroll mechanic for level modifier selection
-
--- Add text component listing number of available rerolls
-
--- One reroll earned each level. Can be saved within a run
-
---- Rerolls reset on new game, restart game, and return to menu
-
--- Add reroll button (disabled when no rerolls available)
-
---- decrement one reroll from available rerolls when used
-
---- Clear previous modifier selection when used, play lever animation, and restart slot machine animation for new modifier selection
-
-
-
 *** KNOWN BUGS ***
 
 - Change boss damage and floor effect damage to percentage health base damage

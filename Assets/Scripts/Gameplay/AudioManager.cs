@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using System.Collections;
 
 public class AudioManager : MonoBehaviour
 {
@@ -9,6 +10,9 @@ public class AudioManager : MonoBehaviour
     public AudioMixer mixer;
     public AudioMixerGroup musicGroup;
     public AudioMixerGroup sfxGroup;
+
+    [Header("UI Glass Crack")]
+    public AudioClip[] sfxGlassCracks;
 
     [Header("Clips")]
     public AudioClip sfxAchievementUnlocked;
@@ -36,6 +40,7 @@ public class AudioManager : MonoBehaviour
 
     [Header("Weather Ambience")]
     public AudioClip sfxRainLoop;
+    [Range(0.01f, 1f)] public float rainFadeOutSeconds = 0.3f;
 
     [Header("Music Pools (Gameplay)")]
     public AudioClip[] EDMGameplayMusic;
@@ -71,6 +76,7 @@ public class AudioManager : MonoBehaviour
     public MusicMode musicMode { get; private set; } = MusicMode.Both;
 
     Coroutine musicChainCo;
+    Coroutine rainFadeCo;
     AudioClip[] currentPool;
     AudioClip lastGameplayClip;
     AudioClip lastBossClip;
@@ -281,14 +287,26 @@ public class AudioManager : MonoBehaviour
     {
         if (!sfxRainLoop || !ambienceLoopSrc) return;
 
+        if (rainFadeCo != null)
+        {
+            StopCoroutine(rainFadeCo);
+            rainFadeCo = null;
+        }
+
+        float targetVol = masterVolume * sfxVolume * Mathf.Clamp01(vol);
+
         if (ambienceLoopSrc.isPlaying && ambienceLoopSrc.clip == sfxRainLoop)
+        {
+            ambienceLoopSrc.pitch = Mathf.Clamp(pitch, 0.5f, 2f);
+            ambienceLoopSrc.volume = targetVol;
             return;
+        }
 
         ambienceLoopSrc.Stop();
         ambienceLoopSrc.clip = sfxRainLoop;
         ambienceLoopSrc.loop = true;
         ambienceLoopSrc.pitch = Mathf.Clamp(pitch, 0.5f, 2f);
-        ambienceLoopSrc.volume = masterVolume * sfxVolume * Mathf.Clamp01(vol);
+        ambienceLoopSrc.volume = targetVol;
         ambienceLoopSrc.Play();
     }
 
@@ -296,12 +314,52 @@ public class AudioManager : MonoBehaviour
     {
         if (!ambienceLoopSrc) return;
 
-        if (ambienceLoopSrc.clip == sfxRainLoop)
+        if (ambienceLoopSrc.clip != sfxRainLoop)
+            return;
+
+        if (!ambienceLoopSrc.isPlaying)
+        {
+            ambienceLoopSrc.clip = null;
+            ambienceLoopSrc.pitch = 1f;
+            ambienceLoopSrc.volume = masterVolume * sfxVolume;
+            return;
+        }
+
+        if (rainFadeCo != null)
+            StopCoroutine(rainFadeCo);
+
+        rainFadeCo = StartCoroutine(CoFadeOutRainAmbience());
+    }
+
+    IEnumerator CoFadeOutRainAmbience()
+    {
+        if (!ambienceLoopSrc)
+        {
+            rainFadeCo = null;
+            yield break;
+        }
+
+        float startVolume = ambienceLoopSrc.volume;
+        float duration = Mathf.Max(0.01f, rainFadeOutSeconds);
+        float t = 0f;
+
+        while (t < duration && ambienceLoopSrc && ambienceLoopSrc.isPlaying && ambienceLoopSrc.clip == sfxRainLoop)
+        {
+            t += Time.unscaledDeltaTime;
+            float k = Mathf.Clamp01(t / duration);
+            ambienceLoopSrc.volume = Mathf.Lerp(startVolume, 0f, k);
+            yield return null;
+        }
+
+        if (ambienceLoopSrc)
         {
             ambienceLoopSrc.Stop();
             ambienceLoopSrc.clip = null;
             ambienceLoopSrc.pitch = 1f;
+            ambienceLoopSrc.volume = masterVolume * sfxVolume;
         }
+
+        rainFadeCo = null;
     }
 
     AudioClip PickRandom(AudioClip[] pool)
@@ -452,6 +510,7 @@ public class AudioManager : MonoBehaviour
     {
         levelMusicActive = false;
         StopLevelMusicInternal();
+        StopRainAmbience();
     }
 
     void StopLevelMusicInternal()
@@ -576,12 +635,13 @@ public class AudioManager : MonoBehaviour
     {
         if (!clip) return;
 
-        // Intermission should replace gameplay/pause music cleanly
+        // Intermission replaces gameplay/pause music cleanly
         context = MusicContext.None;
         levelMusicActive = false;
 
         StopPauseMusic();
         StopLevelMusicInternal();
+        StopRainAmbience();
 
         PlayMusic(clip, loop: true, vol: 1f);
     }
@@ -646,6 +706,14 @@ public class AudioManager : MonoBehaviour
 
         uiSfxSrc.volume = masterVolume * sfxVolume;
         PlayUISFX(sfxMonsterDie, vol: vol, pitch: 1f, jitter: true);
+    }
+
+    public void PlayRandomGlassCrack(float vol = 1f)
+    {
+        var clip = PickRandom(sfxGlassCracks);
+        if (!clip) return;
+
+        PlayUISFX(clip, vol, pitch: 1f, jitter: true);
     }
 
     public void PlayBossRowBlastHit(float vol = 1f)

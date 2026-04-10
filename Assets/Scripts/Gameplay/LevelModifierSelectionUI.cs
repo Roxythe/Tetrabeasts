@@ -1,13 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Audio;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class LevelModifierSelectionUI : MonoBehaviour
 {
+    public delegate bool RerollHandler(LevelModifierSO currentModifier, out LevelModifierSO nextModifier);
+
     class SlotColumn
     {
         public RectTransform viewport;
@@ -35,7 +36,10 @@ public class LevelModifierSelectionUI : MonoBehaviour
     [SerializeField] Button leverButton;
     [SerializeField] RectTransform leverVisual;
     [SerializeField] Button continueButton;
+    [SerializeField] Button rerollButton;
     [SerializeField] Button modifierInfoButton;
+    [SerializeField] TMP_Text rerollCountText;
+    [SerializeField] TMP_Text shadowRerollCountText;
 
     [Header("Modifier Info Panel")]
     [SerializeField] GameObject modifierInfoPanel;
@@ -67,11 +71,13 @@ public class LevelModifierSelectionUI : MonoBehaviour
     [SerializeField] float leverPressAngle = 18f;
     [SerializeField] float leverPressDuration = 0.10f;
     [SerializeField] float leverReturnDuration = 0.14f;
+    [SerializeField] float rerollRebuildDelaySeconds = 0.06f;
 
     readonly List<SlotColumn> _columns = new();
 
     bool _spinClicked;
     bool _continueClicked;
+    bool _rerollClicked;
     bool _isSpinning;
 
     LevelModifierSO _currentChosenModifier;
@@ -79,10 +85,17 @@ public class LevelModifierSelectionUI : MonoBehaviour
     Vector3 _leverArrowBaseScale = Vector3.one;
     Vector3 _modNameBaseScale = Vector3.one;
     Vector3 _modNameShadowBaseScale = Vector3.one;
+    Color _modNameBaseColor = Color.white;
+    Color _modNameShadowBaseColor = Color.white;
     Coroutine _modNameAnimCR;
 
+    public LevelModifierSO CurrentChosenModifier => _currentChosenModifier;
 
-    public IEnumerator PlaySelection(IReadOnlyList<LevelModifierSO> pool, LevelModifierSO chosen)
+    public IEnumerator PlaySelection(
+        IReadOnlyList<LevelModifierSO> pool,
+        LevelModifierSO chosen,
+        Func<int> getAvailableRerolls = null,
+        RerollHandler rerollHandler = null)
     {
         if (!chosen)
             yield break;
@@ -95,6 +108,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
 
         _spinClicked = false;
         _continueClicked = false;
+        _rerollClicked = false;
         _isSpinning = false;
         _currentChosenModifier = chosen;
 
@@ -113,6 +127,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
         if (modDisplayNameText)
         {
             _modNameBaseScale = modDisplayNameText.rectTransform.localScale;
+            _modNameBaseColor = modDisplayNameText.color;
             modDisplayNameText.rectTransform.localScale = _modNameBaseScale;
             modDisplayNameText.text = string.Empty;
         }
@@ -120,26 +135,15 @@ public class LevelModifierSelectionUI : MonoBehaviour
         if (modDisplayNameShadowText)
         {
             _modNameShadowBaseScale = modDisplayNameShadowText.rectTransform.localScale;
+            _modNameShadowBaseColor = modDisplayNameShadowText.color;
             modDisplayNameShadowText.rectTransform.localScale = _modNameShadowBaseScale;
             modDisplayNameShadowText.text = string.Empty;
         }
 
         StopModNameAnimation();
 
-        if (continueButton)
-        {
-            continueButton.gameObject.SetActive(false);
-            continueButton.interactable = false;
-        }
-
-        if (modifierInfoButton)
-        {
-            modifierInfoButton.gameObject.SetActive(false);
-            modifierInfoButton.interactable = false;
-        }
-
-        if (modifierInfoPanel)
-            modifierInfoPanel.SetActive(false);
+        ClearModifierReveal();
+        RefreshRerollUI(GetAvailableRerolls(getAvailableRerolls), showButton: false, rerollHandler);
 
         if (leverButton)
         {
@@ -148,6 +152,8 @@ public class LevelModifierSelectionUI : MonoBehaviour
         }
 
         var sprites = BuildSpritePool(pool, chosen);
+        bool pendingRebuildForNextSpin = false;
+
         for (int i = 0; i < _columns.Count; i++)
             PopulateColumn(_columns[i], sprites, chosen.icon);
 
@@ -156,34 +162,62 @@ public class LevelModifierSelectionUI : MonoBehaviour
         if (leverButton)
             leverButton.interactable = false;
 
-        yield return StartCoroutine(PlayLeverPullRoutine());
-        yield return StartCoroutine(SpinColumnsRoutine());
-
-        if (modDisplayNameText) modDisplayNameText.text = chosen.displayName;
-        if (modDisplayNameShadowText) modDisplayNameShadowText.text = chosen.displayName;
-
-        PlayModNameAnimation();
-
-        PopulateModifierInfoPanel(chosen);
-
-        AudioManager.I?.PlaySlotReveal();
-
-        if (continueButton)
+        while (true)
         {
-            continueButton.gameObject.SetActive(true);
-            continueButton.interactable = true;
+            yield return StartCoroutine(PlayLeverPullRoutine());
+            yield return StartCoroutine(SpinColumnsRoutine(
+                         rebuildColumnsAfterSpinStarts: pendingRebuildForNextSpin,
+                         rebuildPool: sprites, rebuildChosenSprite: chosen.icon));
+
+            RevealModifier(chosen);
+
+            if (leverArrowVisual)
+                leverArrowVisual.localScale = _leverArrowBaseScale;
+
+            _continueClicked = false;
+            _rerollClicked = false;
+
+            RefreshRerollUI(GetAvailableRerolls(getAvailableRerolls), showButton: true, rerollHandler);
+
+            bool shouldSpinAgain = false;
+            while (!_continueClicked)
+            {
+                yield return new WaitUntil(() => _continueClicked || _rerollClicked);
+
+                if (_continueClicked)
+                    break;
+
+                if (!_rerollClicked || rerollHandler == null)
+                {
+                    _rerollClicked = false;
+                    continue;
+                }
+
+                if (!rerollHandler(chosen, out var rerolledModifier) || !rerolledModifier)
+                {
+                    _rerollClicked = false;
+                    RefreshRerollUI(GetAvailableRerolls(getAvailableRerolls), showButton: true, rerollHandler);
+                    continue;
+                }
+
+                chosen = rerolledModifier;
+                _currentChosenModifier = rerolledModifier;
+                shouldSpinAgain = true;
+                break;
+            }
+
+            if (_continueClicked)
+                break;
+
+            if (!shouldSpinAgain)
+                continue;
+
+            ClearModifierReveal();
+            RefreshRerollUI(GetAvailableRerolls(getAvailableRerolls), showButton: false, rerollHandler);
+
+            sprites = BuildSpritePool(pool, chosen);
+            pendingRebuildForNextSpin = true;
         }
-
-        if (modifierInfoButton)
-        {
-            modifierInfoButton.gameObject.SetActive(true);
-            modifierInfoButton.interactable = true;
-        }
-
-        if (leverArrowVisual)
-            leverArrowVisual.localScale = _leverArrowBaseScale;
-
-        yield return new WaitUntil(() => _continueClicked);
 
         if (modifierInfoPanel)
             modifierInfoPanel.SetActive(false);
@@ -216,8 +250,14 @@ public class LevelModifierSelectionUI : MonoBehaviour
         if (!modDisplayNameText || !modDisplayNameShadowText)
             Debug.LogWarning("LevelModifierSelectionUI: Mod display name text or shadow text is missing.");
 
-        if (!leverButton || !continueButton || !modifierInfoButton)
-            Debug.LogWarning("LevelModifierSelectionUI: LeverButton / ContinueButton / ModifierInfoButton is missing.");
+        if (!leverButton || !continueButton || !rerollButton || !modifierInfoButton)
+            Debug.LogWarning("LevelModifierSelectionUI: LeverButton / ContinueButton / RerollButton / ModifierInfoButton is missing.");
+
+        if (!rerollCountText)
+            Debug.LogWarning("LevelModifierSelectionUI: Reroll count text is missing.");
+
+        if (!shadowRerollCountText)
+            Debug.LogWarning("LevelModifierSelectionUI: Shadow reroll count text is missing.");
 
         if (!modifierInfoPanel || !modifierInfoTitleText || !modifierInfoShadowTitleText || !modifierInfoIcon || !modifierInfoDescText || !closeInfoButton)
             Debug.LogWarning("LevelModifierSelectionUI: Modifier info panel references are missing.");
@@ -265,6 +305,12 @@ public class LevelModifierSelectionUI : MonoBehaviour
             continueButton.onClick.AddListener(OnContinueClicked);
         }
 
+        if (rerollButton)
+        {
+            rerollButton.onClick.RemoveListener(OnRerollClicked);
+            rerollButton.onClick.AddListener(OnRerollClicked);
+        }
+
         if (modifierInfoButton)
         {
             modifierInfoButton.onClick.RemoveListener(OnModifierInfoClicked);
@@ -292,6 +338,14 @@ public class LevelModifierSelectionUI : MonoBehaviour
     void OnContinueClicked()
     {
         _continueClicked = true;
+    }
+
+    void OnRerollClicked()
+    {
+        if (_isSpinning)
+            return;
+
+        _rerollClicked = true;
     }
 
     void PopulateColumn(SlotColumn column, List<Sprite> pool, Sprite chosenSprite)
@@ -349,7 +403,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
 
                         if (uniquePool.Count > 1 && uniquePool[0] == previousSprite)
                         {
-                            int swapIndex = Random.Range(1, uniquePool.Count);
+                            int swapIndex = UnityEngine.Random.Range(1, uniquePool.Count);
                             (uniquePool[0], uniquePool[swapIndex]) = (uniquePool[swapIndex], uniquePool[0]);
                         }
                     }
@@ -438,7 +492,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
 
         for (int i = sprites.Count - 1; i > 0; i--)
         {
-            int j = Random.Range(0, i + 1);
+            int j = UnityEngine.Random.Range(0, i + 1);
             (sprites[i], sprites[j]) = (sprites[j], sprites[i]);
         }
     }
@@ -473,6 +527,88 @@ public class LevelModifierSelectionUI : MonoBehaviour
             modifierInfoDescText.text = modifier.description;
     }
 
+    void RevealModifier(LevelModifierSO chosen)
+    {
+        if (!chosen)
+            return;
+
+        if (modDisplayNameText)
+            modDisplayNameText.text = chosen.displayName;
+
+        if (modDisplayNameShadowText)
+            modDisplayNameShadowText.text = chosen.displayName;
+
+        PlayModNameAnimation();
+        PopulateModifierInfoPanel(chosen);
+        AudioManager.I?.PlaySlotReveal();
+
+        if (continueButton)
+        {
+            continueButton.gameObject.SetActive(true);
+            continueButton.interactable = true;
+        }
+
+        if (modifierInfoButton)
+        {
+            modifierInfoButton.gameObject.SetActive(true);
+            modifierInfoButton.interactable = true;
+        }
+    }
+
+    void ClearModifierReveal()
+    {
+        StopModNameAnimation();
+
+        if (modDisplayNameText)
+            modDisplayNameText.text = string.Empty;
+
+        if (modDisplayNameShadowText)
+            modDisplayNameShadowText.text = string.Empty;
+
+        if (continueButton)
+        {
+            continueButton.gameObject.SetActive(false);
+            continueButton.interactable = false;
+        }
+
+        if (rerollButton)
+        {
+            rerollButton.gameObject.SetActive(false);
+            rerollButton.interactable = false;
+        }
+
+        if (modifierInfoButton)
+        {
+            modifierInfoButton.gameObject.SetActive(false);
+            modifierInfoButton.interactable = false;
+        }
+
+        if (modifierInfoPanel)
+            modifierInfoPanel.SetActive(false);
+    }
+
+    void RefreshRerollUI(int availableRerolls, bool showButton, RerollHandler rerollHandler)
+    {
+        int clampedRerolls = Mathf.Max(0, availableRerolls);
+
+        if (rerollCountText)
+            rerollCountText.text = $"Rerolls: {clampedRerolls}";
+
+        if (shadowRerollCountText)
+            shadowRerollCountText.text = $"Rerolls: {clampedRerolls}";
+
+        if (!rerollButton)
+            return;
+
+        rerollButton.gameObject.SetActive(showButton);
+        rerollButton.interactable = showButton && rerollHandler != null && clampedRerolls > 0;
+    }
+
+    static int GetAvailableRerolls(Func<int> getAvailableRerolls)
+    {
+        return getAvailableRerolls != null ? Mathf.Max(0, getAvailableRerolls()) : 0;
+    }
+
     IEnumerator PlayLeverPullRoutine()
     {
         AudioManager.I?.PlaySlotLever();
@@ -504,7 +640,10 @@ public class LevelModifierSelectionUI : MonoBehaviour
         leverVisual.localRotation = startRot;
     }
 
-    IEnumerator SpinColumnsRoutine()
+    IEnumerator SpinColumnsRoutine(
+    bool rebuildColumnsAfterSpinStarts = false,
+    List<Sprite> rebuildPool = null,
+    Sprite rebuildChosenSprite = null)
     {
         _isSpinning = true;
 
@@ -523,6 +662,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
         bool[] settleInitialized = new bool[_columns.Count];
         float[] settleStartOffsets = new float[_columns.Count];
         float[] settleEndOffsets = new float[_columns.Count];
+        bool rebuiltColumns = !rebuildColumnsAfterSpinStarts;
 
         while (elapsed < totalDuration)
         {
@@ -583,6 +723,14 @@ public class LevelModifierSelectionUI : MonoBehaviour
                 column.content.anchoredPosition = new Vector2(0f, y);
             }
 
+            if (!rebuiltColumns && elapsed >= Mathf.Max(0f, rerollRebuildDelaySeconds))
+            {
+                for (int i = 0; i < _columns.Count; i++)
+                    PopulateColumn(_columns[i], rebuildPool, rebuildChosenSprite);
+
+                rebuiltColumns = true;
+            }
+
             yield return null;
         }
 
@@ -614,10 +762,16 @@ public class LevelModifierSelectionUI : MonoBehaviour
         }
 
         if (modDisplayNameText)
+        {
             modDisplayNameText.rectTransform.localScale = _modNameBaseScale;
+            modDisplayNameText.color = _modNameBaseColor;
+        }
 
         if (modDisplayNameShadowText)
+        {
             modDisplayNameShadowText.rectTransform.localScale = _modNameShadowBaseScale;
+            modDisplayNameShadowText.color = _modNameShadowBaseColor;
+        }
     }
 
     IEnumerator AnimateModNameRoutine()
@@ -713,5 +867,4 @@ public class LevelModifierSelectionUI : MonoBehaviour
             value += cycleHeight;
         return value;
     }
-
 }

@@ -23,7 +23,7 @@ MonoBehaviour:
   projectileInterval: 2
   projectileSpeed: 800
   projectileDamage: 40
-  sfxProjectileHitTile: {fileID: 8300000, guid: 23223cee22f6a6c4caceff40d1bcd1e6, type: 3}
+  sfxProjectileHitTile: {fileID: 8300000, guid: 6bf402a552edcc24291e706965866709, type: 3}
   sfxProjectileHitTileClips:
   - {fileID: 8300000, guid: fccb4318ede48ff4db14c0d040030810, type: 3}
   - {fileID: 8300000, guid: 6bf402a552edcc24291e706965866709, type: 3}
@@ -58,6 +58,9 @@ MonoBehaviour:
   overridePoisonCount: 5
   overrideFireCount: 5
   overrideSpikeCount: 5
+  enableLevelModifierSelection: 0
+  levelModifierDatabase: {fileID: 0}
+  allowedLevelModifierKinds: 
   bossEnableRowBlast: 1
   bossEnableFullBoardBlast: 1
   bossEnableLightningStrike: 1

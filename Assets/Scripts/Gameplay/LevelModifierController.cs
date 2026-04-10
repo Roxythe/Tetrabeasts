@@ -50,6 +50,7 @@ public class LevelModifierController : MonoBehaviour
     float _autoShiftTimer;
     float _autoShiftPauseRemaining;
     bool _autoShiftMovingRight = true;
+    int _availableRerolls;
     int _comboShieldRemaining;
     int _pendingComboShieldBreaks;
     Coroutine _comboShieldPulseCR;
@@ -57,6 +58,7 @@ public class LevelModifierController : MonoBehaviour
     static Sprite _onePx;
 
     public LevelModifierSO ActiveModifier { get; private set; }
+    public int AvailableRerolls => Mathf.Max(0, _availableRerolls);
     public bool IsSelectionRunning { get; private set; }
 
     void Awake()
@@ -100,7 +102,12 @@ public class LevelModifierController : MonoBehaviour
     {
         ResetLevelState();
 
-        if (castleData == null || castleData.isBossLevel || !castleData.enableLevelModifierSelection)
+        if (castleData == null)
+            yield break;
+
+        _availableRerolls++;
+
+        if (castleData.isBossLevel || !castleData.enableLevelModifierSelection)
             yield break;
 
         var database = castleData.levelModifierDatabase;
@@ -121,7 +128,25 @@ public class LevelModifierController : MonoBehaviour
 
         IsSelectionRunning = true;
         if (_selectionUI)
-            yield return _selectionUI.PlaySelection(pool, chosen);
+        {
+            bool TryConsumeReroll(LevelModifierSO currentModifier, out LevelModifierSO nextModifier)
+            {
+                nextModifier = null;
+
+                if (_availableRerolls <= 0)
+                    return false;
+
+                nextModifier = database.PickWeighted(castleData.allowedLevelModifierKinds, currentModifier);
+                if (!nextModifier)
+                    return false;
+
+                _availableRerolls = Mathf.Max(0, _availableRerolls - 1);
+                return true;
+            }
+
+            yield return _selectionUI.PlaySelection(pool, chosen, () => AvailableRerolls, TryConsumeReroll);
+            chosen = _selectionUI.CurrentChosenModifier ? _selectionUI.CurrentChosenModifier : chosen;
+        }
         IsSelectionRunning = false;
 
         SetSelectionCursorState(false);
@@ -129,6 +154,12 @@ public class LevelModifierController : MonoBehaviour
         ActiveModifier = chosen;
         ApplyModifierStartupEffects();
         LogModifierActivation();
+    }
+
+    public void ResetRunState()
+    {
+        _availableRerolls = 0;
+        ResetLevelState();
     }
 
     public bool BlocksManualRotation => ActiveModifier && ActiveModifier.kind == LevelModifierKind.AutoRotate;

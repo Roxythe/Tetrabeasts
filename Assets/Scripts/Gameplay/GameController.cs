@@ -200,6 +200,20 @@ public class GameController : MonoBehaviour
     [SerializeField] int unitLives = 20; // Current lives (Based on max + buffs)
     [SerializeField] int reinforcementsPerWin = 5;
 
+    [Header("Unit Lives Glass Overlay")]
+    [SerializeField] Image unitLivesGlassOverlayImage;
+    [SerializeField] Sprite[] unitLivesGlassOverlaySprites = new Sprite[3];
+    [SerializeField] float unitLivesGlassCrackSfxVolume = 1f;
+
+    enum UnitLivesGlassState
+    {
+        High = 0,
+        Mid = 1,
+        Low = 2
+    }
+
+    UnitLivesGlassState? _lastUnitLivesGlassState;
+
     public TMP_Text unitLivesText;
     public Slider unitLivesSlider;
 
@@ -340,10 +354,14 @@ public class GameController : MonoBehaviour
     public TMP_Text levelText;
     [HideInInspector] public LevelModifierController levelModifierController;
     bool _levelStartBlocked = false;
+    int _starDifficulty = 0;
+    StarDifficultyModifiers _starDifficultyModifiers = new StarDifficultyModifiers(0);
 
     public int CurrentLevel => currentLevel;
     public int CurrentReserveUnits => unitLives;
     public int MaxReserveUnits => EffectiveMaxUnitLives;
+    public int CurrentStarDifficulty => _starDifficulty;
+    public float CurrentMisfortune => misfortune + _starDifficultyModifiers.misfortuneAdd;
     public bool IsGameplaySuspended => isPaused || _levelStartBlocked || (levelModifierController && levelModifierController.IsSelectionRunning);
     public bool IsRoundActive => !IsGameplaySuspended && !gameOver && !levelWon;
 
@@ -495,7 +513,9 @@ public class GameController : MonoBehaviour
         if (_specialFillCR != null) StopCoroutine(_specialFillCR);
         _specialFillCR = StartCoroutine(SpecialGaugeFillFieryCo());
 
+        levelModifierController?.ResetRunState();
         ResetRunMods();
+        RefreshStarDifficultyState();
         RefreshActiveMonsterPassives(applyStartingReserveDelta: false);
 
         unitLives = EffectiveMaxUnitLives;
@@ -718,6 +738,50 @@ public class GameController : MonoBehaviour
         lineClearCurrencyAmountMult = RunModsStore.LineClearCurrencyAmountMult;
 
         enemyCastleHpMult = RunModsStore.EnemyCastleHpMult;
+    }
+
+    void RefreshStarDifficultyState()
+    {
+        _starDifficulty = (PlayerProgress.I != null) ? PlayerProgress.I.GetSelectedStarDifficulty() : 0;
+        _starDifficultyModifiers = StarDifficultySystem.GetModifiers(_starDifficulty);
+    }
+
+    float GetEffectiveSpecialGaugeGainMultiplier()
+    {
+        return Mathf.Max(0f, specialGainMult * _starDifficultyModifiers.specialGaugeGainMultiplier);
+    }
+
+    int GetScaledScorePoints(int points)
+    {
+        int clampedPoints = Mathf.Max(0, points);
+        if (clampedPoints <= 0)
+            return 0;
+
+        return Mathf.Max(0, Mathf.RoundToInt(clampedPoints * _starDifficultyModifiers.scoreGainMultiplier));
+    }
+
+    public float GetScaledEnemyDamage(float amount)
+    {
+        return Mathf.Max(0f, amount) * _starDifficultyModifiers.enemyDamageMultiplier;
+    }
+
+    void HandleStarDifficultyFinalWin()
+    {
+        if (PlayerProgress.I == null)
+            return;
+
+        if (_starDifficulty > 0)
+        {
+            string achievementId = StarDifficultySystem.GetAchievementId(_starDifficulty);
+            if (!string.IsNullOrEmpty(achievementId))
+                PlayerProgress.I.UnlockAchievement(achievementId);
+        }
+
+        if (_starDifficulty >= StarDifficultySystem.MaxStars)
+            return;
+
+        if (PlayerProgress.I.GetMaxUnlockedStarDifficulty() == _starDifficulty)
+            PlayerProgress.I.TryUnlockStarDifficulty(_starDifficulty + 1);
     }
 
     void RefreshActiveMonsterPassives(bool applyStartingReserveDelta)
@@ -998,6 +1062,8 @@ public class GameController : MonoBehaviour
         if (levelModifierController)
             specialChargeFromMonsters = levelModifierController.ModifySpecialGaugeGain(specialChargeFromMonsters);
 
+        specialChargeFromMonsters *= GetEffectiveSpecialGaugeGainMultiplier();
+
         if (specialChargeFromMonsters > 0f)
         {
             specialGauge = Mathf.Min(specialGaugeMax, specialGauge + specialChargeFromMonsters);
@@ -1209,7 +1275,7 @@ public class GameController : MonoBehaviour
 
     void AddScoreInternal(int points)
     {
-        score += Mathf.Max(0, points);
+        score += GetScaledScorePoints(points);
         if (scoreUI) scoreUI.Set(score);
     }
 
@@ -1247,7 +1313,7 @@ public class GameController : MonoBehaviour
         if (enemyCastleUI && data)
         {
             int levelNumber = levelIndex + 1;
-            enemyCastleUI.InitCastle(data, levelNumber, enemyCastleHpMult);
+            enemyCastleUI.InitCastle(data, levelNumber, enemyCastleHpMult * _starDifficultyModifiers.enemyHealthMultiplier);
 
             _castleData = data;
 
@@ -1262,7 +1328,7 @@ public class GameController : MonoBehaviour
 
             castleAttackInterval = data.projectileInterval * enemyAttackIntervalMult;
             projectileSpeed = data.projectileSpeed * enemyProjectileSpeedMult;
-            castleProjectileDamage = Mathf.RoundToInt(data.projectileDamage * enemyProjectileDamageMult);
+            castleProjectileDamage = Mathf.Max(1, Mathf.RoundToInt(GetScaledEnemyDamage(data.projectileDamage * enemyProjectileDamageMult)));
 
             if (levelText) levelText.text = $"Level: {levelNumber}";
         }
@@ -1366,7 +1432,7 @@ public class GameController : MonoBehaviour
         float misfortuneGain = 5f + (5f * bonusSteps);
 
         misfortune += misfortuneGain;
-        RunModsStore.Misfortune = misfortune;
+        RunModsStore.Misfortune = CurrentMisfortune;
 
         int gained = GetRoundWinCurrency();
         CurrencyStore.Add(gained);
@@ -1457,7 +1523,7 @@ public class GameController : MonoBehaviour
         RunModsStore.EnemyCastleHpMult = enemyCastleHpMult;
 
         RunModsStore.Luck = EffectiveLuck;
-        RunModsStore.Misfortune = misfortune;
+        RunModsStore.Misfortune = CurrentMisfortune;
     }
 
     void ContinueAfterRoundRewards()
@@ -1503,6 +1569,8 @@ public class GameController : MonoBehaviour
             PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunBeatFinalLevel, 1);
             PlayerProgress.I.EndRun();
         }
+
+        HandleStarDifficultyFinalWin();
 
         if (PlayerProgress.I != null)
         {
@@ -2354,8 +2422,10 @@ public class GameController : MonoBehaviour
         ResetBossGravityVisuals();
 
         // Reset run state
+        levelModifierController?.ResetRunState();
         RunModsStore.ResetAll();
         ResetRunMods();
+        RefreshStarDifficultyState();
         RefreshActiveMonsterPassives(applyStartingReserveDelta: false);
 
         // Reset Level 1 difficulty baseline + unit lives
@@ -2450,6 +2520,8 @@ public class GameController : MonoBehaviour
         }
 
         AudioListener.pause = false;
+
+        levelModifierController?.ResetRunState();
 
         if (!string.IsNullOrEmpty(titleSceneName))
             UnityEngine.SceneManagement.SceneManager.LoadScene(titleSceneName);
@@ -2626,7 +2698,7 @@ public class GameController : MonoBehaviour
     }
 
     // ================ Unit Lives System ===================
-    
+
     void SetupUnitLivesUI()
     {
         if (unitLivesSlider)
@@ -2634,7 +2706,6 @@ public class GameController : MonoBehaviour
             unitLivesSlider.minValue = 0;
             unitLivesSlider.maxValue = EffectiveMaxUnitLives;
 
-            // Cache fill image for flashing on death
             _unitLivesFillImg = unitLivesSlider.fillRect ? unitLivesSlider.fillRect.GetComponent<Image>() : null;
             if (_unitLivesFillImg)
                 _unitLivesFillDefaultColor = _unitLivesFillImg.color;
@@ -2644,6 +2715,7 @@ public class GameController : MonoBehaviour
                 _unitLivesBarDefaultPos = _unitLivesBarRect.anchoredPosition;
         }
 
+        _lastUnitLivesGlassState = null;
         UpdateUnitLivesUI();
     }
 
@@ -2710,6 +2782,49 @@ public class GameController : MonoBehaviour
             unitLivesSlider.maxValue = max;
             unitLivesSlider.value = unitLives;
         }
+
+        RefreshUnitLivesGlassOverlay(unitLives, max);
+    }
+
+    UnitLivesGlassState GetUnitLivesGlassState(int current, int max)
+    {
+        if (max <= 0)
+            return UnitLivesGlassState.Low;
+
+        float pct = Mathf.Clamp01((float)current / max);
+
+        if (pct >= 0.66f)
+            return UnitLivesGlassState.High;
+
+        if (pct >= 0.33f)
+            return UnitLivesGlassState.Mid;
+
+        return UnitLivesGlassState.Low;
+    }
+
+    void RefreshUnitLivesGlassOverlay(int current, int max)
+    {
+        if (!unitLivesGlassOverlayImage)
+            return;
+
+        UnitLivesGlassState nextState = GetUnitLivesGlassState(current, max);
+        int spriteIndex = (int)nextState;
+
+        if (unitLivesGlassOverlaySprites != null &&
+            spriteIndex >= 0 &&
+            spriteIndex < unitLivesGlassOverlaySprites.Length)
+        {
+            unitLivesGlassOverlayImage.sprite = unitLivesGlassOverlaySprites[spriteIndex];
+        }
+
+        bool shouldPlayCrack =
+            _lastUnitLivesGlassState.HasValue &&
+            (int)nextState > (int)_lastUnitLivesGlassState.Value;
+
+        if (shouldPlayCrack && AudioManager.I)
+            AudioManager.I.PlayRandomGlassCrack(unitLivesGlassCrackSfxVolume);
+
+        _lastUnitLivesGlassState = nextState;
     }
 
     void OnBoardTileDied(Vector2Int cell, MonsterData data)
@@ -3435,7 +3550,7 @@ public class GameController : MonoBehaviour
         int y1 = Mathf.Clamp(yTop - 1, 0, gameBoard.height - 1);
         int y2 = Mathf.Clamp(yTop - 2, 0, gameBoard.height - 1);
 
-        float dmg = Mathf.Max(0f, _castleData.bossRowBlastDamage);
+        float dmg = GetScaledEnemyDamage(Mathf.Max(0f, _castleData.bossRowBlastDamage));
 
         var targets = new List<Vector2Int>();
         for (int x = 0; x < gameBoard.width; x++)
@@ -3456,7 +3571,7 @@ public class GameController : MonoBehaviour
     {
         if (_castleData == null || gameBoard == null) return;
 
-        float dmg = Mathf.Max(0f, _castleData.bossFullBoardDamage);
+        float dmg = GetScaledEnemyDamage(Mathf.Max(0f, _castleData.bossFullBoardDamage));
         float warn = BossWarnSeconds();
 
         // Collect only occupied monster cells (hp > 0)
@@ -3598,12 +3713,12 @@ public class GameController : MonoBehaviour
         if (AudioManager.I) AudioManager.I.PlayBossLightningStrike();
 
         // Initial impact damage if a monster is there now (even if it was empty when chosen)
-        float initial = Mathf.Max(0f, _castleData.bossLightningInitialDamage);
+        float initial = GetScaledEnemyDamage(Mathf.Max(0f, _castleData.bossLightningInitialDamage));
 
         if (initial > 0f) gameBoard.DamageTile(cell, initial);
 
         // Spawn temporary hazard (ticks) without destroying monsters
-        float tickDmg = Mathf.Max(0f, _castleData.bossLightningTickDamage);
+        float tickDmg = GetScaledEnemyDamage(Mathf.Max(0f, _castleData.bossLightningTickDamage));
         float interval = Mathf.Max(0.05f, _castleData.bossLightningTickInterval);
         float duration = Mathf.Max(0.05f, _castleData.bossLightningHazardDuration);
 
@@ -3869,17 +3984,17 @@ public class GameController : MonoBehaviour
 
                 case CastleData.BossTrapKind.Spike:
                     gameBoard.SetFloorEffect(c, Board.FloorEffectType.Spike,
-                        obstacleManager.spikeOneShotDamage, 1f, 1);
+                        GetScaledEnemyDamage(obstacleManager.spikeOneShotDamage), 1f, 1);
                     break;
 
                 case CastleData.BossTrapKind.Poison:
                     gameBoard.SetFloorEffect(c, Board.FloorEffectType.Poison,
-                        obstacleManager.poisonTickDamage, obstacleManager.poisonTickInterval, obstacleManager.poisonTicks);
+                        GetScaledEnemyDamage(obstacleManager.poisonTickDamage), obstacleManager.poisonTickInterval, obstacleManager.poisonTicks);
                     break;
 
                 case CastleData.BossTrapKind.Fire:
                     gameBoard.SetFloorEffect(c, Board.FloorEffectType.Burn,
-                        obstacleManager.fireTickDamage, obstacleManager.fireTickInterval, obstacleManager.fireTicks);
+                        GetScaledEnemyDamage(obstacleManager.fireTickDamage), obstacleManager.fireTickInterval, obstacleManager.fireTicks);
                     break;
             }
         }
@@ -4306,7 +4421,9 @@ public class GameController : MonoBehaviour
         int bonusSum = clearTimeBonus + unitsLostBonus + comboBonus + obstacleBonus;
         int bonusBucket = Mathf.Max(0, bonusSum);
 
-        int totalBeforeReduction = baseXp + bonusBucket;
+        int totalBeforeDifficulty = baseXp + bonusBucket;
+        int difficultyBonus = Mathf.RoundToInt(totalBeforeDifficulty * (_starDifficultyModifiers.expGainMultiplier - 1f));
+        int totalBeforeReduction = Mathf.Max(0, totalBeforeDifficulty + difficultyBonus);
 
         var roster = GetActiveMonsterRoster();
         var perMonster = new Dictionary<string, float>();
@@ -4343,6 +4460,9 @@ public class GameController : MonoBehaviour
                 reserveBonus = unitsLostBonus,
                 comboBonus = comboBonus,
                 obstacleBonus = obstacleBonus,
+                difficultyStars = _starDifficulty,
+                difficultyBonus = difficultyBonus,
+                totalBeforeDifficulty = totalBeforeDifficulty,
                 totalBeforeReduction = totalBeforeReduction
             },
             perMonsterAwardXp = perMonster

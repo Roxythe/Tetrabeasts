@@ -32,7 +32,7 @@ public class LevelModifierDatabaseSO : ScriptableObject
         return result;
     }
 
-    public LevelModifierSO PickWeighted(LevelModifierKind[] allowedKinds = null)
+    public LevelModifierSO PickWeighted(LevelModifierKind[] allowedKinds = null, LevelModifierSO excludeModifier = null)
     {
         if (modifiers == null || modifiers.Length == 0)
             return null;
@@ -51,11 +51,16 @@ public class LevelModifierDatabaseSO : ScriptableObject
             if (allowed != null && !allowed.Contains(option.modifier.kind))
                 continue;
 
+            if (excludeModifier && option.modifier == excludeModifier)
+                continue;
+
             totalWeight += Mathf.Max(1, option.weight);
         }
 
         if (totalWeight <= 0)
-            return null;
+        {
+            return excludeModifier ? PickWeighted(allowedKinds, null) : null;
+        }
 
         int roll = Random.Range(0, totalWeight);
 
@@ -66,6 +71,9 @@ public class LevelModifierDatabaseSO : ScriptableObject
                 continue;
 
             if (allowed != null && !allowed.Contains(option.modifier.kind))
+                continue;
+
+            if (excludeModifier && option.modifier == excludeModifier)
                 continue;
 
             roll -= Mathf.Max(1, option.weight);

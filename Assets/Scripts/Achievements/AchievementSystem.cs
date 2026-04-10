@@ -151,6 +151,11 @@ public static class AchievementSystem
         public const string LevelTime_300 = "ACH_LEVEL_TIME_300";
 
         public const string BeatFinal = "ACH_BEAT_FINAL";
+        public const string BeatStar1 = "ACH_BEAT_STAR_1";
+        public const string BeatStar2 = "ACH_BEAT_STAR_2";
+        public const string BeatStar3 = "ACH_BEAT_STAR_3";
+        public const string BeatStar4 = "ACH_BEAT_STAR_4";
+        public const string BeatStar5 = "ACH_BEAT_STAR_5";
 
         // -------- Challenge / Conditional --------
         public const string PerfectWins_1 = "ACH_PERFECT_WINS_1";

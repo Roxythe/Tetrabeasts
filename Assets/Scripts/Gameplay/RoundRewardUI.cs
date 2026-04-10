@@ -66,7 +66,7 @@ public class RoundRewardUI : MonoBehaviour
     {
         var gc = FindFirstObjectByType<GameController>();
         float luck = gc ? gc.luck : RunModsStore.Luck;
-        float misfortune = gc ? gc.misfortune : RunModsStore.Misfortune;
+        float misfortune = gc ? gc.CurrentMisfortune : RunModsStore.Misfortune;
 
         bool wasBossLevel = gc && gc.LastLevelWasBoss;
 

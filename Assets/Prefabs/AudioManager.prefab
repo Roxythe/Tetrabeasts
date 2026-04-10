@@ -47,6 +47,11 @@ MonoBehaviour:
   mixer: {fileID: 24100000, guid: 57e1049380a4c1c44910470098c3cf56, type: 2}
   musicGroup: {fileID: -3974107776444165418, guid: 57e1049380a4c1c44910470098c3cf56, type: 2}
   sfxGroup: {fileID: -2550373149824464684, guid: 57e1049380a4c1c44910470098c3cf56, type: 2}
+  sfxGlassCracks:
+  - {fileID: 8300000, guid: c7e56f8d4450f8d41ba6155cc46ad95d, type: 3}
+  - {fileID: 8300000, guid: 3ae2e5ab55d1f3542932eaa7b409c906, type: 3}
+  - {fileID: 8300000, guid: 6894b0fe84961534987a194336a9ec66, type: 3}
+  - {fileID: 8300000, guid: 5b4075258229ec845b5d78d4f55ba9db, type: 3}
   sfxAchievementUnlocked: {fileID: 8300000, guid: 4fdc5a28e44b7904e87738c94f90f962, type: 3}
   bgmLoop: {fileID: 8300000, guid: fb7b322080d67a64daa251abc42133dc, type: 3}
   sfxRestart: {fileID: 8300000, guid: 9b934f9e5161c1f4699da6b51d6f07d0, type: 3}
