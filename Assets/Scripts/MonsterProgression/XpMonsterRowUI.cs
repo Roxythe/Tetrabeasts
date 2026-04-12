@@ -15,6 +15,7 @@ public class XpMonsterRowUI : MonoBehaviour
 
     public TMP_Text xpDistText;
     public TMP_Text xpDrainText;
+    public TMP_Text xpTransferInfoText;
 
     public RectTransform xpBarCenterRect;
     public RectTransform xpOrbDistRect;
@@ -74,6 +75,12 @@ public class XpMonsterRowUI : MonoBehaviour
     {
         if (xpDistText) xpDistText.gameObject.SetActive(false);
         if (xpDrainText) xpDrainText.gameObject.SetActive(false);
+
+        if (xpTransferInfoText)
+        {
+            xpTransferInfoText.gameObject.SetActive(false);
+            xpTransferInfoText.text = string.Empty;
+        }
 
         HideLevelUps();
     }
@@ -388,6 +395,37 @@ public class XpMonsterRowUI : MonoBehaviour
 
         levelUpStatsText.transform.localScale = from;
         _statPulseCR = null;
+    }
+
+    public void ShowXpDrainTransferInfo(float preservedXp, float drainableXp, float conversionFraction)
+    {
+        if (!xpTransferInfoText)
+            return;
+
+        xpTransferInfoText.gameObject.SetActive(true);
+
+        int percent = Mathf.RoundToInt(Mathf.Clamp01(conversionFraction) * 100f);
+        xpTransferInfoText.text = $"{FormatXp(preservedXp)} permanent EXP ({percent}% of {FormatXp(drainableXp)} transferable EXP)";
+    }
+
+    public void ShowXpCommitTransferInfo(float preservedXp, float drainableXp, float conversionFraction)
+    {
+        if (!xpTransferInfoText)
+            return;
+
+        xpTransferInfoText.gameObject.SetActive(true);
+
+        int percent = Mathf.RoundToInt(Mathf.Clamp01(conversionFraction) * 100f);
+        xpTransferInfoText.text = $"Converted from {FormatXp(drainableXp)} run EXP at {percent}%";
+    }
+
+    public void HideXpTransferInfo()
+    {
+        if (!xpTransferInfoText)
+            return;
+
+        xpTransferInfoText.gameObject.SetActive(false);
+        xpTransferInfoText.text = string.Empty;
     }
 
     public int GetUiLevel() => _uiLevel;

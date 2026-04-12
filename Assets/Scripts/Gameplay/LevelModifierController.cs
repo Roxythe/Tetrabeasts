@@ -31,6 +31,10 @@ public class LevelModifierController : MonoBehaviour
     [SerializeField] float comboShieldPulseScale = 1.18f;
     [SerializeField] float comboShieldPulseDuration = 0.18f;
 
+    [Header("Auto Shift Tuning")]
+    [SerializeField, Range(0.5f, 2f)] float autoShiftBaseSpeedMultiplier = 1.15f;
+    [SerializeField, Range(0f, 1f)] float autoShiftGravityRampInfluence = 0.45f;
+
     readonly Dictionary<Vector2Int, OvergrowthState> _growingOvergrowth = new();
     readonly Dictionary<Vector2Int, Image> _overgrowthVisuals = new();
     readonly Dictionary<Vector2Int, float> _contagionFloorSpreadTimers = new();
@@ -105,7 +109,10 @@ public class LevelModifierController : MonoBehaviour
         if (castleData == null)
             yield break;
 
-        _availableRerolls++;
+        int levelNumber = (_gc ? _gc.CurrentLevel : 0) + 1;
+        
+        if ((levelNumber % 2) == 1)
+            _availableRerolls++;
 
         if (castleData.isBossLevel || !castleData.enableLevelModifierSelection)
             yield break;
@@ -262,8 +269,15 @@ public class LevelModifierController : MonoBehaviour
                     return;
                 }
 
+                float baseInterval = Mathf.Max(0.03f, ActiveModifier.autoShiftInterval / Mathf.Max(0.01f, autoShiftBaseSpeedMultiplier));
+                float gravityRamp01 = _gc ? _gc.CurrentGravityRamp : 0f;
+                float effectiveInterval = Mathf.Lerp(
+                    baseInterval,
+                    baseInterval * Mathf.Clamp01(1f - autoShiftGravityRampInfluence),
+                    gravityRamp01);
+
                 _autoShiftTimer += dt;
-                if (_autoShiftTimer >= Mathf.Max(0.05f, ActiveModifier.autoShiftInterval))
+                if (_autoShiftTimer >= Mathf.Max(0.03f, effectiveInterval))
                 {
                     _autoShiftTimer = 0f;
                     Vector2Int delta = _autoShiftMovingRight ? Vector2Int.right : Vector2Int.left;

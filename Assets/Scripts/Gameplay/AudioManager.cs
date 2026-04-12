@@ -727,4 +727,18 @@ public class AudioManager : MonoBehaviour
         if (!sfxBossBoardBlastHit) return;
         PlaySFX(sfxBossBoardBlastHit, vol);
     }
+
+    public void ConfigureExternalMusicSource(AudioSource source, float vol = 1f)
+    {
+        if (!source) return;
+
+        source.spatialBlend = 0f;
+        source.playOnAwake = false;
+        source.ignoreListenerPause = false;
+
+        if (musicGroup)
+            source.outputAudioMixerGroup = musicGroup;
+
+        source.volume = masterVolume * musicVolume * Mathf.Clamp01(vol);
+    }
 }

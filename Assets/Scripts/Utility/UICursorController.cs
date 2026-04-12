@@ -5,7 +5,7 @@ public class UICursorController : MonoBehaviour
 {
     public RectTransform cursorRect;   
     public Canvas rootCanvas;
-    public float baseSize = 64f;                 // Size at scale 1
+    public float baseSize = 48f;
     public Vector2 hotspotPixels = Vector2.zero; // (0,0) top-left
     public bool forceLastSibling = true;
     public bool cursorBlocksRaycasts = false; // Keep false so it never blocks dropdown clicks

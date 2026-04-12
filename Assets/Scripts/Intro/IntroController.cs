@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Video;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -8,6 +9,9 @@ public class IntroController : MonoBehaviour
     public VideoPlayer videoPlayer;
     public TMP_Text pressAnyKeyText;
     public string titleSceneName = "TitleScene";
+
+    [Header("Cursor")]
+    public UICursorController uiCursorController;
 
     bool firstInputShown = false;
     bool skippingEnabled = false;
@@ -24,6 +28,7 @@ public class IntroController : MonoBehaviour
 
     public GameObject blackOverlay;
     public AudioSource videoAudioSource;
+    [Range(0f, 1f)] public float introVideoVolume = 1f;
 
     bool _firstFrameShown = false;
     float _savedVideoVolume = 1f;
@@ -36,6 +41,18 @@ public class IntroController : MonoBehaviour
 
     void Start()
     {
+        SettingsStore.ApplySavedVolumesToAudio();
+
+        if (uiCursorController)
+        {
+            uiCursorController.SetScale(SettingsStore.LoadCursorScale());
+            uiCursorController.SetVisible(true);
+        }
+
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = false;
+
         bool hasSelections = SelectedCharacterStore.HasSavedSelection() || SelectedMonstersStore.HasSavedSelection();
 
         if (SettingsStore.LoadSkipIntroEnabled() && hasSelections)
@@ -69,6 +86,9 @@ public class IntroController : MonoBehaviour
 
         if (videoAudioSource)
         {
+            if (AudioManager.I)
+                AudioManager.I.ConfigureExternalMusicSource(videoAudioSource, introVideoVolume);
+
             _savedVideoVolume = videoAudioSource.volume;
             videoAudioSource.volume = 0f;
 
@@ -257,5 +277,17 @@ public class IntroController : MonoBehaviour
     {
         Debug.LogWarning($"VideoPlayer error: {message}. Loading title scene.");
         LoadTitle();
+    }
+
+    void OnApplicationFocus(bool hasFocus)
+    {
+        if (!hasFocus) return;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = false;
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+
+        if (uiCursorController)
+            uiCursorController.SetVisible(true);
     }
 }

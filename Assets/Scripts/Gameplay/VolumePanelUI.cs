@@ -114,6 +114,7 @@ public class VolumePanelUI : MonoBehaviour
     void SetCursorSize(float v)
     {
         uiCursor?.SetScale(v);
+        SettingsStore.SaveCursorScale(v);
     }
 
     void SetMusicMode(int index)

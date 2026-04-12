@@ -345,6 +345,11 @@ public class GameController : MonoBehaviour
     int _levelStartReserveUnits = 0;
     MonsterPassiveBonuses _partyPassiveBonuses;
 
+    [Header("Run-End XP Conversion")]
+    [SerializeField, Range(0f, 1f)] float baseRunEndXpConversion = 0.10f;
+    [SerializeField, Range(0f, 1f)] float starDifficultyRunEndXpBonusPerStar = 0.05f;
+    [SerializeField, Range(0f, 1f)] float finalLevelWinXpConversionBonus = 0.10f;
+
     [Header("Debug")]
     public bool logRowDamageBreakdown = true;
 
@@ -707,6 +712,28 @@ public class GameController : MonoBehaviour
         SettingsStore.CursorScaleChanged -= OnCursorScaleChanged;
     }
 
+    public float CurrentFallInterval => GetCurrentFallInterval();
+
+    public float CurrentGravityRamp
+    {
+        get
+        {
+            float start = Mathf.Max(minFallInterval + 0.0001f, _thisLevelStartInterval);
+            float current = GetCurrentFallInterval();
+            return Mathf.Clamp01(1f - Mathf.InverseLerp(start, minFallInterval, current));
+        }
+    }
+
+    float GetRunEndXpConversionFraction(bool finalLevelWin)
+    {
+        float fraction = baseRunEndXpConversion + (_starDifficulty * starDifficultyRunEndXpBonusPerStar);
+
+        if (finalLevelWin)
+            fraction += finalLevelWinXpConversionBonus;
+
+        return Mathf.Clamp01(fraction);
+    }
+
     void ResetRunMods()
     {
         _runBuffs.Clear();
@@ -936,16 +963,18 @@ public class GameController : MonoBehaviour
 
             if (AudioManager.I) AudioManager.I.PlayIntermissionLoseMusic();
 
-            xpAwardUI.ShowRunEndCommit(roster, 0.10f, () =>
-                {
-                    CloseXpUiMode();
-                    ShowHighScore();
-                });
+            float keepFraction = GetRunEndXpConversionFraction(finalLevelWin: false);
+
+            xpAwardUI.ShowRunEndCommit(roster, keepFraction, () =>
+            {
+                CloseXpUiMode();
+                ShowHighScore();
+            });
 
             return;
         }
 
-        var kept = RunMonsterProgress.EndRunAndComputeKeptXp(0.10f);
+        var kept = RunMonsterProgress.EndRunAndComputeKeptXp(GetRunEndXpConversionFraction(finalLevelWin: false));
         foreach (var kv in kept)
             MonsterProgressStore.AddPermanentXp(kv.Key, kv.Value);
 
@@ -1600,7 +1629,9 @@ public class GameController : MonoBehaviour
 
             if (AudioManager.I) AudioManager.I.PlayIntermissionWinMusic();
 
-            xpAwardUI.ShowRunEndCommit(roster, 0.10f, () =>
+            float keepFraction = GetRunEndXpConversionFraction(finalLevelWin: true);
+
+            xpAwardUI.ShowRunEndCommit(roster, keepFraction, () =>
             {
                 CloseXpUiMode();
                 ShowHighScore();
@@ -1609,7 +1640,7 @@ public class GameController : MonoBehaviour
             return;
         }
 
-        var kept = RunMonsterProgress.EndRunAndComputeKeptXp(0.10f);
+        var kept = RunMonsterProgress.EndRunAndComputeKeptXp(GetRunEndXpConversionFraction(finalLevelWin: true));
         foreach (var kv in kept)
             MonsterProgressStore.AddPermanentXp(kv.Key, kv.Value);
 
@@ -2906,16 +2937,35 @@ public class GameController : MonoBehaviour
                 fromLabel = "floor effect";
                 break;
 
+            case Board.DamageSource.FloorLightning:
+                damageTypeWord = "lightning";
+                damageTypeColor = GetBattleLogLightningColor();
+                fromLabel = "storm";
+                break;
+
+            case Board.DamageSource.Contagion:
+                damageTypeWord = "contagion";
+                damageTypeColor = GetBattleLogContagionColor();
+                fromLabel = "infection";
+                break;
+
+            case Board.DamageSource.Rations:
+                damageTypeWord = "starvation";
+                damageTypeColor = GetBattleLogLowRationsColor();
+                fromLabel = "low rations";
+                break;
+
+            case Board.DamageSource.DeathExplosion:
+                damageTypeWord = "burst";
+                damageTypeColor = GetBattleLogDeathBurstColor();
+                fromLabel = "death burst";
+                break;
+
             case Board.DamageSource.FloorSpike:
                 fromLabel = "spikes";
                 break;
 
-            case Board.DamageSource.FloorLightning:
-                fromLabel = "lightning";
-                break;
-
             case Board.DamageSource.CastleProjectile:
-
                 fromLabel = "Enemy Archer";
                 break;
 
@@ -2931,19 +2981,6 @@ public class GameController : MonoBehaviour
                 fromLabel = "Overgrowth";
                 break;
 
-            case Board.DamageSource.Contagion:
-                damageTypeWord = "contagion";
-                fromLabel = "infection";
-                break;
-
-            case Board.DamageSource.Rations:
-                fromLabel = "low rations";
-                break;
-
-            case Board.DamageSource.DeathExplosion:
-                fromLabel = "death burst";
-                break;
-
             case Board.DamageSource.RearAmbush:
                 fromLabel = "rear ambush";
                 break;
@@ -2952,6 +2989,26 @@ public class GameController : MonoBehaviour
                 fromLabel = null;
                 break;
         }
+    }
+
+    Color32 GetBattleLogLowRationsColor()
+    {
+        return battleLog ? GetPrivateColorOrFallback(new Color32(214, 184, 96, 255)) : new Color32(214, 184, 96, 255);
+    }
+
+    Color32 GetBattleLogDeathBurstColor()
+    {
+        return battleLog ? GetPrivateColorOrFallback(new Color32(255, 120, 120, 255)) : new Color32(255, 120, 120, 255);
+    }
+
+    Color32 GetBattleLogLightningColor()
+    {
+        return battleLog ? GetPrivateColorOrFallback(new Color32(80, 230, 255, 255)) : new Color32(80, 230, 255, 255);
+    }
+
+    Color32 GetBattleLogContagionColor()
+    {
+        return battleLog ? GetPrivateColorOrFallback(new Color32(190, 90, 255, 255)) : new Color32(190, 90, 255, 255);
     }
 
     Color32 GetBattleLogPoisonColor()

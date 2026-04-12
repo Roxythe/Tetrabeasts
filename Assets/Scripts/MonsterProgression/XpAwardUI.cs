@@ -400,6 +400,16 @@ public class XpAwardUI : MonoBehaviour
             if (!md) continue;
 
             _rows[i].HideDeltaTexts();
+
+            if (runSnap != null && runSnap.TryGetValue(md.monsterName, out var st))
+            {
+                float runTotalXp = ((st.level - 1) * XpPerLevel) + st.xpInto;
+                float permanentTotalXp = MonsterProgressStore.GetPermanentTotalXp(md.monsterName);
+                float drainableXp = Mathf.Max(0f, runTotalXp - permanentTotalXp);
+                float preservedXp = drainableXp * _permanentXpConversion;
+
+                _rows[i].ShowXpDrainTransferInfo(preservedXp, drainableXp, _permanentXpConversion);
+            }
         }
 
         if (orbDrainStartDelaySeconds > 0f)
@@ -448,8 +458,17 @@ public class XpAwardUI : MonoBehaviour
 
             _rows[i].HideDeltaTexts();
 
-            if (keptXp != null && keptXp.TryGetValue(md.monsterName, out var kept))
-                _rows[i].ShowXpDist(kept);
+            float kept = keptXp != null && keptXp.TryGetValue(md.monsterName, out var keptValue) ? keptValue : 0f;
+            _rows[i].ShowXpDist(kept);
+
+            if (runSnap != null && runSnap.TryGetValue(md.monsterName, out var st))
+            {
+                float runTotalXp = ((st.level - 1) * XpPerLevel) + st.xpInto;
+                float permanentTotalXp = MonsterProgressStore.GetPermanentTotalXp(md.monsterName);
+                float drainableXp = Mathf.Max(0f, runTotalXp - permanentTotalXp);
+
+                _rows[i].ShowXpCommitTransferInfo(kept, drainableXp, _permanentXpConversion);
+            }
         }
 
         if (orbGainStartDelaySeconds > 0f)
