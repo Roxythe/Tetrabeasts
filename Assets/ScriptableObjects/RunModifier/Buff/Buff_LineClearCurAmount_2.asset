@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90562e4e9a0c7934aab92bcb4ad86cca, type: 3}
   m_Name: Buff_LineClearCurAmount_2
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
-  displayName: Currency Drop Value Up
+  displayName: Currency Drop Up
   description: Double the amount of currency gained occasionally when clearing lines
   icon: {fileID: 1090728018836599419, guid: 04efb91007be62b4ea86b6ed6049dd6f, type: 3}
   isBuff: 1

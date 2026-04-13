@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90562e4e9a0c7934aab92bcb4ad86cca, type: 3}
   m_Name: Buff_SpecialBlockChance_2
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
-  displayName: Special Block Chance Up
+  displayName: Special Block Up
   description: Moderatley incecreases the chance of special blocks appearing
   icon: {fileID: -6166464007423887329, guid: b150c915d9e3c5643bc2f225b2a9a6dc, type: 3}
   isBuff: 1

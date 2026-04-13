@@ -97,7 +97,7 @@ MonoBehaviour:
     weight: 1
   - kind: 3
     pattern: 5
-    weight: 1
+    weight: 5
   - kind: 3
     pattern: 0
     weight: 1
@@ -133,7 +133,7 @@ MonoBehaviour:
     allowRepeat: 0
     cooldown: 10
   - kind: 6
-    weight: 5
+    weight: 10
     allowRepeat: 0
     cooldown: 10
   - kind: 7

@@ -133,11 +133,11 @@ MonoBehaviour:
     allowRepeat: 0
     cooldown: 10
   - kind: 6
-    weight: 7
+    weight: 4
     allowRepeat: 0
     cooldown: 10
   - kind: 7
-    weight: 7
+    weight: 10
     allowRepeat: 0
     cooldown: 10
   bossInvulnDuration: 10

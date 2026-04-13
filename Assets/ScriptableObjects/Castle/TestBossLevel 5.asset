@@ -58,6 +58,9 @@ MonoBehaviour:
   overridePoisonCount: 5
   overrideFireCount: 4
   overrideSpikeCount: 3
+  enableLevelModifierSelection: 0
+  levelModifierDatabase: {fileID: 0}
+  allowedLevelModifierKinds: 
   bossEnableRowBlast: 1
   bossEnableFullBoardBlast: 1
   bossEnableLightningStrike: 1
@@ -85,7 +88,7 @@ MonoBehaviour:
   bossTrapOptions:
   - kind: 0
     pattern: 2
-    weight: 1
+    weight: 5
   - kind: 1
     pattern: 5
     weight: 1
@@ -94,31 +97,31 @@ MonoBehaviour:
     weight: 1
   - kind: 3
     pattern: 5
-    weight: 1
+    weight: 10
   - kind: 3
     pattern: 0
     weight: 1
   - kind: 2
-    pattern: 0
-    weight: 1
+    pattern: 5
+    weight: 10
   bossTrapCountPerUse: 4
   bossTrapCountPerClusterUse: 1
   useBossAbilityOptionPool: 1
   bossAbilityOptions:
   - kind: 0
-    weight: 1
+    weight: 2
     allowRepeat: 0
     cooldown: 20
   - kind: 1
-    weight: 1
+    weight: 2
     allowRepeat: 0
     cooldown: 20
   - kind: 2
-    weight: 1
+    weight: 5
     allowRepeat: 1
     cooldown: 12
   - kind: 3
-    weight: 3
+    weight: 10
     allowRepeat: 1
     cooldown: 12
   - kind: 4
