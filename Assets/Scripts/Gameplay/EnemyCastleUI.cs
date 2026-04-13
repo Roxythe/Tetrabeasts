@@ -123,16 +123,16 @@ public class EnemyCastleUI : MonoBehaviour
     }
 
     // Call this whenever damage to the castle occurs
-    public void ApplyDamage(int dmg)
+    public int ApplyDamage(int dmg)
     {
-        if (dmg <= 0 || sourceData == null) return;
+        if (dmg <= 0 || sourceData == null) return 0;
 
         if (_invulnerable)
         {
             // Play special invuln hit SFX (different from normal)
             if (AudioManager.I && sourceData.bossInvulnHitSFX)
                 AudioManager.I.PlaySFX(sourceData.bossInvulnHitSFX);
-            return;
+            return 0;
         }
 
         if (_magicShield)
@@ -141,13 +141,19 @@ public class EnemyCastleUI : MonoBehaviour
                 AudioManager.I.PlaySFX(sourceData.bossPylonReducedHitSFX);
         }
 
-        currentHP = Mathf.Max(0, currentHP - dmg);
+        int appliedDamage = Mathf.Clamp(dmg, 0, currentHP);
+        if (appliedDamage <= 0)
+            return 0;
+
+        currentHP = Mathf.Max(0, currentHP - appliedDamage);
         UpdateVisuals();
 
         TriggerBossDamageTakenSprite(); // Show damage sprite briefly, then return to correct idle
 
         if (currentHP <= 0)
             OnCastleDestroyed();
+
+        return appliedDamage;
     }
 
     void UpdateVisuals()

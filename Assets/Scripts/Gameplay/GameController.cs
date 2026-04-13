@@ -289,6 +289,7 @@ public class GameController : MonoBehaviour
     public bool disableNextPreview = false;
     public bool disableLandingHint = false;
     bool _pendingMainMenuAfterXp = false;
+    bool _finalWinStateApplied = false;
 
     public int currencyPerRoundWinAdd = 0;
     public float currencyPerRoundWinMult = 1f;
@@ -356,6 +357,11 @@ public class GameController : MonoBehaviour
     public ScoreUI scoreUI;
     public HighScoreUI highScoreUI;
     [SerializeField] XpAwardUI xpAwardUI;
+
+    [Header("Victory Panel")]
+    [SerializeField] VictoryPanelUI victoryPanelUI;
+    [SerializeField] GameObject victoryModifierRowPrefab;
+
     public TMP_Text levelText;
     [HideInInspector] public LevelModifierController levelModifierController;
     bool _levelStartBlocked = false;
@@ -420,6 +426,9 @@ public class GameController : MonoBehaviour
 
         if (!highScoreUI) Debug.LogError("HighScoreUI not found in scene.");
         else Debug.Log("HighScoreUI bound to: " + highScoreUI.gameObject.name);
+
+        ResolveVictoryPanelUi();
+        if (victoryPanelUI) victoryPanelUI.Hide();
 
         if (allTetrominoes == null || allTetrominoes.Length == 0)
         {
@@ -531,6 +540,8 @@ public class GameController : MonoBehaviour
 
         InitLevel(currentLevel);
         RunMonsterProgress.BeginRun(GetActiveMonsterRoster());
+        RunSummaryStats.BeginRun();
+        _finalWinStateApplied = false;
 
         // Pause menu defaults
         if (pausePanel) pausePanel.SetActive(false);
@@ -587,6 +598,9 @@ public class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
             ActivateSpecial();
 #endif
+
+        if (IsRoundActive)
+            RunSummaryStats.AddActiveTime(Time.deltaTime);
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -1087,6 +1101,9 @@ public class GameController : MonoBehaviour
         if (rowsCleared > 0 && PlayerProgress.I) // Track total row clears for achievements
             PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.TotalRowClears, rowsCleared);
 
+        if (rowsCleared > 0)
+            RunSummaryStats.AddLinesCleared(rowsCleared);
+
         // Special gauge
         if (levelModifierController)
             specialChargeFromMonsters = levelModifierController.ModifySpecialGaugeGain(specialChargeFromMonsters);
@@ -1277,6 +1294,8 @@ public class GameController : MonoBehaviour
         if (_comboCount > _maxComboThisLevel)
             _maxComboThisLevel = _comboCount; // Update max combo for bonus XP tracking
 
+        RunSummaryStats.RecordCombo(_comboCount);
+
         _comboTimer = Mathf.Max(0.1f, CurrentComboWindowSeconds);
 
         if (scoreUI)
@@ -1305,6 +1324,7 @@ public class GameController : MonoBehaviour
     void AddScoreInternal(int points)
     {
         score += GetScaledScorePoints(points);
+        RunSummaryStats.SetFinalScore(score);
         if (scoreUI) scoreUI.Set(score);
     }
 
@@ -1404,12 +1424,20 @@ public class GameController : MonoBehaviour
             yield return new WaitForSeconds(delay);
 
         int completedLevelNumber = currentLevel + 1;
+        bool finalLevel = IsFinalLevelIndex(currentLevel);
 
         var roster = GetActiveMonsterRoster();
         var computed = ComputeRoundWinXp(completedLevelNumber);
 
-        void ContinueToRewards()
+        void ContinueAfterRoundXp()
         {
+            if (finalLevel)
+            {
+                ShowFinalVictoryPanelAfterRoundWin(roster);
+                return;
+            }
+
+            CloseXpUiMode();
             ContinueAfterRoundWinRewards();
         }
 
@@ -1420,17 +1448,18 @@ public class GameController : MonoBehaviour
             if (AudioManager.I)
                 AudioManager.I.PlayIntermissionWinMusic();
 
-            xpAwardUI.ShowRoundWin(computed.breakdown, roster, computed.perMonsterAwardXp, () =>
-            {
-                CloseXpUiMode();
-                ContinueToRewards();
-            });
-
+            xpAwardUI.ShowRoundWin(computed.breakdown, roster, computed.perMonsterAwardXp, ContinueAfterRoundXp);
             yield break;
         }
 
         foreach (var kv in computed.perMonsterAwardXp)
             RunMonsterProgress.AddRunXp(kv.Key, kv.Value);
+
+        if (finalLevel)
+        {
+            ShowFinalVictoryPanelAfterRoundWin(roster);
+            yield break;
+        }
 
         ContinueAfterRoundWinRewards();
     }
@@ -1591,6 +1620,51 @@ public class GameController : MonoBehaviour
 
     void EndRunAsWin()
     {
+        FinalizeRunAsWinState();
+        ShowRunEndCommitAfterFinalWin(GetActiveMonsterRoster(), playIntermissionMusic: true);
+    }
+
+    void ShowFinalVictoryPanelAfterRoundWin(List<MonsterData> roster)
+    {
+        ApplyFinalLevelRoundWinBookkeeping();
+        FinalizeRunAsWinState();
+
+        OpenXpUiMode();
+        if (xpAwardUI)
+            xpAwardUI.HideAll();
+
+        ResolveVictoryPanelUi();
+        if (victoryPanelUI)
+            victoryPanelUI.SetRootActive(true);
+
+        ResolveVictoryPanelUi();
+        if (!victoryPanelUI)
+        {
+            ShowRunEndCommitAfterFinalWin(roster, playIntermissionMusic: false);
+            return;
+        }
+
+        victoryPanelUI.SetRootActive(true);
+        victoryPanelUI.Show(RunSummaryStats.GetSnapshot(), RunModsStore.Buffs, RunModsStore.Debuffs, () =>
+        {
+            ContinueAfterVictoryPanel(roster);
+        });
+    }
+
+    void ContinueAfterVictoryPanel(List<MonsterData> roster)
+    {
+        if (victoryPanelUI)
+            victoryPanelUI.Hide();
+
+        ShowRunEndCommitAfterFinalWin(roster, playIntermissionMusic: false);
+    }
+
+    void FinalizeRunAsWinState()
+    {
+        if (_finalWinStateApplied)
+            return;
+
+        _finalWinStateApplied = true;
         gameOver = true;
 
         if (PlayerProgress.I)
@@ -1613,7 +1687,10 @@ public class GameController : MonoBehaviour
 
             TryMarkFinalWinAllCharacters();
         }
+    }
 
+    void ShowRunEndCommitAfterFinalWin(List<MonsterData> roster, bool playIntermissionMusic)
+    {
         void ShowHighScore()
         {
             if (AudioManager.I) AudioManager.I.StopMusic();
@@ -1622,12 +1699,12 @@ public class GameController : MonoBehaviour
             EnterUICursorMode();
         }
 
-        var roster = GetActiveMonsterRoster();
         if (xpAwardUI)
         {
             OpenXpUiMode();
 
-            if (AudioManager.I) AudioManager.I.PlayIntermissionWinMusic();
+            if (playIntermissionMusic && AudioManager.I)
+                AudioManager.I.PlayIntermissionWinMusic();
 
             float keepFraction = GetRunEndXpConversionFraction(finalLevelWin: true);
 
@@ -1644,7 +1721,49 @@ public class GameController : MonoBehaviour
         foreach (var kv in kept)
             MonsterProgressStore.AddPermanentXp(kv.Key, kv.Value);
 
+        CloseXpUiMode();
         ShowHighScore();
+    }
+
+    void ApplyFinalLevelRoundWinBookkeeping()
+    {
+        currentLevel++;
+
+        if (PlayerProgress.I)
+        {
+            PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.LevelsWon, 1);
+            PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunLevelsWon, 1);
+
+            PlayerProgress.I.SetRunBestFloatMin(AchievementSystem.Stat.RunBestLevelWinSeconds, _levelTimer);
+            PlayerProgress.I.SetRunBestFloatMin(AchievementSystem.Stat.RunBestLevelSeconds, _levelTimer);
+
+            int maxLivesNow = EffectiveMaxUnitLives;
+            if (unitLives >= maxLivesNow)
+                PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.PerfectLevelWins, 1);
+        }
+
+        RefreshActiveMonsterPassives(applyStartingReserveDelta: true);
+
+        int roundsWon = currentLevel;
+        int bonusSteps = roundsWon / 3;
+        float misfortuneGain = 5f + (5f * bonusSteps);
+
+        misfortune += misfortuneGain;
+        RunModsStore.Misfortune = CurrentMisfortune;
+
+        int gained = GetRoundWinCurrency();
+        CurrencyStore.Add(gained);
+
+        if (PlayerProgress.I && gained > 0)
+            PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.GoldEarned, gained);
+
+        if (currencyUI) currencyUI.Refresh();
+
+        int maxLives = EffectiveMaxUnitLives;
+        int reinforcementsGranted = CurrentReinforcementsPerWin;
+
+        unitLives = Mathf.Clamp(unitLives + reinforcementsGranted, 0, maxLives);
+        UpdateUnitLivesUI();
     }
 
     void TryMarkFinalWinAllCharacters()
@@ -1697,6 +1816,8 @@ public class GameController : MonoBehaviour
         {
             case SpecialAbility.ClearBottomRows:
                 {
+                    RunSummaryStats.AddSpecialUsed();
+
                     int rows = Mathf.Max(1, selectedCharacter.clearRows);
 
                     int squaresCleared = gameBoard.ClearBottomRowsWithCombat(rows, out int totalMonsterDamage,
@@ -1713,6 +1834,9 @@ public class GameController : MonoBehaviour
 
                     if (squaresCleared > 0 && AudioManager.I)
                         AudioManager.I.PlayRandomLineClear();
+
+                    if (rowDamage != null && rowDamage.Count > 0)
+                        RunSummaryStats.AddLinesCleared(rowDamage.Count);
 
                     // Spawn one projectile per cleared row, using the dominant monster for visuals
                     if (rowDamage != null && rowDamage.Count > 0 && gameBoard && enemyCastleUI && enemyCastleUI.castleImage && !levelWon)
@@ -1789,11 +1913,16 @@ public class GameController : MonoBehaviour
 
             case SpecialAbility.RestoreAllToFull:
                 {
+                    RunSummaryStats.AddSpecialUsed();
+
                     // Count how many were dead before revive
                     int deadBefore = gameBoard.CountDeadTiles();
 
                     var changed = new List<Vector2Int>();
-                    int count = gameBoard.ReviveAllTilesToFull(changed);
+                    int count = gameBoard.ReviveAllTilesToFull(changed, out float totalRestored);
+
+                    if (totalRestored > 0f)
+                        RunSummaryStats.AddHealingDone(totalRestored);
 
                     if (selectedCharacter.sfxRestoreAll && AudioManager.I)
                         AudioManager.I.PlaySFX(selectedCharacter.sfxRestoreAll);
@@ -1821,6 +1950,8 @@ public class GameController : MonoBehaviour
 
             case SpecialAbility.GlobalImmunity:
                 {
+                    RunSummaryStats.AddSpecialUsed();
+
                     // Start the timer/pulse co-routine
                     StartCoroutine(GlobalImmunityCo(Mathf.Max(0.25f, selectedCharacter.immunityDuration)));
 
@@ -1831,6 +1962,8 @@ public class GameController : MonoBehaviour
 
             case SpecialAbility.ReducedGravity:
                 {
+                    RunSummaryStats.AddSpecialUsed();
+
                     float dur = (selectedCharacter != null) ? Mathf.Max(0.25f, selectedCharacter.reducedGravityDuration) : 10f;
                     float mult = (selectedCharacter != null) ? Mathf.Clamp(selectedCharacter.reducedGravityMultiplier, 0.1f, 2f) : 0.6666667f;
 
@@ -1850,6 +1983,8 @@ public class GameController : MonoBehaviour
 
             case SpecialAbility.DoubleStats:
                 {
+                    RunSummaryStats.AddSpecialUsed();
+
                     float dur = (selectedCharacter != null) ? Mathf.Max(0.25f, selectedCharacter.doubleStatsDuration) : 10f;
 
                     if (_playerDoubleStatsCR != null)
@@ -2103,7 +2238,9 @@ public class GameController : MonoBehaviour
 
             levelModifierController?.OnCastleProjectileImpact();
 
-            enemyCastleUI.ApplyDamage(damage);
+            int appliedDamage = enemyCastleUI.ApplyDamage(damage);
+            if (appliedDamage > 0)
+                RunSummaryStats.RecordDamageDealt(appliedDamage);
 
             if (enemyCastleUI.currentHP <= 0 && !winQueued)
             {
@@ -2482,6 +2619,10 @@ public class GameController : MonoBehaviour
 
         ResetCombo();
         if (highScoreUI) highScoreUI.Hide(); // Close high-score panel if it was open
+        if (victoryPanelUI) victoryPanelUI.Hide();
+
+        RunSummaryStats.BeginRun();
+        _finalWinStateApplied = false;
 
         // Reset bag and preview
         StartCoroutine(BeginCurrentLevelSequence());
@@ -2872,6 +3013,7 @@ public class GameController : MonoBehaviour
             AudioManager.I.PlayMonsterDieSFX(vol: 1.8f);
 
         unitLives = Mathf.Max(0, unitLives - 1);
+        RunSummaryStats.AddUnitsDied();
         UpdateUnitLivesUI();
 
         FlashUnitLivesFill(); // Flash reserve slider fill red briefly
@@ -2908,6 +3050,9 @@ public class GameController : MonoBehaviour
     void OnBoardTileHealed(Vector2Int cell, MonsterData target, MonsterData source, float amount)
     {
         levelModifierController?.OnTileHealed(cell, target, source, amount);
+
+        if (amount > 0f)
+            RunSummaryStats.AddHealingDone(amount);
 
         if (!battleLog || !target || !source) return;
 
@@ -3061,6 +3206,7 @@ public class GameController : MonoBehaviour
         if (!IsRoundActive) return;
 
         _obstaclesDestroyedThisLevel += 1;
+        RunSummaryStats.AddObstaclesDestroyed();
 
         // Stone existing run buff drops
         if (type == Board.ObstacleType.Stone)
@@ -4546,6 +4692,26 @@ public class GameController : MonoBehaviour
 
         EnterUICursorMode();
         StartCoroutine(ReapplyUICursorNextFrame());
+    }
+
+    void ResolveVictoryPanelUi()
+    {
+        if (!victoryPanelUI)
+            victoryPanelUI = FindFirstObjectByType<VictoryPanelUI>(FindObjectsInactive.Include);
+
+        if (!victoryPanelUI)
+        {
+            Debug.LogWarning("GameController: VictoryPanelUI was not found in the scene. Assign the existing inactive Victory Panel in the inspector.");
+            return;
+        }
+
+        if (victoryModifierRowPrefab)
+            victoryPanelUI.SetModifierRowPrefab(victoryModifierRowPrefab);
+    }
+
+    bool IsFinalLevelIndex(int levelIndex)
+    {
+        return castlesByLevel == null || castlesByLevel.Length == 0 || levelIndex >= castlesByLevel.Length - 1;
     }
 
     // ================== Helper/Utility ==================

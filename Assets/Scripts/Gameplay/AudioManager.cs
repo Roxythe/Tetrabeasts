@@ -285,7 +285,8 @@ public class AudioManager : MonoBehaviour
 
     public void PlayRainAmbience(float vol = 1f, float pitch = 1f)
     {
-        if (!sfxRainLoop || !ambienceLoopSrc) return;
+        if (!sfxRainLoop || !ambienceLoopSrc)
+            return;
 
         if (rainFadeCo != null)
         {
@@ -293,19 +294,25 @@ public class AudioManager : MonoBehaviour
             rainFadeCo = null;
         }
 
-        float targetVol = masterVolume * sfxVolume * Mathf.Clamp01(vol);
+        float targetVol = GetRainTargetVolume(vol);
+        float clampedPitch = Mathf.Clamp(pitch, 0.5f, 2f);
 
-        if (ambienceLoopSrc.isPlaying && ambienceLoopSrc.clip == sfxRainLoop)
+        if (ambienceLoopSrc.clip == sfxRainLoop)
         {
-            ambienceLoopSrc.pitch = Mathf.Clamp(pitch, 0.5f, 2f);
+            ambienceLoopSrc.loop = true;
+            ambienceLoopSrc.pitch = clampedPitch;
             ambienceLoopSrc.volume = targetVol;
+
+            if (!ambienceLoopSrc.isPlaying)
+                ambienceLoopSrc.Play();
+
             return;
         }
 
         ambienceLoopSrc.Stop();
         ambienceLoopSrc.clip = sfxRainLoop;
         ambienceLoopSrc.loop = true;
-        ambienceLoopSrc.pitch = Mathf.Clamp(pitch, 0.5f, 2f);
+        ambienceLoopSrc.pitch = clampedPitch;
         ambienceLoopSrc.volume = targetVol;
         ambienceLoopSrc.Play();
     }
@@ -356,7 +363,7 @@ public class AudioManager : MonoBehaviour
             ambienceLoopSrc.Stop();
             ambienceLoopSrc.clip = null;
             ambienceLoopSrc.pitch = 1f;
-            ambienceLoopSrc.volume = masterVolume * sfxVolume;
+            ambienceLoopSrc.volume = GetRainTargetVolume();
         }
 
         rainFadeCo = null;
@@ -726,6 +733,11 @@ public class AudioManager : MonoBehaviour
     {
         if (!sfxBossBoardBlastHit) return;
         PlaySFX(sfxBossBoardBlastHit, vol);
+    }
+
+    float GetRainTargetVolume(float vol = 1f)
+    {
+        return masterVolume * sfxVolume * Mathf.Clamp01(vol);
     }
 
     public void ConfigureExternalMusicSource(AudioSource source, float vol = 1f)

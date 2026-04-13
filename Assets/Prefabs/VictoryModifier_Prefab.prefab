@@ -100,7 +100,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -236,7 +236,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -281,6 +281,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 506336501681545116}
+  - component: {fileID: 3784474397544058519}
   - component: {fileID: 4767660379771113076}
   m_Layer: 5
   m_Name: VictoryModifier_Prefab
@@ -313,6 +314,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 320, y: 128}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3784474397544058519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2687559026713328491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8a615d73f1ed68428d6242eebe12f79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VictoryModifierRowUI
+  iconImage: {fileID: 8745675830784516383}
+  titleText: {fileID: 7403884206027153165}
+  shadowTitleText: {fileID: 1391177696325871506}
+  counterText: {fileID: 7599386784774276347}
+  shadowCounterText: {fileID: 1502031398447976322}
 --- !u!114 &4767660379771113076
 MonoBehaviour:
   m_ObjectHideFlags: 0

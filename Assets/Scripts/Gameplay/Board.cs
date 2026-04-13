@@ -1397,7 +1397,13 @@ public class Board : MonoBehaviour
 
     public int ReviveAllTilesToFull(List<Vector2Int> changedCells)
     {
+        return ReviveAllTilesToFull(changedCells, out _);
+    }
+
+    public int ReviveAllTilesToFull(List<Vector2Int> changedCells, out float totalRestored)
+    {
         if (changedCells == null) changedCells = new List<Vector2Int>();
+        totalRestored = 0f;
 
         var keys = new List<Vector2Int>(monsters.Keys);
 
@@ -1408,6 +1414,7 @@ public class Board : MonoBehaviour
             float max = Mathf.Max(0f, inst.maxHp);
             if (inst.hp < max) // Includes reviving from 0
             {
+                totalRestored += Mathf.Max(0f, max - inst.hp);
                 inst.hp = max;
                 monsters[cell] = inst;
 
