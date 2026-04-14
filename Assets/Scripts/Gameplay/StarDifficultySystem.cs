@@ -46,10 +46,17 @@ public static class StarDifficultySystem
     public static string GetSelectionLabel(int stars)
     {
         stars = ClampStars(stars);
-        if (stars <= 0)
-            return "0 Stars: Normal difficulty";
 
-        return stars == 1 ? "1 Star selected" : $"{stars} Stars selected";
+        return stars switch
+        {
+            0 => $"{stars} Star: Recruit Difficulty",
+            1 => $"{stars} Star: Soldier Difficulty",
+            2 => $"{stars} Star: Veteran Difficulty",
+            3 => $"{stars} Star: Lieutenant Difficulty",
+            4 => $"{stars} Star: General Difficulty",
+            5 => $"{stars} Star: War God Difficulty",
+            _ => $"{stars} Star: Recruit Difficulty"
+        };
     }
 
     public static string GetUnlockInstruction(int targetStars)

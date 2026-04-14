@@ -12,6 +12,7 @@ public class VictoryPanelUI : MonoBehaviour
     [Header("Stats")]
     [SerializeField] TMP_Text statsCategoryText;
     [SerializeField] TMP_Text statsEarnedText;
+    [SerializeField] TMP_Text unlockedDifficultyText;
 
     [Header("Modifier Lists")]
     [SerializeField] Transform buffsContent;
@@ -246,23 +247,26 @@ public class VictoryPanelUI : MonoBehaviour
             return;
 
         if (!statsCategoryText)
-            statsCategoryText = FindText(rootTransform, "statscategorytext");
+            statsCategoryText = FindText(rootTransform, "StatsCategory_Text");
 
         if (!statsEarnedText)
-            statsEarnedText = FindText(rootTransform, "statsearnedtext");
+            statsEarnedText = FindText(rootTransform, "StatsEarned_Text");
+
+        if (!unlockedDifficultyText)
+            unlockedDifficultyText = FindText(rootTransform, "UnlockedDifficulty_Text");
 
         if (!continueButton)
         {
-            var continueTransform = FindDescendant(rootTransform, "continuebutton", exactMatch: true);
+            var continueTransform = FindDescendant(rootTransform, "Continue_Button", exactMatch: true);
             if (continueTransform)
                 continueButton = continueTransform.GetComponent<Button>();
         }
 
         if (!buffsContent)
-            buffsContent = ResolveScrollContent(rootTransform, "buffscrollview");
+            buffsContent = ResolveScrollContent(rootTransform, "Buff_ScrollView");
 
         if (!debuffsContent)
-            debuffsContent = ResolveScrollContent(rootTransform, "debuffscrollview");
+            debuffsContent = ResolveScrollContent(rootTransform, "Debuff_ScrollView");
     }
 
     Transform ResolveScrollContent(Transform rootTransform, string scrollViewName)
@@ -361,5 +365,15 @@ public class VictoryPanelUI : MonoBehaviour
         int seconds = roundedSeconds % 60;
 
         return $"{hours}H {minutes}M {seconds}S";
+    }
+
+    public void SetUnlockedDifficultyText(string message)
+    {
+        if (!unlockedDifficultyText)
+            return;
+
+        bool hasMessage = !string.IsNullOrWhiteSpace(message);
+        unlockedDifficultyText.gameObject.SetActive(hasMessage);
+        unlockedDifficultyText.text = hasMessage ? message : string.Empty;
     }
 }

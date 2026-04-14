@@ -13,6 +13,11 @@ public class TitleStarDifficultyUI : MonoBehaviour
     [SerializeField] TMP_Text shadowSelectionText;
     [SerializeField] TMP_Text unlockText;
 
+    [Header("Keyboard Input")]
+    [SerializeField] bool allowKeyboardCycling = true;
+    [SerializeField] KeyCode decreaseDifficultyKey = KeyCode.A;
+    [SerializeField] KeyCode increaseDifficultyKey = KeyCode.D;
+
     [Header("Stars")]
     [SerializeField] Image[] starImages = new Image[StarDifficultySystem.MaxStars];
     [SerializeField] Sprite filledStarSprite;
@@ -20,6 +25,21 @@ public class TitleStarDifficultyUI : MonoBehaviour
     [SerializeField] Color filledStarColor = Color.white;
     [SerializeField] Color emptyUnlockedStarColor = new Color(0.92f, 0.92f, 0.92f, 1f);
     [SerializeField] Color lockedStarColor = new Color(0.50f, 0.50f, 0.50f, 0.80f);
+
+    [System.Serializable]
+    struct DifficultyAnimationEntry
+    {
+        public GameObject prefab;
+    }
+
+    [Header("Difficulty Animation Prefabs")]
+    [SerializeField] RectTransform leftDifficultyAnimationHolder;
+    [SerializeField] RectTransform rightDifficultyAnimationHolder;
+    [SerializeField] DifficultyAnimationEntry[] difficultyAnimationPrefabs = new DifficultyAnimationEntry[StarDifficultySystem.MaxStars + 1];
+
+    GameObject _leftDifficultyAnimationInstance;
+    GameObject _rightDifficultyAnimationInstance;
+    int _lastAppliedDifficultyAnimation = -1;
 
     [Header("Tooltip")]
     [SerializeField] RectTransform tooltipRoot;
@@ -42,6 +62,22 @@ public class TitleStarDifficultyUI : MonoBehaviour
         HookButtons();
         HookStarHoverTargets();
         RefreshNow();
+        RefreshDifficultyAnimations(force: true);
+    }
+
+    void Update()
+    {
+        if (!allowKeyboardCycling || !isActiveAndEnabled)
+            return;
+
+        if (PlayerProgress.I == null)
+            return;
+
+        if (Input.GetKeyDown(decreaseDifficultyKey))
+            OnDecreaseClicked();
+
+        if (Input.GetKeyDown(increaseDifficultyKey))
+            OnIncreaseClicked();
     }
 
     public void RefreshNow()
@@ -89,6 +125,7 @@ public class TitleStarDifficultyUI : MonoBehaviour
                 : StarDifficultySystem.GetUnlockInstruction(maxUnlockedStars + 1);
         }
 
+        RefreshDifficultyAnimations();
         HideTooltip();
     }
 
@@ -101,6 +138,16 @@ public class TitleStarDifficultyUI : MonoBehaviour
     {
         if (hideTooltipOnDisable)
             HideTooltip();
+
+        if (_leftDifficultyAnimationInstance)
+            Destroy(_leftDifficultyAnimationInstance);
+
+        if (_rightDifficultyAnimationInstance)
+            Destroy(_rightDifficultyAnimationInstance);
+
+        _leftDifficultyAnimationInstance = null;
+        _rightDifficultyAnimationInstance = null;
+        _lastAppliedDifficultyAnimation = -1;
     }
 
     void OnValidate()
@@ -303,6 +350,76 @@ public class TitleStarDifficultyUI : MonoBehaviour
         return transform as RectTransform;
     }
 
+    public void RefreshDifficultyAnimations(bool force = false)
+    {
+        if (PlayerProgress.I == null)
+            return;
+
+        int selectedStars = StarDifficultySystem.ClampStars(PlayerProgress.I.GetSelectedStarDifficulty());
+        if (!force && _lastAppliedDifficultyAnimation == selectedStars)
+            return;
+
+        _lastAppliedDifficultyAnimation = selectedStars;
+
+        GameObject prefab = null;
+        if (difficultyAnimationPrefabs != null &&
+            selectedStars >= 0 &&
+            selectedStars < difficultyAnimationPrefabs.Length)
+        {
+            prefab = difficultyAnimationPrefabs[selectedStars].prefab;
+        }
+
+        ReplaceDifficultyAnimationInstance(ref _leftDifficultyAnimationInstance, leftDifficultyAnimationHolder, prefab);
+        ReplaceDifficultyAnimationInstance(ref _rightDifficultyAnimationInstance, rightDifficultyAnimationHolder, prefab);
+    }
+
+    public void ReplaceDifficultyAnimationInstance(ref GameObject currentInstance, RectTransform holder, GameObject prefab)
+    {
+        if (currentInstance)
+            Destroy(currentInstance);
+
+        currentInstance = null;
+
+        if (!holder || !prefab)
+            return;
+
+        currentInstance = Instantiate(prefab, holder);
+        currentInstance.name = prefab.name;
+
+        RectTransform instanceRect = currentInstance.transform as RectTransform;
+        if (instanceRect)
+        {
+            instanceRect.anchorMin = Vector2.zero;
+            instanceRect.anchorMax = Vector2.one;
+            instanceRect.offsetMin = Vector2.zero;
+            instanceRect.offsetMax = Vector2.zero;
+            instanceRect.localScale = Vector3.one;
+            instanceRect.anchoredPosition = Vector2.zero;
+        }
+
+        RestartDifficultyAnimation(currentInstance);
+    }
+
+    void RestartDifficultyAnimation(GameObject instance)
+    {
+        if (!instance)
+            return;
+
+        var pingPongAnimators = instance.GetComponentsInChildren<UIImagePingPongAnimator>(true);
+        for (int i = 0; i < pingPongAnimators.Length; i++)
+        {
+            pingPongAnimators[i].ResetAnimation();
+            pingPongAnimators[i].Play();
+        }
+
+        var animators = instance.GetComponentsInChildren<Animator>(true);
+        for (int i = 0; i < animators.Length; i++)
+        {
+            animators[i].Rebind();
+            animators[i].Update(0f);
+            animators[i].Play(0, 0, 0f);
+        }
+    }
 }
 
 public class TitleStarDifficultyHoverTarget : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
@@ -335,4 +452,5 @@ public class TitleStarDifficultyHoverTarget : MonoBehaviour, IPointerEnterHandle
 
         owner.HideTooltip();
     }
+
 }

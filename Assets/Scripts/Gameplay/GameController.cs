@@ -47,25 +47,22 @@ public class GameController : MonoBehaviour
 
     [Header("Gravity UI")]
     [SerializeField] TMP_Text levelTimerText;
-    [SerializeField] TMP_Text gravityText; // Displays current fall interval / speed
-    [SerializeField] string gravityTextFormat = "{0:0.0}";
+    [SerializeField] TMP_Text gravityText;
+    [SerializeField] string gravityTextFormat = "{0:0.00}";
 
-    [SerializeField] float fallRampStepSeconds = 2f; // 1 = every second, 2 = every other second, 3 = every 3rd second
     [SerializeField] float startFallInterval = 1.0f;
+    [SerializeField] float minFallInterval = 0.10f;
 
-    [SerializeField] float minFallInterval = 0.10f;                // Clamp (fastest allowed)
-    [SerializeField] float fallIntervalDecreasePerSecond = 0.008f;  // In-level ramp (shrinks interval over time)
+    [Header("Gravity Progression")]
+    [SerializeField] float gravityIncreasePerSecond = 0.01f;
+    [SerializeField] float levelBaseGravityIncrease = 0.20f;
 
-    // Smooth non-compounding per-level start speed
-    [SerializeField] float baseLevelGravity = 1.0f;                // Level 1 gravity baseline
-    [SerializeField] float gravityIncreasePerLevel = 0.15f;        // Added each new level 
-
-    // Runtime cache 
-    float _level1FallInterval;          // Snapshot of Level 1 baseline interval
-    float _lastShownFallInterval = -1f; // Cache last shown interval to avoid redundant UI updates
+    // Runtime cache
+    float _level1FallInterval;
+    float _lastShownFallInterval = -1f;
     float _levelTimer = 0f;
-    float _thisLevelStartInterval;      // Computed at each level start
-    int _lastLevelInitialized = -999;   // Prevents double-applying
+    float _thisLevelBaseFallInterval;
+    int _lastLevelInitialized = -999;
 
     [Header("Boss Gravity Visuals")]
     [SerializeField] Image bossGravityIncreasedImage; // Toggle/flash when boss gravity is active
@@ -367,6 +364,7 @@ public class GameController : MonoBehaviour
     bool _levelStartBlocked = false;
     int _starDifficulty = 0;
     StarDifficultyModifiers _starDifficultyModifiers = new StarDifficultyModifiers(0);
+    bool _newDifficultyUnlockedThisRun;
 
     public int CurrentLevel => currentLevel;
     public int CurrentReserveUnits => unitLives;
@@ -542,6 +540,7 @@ public class GameController : MonoBehaviour
         RunMonsterProgress.BeginRun(GetActiveMonsterRoster());
         RunSummaryStats.BeginRun();
         _finalWinStateApplied = false;
+        _newDifficultyUnlockedThisRun = false;
 
         // Pause menu defaults
         if (pausePanel) pausePanel.SetActive(false);
@@ -732,9 +731,13 @@ public class GameController : MonoBehaviour
     {
         get
         {
-            float start = Mathf.Max(minFallInterval + 0.0001f, _thisLevelStartInterval);
+            float baseInterval = Mathf.Max(minFallInterval, _thisLevelBaseFallInterval);
             float current = GetCurrentFallInterval();
-            return Mathf.Clamp01(1f - Mathf.InverseLerp(start, minFallInterval, current));
+
+            if (baseInterval <= minFallInterval + 0.0001f)
+                return 1f;
+
+            return Mathf.Clamp01(1f - Mathf.InverseLerp(baseInterval, minFallInterval, current));
         }
     }
 
@@ -806,10 +809,10 @@ public class GameController : MonoBehaviour
         return Mathf.Max(0f, amount) * _starDifficultyModifiers.enemyDamageMultiplier;
     }
 
-    void HandleStarDifficultyFinalWin()
+    bool HandleStarDifficultyFinalWin()
     {
         if (PlayerProgress.I == null)
-            return;
+            return false;
 
         if (_starDifficulty > 0)
         {
@@ -819,10 +822,15 @@ public class GameController : MonoBehaviour
         }
 
         if (_starDifficulty >= StarDifficultySystem.MaxStars)
-            return;
+            return false;
 
         if (PlayerProgress.I.GetMaxUnlockedStarDifficulty() == _starDifficulty)
+        {
             PlayerProgress.I.TryUnlockStarDifficulty(_starDifficulty + 1);
+            return true;
+        }
+
+        return false;
     }
 
     void RefreshActiveMonsterPassives(bool applyStartingReserveDelta)
@@ -1645,6 +1653,7 @@ public class GameController : MonoBehaviour
         }
 
         victoryPanelUI.SetRootActive(true);
+        victoryPanelUI.SetUnlockedDifficultyText(_newDifficultyUnlockedThisRun ? "New Difficulty Unlocked!" : string.Empty);
         victoryPanelUI.Show(RunSummaryStats.GetSnapshot(), RunModsStore.Buffs, RunModsStore.Debuffs, () =>
         {
             ContinueAfterVictoryPanel(roster);
@@ -1673,7 +1682,7 @@ public class GameController : MonoBehaviour
             PlayerProgress.I.EndRun();
         }
 
-        HandleStarDifficultyFinalWin();
+        _newDifficultyUnlockedThisRun = HandleStarDifficultyFinalWin();
 
         if (PlayerProgress.I != null)
         {
@@ -2822,27 +2831,30 @@ public class GameController : MonoBehaviour
         _levelTimer = 0f;
         _gravityCapAccumSeconds = 0f;
 
-        // Level 1 => levelIndex 0
-        float levelGravity = baseLevelGravity + (Mathf.Max(0, levelIndex) * gravityIncreasePerLevel);
+        int displayedLevel = Mathf.Max(1, levelIndex + 1);
+        float levelBonus = Mathf.Max(0, displayedLevel - 1) * Mathf.Max(0f, levelBaseGravityIncrease);
 
-        // Convert gravity to a starting interval
-        _thisLevelStartInterval = _level1FallInterval / Mathf.Max(0.01f, levelGravity);
+        _thisLevelBaseFallInterval = Mathf.Max(
+            minFallInterval,
+            _level1FallInterval - levelBonus
+        );
 
+        float interval = GetCurrentFallInterval();
+
+        if (piece)
+            piece.SetFallInterval(interval, resetAccumulator: true);
+
+        UpdateGravityText(interval);
         UpdateLevelTimerUI();
-        UpdateGravityText(GetCurrentFallInterval());
     }
 
     float GetCurrentFallInterval()
     {
-        // During the level, the interval shrinks over time 
-        float ramp = fallIntervalDecreasePerSecond * EffectiveFallRampRateMult;
+        float elapsedReduction = Mathf.Max(0f, gravityIncreasePerSecond) * _levelTimer;
+        float interval = _thisLevelBaseFallInterval - elapsedReduction;
 
-        float step = Mathf.Max(0.01f, fallRampStepSeconds);
-        float steppedTime = Mathf.Floor(_levelTimer / step) * step; // Only advances every 'step' seconds
+        interval /= Mathf.Max(0.01f, EffectivePieceGravityMult);
 
-        float interval = _thisLevelStartInterval - (steppedTime * ramp);
-
-        interval /= EffectivePieceGravityMult; // >1 = faster, <1 = slower
         return Mathf.Max(minFallInterval, interval);
     }
 
