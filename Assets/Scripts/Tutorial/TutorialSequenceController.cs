@@ -26,13 +26,9 @@ public class TutorialSequenceController : MonoBehaviour
     public class TutorialStep
     {
         public string stepId;
-        public string title;
 
         [TextArea(3, 8)]
         public string body;
-
-        [TextArea(1, 3)]
-        public string prompt;
 
         [Header("Flow")]
         public bool pauseGameplay = true;
@@ -47,6 +43,8 @@ public class TutorialSequenceController : MonoBehaviour
         [Header("Highlight")]
         public RectTransform highlightTarget;
         public Vector2 highlightPadding = new Vector2(24f, 24f);
+        public bool highlightActivePiece;
+        public bool freezePieceGravity;
 
         [Header("Completion")]
         public TutorialStepCompletionMode completionMode = TutorialStepCompletionMode.NextButton;
@@ -111,6 +109,9 @@ public class TutorialSequenceController : MonoBehaviour
         UnbindGameplayEvents();
         CleanupCurrentStepBindings();
         SetGameplaySuspended(false);
+
+        if (gameController)
+            gameController.SetTutorialFreezePieceGravity(false);
 
         if (popupView && popupView.gameObject.activeInHierarchy)
             popupView.Hide();
@@ -182,6 +183,9 @@ public class TutorialSequenceController : MonoBehaviour
     {
         CleanupCurrentStepBindings();
         SetGameplaySuspended(false);
+
+        if (gameController)
+            gameController.SetTutorialFreezePieceGravity(false);
 
         popupView?.Hide();
         highlightView?.Hide();
@@ -264,13 +268,7 @@ public class TutorialSequenceController : MonoBehaviour
         _resolvedCompletionMode = ResolveCompletionMode(step);
 
         popupView.Show();
-        string body = step.body;
-        string prompt = ResolvePrompt(step, _resolvedCompletionMode);
-
-        if (!string.IsNullOrWhiteSpace(prompt))
-            body = string.IsNullOrWhiteSpace(body) ? prompt : $"{body}\n\n{prompt}";
-
-        popupView.SetContent(body);
+        popupView.SetContent(step.body);
         popupView.SetSkipVisible(step.allowSkip);
 
         ApplyPopupPosition(step);
@@ -278,6 +276,10 @@ public class TutorialSequenceController : MonoBehaviour
         HookCurrentStepBindings(step);
         SetGameplaySuspended(step.pauseGameplay);
         RefreshPopupState(step);
+
+        EnsureGameController();
+        if (gameController)
+            gameController.SetTutorialFreezePieceGravity(step.freezePieceGravity);
 
         if (_resolvedCompletionMode == TutorialStepCompletionMode.PanelOpened && step.watchedPanel && step.watchedPanel.activeInHierarchy)
             MarkCurrentStepRequirementMet();
@@ -296,6 +298,19 @@ public class TutorialSequenceController : MonoBehaviour
     {
         if (!highlightView)
             return;
+
+        if (step.highlightActivePiece)
+        {
+            EnsureGameController();
+            var targets = gameController ? gameController.GetTutorialActivePieceHighlightTargets() : null;
+
+            if (targets != null && targets.Count > 0)
+                highlightView.Show(targets, step.highlightPadding);
+            else
+                highlightView.Hide();
+
+            return;
+        }
 
         if (step.highlightTarget)
             highlightView.Show(step.highlightTarget, step.highlightPadding);
@@ -446,32 +461,6 @@ public class TutorialSequenceController : MonoBehaviour
         }
 
         return step.completionMode;
-    }
-
-    string ResolvePrompt(TutorialStep step, TutorialStepCompletionMode mode)
-    {
-        if (!string.IsNullOrWhiteSpace(step.prompt))
-            return step.prompt;
-
-        switch (mode)
-        {
-            case TutorialStepCompletionMode.AnyKey:
-            case TutorialStepCompletionMode.AllKeys:
-                return "Press the required control to continue.";
-
-            case TutorialStepCompletionMode.AnyGameplayEvent:
-            case TutorialStepCompletionMode.AllGameplayEvents:
-                return "Perform the required action to continue.";
-
-            case TutorialStepCompletionMode.ButtonClick:
-                return "Click the highlighted button to continue.";
-
-            case TutorialStepCompletionMode.PanelOpened:
-                return "Open the highlighted panel to continue.";
-
-            default:
-                return "Click Continue when you're ready.";
-        }
     }
 
     bool CheckAnyRequiredKeyPressed(TutorialStep step)

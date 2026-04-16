@@ -190,9 +190,11 @@ public class GameController : MonoBehaviour
     public VolumePanelUI volumePanelInPause;
     public string titleSceneName = "TitleScene";
     bool isPaused = false;
-    bool tutorialSuspended = false;
     public bool IsPaused => isPaused;
-    public bool IsTutorialSuspended => tutorialSuspended;
+    bool tutorialSuspended = false;
+    bool tutorialFreezePieceGravity = false;
+
+    public bool IsTutorialPieceGravityFrozen => tutorialFreezePieceGravity;
     public event System.Action<TutorialGameplayEvent> TutorialGameplayEventRaised;
 
     [Header("Unit Lives")]
@@ -408,6 +410,15 @@ public class GameController : MonoBehaviour
     public Vector4 stoneWeights_L10P = new Vector4(0.40f, 0.30f, 0.20f, 0.10f);
 
     [Range(0f, 0.20f)] public float stoneLegendaryChance_L10P = 0.02f; // taken out of common at level 10+
+
+    // ========== Tutorial First Time Events ==========
+    [SerializeField] TutorialSequenceController firstFullRowTutorial;
+    [SerializeField] TutorialSequenceController firstSpecialChargedTutorial;
+    [SerializeField] TutorialSequenceController firstLossXpTutorial;
+    [SerializeField] TutorialSequenceController firstLevelModifierTutorial;
+
+    bool _fullRowTutorialPendingPause;
+    bool _wasSpecialGaugeFullLastFrame;
 
     void Start()
     {
@@ -946,7 +957,7 @@ public class GameController : MonoBehaviour
         if (levelModifierController)
             yield return levelModifierController.BeginLevel(currentCastleData);
 
-        RefillBag();
+        RefillBag(forceFirstEntryNormal: true);
         EnsureMinBag(3);
         ShowNextPreview();
 
@@ -1009,7 +1020,7 @@ public class GameController : MonoBehaviour
         ShowHighScore();
     }
 
-    void RefillBag()
+    void RefillBag(bool forceFirstEntryNormal = false)
     {
         // Validate source arrays to avoid null floods
         var normals = new List<TetrominoData>();
@@ -1045,9 +1056,10 @@ public class GameController : MonoBehaviour
         foreach (var d in normals)
         {
             TetrominoData use = d;
+            bool isFirstBagEntry = forceFirstEntryNormal && bag.Count == 0;
 
-            // Chance to swap in a special block
-            if (specialsAvailable &&
+            if (!isFirstBagEntry &&
+                specialsAvailable &&
                 !(levelModifierController && levelModifierController.BlocksSpecialPieceSpawns) &&
                 Random.value < chance)
             {
@@ -1057,7 +1069,12 @@ public class GameController : MonoBehaviour
                     var sp = specialBlocks[k];
                     if (!sp) continue;
                     float w = Mathf.Max(0f, sp.spawnWeight);
-                    if ((r -= w) <= 0f) { use = sp; specialsAddedThisRefill++; break; }
+                    if ((r -= w) <= 0f)
+                    {
+                        use = sp;
+                        specialsAddedThisRefill++;
+                        break;
+                    }
                 }
             }
 
@@ -4759,6 +4776,16 @@ public class GameController : MonoBehaviour
     public void SetTutorialSuspended(bool suspended)
     {
         tutorialSuspended = suspended;
+    }
+
+    public void SetTutorialFreezePieceGravity(bool frozen)
+    {
+        tutorialFreezePieceGravity = frozen;
+    }
+
+    public System.Collections.Generic.IReadOnlyList<RectTransform> GetTutorialActivePieceHighlightTargets()
+    {
+        return piece ? piece.GetTutorialHighlightTargets() : null;
     }
 
     public void NotifyTutorialGameplayEvent(TutorialGameplayEvent gameplayEvent)

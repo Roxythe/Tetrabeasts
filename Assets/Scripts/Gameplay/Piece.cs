@@ -133,19 +133,38 @@ public class Piece : MonoBehaviour
         }
 
         // Gravity
-        fallTimer += Time.deltaTime;
-        if (fallTimer >= fallInterval)
+        bool freezeTutorialGravity = gc != null && gc.IsTutorialPieceGravityFrozen;
+
+        if (!freezeTutorialGravity)
+        {
+            fallTimer += Time.deltaTime;
+            if (fallTimer >= fallInterval)
+            {
+                fallTimer = 0f;
+                if (!TryMove(Vector2Int.down)) lockTimer += fallInterval;
+                else lockTimer = 0f;
+            }
+
+            if (lockTimer >= lockDelay)
+                Lock();
+        }
+        else
         {
             fallTimer = 0f;
-            if (!TryMove(Vector2Int.down)) lockTimer += fallInterval;
-            else lockTimer = 0f;
+            lockTimer = 0f;
         }
+
         if (lockTimer >= lockDelay) Lock();
 
         if (data.special != SpecialType.None)
             UpdateSpecialHints();
         else
             UpdateNormalHints();
+    }
+
+    public System.Collections.Generic.IReadOnlyList<RectTransform> GetTutorialHighlightTargets()
+    {
+        return visuals;
     }
 
     void BuildVisuals()
