@@ -83,26 +83,44 @@ public class Piece : MonoBehaviour
 
         // Input handling
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
-        if (!blockHorizontal && Keyboard.current.leftArrowKey.wasPressedThisFrame)  TryMove(Vector2Int.left);
-        if (!blockHorizontal && Keyboard.current.rightArrowKey.wasPressedThisFrame) TryMove(Vector2Int.right);
-        if (Keyboard.current.downArrowKey.wasPressedThisFrame)  SoftDrop();
-        if (!blockRotation && Keyboard.current.upArrowKey.wasPressedThisFrame)    RotateCW();
-        if (!blockRotation && Keyboard.current.zKey.wasPressedThisFrame)          RotateCCW();
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)      HardDrop();
+        var keyboard = Keyboard.current;
+        bool moveLeftPressed = keyboard != null && !blockHorizontal &&
+                               (keyboard.leftArrowKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame);
+        bool moveRightPressed = keyboard != null && !blockHorizontal &&
+                                (keyboard.rightArrowKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame);
+        bool softDropPressed = keyboard != null &&
+                               (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame);
+        bool rotateCwPressed = keyboard != null && !blockRotation &&
+                               (keyboard.upArrowKey.wasPressedThisFrame || keyboard.eKey.wasPressedThisFrame);
+        bool rotateCcwPressed = keyboard != null && !blockRotation &&
+                                (keyboard.zKey.wasPressedThisFrame || keyboard.qKey.wasPressedThisFrame);
+        bool hardDropPressed = keyboard != null && keyboard.spaceKey.wasPressedThisFrame;
 #else
-        if (!blockHorizontal && Input.GetKeyDown(KeyCode.LeftArrow)) TryMove(Vector2Int.left);
-        if (!blockHorizontal && Input.GetKeyDown(KeyCode.RightArrow)) TryMove(Vector2Int.right);
-        if (Input.GetKeyDown(KeyCode.DownArrow)) SoftDrop();
-        if (!blockRotation && Input.GetKeyDown(KeyCode.UpArrow)) RotateCW();
-
-        if (!blockHorizontal && Input.GetKeyDown(KeyCode.A)) TryMove(Vector2Int.left);
-        if (!blockHorizontal && Input.GetKeyDown(KeyCode.D)) TryMove(Vector2Int.right);
-        if (Input.GetKeyDown(KeyCode.S)) SoftDrop();
-
-        if (!blockRotation && Input.GetKeyDown(KeyCode.E)) RotateCW();
-        if (!blockRotation && Input.GetKeyDown(KeyCode.Q)) RotateCCW();
-        if (Input.GetKeyDown(KeyCode.Space)) HardDrop();
+        bool moveLeftPressed = !blockHorizontal && (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A));
+        bool moveRightPressed = !blockHorizontal && (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D));
+        bool softDropPressed = Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S);
+        bool rotateCwPressed = !blockRotation && (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.E));
+        bool rotateCcwPressed = !blockRotation && (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Q));
+        bool hardDropPressed = Input.GetKeyDown(KeyCode.Space);
 #endif
+
+        if (moveLeftPressed && TryMove(Vector2Int.left))
+            NotifyTutorialEvent(TutorialGameplayEvent.MoveLeft);
+
+        if (moveRightPressed && TryMove(Vector2Int.right))
+            NotifyTutorialEvent(TutorialGameplayEvent.MoveRight);
+
+        if (softDropPressed)
+            SoftDrop(true);
+
+        if (rotateCwPressed)
+            RotateCW(true);
+
+        if (rotateCcwPressed)
+            RotateCCW(true);
+
+        if (hardDropPressed)
+            HardDrop(true);
 
         if (gc != null && gc.levelModifierController)
             gc.levelModifierController.HandlePieceAutomation(this, Time.deltaTime);
@@ -275,10 +293,27 @@ public class Piece : MonoBehaviour
         origin += delta;
     }
 
-    void SoftDrop() { if (TryMove(Vector2Int.down)) lockTimer = 0f; }
-    void HardDrop() { while (TryMove(Vector2Int.down)) { } Lock(); }
+    void SoftDrop(bool notifyTutorial = false)
+    {
+        if (!TryMove(Vector2Int.down))
+            return;
 
-    void RotateCW()
+        lockTimer = 0f;
+        if (notifyTutorial)
+            NotifyTutorialEvent(TutorialGameplayEvent.SoftDrop);
+    }
+
+    void HardDrop(bool notifyTutorial = false)
+    {
+        while (TryMove(Vector2Int.down)) { }
+
+        if (notifyTutorial)
+            NotifyTutorialEvent(TutorialGameplayEvent.HardDrop);
+
+        Lock();
+    }
+
+    void RotateCW(bool notifyTutorial = false)
     {
         var next = new Vector2Int[cells.Count];
         for (int i = 0; i < cells.Count; i++)
@@ -291,10 +326,12 @@ public class Piece : MonoBehaviour
         {
             for (int i = 0; i < cells.Count; i++) cells[i] = next[i];
             SyncVisuals();
+            if (notifyTutorial)
+                NotifyTutorialEvent(TutorialGameplayEvent.RotateClockwise);
         }
     }
 
-    void RotateCCW()
+    void RotateCCW(bool notifyTutorial = false)
     {
         var next = new Vector2Int[cells.Count];
         for (int i = 0; i < cells.Count; i++)
@@ -307,6 +344,8 @@ public class Piece : MonoBehaviour
         {
             for (int i = 0; i < cells.Count; i++) cells[i] = next[i];
             SyncVisuals();
+            if (notifyTutorial)
+                NotifyTutorialEvent(TutorialGameplayEvent.RotateCounterClockwise);
         }
     }
 
@@ -819,6 +858,13 @@ public class Piece : MonoBehaviour
             return;
 
         SyncVisuals();
+    }
+
+    void NotifyTutorialEvent(TutorialGameplayEvent gameplayEvent)
+    {
+        var gc = GetComponent<GameController>();
+        if (!gc) gc = FindFirstObjectByType<GameController>();
+        gc?.NotifyTutorialGameplayEvent(gameplayEvent);
     }
 
 }

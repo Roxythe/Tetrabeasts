@@ -190,7 +190,10 @@ public class GameController : MonoBehaviour
     public VolumePanelUI volumePanelInPause;
     public string titleSceneName = "TitleScene";
     bool isPaused = false;
+    bool tutorialSuspended = false;
     public bool IsPaused => isPaused;
+    public bool IsTutorialSuspended => tutorialSuspended;
+    public event System.Action<TutorialGameplayEvent> TutorialGameplayEventRaised;
 
     [Header("Unit Lives")]
     public int maxUnitLives = 20; // Base (starting unit lives)
@@ -371,7 +374,7 @@ public class GameController : MonoBehaviour
     public int MaxReserveUnits => EffectiveMaxUnitLives;
     public int CurrentStarDifficulty => _starDifficulty;
     public float CurrentMisfortune => misfortune + _starDifficultyModifiers.misfortuneAdd;
-    public bool IsGameplaySuspended => isPaused || _levelStartBlocked || (levelModifierController && levelModifierController.IsSelectionRunning);
+    public bool IsGameplaySuspended => isPaused || tutorialSuspended || _levelStartBlocked || (levelModifierController && levelModifierController.IsSelectionRunning);
     public bool IsRoundActive => !IsGameplaySuspended && !gameOver && !levelWon;
 
     private CastleData currentCastleData;
@@ -590,6 +593,9 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
+        if (tutorialSuspended)
+            return;
+
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
     if (UnityEngine.InputSystem.Keyboard.current.rKey.wasPressedThisFrame)
         ActivateSpecial();
@@ -1805,6 +1811,8 @@ public class GameController : MonoBehaviour
 
         if (specialGauge < specialGaugeMax) return; // Require full gauge
 
+        NotifyTutorialGameplayEvent(TutorialGameplayEvent.SpecialActivated);
+
         if (battleLog && selectedCharacter)
             battleLog.LogAbilityUse(selectedCharacter.displayName, selectedCharacter.specialAbilityName);
 
@@ -2538,6 +2546,8 @@ public class GameController : MonoBehaviour
         if (AudioManager.I) AudioManager.I.PlayPauseMusic(); // Play pause menu music if assigned
         if (pausePanel) pausePanel.SetActive(true);
 
+        NotifyTutorialGameplayEvent(TutorialGameplayEvent.PauseOpened);
+
         EnterUICursorMode();
         StartCoroutine(ReapplyUICursorNextFrame());
     }
@@ -2652,6 +2662,7 @@ public class GameController : MonoBehaviour
             AudioManager.I.ApplyPendingMusicModeAfterUnpause(); 
 
         if (pausePanel) pausePanel.SetActive(false);
+        NotifyTutorialGameplayEvent(TutorialGameplayEvent.PauseClosed);
         EnterGameplayCursorMode();
     }
 
@@ -4743,6 +4754,16 @@ public class GameController : MonoBehaviour
     void ClearHardwareCursor()
     {
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+    }
+
+    public void SetTutorialSuspended(bool suspended)
+    {
+        tutorialSuspended = suspended;
+    }
+
+    public void NotifyTutorialGameplayEvent(TutorialGameplayEvent gameplayEvent)
+    {
+        TutorialGameplayEventRaised?.Invoke(gameplayEvent);
     }
 
     void OnApplicationFocus(bool hasFocus)

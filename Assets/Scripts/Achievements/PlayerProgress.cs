@@ -19,6 +19,7 @@ public class PlayerProgress : MonoBehaviour
 
         public HashSet<string> unlockedAchievements = new();
         public HashSet<string> pendingExternalUnlocks = new();
+        public HashSet<string> completedTutorials = new();
 
         public int selectedStarDifficulty = 0;
         public int maxUnlockedStarDifficulty = 0;
@@ -180,6 +181,30 @@ public class PlayerProgress : MonoBehaviour
         return new List<string>(_data.pendingExternalUnlocks);
     }
 
+    public bool IsTutorialCompleted(string tutorialId)
+    {
+        return !string.IsNullOrWhiteSpace(tutorialId) && _data.completedTutorials.Contains(tutorialId);
+    }
+
+    public void SetTutorialCompleted(string tutorialId)
+    {
+        if (string.IsNullOrWhiteSpace(tutorialId)) return;
+        if (_data.completedTutorials.Add(tutorialId))
+            Save();
+    }
+
+    public void ClearTutorialCompleted(string tutorialId)
+    {
+        if (string.IsNullOrWhiteSpace(tutorialId)) return;
+        if (_data.completedTutorials.Remove(tutorialId))
+            Save();
+    }
+
+    public List<string> GetCompletedTutorialIds()
+    {
+        return new List<string>(_data.completedTutorials);
+    }
+
     public int GetSelectedStarDifficulty()
     {
         return _data.selectedStarDifficulty;
@@ -271,6 +296,7 @@ public class PlayerProgress : MonoBehaviour
 
         public List<string> unlocked = new();
         public List<string> pending = new();
+        public List<string> completedTutorials = new();
 
         public int selectedStarDifficulty = 0;
         public int maxUnlockedStarDifficulty = 0;
@@ -286,6 +312,7 @@ public class PlayerProgress : MonoBehaviour
 
             w.unlocked.AddRange(d.unlockedAchievements);
             w.pending.AddRange(d.pendingExternalUnlocks);
+            w.completedTutorials.AddRange(d.completedTutorials);
             w.selectedStarDifficulty = d.selectedStarDifficulty;
             w.maxUnlockedStarDifficulty = d.maxUnlockedStarDifficulty;
 
@@ -310,6 +337,7 @@ public class PlayerProgress : MonoBehaviour
 
             d.unlockedAchievements = new HashSet<string>(unlocked);
             d.pendingExternalUnlocks = new HashSet<string>(pending);
+            d.completedTutorials = new HashSet<string>(completedTutorials);
             d.selectedStarDifficulty = selectedStarDifficulty;
             d.maxUnlockedStarDifficulty = maxUnlockedStarDifficulty;
 
