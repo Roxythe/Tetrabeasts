@@ -73,35 +73,71 @@ public class Piece : MonoBehaviour
 
     void Update()
     {
-        // Pause check
         var gc = FindFirstObjectByType<GameController>();
-        if (gc != null && gc.IsGameplaySuspended)
+
+        bool tutorialPromptActive = gc != null && gc.IsTutorialPromptActive;
+        bool gameplaySuspended = gc != null && gc.IsGameplaySuspended;
+
+        // Allow limited inputs during tutorial prompts, but still block on other suspension states.
+        if (gameplaySuspended && !tutorialPromptActive)
             return;
 
-        bool blockHorizontal = gc != null && gc.levelModifierController && gc.levelModifierController.BlocksManualHorizontalShift;
-        bool blockRotation = gc != null && gc.levelModifierController && gc.levelModifierController.BlocksManualRotation;
+        bool blockHorizontal = gc != null &&
+                               gc.levelModifierController &&
+                               gc.levelModifierController.BlocksManualHorizontalShift;
+
+        bool blockRotation = gc != null &&
+                             gc.levelModifierController &&
+                             gc.levelModifierController.BlocksManualRotation;
+
+        bool allowSoftDrop = !tutorialPromptActive || (gc != null && gc.IsTutorialSoftDropAllowed);
+        bool allowHardDrop = !tutorialPromptActive || (gc != null && gc.IsTutorialHardDropAllowed);
 
         // Input handling
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
-        var keyboard = Keyboard.current;
-        bool moveLeftPressed = keyboard != null && !blockHorizontal &&
-                               (keyboard.leftArrowKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame);
-        bool moveRightPressed = keyboard != null && !blockHorizontal &&
-                                (keyboard.rightArrowKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame);
-        bool softDropPressed = keyboard != null &&
-                               (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame);
-        bool rotateCwPressed = keyboard != null && !blockRotation &&
-                               (keyboard.upArrowKey.wasPressedThisFrame || keyboard.eKey.wasPressedThisFrame);
-        bool rotateCcwPressed = keyboard != null && !blockRotation &&
-                                (keyboard.zKey.wasPressedThisFrame || keyboard.qKey.wasPressedThisFrame);
-        bool hardDropPressed = keyboard != null && keyboard.spaceKey.wasPressedThisFrame;
+    var keyboard = Keyboard.current;
+
+    bool moveLeftPressed = keyboard != null &&
+                           !blockHorizontal &&
+                           (keyboard.leftArrowKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame);
+
+    bool moveRightPressed = keyboard != null &&
+                            !blockHorizontal &&
+                            (keyboard.rightArrowKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame);
+
+    bool softDropPressed = keyboard != null &&
+                           allowSoftDrop &&
+                           (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame);
+
+    bool rotateCwPressed = keyboard != null &&
+                           !blockRotation &&
+                           (keyboard.upArrowKey.wasPressedThisFrame || keyboard.eKey.wasPressedThisFrame);
+
+    bool rotateCcwPressed = keyboard != null &&
+                            !blockRotation &&
+                            (keyboard.zKey.wasPressedThisFrame || keyboard.qKey.wasPressedThisFrame);
+
+    bool hardDropPressed = keyboard != null &&
+                           allowHardDrop &&
+                           keyboard.spaceKey.wasPressedThisFrame;
 #else
-        bool moveLeftPressed = !blockHorizontal && (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A));
-        bool moveRightPressed = !blockHorizontal && (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D));
-        bool softDropPressed = Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S);
-        bool rotateCwPressed = !blockRotation && (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.E));
-        bool rotateCcwPressed = !blockRotation && (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Q));
-        bool hardDropPressed = Input.GetKeyDown(KeyCode.Space);
+        bool moveLeftPressed = !blockHorizontal &&
+                               (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A));
+
+        bool moveRightPressed = !blockHorizontal &&
+                                (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D));
+
+        bool softDropPressed = allowSoftDrop &&
+                               (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S));
+
+        bool rotateCwPressed = !blockRotation &&
+                               (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.E));
+
+        bool rotateCcwPressed = !blockRotation &&
+                                (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Q));
+
+        bool hardDropPressed = allowHardDrop &&
+                               Input.GetKeyDown(KeyCode.Space);
 #endif
 
         if (moveLeftPressed && TryMove(Vector2Int.left))
@@ -132,7 +168,6 @@ public class Piece : MonoBehaviour
             return;
         }
 
-        // Gravity
         bool freezeTutorialGravity = gc != null && gc.IsTutorialPieceGravityFrozen;
 
         if (!freezeTutorialGravity)
@@ -141,8 +176,10 @@ public class Piece : MonoBehaviour
             if (fallTimer >= fallInterval)
             {
                 fallTimer = 0f;
-                if (!TryMove(Vector2Int.down)) lockTimer += fallInterval;
-                else lockTimer = 0f;
+                if (!TryMove(Vector2Int.down))
+                    lockTimer += fallInterval;
+                else
+                    lockTimer = 0f;
             }
 
             if (lockTimer >= lockDelay)
@@ -153,8 +190,6 @@ public class Piece : MonoBehaviour
             fallTimer = 0f;
             lockTimer = 0f;
         }
-
-        if (lockTimer >= lockDelay) Lock();
 
         if (data.special != SpecialType.None)
             UpdateSpecialHints();

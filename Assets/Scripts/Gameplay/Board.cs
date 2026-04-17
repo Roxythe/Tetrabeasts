@@ -1191,6 +1191,9 @@ public class Board : MonoBehaviour
                     rowDominantMonster[rowKey] = dominant;
                 }
 
+                if (rowsCleared == 1 && gc)
+                    yield return gc.ShowFirstFullRowTutorialIfNeeded(GetPlacedVisualsInRow(y));
+
                 // ===== Remove row contents =====
                 for (int x = 0; x < width; x++)
                 {
@@ -3157,5 +3160,24 @@ public class Board : MonoBehaviour
         }
 
         return full && hasClearableContent;
+    }
+
+    public List<RectTransform> GetPlacedVisualsInRow(int rowY)
+    {
+        var result = new List<RectTransform>();
+
+        for (int x = 0; x < width; x++)
+        {
+            var key = new Vector2Int(x, rowY);
+            if (placed.TryGetValue(key, out var rt) && rt)
+                result.Add(rt);
+        }
+
+        return result;
+    }
+
+    public bool HasPlacedTiles()
+    {
+        return placed != null && placed.Count > 0;
     }
 }

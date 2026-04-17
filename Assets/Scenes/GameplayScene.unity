@@ -909,7 +909,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3.0216064, y: -494.09183}
+  m_AnchoredPosition: {x: 0, y: -494.0918}
   m_SizeDelta: {x: 160, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &62712077
@@ -1206,7 +1206,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.5, y: -309.99954}
+  m_AnchoredPosition: {x: -0.5, y: -337.97516}
   m_SizeDelta: {x: 1528, y: 135.38}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &80608505
@@ -10159,7 +10159,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3.0216064, y: -494.09183}
+  m_AnchoredPosition: {x: 0, y: -494.09183}
   m_SizeDelta: {x: 160, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &859588196
@@ -15987,7 +15987,7 @@ MonoBehaviour:
     Cleared
 
 
-'
+    Star Difficulty (X): +XX'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a1470b117e5ec7a4c9c2c4151211f423, type: 2}
   m_sharedMaterial: {fileID: 3855398030641842644, guid: a1470b117e5ec7a4c9c2c4151211f423, type: 2}
@@ -16014,8 +16014,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 64
-  m_fontSizeBase: 64
+  m_fontSize: 56
+  m_fontSizeBase: 56
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -16945,7 +16945,7 @@ MonoBehaviour:
     Cleared
 
 
-'
+    Star Difficulty (X): +XX'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a1470b117e5ec7a4c9c2c4151211f423, type: 2}
   m_sharedMaterial: {fileID: 3855398030641842644, guid: a1470b117e5ec7a4c9c2c4151211f423, type: 2}
@@ -16972,8 +16972,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 64
-  m_fontSizeBase: 64
+  m_fontSize: 56
+  m_fontSizeBase: 56
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -17108,8 +17108,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 64
-  m_fontSizeBase: 64
+  m_fontSize: 56
+  m_fontSizeBase: 56
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -17322,8 +17322,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 64
-  m_fontSizeBase: 64
+  m_fontSize: 56
+  m_fontSizeBase: 56
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -17820,7 +17820,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3.0216064, y: -494.09183}
+  m_AnchoredPosition: {x: 0, y: -494.09183}
   m_SizeDelta: {x: 160, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1594745619
@@ -19289,7 +19289,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3.0216064, y: -494.09183}
+  m_AnchoredPosition: {x: 0, y: -494.09183}
   m_SizeDelta: {x: 160, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1746402951
@@ -23670,6 +23670,7 @@ GameObject:
   - component: {fileID: 2092384769}
   - component: {fileID: 2092384770}
   - component: {fileID: 2092384771}
+  - component: {fileID: 2092384772}
   m_Layer: 5
   m_Name: UI_Canvas
   m_TagString: Untagged
@@ -24190,10 +24191,8 @@ MonoBehaviour:
   stoneWeights_L7_9: {x: 0.55, y: 0.3, z: 0.12, w: 0.03}
   stoneWeights_L10P: {x: 0.4, y: 0.3, z: 0.2, w: 0.1}
   stoneLegendaryChance_L10P: 0.02
-  firstFullRowTutorial: {fileID: 0}
-  firstSpecialChargedTutorial: {fileID: 0}
-  firstLossXpTutorial: {fileID: 0}
-  firstLevelModifierTutorial: {fileID: 0}
+  triggeredTutorialPopups: {fileID: 2092384772}
+  tutorialPopupView: {fileID: 1007656541}
 --- !u!114 &2092384765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24316,6 +24315,8 @@ MonoBehaviour:
     pauseGameplay: 0
     allowSkip: 0
     autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
     popupAnchorPreset: 2
     popupAnchoredPosition: {x: 0, y: 0}
     popupAlpha: 1
@@ -24333,6 +24334,8 @@ MonoBehaviour:
     pauseGameplay: 0
     allowSkip: 0
     autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
     popupAnchorPreset: 2
     popupAnchoredPosition: {x: 0, y: 0}
     popupAlpha: 1
@@ -24350,6 +24353,8 @@ MonoBehaviour:
     pauseGameplay: 0
     allowSkip: 0
     autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 1
+    allowHardDropDuringStep: 0
     popupAnchorPreset: 2
     popupAnchoredPosition: {x: 0, y: 0}
     popupAlpha: 1
@@ -24367,6 +24372,8 @@ MonoBehaviour:
     pauseGameplay: 0
     allowSkip: 0
     autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
     popupAnchorPreset: 2
     popupAnchoredPosition: {x: 0, y: 0}
     popupAlpha: 1
@@ -24384,6 +24391,8 @@ MonoBehaviour:
     pauseGameplay: 0
     allowSkip: 0
     autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
     popupAnchorPreset: 2
     popupAnchoredPosition: {x: 0, y: 0}
     popupAlpha: 1
@@ -24403,6 +24412,8 @@ MonoBehaviour:
     pauseGameplay: 0
     allowSkip: 0
     autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
     popupAnchorPreset: 0
     popupAnchoredPosition: {x: 0, y: 0}
     popupAlpha: 1
@@ -24423,6 +24434,8 @@ MonoBehaviour:
     pauseGameplay: 0
     allowSkip: 0
     autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
     popupAnchorPreset: 0
     popupAnchoredPosition: {x: 0, y: 0}
     popupAlpha: 1
@@ -24444,6 +24457,8 @@ MonoBehaviour:
     pauseGameplay: 0
     allowSkip: 0
     autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 1
     popupAnchorPreset: 0
     popupAnchoredPosition: {x: 0, y: 0}
     popupAlpha: 1
@@ -24456,13 +24471,165 @@ MonoBehaviour:
     requiredGameplayEvents: 03000000
     watchedButton: {fileID: 0}
     watchedPanel: {fileID: 0}
-  - stepId: Attacking_1
-    body: Try filling an entire row on the board next to launch an attack. (Press
-      [F] to Continue)
+  - stepId: Level_Info_1
+    body: Here you can keep track of level information such as any active level modifiers,
+      the curent level number, how long you have been in the level, and the current
+      gravity pulling your pieces down. (Press [F] to Continue)
     pauseGameplay: 0
     allowSkip: 0
     autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    popupAnchorPreset: 2
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 1543460685}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 1
+    completionMode: 2
+    requiredKeys: 66000000
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
+  - stepId: Level_Info_2
+    body: Here you can see a preview of the next piece that will be spawned. Knowing
+      what will come next will help you plan out your next step. (Press [F] to Continue)
+    pauseGameplay: 0
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
     popupAnchorPreset: 0
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 1051868989}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 1
+    completionMode: 2
+    requiredKeys: 66000000
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
+  - stepId: Loss_Condition_1
+    body: 'Reserve Units - Loss Condition
+
+      When any of your units die your
+      current reserve will be reduced. You only have so many soldiers and when your
+      reserve hits 0 you will lose. (Press [F] to Continue)'
+    pauseGameplay: 0
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    popupAnchorPreset: 2
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 1132580155}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 1
+    completionMode: 2
+    requiredKeys: 66000000
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
+  - stepId: Loss_Condition_2
+    body: 'Loss Condition
+
+      If a piece is locked in place above the top row
+      of the board you will instantly lose, regardless of the number of reserve units
+      left. Be caureful not to build to high. (Press [F] to Continue)'
+    pauseGameplay: 0
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    popupAnchorPreset: 2
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 369178296}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 1
+    completionMode: 2
+    requiredKeys: 66000000
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
+  - stepId: WinCondition_1
+    body: 'Win Condition
+
+      Reduce the Enemy Castle''s HP to zero. (Press [F]
+      to Continue)'
+    pauseGameplay: 0
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    popupAnchorPreset: 2
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 369178296}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 1
+    completionMode: 2
+    requiredKeys: 66000000
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
+  - stepId: Pause_Menu_1
+    body: If you need a break press [Esc]. This will pause the game and bring up
+      the pause menu.
+    pauseGameplay: 0
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    popupAnchorPreset: 2
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 0}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 1
+    completionMode: 2
+    requiredKeys: 1b000000
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
+  - stepId: Pause_Menu_2
+    body: Here you can change settings, look through the help menu, check your current
+      modifiers, or end your run early. For now, lets close the pause menu by pressing
+      [Esc] again.
+    pauseGameplay: 0
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    popupAnchorPreset: 2
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 0}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 1
+    completionMode: 2
+    requiredKeys: 1b000000
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
+  - stepId: Attacking_1
+    body: Now lets try filling an entire row on the board next to launch an attack.
+      (Press [F] to Continue)
+    pauseGameplay: 0
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    popupAnchorPreset: 2
     popupAnchoredPosition: {x: 0, y: 0}
     popupAlpha: 1
     highlightTarget: {fileID: 0}
@@ -24490,8 +24657,25 @@ MonoBehaviour:
   highlightTemplate: {fileID: 5910951407269857335, guid: bd12b0a941ae9af4d84371cef990393c, type: 3}
   canvasRoot: {fileID: 2092384763}
   canvasGroup: {fileID: 5910951406893070948}
-  defaultPadding: {x: 16, y: 16}
+  defaultPadding: {x: 12, y: 12}
   minimumSize: {x: 1, y: 1}
+--- !u!114 &2092384772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2092384756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 337d62fbb04a6d54e92133ed2e64ec91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TriggeredTutorialPopupController
+  gameController: {fileID: 2092384764}
+  popupView: {fileID: 1007656541}
+  highlightView: {fileID: 2092384771}
+  dismissTutorialKey: 102
+  ignoreSavedCompletionForTesting: 1
 --- !u!1 &2109608209
 GameObject:
   m_ObjectHideFlags: 0
@@ -26263,9 +26447,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5293128759560788579, guid: 0265750f3c0dd9444af9b4109ed046bb, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5293128759560788579, guid: 0265750f3c0dd9444af9b4109ed046bb, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5293128759560788579, guid: 0265750f3c0dd9444af9b4109ed046bb, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 1880
+      objectReference: {fileID: 0}
     - target: {fileID: 8296040703723748862, guid: 0265750f3c0dd9444af9b4109ed046bb, type: 3}
       propertyPath: m_Name
       value: Tutorial_Panel
+      objectReference: {fileID: 0}
+    - target: {fileID: 8296040703723748862, guid: 0265750f3c0dd9444af9b4109ed046bb, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -26314,6 +26514,10 @@ PrefabInstance:
     - target: {fileID: 253247608050301940, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
       propertyPath: m_Name
       value: PauseMenu_Panel
+      objectReference: {fileID: 0}
+    - target: {fileID: 253247608050301940, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1332198757378613502, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target

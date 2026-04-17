@@ -128,6 +128,8 @@ public class XpAwardUI : MonoBehaviour
     float _gainOrbSfxSecondStart = 0f;
     float _drainOrbSfxSecondStart = 0f;
 
+    public RectTransform TutorialTarget => root ? root.transform as RectTransform : transform as RectTransform;
+
     void Awake()
     {
         HideAll();

@@ -34,6 +34,8 @@ public class TutorialSequenceController : MonoBehaviour
         public bool pauseGameplay = true;
         public bool allowSkip = true;
         public bool autoAdvanceOnComplete = true;
+        public bool allowSoftDropDuringStep = false;
+        public bool allowHardDropDuringStep = false;
 
         [Header("Popup")]
         public TutorialPopupView.PopupAnchorPreset popupAnchorPreset = TutorialPopupView.PopupAnchorPreset.Default;
@@ -79,6 +81,8 @@ public class TutorialSequenceController : MonoBehaviour
     bool _stepRequirementMet;
     TutorialStepCompletionMode _resolvedCompletionMode = TutorialStepCompletionMode.NextButton;
 
+    public bool IsSequenceRunning => _sequenceRunning;
+
     void Awake()
     {
         if (!popupView)
@@ -111,7 +115,10 @@ public class TutorialSequenceController : MonoBehaviour
         SetGameplaySuspended(false);
 
         if (gameController)
+        {
             gameController.SetTutorialFreezePieceGravity(false);
+            gameController.SetTutorialDropPermissions(false, false);
+        }         
 
         if (popupView && popupView.gameObject.activeInHierarchy)
             popupView.Hide();
@@ -185,7 +192,9 @@ public class TutorialSequenceController : MonoBehaviour
         SetGameplaySuspended(false);
 
         if (gameController)
-            gameController.SetTutorialFreezePieceGravity(false);
+        {   gameController.SetTutorialFreezePieceGravity(false);
+            gameController.SetTutorialSuspended(false);
+        }
 
         popupView?.Hide();
         highlightView?.Hide();
@@ -278,8 +287,12 @@ public class TutorialSequenceController : MonoBehaviour
         RefreshPopupState(step);
 
         EnsureGameController();
+
         if (gameController)
+        { 
             gameController.SetTutorialFreezePieceGravity(step.freezePieceGravity);
+            gameController.SetTutorialDropPermissions(step.allowSoftDropDuringStep, step.allowHardDropDuringStep);
+        }
 
         if (_resolvedCompletionMode == TutorialStepCompletionMode.PanelOpened && step.watchedPanel && step.watchedPanel.activeInHierarchy)
             MarkCurrentStepRequirementMet();

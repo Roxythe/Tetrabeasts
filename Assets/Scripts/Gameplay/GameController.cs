@@ -411,14 +411,31 @@ public class GameController : MonoBehaviour
 
     [Range(0f, 0.20f)] public float stoneLegendaryChance_L10P = 0.02f; // taken out of common at level 10+
 
-    // ========== Tutorial First Time Events ==========
-    [SerializeField] TutorialSequenceController firstFullRowTutorial;
-    [SerializeField] TutorialSequenceController firstSpecialChargedTutorial;
-    [SerializeField] TutorialSequenceController firstLossXpTutorial;
-    [SerializeField] TutorialSequenceController firstLevelModifierTutorial;
+    [Header("Tutorial Events")]
+    [SerializeField] TriggeredTutorialPopupController triggeredTutorialPopups;
+    [SerializeField] TutorialPopupView tutorialPopupView;
 
-    bool _fullRowTutorialPendingPause;
     bool _wasSpecialGaugeFullLastFrame;
+
+    const string TutorialIdFirstFullRow = "tutorial_first_full_row";
+    const string TutorialIdFirstSpecialGaugeFull = "tutorial_first_special_gauge_full";
+    const string TutorialIdFirstLossXp = "tutorial_first_loss_xp";
+    const string TutorialIdFirstLevelModifierPanel = "tutorial_first_level_modifier_panel";
+    bool _firstFullRowTutorialShownThisRun;
+    bool tutorialAllowSoftDrop = false;
+    bool tutorialAllowHardDrop = false;
+
+    public bool IsTutorialSoftDropAllowed => tutorialAllowSoftDrop;
+    public bool IsTutorialHardDropAllowed => tutorialAllowHardDrop;
+
+    public bool IsTutorialPromptActive
+    {
+        get
+        {
+            EnsureTutorialPopupView();
+            return tutorialPopupView != null && tutorialPopupView.IsShowing;
+        }
+    }
 
     void Start()
     {
@@ -452,6 +469,7 @@ public class GameController : MonoBehaviour
         if (!piece) piece = GetComponent<Piece>();
         if (!levelModifierController) levelModifierController = GetComponent<LevelModifierController>();
         if (!levelModifierController) levelModifierController = gameObject.AddComponent<LevelModifierController>();
+        EnsureTriggeredTutorialPopups();
 
         if (!obstacleManager)
             obstacleManager = FindFirstObjectByType<ObstacleManager>(FindObjectsInactive.Include);
@@ -555,6 +573,7 @@ public class GameController : MonoBehaviour
         RunSummaryStats.BeginRun();
         _finalWinStateApplied = false;
         _newDifficultyUnlockedThisRun = false;
+        _firstFullRowTutorialShownThisRun = false;
 
         // Pause menu defaults
         if (pausePanel) pausePanel.SetActive(false);
@@ -615,7 +634,7 @@ public class GameController : MonoBehaviour
             ActivateSpecial();
 #endif
 
-        if (IsRoundActive)
+        if (IsRoundActive && !IsTutorialPromptActive)
             RunSummaryStats.AddActiveTime(Time.deltaTime);
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -662,11 +681,23 @@ public class GameController : MonoBehaviour
         // Periodic castle projectile
         if (IsRoundActive && gameBoard)
         {
-            _castleAttackTimer += Time.deltaTime;
-            if (_castleAttackTimer >= castleAttackInterval)
+            if (!CanLaunchCastleProjectile())
             {
                 _castleAttackTimer = 0f;
-                TrySpawnCastleDownshot();
+            }
+            else
+            {
+                _castleAttackTimer += Time.deltaTime;
+
+                float attackInterval = castleAttackInterval;
+                if (currentCastleData)
+                    attackInterval = Mathf.Max(0.1f, currentCastleData.projectileInterval);
+
+                if (_castleAttackTimer >= Mathf.Max(0.1f, attackInterval))
+                {
+                    _castleAttackTimer = 0f;
+                    TrySpawnCastleDownshot();
+                }
             }
         }
 
@@ -685,7 +716,11 @@ public class GameController : MonoBehaviour
         // Level timer and fall speed ramp 
         if (IsRoundActive)
         {
-            _levelTimer += Time.deltaTime;
+            bool blockGravityTimer = IsTutorialPromptActive;
+
+            if (!blockGravityTimer)
+                _levelTimer += Time.deltaTime;
+
             UpdateLevelTimerUI();
 
             // Keep the currently falling piece synced to the current interval
@@ -696,9 +731,9 @@ public class GameController : MonoBehaviour
                 UpdateGravityText(interval);
             }
 
-            // Gravity cap accumulator (only counts while gameplay is active and unpaused)
+            // Gravity cap accumulator only while active and not blocked by tutorial prompt
             float intervalNow = GetCurrentFallInterval();
-            if (intervalNow <= (minFallInterval + 0.0001f))
+            if (!blockGravityTimer && intervalNow <= (minFallInterval + 0.0001f))
                 _gravityCapAccumSeconds += Time.deltaTime;
 
             if (PlayerProgress.I != null)
@@ -1009,6 +1044,8 @@ public class GameController : MonoBehaviour
                 CloseXpUiMode();
                 ShowHighScore();
             });
+
+            QueueFirstLossXpTutorialIfNeeded();
 
             return;
         }
@@ -2117,6 +2154,11 @@ public class GameController : MonoBehaviour
 
         bool full = specialGauge >= (specialGaugeMax - 0.001f);
 
+        if (full && !_wasSpecialGaugeFullLastFrame)
+            QueueFirstSpecialGaugeTutorialIfNeeded();
+
+        _wasSpecialGaugeFullLastFrame = full;
+
         SetSpecialChargedVisuals(full); // Apply visuals first
 
         // Always show the special name text
@@ -2384,6 +2426,10 @@ public class GameController : MonoBehaviour
         var pool = (aliveCols.Count > 0) ? aliveCols : deadOnlyCols;
         int col = pool[UnityEngine.Random.Range(0, pool.Count)];
 
+
+        if (!CanLaunchCastleProjectile())
+            return;
+
         // Find the first living target in that column
         Vector2Int? hitCell = null;
         for (int y = gameBoard.height - 1; y >= 0; y--)
@@ -2393,7 +2439,7 @@ public class GameController : MonoBehaviour
 
             if (gameBoard.TryGetMonster(c, out var inst) && inst.data && inst.hp > 0f)
             { hitCell = c; break; }
-            // else: dead tile � projectile should pass through
+            // else: dead tile projectile should pass through
         }
 
         // Compute start/end positions in board/grid space
@@ -4773,6 +4819,118 @@ public class GameController : MonoBehaviour
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
     }
 
+    void EnsureTriggeredTutorialPopups()
+    {
+        if (!triggeredTutorialPopups)
+            triggeredTutorialPopups = GetComponent<TriggeredTutorialPopupController>();
+
+        if (!triggeredTutorialPopups)
+            triggeredTutorialPopups = gameObject.AddComponent<TriggeredTutorialPopupController>();
+    }
+
+    RectTransform GetSpecialGaugeTutorialTarget()
+    {
+        if (specialGaugeSlider)
+            return specialGaugeSlider.transform as RectTransform;
+
+        return specialGaugeFillImage ? specialGaugeFillImage.rectTransform : null;
+    }
+
+    public IEnumerator ShowFirstFullRowTutorialIfNeeded(IReadOnlyList<RectTransform> highlightTargets)
+    {
+        if (_firstFullRowTutorialShownThisRun)
+            yield break;
+
+        _firstFullRowTutorialShownThisRun = true;
+
+        EnsureTriggeredTutorialPopups();
+        if (!triggeredTutorialPopups)
+            yield break;
+
+        yield return triggeredTutorialPopups.ShowOnceAndWait(
+            TutorialIdFirstFullRow,
+            new List<string>
+            {
+            "You completed a full row. When a row is filled all units are cleared, an attack is launched at the " +
+            "enemy castle, and your Special Gauge is partially charged. (Press [F] to Continue)",
+            "Completing multiple rows within a set time period will build up your combo. Higher combos will deal " +
+            "increased damage and increase your score quickly. Each time a full row is cleared your combo timer " +
+            "will reset giving you a chance to build larger combos and deal massive damage. (Press [F] to Continue)"
+            },
+            TutorialPopupView.PopupAnchorPreset.Top,
+            defaultPopupAnchoredPosition: default,
+            popupAlpha: 1f,
+            pauseGameplay: true,
+            freezePieceGravity: false,
+            allowSkip: true,
+            highlightTargets: highlightTargets,
+            highlightPadding: new Vector2(12f, 12f));
+    }
+
+    void QueueFirstSpecialGaugeTutorialIfNeeded()
+    {
+        EnsureTriggeredTutorialPopups();
+        if (!triggeredTutorialPopups)
+            return;
+
+        if (!enemyCastleUI || enemyCastleUI.CurrentHP <= 0)
+            return;
+
+        if (gameOver || levelWon)
+            return;
+
+        triggeredTutorialPopups.QueueShowOnce(
+            TutorialIdFirstSpecialGaugeFull,
+            "Your Special Gauge is full. Press [R] to activate your commander's special ability. " +
+            "(Press [F] to Continue)",
+            TutorialPopupView.PopupAnchorPreset.Top,
+            popupAlpha: 1f,
+            pauseGameplay: true,
+            freezePieceGravity: false,
+            allowSkip: true,
+            highlightTarget: GetSpecialGaugeTutorialTarget(),
+            highlightPadding: new Vector2(12f, 12f));
+    }
+
+    void QueueFirstLossXpTutorialIfNeeded()
+    {
+        EnsureTriggeredTutorialPopups();
+        if (!triggeredTutorialPopups)
+            return;
+
+        triggeredTutorialPopups.QueueShowOnce(
+            TutorialIdFirstLossXp,
+            "A lost run still gives permanent progress. Here part of the XP your monsters earned during the run " +
+            "is converted into permanent XP. (Press [F] to Continue)",
+            TutorialPopupView.PopupAnchorPreset.Top,
+            popupAlpha: 1f,
+            pauseGameplay: true,
+            freezePieceGravity: false,
+            allowSkip: true,
+            highlightTarget: null,
+            highlightPadding: new Vector2(12f, 12f));
+    }
+
+    public void QueueFirstLevelModifierTutorialIfNeeded(RectTransform highlightTarget)
+    {
+        EnsureTriggeredTutorialPopups();
+        if (!triggeredTutorialPopups)
+            return;
+
+        triggeredTutorialPopups.QueueShowOnce(
+            TutorialIdFirstLevelModifierPanel,
+            "Not all levels are created equal, here you will let lady luck decide what the next battlefield will " +
+            "be like. Pull the lever to reveal it, use rerolls if you have them, then continue into the fight. " +
+            "(Press [F] to Continue)",
+            TutorialPopupView.PopupAnchorPreset.Top,
+            popupAlpha: 1f,
+            pauseGameplay: true,
+            freezePieceGravity: false,
+            allowSkip: true,
+            highlightTarget: null,
+            highlightPadding: new Vector2(12f, 12f));
+    }
+
     public void SetTutorialSuspended(bool suspended)
     {
         tutorialSuspended = suspended;
@@ -4791,6 +4949,44 @@ public class GameController : MonoBehaviour
     public void NotifyTutorialGameplayEvent(TutorialGameplayEvent gameplayEvent)
     {
         TutorialGameplayEventRaised?.Invoke(gameplayEvent);
+    }
+
+    public void SetTutorialDropPermissions(bool allowSoftDrop, bool allowHardDrop)
+    {
+        tutorialAllowSoftDrop = allowSoftDrop;
+        tutorialAllowHardDrop = allowHardDrop;
+    }
+
+    bool HasAnyTutorialPromptActive()
+    {
+        if (triggeredTutorialPopups && triggeredTutorialPopups.IsPopupShowing)
+            return true;
+
+        var sequences = FindObjectsByType<TutorialSequenceController>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
+
+        for (int i = 0; i < sequences.Length; i++)
+        {
+            var sequence = sequences[i];
+            if (sequence && sequence.IsSequenceRunning)
+                return true;
+        }
+
+        return false;
+    }
+
+    bool CanLaunchCastleProjectile()
+    {
+        return gameBoard &&
+               gameBoard.HasPlacedTiles() &&
+               !HasAnyTutorialPromptActive();
+    }
+
+    void EnsureTutorialPopupView()
+    {
+        if (!tutorialPopupView)
+            tutorialPopupView = FindFirstObjectByType<TutorialPopupView>(FindObjectsInactive.Include);
     }
 
     void OnApplicationFocus(bool hasFocus)

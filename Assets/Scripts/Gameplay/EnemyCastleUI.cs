@@ -50,6 +50,8 @@ public class EnemyCastleUI : MonoBehaviour
     Vector2 _bossOverlayBaseAnchoredPos;
     bool _bossOverlayBaseCaptured = false;
 
+    public int CurrentHP => currentHP;
+
     // New overload that accepts the level number
     public void InitCastle(CastleData data, int levelNumber)
     {

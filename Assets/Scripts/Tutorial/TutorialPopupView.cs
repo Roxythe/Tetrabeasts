@@ -73,6 +73,17 @@ public class TutorialPopupView : MonoBehaviour
         canvasGroup.blocksRaycasts = true;
     }
 
+    public bool IsShowing
+    {
+        get
+        {
+            return gameObject.activeInHierarchy &&
+                   canvasGroup != null &&
+                   canvasGroup.alpha > 0.001f &&
+                   canvasGroup.blocksRaycasts;
+        }
+    }
+
     public void Hide()
     {
         if (!canvasGroup) return;

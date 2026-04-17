@@ -90,6 +90,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
     Coroutine _modNameAnimCR;
 
     public LevelModifierSO CurrentChosenModifier => _currentChosenModifier;
+    public RectTransform TutorialTarget => root ? root : transform as RectTransform;
 
     public IEnumerator PlaySelection(
         IReadOnlyList<LevelModifierSO> pool,
@@ -113,6 +114,9 @@ public class LevelModifierSelectionUI : MonoBehaviour
         _currentChosenModifier = chosen;
 
         root.gameObject.SetActive(true);
+
+        var gameController = FindFirstObjectByType<GameController>(FindObjectsInactive.Include);
+        gameController?.QueueFirstLevelModifierTutorialIfNeeded(TutorialTarget);
 
         if (leverVisual)
             _leverDefaultRotation = leverVisual.localRotation;
