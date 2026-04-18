@@ -24310,6 +24310,26 @@ MonoBehaviour:
   popupView: {fileID: 1007656541}
   highlightView: {fileID: 2092384771}
   steps:
+  - stepId: Welcome_1
+    body: Welcome to the battlefield. We will begin by going over a few of the basic
+      controls and battle mechanics. (Press [F] to Continue)
+    pauseGameplay: 0
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    popupAnchorPreset: 2
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 0}
+    highlightPadding: {x: 0, y: 0}
+    highlightActivePiece: 0
+    freezePieceGravity: 1
+    completionMode: 2
+    requiredKeys: 66000000
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
   - stepId: Movement_1
     body: First, try moving your piece to the left by pressing [A].
     pauseGameplay: 0

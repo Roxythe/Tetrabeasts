@@ -29,6 +29,9 @@ public class TitleMenuUI : MonoBehaviour
     [SerializeField] CharacterSelectUI characterSelectUI;
     [SerializeField] MonsterSelectUI monsterSelectUI;
 
+    [Header("Tutorial Popups")]
+    [SerializeField] TriggeredTutorialPopupController triggeredTutorialPopups;
+
     [Header("Pause While Panels Open?")]
     public bool pauseOnPanels = false;
 
@@ -49,6 +52,8 @@ public class TitleMenuUI : MonoBehaviour
     public UICursorController uiCursorController;
 
     TitleStarDifficultyUI _starDifficultyUI;
+
+    const string TutorialIdFirstShopOpen = "title_shop_intro";
 
     void Awake()
     {
@@ -217,7 +222,25 @@ public class TitleMenuUI : MonoBehaviour
         shopPanel.SetActive(show);
 
         if (show)
+        {
             shopPanelUI?.RefreshAll();
+
+            EnsureTriggeredTutorialPopups();
+            if (triggeredTutorialPopups)
+            {
+                triggeredTutorialPopups.QueueShowOnce(
+                    TutorialIdFirstShopOpen,
+                    "Welcome to the the shop, here you can purchase permanent buffs to help improve your monster " +
+                    "units or other aspects of battle. (Press [F] to Continue)",
+                    TutorialPopupView.PopupAnchorPreset.Top,
+                    popupAlpha: 1f,
+                    pauseGameplay: false,
+                    freezePieceGravity: false,
+                    allowSkip: true,
+                    highlightTarget: null,
+                    highlightPadding: default);
+            }
+        }
 
         if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
     }
@@ -404,4 +427,9 @@ public class TitleMenuUI : MonoBehaviour
             uiCursorController.SetVisible(true);
     }
 
+    void EnsureTriggeredTutorialPopups()
+    {
+        if (!triggeredTutorialPopups)
+            triggeredTutorialPopups = FindFirstObjectByType<TriggeredTutorialPopupController>(FindObjectsInactive.Include);
+    }
 }

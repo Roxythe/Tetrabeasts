@@ -309,6 +309,8 @@ MonoBehaviour:
   hoverSFX: {fileID: 8300000, guid: dae9f1364bb247044be20a7795e60123, type: 3}
   unlockSFX: {fileID: 8300000, guid: 7b4ae982ff5c30d408535a4bebfac709, type: 3}
   errorSFX: {fileID: 8300000, guid: 6694eb98107056244a2af47a1f92f8b2, type: 3}
+  selectedAlpha: 1
+  deselectedAlpha: 0.65
 --- !u!114 &35795730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5403,6 +5405,7 @@ GameObject:
   - component: {fileID: 665172193}
   - component: {fileID: 665172194}
   - component: {fileID: 665172195}
+  - component: {fileID: 665172196}
   m_Layer: 5
   m_Name: Title_Canvas
   m_TagString: Untagged
@@ -5545,6 +5548,7 @@ MonoBehaviour:
   characterSelectPanel: {fileID: 35795729}
   characterSelectUI: {fileID: 35795729}
   monsterSelectUI: {fileID: 1480193593}
+  triggeredTutorialPopups: {fileID: 665172196}
   pauseOnPanels: 0
   defaultCharacter: {fileID: 11400000, guid: 0a26fa88028fdd04499aaaa4d27ca2f2, type: 2}
   defaultA: {fileID: 11400000, guid: 433e723cd1e13c44185e776bf85f5eec, type: 2}
@@ -5594,8 +5598,8 @@ MonoBehaviour:
   highlightView: {fileID: 665172195}
   steps:
   - stepId: Welcome_1
-    body: Welcome Overlord, my name is Lilith. We have heeded your call and rallied
-      the few monster we could to assist in your conquest of the human domain. (Press
+    body: Welcome Overlord, my name is Lilith. I have done my best to rally the few
+      monster I could find to assist in your conquest of the human domain. (Press
       [F] to Continue)
     pauseGameplay: 0
     allowSkip: 0
@@ -5604,7 +5608,7 @@ MonoBehaviour:
     allowHardDropDuringStep: 0
     popupAnchorPreset: 1
     popupAnchoredPosition: {x: 0, y: 0}
-    popupAlpha: 0
+    popupAlpha: 1
     highlightTarget: {fileID: 0}
     highlightPadding: {x: 0, y: 0}
     highlightActivePiece: 0
@@ -5613,6 +5617,236 @@ MonoBehaviour:
     requiredKeys: 66000000
     requiredGameplayEvents: 
     watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
+  - stepId: Commander_Select_1
+    body: Before going into battle, we will first have to select our commander. Press
+      the commander button in the bottom right to see who is available. (Press [F]
+      to Continue)
+    pauseGameplay: 0
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    popupAnchorPreset: 1
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 478059240}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 0
+    completionMode: 5
+    requiredKeys: 
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 974213269}
+    watchedPanel: {fileID: 35795727}
+  - stepId: Commander_Select_2
+    body: We only have one Commander that we can use at the moment, but with enough
+      gold we can get a few more. Each commander has their own special ability. The
+      details of each ability can be seen in the Commander preview on the right.
+      (Press [F] to Continue)
+    pauseGameplay: 0
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    popupAnchorPreset: 1
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 478059240}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 0
+    completionMode: 2
+    requiredKeys: 66000000
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 974213269}
+    watchedPanel: {fileID: 35795727}
+  - stepId: Commander_Select_3
+    body: Since our commander is already selected lets confirm the selection at the
+      bottom and head back to the main lobby.
+    pauseGameplay: 0
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    popupAnchorPreset: 1
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 478059240}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 0
+    completionMode: 5
+    requiredKeys: 
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 955269239}
+    watchedPanel: {fileID: 35795727}
+  - stepId: Monster_Select_1
+    body: Now we will set up our monster squadron that will go into battle with our
+      Commander. Press the select monster button in the bottom right.
+    pauseGameplay: 0
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    popupAnchorPreset: 1
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 884760469}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 0
+    completionMode: 6
+    requiredKeys: 
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 1890700155}
+    watchedPanel: {fileID: 1480193591}
+  - stepId: Monster_Select_2
+    body: As you can see we only have so many monsters to work with to creat our
+      squadron. A Squadron must have at least two monsters and can have a maximum
+      of 4. (Press [F] to Continue)
+    pauseGameplay: 0
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    popupAnchorPreset: 1
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 0}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 0
+    completionMode: 2
+    requiredKeys: 66000000
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
+  - stepId: Monster_Select_3
+    body: A war can hardly be fought with such pitiful numbers, but that's where
+      I can be of assistance. (Press [F] to Continue)
+    pauseGameplay: 0
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    popupAnchorPreset: 1
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 0}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 0
+    completionMode: 2
+    requiredKeys: 66000000
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
+  - stepId: Monster_Select_3.5
+    body: I can make clones of your squadron to be sent into battle. This will allow
+      multiple copies to be made to fill out your ranks. However, this will come
+      with some limitations. (Press [F] to Continue)
+    pauseGameplay: 0
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    popupAnchorPreset: 2
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 0}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 0
+    completionMode: 2
+    requiredKeys: 66000000
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
+  - stepId: Monster_Select_4
+    body: I will only be able to make so many copies and if we lose too many in battle
+      we will be forced to retreat. Second, the copies will gain their own experience,
+      but I will only be able to safely convert a small fraction of that experience
+      from the copy back to the original monster after a campaign is finished. (Press
+      [F] to Continue)
+    pauseGameplay: 0
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    popupAnchorPreset: 1
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 0}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 0
+    completionMode: 2
+    requiredKeys: 66000000
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
+  - stepId: Monster_Select_5
+    body: You can click on any monster and see a preview of it's current stats and
+      level in the preview section on the right. Click on the arrow button in the
+      preview section to swap between it's stats and it's passive ability description.
+    pauseGameplay: 0
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    popupAnchorPreset: 1
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 2100349739}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 0
+    completionMode: 5
+    requiredKeys: 
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 2100349743}
+    watchedPanel: {fileID: 0}
+  - stepId: Monster_Select_6
+    body: More monsters can be unlocked with gold and cosmetic skins can also be
+      purchased once you have gained some extra funds. Now, Prress the confirm button
+      at the bottom of the screen to lock in your team.
+    pauseGameplay: 0
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    popupAnchorPreset: 1
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 1814195749}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 0
+    completionMode: 5
+    requiredKeys: 
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 1814195750}
+    watchedPanel: {fileID: 0}
+  - stepId: Campaign_1
+    body: Now you are ready to start your first campaign. Press the Start button
+      to begin a new run.
+    pauseGameplay: 0
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    popupAnchorPreset: 2
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 418901611284447399}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 0
+    completionMode: 5
+    requiredKeys: 
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 418901611284447404}
     watchedPanel: {fileID: 0}
 --- !u!114 &665172195
 MonoBehaviour:
@@ -5632,6 +5866,23 @@ MonoBehaviour:
   canvasGroup: {fileID: 355145794}
   defaultPadding: {x: 12, y: 12}
   minimumSize: {x: 1, y: 1}
+--- !u!114 &665172196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 665172187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 337d62fbb04a6d54e92133ed2e64ec91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TriggeredTutorialPopupController
+  gameController: {fileID: 0}
+  popupView: {fileID: 1781026914}
+  highlightView: {fileID: 665172195}
+  dismissTutorialKey: 102
+  ignoreSavedCompletionForTesting: 1
 --- !u!1001 &684096291
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7446,6 +7697,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d98f32e2ecea5ef4396c2df0311d3ad3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeselectOnPointerUp
+--- !u!114 &974213269 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2214861773987703037, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
+  m_PrefabInstance: {fileID: 478059239}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 974213264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1 &976538827
 GameObject:
   m_ObjectHideFlags: 0
@@ -11491,6 +11753,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5293128759560788579, guid: 0265750f3c0dd9444af9b4109ed046bb, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 1880
+      objectReference: {fileID: 0}
     - target: {fileID: 8296040703723748862, guid: 0265750f3c0dd9444af9b4109ed046bb, type: 3}
       propertyPath: m_Name
       value: Tutorial_Panel
@@ -12103,6 +12369,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d98f32e2ecea5ef4396c2df0311d3ad3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeselectOnPointerUp
+--- !u!114 &1890700155 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2214861773987703037, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
+  m_PrefabInstance: {fileID: 884760468}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1890700150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1 &1933119592 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 670951160764982922, guid: f44477c3a1d199548a834a1f933e0cba, type: 3}
@@ -13907,6 +14184,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d98f32e2ecea5ef4396c2df0311d3ad3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeselectOnPointerUp
+--- !u!114 &418901611284447404 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2214861773987703037, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
+  m_PrefabInstance: {fileID: 418901611284447398}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1647998712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!224 &2312109514745882005 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 845724135397370026, guid: 5e7f2b5277a37d041a57b07dbb619341, type: 3}

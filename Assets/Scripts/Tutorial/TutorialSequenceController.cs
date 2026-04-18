@@ -81,6 +81,7 @@ public class TutorialSequenceController : MonoBehaviour
     bool _stepRequirementMet;
     TutorialStepCompletionMode _resolvedCompletionMode = TutorialStepCompletionMode.NextButton;
 
+    readonly List<Button> _temporarilyDisabledButtons = new();
     public bool IsSequenceRunning => _sequenceRunning;
 
     void Awake()
@@ -283,6 +284,7 @@ public class TutorialSequenceController : MonoBehaviour
         ApplyPopupPosition(step);
         ApplyHighlight(step);
         HookCurrentStepBindings(step);
+        ApplyButtonInteractionLock(step);
         SetGameplaySuspended(step.pauseGameplay);
         RefreshPopupState(step);
 
@@ -348,6 +350,8 @@ public class TutorialSequenceController : MonoBehaviour
 
         _currentWatchedButton = null;
         _watchedButtonAction = null;
+
+        RestoreButtonInteractionLock();
     }
 
     void HandleGameplayEvent(TutorialGameplayEvent gameplayEvent)
@@ -504,32 +508,69 @@ public class TutorialSequenceController : MonoBehaviour
         MarkCurrentStepRequirementMet();
     }
 
+    void ApplyButtonInteractionLock(TutorialStep step)
+    {
+        RestoreButtonInteractionLock();
+
+        if (step == null || step.completionMode != TutorialStepCompletionMode.ButtonClick || !step.watchedButton)
+            return;
+
+        var allButtons = FindObjectsByType<Button>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        for (int i = 0; i < allButtons.Length; i++)
+        {
+            var button = allButtons[i];
+            if (!button || button == step.watchedButton)
+                continue;
+
+            if (!button.interactable)
+                continue;
+
+            button.interactable = false;
+            _temporarilyDisabledButtons.Add(button);
+        }
+
+        step.watchedButton.interactable = true;
+    }
+
+    void RestoreButtonInteractionLock()
+    {
+        for (int i = 0; i < _temporarilyDisabledButtons.Count; i++)
+        {
+            var button = _temporarilyDisabledButtons[i];
+            if (button)
+                button.interactable = true;
+        }
+
+        _temporarilyDisabledButtons.Clear();
+    }
+
     bool WasKeyPressedThisFrame(KeyCode key)
     {
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
-        var keyboard = Keyboard.current;
-        if (keyboard == null)
-            return false;
+    var keyboard = Keyboard.current;
+    if (keyboard == null)
+        return false;
 
-        switch (key)
-        {
-            case KeyCode.A: return keyboard.aKey.wasPressedThisFrame;
-            case KeyCode.D: return keyboard.dKey.wasPressedThisFrame;
-            case KeyCode.S: return keyboard.sKey.wasPressedThisFrame;
-            case KeyCode.Q: return keyboard.qKey.wasPressedThisFrame;
-            case KeyCode.E: return keyboard.eKey.wasPressedThisFrame;
-            case KeyCode.R: return keyboard.rKey.wasPressedThisFrame;
-            case KeyCode.Space: return keyboard.spaceKey.wasPressedThisFrame;
-            case KeyCode.Escape: return keyboard.escapeKey.wasPressedThisFrame;
-            case KeyCode.LeftArrow: return keyboard.leftArrowKey.wasPressedThisFrame;
-            case KeyCode.RightArrow: return keyboard.rightArrowKey.wasPressedThisFrame;
-            case KeyCode.DownArrow: return keyboard.downArrowKey.wasPressedThisFrame;
-            case KeyCode.UpArrow: return keyboard.upArrowKey.wasPressedThisFrame;
-            case KeyCode.Z: return keyboard.zKey.wasPressedThisFrame;
-            case KeyCode.Return: return keyboard.enterKey.wasPressedThisFrame;
-            case KeyCode.KeypadEnter: return keyboard.numpadEnterKey.wasPressedThisFrame;
-            default: return false;
-        }
+    switch (key)
+    {
+        case KeyCode.A: return keyboard.aKey.wasPressedThisFrame;
+        case KeyCode.D: return keyboard.dKey.wasPressedThisFrame;
+        case KeyCode.S: return keyboard.sKey.wasPressedThisFrame;
+        case KeyCode.F: return keyboard.fKey.wasPressedThisFrame;
+        case KeyCode.Q: return keyboard.qKey.wasPressedThisFrame;
+        case KeyCode.E: return keyboard.eKey.wasPressedThisFrame;
+        case KeyCode.R: return keyboard.rKey.wasPressedThisFrame;
+        case KeyCode.Space: return keyboard.spaceKey.wasPressedThisFrame;
+        case KeyCode.Escape: return keyboard.escapeKey.wasPressedThisFrame;
+        case KeyCode.LeftArrow: return keyboard.leftArrowKey.wasPressedThisFrame;
+        case KeyCode.RightArrow: return keyboard.rightArrowKey.wasPressedThisFrame;
+        case KeyCode.DownArrow: return keyboard.downArrowKey.wasPressedThisFrame;
+        case KeyCode.UpArrow: return keyboard.upArrowKey.wasPressedThisFrame;
+        case KeyCode.Z: return keyboard.zKey.wasPressedThisFrame;
+        case KeyCode.Return: return keyboard.enterKey.wasPressedThisFrame;
+        case KeyCode.KeypadEnter: return keyboard.numpadEnterKey.wasPressedThisFrame;
+        default: return false;
+    }
 #else
         return Input.GetKeyDown(key);
 #endif

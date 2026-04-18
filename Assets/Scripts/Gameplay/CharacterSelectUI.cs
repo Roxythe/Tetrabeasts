@@ -23,7 +23,12 @@ public class CharacterSelectUI : MonoBehaviour
     public AudioClip unlockSFX;
     public AudioClip errorSFX;
 
+    [Header("Selection Visuals")]
+    [Range(0f, 1f)] public float selectedAlpha = 1f;
+    [Range(0f, 1f)] public float deselectedAlpha = 0.65f;
+
     PlayerCharacterData previewCharacter;
+    readonly System.Collections.Generic.Dictionary<PlayerCharacterData, Button> buttons = new();
 
     void Awake()
     {
@@ -49,13 +54,23 @@ public class CharacterSelectUI : MonoBehaviour
         // Default preview is the current stored character
         previewCharacter = SelectedCharacterStore.Current;
         RefreshPreview();
+        RefreshButtonAlphas();
     }
 
     void BuildList()
     {
+        for (int i = listParent.childCount - 1; i >= 0; i--)
+            Destroy(listParent.GetChild(i).gameObject);
+
+        buttons.Clear();
+
+        if (roster == null)
+            return;
+
         foreach (var data in roster)
         {
             var btn = Instantiate(characterButtonPrefab, listParent);
+            buttons[data] = btn;
             var txt = btn.GetComponentInChildren<TMP_Text>();
             var img = btn.GetComponentInChildren<Image>();
             var borderT = FindDeep(btn.transform, "Border_Image");
@@ -88,6 +103,7 @@ public class CharacterSelectUI : MonoBehaviour
                 }
 
                 SetCurrent(data);
+                RefreshButtonAlphas();
             });
 
             // Cost text
@@ -146,6 +162,27 @@ public class CharacterSelectUI : MonoBehaviour
         }
     }
 
+    void RefreshButtonAlphas()
+    {
+        foreach (var kv in buttons)
+        {
+            var data = kv.Key;
+            var button = kv.Value;
+            if (!button)
+                continue;
+
+            var portrait = button.GetComponentInChildren<Image>();
+            if (!portrait)
+                continue;
+
+            bool isSelected = SelectedCharacterStore.Current == data;
+
+            Color c = portrait.color;
+            c.a = isSelected ? selectedAlpha : deselectedAlpha;
+            portrait.color = c;
+        }
+    }
+
     void SetCurrent(PlayerCharacterData data)
     {
         // Never set a locked character as current
@@ -163,6 +200,7 @@ public class CharacterSelectUI : MonoBehaviour
             AudioManager.I.PlaySFX(selectSFX);
 
         RefreshPreview();
+        RefreshButtonAlphas();
     }
 
     PlayerCharacterData GetFirstUnlockedCharacter()
