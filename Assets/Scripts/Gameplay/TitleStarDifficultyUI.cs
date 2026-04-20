@@ -34,7 +34,7 @@ public class TitleStarDifficultyUI : MonoBehaviour
 
     [Header("Difficulty Animation Prefabs")]
     [SerializeField] RectTransform leftDifficultyAnimationHolder;
-    [SerializeField] RectTransform rightDifficultyAnimationHolder;
+    [SerializeField] RectTransform rightDifficultyAnimationHolder; // Currently not being used, code commented out
     [SerializeField] DifficultyAnimationEntry[] difficultyAnimationPrefabs = new DifficultyAnimationEntry[StarDifficultySystem.MaxStars + 1];
 
     GameObject _leftDifficultyAnimationInstance;

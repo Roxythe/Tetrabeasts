@@ -29,6 +29,19 @@ public class TitleMenuUI : MonoBehaviour
     [SerializeField] CharacterSelectUI characterSelectUI;
     [SerializeField] MonsterSelectUI monsterSelectUI;
 
+    [Header("Selected Commander UI")]
+    public Transform selectedCommanderParent;
+    public GameObject selectedCommanderPrefab;
+
+    [Header("Selected Monsters UI")]
+    public Transform selectedMonstersParent;
+    public GameObject selectedMonsterIconPrefab;
+
+    [Header("Selected Monster Role Backgrounds")]
+    public Sprite attackRoleBackgroundSprite;
+    public Sprite defenseRoleBackgroundSprite;
+    public Sprite healerRoleBackgroundSprite;
+
     [Header("Tutorial Popups")]
     [SerializeField] TriggeredTutorialPopupController triggeredTutorialPopups;
 
@@ -86,6 +99,8 @@ public class TitleMenuUI : MonoBehaviour
 
             monsterSelectUI.RefreshAllUI();
         }
+
+        RefreshSelectedLoadoutUI();
     }
 
     void Start()
@@ -414,6 +429,92 @@ public class TitleMenuUI : MonoBehaviour
         }
     }
 
+    // --- Selected Loadout UI ---
+
+    public void RefreshSelectedLoadoutUI()
+    {
+        RefreshSelectedCommanderUI();
+        RefreshSelectedMonstersUI();
+    }
+
+    void RefreshSelectedCommanderUI()
+    {
+        if (!selectedCommanderParent || !selectedCommanderPrefab)
+            return;
+
+        for (int i = selectedCommanderParent.childCount - 1; i >= 0; i--)
+            Destroy(selectedCommanderParent.GetChild(i).gameObject);
+
+        var current = SelectedCharacterStore.Current;
+        if (!current)
+            return;
+
+        var entry = Instantiate(selectedCommanderPrefab, selectedCommanderParent);
+        var refs = entry.GetComponent<CommanderIconUIRefs>();
+
+        if (!refs)
+        {
+            Debug.LogWarning("Selected commander prefab is missing CommanderIconUIRefs.", entry);
+            return;
+        }
+
+        if (refs.iconImage)
+            refs.iconImage.sprite = current.portrait;
+
+        if (refs.borderImage)
+            refs.borderImage.sprite = current.defaultBorder;
+    }
+
+    void RefreshSelectedMonstersUI()
+    {
+        if (!selectedMonstersParent || !selectedMonsterIconPrefab)
+            return;
+
+        for (int i = selectedMonstersParent.childCount - 1; i >= 0; i--)
+            Destroy(selectedMonstersParent.GetChild(i).gameObject);
+
+        if (SelectedMonstersStore.Active == null)
+            return;
+
+        foreach (var monster in SelectedMonstersStore.Active)
+        {
+            if (!monster)
+                continue;
+
+            var entry = Instantiate(selectedMonsterIconPrefab, selectedMonstersParent);
+            var refs = entry.GetComponent<MonsterIconUIRefs>();
+
+            if (!refs)
+            {
+                Debug.LogWarning("Selected monster prefab is missing MonsterIconUIRefs.", entry);
+                continue;
+            }
+
+            int skinIndex = MonsterSkinStore.GetValidSelected(monster);
+
+            if (refs.iconImage)
+                refs.iconImage.sprite = MonsterSkinStore.GetPortrait(monster, skinIndex);
+
+            if (refs.roleBackgroundImage)
+            {
+                var roleSprite = GetRoleBackgroundSprite(monster.role);
+                refs.roleBackgroundImage.sprite = roleSprite;
+                refs.roleBackgroundImage.enabled = roleSprite != null;
+            }
+        }
+    }
+
+    Sprite GetRoleBackgroundSprite(MonsterRole role)
+    {
+        return role switch
+        {
+            MonsterRole.Attack => attackRoleBackgroundSprite,
+            MonsterRole.Defense => defenseRoleBackgroundSprite,
+            MonsterRole.Healer => healerRoleBackgroundSprite,
+            _ => null
+        };
+    }
+
     // --- Helper Functions ---
     void OnApplicationFocus(bool hasFocus)
     {
@@ -432,4 +533,5 @@ public class TitleMenuUI : MonoBehaviour
         if (!triggeredTutorialPopups)
             triggeredTutorialPopups = FindFirstObjectByType<TriggeredTutorialPopupController>(FindObjectsInactive.Include);
     }
+
 }

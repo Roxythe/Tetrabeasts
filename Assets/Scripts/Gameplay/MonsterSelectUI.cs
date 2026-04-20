@@ -253,11 +253,17 @@ public class MonsterSelectUI : MonoBehaviour
             }
         }
 
+        if (!changed)
+            return;
+
         if (AudioManager.I && selectSFX)
             AudioManager.I.PlaySFX(selectSFX);
 
         SelectedMonstersStore.Active = new List<MonsterData>(selected);
+        SelectedMonstersStore.SaveNames(SelectedMonstersStore.Active);
+
         RefreshAllUI();
+        RefreshTitleMenuLoadoutUI();
     }
 
     List<MonsterData> BuildDefaultUnlockedSelection()
@@ -549,6 +555,7 @@ public class MonsterSelectUI : MonoBehaviour
         SelectedMonstersStore.Active = new List<MonsterData>(selected);
         SelectedMonstersStore.SaveNames(SelectedMonstersStore.Active);
         RefreshAllUI();
+        RefreshTitleMenuLoadoutUI();
         gameObject.SetActive(false);
     }
 
@@ -762,5 +769,12 @@ public class MonsterSelectUI : MonoBehaviour
 
         float bannerA = selectedOn ? selectedAlpha : (deselectedAlpha * deselectedBannerMultiplier);
         SetImageAlpha(GetBannerImage(btn), bannerA);
+    }
+
+    void RefreshTitleMenuLoadoutUI()
+    {
+        var titleMenu = FindFirstObjectByType<TitleMenuUI>(FindObjectsInactive.Include);
+        if (titleMenu)
+            titleMenu.RefreshSelectedLoadoutUI();
     }
 }

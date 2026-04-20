@@ -24303,7 +24303,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialSequenceController
   autoStart: 1
-  ignoreSavedCompletion: 1
+  ignoreSavedCompletion: 0
   markSequenceCompleteOnSkip: 1
   completionKey: gameplay_intro
   gameController: {fileID: 2092384764}
@@ -24695,7 +24695,7 @@ MonoBehaviour:
   popupView: {fileID: 1007656541}
   highlightView: {fileID: 2092384771}
   dismissTutorialKey: 102
-  ignoreSavedCompletionForTesting: 1
+  ignoreSavedCompletionForTesting: 0
 --- !u!1 &2109608209
 GameObject:
   m_ObjectHideFlags: 0

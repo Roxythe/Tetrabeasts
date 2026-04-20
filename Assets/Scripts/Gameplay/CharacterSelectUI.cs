@@ -171,21 +171,32 @@ public class CharacterSelectUI : MonoBehaviour
             if (!button)
                 continue;
 
-            var portrait = button.GetComponentInChildren<Image>();
-            if (!portrait)
-                continue;
-
+            bool unlocked = UnlockStore.IsUnlocked(data);
             bool isSelected = SelectedCharacterStore.Current == data;
+            float alpha = !unlocked || isSelected ? selectedAlpha : deselectedAlpha;
 
-            Color c = portrait.color;
-            c.a = isSelected ? selectedAlpha : deselectedAlpha;
-            portrait.color = c;
+            var portrait = button.GetComponentInChildren<Image>();
+            var borderT = FindDeep(button.transform, "Border_Image");
+            var border = borderT ? borderT.GetComponent<Image>() : null;
+
+            if (portrait)
+            {
+                Color c = portrait.color;
+                c.a = alpha;
+                portrait.color = c;
+            }
+
+            if (border)
+            {
+                Color c = border.color;
+                c.a = alpha;
+                border.color = c;
+            }
         }
     }
 
     void SetCurrent(PlayerCharacterData data)
     {
-        // Never set a locked character as current
         if (!UnlockStore.IsUnlocked(data))
         {
             if (AudioManager.I && errorSFX)
@@ -201,6 +212,7 @@ public class CharacterSelectUI : MonoBehaviour
 
         RefreshPreview();
         RefreshButtonAlphas();
+        RefreshTitleMenuLoadoutUI();
     }
 
     PlayerCharacterData GetFirstUnlockedCharacter()
@@ -231,6 +243,13 @@ public class CharacterSelectUI : MonoBehaviour
 
         if (selectedSpecialDescription)
             selectedSpecialDescription.text = cur.specialDescription;
+    }
+
+    void RefreshTitleMenuLoadoutUI()
+    {
+        var titleMenu = FindFirstObjectByType<TitleMenuUI>(FindObjectsInactive.Include);
+        if (titleMenu)
+            titleMenu.RefreshSelectedLoadoutUI();
     }
 
     static Transform FindDeep(Transform root, string name)
