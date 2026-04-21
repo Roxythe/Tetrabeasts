@@ -18,6 +18,7 @@ public class VolumePanelUI : MonoBehaviour
     public Toggle combatLogToggle;
     public GameObject combatLogRoot;
     public Toggle skipIntroToggle;
+    public GameController gameplayController;
 
     [Header("SFX Preview")]
     public bool previewOnChange = true;
@@ -156,6 +157,26 @@ public class VolumePanelUI : MonoBehaviour
     void SetSkipIntroEnabled(bool isOn)
     {
         SettingsStore.SaveSkipIntroEnabled(isOn);
+    }
+
+    public void OnSaveAndQuitPressed()
+    {
+        var controller = GetGameplayController();
+        if (!controller)
+        {
+            Debug.LogWarning("VolumePanelUI: No GameController found for Save and Quit.");
+            return;
+        }
+
+        controller.RequestSaveAndQuit();
+    }
+
+    GameController GetGameplayController()
+    {
+        if (!gameplayController)
+            gameplayController = FindFirstObjectByType<GameController>(FindObjectsInactive.Include);
+
+        return gameplayController;
     }
 
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER

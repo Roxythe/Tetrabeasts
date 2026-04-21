@@ -25,6 +25,27 @@ public class PlayerProgress : MonoBehaviour
         public int maxUnlockedStarDifficulty = 0;
     }
 
+    [Serializable]
+    public class StringLongEntry
+    {
+        public string key;
+        public long value;
+    }
+
+    [Serializable]
+    public class StringDoubleEntry
+    {
+        public string key;
+        public double value;
+    }
+
+    [Serializable]
+    public class RunStateSnapshot
+    {
+        public List<StringLongEntry> runInt = new();
+        public List<StringDoubleEntry> runFloat = new();
+    }
+
     SaveData _data = new SaveData();
 
     public event Action<string> AchievementUnlocked;
@@ -74,6 +95,55 @@ public class PlayerProgress : MonoBehaviour
     public void EndRun()
     {
         Save();
+    }
+
+    public RunStateSnapshot CaptureRunState()
+    {
+        var snapshot = new RunStateSnapshot();
+
+        foreach (var kv in _data.runInt)
+            snapshot.runInt.Add(new StringLongEntry { key = kv.Key, value = kv.Value });
+
+        foreach (var kv in _data.runFloat)
+            snapshot.runFloat.Add(new StringDoubleEntry { key = kv.Key, value = kv.Value });
+
+        return snapshot;
+    }
+
+    public void RestoreRunState(RunStateSnapshot snapshot, bool saveAfterRestore = true)
+    {
+        _data.runInt.Clear();
+        _data.runFloat.Clear();
+
+        if (snapshot != null)
+        {
+            if (snapshot.runInt != null)
+            {
+                for (int i = 0; i < snapshot.runInt.Count; i++)
+                {
+                    var entry = snapshot.runInt[i];
+                    if (entry == null || string.IsNullOrWhiteSpace(entry.key))
+                        continue;
+
+                    _data.runInt[entry.key] = entry.value;
+                }
+            }
+
+            if (snapshot.runFloat != null)
+            {
+                for (int i = 0; i < snapshot.runFloat.Count; i++)
+                {
+                    var entry = snapshot.runFloat[i];
+                    if (entry == null || string.IsNullOrWhiteSpace(entry.key))
+                        continue;
+
+                    _data.runFloat[entry.key] = entry.value;
+                }
+            }
+        }
+
+        if (saveAfterRestore)
+            Save();
     }
 
     // ---------------- Stats API ----------------

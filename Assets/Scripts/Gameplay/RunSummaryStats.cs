@@ -2,6 +2,21 @@ using UnityEngine;
 
 public static class RunSummaryStats
 {
+    [System.Serializable]
+    public class SerializableSnapshot
+    {
+        public int linesCleared;
+        public int specialUsedCount;
+        public int obstaclesDestroyed;
+        public int highestCombo;
+        public int highestSingleAttackDamage;
+        public int unitsDied;
+        public float totalHealingDone;
+        public int totalDamageDealt;
+        public float clearTimeSeconds;
+        public int finalScore;
+    }
+
     public readonly struct Snapshot
     {
         public readonly int linesCleared;
@@ -126,5 +141,42 @@ public static class RunSummaryStats
             _totalDamageDealt,
             _clearTimeSeconds,
             _finalScore);
+    }
+
+    public static SerializableSnapshot CaptureSerializableSnapshot()
+    {
+        return new SerializableSnapshot
+        {
+            linesCleared = _linesCleared,
+            specialUsedCount = _specialUsedCount,
+            obstaclesDestroyed = _obstaclesDestroyed,
+            highestCombo = _highestCombo,
+            highestSingleAttackDamage = _highestSingleAttackDamage,
+            unitsDied = _unitsDied,
+            totalHealingDone = _totalHealingDone,
+            totalDamageDealt = _totalDamageDealt,
+            clearTimeSeconds = _clearTimeSeconds,
+            finalScore = _finalScore
+        };
+    }
+
+    public static void RestoreSerializableSnapshot(SerializableSnapshot snapshot)
+    {
+        if (snapshot == null)
+        {
+            BeginRun();
+            return;
+        }
+
+        _linesCleared = Mathf.Max(0, snapshot.linesCleared);
+        _specialUsedCount = Mathf.Max(0, snapshot.specialUsedCount);
+        _obstaclesDestroyed = Mathf.Max(0, snapshot.obstaclesDestroyed);
+        _highestCombo = Mathf.Max(0, snapshot.highestCombo);
+        _highestSingleAttackDamage = Mathf.Max(0, snapshot.highestSingleAttackDamage);
+        _unitsDied = Mathf.Max(0, snapshot.unitsDied);
+        _totalHealingDone = Mathf.Max(0f, snapshot.totalHealingDone);
+        _totalDamageDealt = Mathf.Max(0, snapshot.totalDamageDealt);
+        _clearTimeSeconds = Mathf.Max(0f, snapshot.clearTimeSeconds);
+        _finalScore = Mathf.Max(0, snapshot.finalScore);
     }
 }

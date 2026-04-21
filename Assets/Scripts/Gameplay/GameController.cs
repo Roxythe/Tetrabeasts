@@ -424,6 +424,7 @@ public class GameController : MonoBehaviour
     bool _firstFullRowTutorialShownThisRun;
     bool tutorialAllowSoftDrop = false;
     bool tutorialAllowHardDrop = false;
+    TempRunSaveStore.SaveData _cachedTempRunCheckpoint;
 
     public bool IsTutorialSoftDropAllowed => tutorialAllowSoftDrop;
     public bool IsTutorialHardDropAllowed => tutorialAllowHardDrop;
@@ -437,6 +438,9 @@ public class GameController : MonoBehaviour
         }
     }
 
+    const string QuitWithoutSavingWarningMessage =
+    "Quit without saving? Your current run will be lost and will not be available to continue later.";
+
     void Start()
     {
         // Ensure PlayerProgress exists (stats + achievements)
@@ -446,8 +450,12 @@ public class GameController : MonoBehaviour
             go.AddComponent<PlayerProgress>();
         }
 
+        TempRunSaveStore.SaveData pendingTempRunSave;
+        bool resumeFromTempRun = PreparePendingTempRunResume(out pendingTempRunSave);
+
         // New run starts when gameplay scene starts
-        PlayerProgress.I.BeginRun();
+        if (!resumeFromTempRun)
+            PlayerProgress.I.BeginRun();
 
         HighScoreManager.EnsureInitialized(10);
         if (!highScoreUI)
@@ -519,18 +527,7 @@ public class GameController : MonoBehaviour
         else if (!selectedCharacter && roster != null && roster.Length > 0)
             selectedCharacter = roster[0];
 
-        // Apply character UI
-        if (selectedCharacter)
-        {
-            if (playerPortrait && selectedCharacter.portrait)
-                playerPortrait.sprite = selectedCharacter.portrait;
-            if (playerBorder && selectedCharacter.defaultBorder)
-                playerBorder.sprite = selectedCharacter.defaultBorder;
-            if (playerName)
-                playerName.text = selectedCharacter.displayName;
-            if (playerSpecialName)
-                playerSpecialName.text = selectedCharacter.specialAbilityName;
-        }
+        ApplySelectedCharacterUI();
 
         // Wire Run Mods panel buttons
         if (!runModsPanelRoot && runModsPanelUI)
@@ -562,18 +559,12 @@ public class GameController : MonoBehaviour
         RefreshStarDifficultyState();
         RefreshActiveMonsterPassives(applyStartingReserveDelta: false);
 
-        unitLives = EffectiveMaxUnitLives;
-        SetupUnitLivesUI();
-
         CacheBaseBoardSizeIfNeeded();
-        ApplyRunGridSize(currentLevel);
 
-        InitLevel(currentLevel);
-        RunMonsterProgress.BeginRun(GetActiveMonsterRoster());
-        RunSummaryStats.BeginRun();
-        _finalWinStateApplied = false;
-        _newDifficultyUnlockedThisRun = false;
-        _firstFullRowTutorialShownThisRun = false;
+        if (resumeFromTempRun && pendingTempRunSave != null)
+            RestoreTempRunCheckpoint(pendingTempRunSave);
+        else
+            StartFreshRun();
 
         // Pause menu defaults
         if (pausePanel) pausePanel.SetActive(false);
@@ -598,18 +589,10 @@ public class GameController : MonoBehaviour
         if (quitButton)
         {
             quitButton.onClick.RemoveAllListeners();
-            quitButton.onClick.AddListener(QuitGame);
+            quitButton.onClick.AddListener(RequestSaveAndQuit);
         }
 
         if (volumePanelInPause) volumePanelInPause.pauseWhenOpen = false;
-
-        StartCoroutine(BeginCurrentLevelSequence());
-
-        score = 0;
-        if (scoreUI) scoreUI.Set(score);
-
-        ResetCombo();
-        ResetBossGravityVisuals();
 
         if (currencyUI) currencyUI.Refresh();
 
@@ -619,6 +602,313 @@ public class GameController : MonoBehaviour
             pauseCursor.SetScale(SettingsStore.LoadCursorScale());
 
         SettingsStore.CursorScaleChanged += OnCursorScaleChanged;
+    }
+
+    bool PreparePendingTempRunResume(out TempRunSaveStore.SaveData saveData)
+    {
+        saveData = null;
+
+        if (!TempRunSaveStore.TryConsumePendingResume(out saveData) || saveData == null)
+            return false;
+
+        ApplyTempRunPersistentState(saveData);
+        return true;
+    }
+
+    void ApplyTempRunPersistentState(TempRunSaveStore.SaveData saveData)
+    {
+        if (saveData == null)
+            return;
+
+        if (!string.IsNullOrWhiteSpace(saveData.selectedCharacterName) && roster != null)
+        {
+            for (int i = 0; i < roster.Length; i++)
+            {
+                var candidate = roster[i];
+                if (!candidate || candidate.displayName != saveData.selectedCharacterName)
+                    continue;
+
+                SelectedCharacterStore.Current = candidate;
+                SelectedCharacterStore.Save(candidate);
+                break;
+            }
+        }
+
+        if (PlayerProgress.I != null)
+            PlayerProgress.I.SetSelectedStarDifficulty(saveData.starDifficulty);
+
+        CurrencyStore.Total = Mathf.Max(0, saveData.currencyTotal);
+        ApplySavedShopBuffLevels(saveData.shopBuffLevels);
+        ApplyRunModsStoreSnapshot(saveData.runMods);
+    }
+
+    void ApplySavedShopBuffLevels(List<TempRunSaveStore.ShopBuffLevelEntry> levels)
+    {
+        var allTypes = ShopBuffStore.AllTypes;
+        for (int i = 0; i < allTypes.Length; i++)
+            ShopBuffStore.SetLevel(allTypes[i], 0);
+
+        if (levels == null)
+            return;
+
+        for (int i = 0; i < levels.Count; i++)
+        {
+            var entry = levels[i];
+            if (entry == null)
+                continue;
+
+            if (!System.Enum.IsDefined(typeof(ShopBuffType), entry.type))
+                continue;
+
+            ShopBuffStore.SetLevel((ShopBuffType)entry.type, entry.level);
+        }
+    }
+
+    void ApplyRunModsStoreSnapshot(TempRunSaveStore.RunModsSnapshot snapshot)
+    {
+        RunModsStore.ResetAll();
+        if (snapshot == null)
+            return;
+
+        RunModsStore.EnemyAttackIntervalMult = snapshot.enemyAttackIntervalMult;
+        RunModsStore.EnemyProjectileDamageMult = snapshot.enemyProjectileDamageMult;
+        RunModsStore.EnemyProjectileSpeedMult = snapshot.enemyProjectileSpeedMult;
+        RunModsStore.SpecialGainMult = snapshot.specialGainMult;
+        RunModsStore.SpecialDrainMult = snapshot.specialDrainMult;
+        RunModsStore.SpecialBlockChanceAdd = snapshot.specialBlockChanceAdd;
+        RunModsStore.PieceGravityMult = snapshot.pieceGravityMult;
+        RunModsStore.FallRampRateMult = snapshot.fallRampRateMult;
+        RunModsStore.MonsterDamageMult = snapshot.monsterDamageMult;
+        RunModsStore.MonsterSpecialGainMult = snapshot.monsterSpecialGainMult;
+        RunModsStore.MonsterMaxHpMult = snapshot.monsterMaxHpMult;
+        RunModsStore.HealPowerMult = snapshot.healPowerMult;
+        RunModsStore.HealRangeAdd = snapshot.healRangeAdd;
+        RunModsStore.DisableNextPreview = snapshot.disableNextPreview;
+        RunModsStore.DisableLandingHint = snapshot.disableLandingHint;
+        RunModsStore.LineClearCurrencyChanceAdd = snapshot.lineClearCurrencyChanceAdd;
+        RunModsStore.LineClearCurrencyAmountMult = snapshot.lineClearCurrencyAmountMult;
+        RunModsStore.EnemyCastleHpMult = snapshot.enemyCastleHpMult;
+        RunModsStore.Luck = snapshot.luck;
+        RunModsStore.Misfortune = snapshot.misfortune;
+    }
+
+    void ApplySelectedCharacterUI()
+    {
+        if (!selectedCharacter)
+            return;
+
+        if (playerPortrait && selectedCharacter.portrait)
+            playerPortrait.sprite = selectedCharacter.portrait;
+
+        if (playerBorder && selectedCharacter.defaultBorder)
+            playerBorder.sprite = selectedCharacter.defaultBorder;
+
+        if (playerName)
+            playerName.text = selectedCharacter.displayName;
+
+        if (playerSpecialName)
+            playerSpecialName.text = selectedCharacter.specialAbilityName;
+    }
+
+    void StartFreshRun()
+    {
+        currentLevel = 0;
+        score = 0;
+        _cachedTempRunCheckpoint = null;
+
+        unitLives = EffectiveMaxUnitLives;
+        SetupUnitLivesUI();
+
+        ResetRunGridToBase();
+        ApplyRunGridSize(currentLevel);
+        InitLevel(currentLevel);
+
+        RunMonsterProgress.BeginRun(GetActiveMonsterRoster());
+        RunSummaryStats.BeginRun();
+
+        _finalWinStateApplied = false;
+        _newDifficultyUnlockedThisRun = false;
+        _firstFullRowTutorialShownThisRun = false;
+        gameOver = false;
+        levelWon = false;
+        winQueued = false;
+        _pendingMainMenuAfterXp = false;
+
+        if (scoreUI) scoreUI.Set(score);
+
+        ResetCombo();
+        ResetBossGravityVisuals();
+
+        StartCoroutine(BeginCurrentLevelSequence());
+    }
+
+    void RestoreTempRunCheckpoint(TempRunSaveStore.SaveData saveData)
+    {
+        if (saveData == null)
+        {
+            StartFreshRun();
+            return;
+        }
+
+        _cachedTempRunCheckpoint = saveData;
+        currentLevel = GetClampedSavedLevelIndex(saveData.currentLevel);
+        score = Mathf.Max(0, saveData.score);
+        luck = (saveData.runMods != null) ? saveData.runMods.luck : 0f;
+        misfortune = (saveData.runMods != null) ? saveData.runMods.misfortune : 0f;
+
+        if (piece) piece.ResetPiece();
+        if (gameBoard) gameBoard.ClearAll();
+        if (highScoreUI) highScoreUI.Hide();
+        if (victoryPanelUI) victoryPanelUI.Hide();
+
+        gameOver = false;
+        levelWon = false;
+        winQueued = false;
+        _pendingMainMenuAfterXp = false;
+        _finalWinStateApplied = false;
+        _newDifficultyUnlockedThisRun = false;
+        _firstFullRowTutorialShownThisRun = false;
+
+        ResetRunGridToBase();
+        ApplyRunGridSize(currentLevel);
+        InitLevel(currentLevel);
+
+        unitLives = Mathf.Clamp(saveData.unitLives, 0, EffectiveMaxUnitLives);
+        SetupUnitLivesUI();
+
+        RestoreActiveRunModifierLists(saveData);
+        RunMonsterProgress.RestoreSnapshot(BuildRunMonsterSnapshot(saveData.runMonsterStates));
+        RunSummaryStats.RestoreSerializableSnapshot(saveData.runSummary);
+        PlayerProgress.I?.RestoreRunState(saveData.playerProgressRun);
+
+        RunModsStore.Luck = EffectiveLuck;
+        RunModsStore.Misfortune = CurrentMisfortune;
+
+        if (scoreUI) scoreUI.Set(score);
+        RunSummaryStats.SetFinalScore(score);
+        SetSpecialGaugeImmediate(saveData.specialGauge);
+        ResetCombo();
+        ResetBossGravityVisuals();
+
+        var restoredLevelModifier = ResolveSavedLevelModifier(saveData);
+        int restoredRerolls = (saveData.levelModifier != null) ? saveData.levelModifier.availableRerolls : 0;
+        StartCoroutine(BeginCurrentLevelSequence(useSavedLevelModifier: true,
+            restoredLevelModifier: restoredLevelModifier,
+            restoredRerolls: restoredRerolls));
+    }
+
+    int GetClampedSavedLevelIndex(int levelIndex)
+    {
+        if (castlesByLevel == null || castlesByLevel.Length == 0)
+            return Mathf.Max(0, levelIndex);
+
+        return Mathf.Clamp(levelIndex, 0, castlesByLevel.Length - 1);
+    }
+
+    void RestoreActiveRunModifierLists(TempRunSaveStore.SaveData saveData)
+    {
+        _runBuffs.Clear();
+        _runDebuffs.Clear();
+        RunModsStore.Buffs.Clear();
+        RunModsStore.Debuffs.Clear();
+
+        if (saveData == null)
+            return;
+
+        RestoreRunModifierList(saveData.buffModifierNames, _runBuffs, RunModsStore.Buffs);
+        RestoreRunModifierList(saveData.debuffModifierNames, _runDebuffs, RunModsStore.Debuffs);
+    }
+
+    void RestoreRunModifierList(List<string> modifierNames, List<RunModifierSO> runtimeList, List<RunModifierSO> storeList)
+    {
+        if (modifierNames == null)
+            return;
+
+        for (int i = 0; i < modifierNames.Count; i++)
+        {
+            var resolved = ResolveRunModifierByName(modifierNames[i]);
+            if (!resolved)
+                continue;
+
+            runtimeList.Add(resolved);
+            storeList.Add(resolved);
+        }
+    }
+
+    RunModifierSO ResolveRunModifierByName(string modifierName)
+    {
+        if (string.IsNullOrWhiteSpace(modifierName))
+            return null;
+
+        RunModifierSO resolved = FindRunModifierInPool(buffPool, modifierName);
+        if (resolved) return resolved;
+
+        resolved = FindRunModifierInPool(debuffPool, modifierName);
+        if (resolved) return resolved;
+
+        resolved = FindRunModifierInPool(stoneBuffPoolCommon, modifierName);
+        if (resolved) return resolved;
+
+        resolved = FindRunModifierInPool(stoneBuffPoolUncommon, modifierName);
+        if (resolved) return resolved;
+
+        resolved = FindRunModifierInPool(stoneBuffPoolRare, modifierName);
+        if (resolved) return resolved;
+
+        resolved = FindRunModifierInPool(stoneBuffPoolEpic, modifierName);
+        if (resolved) return resolved;
+
+        return FindRunModifierInPool(stoneBuffPoolLegendary, modifierName);
+    }
+
+    RunModifierSO FindRunModifierInPool(RunModifierSO[] pool, string modifierName)
+    {
+        if (pool == null)
+            return null;
+
+        for (int i = 0; i < pool.Length; i++)
+        {
+            var modifier = pool[i];
+            if (!modifier)
+                continue;
+
+            if (modifier.name == modifierName || modifier.displayName == modifierName)
+                return modifier;
+        }
+
+        return null;
+    }
+
+    Dictionary<string, RunMonsterProgress.RunState> BuildRunMonsterSnapshot(List<TempRunSaveStore.RunMonsterStateEntry> entries)
+    {
+        var snapshot = new Dictionary<string, RunMonsterProgress.RunState>();
+        if (entries == null)
+            return snapshot;
+
+        for (int i = 0; i < entries.Count; i++)
+        {
+            var entry = entries[i];
+            if (entry == null || string.IsNullOrWhiteSpace(entry.monsterName))
+                continue;
+
+            snapshot[entry.monsterName] = new RunMonsterProgress.RunState
+            {
+                level = Mathf.Max(1, entry.level),
+                xpInto = Mathf.Max(0f, entry.xpInto)
+            };
+        }
+
+        return snapshot;
+    }
+
+    LevelModifierSO ResolveSavedLevelModifier(TempRunSaveStore.SaveData saveData)
+    {
+        if (saveData == null || saveData.levelModifier == null || levelModifierController == null)
+            return null;
+
+        return levelModifierController.ResolveModifierFromCurrentCastle(
+            saveData.levelModifier.modifierName,
+            saveData.levelModifier.modifierDisplayName);
     }
 
     void Update()
@@ -982,7 +1272,8 @@ public class GameController : MonoBehaviour
         ShowNextPreview();
     }
 
-    IEnumerator BeginCurrentLevelSequence()
+    IEnumerator BeginCurrentLevelSequence(bool useSavedLevelModifier = false,
+        LevelModifierSO restoredLevelModifier = null, int restoredRerolls = 0)
     {
         _levelStartBlocked = true;
 
@@ -990,11 +1281,21 @@ public class GameController : MonoBehaviour
         monstersBag.Clear();
 
         if (levelModifierController)
-            yield return levelModifierController.BeginLevel(currentCastleData);
+        {
+            if (useSavedLevelModifier)
+            {
+                levelModifierController.RestoreCheckpointState(restoredLevelModifier, restoredRerolls);
+            }
+            else
+            {
+                yield return levelModifierController.BeginLevel(currentCastleData);
+            }
+        }
 
         RefillBag(forceFirstEntryNormal: true);
         EnsureMinBag(3);
         ShowNextPreview();
+        CacheAndWriteTempRunCheckpoint();
 
         _levelStartBlocked = false;
 
@@ -1002,9 +1303,134 @@ public class GameController : MonoBehaviour
             SpawnNextPiece();
     }
 
+    void CacheAndWriteTempRunCheckpoint()
+    {
+        _cachedTempRunCheckpoint = BuildTempRunCheckpointData();
+        TempRunSaveStore.Save(_cachedTempRunCheckpoint);
+        PlayerPrefs.Save();
+    }
+
+    TempRunSaveStore.SaveData BuildTempRunCheckpointData()
+    {
+        var data = new TempRunSaveStore.SaveData
+        {
+            currentLevel = currentLevel,
+            score = Mathf.Max(0, score),
+            unitLives = Mathf.Max(0, unitLives),
+            specialGauge = Mathf.Max(0f, specialGauge),
+            starDifficulty = _starDifficulty,
+            selectedCharacterName = selectedCharacter ? selectedCharacter.displayName : string.Empty,
+            currencyTotal = Mathf.Max(0, CurrencyStore.Total),
+            runMods = new TempRunSaveStore.RunModsSnapshot
+            {
+                enemyAttackIntervalMult = enemyAttackIntervalMult,
+                enemyProjectileDamageMult = enemyProjectileDamageMult,
+                enemyProjectileSpeedMult = enemyProjectileSpeedMult,
+                specialGainMult = specialGainMult,
+                specialDrainMult = specialDrainMult,
+                specialBlockChanceAdd = specialBlockChanceAdd,
+                pieceGravityMult = pieceGravityMult,
+                fallRampRateMult = fallRampRateMult,
+                monsterDamageMult = monsterDamageMult,
+                monsterSpecialGainMult = monsterSpecialGainMult,
+                monsterMaxHpMult = monsterMaxHpMult,
+                healPowerMult = healPowerMult,
+                healRangeAdd = healRangeAdd,
+                disableNextPreview = disableNextPreview,
+                disableLandingHint = disableLandingHint,
+                lineClearCurrencyChanceAdd = lineClearCurrencyChanceAdd,
+                lineClearCurrencyAmountMult = lineClearCurrencyAmountMult,
+                enemyCastleHpMult = enemyCastleHpMult,
+                luck = luck,
+                misfortune = misfortune
+            },
+            playerProgressRun = PlayerProgress.I != null ? PlayerProgress.I.CaptureRunState() : new PlayerProgress.RunStateSnapshot(),
+            runSummary = RunSummaryStats.CaptureSerializableSnapshot(),
+            levelModifier = new TempRunSaveStore.LevelModifierCheckpointData
+            {
+                modifierName = (levelModifierController && levelModifierController.ActiveModifier)
+                    ? levelModifierController.ActiveModifier.name
+                    : string.Empty,
+                modifierDisplayName = (levelModifierController && levelModifierController.ActiveModifier)
+                    ? levelModifierController.ActiveModifier.displayName
+                    : string.Empty,
+                availableRerolls = levelModifierController ? levelModifierController.AvailableRerolls : 0
+            }
+        };
+
+        var activeRoster = GetActiveMonsterRoster();
+        if (activeRoster != null)
+        {
+            for (int i = 0; i < activeRoster.Count; i++)
+            {
+                var monster = activeRoster[i];
+                if (monster && !string.IsNullOrWhiteSpace(monster.monsterName))
+                    data.selectedMonsterNames.Add(monster.monsterName);
+            }
+        }
+
+        var allTypes = ShopBuffStore.AllTypes;
+        for (int i = 0; i < allTypes.Length; i++)
+        {
+            data.shopBuffLevels.Add(new TempRunSaveStore.ShopBuffLevelEntry
+            {
+                type = (int)allTypes[i],
+                level = ShopBuffStore.GetLevel(allTypes[i])
+            });
+        }
+
+        for (int i = 0; i < RunModsStore.Buffs.Count; i++)
+        {
+            var buff = RunModsStore.Buffs[i];
+            if (buff)
+                data.buffModifierNames.Add(buff.name);
+        }
+
+        for (int i = 0; i < RunModsStore.Debuffs.Count; i++)
+        {
+            var debuff = RunModsStore.Debuffs[i];
+            if (debuff)
+                data.debuffModifierNames.Add(debuff.name);
+        }
+
+        var runMonsterSnapshot = RunMonsterProgress.GetSnapshot();
+        foreach (var kv in runMonsterSnapshot)
+        {
+            data.runMonsterStates.Add(new TempRunSaveStore.RunMonsterStateEntry
+            {
+                monsterName = kv.Key,
+                level = kv.Value.level,
+                xpInto = kv.Value.xpInto
+            });
+        }
+
+        return data;
+    }
+
+    bool SaveTempRunForQuit()
+    {
+        if (_cachedTempRunCheckpoint == null)
+            _cachedTempRunCheckpoint = BuildTempRunCheckpointData();
+
+        if (_cachedTempRunCheckpoint == null)
+            return false;
+
+        TempRunSaveStore.Save(_cachedTempRunCheckpoint);
+        PlayerPrefs.Save();
+        PlayerProgress.I?.EndRun();
+        return TempRunSaveStore.HasValidSave();
+    }
+
+    void ClearTempRunCheckpoint()
+    {
+        _cachedTempRunCheckpoint = null;
+        TempRunSaveStore.Delete();
+    }
+
     public void GameOver()
     {
         gameOver = true;
+        ClearTempRunCheckpoint();
         Debug.Log("Game Over");
 
         if (AudioManager.I)
@@ -1735,6 +2161,7 @@ public class GameController : MonoBehaviour
 
         _finalWinStateApplied = true;
         gameOver = true;
+        ClearTempRunCheckpoint();
 
         if (PlayerProgress.I)
         {
@@ -2617,6 +3044,21 @@ public class GameController : MonoBehaviour
 
     public void RestartGame()
     {
+        if (ShouldWarnBeforeDiscardingCurrentRun())
+        {
+            ShowConfirmationPopup(
+                "Restarting will treat this run as a loss. The current temp save will be erased and this run will not be saved. Continue?",
+                RestartGameAfterDiscardingTempRun);
+            return;
+        }
+
+        RestartGameAfterDiscardingTempRun();
+    }
+
+    void RestartGameAfterDiscardingTempRun()
+    {
+        ClearTempRunCheckpoint();
+
         // If still on level 1 (no run XP earned yet), restart immediately
         if (currentLevel == 0)
         {
@@ -2653,6 +3095,8 @@ public class GameController : MonoBehaviour
 
     void DoRestartGameNow()
     {
+        ClearTempRunCheckpoint();
+
         // Unpause if needed
         Time.timeScale = 1f;
         AudioListener.pause = false;
@@ -2731,6 +3175,21 @@ public class GameController : MonoBehaviour
 
     public void ReturnToMainMenu()
     {
+        if (ShouldWarnBeforeDiscardingCurrentRun())
+        {
+            ShowConfirmationPopup(
+                "Returning to the main menu will treat this run as a loss. The current temp save will be erased and this run will not be saved. Continue?",
+                ReturnToMainMenuAfterDiscardingTempRun);
+            return;
+        }
+
+        ReturnToMainMenuAfterDiscardingTempRun();
+    }
+
+    void ReturnToMainMenuAfterDiscardingTempRun()
+    {
+        ClearTempRunCheckpoint();
+
         if (currentLevel == 0)
         {
             _pendingMainMenuAfterXp = false;
@@ -2758,10 +3217,15 @@ public class GameController : MonoBehaviour
 
             return;
         }
+
+        _pendingMainMenuAfterXp = false;
+        DoReturnToMainMenuNow();
     }
 
     void DoReturnToMainMenuNow()
     {
+        ClearTempRunCheckpoint();
+
         if (_pendingMainMenuAfterXp && xpAwardUI && xpAwardUI.gameObject.activeInHierarchy)
             return;
 
@@ -2784,13 +3248,69 @@ public class GameController : MonoBehaviour
             Debug.LogError("GameController.titleSceneName is empty or not set.");
     }
 
+    public void RequestSaveAndQuit()
+    {
+        ShowConfirmationPopup(
+            "Save this run and quit the game? Continuing later will resume from the start of the current level checkpoint. While a run is saved, you will not be able to change your commander, squad, or shop buffs from the title menu.",
+            ConfirmSaveAndQuit);
+    }
+
+    void ConfirmSaveAndQuit()
+    {
+        if (!SaveTempRunForQuit())
+        {
+            ShowAlertPopup("The run could not be temp-saved, so the game will stay open.");
+            return;
+        }
+
+        QuitGameNow();
+    }
+
     public void QuitGame()
+    {
+        ShowConfirmationPopup(
+            QuitWithoutSavingWarningMessage,
+            ConfirmQuitWithoutSaving);
+    }
+
+    void ConfirmQuitWithoutSaving()
+    {
+        QuitGameNow();
+    }
+
+    void QuitGameNow()
     {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
     Application.Quit();
 #endif
+    }
+
+    bool ShouldWarnBeforeDiscardingCurrentRun() => !gameOver && !levelWon;
+
+    void ShowConfirmationPopup(string body, System.Action onConfirm, System.Action onCancel = null)
+    {
+        var popup = ConfirmationPopupUI.FindOrCreate();
+        if (popup)
+        {
+            popup.ShowConfirmation(body, onConfirm, onCancel ?? (() => { }), showWarningVisual: true);
+            return;
+        }
+
+        onConfirm?.Invoke();
+    }
+
+    void ShowAlertPopup(string body)
+    {
+        var popup = ConfirmationPopupUI.FindOrCreate();
+        if (popup)
+        {
+            popup.ShowAlert(body, showWarningVisual: true);
+            return;
+        }
+
+        Debug.LogWarning(body);
     }
 
     public void OpenRunModsPanel()

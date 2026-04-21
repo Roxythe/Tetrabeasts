@@ -29,6 +29,15 @@ public class TitleMenuUI : MonoBehaviour
     [SerializeField] CharacterSelectUI characterSelectUI;
     [SerializeField] MonsterSelectUI monsterSelectUI;
 
+    [Header("Temp Run Buttons")]
+    public Button continueRunButton;
+    public Button deleteTempRunButton;
+
+    [Header("Locked While Temp Run Exists")]
+    public Button characterSelectButton;
+    public Button monsterSelectButton;
+    public Button shopButton;
+
     [Header("Selected Commander UI")]
     public Transform selectedCommanderParent;
     public GameObject selectedCommanderPrefab;
@@ -67,6 +76,11 @@ public class TitleMenuUI : MonoBehaviour
     TitleStarDifficultyUI _starDifficultyUI;
 
     const string TutorialIdFirstShopOpen = "title_shop_intro";
+    const string SavedRunLockedMessage =
+        "A saved run is waiting. Continue that run or delete the temp save before changing your commander, squad, or shop buffs.";
+    const string DeleteTempRunWarningMessage =
+    "Deleting the current temp run will permanently erase that saved run. After deleting it, you will be able to change your commander, monsters, and access the shop again. Continue?";
+
 
     void Awake()
     {
@@ -100,6 +114,9 @@ public class TitleMenuUI : MonoBehaviour
             monsterSelectUI.RefreshAllUI();
         }
 
+        if (TryGetValidTempRun(out var tempRun))
+            ApplyTempRunSelectionsToStores(tempRun);
+
         RefreshSelectedLoadoutUI();
     }
 
@@ -115,18 +132,33 @@ public class TitleMenuUI : MonoBehaviour
             volumePanelUI.uiCursor.SetScale(SettingsStore.LoadCursorScale());
 
         // Setup cursor
-        volumePanelUI.uiCursor.SetScale(SettingsStore.LoadCursorScale());
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = false;
 
         EnsureStarDifficultyUI();
+        RefreshTempRunUI();
         HookAllButtonsForSFX(); // Auto-hook all buttons under this menu for click/hover sounds
     }
 
     // --- Button hooks ---
     public void OnStartGame()
     {
+        if (TryGetValidTempRun(out _))
+        {
+            ShowConfirmationPopup(
+                "Starting a new game will erase the saved run. Continue?",
+                StartFreshGameFromTitle);
+            return;
+        }
+
+        StartFreshGameFromTitle();
+    }
+
+    void StartFreshGameFromTitle()
+    {
+        TempRunSaveStore.Delete();
+
         // Stop title BGM
         if (AudioManager.I)
         {
@@ -171,10 +203,55 @@ public class TitleMenuUI : MonoBehaviour
 
         RunModsStore.ResetAll();
 
-        if (!string.IsNullOrEmpty(gameplaySceneName))
-            UnityEngine.SceneManagement.SceneManager.LoadScene(gameplaySceneName);
-        else
-            Debug.LogError("TitleMenuUI: gameplaySceneName is empty.");
+        LoadGameplayScene();
+    }
+
+    public void OnContinueRun()
+    {
+        if (!TryGetValidTempRun(out var tempRun))
+        {
+            RefreshTempRunUI();
+            return;
+        }
+
+        ApplyTempRunSelectionsToStores(tempRun);
+        TempRunSaveStore.PrepareResume();
+
+        if (AudioManager.I)
+        {
+            var clip = startGameSFX ? startGameSFX : AudioManager.I.sfxRestart;
+            AudioManager.I.PlaySFX(clip);
+            AudioManager.I.StopLevelMusic();
+            AudioManager.I.StopMusic();
+        }
+
+        if (!LoadGameplayScene())
+            TempRunSaveStore.CancelPendingResume();
+    }
+
+    public void OnDeleteTempRun()
+    {
+        if (!TryGetValidTempRun(out _))
+        {
+            RefreshTempRunUI();
+            return;
+        }
+
+        ShowConfirmationPopup(
+            DeleteTempRunWarningMessage,
+            ConfirmDeleteTempRun);
+    }
+
+    void ConfirmDeleteTempRun()
+    {
+        TempRunSaveStore.Delete();
+        RunModsStore.ResetAll();
+        RefreshTempRunUI();
+        RefreshSelectedLoadoutUI();
+        characterSelectUI?.RefreshPreview();
+        monsterSelectUI?.RefreshAllUI();
+        monsterSelectPanel?.RefreshAllUI();
+        shopPanelUI?.RefreshAll();
     }
 
     public void OnToggleHighScore()
@@ -194,6 +271,12 @@ public class TitleMenuUI : MonoBehaviour
 
     public void OnToggleSelectCharacter()
     {
+        if (TryGetValidTempRun(out _))
+        {
+            ShowSavedRunLockedPopup();
+            return;
+        }
+
         if (!characterSelectPanel) return;
 
         var go = characterSelectPanel.gameObject;
@@ -208,6 +291,12 @@ public class TitleMenuUI : MonoBehaviour
 
     public void OnToggleSelectMonster()
     {
+        if (TryGetValidTempRun(out _))
+        {
+            ShowSavedRunLockedPopup();
+            return;
+        }
+
         if (!monsterSelectPanel) return;
 
         var go = monsterSelectPanel.gameObject;
@@ -231,6 +320,12 @@ public class TitleMenuUI : MonoBehaviour
 
     public void OnToggleShop()
     {
+        if (TryGetValidTempRun(out _))
+        {
+            ShowSavedRunLockedPopup();
+            return;
+        }
+
         if (!shopPanel) return;
 
         bool show = !shopPanel.activeSelf;
@@ -350,6 +445,145 @@ public class TitleMenuUI : MonoBehaviour
         }
     }
 
+    bool TryGetValidTempRun(out TempRunSaveStore.SaveData saveData)
+    {
+        saveData = null;
+
+        if (!TempRunSaveStore.Exists())
+            return false;
+
+        if (TempRunSaveStore.TryLoad(out saveData) && saveData != null)
+            return true;
+
+        TempRunSaveStore.Delete();
+        return false;
+    }
+
+    void ApplyTempRunSelectionsToStores(TempRunSaveStore.SaveData saveData)
+    {
+        if (saveData == null)
+            return;
+
+        var characterRoster = (characterSelectUI && characterSelectUI.roster != null && characterSelectUI.roster.Length > 0)
+            ? characterSelectUI.roster
+            : (characterSelectPanel ? characterSelectPanel.roster : null);
+
+        if (!string.IsNullOrWhiteSpace(saveData.selectedCharacterName) && characterRoster != null)
+        {
+            for (int i = 0; i < characterRoster.Length; i++)
+            {
+                var candidate = characterRoster[i];
+                if (!candidate || candidate.displayName != saveData.selectedCharacterName)
+                    continue;
+
+                SelectedCharacterStore.Current = candidate;
+                SelectedCharacterStore.Save(candidate);
+                break;
+            }
+        }
+
+        var monsterRoster = (monsterSelectUI && monsterSelectUI.roster != null && monsterSelectUI.roster.Length > 0)
+            ? monsterSelectUI.roster
+            : (monsterSelectPanel ? monsterSelectPanel.roster : null);
+
+        if (monsterRoster != null && saveData.selectedMonsterNames != null && saveData.selectedMonsterNames.Count > 0)
+        {
+            var restored = new List<MonsterData>();
+
+            for (int i = 0; i < saveData.selectedMonsterNames.Count; i++)
+            {
+                string wantedName = saveData.selectedMonsterNames[i];
+                if (string.IsNullOrWhiteSpace(wantedName))
+                    continue;
+
+                for (int j = 0; j < monsterRoster.Length; j++)
+                {
+                    var candidate = monsterRoster[j];
+                    if (!candidate || candidate.monsterName != wantedName || restored.Contains(candidate))
+                        continue;
+
+                    restored.Add(candidate);
+                    break;
+                }
+            }
+
+            if (restored.Count > 0)
+            {
+                SelectedMonstersStore.Active = restored;
+                SelectedMonstersStore.SaveNames(restored);
+            }
+        }
+    }
+
+    void RefreshTempRunUI()
+    {
+        bool hasTempRun = TryGetValidTempRun(out var saveData);
+        if (hasTempRun)
+            ApplyTempRunSelectionsToStores(saveData);
+
+        if (continueRunButton)
+            continueRunButton.interactable = hasTempRun;
+
+        if (deleteTempRunButton)
+            deleteTempRunButton.interactable = hasTempRun;
+
+        if (characterSelectButton)
+            characterSelectButton.interactable = !hasTempRun;
+
+        if (monsterSelectButton)
+            monsterSelectButton.interactable = !hasTempRun;
+
+        if (shopButton)
+            shopButton.interactable = !hasTempRun;
+
+        if (hasTempRun)
+        {
+            if (shopPanel) shopPanel.SetActive(false);
+            if (monsterSelectPanel) monsterSelectPanel.gameObject.SetActive(false);
+            if (characterSelectPanel) characterSelectPanel.gameObject.SetActive(false);
+        }
+    }
+
+    bool LoadGameplayScene()
+    {
+        if (!string.IsNullOrEmpty(gameplaySceneName))
+        {
+            SceneManager.LoadScene(gameplaySceneName);
+            return true;
+        }
+
+        Debug.LogError("TitleMenuUI: gameplaySceneName is empty.");
+        return false;
+    }
+
+    void ShowSavedRunLockedPopup()
+    {
+        ShowAlertPopup(SavedRunLockedMessage);
+    }
+
+    void ShowConfirmationPopup(string body, System.Action onConfirm, System.Action onCancel = null)
+    {
+        var popup = ConfirmationPopupUI.FindOrCreate();
+        if (popup)
+        {
+            popup.ShowConfirmation(body, onConfirm, onCancel ?? (() => { }), showWarningVisual: true);
+            return;
+        }
+
+        onConfirm?.Invoke();
+    }
+
+    void ShowAlertPopup(string body)
+    {
+        var popup = ConfirmationPopupUI.FindOrCreate();
+        if (popup)
+        {
+            popup.ShowAlert(body, showWarningVisual: true);
+            return;
+        }
+
+        Debug.LogWarning(body);
+    }
 
     PlayerCharacterData GetFirstUnlockedCharacter(PlayerCharacterData[] roster)
     {

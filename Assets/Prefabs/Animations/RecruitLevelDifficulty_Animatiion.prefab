@@ -242,7 +242,7 @@ MonoBehaviour:
   - {fileID: 2141077962931998138, guid: e4b30e6f3f5bf4c49b32031e262dc3cb, type: 3}
   - {fileID: -1987565262941102887, guid: e4b30e6f3f5bf4c49b32031e262dc3cb, type: 3}
   - {fileID: 422993683045120395, guid: e4b30e6f3f5bf4c49b32031e262dc3cb, type: 3}
-  framesPerSecond: 30
+  framesPerSecond: 15
   playOnEnable: 1
 --- !u!95 &9044601466302473938
 Animator:

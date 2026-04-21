@@ -169,6 +169,54 @@ public class LevelModifierController : MonoBehaviour
         ResetLevelState();
     }
 
+    public void RestoreCheckpointState(LevelModifierSO modifier, int availableRerolls)
+    {
+        ResetLevelState();
+        _availableRerolls = Mathf.Max(0, availableRerolls);
+        ActiveModifier = modifier;
+
+        if (ActiveModifier)
+            ApplyModifierStartupEffects();
+        else
+            RefreshModifierUI();
+    }
+
+    public LevelModifierSO ResolveModifierFromCurrentCastle(string modifierName, string modifierDisplayName)
+    {
+        if (string.IsNullOrWhiteSpace(modifierName) && string.IsNullOrWhiteSpace(modifierDisplayName))
+            return null;
+
+        if (!_gc)
+            _gc = GetComponent<GameController>();
+
+        if (_gc == null || _gc.castlesByLevel == null)
+            return null;
+
+        int levelIndex = _gc.CurrentLevel;
+        if (levelIndex < 0 || levelIndex >= _gc.castlesByLevel.Length)
+            return null;
+
+        var castleData = _gc.castlesByLevel[levelIndex];
+        if (!castleData || !castleData.levelModifierDatabase)
+            return null;
+
+        var pool = castleData.levelModifierDatabase.BuildPool(castleData.allowedLevelModifierKinds);
+        for (int i = 0; i < pool.Count; i++)
+        {
+            var modifier = pool[i];
+            if (!modifier)
+                continue;
+
+            if (!string.IsNullOrWhiteSpace(modifierName) && modifier.name == modifierName)
+                return modifier;
+
+            if (!string.IsNullOrWhiteSpace(modifierDisplayName) && modifier.displayName == modifierDisplayName)
+                return modifier;
+        }
+
+        return null;
+    }
+
     public bool BlocksManualRotation => ActiveModifier && ActiveModifier.kind == LevelModifierKind.AutoRotate;
     public bool BlocksManualHorizontalShift => ActiveModifier && ActiveModifier.kind == LevelModifierKind.AutoShift;
     public bool BlocksSpecialUsage => ActiveModifier && ActiveModifier.kind == LevelModifierKind.SpecialLock;

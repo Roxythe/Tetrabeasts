@@ -122,6 +122,24 @@ public static class RunMonsterProgress
         return new Dictionary<string, RunState>(_run);
     }
 
+    public static void RestoreSnapshot(Dictionary<string, RunState> snapshot)
+    {
+        _run.Clear();
+
+        if (snapshot != null)
+        {
+            foreach (var kv in snapshot)
+            {
+                if (string.IsNullOrWhiteSpace(kv.Key))
+                    continue;
+
+                _run[kv.Key] = kv.Value;
+            }
+        }
+
+        _runActive = snapshot != null;
+    }
+
     public static float GetRunTotalXp(string monsterName)
     {
         if (!_run.TryGetValue(monsterName, out var st)) return 0f;
