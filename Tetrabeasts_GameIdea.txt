@@ -2,40 +2,6 @@
 - Add controller support
 
 
-- Add temp save system to save the current run if the player wants to quit game or has auto save backups of current run if game crashes unexpectedly
-
--- Add temp save current run function on quit game to temp save file
-
--- Auto-save current run at level start to temp save file
-
--- Add wireable button logic to title menu for "Continue Run" which will use the temp save file (if one is available)
-
---- I will make the button prefab in unity and wire into title menu via inspector
-
---- Button should not be interactable if no temp save file is found
-
--- Erase temp save file on run loss
-
--- Erase temp save file on beating final level
-
--- Player cannot change player character, monsters in active squad, or purchase buffs from shop from title menu while a temp run is still saved (prevents weird behavior)
-
--- Restart game and return to main menu erases temp save
-
---- Pop up message warns player that restart or return to main menu (respectivley) will treat the current run as a loss and current run will not be saved
-
--- Add wireable button logic to volumeSettings and temp "Save and Quit" button logic (volumeSettings.cs). I will create the actual button prefab in unity.
-
---- Warning message pop up that current squadron cannot be changed and shop buffs cannot be purchased while a run is saved/stored for continued play
-
---- Make sure game is fully saved before closing game
-
--- Add pop up warning message when pressing start game button on title menu
-
---- Pressing play button on title menu erases any current temp save game
-
--- Add wireable button to title menu to delete temp save game then refresh UI and allow player to make changes to commander, monster select, and shop for a new run
-
 
 - Add wireable button to title menu for Codex panel that show all buff/debuff run modifiers and level modifiers
 
