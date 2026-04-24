@@ -832,6 +832,7 @@ public class GameController : MonoBehaviour
 
             runtimeList.Add(resolved);
             storeList.Add(resolved);
+            CodexProgressStore.Unlock(resolved);
         }
     }
 
@@ -2022,6 +2023,7 @@ public class GameController : MonoBehaviour
             _runBuffs.Add(buff);
             RunModsStore.Buffs.Add(buff);
             buff.Apply(this);
+            CodexProgressStore.Unlock(buff);
 
             // Track buff round mod achievements
             if (PlayerProgress.I && PlayerProgress.I.GetLifetimeInt(AchievementSystem.Stat.FirstBuffChosen) == 0)
@@ -2036,6 +2038,7 @@ public class GameController : MonoBehaviour
             _runDebuffs.Add(debuff);
             RunModsStore.Debuffs.Add(debuff);
             debuff.Apply(this);
+            CodexProgressStore.Unlock(debuff);
 
             // Track first debuff chosen for achievements
             if (PlayerProgress.I && PlayerProgress.I.GetLifetimeInt(AchievementSystem.Stat.FirstDebuffChosen) == 0)
@@ -3825,6 +3828,7 @@ public class GameController : MonoBehaviour
 
             RunModsStore.Buffs.Add(buff);
             buff.Apply(this);
+            CodexProgressStore.Unlock(buff);
 
             if (AudioManager.I)
             {

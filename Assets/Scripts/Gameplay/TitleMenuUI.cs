@@ -18,8 +18,10 @@ public class TitleMenuUI : MonoBehaviour
     public GameObject shopPanel;
     public GameObject helpPanel;
     public GameObject achievementPanel;
+    public GameObject codexPanel;
     public HelpMenuUI helpMenuUI;
     public AchievementPanelUI achievementPanelUI;
+    public CodexPanelUI codexPanelUI;
     public ShopPanelUI shopPanelUI;
     public VolumePanelUI volumePanelUI;
     public MonsterSelectUI monsterSelectPanel;
@@ -375,6 +377,19 @@ public class TitleMenuUI : MonoBehaviour
         if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
     }
 
+    public void OnToggleCodex()
+    {
+        if (!codexPanel) return;
+
+        bool show = !codexPanel.activeSelf;
+        codexPanel.SetActive(show);
+
+        if (show)
+            codexPanelUI?.RebuildAll();
+
+        if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
+    }
+
     public void OnQuitGame()
     {
         PlayerProgress.I?.EndRun();
@@ -440,6 +455,7 @@ public class TitleMenuUI : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            if (codexPanel && codexPanel.activeSelf) { OnToggleCodex(); return; }
             if (settingsPanel && settingsPanel.activeSelf) { OnToggleSettings(); return; }
             if (highScorePanel && highScorePanel.activeSelf) { OnToggleHighScore(); return; }
         }

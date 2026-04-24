@@ -159,6 +159,7 @@ public class LevelModifierController : MonoBehaviour
         SetSelectionCursorState(false);
 
         ActiveModifier = chosen;
+        CodexProgressStore.Unlock(ActiveModifier);
         ApplyModifierStartupEffects();
         LogModifierActivation();
     }
@@ -176,7 +177,10 @@ public class LevelModifierController : MonoBehaviour
         ActiveModifier = modifier;
 
         if (ActiveModifier)
+        {
+            CodexProgressStore.Unlock(ActiveModifier);
             ApplyModifierStartupEffects();
+        }
         else
             RefreshModifierUI();
     }
