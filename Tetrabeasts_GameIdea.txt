@@ -1,25 +1,25 @@
 
+- Add round transition screen when round is won
+
+-- Pause game play on round win
+
+-- Add Round win Text "The Castle Has Fallen" that slowly fades in on screen with semi transparent black background
+
+-- Add continue button centered below round win text that will then open XP award panel when pressed
+
+- Add round transition screen when round is lost
+
+-- Pause game play on round lost
+
+-- Add Round loss Text "Conquest Failed" that slowly fades in on screen with semi transparent black background
+
+-- Add continue button centered below round loss text that will then open high score panel when pressed
+
+
+- Level modifier tutorial uses ok/cancel button, should be [F] to continue
+
+
 - Add controller support
-
-
-
-- Create codex UI logic
-
--- Code panel will have a scroll rec view for each panel, content should be filled with prefabs created based on run Modifier and level modifier database 
-
---- Prefab will be made by me in Unity and will include icon Image, alternate NotFound Image, Title Text, and description text. Not found image will be directly on top of icon image and can be set to inactive when an entry has been experienced/used in a playthrough. Icon. title text, and body text should use database information to fill each prefab
-
--- Add wireable button to title menu for Codex panel that show all buff/debuff run modifiers and level modifiers
-
--- Codex Panel should accept already created database for run modifiers and level modifiers that already exists in code base.
-
--- One panel inside codex panel for each (one for buff run modifiers, one for debuff run modifiers, and one for level modifiers), can be moved between by pressing button or A & D key input navigation to shift from one panel to another.
-
---- Show alternate not found yet image (similar to achievements that have not been obtained) for entires that have not been experienced/selected/used in runs before
-
---- A Codex progress store will be required to save whenever a modifier is selected/experienced by the player and unlock the codex entry.
-
---- Script should be created for prefab to bind components and then be wired into Codex Panel UI, I don't want to find/assign components by string
 
 
 ****** TODO ******

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -39,6 +40,8 @@ public class CodexPanelUI : MonoBehaviour
     [Header("Optional Paging Buttons")]
     [SerializeField] Button previousSectionButton;
     [SerializeField] Button nextSectionButton;
+
+    [SerializeField] TMP_Text discoverySummaryText;
 
     [Header("Keyboard Navigation")]
     [SerializeField] KeyCode previousSectionKey = KeyCode.A;
@@ -95,6 +98,7 @@ public class CodexPanelUI : MonoBehaviour
         RebuildRunModifierSection(buffSection, buffRunModifiers);
         RebuildRunModifierSection(debuffSection, debuffRunModifiers);
         RebuildLevelModifierSection(levelModifierSection);
+        UpdateDiscoverySummary();
     }
 
     public void ShowBuffSection()
@@ -162,6 +166,8 @@ public class CodexPanelUI : MonoBehaviour
         SetSectionState(buffSection, _currentSectionIndex == (int)SectionIndex.Buffs);
         SetSectionState(debuffSection, _currentSectionIndex == (int)SectionIndex.Debuffs);
         SetSectionState(levelModifierSection, _currentSectionIndex == (int)SectionIndex.LevelModifiers);
+
+        UpdateDiscoverySummary();
 
         if (forceRefresh || (changed && resetScrollPositionOnSectionChange))
             ResetCurrentSectionScroll();
@@ -262,6 +268,138 @@ public class CodexPanelUI : MonoBehaviour
             var entry = Instantiate(entryPrefab, section.contentParent);
             entry.Bind(modifier, CodexProgressStore.IsUnlocked(modifier));
         }
+    }
+
+    void UpdateDiscoverySummary()
+    {
+        if (!discoverySummaryText)
+            return;
+
+        int sectionUnlocked;
+        int sectionTotal;
+        string sectionLabel = GetCurrentSectionLabelAndCounts(out sectionUnlocked, out sectionTotal);
+
+        int totalUnlocked = GetTotalUnlockedCount();
+        int totalEntries = GetTotalEntryCount();
+        int totalPercent = totalEntries > 0
+            ? Mathf.RoundToInt((float)totalUnlocked / totalEntries * 100f)
+            : 0;
+
+        discoverySummaryText.text =
+            $"{sectionUnlocked} of {sectionTotal} {sectionLabel} discovered. Total codex unlocked {totalPercent}%";
+    }
+
+    string GetCurrentSectionLabelAndCounts(out int unlocked, out int total)
+    {
+        switch ((SectionIndex)_currentSectionIndex)
+        {
+            case SectionIndex.Buffs:
+                unlocked = CountUnlocked(buffRunModifiers);
+                total = CountUnique(buffRunModifiers);
+                return "Buffs";
+
+            case SectionIndex.Debuffs:
+                unlocked = CountUnlocked(debuffRunModifiers);
+                total = CountUnique(debuffRunModifiers);
+                return "Debuffs";
+
+            default:
+                unlocked = CountUnlockedLevelModifiers();
+                total = CountTotalLevelModifiers();
+                return "Level Modifiers";
+        }
+    }
+
+    int GetTotalUnlockedCount()
+    {
+        return CountUnlocked(buffRunModifiers)
+             + CountUnlocked(debuffRunModifiers)
+             + CountUnlockedLevelModifiers();
+    }
+
+    int GetTotalEntryCount()
+    {
+        return CountUnique(buffRunModifiers)
+             + CountUnique(debuffRunModifiers)
+             + CountTotalLevelModifiers();
+    }
+
+    int CountUnlocked(RunModifierSO[] source)
+    {
+        if (source == null || source.Length == 0)
+            return 0;
+
+        var seen = new HashSet<RunModifierSO>();
+        int count = 0;
+
+        for (int i = 0; i < source.Length; i++)
+        {
+            RunModifierSO modifier = source[i];
+            if (!modifier || !seen.Add(modifier))
+                continue;
+
+            if (CodexProgressStore.IsUnlocked(modifier))
+                count++;
+        }
+
+        return count;
+    }
+
+    int CountUnique(RunModifierSO[] source)
+    {
+        if (source == null || source.Length == 0)
+            return 0;
+
+        var seen = new HashSet<RunModifierSO>();
+
+        for (int i = 0; i < source.Length; i++)
+        {
+            RunModifierSO modifier = source[i];
+            if (modifier)
+                seen.Add(modifier);
+        }
+
+        return seen.Count;
+    }
+
+    int CountUnlockedLevelModifiers()
+    {
+        if (!levelModifierDatabase)
+            return 0;
+
+        List<LevelModifierSO> modifiers = levelModifierDatabase.BuildPool();
+        var seen = new HashSet<LevelModifierSO>();
+        int count = 0;
+
+        for (int i = 0; i < modifiers.Count; i++)
+        {
+            LevelModifierSO modifier = modifiers[i];
+            if (!modifier || !seen.Add(modifier))
+                continue;
+
+            if (CodexProgressStore.IsUnlocked(modifier))
+                count++;
+        }
+
+        return count;
+    }
+
+    int CountTotalLevelModifiers()
+    {
+        if (!levelModifierDatabase)
+            return 0;
+
+        List<LevelModifierSO> modifiers = levelModifierDatabase.BuildPool();
+        var seen = new HashSet<LevelModifierSO>();
+
+        for (int i = 0; i < modifiers.Count; i++)
+        {
+            LevelModifierSO modifier = modifiers[i];
+            if (modifier)
+                seen.Add(modifier);
+        }
+
+        return seen.Count;
     }
 
     void ClearChildren(Transform parent)
