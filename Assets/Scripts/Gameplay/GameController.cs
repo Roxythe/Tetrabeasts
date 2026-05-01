@@ -364,19 +364,28 @@ public class GameController : MonoBehaviour
     [SerializeField] VictoryPanelUI victoryPanelUI;
     [SerializeField] GameObject victoryModifierRowPrefab;
 
+    [Header("Round Transition")]
+    [SerializeField] RoundTransitionUI roundTransitionUI;
+    [SerializeField] TMP_FontAsset roundTransitionFont;
+    [SerializeField] Button roundTransitionContinueButtonPrefab;
+
     public TMP_Text levelText;
     [HideInInspector] public LevelModifierController levelModifierController;
     bool _levelStartBlocked = false;
     int _starDifficulty = 0;
     StarDifficultyModifiers _starDifficultyModifiers = new StarDifficultyModifiers(0);
     bool _newDifficultyUnlockedThisRun;
+    bool _roundTransitionActive;
+
+    const string RoundWinTransitionText = "The Castle Has Fallen";
+    const string RoundLossTransitionText = "Conquest Failed";
 
     public int CurrentLevel => currentLevel;
     public int CurrentReserveUnits => unitLives;
     public int MaxReserveUnits => EffectiveMaxUnitLives;
     public int CurrentStarDifficulty => _starDifficulty;
     public float CurrentMisfortune => misfortune + _starDifficultyModifiers.misfortuneAdd;
-    public bool IsGameplaySuspended => isPaused || tutorialSuspended || _levelStartBlocked || (levelModifierController && levelModifierController.IsSelectionRunning);
+    public bool IsGameplaySuspended => isPaused || tutorialSuspended || _roundTransitionActive || _levelStartBlocked || (levelModifierController && levelModifierController.IsSelectionRunning);
     public bool IsRoundActive => !IsGameplaySuspended && !gameOver && !levelWon;
 
     private CastleData currentCastleData;
@@ -466,6 +475,10 @@ public class GameController : MonoBehaviour
 
         ResolveVictoryPanelUi();
         if (victoryPanelUI) victoryPanelUI.Hide();
+
+        if (!roundTransitionUI)
+            roundTransitionUI = FindFirstObjectByType<RoundTransitionUI>(FindObjectsInactive.Include);
+        HideRoundTransitionImmediate();
 
         if (allTetrominoes == null || allTetrominoes.Length == 0)
         {
@@ -712,6 +725,8 @@ public class GameController : MonoBehaviour
 
     void StartFreshRun()
     {
+        HideRoundTransitionImmediate();
+
         currentLevel = 0;
         score = 0;
         _cachedTempRunCheckpoint = null;
@@ -744,6 +759,8 @@ public class GameController : MonoBehaviour
 
     void RestoreTempRunCheckpoint(TempRunSaveStore.SaveData saveData)
     {
+        HideRoundTransitionImmediate();
+
         if (saveData == null)
         {
             StartFreshRun();
@@ -915,6 +932,9 @@ public class GameController : MonoBehaviour
     void Update()
     {
         if (tutorialSuspended)
+            return;
+
+        if (_roundTransitionActive)
             return;
 
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
@@ -1428,8 +1448,71 @@ public class GameController : MonoBehaviour
         TempRunSaveStore.Delete();
     }
 
+    void ResolveRoundTransitionUI()
+    {
+        if (roundTransitionUI)
+            return;
+
+        roundTransitionUI = FindFirstObjectByType<RoundTransitionUI>(FindObjectsInactive.Include);
+        if (!roundTransitionUI)
+            roundTransitionUI = RoundTransitionUI.CreateRuntimeInstance(roundTransitionFont, roundTransitionContinueButtonPrefab);
+
+        roundTransitionUI.Configure(roundTransitionFont, roundTransitionContinueButtonPrefab);
+    }
+
+    void PauseGameplayForRoundTransition()
+    {
+        ResolveRoundTransitionUI();
+
+        _roundTransitionActive = true;
+        isPaused = true;
+        Time.timeScale = 0f;
+        AudioListener.pause = false;
+
+        if (pausePanel)
+            pausePanel.SetActive(false);
+
+        EnterUICursorMode();
+        StartCoroutine(ReapplyUICursorNextFrame());
+    }
+
+    void ResumeGameplayAfterRoundTransition()
+    {
+        _roundTransitionActive = false;
+        isPaused = false;
+        Time.timeScale = 1f;
+        AudioListener.pause = false;
+
+        EnterUICursorMode();
+        StartCoroutine(ReapplyUICursorNextFrame());
+    }
+
+    IEnumerator CoShowRoundTransition(string message)
+    {
+        ResolveRoundTransitionUI();
+
+        bool continued = false;
+        if (roundTransitionUI)
+            roundTransitionUI.Show(message, () => continued = true);
+        else
+            continued = true;
+
+        yield return new WaitUntil(() => continued);
+    }
+
+    void HideRoundTransitionImmediate()
+    {
+        _roundTransitionActive = false;
+
+        if (roundTransitionUI)
+            roundTransitionUI.HideImmediate();
+    }
+
     public void GameOver()
     {
+        if (gameOver)
+            return;
+
         gameOver = true;
         ClearTempRunCheckpoint();
         Debug.Log("Game Over");
@@ -1449,39 +1532,41 @@ public class GameController : MonoBehaviour
             PlayerProgress.I.EndRun();
         }
 
-        void ShowHighScore()
-        {
-            if (highScoreUI) highScoreUI.TryShow(score);
-            if (restartButton) restartButton.gameObject.SetActive(true);
+        StartCoroutine(CoShowGameOverTransitionThenHighScore());
+    }
 
-            EnterUICursorMode();
-        }
+    IEnumerator CoShowGameOverTransitionThenHighScore()
+    {
+        PauseGameplayForRoundTransition();
+        yield return CoShowRoundTransition(RoundLossTransitionText);
+        ResumeGameplayAfterRoundTransition();
 
-        var roster = GetActiveMonsterRoster();
+        CommitRunEndXpSilently(finalLevelWin: false);
+        ShowGameOverHighScore();
+    }
+
+    void ShowGameOverHighScore()
+    {
         if (xpAwardUI)
-        {
-            OpenXpUiMode();
+            xpAwardUI.HideAll();
 
-            if (AudioManager.I) AudioManager.I.PlayIntermissionLoseMusic();
+        if (AudioManager.I)
+            AudioManager.I.PlayIntermissionLoseMusic();
 
-            float keepFraction = GetRunEndXpConversionFraction(finalLevelWin: false);
+        if (highScoreUI)
+            highScoreUI.TryShow(score);
 
-            xpAwardUI.ShowRunEndCommit(roster, keepFraction, () =>
-            {
-                CloseXpUiMode();
-                ShowHighScore();
-            });
+        if (restartButton)
+            restartButton.gameObject.SetActive(true);
 
-            QueueFirstLossXpTutorialIfNeeded();
+        EnterUICursorMode();
+    }
 
-            return;
-        }
-
-        var kept = RunMonsterProgress.EndRunAndComputeKeptXp(GetRunEndXpConversionFraction(finalLevelWin: false));
+    void CommitRunEndXpSilently(bool finalLevelWin)
+    {
+        var kept = RunMonsterProgress.EndRunAndComputeKeptXp(GetRunEndXpConversionFraction(finalLevelWin));
         foreach (var kv in kept)
             MonsterProgressStore.AddPermanentXp(kv.Key, kv.Value);
-
-        ShowHighScore();
     }
 
     void RefillBag(bool forceFirstEntryNormal = false)
@@ -1903,6 +1988,8 @@ public class GameController : MonoBehaviour
 
     IEnumerator CoHandleCastleDestroyedVictory()
     {
+        PauseGameplayForRoundTransition();
+
         if (AudioManager.I)
         {
             AudioManager.I.StopLevelMusic();
@@ -1916,7 +2003,10 @@ public class GameController : MonoBehaviour
 
         float delay = Mathf.Max(0f, victorySequenceDelaySeconds);
         if (delay > 0f)
-            yield return new WaitForSeconds(delay);
+            yield return new WaitForSecondsRealtime(delay);
+
+        yield return CoShowRoundTransition(RoundWinTransitionText);
+        ResumeGameplayAfterRoundTransition();
 
         int completedLevelNumber = currentLevel + 1;
         bool finalLevel = IsFinalLevelIndex(currentLevel);
@@ -3099,6 +3189,7 @@ public class GameController : MonoBehaviour
     void DoRestartGameNow()
     {
         ClearTempRunCheckpoint();
+        HideRoundTransitionImmediate();
 
         // Unpause if needed
         Time.timeScale = 1f;

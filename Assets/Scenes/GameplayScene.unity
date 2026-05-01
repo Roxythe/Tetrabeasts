@@ -24104,6 +24104,9 @@ MonoBehaviour:
   xpAwardUI: {fileID: 2112539615}
   victoryPanelUI: {fileID: 1047163643}
   victoryModifierRowPrefab: {fileID: 2687559026713328491, guid: 6a0606a36296c764ea3bc0194761f3a2, type: 3}
+  roundTransitionUI: {fileID: 0}
+  roundTransitionFont: {fileID: 11400000, guid: a1470b117e5ec7a4c9c2c4151211f423, type: 2}
+  roundTransitionContinueButtonPrefab: {fileID: 6826685574233894395, guid: 5e7f2b5277a37d041a57b07dbb619341, type: 3}
   levelText: {fileID: 685653179}
   levelModifierController: {fileID: 0}
   stoneBuffDropChance: 0.07
