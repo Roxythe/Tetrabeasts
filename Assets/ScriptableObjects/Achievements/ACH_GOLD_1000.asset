@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: ACH_GOLD_1000
   m_EditorClassIdentifier: Assembly-CSharp::AchievementDefSO
   achievementId: ACH_GOLD_1000
-  steamApiName: 
-  title: Get In Loser, We're Going Shopping
+  steamApiName: ACH_GOLD_1000
+  title: Get in Loser, We're Going Shopping
   description: Accumulate 1,000 gold.
   icon: {fileID: 21300000, guid: bc6d01f6aa43b0847a491f487c1587a4, type: 3}
   hiddenUntilUnlocked: 0

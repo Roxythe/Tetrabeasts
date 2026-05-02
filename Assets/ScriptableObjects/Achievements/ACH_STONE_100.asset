@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: ACH_STONE_100
   m_EditorClassIdentifier: Assembly-CSharp::AchievementDefSO
   achievementId: ACH_STONE_100
-  steamApiName: 
-  title: Masta Got Me Workin'
+  steamApiName: ACH_STONE_100
+  title: General Got Me Workin'
   description: Destory 100 stone obstacles.
   icon: {fileID: 21300000, guid: 3b243e9d473768b4eb4607f65809f7e6, type: 3}
   hiddenUntilUnlocked: 1
