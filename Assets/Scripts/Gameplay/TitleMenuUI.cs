@@ -26,10 +26,16 @@ public class TitleMenuUI : MonoBehaviour
     public VolumePanelUI volumePanelUI;
     public MonsterSelectUI monsterSelectPanel;
     public HighScoreUI highScoreUI;
+    public SteamLeaderboardUI steamLeaderboardUI;
     public CharacterSelectUI characterSelectPanel;
 
     [SerializeField] CharacterSelectUI characterSelectUI;
     [SerializeField] MonsterSelectUI monsterSelectUI;
+
+    [Header("Steam Leaderboard")]
+    [SerializeField] GameObject steamLeaderboardPanel;
+    [SerializeField] GameObject steamLeaderboardPrefab;
+    [SerializeField] Transform steamLeaderboardParent;
 
     [Header("Temp Run Buttons")]
     public Button continueRunButton;
@@ -140,6 +146,7 @@ public class TitleMenuUI : MonoBehaviour
 
         EnsureStarDifficultyUI();
         RefreshTempRunUI();
+        RefreshSteamLeaderboardIfVisible();
         HookAllButtonsForSFX(); // Auto-hook all buttons under this menu for click/hover sounds
     }
 
@@ -258,6 +265,9 @@ public class TitleMenuUI : MonoBehaviour
 
     public void OnToggleHighScore()
     {
+        if (TryToggleSteamLeaderboard())
+            return;
+
         if (!highScorePanel) return;
         bool show = !highScorePanel.activeSelf;
 
@@ -457,6 +467,7 @@ public class TitleMenuUI : MonoBehaviour
         {
             if (codexPanel && codexPanel.activeSelf) { OnToggleCodex(); return; }
             if (settingsPanel && settingsPanel.activeSelf) { OnToggleSettings(); return; }
+            if (steamLeaderboardPanel && steamLeaderboardPanel.activeSelf) { OnToggleHighScore(); return; }
             if (highScorePanel && highScorePanel.activeSelf) { OnToggleHighScore(); return; }
         }
     }
@@ -685,6 +696,87 @@ public class TitleMenuUI : MonoBehaviour
     {
         RefreshSelectedCommanderUI();
         RefreshSelectedMonstersUI();
+        RefreshSteamLeaderboardIfVisible();
+    }
+
+    bool TryToggleSteamLeaderboard()
+    {
+        var leaderboard = EnsureSteamLeaderboardUI();
+        if (!leaderboard)
+            return false;
+
+        var panel = steamLeaderboardPanel ? steamLeaderboardPanel : leaderboard.gameObject;
+        bool show = !panel.activeSelf;
+
+        if (highScorePanel && highScorePanel.activeSelf)
+            highScorePanel.SetActive(false);
+
+        panel.SetActive(show);
+
+        if (show)
+        {
+            leaderboard.SetCommanderRoster(GetCommanderRosterForLeaderboard());
+            leaderboard.RefreshLeaderboard();
+        }
+
+        if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
+        return true;
+    }
+
+    SteamLeaderboardUI EnsureSteamLeaderboardUI()
+    {
+        if (!steamLeaderboardUI)
+            steamLeaderboardUI = FindFirstObjectByType<SteamLeaderboardUI>(FindObjectsInactive.Include);
+
+        if (steamLeaderboardUI)
+        {
+            if (!steamLeaderboardPanel)
+                steamLeaderboardPanel = steamLeaderboardUI.gameObject;
+
+            return steamLeaderboardUI;
+        }
+
+        var prefab = steamLeaderboardPrefab;
+        if (!prefab)
+            prefab = Resources.Load<GameObject>("Prefabs/Panels/SteamLeaderboard_Panel");
+
+        if (!prefab)
+            prefab = Resources.Load<GameObject>("UI/SteamLeaderboard_Panel");
+
+        if (!prefab)
+            return null;
+
+        var parent = steamLeaderboardParent ? steamLeaderboardParent : transform;
+        var instance = Instantiate(prefab, parent);
+        instance.name = prefab.name;
+        instance.SetActive(false);
+
+        steamLeaderboardPanel = instance;
+        steamLeaderboardUI = instance.GetComponentInChildren<SteamLeaderboardUI>(true);
+        return steamLeaderboardUI;
+    }
+
+    void RefreshSteamLeaderboardIfVisible()
+    {
+        if (!steamLeaderboardUI)
+            steamLeaderboardUI = FindFirstObjectByType<SteamLeaderboardUI>(FindObjectsInactive.Include);
+
+        if (!steamLeaderboardUI || !steamLeaderboardUI.gameObject.activeInHierarchy)
+            return;
+
+        steamLeaderboardUI.SetCommanderRoster(GetCommanderRosterForLeaderboard());
+        steamLeaderboardUI.RefreshLeaderboard();
+    }
+
+    PlayerCharacterData[] GetCommanderRosterForLeaderboard()
+    {
+        if (characterSelectUI && characterSelectUI.roster != null && characterSelectUI.roster.Length > 0)
+            return characterSelectUI.roster;
+
+        if (characterSelectPanel && characterSelectPanel.roster != null && characterSelectPanel.roster.Length > 0)
+            return characterSelectPanel.roster;
+
+        return null;
     }
 
     void RefreshSelectedCommanderUI()

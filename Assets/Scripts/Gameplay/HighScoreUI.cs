@@ -40,8 +40,14 @@ public class HighScoreUI : MonoBehaviour
 
         bool qualifies = HighScoreManager.IsHighScore(score);
         ForceActivate();
-        SetSubmissionUIActive(qualifies); // Name submission UI
-        SetPostSubmitButtonsActive(!qualifies);
+
+        if (qualifies && TryGetSteamPlayerName(out string steamPlayerName))
+            SubmitScore(steamPlayerName);
+        else
+        {
+            SetSubmissionUIActive(qualifies); // Name submission UI
+            SetPostSubmitButtonsActive(!qualifies);
+        }
 
         SetCloseButtonActive(false);
 
@@ -61,10 +67,23 @@ public class HighScoreUI : MonoBehaviour
 
     void Submit()
     {
-        _highlightRankIndex = HighScoreManager.Add(nameInput ? nameInput.text : "Player", pendingScore);
+        SubmitScore(nameInput ? nameInput.text : "Player");
+    }
+
+    void SubmitScore(string playerName)
+    {
+        _highlightRankIndex = HighScoreManager.Add(playerName, pendingScore);
         RefreshTable();
         SetSubmissionUIActive(false);
         SetPostSubmitButtonsActive(true);
+    }
+
+    bool TryGetSteamPlayerName(out string playerName)
+    {
+        playerName = null;
+
+        var steam = SteamLeaderboardService.Ensure();
+        return steam && steam.TryGetLocalPlayerName(out playerName);
     }
 
     void SetSubmissionUIActive(bool active)

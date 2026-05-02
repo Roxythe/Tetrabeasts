@@ -1,4 +1,13 @@
 
+- Add a continue option after defeating last level
+
+-- continue button will start a new boss level with infinite health
+
+-- Level will not be winnable, it should be a survival mode that continues until one of the loss conditions is met.
+
+-- Level should be a wireable scriptable object based on a castle data scriptable object, but a slight change will need to be made to make sure the health is infinite.
+
+
 
 - Level modifier tutorial uses ok/cancel button, should be [F] to continue
 

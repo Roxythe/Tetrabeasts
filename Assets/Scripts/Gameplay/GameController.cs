@@ -1553,6 +1553,8 @@ public class GameController : MonoBehaviour
         if (AudioManager.I)
             AudioManager.I.PlayIntermissionLoseMusic();
 
+        SubmitSteamLeaderboardScore();
+
         if (highScoreUI)
             highScoreUI.TryShow(score);
 
@@ -1567,6 +1569,14 @@ public class GameController : MonoBehaviour
         var kept = RunMonsterProgress.EndRunAndComputeKeptXp(GetRunEndXpConversionFraction(finalLevelWin));
         foreach (var kv in kept)
             MonsterProgressStore.AddPermanentXp(kv.Key, kv.Value);
+    }
+
+    void SubmitSteamLeaderboardScore()
+    {
+        if (score <= 0)
+            return;
+
+        SteamLeaderboardService.Ensure().SubmitScore(score, selectedCharacter, roster);
     }
 
     void RefillBag(bool forceFirstEntryNormal = false)
@@ -2283,6 +2293,7 @@ public class GameController : MonoBehaviour
         void ShowHighScore()
         {
             if (AudioManager.I) AudioManager.I.StopMusic();
+            SubmitSteamLeaderboardScore();
             if (highScoreUI) highScoreUI.TryShow(score);
             if (restartButton) restartButton.gameObject.SetActive(true);
             EnterUICursorMode();
