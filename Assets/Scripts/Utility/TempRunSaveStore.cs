@@ -13,6 +13,8 @@ public static class TempRunSaveStore
     {
         public int version = 1;
         public int currentLevel;
+        public bool postFinalSurvivalActive;
+        public bool standardFinalWinApplied;
         public int score;
         public int unitLives;
         public float specialGauge;

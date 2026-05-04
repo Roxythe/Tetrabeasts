@@ -9,8 +9,14 @@ public class CastleData : ScriptableObject
     [Tooltip("0 = healthy, 1 = chipped, 2 = cracked, 3 = crumbling")]
     public Sprite[] damageStages = new Sprite[4];
 
+    [Tooltip("Optional background sprite shown by the enemy castle UI for this level.")]
+    public Sprite levelBackgroundSprite;
+
     [Header("Stats")]
     public int maxHP = 100;
+
+    [Tooltip("If true, this castle can take damage for scoring/stat tracking but its HP never decreases.")]
+    public bool infiniteHealth = false;
 
     [Header("Projectile Attack")]
     public Sprite projectileSprite;

@@ -13,7 +13,11 @@ public class RoundTransitionUI : MonoBehaviour
     [SerializeField] TMP_Text messageText;
     [SerializeField] Button continueButton;
     [SerializeField] CanvasGroup continueButtonGroup;
+    [SerializeField] Toggle optOutToggle;
+    [SerializeField] TMP_Text optOutToggleLabel;
+    [SerializeField] CanvasGroup optOutToggleGroup;
     [SerializeField] RectTransform contentRoot;
+    [SerializeField] RectTransform actionRoot;
 
     [Header("Optional Assets")]
     [SerializeField] TMP_FontAsset transitionFont;
@@ -24,9 +28,11 @@ public class RoundTransitionUI : MonoBehaviour
     [SerializeField, Range(0f, 1f)] float backgroundAlpha = 0.72f;
 
     Action _onContinue;
+    Action<bool> _onOptOutContinue;
     Coroutine _fadeRoutine;
     bool _builtRuntimeUi;
     bool _continueButtonUsesPrefab;
+    const float RuntimeActionGap = 22f;
 
     public bool IsShowing => rootPanel && rootPanel.activeSelf;
 
@@ -63,6 +69,12 @@ public class RoundTransitionUI : MonoBehaviour
 
     public void Show(string message, Action onContinue)
     {
+        Show(message, onContinue, string.Empty, false, null);
+    }
+
+    public void Show(string message, Action onContinue, string optOutLabel, bool optOutInitialValue,
+                     Action<bool> onOptOutContinue)
+    {
         EnsureBuilt();
 
         if (!rootPanel)
@@ -73,6 +85,8 @@ public class RoundTransitionUI : MonoBehaviour
 
         ApplyFont();
         _onContinue = onContinue;
+        _onOptOutContinue = onOptOutContinue;
+        ConfigureOptOutToggle(optOutLabel, optOutInitialValue);
 
         gameObject.SetActive(true);
         rootPanel.SetActive(true);
@@ -87,7 +101,9 @@ public class RoundTransitionUI : MonoBehaviour
         }
 
         if (backgroundImage)
+        {
             backgroundImage.color = new Color(0f, 0f, 0f, backgroundAlpha);
+        }
 
         if (messageText)
         {
@@ -108,6 +124,14 @@ public class RoundTransitionUI : MonoBehaviour
             continueButton.interactable = false;
         }
 
+        if (optOutToggleGroup && optOutToggle && optOutToggle.gameObject.activeSelf)
+        {
+            optOutToggleGroup.alpha = 0f;
+            optOutToggleGroup.blocksRaycasts = false;
+            optOutToggleGroup.interactable = false;
+            optOutToggle.interactable = false;
+        }
+
         if (_fadeRoutine != null)
             StopCoroutine(_fadeRoutine);
 
@@ -123,11 +147,15 @@ public class RoundTransitionUI : MonoBehaviour
         }
 
         _onContinue = null;
+        _onOptOutContinue = null;
 
         if (continueButton)
         {
             continueButton.interactable = false;
         }
+
+        if (optOutToggle)
+            optOutToggle.interactable = false;
 
         if (rootPanel)
         {
@@ -173,12 +201,24 @@ public class RoundTransitionUI : MonoBehaviour
         if (continueButton)
             continueButton.interactable = true;
 
+        if (optOutToggleGroup && optOutToggle && optOutToggle.gameObject.activeSelf)
+        {
+            optOutToggleGroup.alpha = 1f;
+            optOutToggleGroup.blocksRaycasts = true;
+            optOutToggleGroup.interactable = true;
+            optOutToggle.interactable = true;
+        }
+
         _fadeRoutine = null;
     }
 
     void Continue()
     {
         var callback = _onContinue;
+        var optOutCallback = _onOptOutContinue;
+        bool optOut = optOutToggle && optOutToggle.gameObject.activeSelf && optOutToggle.isOn;
+
+        optOutCallback?.Invoke(optOut);
         HideImmediate();
         callback?.Invoke();
     }
@@ -199,6 +239,7 @@ public class RoundTransitionUI : MonoBehaviour
 
             ApplyFont();
             WireContinueButton();
+            WireOptOutToggle();
         }
     }
 
@@ -212,6 +253,7 @@ public class RoundTransitionUI : MonoBehaviour
 
         ApplyFont();
         WireContinueButton();
+        WireOptOutToggle();
 
         _builtRuntimeUi = true;
     }
@@ -249,11 +291,11 @@ public class RoundTransitionUI : MonoBehaviour
         contentRoot.anchorMax = new Vector2(0.5f, 0.5f);
         contentRoot.pivot = new Vector2(0.5f, 0.5f);
         contentRoot.anchoredPosition = Vector2.zero;
-        contentRoot.sizeDelta = new Vector2(1320f, 260f);
+        contentRoot.sizeDelta = new Vector2(1120f, 360f);
 
         var layout = contentGo.GetComponent<VerticalLayoutGroup>();
         layout.childAlignment = TextAnchor.MiddleCenter;
-        layout.spacing = 34f;
+        layout.spacing = 24f;
         layout.childControlWidth = false;
         layout.childControlHeight = false;
         layout.childForceExpandWidth = false;
@@ -263,18 +305,27 @@ public class RoundTransitionUI : MonoBehaviour
         messageGo.transform.SetParent(contentGo.transform, false);
 
         var messageRect = messageGo.GetComponent<RectTransform>();
-        messageRect.sizeDelta = new Vector2(1320f, 140f);
+        messageRect.sizeDelta = new Vector2(920f, 230f);
 
         messageText = messageGo.GetComponent<TextMeshProUGUI>();
         messageText.alignment = TextAlignmentOptions.Center;
         messageText.enableAutoSizing = true;
-        messageText.fontSizeMin = 36f;
-        messageText.fontSizeMax = 78f;
+        messageText.fontSizeMin = 32f;
+        messageText.fontSizeMax = 66f;
         messageText.fontStyle = FontStyles.Bold;
         messageText.raycastTarget = false;
         messageText.color = Color.white;
 
-        BuildContinueButton(contentGo.transform);
+        var actionGo = new GameObject(
+            "RoundTransition_ActionRow",
+            typeof(RectTransform));
+
+        actionGo.transform.SetParent(contentGo.transform, false);
+        actionRoot = actionGo.GetComponent<RectTransform>();
+        actionRoot.sizeDelta = new Vector2(1120f, 82f);
+
+        BuildContinueButton(actionGo.transform);
+        BuildOptOutToggle(actionGo.transform);
     }
 
     void RebuildContinueButton()
@@ -285,7 +336,7 @@ public class RoundTransitionUI : MonoBehaviour
         continueButton = null;
         continueButtonGroup = null;
 
-        BuildContinueButton(contentRoot);
+        BuildContinueButton(actionRoot ? actionRoot : contentRoot);
     }
 
     void BuildContinueButton(Transform parent)
@@ -316,6 +367,8 @@ public class RoundTransitionUI : MonoBehaviour
             ApplyContinueLabel();
             WireContinueButton();
             HookContinueButtonSfx();
+            continueButton.transform.SetAsFirstSibling();
+            PositionActionControls();
             return;
         }
 
@@ -331,6 +384,10 @@ public class RoundTransitionUI : MonoBehaviour
         buttonGo.transform.SetParent(parent, false);
 
         var buttonRect = buttonGo.GetComponent<RectTransform>();
+        buttonRect.anchorMin = new Vector2(0.5f, 0.5f);
+        buttonRect.anchorMax = new Vector2(0.5f, 0.5f);
+        buttonRect.pivot = new Vector2(0.5f, 0.5f);
+        buttonRect.anchoredPosition = Vector2.zero;
         buttonRect.sizeDelta = new Vector2(310f, 76f);
 
         continueButtonGroup = buttonGo.GetComponent<CanvasGroup>();
@@ -369,6 +426,92 @@ public class RoundTransitionUI : MonoBehaviour
         ApplyContinueLabel();
         WireContinueButton();
         HookContinueButtonSfx();
+        continueButton.transform.SetAsFirstSibling();
+        PositionActionControls();
+    }
+
+    void BuildOptOutToggle(Transform parent)
+    {
+        if (!parent)
+            return;
+
+        var toggleGo = new GameObject(
+            "DoNotShowSurvivalMessage_Toggle",
+            typeof(RectTransform),
+            typeof(CanvasGroup),
+            typeof(Image),
+            typeof(Toggle),
+            typeof(HorizontalLayoutGroup));
+
+        toggleGo.transform.SetParent(parent, false);
+
+        var toggleRect = toggleGo.GetComponent<RectTransform>();
+        toggleRect.anchorMin = new Vector2(0.5f, 0.5f);
+        toggleRect.anchorMax = new Vector2(0.5f, 0.5f);
+        toggleRect.pivot = new Vector2(0.5f, 0.5f);
+        toggleRect.anchoredPosition = Vector2.zero;
+        toggleRect.sizeDelta = new Vector2(420f, 60f);
+
+        var toggleHitArea = toggleGo.GetComponent<Image>();
+        toggleHitArea.color = new Color(1f, 1f, 1f, 0f);
+        toggleHitArea.raycastTarget = true;
+
+        optOutToggleGroup = toggleGo.GetComponent<CanvasGroup>();
+
+        var layout = toggleGo.GetComponent<HorizontalLayoutGroup>();
+        layout.childAlignment = TextAnchor.MiddleLeft;
+        layout.spacing = 12f;
+        layout.childControlWidth = false;
+        layout.childControlHeight = false;
+        layout.childForceExpandWidth = false;
+        layout.childForceExpandHeight = false;
+
+        var boxGo = new GameObject("Box", typeof(RectTransform), typeof(Image));
+        boxGo.transform.SetParent(toggleGo.transform, false);
+
+        var boxRect = boxGo.GetComponent<RectTransform>();
+        boxRect.sizeDelta = new Vector2(32f, 32f);
+
+        var boxImage = boxGo.GetComponent<Image>();
+        boxImage.color = new Color(1f, 1f, 1f, 0.92f);
+
+        var checkGo = new GameObject("Check", typeof(RectTransform), typeof(Image));
+        checkGo.transform.SetParent(boxGo.transform, false);
+
+        var checkRect = checkGo.GetComponent<RectTransform>();
+        checkRect.anchorMin = new Vector2(0.5f, 0.5f);
+        checkRect.anchorMax = new Vector2(0.5f, 0.5f);
+        checkRect.pivot = new Vector2(0.5f, 0.5f);
+        checkRect.anchoredPosition = Vector2.zero;
+        checkRect.sizeDelta = new Vector2(20f, 20f);
+
+        var checkImage = checkGo.GetComponent<Image>();
+        checkImage.color = new Color(0.10f, 0.10f, 0.10f, 1f);
+
+        var labelGo = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
+        labelGo.transform.SetParent(toggleGo.transform, false);
+
+        var labelRect = labelGo.GetComponent<RectTransform>();
+        labelRect.sizeDelta = new Vector2(370f, 54f);
+
+        optOutToggleLabel = labelGo.GetComponent<TextMeshProUGUI>();
+        optOutToggleLabel.text = "Do not show this message again";
+        optOutToggleLabel.alignment = TextAlignmentOptions.MidlineLeft;
+        optOutToggleLabel.fontSize = 26f;
+        optOutToggleLabel.enableAutoSizing = true;
+        optOutToggleLabel.fontSizeMin = 18f;
+        optOutToggleLabel.fontSizeMax = 26f;
+        optOutToggleLabel.color = Color.white;
+        optOutToggleLabel.raycastTarget = false;
+
+        optOutToggle = toggleGo.GetComponent<Toggle>();
+        optOutToggle.targetGraphic = boxImage;
+        optOutToggle.graphic = checkImage;
+        optOutToggle.isOn = false;
+
+        WireOptOutToggle();
+        PositionActionControls();
+        toggleGo.SetActive(false);
     }
 
     void SetTextAlpha(float alpha)
@@ -398,6 +541,9 @@ public class RoundTransitionUI : MonoBehaviour
                     labels[i].font = transitionFont;
             }
         }
+
+        if (optOutToggleLabel)
+            optOutToggleLabel.font = transitionFont;
     }
 
     void ApplyContinueLabel()
@@ -422,6 +568,58 @@ public class RoundTransitionUI : MonoBehaviour
 
         continueButton.onClick.RemoveAllListeners();
         continueButton.onClick.AddListener(Continue);
+    }
+
+    void WireOptOutToggle()
+    {
+        if (!optOutToggle)
+            return;
+
+        optOutToggle.onValueChanged.RemoveAllListeners();
+    }
+
+    void ConfigureOptOutToggle(string label, bool initialValue)
+    {
+        bool show = !string.IsNullOrWhiteSpace(label);
+
+        if (show && !optOutToggle)
+            BuildOptOutToggle(continueButton ? continueButton.transform.parent : contentRoot);
+
+        if (!optOutToggle)
+            return;
+
+        optOutToggle.gameObject.SetActive(show);
+        optOutToggle.isOn = initialValue;
+
+        if (optOutToggleLabel)
+            optOutToggleLabel.text = show ? label : string.Empty;
+
+        PositionActionControls();
+
+        optOutToggle.interactable = false;
+
+        if (optOutToggleGroup)
+        {
+            optOutToggleGroup.alpha = 0f;
+            optOutToggleGroup.blocksRaycasts = false;
+            optOutToggleGroup.interactable = false;
+        }
+    }
+
+    void PositionActionControls()
+    {
+        if (!continueButton || !optOutToggle)
+            return;
+
+        var buttonRect = continueButton.transform as RectTransform;
+        var toggleRect = optOutToggle.transform as RectTransform;
+        if (!buttonRect || !toggleRect)
+            return;
+
+        float buttonWidth = Mathf.Max(1f, buttonRect.rect.width, buttonRect.sizeDelta.x);
+        float toggleWidth = Mathf.Max(1f, toggleRect.rect.width, toggleRect.sizeDelta.x);
+        float toggleX = buttonWidth * 0.5f + RuntimeActionGap + toggleWidth * 0.5f;
+        toggleRect.anchoredPosition = new Vector2(toggleX, 0f);
     }
 
     void HookContinueButtonSfx()

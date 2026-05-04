@@ -143,7 +143,8 @@ public class XpAwardUI : MonoBehaviour
     void Update()
     {
         if (!root || !root.activeSelf) return;
-        if (!_breakdownAnimating && !_orbAnimating) return;
+        if (_orbAnimating) return;
+        if (!_breakdownAnimating) return;
 
         if (!(Input.anyKeyDown || Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)))
             return;
@@ -747,6 +748,8 @@ public class XpAwardUI : MonoBehaviour
             yield return new WaitForSecondsRealtime(wait);
             elapsedSpawn += wait;
         }
+
+        yield return CoWaitForActiveOrbsToArrive();
     }
 
     IEnumerator CoSpawnOrbArc(RectTransform start, RectTransform end, bool gain, float travelSeconds, float accel01, Action onArrive)
@@ -971,6 +974,7 @@ public class XpAwardUI : MonoBehaviour
             elapsedSpawn += wait;
         }
 
+        yield return CoWaitForActiveOrbsToArrive();
         ClearActiveOrbs();
     }
 
@@ -1041,5 +1045,22 @@ public class XpAwardUI : MonoBehaviour
             if (go) Destroy(go);
         }
         _activeOrbGos.Clear();
+    }
+
+    IEnumerator CoWaitForActiveOrbsToArrive()
+    {
+        while (HasActiveOrbs())
+            yield return null;
+    }
+
+    bool HasActiveOrbs()
+    {
+        for (int i = _activeOrbGos.Count - 1; i >= 0; i--)
+        {
+            if (!_activeOrbGos[i])
+                _activeOrbGos.RemoveAt(i);
+        }
+
+        return _activeOrbGos.Count > 0;
     }
 }

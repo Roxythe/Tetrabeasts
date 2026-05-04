@@ -45,6 +45,12 @@ public class GameController : MonoBehaviour
     [Header("Victory Flow")]
     [SerializeField] float victorySequenceDelaySeconds = 0.25f;
 
+    [Header("Post-Final Survival")]
+    [Tooltip("Optional CastleData used for the endless boss level after the final standard level is cleared.")]
+    [SerializeField] CastleData postFinalSurvivalCastle;
+    [SerializeField] bool forcePostFinalSurvivalInfiniteHealth = true;
+    [SerializeField] bool forcePostFinalSurvivalBossLevel = true;
+
     [Header("Gravity UI")]
     [SerializeField] TMP_Text levelTimerText;
     [SerializeField] TMP_Text gravityText;
@@ -292,6 +298,8 @@ public class GameController : MonoBehaviour
     public bool disableLandingHint = false;
     bool _pendingMainMenuAfterXp = false;
     bool _finalWinStateApplied = false;
+    bool _postFinalSurvivalActive = false;
+    bool _pendingPostFinalSurvivalIntro = false;
 
     public int currencyPerRoundWinAdd = 0;
     public float currencyPerRoundWinMult = 1f;
@@ -379,6 +387,12 @@ public class GameController : MonoBehaviour
 
     const string RoundWinTransitionText = "The Castle Has Fallen";
     const string RoundLossTransitionText = "Conquest Failed";
+    const string PostFinalSurvivalIntroPrefsKey = "Tetrabeasts_PostFinalSurvivalIntroHidden";
+    const string PostFinalSurvivalIntroText =
+        "Endless Survival\n\n" +
+        "This final battle cannot be won. The enemy has endless health, and the run continues until a loss condition is met.\n\n" +
+        "Survive as long as you can.";
+    const string PostFinalSurvivalIntroOptOutText = "Do not show this message again";
 
     public int CurrentLevel => currentLevel;
     public int CurrentReserveUnits => unitLives;
@@ -391,7 +405,7 @@ public class GameController : MonoBehaviour
     private CastleData currentCastleData;
 
     // Used by reward UI and other systems that need to know what type of level just ended
-    public bool LastLevelWasBoss => currentCastleData != null && currentCastleData.isBossLevel;
+    public bool LastLevelWasBoss => currentCastleData != null && IsCastleBossForCurrentMode(currentCastleData);
 
     // ========== Stone Block Buffs ==========
 
@@ -742,6 +756,8 @@ public class GameController : MonoBehaviour
         RunSummaryStats.BeginRun();
 
         _finalWinStateApplied = false;
+        _postFinalSurvivalActive = false;
+        _pendingPostFinalSurvivalIntro = false;
         _newDifficultyUnlockedThisRun = false;
         _firstFullRowTutorialShownThisRun = false;
         gameOver = false;
@@ -768,7 +784,14 @@ public class GameController : MonoBehaviour
         }
 
         _cachedTempRunCheckpoint = saveData;
-        currentLevel = GetClampedSavedLevelIndex(saveData.currentLevel);
+        _postFinalSurvivalActive = saveData.postFinalSurvivalActive && postFinalSurvivalCastle != null;
+        _pendingPostFinalSurvivalIntro = false;
+        if (saveData.postFinalSurvivalActive && postFinalSurvivalCastle == null)
+            Debug.LogWarning("GameController: temp run was saved in post-final survival, but no postFinalSurvivalCastle is assigned.");
+
+        currentLevel = _postFinalSurvivalActive
+            ? GetPostFinalSurvivalLevelIndex()
+            : GetClampedSavedLevelIndex(saveData.currentLevel);
         score = Mathf.Max(0, saveData.score);
         luck = (saveData.runMods != null) ? saveData.runMods.luck : 0f;
         misfortune = (saveData.runMods != null) ? saveData.runMods.misfortune : 0f;
@@ -782,7 +805,7 @@ public class GameController : MonoBehaviour
         levelWon = false;
         winQueued = false;
         _pendingMainMenuAfterXp = false;
-        _finalWinStateApplied = false;
+        _finalWinStateApplied = saveData.standardFinalWinApplied;
         _newDifficultyUnlockedThisRun = false;
         _firstFullRowTutorialShownThisRun = false;
 
@@ -1013,7 +1036,7 @@ public class GameController : MonoBehaviour
         }
 
         // Boss abilities loop
-        if (IsRoundActive && gameBoard && _castleData != null && _castleData.isBossLevel)
+        if (IsRoundActive && gameBoard && _castleData != null && IsCastleBossForCurrentMode(_castleData))
         {
             _bossAbilityTimer += Time.deltaTime;
             if (_bossAbilityTimer >= _bossNextAbilityAt)
@@ -1320,8 +1343,15 @@ public class GameController : MonoBehaviour
 
         _levelStartBlocked = false;
 
+        bool spawnedPiece = false;
         if (CanSpawnNewPiece())
+        {
             SpawnNextPiece();
+            spawnedPiece = piece && piece.HasActiveCells;
+        }
+
+        if (_pendingPostFinalSurvivalIntro && _postFinalSurvivalActive && spawnedPiece)
+            StartCoroutine(CoShowPostFinalSurvivalIntroAfterFirstPiece());
     }
 
     void CacheAndWriteTempRunCheckpoint()
@@ -1336,6 +1366,8 @@ public class GameController : MonoBehaviour
         var data = new TempRunSaveStore.SaveData
         {
             currentLevel = currentLevel,
+            postFinalSurvivalActive = _postFinalSurvivalActive,
+            standardFinalWinApplied = _finalWinStateApplied,
             score = Mathf.Max(0, score),
             unitLives = Mathf.Max(0, unitLives),
             specialGauge = Mathf.Max(0f, specialGauge),
@@ -1489,11 +1521,17 @@ public class GameController : MonoBehaviour
 
     IEnumerator CoShowRoundTransition(string message)
     {
+        yield return CoShowRoundTransition(message, string.Empty, false, null);
+    }
+
+    IEnumerator CoShowRoundTransition(string message, string optOutLabel, bool optOutInitialValue,
+                                      System.Action<bool> onOptOutContinue)
+    {
         ResolveRoundTransitionUI();
 
         bool continued = false;
         if (roundTransitionUI)
-            roundTransitionUI.Show(message, () => continued = true);
+            roundTransitionUI.Show(message, () => continued = true, optOutLabel, optOutInitialValue, onOptOutContinue);
         else
             continued = true;
 
@@ -1541,7 +1579,7 @@ public class GameController : MonoBehaviour
         yield return CoShowRoundTransition(RoundLossTransitionText);
         ResumeGameplayAfterRoundTransition();
 
-        CommitRunEndXpSilently(finalLevelWin: false);
+        CommitRunEndXpSilently(finalLevelWin: _finalWinStateApplied);
         ShowGameOverHighScore();
     }
 
@@ -1918,6 +1956,35 @@ public class GameController : MonoBehaviour
         if (scoreUI) scoreUI.Set(score);
     }
 
+    CastleData ResolveCastleDataForLevel(int levelIndex)
+    {
+        if (_postFinalSurvivalActive && postFinalSurvivalCastle)
+            return postFinalSurvivalCastle;
+
+        if (castlesByLevel != null && levelIndex >= 0 && levelIndex < castlesByLevel.Length)
+            return castlesByLevel[levelIndex];
+
+        return null;
+    }
+
+    bool IsCastleBossForCurrentMode(CastleData data)
+    {
+        if (!data)
+            return false;
+
+        return data.isBossLevel || (_postFinalSurvivalActive && forcePostFinalSurvivalBossLevel);
+    }
+
+    bool CanStartPostFinalSurvival()
+    {
+        return postFinalSurvivalCastle != null;
+    }
+
+    int GetPostFinalSurvivalLevelIndex()
+    {
+        return Mathf.Max(0, castlesByLevel != null ? castlesByLevel.Length : currentLevel + 1);
+    }
+
 
     void InitLevel(int levelIndex)
     {
@@ -1940,9 +2007,7 @@ public class GameController : MonoBehaviour
             ResetLevelTimerAndDrop(levelIndex);
         }
 
-        CastleData data = null;
-        if (castlesByLevel != null && levelIndex >= 0 && levelIndex < castlesByLevel.Length)
-            data = castlesByLevel[levelIndex];
+        CastleData data = ResolveCastleDataForLevel(levelIndex);
 
         if (!enemyCastleUI)
             enemyCastleUI = FindFirstObjectByType<EnemyCastleUI>(FindObjectsInactive.Include);
@@ -1952,11 +2017,18 @@ public class GameController : MonoBehaviour
         if (enemyCastleUI && data)
         {
             int levelNumber = levelIndex + 1;
-            enemyCastleUI.InitCastle(data, levelNumber, enemyCastleHpMult * _starDifficultyModifiers.enemyHealthMultiplier);
+            bool forceInfiniteHealth = _postFinalSurvivalActive && forcePostFinalSurvivalInfiniteHealth;
+            bool forceBossLevel = _postFinalSurvivalActive && forcePostFinalSurvivalBossLevel;
+            enemyCastleUI.InitCastle(
+                data,
+                levelNumber,
+                enemyCastleHpMult * _starDifficultyModifiers.enemyHealthMultiplier,
+                forceInfiniteHealth,
+                forceBossLevel);
 
             _castleData = data;
 
-            if (_castleData != null && _castleData.isBossLevel)
+            if (_castleData != null && IsCastleBossForCurrentMode(_castleData))
             {
                 _bossAbilityTimer = 0f;
                 _bossNextAbilityAt = Random.Range(_castleData.bossAbilityIntervalMin, _castleData.bossAbilityIntervalMax);
@@ -1978,7 +2050,7 @@ public class GameController : MonoBehaviour
 
         if (AudioManager.I && data != null)
         {
-            AudioManager.I.PlayLevelMusic(data.isBossLevel);
+            AudioManager.I.PlayLevelMusic(IsCastleBossForCurrentMode(data));
         }
 
         if (obstacleManager)
@@ -2224,7 +2296,11 @@ public class GameController : MonoBehaviour
     void ShowFinalVictoryPanelAfterRoundWin(List<MonsterData> roster)
     {
         ApplyFinalLevelRoundWinBookkeeping();
-        FinalizeRunAsWinState();
+        bool canContinueToSurvival = CanStartPostFinalSurvival();
+        if (canContinueToSurvival)
+            ApplyStandardFinalWinState();
+        else
+            FinalizeRunAsWinState();
 
         OpenXpUiMode();
         if (xpAwardUI)
@@ -2237,7 +2313,10 @@ public class GameController : MonoBehaviour
         ResolveVictoryPanelUi();
         if (!victoryPanelUI)
         {
-            ShowRunEndCommitAfterFinalWin(roster, playIntermissionMusic: false);
+            if (canContinueToSurvival)
+                StartPostFinalSurvivalLevel();
+            else
+                ShowRunEndCommitAfterFinalWin(roster, playIntermissionMusic: false);
             return;
         }
 
@@ -2245,7 +2324,10 @@ public class GameController : MonoBehaviour
         victoryPanelUI.SetUnlockedDifficultyText(_newDifficultyUnlockedThisRun ? "New Difficulty Unlocked!" : string.Empty);
         victoryPanelUI.Show(RunSummaryStats.GetSnapshot(), RunModsStore.Buffs, RunModsStore.Debuffs, () =>
         {
-            ContinueAfterVictoryPanel(roster);
+            if (canContinueToSurvival)
+                StartPostFinalSurvivalLevel();
+            else
+                ContinueAfterVictoryPanel(roster);
         });
     }
 
@@ -2257,20 +2339,116 @@ public class GameController : MonoBehaviour
         ShowRunEndCommitAfterFinalWin(roster, playIntermissionMusic: false);
     }
 
-    void FinalizeRunAsWinState()
+    void StartPostFinalSurvivalLevel()
+    {
+        if (!CanStartPostFinalSurvival())
+        {
+            ShowRunEndCommitAfterFinalWin(GetActiveMonsterRoster(), playIntermissionMusic: false);
+            return;
+        }
+
+        if (victoryPanelUI)
+            victoryPanelUI.Hide();
+
+        if (xpAwardUI)
+            xpAwardUI.HideAll();
+
+        CloseXpUiMode();
+        HideRoundTransitionImmediate();
+
+        if (roundRewardUI)
+            roundRewardUI.Hide();
+
+        if (piece)
+            piece.ResetPiece();
+
+        if (gameBoard)
+            gameBoard.ClearAll();
+
+        _postFinalSurvivalActive = true;
+        currentLevel = GetPostFinalSurvivalLevelIndex();
+        _lastLevelInitialized = -999;
+
+        gameOver = false;
+        levelWon = false;
+        winQueued = false;
+        _pendingMainMenuAfterXp = false;
+
+        ResetCombo();
+        ResetBossGravityVisuals();
+
+        if (battleLog)
+            battleLog.Clear();
+
+        ApplyRunGridSize(currentLevel);
+        InitLevel(currentLevel);
+
+        _pendingPostFinalSurvivalIntro = ShouldShowPostFinalSurvivalIntro();
+        BeginPostFinalSurvivalGameplay();
+    }
+
+    bool ShouldShowPostFinalSurvivalIntro()
+    {
+        return PlayerPrefs.GetInt(PostFinalSurvivalIntroPrefsKey, 0) == 0;
+    }
+
+    IEnumerator CoShowPostFinalSurvivalIntroAfterFirstPiece()
+    {
+        if (!_pendingPostFinalSurvivalIntro)
+            yield break;
+
+        _pendingPostFinalSurvivalIntro = false;
+        _levelStartBlocked = true;
+
+        yield return null;
+        Canvas.ForceUpdateCanvases();
+
+        if (gameBoard)
+            gameBoard.RecomputeCellMetrics();
+
+        if (piece && piece.HasActiveCells)
+        {
+            piece.RefreshVisualsExternal();
+            piece.RefreshLandingHintsExternal();
+        }
+
+        Canvas.ForceUpdateCanvases();
+        yield return new WaitForEndOfFrame();
+
+        PauseGameplayForRoundTransition();
+
+        bool doNotShowAgain = false;
+        yield return CoShowRoundTransition(
+            PostFinalSurvivalIntroText,
+            PostFinalSurvivalIntroOptOutText,
+            false,
+            value => doNotShowAgain = value);
+
+        if (doNotShowAgain)
+        {
+            PlayerPrefs.SetInt(PostFinalSurvivalIntroPrefsKey, 1);
+            PlayerPrefs.Save();
+        }
+
+        _levelStartBlocked = false;
+        ResumeGameplayAfterRoundTransition();
+        EnterGameplayCursorMode();
+    }
+
+    void BeginPostFinalSurvivalGameplay()
+    {
+        EnterGameplayCursorMode();
+        StartCoroutine(BeginCurrentLevelSequence());
+    }
+
+    void ApplyStandardFinalWinState()
     {
         if (_finalWinStateApplied)
             return;
 
         _finalWinStateApplied = true;
-        gameOver = true;
-        ClearTempRunCheckpoint();
-
         if (PlayerProgress.I)
-        {
             PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunBeatFinalLevel, 1);
-            PlayerProgress.I.EndRun();
-        }
 
         _newDifficultyUnlockedThisRun = HandleStarDifficultyFinalWin();
 
@@ -2286,6 +2464,18 @@ public class GameController : MonoBehaviour
 
             TryMarkFinalWinAllCharacters();
         }
+    }
+
+    void FinalizeRunAsWinState()
+    {
+        ApplyStandardFinalWinState();
+
+        if (gameOver)
+            return;
+
+        gameOver = true;
+        ClearTempRunCheckpoint();
+        PlayerProgress.I?.EndRun();
     }
 
     void ShowRunEndCommitAfterFinalWin(List<MonsterData> roster, bool playIntermissionMusic)
@@ -3226,6 +3416,8 @@ public class GameController : MonoBehaviour
         ResetRunMods();
         RefreshStarDifficultyState();
         RefreshActiveMonsterPassives(applyStartingReserveDelta: false);
+        _postFinalSurvivalActive = false;
+        _pendingPostFinalSurvivalIntro = false;
 
         // Reset Level 1 difficulty baseline + unit lives
         unitLives = EffectiveMaxUnitLives;
@@ -4285,7 +4477,7 @@ public class GameController : MonoBehaviour
 
     void TryCastRandomBossAbility()
     {
-        if (_castleData == null || !_castleData.isBossLevel) return;
+        if (_castleData == null || !IsCastleBossForCurrentMode(_castleData)) return;
 
         // --- Weighted option pool path ---
         if (_castleData.useBossAbilityOptionPool &&
@@ -5423,6 +5615,9 @@ public class GameController : MonoBehaviour
 
     bool IsFinalLevelIndex(int levelIndex)
     {
+        if (_postFinalSurvivalActive)
+            return false;
+
         return castlesByLevel == null || castlesByLevel.Length == 0 || levelIndex >= castlesByLevel.Length - 1;
     }
 

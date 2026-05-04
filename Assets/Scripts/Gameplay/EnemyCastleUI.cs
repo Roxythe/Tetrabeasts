@@ -11,6 +11,7 @@ public class EnemyCastleUI : MonoBehaviour
     public Slider healthBarSlider; 
     public TMP_Text healthBarText;  
     public TMP_Text levelNameText; 
+    public Image levelBackgroundImage;
 
     [Header("Runtime State (read-only for other scripts)")]
     public int maxHP { get; private set; }
@@ -42,6 +43,8 @@ public class EnemyCastleUI : MonoBehaviour
 
     bool _magicShield = false;
     Coroutine _magicShieldCR;
+    bool _infiniteHealth = false;
+    bool _forceBossLevel = false;
 
     CastleData sourceData;
     int _lastStageIndex = -1;
@@ -51,31 +54,52 @@ public class EnemyCastleUI : MonoBehaviour
     bool _bossOverlayBaseCaptured = false;
 
     public int CurrentHP => currentHP;
+    public bool InfiniteHealth => _infiniteHealth;
 
     // New overload that accepts the level number
     public void InitCastle(CastleData data, int levelNumber)
     {
+        InitCastle(data, levelNumber, 1f, false, false);
+    }
+
+    // Overload with HP multiplier (used for run modifiers)
+    public void InitCastle(CastleData data, int levelNumber, float hpMult)
+    {
+        InitCastle(data, levelNumber, hpMult, false, false);
+    }
+
+    public void InitCastle(CastleData data, int levelNumber, float hpMult, bool forceInfiniteHealth, bool forceBossLevel)
+    {
         if (data == null)
         {
             Debug.LogError("EnemyCastleUI.InitCastle called with null data");
+            ApplyLevelBackground(null);
             return;
         }
 
         sourceData = data;
+        _infiniteHealth = forceInfiniteHealth || data.infiniteHealth;
+        _forceBossLevel = forceBossLevel;
 
         castleName = data.castleName;
-        maxHP = Mathf.Max(1, data.maxHP);
+
+        int baseMax = Mathf.Max(1, data.maxHP);
+        maxHP = _infiniteHealth
+            ? baseMax
+            : Mathf.Max(1, Mathf.RoundToInt(baseMax * Mathf.Max(0.01f, hpMult)));
         currentHP = maxHP;
+
         this.levelNumber = Mathf.Max(1, levelNumber);
 
         if (castleNameText) castleNameText.text = castleName;
         if (levelNameText) levelNameText.text = $"Level: {this.levelNumber}";
+        ApplyLevelBackground(data);
 
         if (healthBarSlider)
         {
             healthBarSlider.minValue = 0;
-            healthBarSlider.maxValue = maxHP;
-            healthBarSlider.value = currentHP;
+            healthBarSlider.maxValue = _infiniteHealth ? 1f : maxHP;
+            healthBarSlider.value = _infiniteHealth ? 1f : currentHP;
         }
 
         CacheNormalHealthBarColorIfNeeded();
@@ -87,41 +111,14 @@ public class EnemyCastleUI : MonoBehaviour
         SetupBossOverlay();
     }
 
-    // Overload with HP multiplier (used for run modifiers)
-    public void InitCastle(CastleData data, int levelNumber, float hpMult)
+    void ApplyLevelBackground(CastleData data)
     {
-        if (data == null)
-        {
-            Debug.LogError("EnemyCastleUI.InitCastle called with null data");
+        if (!levelBackgroundImage)
             return;
-        }
 
-        sourceData = data;
-
-        castleName = data.castleName;
-
-        int baseMax = Mathf.Max(1, data.maxHP);
-        maxHP = Mathf.Max(1, Mathf.RoundToInt(baseMax * Mathf.Max(0.01f, hpMult)));
-        currentHP = maxHP;
-
-        this.levelNumber = Mathf.Max(1, levelNumber);
-
-        if (castleNameText) castleNameText.text = castleName;
-        if (levelNameText) levelNameText.text = $"Level: {this.levelNumber}";
-
-        if (healthBarSlider)
-        {
-            healthBarSlider.minValue = 0;
-            healthBarSlider.maxValue = maxHP;
-            healthBarSlider.value = currentHP;
-        }
-
-        CacheNormalHealthBarColorIfNeeded();
-        SetInvulnerabilityVFX(false);
-
-        _lastStageIndex = -1;
-        UpdateVisuals();
-        SetupBossOverlay();
+        Sprite backgroundSprite = data ? data.levelBackgroundSprite : null;
+        levelBackgroundImage.sprite = backgroundSprite;
+        levelBackgroundImage.enabled = backgroundSprite != null;
     }
 
     // Call this whenever damage to the castle occurs
@@ -143,6 +140,13 @@ public class EnemyCastleUI : MonoBehaviour
                 AudioManager.I.PlaySFX(sourceData.bossPylonReducedHitSFX);
         }
 
+        if (_infiniteHealth)
+        {
+            TriggerBossDamageTakenSprite();
+            UpdateVisuals();
+            return dmg;
+        }
+
         int appliedDamage = Mathf.Clamp(dmg, 0, currentHP);
         if (appliedDamage <= 0)
             return 0;
@@ -160,12 +164,15 @@ public class EnemyCastleUI : MonoBehaviour
 
     void UpdateVisuals()
     {
-        if (healthBarSlider) healthBarSlider.value = currentHP;
-        if (healthBarText) healthBarText.text = $"{currentHP} / {maxHP}";
+        if (healthBarSlider)
+            healthBarSlider.value = _infiniteHealth ? 1f : currentHP;
+
+        if (healthBarText)
+            healthBarText.text = _infiniteHealth ? "\u221E" : $"{currentHP} / {maxHP}";
 
         if (castleImage && sourceData != null)
         {
-            float hpPercent = (float)currentHP / Mathf.Max(1, maxHP);
+            float hpPercent = _infiniteHealth ? 1f : (float)currentHP / Mathf.Max(1, maxHP);
 
             // Compute stage index
             int stageIndex =
@@ -194,7 +201,7 @@ public class EnemyCastleUI : MonoBehaviour
     {
         if (!bossOverlayImage) return;
 
-        bool on = (sourceData != null && sourceData.isBossLevel);
+        bool on = IsBossLevelConfigured();
         bossOverlayImage.enabled = on;
 
         if (!on)
@@ -225,6 +232,11 @@ public class EnemyCastleUI : MonoBehaviour
         if (idle) bossOverlayImage.sprite = idle;
 
         SetBossIdleMotionPaused(false);
+    }
+
+    bool IsBossLevelConfigured()
+    {
+        return sourceData != null && (sourceData.isBossLevel || _forceBossLevel);
     }
 
     public void StartInvulnerability(float seconds)
@@ -314,7 +326,7 @@ public class EnemyCastleUI : MonoBehaviour
 
     bool IsBossLevelActive()
     {
-        return sourceData != null && sourceData.isBossLevel && bossOverlayImage != null && bossOverlayImage.enabled;
+        return IsBossLevelConfigured() && bossOverlayImage != null && bossOverlayImage.enabled;
     }
 
     bool IsBossCriticalHP()

@@ -10,21 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d53674e82a67d24eb4f78ba0f273f3a, type: 3}
-  m_Name: TestBossLevel 3
+  m_Name: TestFastBossLevel
   m_EditorClassIdentifier: Assembly-CSharp::CastleData
-  castleName: City Priestess
+  castleName: Tribe Chieftain
   damageStages:
   - {fileID: 21300000, guid: 1f0ff268de0e76d4c91ac180ab7e6e6e, type: 3}
   - {fileID: 21300000, guid: 9082ffe4cf1f7e146b700d31ac4725da, type: 3}
   - {fileID: 21300000, guid: 72665c402bca98948ac42bedf1620070, type: 3}
   - {fileID: 21300000, guid: 8ef84dac0848a8b4f81252dbc3fac646, type: 3}
-  levelBackgroundSprite: {fileID: -7189407165661018413, guid: 3d9f43d24475d6d47be269b319ed00ad, type: 3}
-  maxHP: 1100
+  maxHP: 2
   infiniteHealth: 0
   projectileSprite: {fileID: 21300000, guid: ca7186951d5077d419fe7998de074c6d, type: 3}
-  projectileInterval: 2
+  projectileInterval: 3
   projectileSpeed: 800
-  projectileDamage: 25
+  projectileDamage: 10
   sfxProjectileHitTile: {fileID: 8300000, guid: 23223cee22f6a6c4caceff40d1bcd1e6, type: 3}
   sfxProjectileHitTileClips:
   - {fileID: 8300000, guid: fccb4318ede48ff4db14c0d040030810, type: 3}
@@ -43,12 +42,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 212ba41b43c8a004ca231baaa67f9610, type: 3}
   - {fileID: 8300000, guid: 8990cdb32fd36a74c9df4c24a499b0a1, type: 3}
   isBossLevel: 1
-  bossOverlaySprite: {fileID: 21300000, guid: 1fe2812b4d301d144afd5624a982519e, type: 3}
-  bossAttackSprite: {fileID: 21300000, guid: 758cb6f08691af14bba856ef8850b1b3, type: 3}
-  bossDamageTakenSprite: {fileID: 21300000, guid: 4bff2ef3ff4ea2b408adcd995cee1fc7, type: 3}
-  bossCriticalIdleSprite: {fileID: 21300000, guid: 6ec8a5311cfcab94798a19458199476a, type: 3}
-  bossCriticalDamageTakenSprite: {fileID: 21300000, guid: 4bff2ef3ff4ea2b408adcd995cee1fc7, type: 3}
-  bossCriticalAttackSprite: {fileID: 21300000, guid: b823952992a6c5f45a96dd1583bc653b, type: 3}
+  bossOverlaySprite: {fileID: 21300000, guid: 5a2b319a74bda334e969bf1f53548590, type: 3}
+  bossAttackSprite: {fileID: 21300000, guid: bdb09b0f84b3cfa48bcb3556e93055ff, type: 3}
+  bossDamageTakenSprite: {fileID: 21300000, guid: 5565f83eb7075a34797b43e18b548863, type: 3}
+  bossCriticalIdleSprite: {fileID: 21300000, guid: c7bbfc107fe020f4394661dd9d2311ec, type: 3}
+  bossCriticalDamageTakenSprite: {fileID: 21300000, guid: 99640219c009bb5478ee5c618cd1d67b, type: 3}
+  bossCriticalAttackSprite: {fileID: 21300000, guid: 05527aae6a58f8546937e8c9547ed794, type: 3}
   bossCriticalHpThreshold: 0.3
   bossAttackShiftRight: 1
   bossAttackShiftDistance: 20
@@ -56,7 +55,7 @@ MonoBehaviour:
   bossDamageSpriteSeconds: 0.5
   overrideInitialObstacles: 1
   overridesOnlyForLevel1: 0
-  overrideStoneCount: 7
+  overrideStoneCount: 3
   overridePoisonCount: 1
   overrideFireCount: 1
   overrideSpikeCount: 1
@@ -73,8 +72,8 @@ MonoBehaviour:
   bossEnableMagicExplosive: 1
   bossAbilityIntervalMin: 10
   bossAbilityIntervalMax: 15
-  bossRowBlastDamage: 12
-  bossFullBoardDamage: 7
+  bossRowBlastDamage: 5
+  bossFullBoardDamage: 3
   bossLightningWarningSprite: {fileID: -7430558899833497709, guid: fc848ad20e1533246a7e5adedce199b7, type: 3}
   bossLightningTargetsMin: 1
   bossLightningTargetsMax: 3
@@ -92,8 +91,8 @@ MonoBehaviour:
     pattern: 2
     weight: 1
   - kind: 1
-    pattern: 2
-    weight: 5
+    pattern: 0
+    weight: 1
   - kind: 2
     pattern: 2
     weight: 1
@@ -111,19 +110,19 @@ MonoBehaviour:
   useBossAbilityOptionPool: 1
   bossAbilityOptions:
   - kind: 0
-    weight: 5
+    weight: 100
     allowRepeat: 0
     cooldown: 20
   - kind: 1
-    weight: 1
+    weight: 100
     allowRepeat: 0
     cooldown: 20
   - kind: 2
-    weight: 1
+    weight: 2
     allowRepeat: 1
     cooldown: 12
   - kind: 3
-    weight: 3
+    weight: 5
     allowRepeat: 1
     cooldown: 12
   - kind: 4
@@ -135,11 +134,11 @@ MonoBehaviour:
     allowRepeat: 0
     cooldown: 10
   - kind: 6
-    weight: 4
+    weight: 5
     allowRepeat: 0
     cooldown: 10
   - kind: 7
-    weight: 10
+    weight: 5
     allowRepeat: 0
     cooldown: 10
   bossInvulnDuration: 10

@@ -637,6 +637,7 @@ public class Piece : MonoBehaviour
     public void ResetPiece()
     {
         enabled = false;
+        ClearHints();
 
         // Remove only the active falling tile visuals spawned
         for (int i = 0; i < visuals.Count; i++)
@@ -912,6 +913,17 @@ public class Piece : MonoBehaviour
             return;
 
         SyncVisuals();
+    }
+
+    public void RefreshLandingHintsExternal()
+    {
+        if (cells.Count == 0 || board == null)
+            return;
+
+        if (data != null && data.special != SpecialType.None)
+            UpdateSpecialHints();
+        else
+            UpdateNormalHints();
     }
 
     void NotifyTutorialEvent(TutorialGameplayEvent gameplayEvent)
