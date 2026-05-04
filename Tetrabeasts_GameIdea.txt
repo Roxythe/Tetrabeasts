@@ -5,7 +5,7 @@
 
 -- Level will not be winnable, it should be a survival mode that continues until one of the loss conditions is met.
 
--- Level should be a wireable scriptable object based on a castle data scriptable object, but a slight change will need to be made to make sure the health is infinite.
+-- Level should be a wireable into game controller as a scriptable object based on a castle data scriptable object, but a slight change will need to be made to make sure the health is infinite. This should allow me to set the boss sprites and the boss ability parameters for this survival level after the last boss level of the standard game mode is completed
 
 
 
