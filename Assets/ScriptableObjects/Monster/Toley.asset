@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   monsterName: Toley
   portrait: {fileID: -1066822171247798340, guid: ad70377c34336dc4bbf5567c45944d87, type: 3}
-  monsterDescription: Can take a hit and keep going
+  monsterDescription: Can take a hit and keep going, but won't deal much damage.
   passiveType: 4
   role: 1
   startsLocked: 1

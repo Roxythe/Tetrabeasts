@@ -3151,25 +3151,12 @@ public class GameController : MonoBehaviour
         if (!CanLaunchCastleProjectile())
             return;
 
-        // Find the first living target in that column
-        Vector2Int? hitCell = null;
-        for (int y = gameBoard.height - 1; y >= 0; y--)
-        {
-            var c = new Vector2Int(col, y);
-            if (gameBoard.IsFree(c)) continue;
-
-            if (gameBoard.TryGetMonster(c, out var inst) && inst.data && inst.hp > 0f)
-            { hitCell = c; break; }
-            // else: dead tile projectile should pass through
-        }
-
         // Compute start/end positions in board/grid space
         Vector2 start = gameBoard.CellToAnchoredPos(new Vector2Int(col, gameBoard.height - 1))
                       + new Vector2(0f, gameBoard.GetCellSize().y * 0.75f);
 
-        Vector2 end = hitCell.HasValue
-            ? gameBoard.CellToAnchoredPos(hitCell.Value)
-            : gameBoard.CellToAnchoredPos(new Vector2Int(col, 0));
+        Vector2 end = gameBoard.CellToAnchoredPos(new Vector2Int(col, 0))
+                    - new Vector2(0f, gameBoard.GetCellSize().y * 0.5f);
 
         // Convert to projectile root space if needed
         var root = projectileRoot ? projectileRoot : gameBoard.gridRoot;
@@ -3190,10 +3177,10 @@ public class GameController : MonoBehaviour
                 AudioManager.I.PlaySFX(fireClip);
         }
 
-        SpawnCastleDownProjectile(castleProjectileSprite, start, end, hitCell);
+        SpawnCastleDownProjectile(castleProjectileSprite, start, end, col);
     }
 
-    void SpawnCastleDownProjectile(Sprite sprite, Vector2 start, Vector2 end, Vector2Int? targetCell)
+    void SpawnCastleDownProjectile(Sprite sprite, Vector2 start, Vector2 end, int column)
     {
         var root = projectileRoot ? projectileRoot : gameBoard.gridRoot;
         var go = new GameObject("CastleDownshot", typeof(UnityEngine.UI.Image));
@@ -3207,34 +3194,116 @@ public class GameController : MonoBehaviour
         rt.sizeDelta = gameBoard.GetCellSize();
         rt.anchoredPosition = start;
 
-        StartCoroutine(CastleDownshotCo(rt, end, targetCell));
+        StartCoroutine(CastleDownshotCo(rt, end, column));
     }
 
-    System.Collections.IEnumerator CastleDownshotCo(RectTransform rt, Vector2 end, Vector2Int? targetCell)
+    System.Collections.IEnumerator CastleDownshotCo(RectTransform rt, Vector2 end, int column)
     {
         float speed = Mathf.Max(10f, projectileSpeed);
         while (rt && (rt.anchoredPosition - end).sqrMagnitude > 4f)
         {
+            Vector2 previous = rt.anchoredPosition;
             rt.anchoredPosition = Vector2.MoveTowards(rt.anchoredPosition, end, speed * Time.deltaTime);
+
+            if (TryGetCastleDownshotImpactCell(column, previous, rt.anchoredPosition, out var hitCell, out bool damageMonster))
+            {
+                rt.anchoredPosition = BoardLocalToProjectileRoot(gameBoard.CellToAnchoredPos(hitCell));
+                Destroy(rt.gameObject);
+
+                ResolveCastleDownshotImpact(hitCell, damageMonster);
+                yield break;
+            }
+
             yield return null;
         }
 
         if (rt) Destroy(rt.gameObject);
+    }
+
+    bool TryGetCastleDownshotImpactCell(int column, Vector2 previousRootPos, Vector2 currentRootPos,
+                                        out Vector2Int hitCell, out bool damageMonster)
+    {
+        hitCell = default;
+        damageMonster = false;
+
+        if (!gameBoard || column < 0 || column >= gameBoard.width)
+            return false;
+
+        Vector2 previousBoard = ProjectileRootToBoardLocal(previousRootPos);
+        Vector2 currentBoard = ProjectileRootToBoardLocal(currentRootPos);
+        float sweepTop = Mathf.Max(previousBoard.y, currentBoard.y);
+        float sweepBottom = Mathf.Min(previousBoard.y, currentBoard.y);
+        float halfCell = gameBoard.GetCellSize().y * 0.5f;
+
+        for (int y = gameBoard.height - 1; y >= 0; y--)
+        {
+            var c = new Vector2Int(column, y);
+            float centerY = gameBoard.CellToAnchoredPos(c).y;
+            float cellTop = centerY + halfCell;
+            float cellBottom = centerY - halfCell;
+
+            if (sweepTop < cellBottom || sweepBottom > cellTop)
+                continue;
+
+            if (gameBoard.HasObstacle(c))
+            {
+                hitCell = c;
+                return true;
+            }
+
+            if (gameBoard.TryGetMonster(c, out var inst) && inst.data && inst.hp > 0f)
+            {
+                hitCell = c;
+                damageMonster = true;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    Vector2 ProjectileRootToBoardLocal(Vector2 anchored)
+    {
+        if (!gameBoard) return anchored;
+
+        var root = projectileRoot ? projectileRoot : gameBoard.gridRoot;
+        return root == gameBoard.gridRoot
+            ? anchored
+            : LocalTo(gameBoard.gridRoot, root, anchored);
+    }
+
+    Vector2 BoardLocalToProjectileRoot(Vector2 anchored)
+    {
+        if (!gameBoard) return anchored;
+
+        var root = projectileRoot ? projectileRoot : gameBoard.gridRoot;
+        return root == gameBoard.gridRoot
+            ? anchored
+            : LocalTo(root, gameBoard.gridRoot, anchored);
+    }
+
+    void ResolveCastleDownshotImpact(Vector2Int hitCell, bool damageMonster)
+    {
+        if (!gameBoard || levelWon || gameOver)
+            return;
 
         AudioClip hitClip = null;
         if (currentCastleData)
             hitClip = currentCastleData.PickRandom(currentCastleData.sfxProjectileHitTileClips,
                                                    currentCastleData.sfxProjectileHitTile);
 
-        // Apply damage on impact
-        if (targetCell.HasValue && !levelWon && !gameOver)
+        if (damageMonster)
         {
-            bool aliveAfter = gameBoard.DamageTile(targetCell.Value, castleProjectileDamage,
+            bool aliveAfter = gameBoard.DamageTile(hitCell, castleProjectileDamage,
                                                    Board.DamageSource.CastleProjectile, hitClip);
 
-            if (gameBoard.TryGetMonster(targetCell.Value, out var inst) && inst.data)
-                Debug.Log($"Hit {inst.data.name} at {targetCell.Value}: {inst.hp}/{inst.data.maxHealth}"
+            if (gameBoard.TryGetMonster(hitCell, out var inst) && inst.data)
+                Debug.Log($"Hit {inst.data.name} at {hitCell}: {inst.hp}/{inst.data.maxHealth}"
                           + (aliveAfter ? "" : " (DEAD)"));
+        }
+        else if (AudioManager.I && hitClip)
+        {
+            AudioManager.I.PlaySFX(hitClip);
         }
     }
 

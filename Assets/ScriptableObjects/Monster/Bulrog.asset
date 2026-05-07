@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   monsterName: Bulrog
   portrait: {fileID: -5713861770949114686, guid: 17347e98cf283614d8cdf5bea68f8fec, type: 3}
-  monsterDescription: Beefy boy that does little damage
+  monsterDescription: Beefy boy that deals very little damage.
   passiveType: 6
   role: 1
   startsLocked: 0

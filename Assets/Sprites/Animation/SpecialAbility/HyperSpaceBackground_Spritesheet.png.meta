@@ -1,0 +1,5336 @@
+fileFormatVersion: 2
+guid: 190330251fc7e8e44a07668444541a85
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7584781145904610204
+    second: HyperSpaceBackground_Spritesheet_0
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 5040
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4648643dbb17db690800000000000000
+      internalID: -7584781145904610204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_1
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 5040
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 347765c9d97f0124baad1d55bc6df7bc
+      internalID: -987392114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_2
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 5040
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5278b6b19fbf5904a800872de72217c0
+      internalID: 2014650868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_3
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 5040
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9481538eccce00840b7f75c5473a73e2
+      internalID: -451254171
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_4
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 5040
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 088e93d645431aa4bbea3b2342d975e1
+      internalID: -14527017
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_5
+      rect:
+        serializedVersion: 2
+        x: 3200
+        y: 5040
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 739aca70184210147b7ec06a939e448c
+      internalID: -75216184
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_6
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 5040
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 100e2072152ee8845a3afe5df9fad0a4
+      internalID: -589100822
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_7
+      rect:
+        serializedVersion: 2
+        x: 4480
+        y: 5040
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 244dee80528354a42b63c3218964ef8a
+      internalID: 1256741461
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_8
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 5040
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a596e207d15cfe84f937317e73eb8bdb
+      internalID: 803195291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_9
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 5040
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c40718f908519fd40a9b05afdc9811af
+      internalID: 449029201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_10
+      rect:
+        serializedVersion: 2
+        x: 6400
+        y: 5040
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 168d7fb474ff1954a89821ac6d677be4
+      internalID: -45385378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_11
+      rect:
+        serializedVersion: 2
+        x: 7040
+        y: 5040
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6c33346074e0ca048ab076748159fb16
+      internalID: -999646111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_12
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 5040
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0dd91f622051b56448bcbc9d8a063195
+      internalID: 1898031294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_13
+      rect:
+        serializedVersion: 2
+        x: 8320
+        y: 5040
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5915ff99844021d418a4b41e8a286ce7
+      internalID: -664564196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_14
+      rect:
+        serializedVersion: 2
+        x: 8960
+        y: 5040
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 177a29476bacad34c88230b80d70ffc7
+      internalID: -981299081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 4680
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2bafbff18c4e1c74ea1d3e9b2454b939
+      internalID: -1467303002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_16
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 4680
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3092dff95ef44834d86f820117cc09de
+      internalID: -369779942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_17
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 4680
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 22b09b74cf3d77e42ab1227f3ad97412
+      internalID: -1254186337
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_18
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 4680
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b4fb4e71127ed84ea179b00b1481e64
+      internalID: -1862968231
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_19
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 4680
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c1962243c182334292d24e1df2cd7cd
+      internalID: -2082115562
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_20
+      rect:
+        serializedVersion: 2
+        x: 3200
+        y: 4680
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: add26e618873dde40bd6257bd06db86e
+      internalID: 520774903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_21
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 4680
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ba466d12a46bea4aa5130baab21b350
+      internalID: -1083818935
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_22
+      rect:
+        serializedVersion: 2
+        x: 4480
+        y: 4680
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b1b6627faac1d8d49b2596a40cb097cb
+      internalID: 1394884328
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_23
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 4680
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bf04d58d139f76a4db93c1919429f811
+      internalID: 689167174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_24
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 4680
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c5a165a1c176cca4f909ac654989e0b2
+      internalID: 776303543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_25
+      rect:
+        serializedVersion: 2
+        x: 6400
+        y: 4680
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a6855010bb66eb84da8396556fcf9658
+      internalID: 1728466174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_26
+      rect:
+        serializedVersion: 2
+        x: 7040
+        y: 4680
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c9466af8313526f448f72aad6a82fb04
+      internalID: 232338861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_27
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 4680
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 677897e8b051afe498515ca9de6b79cd
+      internalID: 1577425653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_28
+      rect:
+        serializedVersion: 2
+        x: 8320
+        y: 4680
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d8b28339c598f7741abe8fc0ecc4fc6e
+      internalID: -1163427618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_29
+      rect:
+        serializedVersion: 2
+        x: 8960
+        y: 4680
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f1d856bd3e5972244824678c872e0bee
+      internalID: -228662436
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_30
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 4320
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9868ea4f7415b704c894099994364079
+      internalID: 770142471
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_31
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 4320
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 18a14c2d6e7b36f4eabbea4c25ad0864
+      internalID: -179356897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_32
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 4320
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 714154e309ee7774a89c627f1ca89002
+      internalID: -971339216
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_33
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 4320
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 76c41ae31f5f12f4baf9c03d1d681c57
+      internalID: 13003524
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_34
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 4320
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7b2f7ef804ed2d245929e8d47c52feea
+      internalID: -988169835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_35
+      rect:
+        serializedVersion: 2
+        x: 3200
+        y: 4320
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 35a55b1920c2f5642929144ab6df1925
+      internalID: 936185644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_36
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 4320
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ed4585b3ae7cae54a9f2e2634b2df69b
+      internalID: 853891674
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_37
+      rect:
+        serializedVersion: 2
+        x: 4480
+        y: 4320
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 23c9bdd87fe1d9a41aec8b8fb4a39561
+      internalID: -289653165
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_38
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 4320
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 242bf47c14e528a46b8890b6437d43ec
+      internalID: -1901561119
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_39
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 4320
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 982ebd5fa07a2e2488717f6416c222a7
+      internalID: 2053200094
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_40
+      rect:
+        serializedVersion: 2
+        x: 6400
+        y: 4320
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6ac50a9f7bf52a54b8a50dd597f74e00
+      internalID: 1082305231
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_41
+      rect:
+        serializedVersion: 2
+        x: 7040
+        y: 4320
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d1a4bb79dbd675f4c82c355039e9c5bd
+      internalID: -1606536181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_42
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 4320
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aebed2c8de1b0c64d9b82991973d14c5
+      internalID: -1246572737
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_43
+      rect:
+        serializedVersion: 2
+        x: 8320
+        y: 4320
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 06a512a74bdc27546bbada66cc56f90b
+      internalID: -340497274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_44
+      rect:
+        serializedVersion: 2
+        x: 8960
+        y: 4320
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b6de1ec8e9e5cea409b7e6bd3bac7b70
+      internalID: -460444934
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_45
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3960
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c88095d0bf527f94880e122af3c2a6a8
+      internalID: 934398888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_46
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 3960
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cdd92e1e366053049a3514a935546f9a
+      internalID: -1181762703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_47
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 3960
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a253104b1d711d0479c7390af58448d9
+      internalID: 2109492255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_48
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 3960
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fb8b66b40f7ccbd49a636d514c3f26b3
+      internalID: -57032270
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_49
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 3960
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2aa1b2f72726c0b488619881407fea05
+      internalID: -927771996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_50
+      rect:
+        serializedVersion: 2
+        x: 3200
+        y: 3960
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4071a027bee4fa14ab0387859ab710fe
+      internalID: 2055476604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_51
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 3960
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: be442032db050de4dbd0b5122b9c25d9
+      internalID: 791491097
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_52
+      rect:
+        serializedVersion: 2
+        x: 4480
+        y: 3960
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 079132df460ee954687e92f4da9e855d
+      internalID: 657383159
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_53
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 3960
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 90594fd97f8f0ad47b56e6d4d7314662
+      internalID: 520536884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_54
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 3960
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8a870e10a01ef384eb1e5c5fcdf15e67
+      internalID: 352551176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_55
+      rect:
+        serializedVersion: 2
+        x: 6400
+        y: 3960
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 22635d8ab3aa0a64b9cdd1ebf2821383
+      internalID: -1524368207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_56
+      rect:
+        serializedVersion: 2
+        x: 7040
+        y: 3960
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 259b25c97599bee429289ba5bb9d2db7
+      internalID: -1043532300
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_57
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 3960
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e5a1538f3dccc28489c1f4b9b18fb550
+      internalID: 1702549742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_58
+      rect:
+        serializedVersion: 2
+        x: 8320
+        y: 3960
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 126fa826012e52f44877e7197237bab1
+      internalID: 1258968542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_59
+      rect:
+        serializedVersion: 2
+        x: 8960
+        y: 3960
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 18f4ce685128ecf469a43831b18d1ba9
+      internalID: -1849522739
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_60
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3600
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1b7615bafe70ac6469e9d3858e69a227
+      internalID: -200053212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_61
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 3600
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84a6ea9c2f0c5d34799906d142202e9b
+      internalID: 776619749
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_62
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 3600
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ab742745fd5daec4bae42e6b2c184a54
+      internalID: -1772921928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_63
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 3600
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 68c7dd5ad52008646b3589c6fbd3f868
+      internalID: 568172146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_64
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 3600
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 20024d176ced65246bbd024a00e1a489
+      internalID: -1923825198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_65
+      rect:
+        serializedVersion: 2
+        x: 3200
+        y: 3600
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 81caae15e8cd9ca48b63de905aa2131f
+      internalID: -374785429
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_66
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 3600
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a89c012dee7963745a53e6c5b619c578
+      internalID: 2049316718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_67
+      rect:
+        serializedVersion: 2
+        x: 4480
+        y: 3600
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 66dada9dc5d7b95408924922363029da
+      internalID: 1179951777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_68
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 3600
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c09edd999deb3c44b9b5da951b917273
+      internalID: 1702691939
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_69
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 3600
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5d3bd537f43818b4d8c5af03f807bc03
+      internalID: -153320064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_70
+      rect:
+        serializedVersion: 2
+        x: 6400
+        y: 3600
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 95ac78d68821f9f408ca2edf38459326
+      internalID: -1478357226
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_71
+      rect:
+        serializedVersion: 2
+        x: 7040
+        y: 3600
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 337e924ef6f26b94c86b8db5136ad04e
+      internalID: 1355679925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_72
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 3600
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e73faa85ac7bce34987db2701d4107b7
+      internalID: -129461536
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_73
+      rect:
+        serializedVersion: 2
+        x: 8320
+        y: 3600
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1ac5e4f058b892e4abc02bc249947d6d
+      internalID: 1857979806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_74
+      rect:
+        serializedVersion: 2
+        x: 8960
+        y: 3600
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a5c88fcc9e5aa884ba6c5f9eab8a30ce
+      internalID: -486928962
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_75
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3240
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c25123b82a0b53941ac4db5b271b31c4
+      internalID: -1192254071
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_76
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 3240
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0692bbda78ee98447b0bfba0bf36e548
+      internalID: 627865447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_77
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 3240
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e6e907f36d693ab4588737a36074595e
+      internalID: 90669447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_78
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 3240
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c2261fec1e04f1941b6272a1fe4d323c
+      internalID: 867699335
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_79
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 3240
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eedb9ce418b9fb44ab56eabda540fdfc
+      internalID: 2040372871
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_80
+      rect:
+        serializedVersion: 2
+        x: 3200
+        y: 3240
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 53bb2c92fb7cbc347bbe91de960b9a26
+      internalID: 503518564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_81
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 3240
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4459c8b7bf8ed6944a4613006e5715a8
+      internalID: 1687130973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_82
+      rect:
+        serializedVersion: 2
+        x: 4480
+        y: 3240
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7192728ac44cbbf4aa6447dbc7a266e2
+      internalID: -1190433119
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_83
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 3240
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c8db9ec9a67dffe40b9b9b11bfa7ab9a
+      internalID: 1901212685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_84
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 3240
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fda3f207340ac6544a01fb72167495ab
+      internalID: 1472333573
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_85
+      rect:
+        serializedVersion: 2
+        x: 6400
+        y: 3240
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 19aa6809318b9ba4dada7806de09d0f5
+      internalID: 1175826290
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_86
+      rect:
+        serializedVersion: 2
+        x: 7040
+        y: 3240
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 307ec9c179370314ab4ba710c920531b
+      internalID: -1840209442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_87
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 3240
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6b6288080ec3fef47a96462969067f6f
+      internalID: 1839926651
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_88
+      rect:
+        serializedVersion: 2
+        x: 8320
+        y: 3240
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 55078c169be21664ca9c53b118a8e3e1
+      internalID: -1487564267
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_89
+      rect:
+        serializedVersion: 2
+        x: 8960
+        y: 3240
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4596604db3180ce448d7fddcc4d7a7e6
+      internalID: -1602029881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_90
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2880
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 234ecd471230fac40a7374d10c1a2a09
+      internalID: -1216569341
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_91
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 2880
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 22a12377bb52a504fb7b2851ce586350
+      internalID: -1687829146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_92
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 2880
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96d1a4b9861179541b447631641b3d7e
+      internalID: 2068921038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_93
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 2880
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7786af46636efbe42847f672e266a88c
+      internalID: 1468566897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_94
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2880
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cf48f99c0fd75a74f91e2adb06ad1d68
+      internalID: 1652552343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_95
+      rect:
+        serializedVersion: 2
+        x: 3200
+        y: 2880
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b88cdefb0b049354aba894350e9e23bc
+      internalID: 978549269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_96
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 2880
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ba80754aa3371dd4992f6ae4abc80bf3
+      internalID: 183285970
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_97
+      rect:
+        serializedVersion: 2
+        x: 4480
+        y: 2880
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c77066f23c1e8e44976c75849baaefe
+      internalID: -557719496
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_98
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 2880
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 14bd1a86d645cdb4f86380d5d41f3577
+      internalID: -1650421458
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_99
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 2880
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1c1f67e9e8b35b540a26c6d203d836dc
+      internalID: -581795157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_100
+      rect:
+        serializedVersion: 2
+        x: 6400
+        y: 2880
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ba3d5938ee2380e49b0aaf9c121f96e3
+      internalID: -1883194811
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_101
+      rect:
+        serializedVersion: 2
+        x: 7040
+        y: 2880
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e8a7883756caedc46b7aa4c33a982f8a
+      internalID: 1942188846
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_102
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 2880
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f574d82eaeb0e94fbfcfa6fdf5785d6
+      internalID: -236943534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_103
+      rect:
+        serializedVersion: 2
+        x: 8320
+        y: 2880
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4eb337f048c7ecc49a900dde19f88634
+      internalID: -1466209484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_104
+      rect:
+        serializedVersion: 2
+        x: 8960
+        y: 2880
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bddd7f053f317fe49ab86be7d915fc32
+      internalID: -139979060
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_105
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2520
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f9c1dda8ba72cbb4c842207d217b4b87
+      internalID: -137859498
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_106
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 2520
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: df984eb21810f2344a4875a5a6a2b24e
+      internalID: -605438266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_107
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 2520
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 10b41bf31bc55e844869c7253c05b619
+      internalID: -429546197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_108
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 2520
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3d441021bd2096e41912abb4522fa1e0
+      internalID: -796528084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_109
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2520
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2bdc9cbc9512c7744864b0062f8b16aa
+      internalID: -1149007387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_110
+      rect:
+        serializedVersion: 2
+        x: 3200
+        y: 2520
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 52beee150db74b046883cbc698cee9a4
+      internalID: 263990966
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_111
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 2520
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c30493048c461d4dbba6555e1d86d3a
+      internalID: 81417527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_112
+      rect:
+        serializedVersion: 2
+        x: 4480
+        y: 2520
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7172fea06818c1f43b462f343654ea47
+      internalID: 1179683921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_113
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 2520
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d0e5cab1035931b44aa02a4ee65dc8d9
+      internalID: 1677428739
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_114
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 2520
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b2cb080be9f997944911db8477b1fdde
+      internalID: 315874466
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_115
+      rect:
+        serializedVersion: 2
+        x: 6400
+        y: 2520
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2b01023dd93da9d42bd3cbe59e8668a7
+      internalID: -1833157204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_116
+      rect:
+        serializedVersion: 2
+        x: 7040
+        y: 2520
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 331507c34fa730142971a009e3e29ed0
+      internalID: -210628049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_117
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 2520
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8c41d2a53e256be4db1572477653fa53
+      internalID: 928961197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_118
+      rect:
+        serializedVersion: 2
+        x: 8320
+        y: 2520
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 203e3d75d96f4ce478871d508dd969d3
+      internalID: 127003636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_119
+      rect:
+        serializedVersion: 2
+        x: 8960
+        y: 2520
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d525a81eeb52b5f46a00996a666caa82
+      internalID: -1136240065
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_120
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2160
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b97dc72363ff35f4d94a5064e42093de
+      internalID: -779838490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_121
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 2160
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fd042ff5546563f469fd86ff4a769635
+      internalID: -666576948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_122
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 2160
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8319681dedf787748bac8c2592379197
+      internalID: 776672087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_123
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 2160
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f5ed4ec5c882f2f438a2467ca7e07153
+      internalID: -1428650390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_124
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2160
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b373b3455302f694e8d92445eaed68ea
+      internalID: -1903759246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_125
+      rect:
+        serializedVersion: 2
+        x: 3200
+        y: 2160
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1bfe738aad254bf418f4858596ab971f
+      internalID: 894909787
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_126
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 2160
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 521f103deb6428c4b8231750a88e33ea
+      internalID: -1896501262
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_127
+      rect:
+        serializedVersion: 2
+        x: 4480
+        y: 2160
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b46093d228059fc4cb3d26144b80a7ad
+      internalID: -2092273819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_128
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 2160
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dd489d64381669941bb51cc01d2f2157
+      internalID: -438752202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_129
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 2160
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 840638cc5a111b344ac7e0e886da454f
+      internalID: 1920132545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_130
+      rect:
+        serializedVersion: 2
+        x: 6400
+        y: 2160
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a11a3f92cd3c4524aae0e2d40c43fcf3
+      internalID: -1663278804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_131
+      rect:
+        serializedVersion: 2
+        x: 7040
+        y: 2160
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fd90352ed8a31ef46ba5e43e0f3c3d67
+      internalID: -916106432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_132
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 2160
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f84e264965f319e4eb50ae06659dc3b8
+      internalID: 1845812789
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_133
+      rect:
+        serializedVersion: 2
+        x: 8320
+        y: 2160
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 13d1123835ac3f346bc3afc75bcaaacb
+      internalID: 1686580053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_134
+      rect:
+        serializedVersion: 2
+        x: 8960
+        y: 2160
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 042d18a8028c6a840b4dcad1a4437d0e
+      internalID: 591002970
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_135
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1800
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5e94aeea3f0a14d4c94cac475b2e89b0
+      internalID: 1410284043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_136
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 1800
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e780cd7894cb3eb4899034fc757b9346
+      internalID: -1966520344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_137
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1800
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1ea8cfd9c59115d4fb9fdab7c26d9d62
+      internalID: 1502881526
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_138
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 1800
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8c3ec4a7369bb1a4c89b94dd4d148196
+      internalID: 1647594163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_139
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1800
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 054762557ce347b45888ad2a945914ff
+      internalID: 1952531807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_140
+      rect:
+        serializedVersion: 2
+        x: 3200
+        y: 1800
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0e2f363d3b6363043b8750d6b4afa29f
+      internalID: -164978433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_141
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 1800
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f8e1dffdcc724214aa61b5df8cd0ad09
+      internalID: 1954607005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_142
+      rect:
+        serializedVersion: 2
+        x: 4480
+        y: 1800
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 85c38d762317d4f47a2a1655f8b1b31f
+      internalID: -1127906770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_143
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 1800
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7bcd313bb34195742945d1bd68cf790d
+      internalID: 1228083900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_144
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 1800
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 097c902c8d4a0854cb670b2d0eb2f1bb
+      internalID: 702886820
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_145
+      rect:
+        serializedVersion: 2
+        x: 6400
+        y: 1800
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b5c6d6fe6a9086c43b05dcbc40dc82e8
+      internalID: 1575007834
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_146
+      rect:
+        serializedVersion: 2
+        x: 7040
+        y: 1800
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 586111b1bc448e1499de10a2940fa5cb
+      internalID: -1639352554
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_147
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 1800
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0defb13a61ea22e4490c09484416e4ee
+      internalID: 1846978006
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_148
+      rect:
+        serializedVersion: 2
+        x: 8320
+        y: 1800
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 330929fb60fde854ea472fe130d4bf6b
+      internalID: -1256225836
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_149
+      rect:
+        serializedVersion: 2
+        x: 8960
+        y: 1800
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5143d4d6ebd42cf4bbf32bf18c778562
+      internalID: -894478928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_150
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1440
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3e24feb592b74db428669a590448a8dc
+      internalID: 1392121476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_151
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 1440
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c56149a6910b71944b3418e9ec70e507
+      internalID: -312302321
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_152
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1440
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3ef38b6cdc023fe4b9b133fbea9f5278
+      internalID: 425813547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_153
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 1440
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7d0866c14611b834bb19b8c2c05ddbaa
+      internalID: 906690452
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_154
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1440
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 823eb4d5c31dbc94d8726e1502a4701f
+      internalID: 2106285237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_155
+      rect:
+        serializedVersion: 2
+        x: 3200
+        y: 1440
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0b660d5c1cb1d4140a52d322fd3c7eea
+      internalID: -76757274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_156
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 1440
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 52bcdadabf5a1284f96d9359c280cdde
+      internalID: 672427077
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_157
+      rect:
+        serializedVersion: 2
+        x: 4480
+        y: 1440
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fa8e0833139bd1a44b7b6631ecb0a8cf
+      internalID: 119809224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_158
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 1440
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 41ecaf88da08c7f4d9e713da23928ba5
+      internalID: -133099814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_159
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 1440
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b9d08f3ae9c50f5449bf5f13d8b8a39a
+      internalID: 1969500168
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_160
+      rect:
+        serializedVersion: 2
+        x: 6400
+        y: 1440
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4cfdec44dd3b317478f30d92a8237c80
+      internalID: 772829280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_161
+      rect:
+        serializedVersion: 2
+        x: 7040
+        y: 1440
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eff9fd7f78b592641b1cb5652235b49c
+      internalID: 604853774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_162
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 1440
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e9ec1b7de5f8a34408ca43a7f61aa481
+      internalID: 1674433015
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_163
+      rect:
+        serializedVersion: 2
+        x: 8320
+        y: 1440
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b3340cd24efcd9448466f08352f93f1
+      internalID: -1960605792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_164
+      rect:
+        serializedVersion: 2
+        x: 8960
+        y: 1440
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 09d5bf01eb7b6194e943abfcd2796f08
+      internalID: -1572428347
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_165
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1080
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2fe97205c3561a446a2917d92089188c
+      internalID: 439700602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_166
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 1080
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a636947f0f550543920d9450192a647
+      internalID: 1663461792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_167
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1080
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3bc0700fa48ddfc45806225f6c85d0c2
+      internalID: -2116750134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_168
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 1080
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2092c778cdf70004fadfc56b54a0f7da
+      internalID: 2029648616
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_169
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1080
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 99cf64d0b63ac6e408eae01f3c4658c8
+      internalID: 658043421
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_170
+      rect:
+        serializedVersion: 2
+        x: 3200
+        y: 1080
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0f6c367be4952714db23b1422c4d6a31
+      internalID: -1564362915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_171
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 1080
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b87e3623462448d4a86129c2ec3cc7ac
+      internalID: -2089679121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_172
+      rect:
+        serializedVersion: 2
+        x: 4480
+        y: 1080
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 34ebdc23868f77545bcd57593741eb6f
+      internalID: -1731677043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_173
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 1080
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a81db31f82f66e34c80786e3b933267a
+      internalID: 24278349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_174
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 1080
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 385fd69005da6ac45ba50111ddb9137a
+      internalID: 1517648123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_175
+      rect:
+        serializedVersion: 2
+        x: 6400
+        y: 1080
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ea07a6b957e505d41a26f8a8e8ffada3
+      internalID: -2076707680
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_176
+      rect:
+        serializedVersion: 2
+        x: 7040
+        y: 1080
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9bee41af8e796df4a9ea7252afe2e755
+      internalID: 306948205
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_177
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 1080
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 625dce1a2a7555549a57e8ebc68a68a7
+      internalID: -1708797667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_178
+      rect:
+        serializedVersion: 2
+        x: 8320
+        y: 1080
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 42dafc87db23f6748a356aaeb5ccf4b7
+      internalID: -268830590
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_179
+      rect:
+        serializedVersion: 2
+        x: 8960
+        y: 1080
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 45ede2d88b5a41f46b54be061550f9bc
+      internalID: -1327760797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_180
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 720
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 404944dfccdb65c42b457bae05c4c13c
+      internalID: 2068879474
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_181
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 720
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c2e34f642bdef6245a7f7a3025b0ce63
+      internalID: 863283365
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_182
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 720
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0c685bd1be8eb7f4488efa407acb890f
+      internalID: 538371848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_183
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 720
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 51337487c6e308c4388994daf809e6e4
+      internalID: -439164003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_184
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 720
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 569a51c1109ec824984590d559a3a287
+      internalID: 1049616512
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_185
+      rect:
+        serializedVersion: 2
+        x: 3200
+        y: 720
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5a384ca13110fc14ca4f8911ef53d88f
+      internalID: -1328576688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_186
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 720
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 030b374603843644e903ee7a4709b731
+      internalID: -905985742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_187
+      rect:
+        serializedVersion: 2
+        x: 4480
+        y: 720
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 22d5ab3386642254bbaec85c99c12584
+      internalID: -419185468
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_188
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 720
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 14cb84942f30cfd408b861789ff9155d
+      internalID: 1592687086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_189
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 720
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 45b82e692bacddb4caf00fb5e590dd34
+      internalID: -1237600780
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_190
+      rect:
+        serializedVersion: 2
+        x: 6400
+        y: 720
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: be16bb007de979743a8f34e6efe323d3
+      internalID: -1200849983
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_191
+      rect:
+        serializedVersion: 2
+        x: 7040
+        y: 720
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9e5e79bfe3bde71448ac4b763c89f0f2
+      internalID: -677833428
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_192
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 720
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a4de22b44086ce48ae6e1ec02e1e8b7
+      internalID: 220590353
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_193
+      rect:
+        serializedVersion: 2
+        x: 8320
+        y: 720
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 451db3367ba0db549a8316ba7c68bdb1
+      internalID: -1792162143
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_194
+      rect:
+        serializedVersion: 2
+        x: 8960
+        y: 720
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e0a63a43006451645b795deba1c5e30f
+      internalID: 785058709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_195
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 360
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1b1c52b33b726b446b7e6d7c2d50cfab
+      internalID: -2081285102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_196
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 360
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f8a334c47e9dcf545aad3cdca91f07d6
+      internalID: 419857319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_197
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 360
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 54faa0f9143ec6c47bf61afaf3683c45
+      internalID: 1078779956
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_198
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 360
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 29b8df94a494f144892043e7bc837401
+      internalID: 1477532947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_199
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 360
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3c2317fe4f6151f45b01020919f5d2bd
+      internalID: -1618533173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_200
+      rect:
+        serializedVersion: 2
+        x: 3200
+        y: 360
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0e088af272b6c2e4c8881731d4826a3b
+      internalID: -100147098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_201
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 360
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 72c6ab3e685e7bf4bbf0cfee2615286f
+      internalID: -1709341416
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_202
+      rect:
+        serializedVersion: 2
+        x: 4480
+        y: 360
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0e8b2afd4ac0d2b46aa4fd76f105fb76
+      internalID: -209660107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_203
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 360
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f3d7ce598fdd1934fafc38bd4721974d
+      internalID: 916531476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_204
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 360
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4dff7a6c99441054baaa87e4475b2ca4
+      internalID: 889340446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_205
+      rect:
+        serializedVersion: 2
+        x: 6400
+        y: 360
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d6c292076d5eb6840a8ef4479c9dc3d4
+      internalID: 1690039966
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_206
+      rect:
+        serializedVersion: 2
+        x: 7040
+        y: 360
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c6079c256ce0ff4eb0f89e8475212e7
+      internalID: -2029312013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_207
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 360
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc09af0a11d44624fa6a65c1bd3ad9fc
+      internalID: 473667982
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_208
+      rect:
+        serializedVersion: 2
+        x: 8320
+        y: 360
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3367885bc42ed0748833c2948cdde377
+      internalID: 1530825955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_209
+      rect:
+        serializedVersion: 2
+        x: 8960
+        y: 360
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b6c8f37c3bdbc8d40a3bd2b0d93fcf51
+      internalID: -1160309759
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_210
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 50474bb8939944c4fab265e17ae4a8de
+      internalID: 1770228972
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_211
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 0
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b68fa606af382b4bbfdf7b832da0e1c
+      internalID: 344651407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_212
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 0
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8f0bea415210dbd4dbb1e9e7661db38f
+      internalID: -1108053454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_213
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 0
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 772b8c985842a1e4fac6db663f9ff595
+      internalID: 1525510198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_214
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 0
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c595c0e7d9f36dc4eb81df04f361b87c
+      internalID: 649424088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_215
+      rect:
+        serializedVersion: 2
+        x: 3200
+        y: 0
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 372337147771627489fc8f853da8d978
+      internalID: -1480871157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_216
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 0
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b4be7d505be6d1f438610167b609fa59
+      internalID: 666873238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_217
+      rect:
+        serializedVersion: 2
+        x: 4480
+        y: 0
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2af7284739f381148813969750785b29
+      internalID: 1873042044
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_218
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 0
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e551de1671136794d8de4a6f48858f01
+      internalID: -781949484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_219
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 0
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b0c79b3e62ee95946ac1679995bd2e14
+      internalID: 1132874318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_220
+      rect:
+        serializedVersion: 2
+        x: 6400
+        y: 0
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5177e632865b6eb46950717f1f411204
+      internalID: -715576730
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_221
+      rect:
+        serializedVersion: 2
+        x: 7040
+        y: 0
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9adc578e4a4074a4cba6fbdb1bbd2f2f
+      internalID: 899498492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_222
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 0
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 059cdcaa5c6b7014ab6cc26175d38e09
+      internalID: 1199492664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_223
+      rect:
+        serializedVersion: 2
+        x: 8320
+        y: 0
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9cee47c53da35c54eb847eef6a2ba162
+      internalID: 865664758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HyperSpaceBackground_Spritesheet_224
+      rect:
+        serializedVersion: 2
+        x: 8960
+        y: 0
+        width: 640
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 265722d8466c6b14fbdfcc388a841a7d
+      internalID: -383585203
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 1e99e7d1c35e35844a18ad8fc28f1783
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":15.0,"y":15.0},"gridSpriteSize":{"x":640.0,"y":360.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      HyperSpaceBackground_Spritesheet_0: -7584781145904610204
+      HyperSpaceBackground_Spritesheet_1: -987392114
+      HyperSpaceBackground_Spritesheet_10: -45385378
+      HyperSpaceBackground_Spritesheet_100: -1883194811
+      HyperSpaceBackground_Spritesheet_101: 1942188846
+      HyperSpaceBackground_Spritesheet_102: -236943534
+      HyperSpaceBackground_Spritesheet_103: -1466209484
+      HyperSpaceBackground_Spritesheet_104: -139979060
+      HyperSpaceBackground_Spritesheet_105: -137859498
+      HyperSpaceBackground_Spritesheet_106: -605438266
+      HyperSpaceBackground_Spritesheet_107: -429546197
+      HyperSpaceBackground_Spritesheet_108: -796528084
+      HyperSpaceBackground_Spritesheet_109: -1149007387
+      HyperSpaceBackground_Spritesheet_11: -999646111
+      HyperSpaceBackground_Spritesheet_110: 263990966
+      HyperSpaceBackground_Spritesheet_111: 81417527
+      HyperSpaceBackground_Spritesheet_112: 1179683921
+      HyperSpaceBackground_Spritesheet_113: 1677428739
+      HyperSpaceBackground_Spritesheet_114: 315874466
+      HyperSpaceBackground_Spritesheet_115: -1833157204
+      HyperSpaceBackground_Spritesheet_116: -210628049
+      HyperSpaceBackground_Spritesheet_117: 928961197
+      HyperSpaceBackground_Spritesheet_118: 127003636
+      HyperSpaceBackground_Spritesheet_119: -1136240065
+      HyperSpaceBackground_Spritesheet_12: 1898031294
+      HyperSpaceBackground_Spritesheet_120: -779838490
+      HyperSpaceBackground_Spritesheet_121: -666576948
+      HyperSpaceBackground_Spritesheet_122: 776672087
+      HyperSpaceBackground_Spritesheet_123: -1428650390
+      HyperSpaceBackground_Spritesheet_124: -1903759246
+      HyperSpaceBackground_Spritesheet_125: 894909787
+      HyperSpaceBackground_Spritesheet_126: -1896501262
+      HyperSpaceBackground_Spritesheet_127: -2092273819
+      HyperSpaceBackground_Spritesheet_128: -438752202
+      HyperSpaceBackground_Spritesheet_129: 1920132545
+      HyperSpaceBackground_Spritesheet_13: -664564196
+      HyperSpaceBackground_Spritesheet_130: -1663278804
+      HyperSpaceBackground_Spritesheet_131: -916106432
+      HyperSpaceBackground_Spritesheet_132: 1845812789
+      HyperSpaceBackground_Spritesheet_133: 1686580053
+      HyperSpaceBackground_Spritesheet_134: 591002970
+      HyperSpaceBackground_Spritesheet_135: 1410284043
+      HyperSpaceBackground_Spritesheet_136: -1966520344
+      HyperSpaceBackground_Spritesheet_137: 1502881526
+      HyperSpaceBackground_Spritesheet_138: 1647594163
+      HyperSpaceBackground_Spritesheet_139: 1952531807
+      HyperSpaceBackground_Spritesheet_14: -981299081
+      HyperSpaceBackground_Spritesheet_140: -164978433
+      HyperSpaceBackground_Spritesheet_141: 1954607005
+      HyperSpaceBackground_Spritesheet_142: -1127906770
+      HyperSpaceBackground_Spritesheet_143: 1228083900
+      HyperSpaceBackground_Spritesheet_144: 702886820
+      HyperSpaceBackground_Spritesheet_145: 1575007834
+      HyperSpaceBackground_Spritesheet_146: -1639352554
+      HyperSpaceBackground_Spritesheet_147: 1846978006
+      HyperSpaceBackground_Spritesheet_148: -1256225836
+      HyperSpaceBackground_Spritesheet_149: -894478928
+      HyperSpaceBackground_Spritesheet_15: -1467303002
+      HyperSpaceBackground_Spritesheet_150: 1392121476
+      HyperSpaceBackground_Spritesheet_151: -312302321
+      HyperSpaceBackground_Spritesheet_152: 425813547
+      HyperSpaceBackground_Spritesheet_153: 906690452
+      HyperSpaceBackground_Spritesheet_154: 2106285237
+      HyperSpaceBackground_Spritesheet_155: -76757274
+      HyperSpaceBackground_Spritesheet_156: 672427077
+      HyperSpaceBackground_Spritesheet_157: 119809224
+      HyperSpaceBackground_Spritesheet_158: -133099814
+      HyperSpaceBackground_Spritesheet_159: 1969500168
+      HyperSpaceBackground_Spritesheet_16: -369779942
+      HyperSpaceBackground_Spritesheet_160: 772829280
+      HyperSpaceBackground_Spritesheet_161: 604853774
+      HyperSpaceBackground_Spritesheet_162: 1674433015
+      HyperSpaceBackground_Spritesheet_163: -1960605792
+      HyperSpaceBackground_Spritesheet_164: -1572428347
+      HyperSpaceBackground_Spritesheet_165: 439700602
+      HyperSpaceBackground_Spritesheet_166: 1663461792
+      HyperSpaceBackground_Spritesheet_167: -2116750134
+      HyperSpaceBackground_Spritesheet_168: 2029648616
+      HyperSpaceBackground_Spritesheet_169: 658043421
+      HyperSpaceBackground_Spritesheet_17: -1254186337
+      HyperSpaceBackground_Spritesheet_170: -1564362915
+      HyperSpaceBackground_Spritesheet_171: -2089679121
+      HyperSpaceBackground_Spritesheet_172: -1731677043
+      HyperSpaceBackground_Spritesheet_173: 24278349
+      HyperSpaceBackground_Spritesheet_174: 1517648123
+      HyperSpaceBackground_Spritesheet_175: -2076707680
+      HyperSpaceBackground_Spritesheet_176: 306948205
+      HyperSpaceBackground_Spritesheet_177: -1708797667
+      HyperSpaceBackground_Spritesheet_178: -268830590
+      HyperSpaceBackground_Spritesheet_179: -1327760797
+      HyperSpaceBackground_Spritesheet_18: -1862968231
+      HyperSpaceBackground_Spritesheet_180: 2068879474
+      HyperSpaceBackground_Spritesheet_181: 863283365
+      HyperSpaceBackground_Spritesheet_182: 538371848
+      HyperSpaceBackground_Spritesheet_183: -439164003
+      HyperSpaceBackground_Spritesheet_184: 1049616512
+      HyperSpaceBackground_Spritesheet_185: -1328576688
+      HyperSpaceBackground_Spritesheet_186: -905985742
+      HyperSpaceBackground_Spritesheet_187: -419185468
+      HyperSpaceBackground_Spritesheet_188: 1592687086
+      HyperSpaceBackground_Spritesheet_189: -1237600780
+      HyperSpaceBackground_Spritesheet_19: -2082115562
+      HyperSpaceBackground_Spritesheet_190: -1200849983
+      HyperSpaceBackground_Spritesheet_191: -677833428
+      HyperSpaceBackground_Spritesheet_192: 220590353
+      HyperSpaceBackground_Spritesheet_193: -1792162143
+      HyperSpaceBackground_Spritesheet_194: 785058709
+      HyperSpaceBackground_Spritesheet_195: -2081285102
+      HyperSpaceBackground_Spritesheet_196: 419857319
+      HyperSpaceBackground_Spritesheet_197: 1078779956
+      HyperSpaceBackground_Spritesheet_198: 1477532947
+      HyperSpaceBackground_Spritesheet_199: -1618533173
+      HyperSpaceBackground_Spritesheet_2: 2014650868
+      HyperSpaceBackground_Spritesheet_20: 520774903
+      HyperSpaceBackground_Spritesheet_200: -100147098
+      HyperSpaceBackground_Spritesheet_201: -1709341416
+      HyperSpaceBackground_Spritesheet_202: -209660107
+      HyperSpaceBackground_Spritesheet_203: 916531476
+      HyperSpaceBackground_Spritesheet_204: 889340446
+      HyperSpaceBackground_Spritesheet_205: 1690039966
+      HyperSpaceBackground_Spritesheet_206: -2029312013
+      HyperSpaceBackground_Spritesheet_207: 473667982
+      HyperSpaceBackground_Spritesheet_208: 1530825955
+      HyperSpaceBackground_Spritesheet_209: -1160309759
+      HyperSpaceBackground_Spritesheet_21: -1083818935
+      HyperSpaceBackground_Spritesheet_210: 1770228972
+      HyperSpaceBackground_Spritesheet_211: 344651407
+      HyperSpaceBackground_Spritesheet_212: -1108053454
+      HyperSpaceBackground_Spritesheet_213: 1525510198
+      HyperSpaceBackground_Spritesheet_214: 649424088
+      HyperSpaceBackground_Spritesheet_215: -1480871157
+      HyperSpaceBackground_Spritesheet_216: 666873238
+      HyperSpaceBackground_Spritesheet_217: 1873042044
+      HyperSpaceBackground_Spritesheet_218: -781949484
+      HyperSpaceBackground_Spritesheet_219: 1132874318
+      HyperSpaceBackground_Spritesheet_22: 1394884328
+      HyperSpaceBackground_Spritesheet_220: -715576730
+      HyperSpaceBackground_Spritesheet_221: 899498492
+      HyperSpaceBackground_Spritesheet_222: 1199492664
+      HyperSpaceBackground_Spritesheet_223: 865664758
+      HyperSpaceBackground_Spritesheet_224: -383585203
+      HyperSpaceBackground_Spritesheet_23: 689167174
+      HyperSpaceBackground_Spritesheet_24: 776303543
+      HyperSpaceBackground_Spritesheet_25: 1728466174
+      HyperSpaceBackground_Spritesheet_26: 232338861
+      HyperSpaceBackground_Spritesheet_27: 1577425653
+      HyperSpaceBackground_Spritesheet_28: -1163427618
+      HyperSpaceBackground_Spritesheet_29: -228662436
+      HyperSpaceBackground_Spritesheet_3: -451254171
+      HyperSpaceBackground_Spritesheet_30: 770142471
+      HyperSpaceBackground_Spritesheet_31: -179356897
+      HyperSpaceBackground_Spritesheet_32: -971339216
+      HyperSpaceBackground_Spritesheet_33: 13003524
+      HyperSpaceBackground_Spritesheet_34: -988169835
+      HyperSpaceBackground_Spritesheet_35: 936185644
+      HyperSpaceBackground_Spritesheet_36: 853891674
+      HyperSpaceBackground_Spritesheet_37: -289653165
+      HyperSpaceBackground_Spritesheet_38: -1901561119
+      HyperSpaceBackground_Spritesheet_39: 2053200094
+      HyperSpaceBackground_Spritesheet_4: -14527017
+      HyperSpaceBackground_Spritesheet_40: 1082305231
+      HyperSpaceBackground_Spritesheet_41: -1606536181
+      HyperSpaceBackground_Spritesheet_42: -1246572737
+      HyperSpaceBackground_Spritesheet_43: -340497274
+      HyperSpaceBackground_Spritesheet_44: -460444934
+      HyperSpaceBackground_Spritesheet_45: 934398888
+      HyperSpaceBackground_Spritesheet_46: -1181762703
+      HyperSpaceBackground_Spritesheet_47: 2109492255
+      HyperSpaceBackground_Spritesheet_48: -57032270
+      HyperSpaceBackground_Spritesheet_49: -927771996
+      HyperSpaceBackground_Spritesheet_5: -75216184
+      HyperSpaceBackground_Spritesheet_50: 2055476604
+      HyperSpaceBackground_Spritesheet_51: 791491097
+      HyperSpaceBackground_Spritesheet_52: 657383159
+      HyperSpaceBackground_Spritesheet_53: 520536884
+      HyperSpaceBackground_Spritesheet_54: 352551176
+      HyperSpaceBackground_Spritesheet_55: -1524368207
+      HyperSpaceBackground_Spritesheet_56: -1043532300
+      HyperSpaceBackground_Spritesheet_57: 1702549742
+      HyperSpaceBackground_Spritesheet_58: 1258968542
+      HyperSpaceBackground_Spritesheet_59: -1849522739
+      HyperSpaceBackground_Spritesheet_6: -589100822
+      HyperSpaceBackground_Spritesheet_60: -200053212
+      HyperSpaceBackground_Spritesheet_61: 776619749
+      HyperSpaceBackground_Spritesheet_62: -1772921928
+      HyperSpaceBackground_Spritesheet_63: 568172146
+      HyperSpaceBackground_Spritesheet_64: -1923825198
+      HyperSpaceBackground_Spritesheet_65: -374785429
+      HyperSpaceBackground_Spritesheet_66: 2049316718
+      HyperSpaceBackground_Spritesheet_67: 1179951777
+      HyperSpaceBackground_Spritesheet_68: 1702691939
+      HyperSpaceBackground_Spritesheet_69: -153320064
+      HyperSpaceBackground_Spritesheet_7: 1256741461
+      HyperSpaceBackground_Spritesheet_70: -1478357226
+      HyperSpaceBackground_Spritesheet_71: 1355679925
+      HyperSpaceBackground_Spritesheet_72: -129461536
+      HyperSpaceBackground_Spritesheet_73: 1857979806
+      HyperSpaceBackground_Spritesheet_74: -486928962
+      HyperSpaceBackground_Spritesheet_75: -1192254071
+      HyperSpaceBackground_Spritesheet_76: 627865447
+      HyperSpaceBackground_Spritesheet_77: 90669447
+      HyperSpaceBackground_Spritesheet_78: 867699335
+      HyperSpaceBackground_Spritesheet_79: 2040372871
+      HyperSpaceBackground_Spritesheet_8: 803195291
+      HyperSpaceBackground_Spritesheet_80: 503518564
+      HyperSpaceBackground_Spritesheet_81: 1687130973
+      HyperSpaceBackground_Spritesheet_82: -1190433119
+      HyperSpaceBackground_Spritesheet_83: 1901212685
+      HyperSpaceBackground_Spritesheet_84: 1472333573
+      HyperSpaceBackground_Spritesheet_85: 1175826290
+      HyperSpaceBackground_Spritesheet_86: -1840209442
+      HyperSpaceBackground_Spritesheet_87: 1839926651
+      HyperSpaceBackground_Spritesheet_88: -1487564267
+      HyperSpaceBackground_Spritesheet_89: -1602029881
+      HyperSpaceBackground_Spritesheet_9: 449029201
+      HyperSpaceBackground_Spritesheet_90: -1216569341
+      HyperSpaceBackground_Spritesheet_91: -1687829146
+      HyperSpaceBackground_Spritesheet_92: 2068921038
+      HyperSpaceBackground_Spritesheet_93: 1468566897
+      HyperSpaceBackground_Spritesheet_94: 1652552343
+      HyperSpaceBackground_Spritesheet_95: 978549269
+      HyperSpaceBackground_Spritesheet_96: 183285970
+      HyperSpaceBackground_Spritesheet_97: -557719496
+      HyperSpaceBackground_Spritesheet_98: -1650421458
+      HyperSpaceBackground_Spritesheet_99: -581795157
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

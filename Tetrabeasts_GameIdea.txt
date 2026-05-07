@@ -1,13 +1,4 @@
 
-- Add a continue option after defeating last level
-
--- continue button will start a new boss level with infinite health
-
--- Level will not be winnable, it should be a survival mode that continues until one of the loss conditions is met.
-
--- Level should be a wireable into game controller as a scriptable object based on a castle data scriptable object, but a slight change will need to be made to make sure the health is infinite. This should allow me to set the boss sprites and the boss ability parameters for this survival level after the last boss level of the standard game mode is completed
-
-
 
 - Level modifier tutorial uses ok/cancel button, should be [F] to continue
 
@@ -26,8 +17,6 @@
 
 - Unlocked characters, monsters, monster skin variations, challenge modes completed, achievments, and personal high score
 
-- Add world leaderboard viewable in game (Take safety precautions to make sure data is secure and it can't be used for any malicious or nefarious purposes)
-
 - Play with the grid size and experiment with different grid sizes.
 
 
@@ -40,10 +29,6 @@
 - Add setting toggle in setting menu or monster select to use any unlocked skin for a monster at random when creating monster sprite for monster pieces
 
 - Add SFX to player character data for reduced gravity special ability
-
-
-
-- Add basic tutorial
 
 
 *** KNOWN BUGS ***

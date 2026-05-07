@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   monsterName: Ram
   portrait: {fileID: 21300000, guid: 6787f75a011703f4baa32af492be2fa0, type: 3}
-  monsterDescription: A well rounded attacker unit
+  monsterDescription: A well rounded attacker unit with decent damage, but enough
+    health to survive weaker attacks.
   passiveType: 2
   role: 0
   startsLocked: 0
