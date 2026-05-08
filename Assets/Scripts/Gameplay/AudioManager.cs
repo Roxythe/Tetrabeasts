@@ -70,6 +70,7 @@ public class AudioManager : MonoBehaviour
     private AudioSource sfxSrc;
     AudioSource uiSfxSrc;
     AudioSource uiLoopSfxSrc;
+    AudioSource[] specialAbilityLoopSfxSources;
     AudioSource ambienceLoopSrc;
     AudioSource pauseMusicSrc;
 
@@ -77,9 +78,12 @@ public class AudioManager : MonoBehaviour
 
     Coroutine musicChainCo;
     Coroutine rainFadeCo;
+    Coroutine specialAbilityLoopFadeCo;
     AudioClip[] currentPool;
     AudioClip lastGameplayClip;
     AudioClip lastBossClip;
+    bool specialAbilityPausedMainMusic;
+    float specialAbilityLoopSfxVolumeScale = 1f;
 
     enum MusicContext { None, Title, Level }
     MusicContext context = MusicContext.None;
@@ -90,6 +94,7 @@ public class AudioManager : MonoBehaviour
     const string K_Master = "vol_master";
     const string K_Music = "vol_music";
     const string K_SFX = "vol_sfx";
+    const int SpecialAbilityLoopSfxLayerCount = 12;
 
     public enum MusicMode { EDM = 0, Metal = 1, Both = 2 }
     const string K_MusicMode = "music_mode";
@@ -105,6 +110,7 @@ public class AudioManager : MonoBehaviour
         sfxSrc = gameObject.AddComponent<AudioSource>();
         uiSfxSrc = gameObject.AddComponent<AudioSource>();
         uiLoopSfxSrc = gameObject.AddComponent<AudioSource>();
+        specialAbilityLoopSfxSources = new AudioSource[SpecialAbilityLoopSfxLayerCount];
         ambienceLoopSrc = gameObject.AddComponent<AudioSource>();
         pauseMusicSrc = gameObject.AddComponent<AudioSource>();
 
@@ -128,6 +134,13 @@ public class AudioManager : MonoBehaviour
         uiLoopSfxSrc.playOnAwake = false;
         uiLoopSfxSrc.loop = true;
         uiLoopSfxSrc.spatialBlend = 0f;
+
+        for (int i = 0; i < specialAbilityLoopSfxSources.Length; i++)
+        {
+            AudioSource source = gameObject.AddComponent<AudioSource>();
+            ConfigureSpecialAbilityLoopSfxSource(source);
+            specialAbilityLoopSfxSources[i] = source;
+        }
 
         ambienceLoopSrc.ignoreListenerPause = false;
         ambienceLoopSrc.playOnAwake = false;
@@ -166,6 +179,19 @@ public class AudioManager : MonoBehaviour
         SetSFXVolume(sfxVolume, save: false);
     }
 
+    void ConfigureSpecialAbilityLoopSfxSource(AudioSource source)
+    {
+        if (!source) return;
+
+        source.ignoreListenerPause = true;
+        source.playOnAwake = false;
+        source.loop = true;
+        source.spatialBlend = 0f;
+
+        if (sfxGroup)
+            source.outputAudioMixerGroup = sfxGroup;
+    }
+
     void Start()
     {
 
@@ -182,6 +208,30 @@ public class AudioManager : MonoBehaviour
     }
 
     public void StopMusic() => musicSrc.Stop();
+
+    public void PauseMainMusicForSpecialAbilityPopup()
+    {
+        if (!musicSrc || specialAbilityPausedMainMusic)
+            return;
+
+        specialAbilityPausedMainMusic = musicSrc.isPlaying;
+        if (specialAbilityPausedMainMusic)
+            musicSrc.Pause();
+    }
+
+    public void ResumeMainMusicAfterSpecialAbilityPopup()
+    {
+        if (!musicSrc)
+        {
+            specialAbilityPausedMainMusic = false;
+            return;
+        }
+
+        if (specialAbilityPausedMainMusic)
+            musicSrc.UnPause();
+
+        specialAbilityPausedMainMusic = false;
+    }
 
     public void PlaySFX(AudioClip clip, float vol = 1f, float pitch = 1f, bool jitter = true)
     {
@@ -225,6 +275,7 @@ public class AudioManager : MonoBehaviour
         sfxSrc.volume = masterVolume * sfxVolume;
         uiSfxSrc.volume = masterVolume * sfxVolume;
         uiLoopSfxSrc.volume = masterVolume * sfxVolume;
+        ApplySpecialAbilityLoopSfxVolume();
         ambienceLoopSrc.volume = masterVolume * sfxVolume;
         pauseMusicSrc.volume = masterVolume * musicVolume;
 
@@ -254,6 +305,7 @@ public class AudioManager : MonoBehaviour
         sfxSrc.volume = masterVolume * sfxVolume;
         uiSfxSrc.volume = masterVolume * sfxVolume;
         uiLoopSfxSrc.volume = masterVolume * sfxVolume;
+        ApplySpecialAbilityLoopSfxVolume();
         ambienceLoopSrc.volume = masterVolume * sfxVolume;
 
         if (save) SettingsStore.SaveVolumes(masterVolume, musicVolume, sfxVolume);
@@ -391,6 +443,118 @@ public class AudioManager : MonoBehaviour
         uiSfxSrc.pitch = Mathf.Clamp(p, 0.5f, 2f);
         uiSfxSrc.PlayOneShot(clip, vol);
         uiSfxSrc.pitch = 1f; // Reset
+    }
+
+    public void PlaySpecialAbilityAnimationSFX(AudioClip clip, float vol = 1f)
+    {
+        PlaySFX(clip, vol, pitch: 1f, jitter: false);
+    }
+
+    public void PlaySpecialAbilityPopupLoopSFX(AudioClip clip, float vol = 1f, float pitch = 1f)
+    {
+        if (!clip || specialAbilityLoopSfxSources == null) return;
+
+        if (specialAbilityLoopFadeCo != null)
+        {
+            StopCoroutine(specialAbilityLoopFadeCo);
+            specialAbilityLoopFadeCo = null;
+        }
+
+        specialAbilityLoopSfxVolumeScale = Mathf.Max(0f, vol);
+        float clampedPitch = Mathf.Clamp(pitch, 0.5f, 2f);
+
+        for (int i = 0; i < specialAbilityLoopSfxSources.Length; i++)
+        {
+            AudioSource source = specialAbilityLoopSfxSources[i];
+            if (!source) continue;
+
+            source.Stop();
+            source.clip = clip;
+            source.loop = true;
+            source.pitch = clampedPitch;
+            source.time = 0f;
+        }
+
+        ApplySpecialAbilityLoopSfxVolume();
+
+        for (int i = 0; i < specialAbilityLoopSfxSources.Length; i++)
+        {
+            AudioSource source = specialAbilityLoopSfxSources[i];
+            if (source && source.clip)
+                source.Play();
+        }
+    }
+
+    public void FadeSpecialAbilityPopupLoopSFX(float durationSeconds = 1f, float targetVolumeScale = 0.05f)
+    {
+        if (specialAbilityLoopSfxSources == null)
+            return;
+
+        if (specialAbilityLoopFadeCo != null)
+            StopCoroutine(specialAbilityLoopFadeCo);
+
+        specialAbilityLoopFadeCo = StartCoroutine(FadeSpecialAbilityPopupLoopSFXRoutine(durationSeconds, targetVolumeScale));
+    }
+
+    public void StopSpecialAbilityPopupLoopSFX()
+    {
+        if (specialAbilityLoopSfxSources == null) return;
+
+        if (specialAbilityLoopFadeCo != null)
+        {
+            StopCoroutine(specialAbilityLoopFadeCo);
+            specialAbilityLoopFadeCo = null;
+        }
+
+        for (int i = 0; i < specialAbilityLoopSfxSources.Length; i++)
+        {
+            AudioSource source = specialAbilityLoopSfxSources[i];
+            if (!source) continue;
+
+            source.Stop();
+            source.clip = null;
+            source.pitch = 1f;
+        }
+
+        specialAbilityLoopSfxVolumeScale = 1f;
+        ApplySpecialAbilityLoopSfxVolume();
+    }
+
+    IEnumerator FadeSpecialAbilityPopupLoopSFXRoutine(float durationSeconds, float targetVolumeScale)
+    {
+        float duration = Mathf.Max(0.01f, durationSeconds);
+        float startScale = specialAbilityLoopSfxVolumeScale;
+        float endScale = Mathf.Clamp(targetVolumeScale, 0f, startScale);
+        float t = 0f;
+
+        while (t < duration)
+        {
+            t += Time.unscaledDeltaTime;
+            specialAbilityLoopSfxVolumeScale = Mathf.Lerp(startScale, endScale, Mathf.Clamp01(t / duration));
+            ApplySpecialAbilityLoopSfxVolume();
+            yield return null;
+        }
+
+        specialAbilityLoopSfxVolumeScale = endScale;
+        ApplySpecialAbilityLoopSfxVolume();
+        specialAbilityLoopFadeCo = null;
+    }
+
+    void ApplySpecialAbilityLoopSfxVolume()
+    {
+        if (specialAbilityLoopSfxSources == null)
+            return;
+
+        float remainingVolume = masterVolume * sfxVolume * specialAbilityLoopSfxVolumeScale;
+        for (int i = 0; i < specialAbilityLoopSfxSources.Length; i++)
+        {
+            AudioSource source = specialAbilityLoopSfxSources[i];
+            if (!source) continue;
+
+            float layerVolume = Mathf.Clamp01(remainingVolume);
+            source.volume = layerVolume;
+            remainingVolume -= layerVolume;
+        }
     }
 
     public void PlaySlotLever(float vol = 4f)

@@ -23997,6 +23997,12 @@ MonoBehaviour:
   sfxCurrencyLineGain: {fileID: 8300000, guid: 8cc2cb58f546add4cad7ed3e5909933a, type: 3}
   specialSlider: {fileID: 901058035}
   specialText: {fileID: 360363618}
+  specialAbilityPopupPrefab: {fileID: 4518732633352361137, guid: 99d993e0115d2cc449eade83d4e9fd29, type: 3}
+  specialAbilityPopupRoot: {fileID: 0}
+  specialAbilityPopupLoopSFX: {fileID: 0}
+  specialAbilityPopupLoopSFXVolume: 4
+  specialAbilityPopupLockInSFX: {fileID: 0}
+  specialAbilityPopupLockInSFXVolume: 1
   specialGauge: 0
   specialGaugeMax: 100
   activateSpecialGaugeText: {fileID: 226153486}

@@ -30,6 +30,11 @@ public class PlayerCharacterData : ScriptableObject
     public float cooldownSeconds = 0f;    
     public float specialGaugeMax = 100f;
 
+    [Header("Special Ability Popup")]
+    public GameObject specialAbilityAnimationPrefab;
+    public AudioClip specialAbilityAnimationSFX;
+    [Min(0f)] public float specialAbilityAnimationSFXVolume = 1f;
+
     [Header("Restore All To Full (Revive + Heal)")]
     public Sprite reviveAllVFXSprite;
     public AudioClip sfxRestoreAll;  

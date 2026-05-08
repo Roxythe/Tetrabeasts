@@ -24,6 +24,9 @@ MonoBehaviour:
   clearRows: 3
   cooldownSeconds: 0
   specialGaugeMax: 100
+  specialAbilityAnimationPrefab: {fileID: 3263783689272246130, guid: d116023b5ccbdae429903b5d2313c6b6, type: 3}
+  specialAbilityAnimationSFX: {fileID: 8300000, guid: 7b4ae982ff5c30d408535a4bebfac709, type: 3}
+  specialAbilityAnimationSFXVolume: 1
   reviveAllVFXSprite: {fileID: 0}
   sfxRestoreAll: {fileID: 0}
   immunityDuration: 5

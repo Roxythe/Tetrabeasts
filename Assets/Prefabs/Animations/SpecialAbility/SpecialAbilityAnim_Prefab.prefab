@@ -273,7 +273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.88235295}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.78431374}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -305,6 +305,10 @@ PrefabInstance:
     - target: {fileID: 1415495974040464390, guid: 79f5f6b73491ce54aa5cd11adb12cbaa, type: 3}
       propertyPath: m_Name
       value: HyperSpaceBackground_Animation (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1415495974040464390, guid: 79f5f6b73491ce54aa5cd11adb12cbaa, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4092421788054048711, guid: 79f5f6b73491ce54aa5cd11adb12cbaa, type: 3}
       propertyPath: m_Pivot.x
@@ -411,6 +415,10 @@ PrefabInstance:
     - target: {fileID: 1415495974040464390, guid: 79f5f6b73491ce54aa5cd11adb12cbaa, type: 3}
       propertyPath: m_Name
       value: HyperSpaceBackground_Animation
+      objectReference: {fileID: 0}
+    - target: {fileID: 1415495974040464390, guid: 79f5f6b73491ce54aa5cd11adb12cbaa, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4092421788054048711, guid: 79f5f6b73491ce54aa5cd11adb12cbaa, type: 3}
       propertyPath: m_Pivot.x

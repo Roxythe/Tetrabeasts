@@ -1419,6 +1419,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SpecialAbilityAnim_Prefab
       objectReference: {fileID: 0}
+    - target: {fileID: 4518732633352361137, guid: 99d993e0115d2cc449eade83d4e9fd29, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

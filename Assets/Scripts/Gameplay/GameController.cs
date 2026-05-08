@@ -128,6 +128,14 @@ public class GameController : MonoBehaviour
     public UnityEngine.UI.Slider specialSlider;
     public TMP_Text specialText;
 
+    [Header("Special Ability Popup")]
+    [SerializeField] GameObject specialAbilityPopupPrefab;
+    [SerializeField] RectTransform specialAbilityPopupRoot;
+    [SerializeField] AudioClip specialAbilityPopupLoopSFX;
+    [SerializeField, Min(0f)] float specialAbilityPopupLoopSFXVolume = 4f;
+    [SerializeField] AudioClip specialAbilityPopupLockInSFX;
+    [SerializeField, Min(0f)] float specialAbilityPopupLockInSFXVolume = 1f;
+
     [Header("Special Gauge")]
     public float specialGauge = 0f;
     public float specialGaugeMax = 100f;
@@ -399,7 +407,7 @@ public class GameController : MonoBehaviour
     public int MaxReserveUnits => EffectiveMaxUnitLives;
     public int CurrentStarDifficulty => _starDifficulty;
     public float CurrentMisfortune => misfortune + _starDifficultyModifiers.misfortuneAdd;
-    public bool IsGameplaySuspended => isPaused || tutorialSuspended || _roundTransitionActive || _levelStartBlocked || (levelModifierController && levelModifierController.IsSelectionRunning);
+    public bool IsGameplaySuspended => isPaused || tutorialSuspended || _roundTransitionActive || _specialAbilityCinematicActive || _levelStartBlocked || (levelModifierController && levelModifierController.IsSelectionRunning);
     public bool IsRoundActive => !IsGameplaySuspended && !gameOver && !levelWon;
 
     private CastleData currentCastleData;
@@ -439,6 +447,8 @@ public class GameController : MonoBehaviour
     [SerializeField] TutorialPopupView tutorialPopupView;
 
     bool _wasSpecialGaugeFullLastFrame;
+    bool _specialAbilityCinematicActive;
+    Coroutine _specialAbilityCinematicCR;
 
     const string TutorialIdFirstFullRow = "tutorial_first_full_row";
     const string TutorialIdFirstSpecialGaugeFull = "tutorial_first_special_gauge_full";
@@ -574,7 +584,7 @@ public class GameController : MonoBehaviour
         if (selectedCharacter && selectedCharacter.specialGaugeMax > 0f)
             specialGaugeMax = selectedCharacter.specialGaugeMax;
 
-        specialGauge = 0f; // Initialize Special gauge
+        specialGauge = 100f; // Initialize Special gauge
         UpdateSpecialUI();
         ResetSpecialChargedVisuals();
 
@@ -958,6 +968,9 @@ public class GameController : MonoBehaviour
             return;
 
         if (_roundTransitionActive)
+            return;
+
+        if (_specialAbilityCinematicActive)
             return;
 
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
@@ -2578,39 +2591,189 @@ public class GameController : MonoBehaviour
     void ActivateSpecial()
     {
         if (gameOver || gameBoard == null || selectedCharacter == null) return;
+        if (!IsRoundActive) return;
+        if (_specialAbilityCinematicCR != null) return;
+
         if (levelModifierController && levelModifierController.BlocksSpecialUsage)
         {
             SetSpecialGaugeImmediate(0f);
             return;
         }
 
-        if (specialGauge < specialGaugeMax) return; // Require full gauge
+        if (specialGaugeMax <= 0f || specialGauge < specialGaugeMax) return; // Require full gauge
 
+        PlayerCharacterData character = selectedCharacter;
+        TrackSpecialActivation(character);
+        PlaySpecialAbilityActivationSFX(character);
+
+        _specialAbilityCinematicActive = true;
+        _specialAbilityCinematicCR = StartCoroutine(ActivateSpecialRoutine(character));
+    }
+
+    void PlaySpecialAbilityActivationSFX(PlayerCharacterData character)
+    {
+        if (AudioManager.I && character && character.specialAbilityAnimationSFX)
+            AudioManager.I.PlaySpecialAbilityAnimationSFX(character.specialAbilityAnimationSFX, character.specialAbilityAnimationSFXVolume);
+    }
+
+    void TrackSpecialActivation(PlayerCharacterData character)
+    {
         NotifyTutorialGameplayEvent(TutorialGameplayEvent.SpecialActivated);
 
-        if (battleLog && selectedCharacter)
-            battleLog.LogAbilityUse(selectedCharacter.displayName, selectedCharacter.specialAbilityName);
+        if (battleLog && character)
+            battleLog.LogAbilityUse(character.displayName, character.specialAbilityName);
 
         if (PlayerProgress.I) // Track total special uses for achievements
         {
             PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.SpecialsUsedTotal, 1);
 
             // Per-character special count (stable key based on asset name)
-            string charKey = selectedCharacter ? selectedCharacter.name : "Unknown";
+            string charKey = character ? character.name : "Unknown";
             PlayerProgress.I.AddLifetimeInt($"lt_specials_used_char_{charKey}", 1);
 
             // Check "each character specials" thresholds (20 / 100)
             TryMarkSpecialsEachCharacter(20, AchievementSystem.Stat.SpecialsEachChar_20);
             TryMarkSpecialsEachCharacter(100, AchievementSystem.Stat.SpecialsEachChar_100);
         }
+    }
 
-        switch (selectedCharacter.ability)
+    IEnumerator ActivateSpecialRoutine(PlayerCharacterData character)
+    {
+        if (specialAbilityPopupPrefab)
+        {
+            PauseGameplayForSpecialAbilityPopup();
+            yield return PlaySpecialAbilityPopup(character);
+            ResumeGameplayAfterSpecialAbilityPopup();
+        }
+
+        _specialAbilityCinematicActive = false;
+        _specialAbilityCinematicCR = null;
+
+        if (!gameOver && !levelWon && character)
+            ApplySpecialGameplayEffect(character);
+    }
+
+    IEnumerator PlaySpecialAbilityPopup(PlayerCharacterData character)
+    {
+        Transform parent = ResolveSpecialAbilityPopupParent();
+        GameObject popup = Instantiate(specialAbilityPopupPrefab, parent, false);
+        PrepareSpecialAbilityPopupRect(popup);
+
+        SpecialAbilityPopup popupView = popup.GetComponent<SpecialAbilityPopup>();
+        if (!popupView)
+            popupView = popup.AddComponent<SpecialAbilityPopup>();
+
+        popupView.Prepare(character);
+
+        if (AudioManager.I)
+        {
+            AudioManager.I.PauseMainMusicForSpecialAbilityPopup();
+
+            if (specialAbilityPopupLoopSFX)
+                AudioManager.I.PlaySpecialAbilityPopupLoopSFX(specialAbilityPopupLoopSFX, specialAbilityPopupLoopSFXVolume);
+        }
+
+        yield return popupView.PlayPrepared(
+            onSlideInComplete: () =>
+            {
+                if (AudioManager.I && specialAbilityPopupLockInSFX)
+                    AudioManager.I.PlaySpecialAbilityAnimationSFX(specialAbilityPopupLockInSFX, specialAbilityPopupLockInSFXVolume);
+            },
+            onClosingStarted: fadeDuration =>
+            {
+                if (AudioManager.I)
+                    AudioManager.I.FadeSpecialAbilityPopupLoopSFX(fadeDuration);
+            });
+
+        if (AudioManager.I)
+        {
+            AudioManager.I.StopSpecialAbilityPopupLoopSFX();
+            AudioManager.I.ResumeMainMusicAfterSpecialAbilityPopup();
+        }
+
+        if (popup)
+            Destroy(popup);
+    }
+
+    Transform ResolveSpecialAbilityPopupParent()
+    {
+        if (specialAbilityPopupRoot)
+            return specialAbilityPopupRoot;
+
+        Canvas canvas = null;
+        if (pausePanel)
+            canvas = pausePanel.GetComponentInParent<Canvas>(true);
+
+        if (!canvas && specialSlider)
+            canvas = specialSlider.GetComponentInParent<Canvas>(true);
+
+        if (!canvas)
+            canvas = FindFirstObjectByType<Canvas>(FindObjectsInactive.Include);
+
+        return canvas ? canvas.transform : transform;
+    }
+
+    void PrepareSpecialAbilityPopupRect(GameObject popup)
+    {
+        if (!popup)
+            return;
+
+        if (popup.TryGetComponent(out RectTransform rt))
+        {
+            rt.SetAsLastSibling();
+            rt.localScale = Vector3.one;
+
+            if (rt.parent is RectTransform)
+            {
+                rt.anchorMin = Vector2.zero;
+                rt.anchorMax = Vector2.one;
+                rt.offsetMin = Vector2.zero;
+                rt.offsetMax = Vector2.zero;
+                rt.anchoredPosition = Vector2.zero;
+            }
+            else
+            {
+                rt.localPosition = Vector3.zero;
+            }
+        }
+        else
+        {
+            popup.transform.SetAsLastSibling();
+            popup.transform.localPosition = Vector3.zero;
+            popup.transform.localScale = Vector3.one;
+        }
+    }
+
+    void PauseGameplayForSpecialAbilityPopup()
+    {
+        isPaused = true;
+        Time.timeScale = 0f;
+        AudioListener.pause = false;
+
+        if (pausePanel)
+            pausePanel.SetActive(false);
+
+        EnterGameplayCursorMode();
+    }
+
+    void ResumeGameplayAfterSpecialAbilityPopup()
+    {
+        Time.timeScale = 1f;
+        AudioListener.pause = false;
+        isPaused = false;
+
+        EnterGameplayCursorMode();
+    }
+
+    void ApplySpecialGameplayEffect(PlayerCharacterData character)
+    {
+        switch (character.ability)
         {
             case SpecialAbility.ClearBottomRows:
                 {
                     RunSummaryStats.AddSpecialUsed();
 
-                    int rows = Mathf.Max(1, selectedCharacter.clearRows);
+                    int rows = Mathf.Max(1, character.clearRows);
 
                     int squaresCleared = gameBoard.ClearBottomRowsWithCombat(rows, out int totalMonsterDamage,
                                          out float _specialChargeIgnored, out Dictionary<int, int> rowDamage,
@@ -2716,12 +2879,10 @@ public class GameController : MonoBehaviour
                     if (totalRestored > 0f)
                         RunSummaryStats.AddHealingDone(totalRestored);
 
-                    if (selectedCharacter.sfxRestoreAll && AudioManager.I)
-                        AudioManager.I.PlaySFX(selectedCharacter.sfxRestoreAll);
+                    if (character.sfxRestoreAll && AudioManager.I)
+                        AudioManager.I.PlaySFX(character.sfxRestoreAll);
 
-                    Sprite vfx = (selectedCharacter && selectedCharacter.reviveAllVFXSprite)
-                                 ? selectedCharacter.reviveAllVFXSprite
-                                 : null;
+                    Sprite vfx = character.reviveAllVFXSprite ? character.reviveAllVFXSprite : null;
 
                     if (vfx && count > 0)
                         foreach (var cell in changed)
@@ -2745,7 +2906,7 @@ public class GameController : MonoBehaviour
                     RunSummaryStats.AddSpecialUsed();
 
                     // Start the timer/pulse co-routine
-                    StartCoroutine(GlobalImmunityCo(Mathf.Max(0.25f, selectedCharacter.immunityDuration)));
+                    StartCoroutine(GlobalImmunityCo(Mathf.Max(0.25f, character.immunityDuration)));
 
                     specialGauge = 0f; // Reset gauge
                     UpdateSpecialUI();
@@ -2756,8 +2917,8 @@ public class GameController : MonoBehaviour
                 {
                     RunSummaryStats.AddSpecialUsed();
 
-                    float dur = (selectedCharacter != null) ? Mathf.Max(0.25f, selectedCharacter.reducedGravityDuration) : 10f;
-                    float mult = (selectedCharacter != null) ? Mathf.Clamp(selectedCharacter.reducedGravityMultiplier, 0.1f, 2f) : 0.6666667f;
+                    float dur = Mathf.Max(0.25f, character.reducedGravityDuration);
+                    float mult = Mathf.Clamp(character.reducedGravityMultiplier, 0.1f, 2f);
 
                     if (_playerGravityCR != null)
                     {
@@ -2777,7 +2938,7 @@ public class GameController : MonoBehaviour
                 {
                     RunSummaryStats.AddSpecialUsed();
 
-                    float dur = (selectedCharacter != null) ? Mathf.Max(0.25f, selectedCharacter.doubleStatsDuration) : 10f;
+                    float dur = Mathf.Max(0.25f, character.doubleStatsDuration);
 
                     if (_playerDoubleStatsCR != null)
                     {
