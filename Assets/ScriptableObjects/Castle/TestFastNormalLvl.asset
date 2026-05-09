@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CastleData
   castleName: Starting Village
   damageStages:
-  - {fileID: 21300000, guid: 1f0ff268de0e76d4c91ac180ab7e6e6e, type: 3}
-  - {fileID: 21300000, guid: 9082ffe4cf1f7e146b700d31ac4725da, type: 3}
-  - {fileID: 21300000, guid: 72665c402bca98948ac42bedf1620070, type: 3}
-  - {fileID: 21300000, guid: 8ef84dac0848a8b4f81252dbc3fac646, type: 3}
-  maxHP: 1
+  - {fileID: 21300000, guid: ecd6c7b794ace444c9ac680498100d5a, type: 3}
+  - {fileID: 21300000, guid: 55e6da4121f987f4d96a1dd0443c31a7, type: 3}
+  - {fileID: 21300000, guid: bae3e1b353ab47c4c94a5c8809550581, type: 3}
+  - {fileID: 21300000, guid: c5bc02764f55fc9429b5717ac3fba103, type: 3}
+  levelBackgroundSprite: {fileID: 0}
+  maxHP: 100
+  infiniteHealth: 0
   projectileSprite: {fileID: 21300000, guid: ca7186951d5077d419fe7998de074c6d, type: 3}
   projectileInterval: 3
   projectileSpeed: 800
@@ -40,7 +42,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 36168d0de03667d49b6b637203e675eb, type: 3}
   - {fileID: 8300000, guid: 212ba41b43c8a004ca231baaa67f9610, type: 3}
   - {fileID: 8300000, guid: 8990cdb32fd36a74c9df4c24a499b0a1, type: 3}
-  isBossLevel: 0
+  isBossLevel: 1
   bossOverlaySprite: {fileID: 0}
   bossAttackSprite: {fileID: 0}
   bossDamageTakenSprite: {fileID: 0}

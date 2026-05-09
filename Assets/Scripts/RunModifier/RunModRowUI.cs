@@ -7,7 +7,9 @@ public class RunModRowUI : MonoBehaviour
     [Header("UI")]
     public Image icon;
     public TMP_Text nameText;
+    public TMP_Text nameShadowText;
     public TMP_Text descText;
+    public TMP_Text descShadowText;
 
     [Header("Optional rarity colors (copy from RunModOptionButton if you want)")]
     public Color commonNameColor = new Color(0.85f, 0.85f, 0.85f);
@@ -37,7 +39,20 @@ public class RunModRowUI : MonoBehaviour
             nameText.text = copies > 1 ? $"{mod.displayName} x{copies}" : mod.displayName;
         }
 
-        if (descText) descText.text = mod.description;
+        if (nameShadowText)
+        {
+            nameShadowText.text = nameText ? nameText.text : mod.displayName;
+        }
+
+        if (descText)
+        {
+            descText.text = mod.description;
+        }
+
+        if (descShadowText)
+        {
+            descShadowText.text = descText ? descText.text : mod.description;
+        }
 
         // Color by rarity if it's a generic mod, otherwise use common colors
         if (mod is RunModifier generic)

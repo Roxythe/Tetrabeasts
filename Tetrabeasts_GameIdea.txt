@@ -6,6 +6,18 @@
 - Add controller support
 
 
+- Add shadow text to buff/debuff run modifiers in round win panel
+
+- Add a sort function to codex panels so that entries that have been found are at the top
+
+- Loss condition triggered incorrectly on level 7 with level modifier ambush that spawns obastacles at the bottom row at certain time intervals. My loss condition for a piece being set above the boards top row was triggered incorrectly. I am not sure if it was due to the soldier ambush rows or if it was not taking the current row count into account as row/column size increases as the players gets to higher levels. Image attached
+
+- Gravity acceleration is either not being reset when a new level is started or it is increasing too quickly as I can start a new level and then be at the maximum gravity with 4-8 seconds in the middle level
+
+- On the EXP screen when a monsters level up reward is an improved passive I would rather it say "Passive+" instead of writing out the full new passive in text as it takes up an obnoxious amount of space.
+
+- Add a minimum to special block chance of 1% so that it cannot be lower than 1% no matter what
+
 ****** TODO ******
 
 - Run Modifier images shown in a row on the gameplay scene

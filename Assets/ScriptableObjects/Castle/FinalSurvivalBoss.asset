@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CastleData
   castleName: Emperor's Palace
   damageStages:
-  - {fileID: 21300000, guid: 1f0ff268de0e76d4c91ac180ab7e6e6e, type: 3}
-  - {fileID: 21300000, guid: 9082ffe4cf1f7e146b700d31ac4725da, type: 3}
-  - {fileID: 21300000, guid: 72665c402bca98948ac42bedf1620070, type: 3}
-  - {fileID: 21300000, guid: 8ef84dac0848a8b4f81252dbc3fac646, type: 3}
+  - {fileID: -7616692476637277105, guid: f3e860782e7976d4d9f26654e4e408ee, type: 3}
+  - {fileID: -7616692476637277105, guid: f3e860782e7976d4d9f26654e4e408ee, type: 3}
+  - {fileID: -7616692476637277105, guid: f3e860782e7976d4d9f26654e4e408ee, type: 3}
+  - {fileID: -7616692476637277105, guid: f3e860782e7976d4d9f26654e4e408ee, type: 3}
   levelBackgroundSprite: {fileID: 7177447691466052707, guid: 7fe717733100399409473e8864f22b1f, type: 3}
   maxHP: 3000
   infiniteHealth: 0

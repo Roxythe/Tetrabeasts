@@ -4716,51 +4716,49 @@ public class GameController : MonoBehaviour
         {
             var pickedKind = PickBossAbilityKindFromPool(_castleData);
 
-            if (battleLog)
-                battleLog.LogBossAbility(pickedKind.ToString());
-
-            // Play attack for ANY boss special cast
-            if (enemyCastleUI) enemyCastleUI.PlayBossAttackSprite();
-
-            // Execute the picked ability
-            switch (pickedKind)
-            {
-                case CastleData.BossAbilityKind.RowBlast: Boss_RowBlastTop3(); break;
-                case CastleData.BossAbilityKind.FullBoardBlast: Boss_FullBoardBlast(); break;
-                case CastleData.BossAbilityKind.LightningStrike: Boss_LightningStrike(); break;
-                case CastleData.BossAbilityKind.SpawnTraps: Boss_SpawnTraps(); break;
-                case CastleData.BossAbilityKind.Invulnerability: Boss_Invulnerability(); break;
-                case CastleData.BossAbilityKind.GravityBoost: Boss_GravityBoost(); break;
-                case CastleData.BossAbilityKind.PylonShield: Boss_PylonShield(); break;
-                case CastleData.BossAbilityKind.MagicExplosive: Boss_MagicExplosive(); break;
-            }
+            LogAndExecuteBossAbility(pickedKind);
 
             return;
         }
 
         // --- Prototype behavior fallback ---
-        var picks = new List<System.Action>();
+        var picks = new List<CastleData.BossAbilityKind>();
 
-        if (_castleData.bossEnableRowBlast) picks.Add(Boss_RowBlastTop3);
-        if (_castleData.bossEnableFullBoardBlast) picks.Add(Boss_FullBoardBlast);
-        if (_castleData.bossEnableLightningStrike) picks.Add(Boss_LightningStrike);
-        if (_castleData.bossEnableSpawnTraps) picks.Add(Boss_SpawnTraps);
-        if (_castleData.bossEnableInvulnerability) picks.Add(Boss_Invulnerability);
-        if (_castleData.bossEnableGravityBoost) picks.Add(Boss_GravityBoost);
-        if (_castleData.bossEnablePylonShield) picks.Add(Boss_PylonShield);
-        if (_castleData.bossEnableMagicExplosive) picks.Add(Boss_MagicExplosive);
+        if (_castleData.bossEnableRowBlast) picks.Add(CastleData.BossAbilityKind.RowBlast);
+        if (_castleData.bossEnableFullBoardBlast) picks.Add(CastleData.BossAbilityKind.FullBoardBlast);
+        if (_castleData.bossEnableLightningStrike) picks.Add(CastleData.BossAbilityKind.LightningStrike);
+        if (_castleData.bossEnableSpawnTraps) picks.Add(CastleData.BossAbilityKind.SpawnTraps);
+        if (_castleData.bossEnableInvulnerability) picks.Add(CastleData.BossAbilityKind.Invulnerability);
+        if (_castleData.bossEnableGravityBoost) picks.Add(CastleData.BossAbilityKind.GravityBoost);
+        if (_castleData.bossEnablePylonShield) picks.Add(CastleData.BossAbilityKind.PylonShield);
+        if (_castleData.bossEnableMagicExplosive) picks.Add(CastleData.BossAbilityKind.MagicExplosive);
 
         if (picks.Count == 0) return;
 
-        var cast = picks[Random.Range(0, picks.Count)];
+        var pickedFallbackKind = picks[Random.Range(0, picks.Count)];
 
-        if (battleLog)
-            battleLog.LogBossAbility(cast.Method.Name);
+        LogAndExecuteBossAbility(pickedFallbackKind);
+    }
+
+    void LogAndExecuteBossAbility(CastleData.BossAbilityKind pickedKind)
+    {
+        if (battleLog && pickedKind != CastleData.BossAbilityKind.SpawnTraps)
+            battleLog.LogBossAbility(pickedKind.ToString());
 
         // Play attack for any boss special cast
         if (enemyCastleUI) enemyCastleUI.PlayBossAttackSprite();
 
-        cast?.Invoke();
+        switch (pickedKind)
+        {
+            case CastleData.BossAbilityKind.RowBlast: Boss_RowBlastTop3(); break;
+            case CastleData.BossAbilityKind.FullBoardBlast: Boss_FullBoardBlast(); break;
+            case CastleData.BossAbilityKind.LightningStrike: Boss_LightningStrike(); break;
+            case CastleData.BossAbilityKind.SpawnTraps: Boss_SpawnTraps(); break;
+            case CastleData.BossAbilityKind.Invulnerability: Boss_Invulnerability(); break;
+            case CastleData.BossAbilityKind.GravityBoost: Boss_GravityBoost(); break;
+            case CastleData.BossAbilityKind.PylonShield: Boss_PylonShield(); break;
+            case CastleData.BossAbilityKind.MagicExplosive: Boss_MagicExplosive(); break;
+        }
     }
 
     CastleData.BossAbilityKind PickBossAbilityKindFromPool(CastleData cd)
@@ -5081,7 +5079,8 @@ public class GameController : MonoBehaviour
         if (bossEnableMagicExplosive)
             Boss_MagicExplosive();
 
-        StartCoroutine(BossSpawnTrapsSplitWithWarningRoutine());
+        var castOpt = GetBossTrapOptionForThisSpawn();
+        StartCoroutine(BossSpawnTrapsSplitWithWarningRoutine(castOpt));
     }
 
     void FlashBossTrapWarning(Vector2Int cell, Sprite sprite, float seconds)
@@ -5105,15 +5104,12 @@ public class GameController : MonoBehaviour
         return opt;
     }
 
-    IEnumerator BossSpawnTrapsSplitWithWarningRoutine()
+    IEnumerator BossSpawnTrapsSplitWithWarningRoutine(CastleData.BossTrapSpawnOption castOpt)
     {
         float warn = BossWarnSeconds();
 
         var reserved = new HashSet<Vector2Int>();
         var batches = new List<TrapSpawnBatch>();
-
-        // Roll ONE option for this entire cast (kind + pattern)
-        var castOpt = GetBossTrapOptionForThisSpawn();
 
         // Decide how many placements based on the selected pattern
         int count =
@@ -5132,6 +5128,9 @@ public class GameController : MonoBehaviour
 
         if (batches.Count == 0)
             yield break;
+
+        if (battleLog)
+            battleLog.LogBossTrapAbility(castOpt.kind);
 
         // Warning flash
         PlayBossAbilityWarningSFX();

@@ -35,6 +35,26 @@ public sealed class BattleLogUI : MonoBehaviour
 
     private readonly Queue<TMP_Text> _active = new();
     private readonly Queue<string> _buffer = new();
+    private static readonly Dictionary<string, string> BossAbilitySpellTitles = new(System.StringComparer.Ordinal)
+    {
+        { "RowBlast", "Skybreaker Edict" },
+        { "RowBlastTop3", "Skybreaker Edict" },
+        { "Boss_RowBlastTop3", "Skybreaker Edict" },
+        { "FullBoardBlast", "Heaven's Judgement" },
+        { "Boss_FullBoardBlast", "Heaven's Judgement" },
+        { "LightningStrike", "Stormcaller's Verdict" },
+        { "Boss_LightningStrike", "Stormcaller's Verdict" },
+        { "SpawnTraps", "Hex of the Warped Ground" },
+        { "Boss_SpawnTraps", "Hex of the Warped Ground" },
+        { "Invulnerability", "Aegis of the Unbroken Crown" },
+        { "Boss_Invulnerability", "Aegis of the Unbroken Crown" },
+        { "GravityBoost", "Temporal Distortion" },
+        { "Boss_GravityBoost", "Temporal Distortion" },
+        { "PylonShield", "Ward of the Arcane Pylons" },
+        { "Boss_PylonShield", "Ward of the Arcane Pylons" },
+        { "MagicExplosive", "Rune of Ruin" },
+        { "Boss_MagicExplosive", "Rune of Ruin" },
+    };
 
     private void Awake()
     {
@@ -67,7 +87,10 @@ public sealed class BattleLogUI : MonoBehaviour
     AddLine($"{Unit(actorName)} uses {PlayerAbility(abilityName)}.");
 
     public void LogBossAbility(string abilityName) =>
-    AddLine($"{Boss("Boss")} uses {B(HumanizePascal(abilityName))}.");
+    AddLine($"{Boss("Boss")} casts {B(GetBossAbilitySpellTitle(abilityName))}.");
+
+    public void LogBossTrapAbility(CastleData.BossTrapKind trapKind) =>
+    AddLine($"{Boss("Boss")} casts {B(GetBossTrapSpellTitle(trapKind))}.");
 
     public void LogPlain(string msg) =>
         AddLine(C(E(msg), normal));
@@ -204,6 +227,33 @@ public sealed class BattleLogUI : MonoBehaviour
         }
 
         return new string(chars.ToArray());
+    }
+
+    private static string GetBossAbilitySpellTitle(string abilityName)
+    {
+        if (string.IsNullOrWhiteSpace(abilityName)) return string.Empty;
+        if (BossAbilitySpellTitles.TryGetValue(abilityName, out string title)) return title;
+
+        string trimmed = abilityName.StartsWith("Boss_", System.StringComparison.Ordinal)
+            ? abilityName.Substring("Boss_".Length)
+            : abilityName;
+
+        return BossAbilitySpellTitles.TryGetValue(trimmed, out title)
+            ? title
+            : HumanizePascal(trimmed);
+    }
+
+    private static string GetBossTrapSpellTitle(CastleData.BossTrapKind trapKind)
+    {
+        switch (trapKind)
+        {
+            case CastleData.BossTrapKind.Stone: return "Summon Earthen Rampart";
+            case CastleData.BossTrapKind.Spike: return "Raise Iron Thorns";
+            case CastleData.BossTrapKind.Poison: return "Sow Venomous Miasma";
+            case CastleData.BossTrapKind.Fire: return "Kindle Infernal Sigils";
+            case CastleData.BossTrapKind.Lightning: return "Call Stormbound Sigils";
+            default: return "Hex of the Warped Ground";
+        }
     }
 
     public void SetVisible(bool visible)
