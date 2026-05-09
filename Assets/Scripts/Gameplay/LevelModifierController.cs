@@ -35,6 +35,10 @@ public class LevelModifierController : MonoBehaviour
     [SerializeField, Range(0.5f, 2f)] float autoShiftBaseSpeedMultiplier = 1.15f;
     [SerializeField, Range(0f, 1f)] float autoShiftGravityRampInfluence = 0.45f;
 
+    [Header("Rear Ambush Tuning")]
+    [SerializeField, Min(0)] int rearAmbushBaseRows = 3;
+    [SerializeField, Min(1)] int rearAmbushLevelsPerExtraRow = 2;
+
     readonly Dictionary<Vector2Int, OvergrowthState> _growingOvergrowth = new();
     readonly Dictionary<Vector2Int, Image> _overgrowthVisuals = new();
     readonly Dictionary<Vector2Int, float> _contagionFloorSpreadTimers = new();
@@ -57,6 +61,7 @@ public class LevelModifierController : MonoBehaviour
     int _availableRerolls;
     int _comboShieldRemaining;
     int _pendingComboShieldBreaks;
+    int _rearAmbushRowsSpawnedThisLevel;
     Coroutine _comboShieldPulseCR;
 
     static Sprite _onePx;
@@ -623,6 +628,9 @@ public class LevelModifierController : MonoBehaviour
 
     void UpdateRearAmbush(float dt)
     {
+        if (_rearAmbushRowsSpawnedThisLevel >= GetRearAmbushRowLimit())
+            return;
+
         _rearAmbushCountdown -= dt;
         if (_rearAmbushCountdown > 0f)
             return;
@@ -630,11 +638,21 @@ public class LevelModifierController : MonoBehaviour
         _rearAmbushCountdown = Mathf.Max(0.1f, ActiveModifier.rearAmbushInterval);
 
         board?.ShiftBoardUpOneRowAndFillBottom(ActiveModifier.rearAmbushSoldierSprite);
+        _rearAmbushRowsSpawnedThisLevel++;
 
         if (!piece || !piece.HasActiveCells || !piece.OverlapsPlacedCells())
             return;
 
-        _gc?.GameOver();
+        if (!piece.TryResolvePlacedOverlapByShiftingUp())
+            _gc?.GameOver();
+    }
+
+    int GetRearAmbushRowLimit()
+    {
+        int completedLevelsThisRun = Mathf.Max(0, _gc ? _gc.CurrentLevel : 0);
+        int extraRows = completedLevelsThisRun / Mathf.Max(1, rearAmbushLevelsPerExtraRow);
+
+        return Mathf.Max(0, rearAmbushBaseRows + extraRows);
     }
 
     void UpdateLowRations(float dt)
@@ -1193,6 +1211,7 @@ public class LevelModifierController : MonoBehaviour
         _autoShiftMovingRight = true;
         _comboShieldRemaining = 0;
         _pendingComboShieldBreaks = 0;
+        _rearAmbushRowsSpawnedThisLevel = 0;
         RefreshComboShieldUI(false);
 
         _growingOvergrowth.Clear();

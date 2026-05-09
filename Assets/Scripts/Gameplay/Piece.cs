@@ -691,6 +691,38 @@ public class Piece : MonoBehaviour
         return false;
     }
 
+    public bool TryResolvePlacedOverlapByShiftingUp()
+    {
+        if (board == null || cells.Count == 0)
+            return true;
+
+        bool moved = false;
+        int maxAttempts = Mathf.Max(1, board.height + 4);
+
+        for (int attempt = 0; attempt <= maxAttempts; attempt++)
+        {
+            if (!OverlapsPlacedCells())
+            {
+                if (moved)
+                {
+                    fallTimer = 0f;
+                    lockTimer = 0f;
+                    SyncVisuals();
+                }
+
+                return true;
+            }
+
+            Shift(Vector2Int.up);
+            moved = true;
+        }
+
+        if (moved)
+            SyncVisuals();
+
+        return !OverlapsPlacedCells();
+    }
+
     public void SetMonsters(MonsterData[] arr)
     {
         monstersForCells.Clear();

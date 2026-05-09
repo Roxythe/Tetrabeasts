@@ -334,9 +334,7 @@ public static class MonsterLeveling
         {
             if (MonsterPassiveSystem.ReplacesStatUpgrade(data, newLevel))
             {
-                string passiveLine = MonsterPassiveSystem.GetPassiveUpgradeLine(data, newLevel);
-                if (!string.IsNullOrEmpty(passiveLine))
-                    specialLines.Add(passiveLine);
+                specialLines.Add("Passive+");
                 continue;
             }
 
@@ -433,9 +431,7 @@ public static class MonsterLeveling
         {
             if (MonsterPassiveSystem.ReplacesStatUpgrade(data, newLevel))
             {
-                string passiveLine = MonsterPassiveSystem.GetPassiveUpgradeLine(data, newLevel);
-                if (!string.IsNullOrEmpty(passiveLine))
-                    lines.Add(passiveLine);
+                lines.Add("Passive+");
                 continue;
             }
 

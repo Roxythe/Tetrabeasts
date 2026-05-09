@@ -232,12 +232,10 @@ public class CodexPanelUI : MonoBehaviour
         if (source == null || source.Length == 0)
             return;
 
-        var seen = new HashSet<RunModifierSO>();
-        for (int i = 0; i < source.Length; i++)
+        List<RunModifierSO> sortedModifiers = BuildRunModifierDisplayList(source);
+        for (int i = 0; i < sortedModifiers.Count; i++)
         {
-            RunModifierSO modifier = source[i];
-            if (!modifier || !seen.Add(modifier))
-                continue;
+            RunModifierSO modifier = sortedModifiers[i];
 
             var entry = Instantiate(entryPrefab, section.contentParent);
             entry.Bind(modifier, CodexProgressStore.IsUnlocked(modifier), section == buffSection 
@@ -256,18 +254,65 @@ public class CodexPanelUI : MonoBehaviour
         if (!levelModifierDatabase)
             return;
 
-        List<LevelModifierSO> modifiers = levelModifierDatabase.BuildPool();
-        var seen = new HashSet<LevelModifierSO>();
+        List<LevelModifierSO> modifiers = BuildLevelModifierDisplayList(levelModifierDatabase.BuildPool());
 
         for (int i = 0; i < modifiers.Count; i++)
         {
             LevelModifierSO modifier = modifiers[i];
-            if (!modifier || !seen.Add(modifier))
-                continue;
 
             var entry = Instantiate(entryPrefab, section.contentParent);
             entry.Bind(modifier, CodexProgressStore.IsUnlocked(modifier));
         }
+    }
+
+    List<RunModifierSO> BuildRunModifierDisplayList(RunModifierSO[] source)
+    {
+        var discovered = new List<RunModifierSO>();
+        var undiscovered = new List<RunModifierSO>();
+
+        if (source == null || source.Length == 0)
+            return discovered;
+
+        var seen = new HashSet<RunModifierSO>();
+        for (int i = 0; i < source.Length; i++)
+        {
+            RunModifierSO modifier = source[i];
+            if (!modifier || !seen.Add(modifier))
+                continue;
+
+            if (CodexProgressStore.IsUnlocked(modifier))
+                discovered.Add(modifier);
+            else
+                undiscovered.Add(modifier);
+        }
+
+        discovered.AddRange(undiscovered);
+        return discovered;
+    }
+
+    List<LevelModifierSO> BuildLevelModifierDisplayList(List<LevelModifierSO> source)
+    {
+        var discovered = new List<LevelModifierSO>();
+        var undiscovered = new List<LevelModifierSO>();
+
+        if (source == null || source.Count == 0)
+            return discovered;
+
+        var seen = new HashSet<LevelModifierSO>();
+        for (int i = 0; i < source.Count; i++)
+        {
+            LevelModifierSO modifier = source[i];
+            if (!modifier || !seen.Add(modifier))
+                continue;
+
+            if (CodexProgressStore.IsUnlocked(modifier))
+                discovered.Add(modifier);
+            else
+                undiscovered.Add(modifier);
+        }
+
+        discovered.AddRange(undiscovered);
+        return discovered;
     }
 
     void UpdateDiscoverySummary()

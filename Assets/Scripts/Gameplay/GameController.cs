@@ -68,7 +68,6 @@ public class GameController : MonoBehaviour
     float _lastShownFallInterval = -1f;
     float _levelTimer = 0f;
     float _thisLevelBaseFallInterval;
-    int _lastLevelInitialized = -999;
 
     [Header("Boss Gravity Visuals")]
     [SerializeField] Image bossGravityIncreasedImage; // Toggle/flash when boss gravity is active
@@ -174,6 +173,8 @@ public class GameController : MonoBehaviour
     public TetrominoData[] specialBlocks;
     [Range(0f, 1f)]
     public float specialChancePerEnqueue = 0.08f;
+    [Range(0f, 1f)]
+    public float minSpecialChance = 0.01f;
     [Range(0f, 1f)]
     public float maxSpecialChance = 0.33f; // Hard cap (33%)
 
@@ -1661,7 +1662,9 @@ public class GameController : MonoBehaviour
         var roster = GetActiveMonsterRoster();
         int specialsAddedThisRefill = 0;
 
-        float chance = Mathf.Clamp(specialChancePerEnqueue + specialBlockChanceAdd, 0f, maxSpecialChance);
+        float chanceCap = Mathf.Max(0f, maxSpecialChance);
+        float chanceFloor = Mathf.Min(Mathf.Clamp01(minSpecialChance), chanceCap);
+        float chance = Mathf.Clamp(specialChancePerEnqueue + specialBlockChanceAdd, chanceFloor, chanceCap);
 
         foreach (var d in normals)
         {
@@ -2013,12 +2016,7 @@ public class GameController : MonoBehaviour
         _levelStartMaxLives = EffectiveMaxUnitLives;
         _levelStartReserveUnits = unitLives;
 
-        // Only apply level-start logic once per level
-        if (levelIndex != _lastLevelInitialized)
-        {
-            _lastLevelInitialized = levelIndex;
-            ResetLevelTimerAndDrop(levelIndex);
-        }
+        ResetLevelTimerAndDrop(levelIndex);
 
         CastleData data = ResolveCastleDataForLevel(levelIndex);
 
@@ -2380,7 +2378,6 @@ public class GameController : MonoBehaviour
 
         _postFinalSurvivalActive = true;
         currentLevel = GetPostFinalSurvivalLevelIndex();
-        _lastLevelInitialized = -999;
 
         gameOver = false;
         levelWon = false;
@@ -3059,7 +3056,12 @@ public class GameController : MonoBehaviour
     void SpawnAttackProjectile(Sprite sprite, Sprite altSprite, AttackAnimType animType,
                                Vector2 startAnchored, Vector2 targetAnchored, int damage, MonsterData attackerMD)
     {
-        if (!sprite) return;
+        if (!sprite)
+        {
+            ApplyCastleAttackDamage(damage, attackerMD, null);
+            return;
+        }
+
         if (projectileRoot == null) projectileRoot = gameBoard.gridRoot;
 
         Vector2 cellSize = gameBoard.GetCellSize();
@@ -3170,43 +3172,48 @@ public class GameController : MonoBehaviour
 
         if (rt) Destroy(rt.gameObject);
 
-        if (damage > 0 && enemyCastleUI && !levelWon && !gameOver)
+        if (ApplyCastleAttackDamage(damage, attackerMD, impactClip))
+            yield break;
+    }
+
+    bool ApplyCastleAttackDamage(int damage, MonsterData attackerMD, AudioClip impactClip)
+    {
+        if (damage <= 0 || !enemyCastleUI || levelWon || gameOver)
+            return false;
+
+        int originalDamage = damage;
+
+        if (AudioManager.I && impactClip)
+            AudioManager.I.PlaySFX(impactClip);
+
+        bool pylonsAlive = gameBoard && gameBoard.CountObstaclesOfType(Board.ObstacleType.MagicPylon) > 0;
+        if (pylonsAlive)
+            damage = Mathf.Max(1, Mathf.CeilToInt(damage * Mathf.Clamp(bossPylonDamageMult, 0.05f, 1f)));
+
+        enemyCastleUI.SetMagicShieldActive(pylonsAlive);
+        _bossPylonShieldActive = pylonsAlive;
+
+        if (battleLog)
         {
-            int originalDamage = damage;
-
-            // Play impact SFX when damage is applied
-            if (AudioManager.I && impactClip)
-                AudioManager.I.PlaySFX(impactClip);
-
-            bool pylonsAlive = gameBoard && gameBoard.CountObstaclesOfType(Board.ObstacleType.MagicPylon) > 0;
-            if (pylonsAlive)
-                damage = Mathf.Max(1, Mathf.CeilToInt(damage * Mathf.Clamp(bossPylonDamageMult, 0.05f, 1f)));
-
-            if (enemyCastleUI)
-                enemyCastleUI.SetMagicShieldActive(pylonsAlive);
-
-            _bossPylonShieldActive = pylonsAlive;
-
-            if (battleLog)
-            {
-                string attackerName = attackerMD ? attackerMD.name : "Unknown";
-                bool pylonsReduced = pylonsAlive && damage < originalDamage;
-                battleLog.LogCastleHit(attackerName, damage, pylonsReduced);
-            }
-
-            levelModifierController?.OnCastleProjectileImpact();
-
-            int appliedDamage = enemyCastleUI.ApplyDamage(damage);
-            if (appliedDamage > 0)
-                RunSummaryStats.RecordDamageDealt(appliedDamage);
-
-            if (enemyCastleUI.currentHP <= 0 && !winQueued)
-            {
-                winQueued = true;
-                StartCoroutine(CoWinAfterDelay(0.25f));
-                yield break;
-            }
+            string attackerName = attackerMD ? attackerMD.name : "Unknown";
+            bool pylonsReduced = pylonsAlive && damage < originalDamage;
+            battleLog.LogCastleHit(attackerName, damage, pylonsReduced);
         }
+
+        levelModifierController?.OnCastleProjectileImpact();
+
+        int appliedDamage = enemyCastleUI.ApplyDamage(damage);
+        if (appliedDamage > 0)
+            RunSummaryStats.RecordDamageDealt(appliedDamage);
+
+        if (enemyCastleUI.currentHP <= 0 && !winQueued)
+        {
+            winQueued = true;
+            StartCoroutine(CoWinAfterDelay(0.25f));
+            return true;
+        }
+
+        return false;
     }
 
     IEnumerator CoWinAfterDelay(float delay)
@@ -3653,8 +3660,6 @@ public class GameController : MonoBehaviour
         unitLives = EffectiveMaxUnitLives;
         SetupUnitLivesUI();
 
-        _lastLevelInitialized = -999;
-
         currentLevel = 0;
         ResetRunGridToBase();
         ApplyRunGridSize(currentLevel);
@@ -3954,10 +3959,12 @@ public class GameController : MonoBehaviour
 
         int displayedLevel = Mathf.Max(1, levelIndex + 1);
         float levelBonus = Mathf.Max(0, displayedLevel - 1) * Mathf.Max(0f, levelBaseGravityIncrease);
+        float baseGravity = 1f / Mathf.Max(0.0001f, _level1FallInterval);
+        float levelStartGravity = Mathf.Max(0.0001f, baseGravity + levelBonus);
 
         _thisLevelBaseFallInterval = Mathf.Max(
             minFallInterval,
-            _level1FallInterval - levelBonus
+            1f / levelStartGravity
         );
 
         float interval = GetCurrentFallInterval();
@@ -3971,8 +3978,11 @@ public class GameController : MonoBehaviour
 
     float GetCurrentFallInterval()
     {
-        float elapsedReduction = Mathf.Max(0f, gravityIncreasePerSecond) * _levelTimer;
-        float interval = _thisLevelBaseFallInterval - elapsedReduction;
+        float baseGravity = 1f / Mathf.Max(0.0001f, _thisLevelBaseFallInterval);
+        float gravityRamp = Mathf.Max(0f, gravityIncreasePerSecond) *
+                            Mathf.Max(0f, EffectiveFallRampRateMult) *
+                            _levelTimer;
+        float interval = 1f / Mathf.Max(0.0001f, baseGravity + gravityRamp);
 
         interval /= Mathf.Max(0.01f, EffectivePieceGravityMult);
 
