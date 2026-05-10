@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1494f8b3dc5a41f419f6592e52725581, type: 3}
-  m_Name: Death
+  m_Name: SlowGravity
   m_EditorClassIdentifier: Assembly-CSharp::TetrominoData
-  id: Death
-  color: {r: 0, g: 0, b: 0, a: 1}
+  id: SlowGravity
+  color: {r: 0.55, g: 0.95, b: 1, a: 1}
   cells:
   - {x: 0, y: 0}
-  special: 1
-  specialSprite: {fileID: 21300000, guid: 888974688956fbe44803e3eb32fcb9d6, type: 3}
-  spawnWeight: 0.2
-  specialFlashSprite: {fileID: 21300000, guid: 888974688956fbe44803e3eb32fcb9d6, type: 3}
-  flashOnlyOccupied: 1
-  specialSFX: {fileID: 8300000, guid: c76d08a9de788a74882d31d3d89235d1, type: 3}
+  special: 5
+  specialSprite: {fileID: -6605040193917352901, guid: 48da2eb413088c14ebaa183806cf5891, type: 3}
+  spawnWeight: 0.25
+  specialFlashSprite: {fileID: -6605040193917352901, guid: 48da2eb413088c14ebaa183806cf5891, type: 3}
+  flashOnlyOccupied: 0
+  specialSFX: {fileID: 0}
   slowGravityMultiplier: 0.5
   slowGravityRampRateMultiplier: 0.2

@@ -7,8 +7,16 @@ public class PanelOpener : MonoBehaviour
     public void Toggle()
     {
         if (!panel) return;
-        panel.SetActive(!panel.activeSelf);
+        UIPanelTransition.SetVisible(panel, !UIPanelTransition.IsVisible(panel));
     }
-    public void Open() { if (panel) panel.SetActive(true); }
-    public void Close() { if (panel) panel.SetActive(false); }
+
+    public void Open()
+    {
+        if (panel) UIPanelTransition.Show(panel);
+    }
+
+    public void Close()
+    {
+        if (panel) UIPanelTransition.Hide(panel);
+    }
 }

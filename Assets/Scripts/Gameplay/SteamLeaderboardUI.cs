@@ -246,7 +246,7 @@ public class SteamLeaderboardUI : MonoBehaviour
 
     void Hide()
     {
-        gameObject.SetActive(false);
+        UIPanelTransition.Hide(gameObject);
     }
 
     void SetStatus(string message)

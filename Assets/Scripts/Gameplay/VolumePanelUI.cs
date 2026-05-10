@@ -137,12 +137,13 @@ public class VolumePanelUI : MonoBehaviour
 
     void BringToFront() => transform.SetAsLastSibling();
 
-    public void Open() { gameObject.SetActive(true); }
-    public void Close() { gameObject.SetActive(false); }
+    public void Open() { UIPanelTransition.Show(gameObject); }
+    public void Close() { Close(false); }
+    public void Close(bool instant) { UIPanelTransition.Hide(gameObject, instant); }
 
     public void Toggle()
     {
-        if (gameObject.activeSelf) Close();
+        if (UIPanelTransition.IsVisible(gameObject)) Close();
         else Open();
     }
 
@@ -182,12 +183,38 @@ public class VolumePanelUI : MonoBehaviour
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
     void Update()
     {
-        if (Keyboard.current.escapeKey.wasPressedThisFrame) Toggle();
+        var keyboard = Keyboard.current;
+        if (keyboard == null || !keyboard.escapeKey.wasPressedThisFrame)
+            return;
+
+        if (!UIPanelTransition.IsVisible(gameObject))
+            return;
+
+        if (ShouldLetGameplayPauseHandleEscape())
+            return;
+
+        if (!ConfirmationPopupUI.TryCancelShowingPopup())
+            Toggle();
     }
 #else
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape)) Toggle();
+        if (!Input.GetKeyDown(KeyCode.Escape))
+            return;
+
+        if (!UIPanelTransition.IsVisible(gameObject))
+            return;
+
+        if (ShouldLetGameplayPauseHandleEscape())
+            return;
+
+        if (!ConfirmationPopupUI.TryCancelShowingPopup())
+            Toggle();
     }
 #endif
+
+    bool ShouldLetGameplayPauseHandleEscape()
+    {
+        return !pauseWhenOpen && GetGameplayController() && GetGameplayController().IsPaused;
+    }
 }

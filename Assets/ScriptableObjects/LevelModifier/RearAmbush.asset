@@ -17,7 +17,7 @@ MonoBehaviour:
   description: Enemy ambush will cut off any retreat. Rows will slowly fill with
     enemy units progressivley limiting space to maneuver.
   icon: {fileID: 21300000, guid: 660a4dd4fe4a33d4fb511d20dae4a568, type: 3}
-  backgroundOverrideSprite: {fileID: 21300000, guid: 18650169a22c0b14b8b3cbc3b8e211c5, type: 3}
+  backgroundOverrideSprite: {fileID: 0}
   enableRainOverlay: 0
   rainDrops: 44
   rainSpeed: 140
@@ -46,7 +46,7 @@ MonoBehaviour:
   stormFloorTickDamage: 1
   stormFloorTickInterval: 0.5
   stormFloorDuration: 4
-  rearAmbushInterval: 10
+  rearAmbushInterval: 15
   rearAmbushSoldierSprite: {fileID: 21300000, guid: b83d91c9e2e79da41a07bee6c9bc0e03, type: 3}
   lowRationsTickInterval: 3
   lowRationsNegligibleReserveThreshold: 5
@@ -62,13 +62,13 @@ MonoBehaviour:
   contagionFloorSprite: {fileID: 21300000, guid: 73885b1784c4bc944aed3861777e71c5, type: 3}
   contagionUnitTint: {r: 0.26669225, g: 0, b: 0.38679248, a: 0.60784316}
   contagionFloorTint: {r: 0, g: 0, b: 0, a: 0.6156863}
-  deathExplosionDamage: 2
+  deathExplosionMaxHpPercent: 0.3
   swampPoisonDamage: 1
   swampPoisonInterval: 1
   swampPoisonTicks: -1
   autoRotateInterval: 0.75
   autoShiftInterval: 0.4
-  autoShiftEdgePauseSeconds: 0.6
+  autoShiftEdgePauseSeconds: 0.2
   comboThreshold: 3
   comboBelowThresholdDamageMultiplier: 0.2
   comboShieldThreshold: 4

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum SpecialType { None, Death, Bomb, Bolt, Earthquake }
+public enum SpecialType { None, Death, Bomb, Bolt, Earthquake, SlowGravity }
 
 [CreateAssetMenu(menuName = "Blocks/TetrominoData")]
 public class TetrominoData : ScriptableObject
@@ -15,5 +15,9 @@ public class TetrominoData : ScriptableObject
     public float spawnWeight = 0.05f;
     public Sprite specialFlashSprite;  // Flashed on affected cells at activation
     public bool flashOnlyOccupied = true; // True = flash only occupied cells, false = flash all affected cells
-    public AudioClip specialSFX; 
+    public AudioClip specialSFX;
+
+    [Header("Slow Gravity")]
+    [Range(0.05f, 1f)] public float slowGravityMultiplier = 0.50f;
+    [Range(0f, 1f)] public float slowGravityRampRateMultiplier = 0.20f;
 }

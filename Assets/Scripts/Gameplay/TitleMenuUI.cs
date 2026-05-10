@@ -265,20 +265,23 @@ public class TitleMenuUI : MonoBehaviour
 
     public void OnToggleHighScore()
     {
-        if (TryToggleSteamLeaderboard())
-            return;
-
         if (!highScorePanel) return;
-        bool show = !highScorePanel.activeSelf;
+        bool show = !UIPanelTransition.IsVisible(highScorePanel);
 
         if (show)
         {
             HighScoreManager.EnsureInitialized(10);
             highScoreUI?.ShowReadOnly();
+            highScorePanel.transform.SetAsLastSibling();
         }
 
-        highScorePanel.SetActive(show);
+        UIPanelTransition.SetVisible(highScorePanel, show);
         if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
+    }
+
+    public void OnToggleSteamLeaderboard()
+    {
+        TryToggleSteamLeaderboard();
     }
 
     public void OnToggleSelectCharacter()
@@ -292,8 +295,8 @@ public class TitleMenuUI : MonoBehaviour
         if (!characterSelectPanel) return;
 
         var go = characterSelectPanel.gameObject;
-        bool show = !go.activeSelf;
-        go.SetActive(show);
+        bool show = !UIPanelTransition.IsVisible(go);
+        UIPanelTransition.SetVisible(go, show);
 
         if (show)
             characterSelectPanel.RefreshPreview();  // Show the currently stored pick
@@ -312,8 +315,8 @@ public class TitleMenuUI : MonoBehaviour
         if (!monsterSelectPanel) return;
 
         var go = monsterSelectPanel.gameObject;
-        bool show = !go.activeSelf;
-        go.SetActive(show);
+        bool show = !UIPanelTransition.IsVisible(go);
+        UIPanelTransition.SetVisible(go, show);
 
         if (show)
             monsterSelectPanel.RefreshAllUI();
@@ -324,8 +327,8 @@ public class TitleMenuUI : MonoBehaviour
     public void OnToggleSettings()
     {
         if (!settingsPanel) return;
-        bool show = !settingsPanel.activeSelf;
-        settingsPanel.SetActive(show);
+        bool show = !UIPanelTransition.IsVisible(settingsPanel);
+        UIPanelTransition.SetVisible(settingsPanel, show);
 
         if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
     }
@@ -340,8 +343,8 @@ public class TitleMenuUI : MonoBehaviour
 
         if (!shopPanel) return;
 
-        bool show = !shopPanel.activeSelf;
-        shopPanel.SetActive(show);
+        bool show = !UIPanelTransition.IsVisible(shopPanel);
+        UIPanelTransition.SetVisible(shopPanel, show);
 
         if (show)
         {
@@ -371,8 +374,8 @@ public class TitleMenuUI : MonoBehaviour
     {
         if (!helpPanel) return;
 
-        bool show = !helpPanel.activeSelf;
-        helpPanel.SetActive(show);
+        bool show = !UIPanelTransition.IsVisible(helpPanel);
+        UIPanelTransition.SetVisible(helpPanel, show);
 
         if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
     }
@@ -381,8 +384,8 @@ public class TitleMenuUI : MonoBehaviour
     {
         if (!achievementPanel) return;
 
-        bool show = !achievementPanel.activeSelf;
-        achievementPanel.SetActive(show);
+        bool show = !UIPanelTransition.IsVisible(achievementPanel);
+        UIPanelTransition.SetVisible(achievementPanel, show);
 
         if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
     }
@@ -391,8 +394,8 @@ public class TitleMenuUI : MonoBehaviour
     {
         if (!codexPanel) return;
 
-        bool show = !codexPanel.activeSelf;
-        codexPanel.SetActive(show);
+        bool show = !UIPanelTransition.IsVisible(codexPanel);
+        UIPanelTransition.SetVisible(codexPanel, show);
 
         if (show)
             codexPanelUI?.RebuildAll();
@@ -465,10 +468,10 @@ public class TitleMenuUI : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (codexPanel && codexPanel.activeSelf) { OnToggleCodex(); return; }
-            if (settingsPanel && settingsPanel.activeSelf) { OnToggleSettings(); return; }
-            if (steamLeaderboardPanel && steamLeaderboardPanel.activeSelf) { OnToggleHighScore(); return; }
-            if (highScorePanel && highScorePanel.activeSelf) { OnToggleHighScore(); return; }
+            if (ConfirmationPopupUI.TryCancelShowingPopup()) return;
+            if (codexPanel && UIPanelTransition.IsVisible(codexPanel)) { OnToggleCodex(); return; }
+            if (settingsPanel && UIPanelTransition.IsVisible(settingsPanel)) { OnToggleSettings(); return; }
+            if (highScorePanel && UIPanelTransition.IsVisible(highScorePanel)) { OnToggleHighScore(); return; }
         }
     }
 
@@ -565,9 +568,9 @@ public class TitleMenuUI : MonoBehaviour
 
         if (hasTempRun)
         {
-            if (shopPanel) shopPanel.SetActive(false);
-            if (monsterSelectPanel) monsterSelectPanel.gameObject.SetActive(false);
-            if (characterSelectPanel) characterSelectPanel.gameObject.SetActive(false);
+            if (shopPanel) UIPanelTransition.Hide(shopPanel, true);
+            if (monsterSelectPanel) UIPanelTransition.Hide(monsterSelectPanel.gameObject, true);
+            if (characterSelectPanel) UIPanelTransition.Hide(characterSelectPanel.gameObject, true);
         }
     }
 
@@ -706,12 +709,12 @@ public class TitleMenuUI : MonoBehaviour
             return false;
 
         var panel = steamLeaderboardPanel ? steamLeaderboardPanel : leaderboard.gameObject;
-        bool show = !panel.activeSelf;
+        bool show = !UIPanelTransition.IsVisible(panel);
 
-        if (highScorePanel && highScorePanel.activeSelf)
-            highScorePanel.SetActive(false);
+        if (highScorePanel && UIPanelTransition.IsVisible(highScorePanel))
+            UIPanelTransition.Hide(highScorePanel);
 
-        panel.SetActive(show);
+        UIPanelTransition.SetVisible(panel, show);
 
         if (show)
         {
@@ -749,7 +752,7 @@ public class TitleMenuUI : MonoBehaviour
         var parent = steamLeaderboardParent ? steamLeaderboardParent : transform;
         var instance = Instantiate(prefab, parent);
         instance.name = prefab.name;
-        instance.SetActive(false);
+        UIPanelTransition.Hide(instance, true);
 
         steamLeaderboardPanel = instance;
         steamLeaderboardUI = instance.GetComponentInChildren<SteamLeaderboardUI>(true);

@@ -113,7 +113,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
         _isSpinning = false;
         _currentChosenModifier = chosen;
 
-        root.gameObject.SetActive(true);
+        UIPanelTransition.Show(root.gameObject);
 
         var gameController = FindFirstObjectByType<GameController>(FindObjectsInactive.Include);
         gameController?.QueueFirstLevelModifierTutorialIfNeeded(TutorialTarget);
@@ -224,11 +224,11 @@ public class LevelModifierSelectionUI : MonoBehaviour
         }
 
         if (modifierInfoPanel)
-            modifierInfoPanel.SetActive(false);
+            UIPanelTransition.Hide(modifierInfoPanel);
 
         StopModNameAnimation();
 
-        root.gameObject.SetActive(false);
+        UIPanelTransition.Hide(root.gameObject);
     }
 
     void Update()
@@ -504,13 +504,13 @@ public class LevelModifierSelectionUI : MonoBehaviour
     void OnModifierInfoClicked()
     {
         if (modifierInfoPanel)
-            modifierInfoPanel.SetActive(true);
+            UIPanelTransition.Show(modifierInfoPanel);
     }
 
     void OnCloseInfoClicked()
     {
         if (modifierInfoPanel)
-            modifierInfoPanel.SetActive(false);
+            UIPanelTransition.Hide(modifierInfoPanel);
     }
 
     void PopulateModifierInfoPanel(LevelModifierSO modifier)
@@ -588,7 +588,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
         }
 
         if (modifierInfoPanel)
-            modifierInfoPanel.SetActive(false);
+            UIPanelTransition.Hide(modifierInfoPanel, true);
     }
 
     void RefreshRerollUI(int availableRerolls, bool showButton, RerollHandler rerollHandler)

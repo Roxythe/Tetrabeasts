@@ -25,7 +25,7 @@ public class ConfirmationPopupUI : MonoBehaviour
         if (warningVisual)
             warningVisual.SetActive(false);
 
-        popupView?.Hide();
+        popupView?.Hide(true);
     }
 
     public static ConfirmationPopupUI FindOrCreate()
@@ -55,6 +55,30 @@ public class ConfirmationPopupUI : MonoBehaviour
     string continueText = "Continue", string cancelText = "Cancel", bool showWarningVisual = false)
     {
         Show(body, onConfirm, onCancel, continueText, cancelText, showWarningVisual);
+    }
+
+    public static bool TryCancelShowingPopup()
+    {
+        var existing = UnityEngine.Object.FindFirstObjectByType<ConfirmationPopupUI>(FindObjectsInactive.Include);
+        return existing && existing.CancelFromInput();
+    }
+
+    public bool CancelFromInput()
+    {
+        if (!IsShowing)
+            return false;
+
+        var cancel = _onCancel;
+        var confirm = _onConfirm;
+
+        Hide();
+
+        if (cancel != null)
+            cancel.Invoke();
+        else
+            confirm?.Invoke();
+
+        return true;
     }
 
     void Show(string body, Action onConfirm, Action onCancel, string continueText, string cancelText, bool showWarningVisual)

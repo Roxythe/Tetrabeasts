@@ -51,26 +51,23 @@ public class TutorialPopupView : MonoBehaviour
         if (!popupRoot)
             popupRoot = transform as RectTransform;
 
-        if (!canvasGroup)
-            canvasGroup = GetComponent<CanvasGroup>();
-
-        if (!canvasGroup)
-            canvasGroup = gameObject.AddComponent<CanvasGroup>();
+        EnsureCanvasGroup();
 
         if (popupRoot)
             defaultAnchoredPosition = popupRoot.anchoredPosition;
     }
 
-    public void Show()
+    public void Show(bool instant = false)
     {
-        gameObject.SetActive(true);
+        EnsureCanvasGroup();
+        UIPanelTransition.Show(gameObject, visibleAlpha, instant);
+        EnsureCanvasGroup();
 
-        if (!canvasGroup)
-            return;
-
-        canvasGroup.alpha = visibleAlpha;
-        canvasGroup.interactable = true;
-        canvasGroup.blocksRaycasts = true;
+        if (canvasGroup)
+        {
+            canvasGroup.interactable = true;
+            canvasGroup.blocksRaycasts = true;
+        }
     }
 
     public bool IsShowing
@@ -84,13 +81,14 @@ public class TutorialPopupView : MonoBehaviour
         }
     }
 
-    public void Hide()
+    public void Hide(bool instant = false)
     {
+        EnsureCanvasGroup();
         if (!canvasGroup) return;
 
-        canvasGroup.alpha = 0f;
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = false;
+        UIPanelTransition.Hide(gameObject, instant);
     }
 
     public void SetContent(string body)
@@ -157,5 +155,14 @@ public class TutorialPopupView : MonoBehaviour
 
         if (canvasGroup && gameObject.activeInHierarchy)
             canvasGroup.alpha = visibleAlpha;
+    }
+
+    void EnsureCanvasGroup()
+    {
+        if (!canvasGroup)
+            canvasGroup = GetComponent<CanvasGroup>();
+
+        if (!canvasGroup)
+            canvasGroup = gameObject.AddComponent<CanvasGroup>();
     }
 }

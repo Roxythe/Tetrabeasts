@@ -556,7 +556,7 @@ public class MonsterSelectUI : MonoBehaviour
         SelectedMonstersStore.SaveNames(SelectedMonstersStore.Active);
         RefreshAllUI();
         RefreshTitleMenuLoadoutUI();
-        gameObject.SetActive(false);
+        UIPanelTransition.Hide(gameObject);
     }
 
     static Transform FindDeep(Transform root, string name)

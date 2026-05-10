@@ -2340,7 +2340,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4588070999493795077, guid: f553da2721377124aaefab10a83de12d, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5803,9 +5803,9 @@ RectTransform:
   - {fileID: 1933119593}
   - {fileID: 1257397453}
   - {fileID: 499214993}
-  - {fileID: 1781026915}
   - {fileID: 2064785034}
   - {fileID: 316581731}
+  - {fileID: 1781026915}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -16851,6 +16851,14 @@ PrefabInstance:
     - target: {fileID: 1351472612344549031, guid: f44477c3a1d199548a834a1f933e0cba, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2136342077925118327, guid: f44477c3a1d199548a834a1f933e0cba, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: ecd6c7b794ace444c9ac680498100d5a, type: 3}
+    - target: {fileID: 2136342077925118327, guid: f44477c3a1d199548a834a1f933e0cba, type: 3}
+      propertyPath: m_PreserveAspect
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4926285063921144689, guid: f44477c3a1d199548a834a1f933e0cba, type: 3}
       propertyPath: m_AnchorMax.x

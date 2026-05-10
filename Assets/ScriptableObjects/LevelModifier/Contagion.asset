@@ -18,7 +18,7 @@ MonoBehaviour:
     a chance to transfer from afflicted units to healthy units and will spread with
     certainity on the death of infected units.
   icon: {fileID: 21300000, guid: a25bc7ccdcb004c49a08e0018296e3df, type: 3}
-  backgroundOverrideSprite: {fileID: 21300000, guid: 18650169a22c0b14b8b3cbc3b8e211c5, type: 3}
+  backgroundOverrideSprite: {fileID: 0}
   enableRainOverlay: 0
   rainDrops: 44
   rainSpeed: 140
@@ -63,7 +63,7 @@ MonoBehaviour:
   contagionFloorSprite: {fileID: 21300000, guid: 73885b1784c4bc944aed3861777e71c5, type: 3}
   contagionUnitTint: {r: 0.9811321, g: 0.5229619, b: 0.92510456, a: 1}
   contagionFloorTint: {r: 1, g: 0.05490196, b: 0.87058824, a: 1}
-  deathExplosionDamage: 2
+  deathExplosionMaxHpPercent: 0.3
   swampPoisonDamage: 1
   swampPoisonInterval: 1
   swampPoisonTicks: -1

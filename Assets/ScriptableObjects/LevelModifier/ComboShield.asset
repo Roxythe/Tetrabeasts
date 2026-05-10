@@ -18,7 +18,7 @@ MonoBehaviour:
     will be required to remove each enemy shield. Damage dealt to the enemy while
     shielded is significantly reduced.
   icon: {fileID: 21300000, guid: ac3430f92ab02a54bbcfd7fdfd2c94af, type: 3}
-  backgroundOverrideSprite: {fileID: 21300000, guid: 18650169a22c0b14b8b3cbc3b8e211c5, type: 3}
+  backgroundOverrideSprite: {fileID: 0}
   enableRainOverlay: 0
   rainDrops: 44
   rainSpeed: 140
@@ -63,7 +63,7 @@ MonoBehaviour:
   contagionFloorSprite: {fileID: 21300000, guid: 73885b1784c4bc944aed3861777e71c5, type: 3}
   contagionUnitTint: {r: 1, g: 0, b: 0.85932016, a: 0.6862745}
   contagionFloorTint: {r: 1, g: 0, b: 0.72008324, a: 0.84313726}
-  deathExplosionDamage: 10
+  deathExplosionMaxHpPercent: 0.3
   swampPoisonDamage: 2
   swampPoisonInterval: 1
   swampPoisonTicks: -1

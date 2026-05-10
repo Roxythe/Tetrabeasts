@@ -49,6 +49,7 @@ public class LevelModifierController : MonoBehaviour
     GameController _gc;
     LevelModifierSelectionUI _selectionUI;
     RainOverlayUI _rainOverlay;
+    Sprite _currentLevelBackgroundSprite;
 
     float _overgrowthSpawnTimer;
     float _stormCountdown;
@@ -109,6 +110,7 @@ public class LevelModifierController : MonoBehaviour
 
     public IEnumerator BeginLevel(CastleData castleData)
     {
+        CacheLevelBackground(castleData);
         ResetLevelState();
 
         if (castleData == null)
@@ -177,6 +179,7 @@ public class LevelModifierController : MonoBehaviour
 
     public void RestoreCheckpointState(LevelModifierSO modifier, int availableRerolls)
     {
+        CacheLevelBackgroundFromCurrentLevel();
         ResetLevelState();
         _availableRerolls = Mathf.Max(0, availableRerolls);
         ActiveModifier = modifier;
@@ -1143,19 +1146,7 @@ public class LevelModifierController : MonoBehaviour
             rt.SetSiblingIndex(0);
         }
 
-        Sprite bg = null;
-
-        if (ActiveModifier && ActiveModifier.backgroundOverrideSprite)
-            bg = ActiveModifier.backgroundOverrideSprite;
-        else
-            bg = defaultBackgroundSprite;
-
-        if (backgroundOverrideImage)
-        {
-            backgroundOverrideImage.sprite = bg;
-            backgroundOverrideImage.color = Color.white;
-            backgroundOverrideImage.gameObject.SetActive(bg != null);
-        }
+        ApplyResolvedBackgroundSprite();
 
         if (ActiveModifier && ActiveModifier.enableRainOverlay)
         {
@@ -1222,12 +1213,7 @@ public class LevelModifierController : MonoBehaviour
         ClearVisualDictionary(_contagionFloorVisuals);
         ClearVisualDictionary(_infectionVisuals);
 
-        if (backgroundOverrideImage)
-        {
-            backgroundOverrideImage.sprite = defaultBackgroundSprite;
-            backgroundOverrideImage.color = Color.white;
-            backgroundOverrideImage.gameObject.SetActive(defaultBackgroundSprite != null);
-        }
+        ApplyResolvedBackgroundSprite();
 
         if (_rainOverlay)
             _rainOverlay.gameObject.SetActive(false);
@@ -1235,6 +1221,46 @@ public class LevelModifierController : MonoBehaviour
         AudioManager.I?.StopRainAmbience();
 
         RefreshModifierUI();
+    }
+
+    void CacheLevelBackground(CastleData castleData)
+    {
+        _currentLevelBackgroundSprite = castleData ? castleData.levelBackgroundSprite : null;
+    }
+
+    void CacheLevelBackgroundFromCurrentLevel()
+    {
+        if (!_gc)
+            _gc = GetComponent<GameController>();
+
+        CastleData castleData = null;
+        if (_gc && _gc.castlesByLevel != null)
+        {
+            int levelIndex = _gc.CurrentLevel;
+            if (levelIndex >= 0 && levelIndex < _gc.castlesByLevel.Length)
+                castleData = _gc.castlesByLevel[levelIndex];
+        }
+
+        CacheLevelBackground(castleData);
+    }
+
+    Sprite ResolveBackgroundSprite()
+    {
+        if (ActiveModifier && ActiveModifier.backgroundOverrideSprite)
+            return ActiveModifier.backgroundOverrideSprite;
+
+        return _currentLevelBackgroundSprite ? _currentLevelBackgroundSprite : defaultBackgroundSprite;
+    }
+
+    void ApplyResolvedBackgroundSprite()
+    {
+        if (!backgroundOverrideImage)
+            return;
+
+        Sprite bg = ResolveBackgroundSprite();
+        backgroundOverrideImage.sprite = bg;
+        backgroundOverrideImage.color = Color.white;
+        backgroundOverrideImage.gameObject.SetActive(bg != null);
     }
 
     void ClearVisualDictionary(Dictionary<Vector2Int, Image> dict)

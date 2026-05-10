@@ -72,9 +72,9 @@ public class RoundRewardUI : MonoBehaviour
 
         _onComplete = onComplete;
 
-        rootPanel.SetActive(true);
-        buffPanel.SetActive(true);
-        debuffPanel.SetActive(false);
+        UIPanelTransition.Show(rootPanel);
+        UIPanelTransition.Show(buffPanel, true);
+        UIPanelTransition.Hide(debuffPanel, true);
         StartBlink();
 
         confirmBuffButton.interactable = false;
@@ -102,8 +102,8 @@ public class RoundRewardUI : MonoBehaviour
         confirmBuffButton.onClick.RemoveAllListeners();
         confirmBuffButton.onClick.AddListener(() =>
         {
-            buffPanel.SetActive(false);
-            debuffPanel.SetActive(true);
+            UIPanelTransition.Hide(buffPanel);
+            UIPanelTransition.Show(debuffPanel);
 
             Populate(debuffContainer, Pick3UniqueWeighted(debuffPool, misfortune, wasBossLevel), isBuff: false);
         });
@@ -366,7 +366,7 @@ public class RoundRewardUI : MonoBehaviour
         }
 
         StopBlink();
-        rootPanel.SetActive(false);
+        UIPanelTransition.Hide(rootPanel);
     }
 
     // ========= Round Win Blink Logic =========

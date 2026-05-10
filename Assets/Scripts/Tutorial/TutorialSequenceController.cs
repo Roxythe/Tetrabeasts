@@ -98,7 +98,7 @@ public class TutorialSequenceController : MonoBehaviour
         if (popupView && popupView.PopupRectTransform)
             _defaultPopupPosition = popupView.PopupRectTransform.anchoredPosition;
 
-        popupView?.Hide();
+        popupView?.Hide(true);
         highlightView?.Hide();
     }
 
@@ -122,7 +122,7 @@ public class TutorialSequenceController : MonoBehaviour
         }         
 
         if (popupView && popupView.gameObject.activeInHierarchy)
-            popupView.Hide();
+            popupView.Hide(true);
 
         highlightView?.Hide();
 
@@ -277,11 +277,11 @@ public class TutorialSequenceController : MonoBehaviour
         var step = steps[_currentStepIndex];
         _resolvedCompletionMode = ResolveCompletionMode(step);
 
-        popupView.Show();
         popupView.SetContent(step.body);
         popupView.SetSkipVisible(step.allowSkip);
 
         ApplyPopupPosition(step);
+        popupView.Show();
         ApplyHighlight(step);
         HookCurrentStepBindings(step);
         ApplyButtonInteractionLock(step);

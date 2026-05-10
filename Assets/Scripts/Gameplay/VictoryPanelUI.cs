@@ -107,7 +107,7 @@ public class VictoryPanelUI : MonoBehaviour
             continueButton.onClick.AddListener(() => onContinue?.Invoke());
         }
 
-        root.SetActive(true);
+        UIPanelTransition.Show(root);
         Canvas.ForceUpdateCanvases();
     }
 
@@ -117,7 +117,7 @@ public class VictoryPanelUI : MonoBehaviour
             root = gameObject;
 
         if (root)
-            root.SetActive(active);
+            UIPanelTransition.SetVisible(root, active);
     }
 
     public void Hide()
@@ -126,7 +126,7 @@ public class VictoryPanelUI : MonoBehaviour
             root = gameObject;
 
         if (root)
-            root.SetActive(false);
+            UIPanelTransition.Hide(root, true);
     }
 
     void RefreshStats(RunSummaryStats.Snapshot stats)

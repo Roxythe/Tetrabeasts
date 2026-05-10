@@ -63,6 +63,9 @@ public class GameController : MonoBehaviour
     [SerializeField] float gravityIncreasePerSecond = 0.01f;
     [SerializeField] float levelBaseGravityIncrease = 0.20f;
 
+    [Header("Slow Gravity Special Block")]
+    [SerializeField, Range(0.01f, 1f)] float minSlowGravitySpecialMultiplier = 0.10f;
+
     // Runtime cache
     float _level1FallInterval;
     float _lastShownFallInterval = -1f;
@@ -318,6 +321,8 @@ public class GameController : MonoBehaviour
     // =========== Player Special Timers ===========
     float _playerGravityMultActive = 1f;     // 1 = normal
     Coroutine _playerGravityCR;
+    float _slowGravitySpecialMultActive = 1f;
+    float _slowGravitySpecialRampRateMultActive = 1f;
 
     float _playerDoubleStatsAttackMult = 1f; // Multiplied into monster damage output
     Coroutine _playerDoubleStatsCR;
@@ -335,9 +340,10 @@ public class GameController : MonoBehaviour
     Mathf.Max(0.01f, pieceGravityMult) *
     ShopBuffEffects.GravityMultiplier *
     _playerGravityMultActive *
+    _slowGravitySpecialMultActive *
     (1f + _bossGravityBonusActive); // Slows falling (mult < 1 => slower because interval /= mult)
 
-    float EffectiveFallRampRateMult => Mathf.Max(0f, fallRampRateMult) * ShopBuffEffects.VelocityMultiplier; // Velocity Down: slows ramping (mult < 1 => slower ramp)
+    float EffectiveFallRampRateMult => Mathf.Max(0f, fallRampRateMult) * ShopBuffEffects.VelocityMultiplier * _slowGravitySpecialRampRateMultActive; // Velocity Down: slows ramping (mult < 1 => slower ramp)
     float EffectiveCurrencyChancePerClearedRow => // Gold Up: +2% chance per level
         Mathf.Clamp01(currencyChancePerClearedRow + lineClearCurrencyChanceAdd + ShopBuffEffects.GoldChanceBonus);
     float EffectiveLuck => luck + ShopBuffEffects.LuckBonus; // Luck Up: +10 per level 
@@ -578,8 +584,8 @@ public class GameController : MonoBehaviour
             closeRunModsButton.onClick.AddListener(CloseRunModsPanel);
 
         // Ensure pause menu sub panels start closed
-        if (runModsPanelRoot) runModsPanelRoot.SetActive(false); 
-        if (helpPanelRoot) helpPanelRoot.SetActive(false);
+        if (runModsPanelRoot) UIPanelTransition.Hide(runModsPanelRoot, true);
+        if (helpPanelRoot) UIPanelTransition.Hide(helpPanelRoot, true);
 
         // Apply character special gauge max
         if (selectedCharacter && selectedCharacter.specialGaugeMax > 0f)
@@ -605,7 +611,7 @@ public class GameController : MonoBehaviour
             StartFreshRun();
 
         // Pause menu defaults
-        if (pausePanel) pausePanel.SetActive(false);
+        if (pausePanel) UIPanelTransition.Hide(pausePanel, true);
         Time.timeScale = 1f;
         isPaused = false;
 
@@ -987,6 +993,9 @@ public class GameController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            if (ConfirmationPopupUI.TryCancelShowingPopup())
+                return;
+
             if (!isPaused)
             {
                 PauseGame();
@@ -997,21 +1006,21 @@ public class GameController : MonoBehaviour
                 bool closedSomething = false; // Close any sub-panels opened from pause
 
                 // Close Help panel first 
-                if (helpPanelRoot && helpPanelRoot.activeSelf)
+                if (helpPanelRoot && UIPanelTransition.IsVisible(helpPanelRoot))
                 {
-                    helpPanelRoot.SetActive(false);
+                    UIPanelTransition.Hide(helpPanelRoot);
                     closedSomething = true;
                 }
 
                 // Close Run Mods
-                if (!closedSomething && runModsPanelRoot && runModsPanelRoot.activeSelf)
+                if (!closedSomething && runModsPanelRoot && UIPanelTransition.IsVisible(runModsPanelRoot))
                 {
-                    runModsPanelRoot.SetActive(false);
+                    UIPanelTransition.Hide(runModsPanelRoot);
                     closedSomething = true;
                 }
 
                 // Close Volume settings panel
-                if (!closedSomething && volumePanelInPause && volumePanelInPause.gameObject.activeSelf)
+                if (!closedSomething && volumePanelInPause && UIPanelTransition.IsVisible(volumePanelInPause.gameObject))
                 {
                     volumePanelInPause.Close();
                     closedSomething = true;
@@ -1516,7 +1525,7 @@ public class GameController : MonoBehaviour
         AudioListener.pause = false;
 
         if (pausePanel)
-            pausePanel.SetActive(false);
+            UIPanelTransition.Hide(pausePanel, true);
 
         EnterUICursorMode();
         StartCoroutine(ReapplyUICursorNextFrame());
@@ -2748,7 +2757,7 @@ public class GameController : MonoBehaviour
         AudioListener.pause = false;
 
         if (pausePanel)
-            pausePanel.SetActive(false);
+            UIPanelTransition.Hide(pausePanel, true);
 
         EnterGameplayCursorMode();
     }
@@ -3565,7 +3574,7 @@ public class GameController : MonoBehaviour
         AudioListener.pause = true;  // Pause SFX/music globally
 
         if (AudioManager.I) AudioManager.I.PlayPauseMusic(); // Play pause menu music if assigned
-        if (pausePanel) pausePanel.SetActive(true);
+        if (pausePanel) UIPanelTransition.Show(pausePanel);
 
         NotifyTutorialGameplayEvent(TutorialGameplayEvent.PauseOpened);
 
@@ -3633,9 +3642,9 @@ public class GameController : MonoBehaviour
         Time.timeScale = 1f;
         AudioListener.pause = false;
         isPaused = false;
-        if (pausePanel) pausePanel.SetActive(false);
+        if (pausePanel) UIPanelTransition.Hide(pausePanel, true);
 
-        ClosePauseSubPanels();
+        ClosePauseSubPanels(true);
 
         if (AudioManager.I) AudioManager.I.StopPauseMusic();
         if (AudioManager.I) AudioManager.I.PlaySFX(AudioManager.I.sfxRestart);
@@ -3689,7 +3698,7 @@ public class GameController : MonoBehaviour
 
     public void ResumeGame()
     {
-        ClosePauseSubPanels();
+        ClosePauseSubPanels(true);
 
         if (AudioManager.I) AudioManager.I.StopPauseMusic();
 
@@ -3700,7 +3709,7 @@ public class GameController : MonoBehaviour
         if (AudioManager.I) // Handle music mode changes that were made while paused
             AudioManager.I.ApplyPendingMusicModeAfterUnpause(); 
 
-        if (pausePanel) pausePanel.SetActive(false);
+        if (pausePanel) UIPanelTransition.Hide(pausePanel);
         NotifyTutorialGameplayEvent(TutorialGameplayEvent.PauseClosed);
         EnterGameplayCursorMode();
     }
@@ -3851,27 +3860,27 @@ public class GameController : MonoBehaviour
 
         if (runModsPanelUI) runModsPanelUI.Refresh(); // Make sure the list is up to date before showing
 
-        runModsPanelRoot.SetActive(true);
+        UIPanelTransition.Show(runModsPanelRoot);
     }
 
     public void CloseRunModsPanel()
     {
-        if (runModsPanelRoot) runModsPanelRoot.SetActive(false);
+        if (runModsPanelRoot) UIPanelTransition.Hide(runModsPanelRoot);
     }
 
-    void ClosePauseSubPanels()
+    void ClosePauseSubPanels(bool instant = false)
     {
         // Close Help panel
-        if (helpPanelRoot && helpPanelRoot.activeSelf)
-            helpPanelRoot.SetActive(false);
+        if (helpPanelRoot && UIPanelTransition.IsVisible(helpPanelRoot))
+            UIPanelTransition.Hide(helpPanelRoot, instant);
 
         // Close Run Mods
-        if (runModsPanelRoot && runModsPanelRoot.activeSelf)
-            runModsPanelRoot.SetActive(false);
+        if (runModsPanelRoot && UIPanelTransition.IsVisible(runModsPanelRoot))
+            UIPanelTransition.Hide(runModsPanelRoot, instant);
 
         // Close Volume settings panel
-        if (volumePanelInPause && volumePanelInPause.gameObject.activeSelf)
-            volumePanelInPause.Close();
+        if (volumePanelInPause && UIPanelTransition.IsVisible(volumePanelInPause.gameObject))
+            volumePanelInPause.Close(instant);
     }
 
     // ================ Currency Popup System ===================
@@ -3956,6 +3965,7 @@ public class GameController : MonoBehaviour
     {
         _levelTimer = 0f;
         _gravityCapAccumSeconds = 0f;
+        ResetSlowGravitySpecialEffect();
 
         int displayedLevel = Mathf.Max(1, levelIndex + 1);
         float levelBonus = Mathf.Max(0, displayedLevel - 1) * Mathf.Max(0f, levelBaseGravityIncrease);
@@ -3974,6 +3984,33 @@ public class GameController : MonoBehaviour
 
         UpdateGravityText(interval);
         UpdateLevelTimerUI();
+    }
+
+    void ResetSlowGravitySpecialEffect()
+    {
+        _slowGravitySpecialMultActive = 1f;
+        _slowGravitySpecialRampRateMultActive = 1f;
+    }
+
+    public void ActivateSlowGravitySpecial(float gravityMultiplier, float rampRateMultiplier)
+    {
+        float minMultiplier = Mathf.Clamp(minSlowGravitySpecialMultiplier, 0.01f, 1f);
+        float gravityMult = Mathf.Clamp(gravityMultiplier, minMultiplier, 1f);
+        float rampMult = Mathf.Clamp01(rampRateMultiplier);
+
+        _slowGravitySpecialMultActive = Mathf.Clamp(
+            _slowGravitySpecialMultActive * gravityMult,
+            minMultiplier,
+            1f);
+
+        _slowGravitySpecialRampRateMultActive = Mathf.Clamp01(_slowGravitySpecialRampRateMultActive * rampMult);
+
+        float interval = GetCurrentFallInterval();
+        if (piece && piece.enabled)
+            piece.SetFallInterval(interval, resetAccumulator: true);
+
+        _lastShownFallInterval = -1f;
+        UpdateGravityText(interval);
     }
 
     float GetCurrentFallInterval()
@@ -5820,10 +5857,10 @@ public class GameController : MonoBehaviour
         isPaused = true;
 
         // Ensure pause menu itself is not shown
-        if (pausePanel) pausePanel.SetActive(false);
+        if (pausePanel) UIPanelTransition.Hide(pausePanel, true);
 
         if (xpAwardUI && !xpAwardUI.gameObject.activeInHierarchy)
-            xpAwardUI.gameObject.SetActive(true);
+            UIPanelTransition.Show(xpAwardUI.gameObject);
 
         EnterUICursorMode();
         StartCoroutine(ReapplyUICursorNextFrame());
@@ -6053,7 +6090,7 @@ public class GameController : MonoBehaviour
     {
         if (!hasFocus) return;
 
-        if (isPaused || (runModsPanelRoot && runModsPanelRoot.activeSelf))
+        if (isPaused || (runModsPanelRoot && UIPanelTransition.IsVisible(runModsPanelRoot)))
             EnterUICursorMode();
         else
             EnterGameplayCursorMode();

@@ -532,6 +532,18 @@ public class Piece : MonoBehaviour
 
                         return;
                     }
+
+                case SpecialType.SlowGravity:
+                    {
+                        gc?.ActivateSlowGravitySpecial(
+                            data.slowGravityMultiplier,
+                            data.slowGravityRampRateMultiplier);
+
+                        for (int y = 0; y < board.height; y++)
+                            for (int x = 0; x < board.width; x++)
+                                envAffected.Add(new Vector2Int(x, y));
+                        break;
+                    }
             }
 
             var affectedEnv = new List<Vector2Int>();
@@ -556,8 +568,11 @@ public class Piece : MonoBehaviour
 
             if (AudioManager.I && data.specialSFX) AudioManager.I.PlaySFX(data.specialSFX);
 
-            board.ApplySpecialToEnvironment(envAffected, data.special);    
-            board.FlashCells(toRemove, data.specialFlashSprite, data.flashOnlyOccupied); // Flash on affected cells using data flags
+            board.ApplySpecialToEnvironment(envAffected, data.special);
+            board.FlashCells(
+                data.special == SpecialType.SlowGravity ? envAffected : toRemove,
+                data.specialFlashSprite,
+                data.flashOnlyOccupied); // Flash on affected cells using data flags
 
             // Remove targets and make only the directly-above tiles fall sparsely
             board.RemoveCellsAndFall(toRemove, out var removedA, out int dmgA, out float chargeA);

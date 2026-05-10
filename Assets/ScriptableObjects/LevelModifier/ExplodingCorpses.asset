@@ -17,7 +17,7 @@ MonoBehaviour:
   description: Units will explode on death dealing damage to all surrounding units.
     Damage dealt is a percentage based off of the max health of the exploding unit.
   icon: {fileID: 21300000, guid: 81538dcc9afa0e04dbc528435effaa9e, type: 3}
-  backgroundOverrideSprite: {fileID: 21300000, guid: 18650169a22c0b14b8b3cbc3b8e211c5, type: 3}
+  backgroundOverrideSprite: {fileID: 0}
   enableRainOverlay: 0
   rainDrops: 44
   rainSpeed: 140

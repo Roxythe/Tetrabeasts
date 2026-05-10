@@ -22,3 +22,5 @@ MonoBehaviour:
   specialFlashSprite: {fileID: 3666344496301738487, guid: ff77d75be45fc354ebb5336a6d3994cb, type: 3}
   flashOnlyOccupied: 1
   specialSFX: {fileID: 8300000, guid: 7831f18804209d34b93037c32838cf6e, type: 3}
+  slowGravityMultiplier: 0.5
+  slowGravityRampRateMultiplier: 0.3

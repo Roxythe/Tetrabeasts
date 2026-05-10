@@ -58,11 +58,12 @@ public class HighScoreUI : MonoBehaviour
 
     void ForceActivate()
     {
-        if (!gameObject.activeSelf) gameObject.SetActive(true);
-        if (panel && !panel.activeSelf) panel.SetActive(true);
+        bool hasSeparatePanel = panel && panel != gameObject;
+        if (!UIPanelTransition.IsVisible(gameObject)) UIPanelTransition.Show(gameObject, hasSeparatePanel);
+        if (panel && !UIPanelTransition.IsVisible(panel)) UIPanelTransition.Show(panel);
 
         var cg = (panel ? panel : gameObject).GetComponent<CanvasGroup>();
-        if (cg) { cg.alpha = 1f; cg.interactable = true; cg.blocksRaycasts = true; }
+        if (cg) { cg.interactable = true; cg.blocksRaycasts = true; }
     }
 
     void Submit()
@@ -100,7 +101,7 @@ public class HighScoreUI : MonoBehaviour
 
     public void Hide()
     {
-        if (panel) panel.SetActive(false);
+        if (panel) UIPanelTransition.Hide(panel);
     }
 
     public void RefreshTable()

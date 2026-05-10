@@ -9801,7 +9801,7 @@ MonoBehaviour:
   healthBarSlider: {fileID: 369178297}
   healthBarText: {fileID: 60255996}
   levelNameText: {fileID: 685653179}
-  levelBackgroundImage: {fileID: 0}
+  levelBackgroundImage: {fileID: 1021661073}
   bossOverlayImage: {fileID: 819429985}
   bossOverlaySize: {x: 0, y: 0}
   bossOverlayOffset: {x: 0, y: 0}
@@ -17071,9 +17071,12 @@ MonoBehaviour:
   dimmerPanelName: Dimmer_Panel
   fallbackDurationSeconds: 1.25
   completionBufferSeconds: 0.05
+  characterAnimationLastFrameHoldOffsetSeconds: 0.03
   maxDurationSeconds: 8
   dimmerFadeSeconds: 0.25
   slideInSeconds: 0.55
+  slideOutSeconds: 0.55
+  loopSfxFadeOutLeadSeconds: 1
   characterAnimationStartDelaySeconds: 0.5
   slideInOffsetPixels: 0
 --- !u!114 &1534734142
@@ -23941,6 +23944,7 @@ MonoBehaviour:
   minFallInterval: 0.1
   gravityIncreasePerSecond: 0.01
   levelBaseGravityIncrease: 0.2
+  minSlowGravitySpecialMultiplier: 0.1
   bossGravityIncreasedImage: {fileID: 1219635494}
   gravityTextDefaultColor: {r: 1, g: 1, b: 1, a: 1}
   gravityTextBossColor: {r: 0.8, g: 0.25, b: 1, a: 1}
@@ -24132,7 +24136,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 76d1cbaa83a0dd040b55b04bd2932b37, type: 2}
   - {fileID: 11400000, guid: 3b2b178012d4e3f45a1be4fffc5b8def, type: 2}
   - {fileID: 11400000, guid: 83208262cc66a7143b101ba8cdb0d548, type: 2}
+  - {fileID: 11400000, guid: a3d8e2f5c1b64a86a2de5bd75e1f4fd6, type: 2}
   specialChancePerEnqueue: 0.05
+  minSpecialChance: 0.01
   maxSpecialChance: 0.25
   projectileRoot: {fileID: 304730603}
   projectileSpeed: 1000
@@ -24401,6 +24407,8 @@ MonoBehaviour:
   comboShieldPulseDuration: 1.25
   autoShiftBaseSpeedMultiplier: 1.15
   autoShiftGravityRampInfluence: 0.45
+  rearAmbushBaseRows: 3
+  rearAmbushLevelsPerExtraRow: 2
 --- !u!114 &2092384770
 MonoBehaviour:
   m_ObjectHideFlags: 0
