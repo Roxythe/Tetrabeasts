@@ -132,6 +132,9 @@ MonoBehaviour:
   closeButton: {fileID: 0}
   statusText: {fileID: 7295696199555741483}
   statusShadowText: {fileID: 3492062113539945100}
+  refreshText: {fileID: 6708816040778160572}
+  refreshShadowText: {fileID: 7185797833751070814}
+  refreshTimerUpdateSeconds: 1
 --- !u!1 &168036426412762265
 GameObject:
   m_ObjectHideFlags: 0

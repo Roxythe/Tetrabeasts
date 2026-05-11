@@ -6,6 +6,70 @@ using UnityEngine;
 using Steamworks;
 #endif
 
+public static class SteamLeaderboardResetSchedule
+{
+    public const int ResetIntervalWeeks = 4;
+
+    static readonly DateTime FirstResetUtc = new(2026, 5, 12, 4, 0, 0, DateTimeKind.Utc);
+    static readonly TimeSpan ResetInterval = TimeSpan.FromDays(ResetIntervalWeeks * 7);
+
+    public static string GetActiveLeaderboardName(string baseLeaderboardName)
+    {
+        if (string.IsNullOrWhiteSpace(baseLeaderboardName))
+            baseLeaderboardName = SteamLeaderboardService.DefaultLeaderboardName;
+
+        int periodIndex = GetResetPeriodIndex(DateTime.UtcNow);
+        return periodIndex <= 0 ? baseLeaderboardName : $"{baseLeaderboardName}_R{periodIndex:0000}";
+    }
+
+    public static TimeSpan GetTimeUntilNextReset()
+    {
+        return GetNextResetUtc(DateTime.UtcNow) - DateTime.UtcNow;
+    }
+
+    public static int GetResetPeriodIndex(DateTime utcNow)
+    {
+        utcNow = utcNow.ToUniversalTime();
+        if (utcNow < FirstResetUtc)
+            return 0;
+
+        long elapsedTicks = utcNow.Ticks - FirstResetUtc.Ticks;
+        return (int)(elapsedTicks / ResetInterval.Ticks) + 1;
+    }
+
+    public static string FormatCountdown(TimeSpan remaining)
+    {
+        double remainingSeconds = Math.Max(0d, remaining.TotalSeconds);
+        if (remainingSeconds >= 86400d)
+        {
+            int totalMinutes = Mathf.Max(0, Mathf.FloorToInt((float)(remainingSeconds / 60d)));
+            int days = totalMinutes / 1440;
+            int dayHours = totalMinutes % 1440 / 60;
+            int dayMinutes = totalMinutes % 60;
+
+            return $"Reset: {days}d {dayHours}h {dayMinutes}m";
+        }
+
+        int totalSeconds = Mathf.Max(0, Mathf.CeilToInt((float)remainingSeconds));
+        int hours = totalSeconds / 3600;
+        int minutes = totalSeconds % 3600 / 60;
+        int seconds = totalSeconds % 60;
+
+        return $"Reset: {hours}h {minutes}m {seconds}s";
+    }
+
+    static DateTime GetNextResetUtc(DateTime utcNow)
+    {
+        utcNow = utcNow.ToUniversalTime();
+        if (utcNow < FirstResetUtc)
+            return FirstResetUtc;
+
+        long elapsedTicks = utcNow.Ticks - FirstResetUtc.Ticks;
+        long completedIntervals = elapsedTicks / ResetInterval.Ticks;
+        return FirstResetUtc.AddTicks((completedIntervals + 1) * ResetInterval.Ticks);
+    }
+}
+
 public class SteamLeaderboardService : MonoBehaviour
 {
     public const string DefaultLeaderboardName = "Tetrabeasts_GlobalScore";
@@ -27,6 +91,7 @@ public class SteamLeaderboardService : MonoBehaviour
     bool _steamInitialized;
     bool _leaderboardReady;
     bool _leaderboardFindInFlight;
+    string _activeLeaderboardName;
     string _lastStatus = "Steam leaderboard ready.";
 
     CallResult<LeaderboardFindResult_t> _findLeaderboardResult;
@@ -91,8 +156,7 @@ public class SteamLeaderboardService : MonoBehaviour
 
         leaderboardName = requestedLeaderboardName;
 #if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
-        _leaderboardReady = false;
-        _leaderboard = default;
+        InvalidateLeaderboard();
 #endif
     }
 
@@ -333,6 +397,10 @@ public class SteamLeaderboardService : MonoBehaviour
         if (!_steamInitialized)
             return;
 
+        string activeName = SteamLeaderboardResetSchedule.GetActiveLeaderboardName(leaderboardName);
+        if (_activeLeaderboardName != activeName)
+            InvalidateLeaderboard();
+
         if (_leaderboardReady)
         {
             action?.Invoke();
@@ -345,14 +413,21 @@ public class SteamLeaderboardService : MonoBehaviour
         FindLeaderboard();
     }
 
+    void InvalidateLeaderboard()
+    {
+        _leaderboardReady = false;
+        _leaderboard = default;
+    }
+
     void FindLeaderboard()
     {
         if (!_steamInitialized || _leaderboardReady || _leaderboardFindInFlight)
             return;
 
+        _activeLeaderboardName = SteamLeaderboardResetSchedule.GetActiveLeaderboardName(leaderboardName);
         _leaderboardFindInFlight = true;
         var handle = SteamUserStats.FindOrCreateLeaderboard(
-            leaderboardName,
+            _activeLeaderboardName,
             ELeaderboardSortMethod.k_ELeaderboardSortMethodDescending,
             ELeaderboardDisplayType.k_ELeaderboardDisplayTypeNumeric);
 
@@ -365,9 +440,16 @@ public class SteamLeaderboardService : MonoBehaviour
 
         if (ioFailure || result.m_bLeaderboardFound == 0)
         {
-            _lastStatus = $"Steam leaderboard '{leaderboardName}' was not found.";
+            _lastStatus = $"Steam leaderboard '{_activeLeaderboardName}' was not found.";
             if (logSteamStatus)
                 Debug.LogWarning(_lastStatus);
+            return;
+        }
+
+        if (_activeLeaderboardName != SteamLeaderboardResetSchedule.GetActiveLeaderboardName(leaderboardName))
+        {
+            InvalidateLeaderboard();
+            FindLeaderboard();
             return;
         }
 

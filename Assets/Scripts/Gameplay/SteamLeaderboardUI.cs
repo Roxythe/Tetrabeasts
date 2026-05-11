@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -40,20 +41,34 @@ public class SteamLeaderboardUI : MonoBehaviour
     [SerializeField] TMP_Text statusText;
     [SerializeField] TMP_Text statusShadowText;
 
+    [Header("Reset Timer")]
+    [SerializeField] TMP_Text refreshText;
+    [SerializeField] TMP_Text refreshShadowText;
+    [SerializeField] float refreshTimerUpdateSeconds = 1f;
+
     SteamLeaderboardSnapshot _snapshot;
     LeaderboardTab _activeTab = LeaderboardTab.Global;
     bool _isRefreshing;
+    float _nextRefreshTimerUpdateTime;
+    int _lastResetPeriodIndex = int.MinValue;
 
     void Awake()
     {
         ResolveMissingReferences();
         HookButtons();
         SetActiveTab(_activeTab);
+        UpdateResetTimer(true);
     }
 
     void OnEnable()
     {
+        UpdateResetTimer(true);
         RefreshLeaderboard();
+    }
+
+    void Update()
+    {
+        UpdateResetTimer(false);
     }
 
     void OnDestroy()
@@ -258,6 +273,33 @@ public class SteamLeaderboardUI : MonoBehaviour
             statusShadowText.text = message;
     }
 
+    void UpdateResetTimer(bool force)
+    {
+        if (!force && Time.unscaledTime < _nextRefreshTimerUpdateTime)
+            return;
+
+        TimeSpan timeUntilReset = SteamLeaderboardResetSchedule.GetTimeUntilNextReset();
+        SetResetTimerText(SteamLeaderboardResetSchedule.FormatCountdown(timeUntilReset));
+
+        int resetPeriodIndex = SteamLeaderboardResetSchedule.GetResetPeriodIndex(DateTime.UtcNow);
+        bool resetBoundaryCrossed = _lastResetPeriodIndex != int.MinValue && resetPeriodIndex != _lastResetPeriodIndex;
+        _lastResetPeriodIndex = resetPeriodIndex;
+
+        _nextRefreshTimerUpdateTime = Time.unscaledTime + Mathf.Max(0.1f, refreshTimerUpdateSeconds);
+
+        if (resetBoundaryCrossed && isActiveAndEnabled)
+            RefreshLeaderboard();
+    }
+
+    void SetResetTimerText(string message)
+    {
+        if (refreshText)
+            refreshText.text = message;
+
+        if (refreshShadowText)
+            refreshShadowText.text = message;
+    }
+
     void ResolveMissingReferences()
     {
         if (!globalPanel)
@@ -279,6 +321,12 @@ public class SteamLeaderboardUI : MonoBehaviour
 
         if (!statusShadowText)
             statusShadowText = FindText("statusshadow", "status_shadow", "statusshadowtext", "status_shadow_text");
+
+        if (!refreshText)
+            refreshText = FindText("refresh_text", "refreshtimer", "reset_text");
+
+        if (!refreshShadowText)
+            refreshShadowText = FindText("refreshshadow_text", "refresh_shadow", "resetshadow_text", "reset_shadow");
 
         if (!globalTabButton)
             globalTabButton = FindButton("global");
@@ -347,6 +395,14 @@ public class SteamLeaderboardUI : MonoBehaviour
         statusShadowText = CreateText("Status_Shadow_Text", "Refreshing leaderboards...", header, 18f, TextAlignmentOptions.MidlineRight);
         statusShadowText.color = new Color(0f, 0f, 0f);
         AddLayoutElement(statusShadowText.gameObject, preferredWidth: 210f, flexibleWidth: 1f);
+
+        refreshShadowText = CreateText("RefreshShadow_Text", "Reset: 72h 0m 0s", header, 18f, TextAlignmentOptions.MidlineRight);
+        refreshShadowText.color = new Color(0f, 0f, 0f);
+        AddLayoutElement(refreshShadowText.gameObject, preferredWidth: 150f);
+
+        refreshText = CreateText("Refresh_Text", "Reset: 72h 0m 0s", header, 18f, TextAlignmentOptions.MidlineRight);
+        refreshText.color = new Color(1f, 0.94f, 0.2f, 1f);
+        AddLayoutElement(refreshText.gameObject, preferredWidth: 150f);
 
         refreshButton = CreateButton("Refresh_Button", "Refresh", header, 86f);
         closeButton = CreateButton("Close_Button", "X", header, 46f);
