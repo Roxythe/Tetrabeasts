@@ -81,6 +81,7 @@ public class PlayerProgress : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         Load();
+        SteamAchievementService.Ensure();
     }
 
     // ---------------- Run lifecycle ----------------

@@ -15,6 +15,7 @@ public class ConfirmationPopupUI : MonoBehaviour
 
     Action _onConfirm;
     Action _onCancel;
+    bool _explicitShowInProgress;
 
     public bool IsShowing => popupView && popupView.IsShowing;
 
@@ -25,7 +26,8 @@ public class ConfirmationPopupUI : MonoBehaviour
         if (warningVisual)
             warningVisual.SetActive(false);
 
-        popupView?.Hide(true);
+        if (!_explicitShowInProgress)
+            popupView?.Hide(true);
     }
 
     public static ConfirmationPopupUI FindOrCreate()
@@ -123,7 +125,15 @@ public class ConfirmationPopupUI : MonoBehaviour
         if (warningVisual)
             warningVisual.SetActive(false);
 
-        popupView.Show();
+        _explicitShowInProgress = true;
+        try
+        {
+            popupView.Show();
+        }
+        finally
+        {
+            _explicitShowInProgress = false;
+        }
 
         if (warningVisual)
             warningVisual.SetActive(showWarningVisual);

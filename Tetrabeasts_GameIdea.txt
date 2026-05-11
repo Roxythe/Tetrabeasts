@@ -6,11 +6,6 @@
 - Add intuitive controller support
 
 
-- I found a bug where if I click quit game with my pause menu open it will open the warning/confirmation pop up but I can press escape and it will close my pause menu and resume the game but it will leave the confirmation pop up active. Instead when I press the escape key when the warning pop up is active it should work like pressing the cancel button and close the warning pop up without closing the pause menu.  
-
-
-- I would like to add in fade in when opening panels and a fade out when closing panels. Most of my transitions, openings, and closings of panels are simply turning panels on and off and the transition feels abrupt and I think a short fade transition would help with that.
-
 ****** TODO ******
 
 - Run Modifier images shown in a row on the gameplay scene

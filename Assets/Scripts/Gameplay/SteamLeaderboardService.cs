@@ -81,22 +81,6 @@ public class SteamLeaderboardService : MonoBehaviour
         InitializeSteamIfAvailable();
     }
 
-    void Update()
-    {
-#if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
-        if (_steamInitialized)
-            SteamAPI.RunCallbacks();
-#endif
-    }
-
-    void OnApplicationQuit()
-    {
-#if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
-        if (_steamInitialized)
-            SteamAPI.Shutdown();
-#endif
-    }
-
     public void SetLeaderboardName(string requestedLeaderboardName)
     {
         if (string.IsNullOrWhiteSpace(requestedLeaderboardName))
@@ -191,7 +175,7 @@ public class SteamLeaderboardService : MonoBehaviour
                 });
 
             DownloadEntries(
-                ELeaderboardDataRequest.k_ELeaderboardDataRequestAroundUser,
+                ELeaderboardDataRequest.k_ELeaderboardDataRequestGlobalAroundUser,
                 -4,
                 5,
                 _currentRankResult ??= CallResult<LeaderboardScoresDownloaded_t>.Create(),
@@ -311,8 +295,11 @@ public class SteamLeaderboardService : MonoBehaviour
 
         try
         {
-            _steamInitialized = SteamAPI.Init();
-            _lastStatus = _steamInitialized ? "Steam leaderboard ready." : "Steam API did not initialize.";
+            var steam = SteamPlatformService.Ensure();
+            _steamInitialized = steam && steam.IsAvailable;
+            _lastStatus = _steamInitialized
+                ? "Steam leaderboard ready."
+                : (steam ? steam.LastStatus : "Steam API did not initialize.");
 
             if (_steamInitialized)
             {
@@ -554,6 +541,428 @@ public class SteamLeaderboardService : MonoBehaviour
             Buffer.BlockCopy(rgba, top, row, 0, stride);
             Buffer.BlockCopy(rgba, bottom, rgba, top, stride);
             Buffer.BlockCopy(row, 0, rgba, bottom, stride);
+        }
+    }
+#endif
+}
+
+[DisallowMultipleComponent]
+public class SteamPlatformService : MonoBehaviour
+{
+    static SteamPlatformService _instance;
+    public static SteamPlatformService Instance => _instance;
+
+    public string LastStatus { get; private set; } = "Steamworks.NET is not enabled for this build.";
+
+    public bool IsAvailable
+    {
+        get
+        {
+#if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
+            return _steamInitialized;
+#else
+            return false;
+#endif
+        }
+    }
+
+#if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
+    [SerializeField] bool logSteamStatus = true;
+
+    bool _steamInitialized;
+    bool _shutdown;
+#endif
+
+    public static SteamPlatformService Ensure()
+    {
+        if (_instance)
+        {
+            _instance.InitializeSteamIfAvailable();
+            return _instance;
+        }
+
+        var existing = FindFirstObjectByType<SteamPlatformService>(FindObjectsInactive.Include);
+        if (existing)
+        {
+            _instance = existing;
+            if (!_instance.gameObject.activeSelf)
+                _instance.gameObject.SetActive(true);
+
+            _instance.InitializeSteamIfAvailable();
+            return _instance;
+        }
+
+        var go = new GameObject("SteamPlatformService");
+        DontDestroyOnLoad(go);
+        _instance = go.AddComponent<SteamPlatformService>();
+        return _instance;
+    }
+
+    void Awake()
+    {
+        if (_instance && _instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        _instance = this;
+        DontDestroyOnLoad(gameObject);
+        InitializeSteamIfAvailable();
+    }
+
+    void Update()
+    {
+#if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
+        if (_steamInitialized)
+            SteamAPI.RunCallbacks();
+#endif
+    }
+
+    void OnApplicationQuit()
+    {
+#if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
+        if (_steamInitialized && !_shutdown)
+        {
+            SteamAPI.Shutdown();
+            _steamInitialized = false;
+            _shutdown = true;
+        }
+#endif
+    }
+
+    public bool InitializeSteamIfAvailable()
+    {
+#if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
+        if (_steamInitialized)
+            return true;
+
+        try
+        {
+            _steamInitialized = SteamAPI.Init();
+            _shutdown = false;
+
+            LastStatus = _steamInitialized
+                ? $"Steam initialized for app {SteamUtils.GetAppID().m_AppId}."
+                : "Steam API did not initialize. Steam achievements and leaderboards will stay local/unavailable.";
+
+            if (!_steamInitialized && logSteamStatus)
+                Debug.LogWarning(LastStatus);
+        }
+        catch (Exception ex)
+        {
+            _steamInitialized = false;
+            LastStatus = $"Steam API unavailable: {ex.Message}";
+            if (logSteamStatus)
+                Debug.LogWarning(LastStatus);
+        }
+
+        return _steamInitialized;
+#else
+        return false;
+#endif
+    }
+
+#if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
+    public bool IsForCurrentApp(ulong gameId)
+    {
+        if (!_steamInitialized)
+            return false;
+
+        return new CGameID(gameId).AppID() == SteamUtils.GetAppID();
+    }
+#endif
+}
+
+[DisallowMultipleComponent]
+public class SteamAchievementService : MonoBehaviour
+{
+    static SteamAchievementService _instance;
+    public static SteamAchievementService Instance => _instance;
+
+    [Header("Optional")]
+    [SerializeField] AchievementDatabaseSO database;
+
+#if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
+    [SerializeField] bool logSteamStatus = true;
+
+    SteamPlatformService _steam;
+    Callback<UserStatsStored_t> _userStatsStoredCallback;
+    Callback<UserAchievementStored_t> _achievementStoredCallback;
+    bool _storeStatsNeeded;
+    bool _callbacksCreated;
+#endif
+
+    readonly HashSet<string> _submittedAchievementIds = new();
+    readonly Dictionary<string, string> _apiNameToAchievementId = new();
+    bool _subscribedToProgress;
+
+    public bool IsSteamAvailable
+    {
+        get
+        {
+#if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
+            return _steam && _steam.IsAvailable;
+#else
+            return false;
+#endif
+        }
+    }
+
+    public static bool ShouldUseSteamAchievementNotifications
+    {
+        get
+        {
+            var service = Ensure();
+            return service && service.IsSteamAvailable;
+        }
+    }
+
+    public static SteamAchievementService Ensure()
+    {
+        if (_instance)
+            return _instance;
+
+        var existing = FindFirstObjectByType<SteamAchievementService>(FindObjectsInactive.Include);
+        if (existing)
+        {
+            _instance = existing;
+            if (!_instance.gameObject.activeSelf)
+                _instance.gameObject.SetActive(true);
+
+            return _instance;
+        }
+
+        var go = new GameObject("SteamAchievementService");
+        DontDestroyOnLoad(go);
+        _instance = go.AddComponent<SteamAchievementService>();
+        return _instance;
+    }
+
+    void Awake()
+    {
+        if (_instance && _instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        _instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        if (database)
+            database.BuildLookup();
+
+#if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
+        _steam = SteamPlatformService.Ensure();
+        CreateCallbacksIfAvailable();
+#endif
+    }
+
+    void OnEnable()
+    {
+        TrySubscribeToProgress();
+        SyncPendingExternalUnlocks();
+    }
+
+    void Start()
+    {
+        TrySubscribeToProgress();
+        SyncPendingExternalUnlocks();
+    }
+
+    void OnDisable()
+    {
+        if (_subscribedToProgress && PlayerProgress.I != null)
+            PlayerProgress.I.AchievementUnlocked -= OnLocalAchievementUnlocked;
+
+        _subscribedToProgress = false;
+    }
+
+    void Update()
+    {
+        TrySubscribeToProgress();
+
+#if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
+        if (!_steam)
+            _steam = SteamPlatformService.Ensure();
+
+        CreateCallbacksIfAvailable();
+#endif
+    }
+
+    void TrySubscribeToProgress()
+    {
+        if (_subscribedToProgress || PlayerProgress.I == null)
+            return;
+
+        PlayerProgress.I.AchievementUnlocked += OnLocalAchievementUnlocked;
+        _subscribedToProgress = true;
+    }
+
+    void OnLocalAchievementUnlocked(string achievementId)
+    {
+        if (TrySyncAchievementToSteam(achievementId))
+            StoreStatsIfNeeded();
+    }
+
+    public void SyncPendingExternalUnlocks()
+    {
+        if (PlayerProgress.I == null)
+            return;
+
+        bool changed = false;
+        var pending = PlayerProgress.I.GetPendingExternalUnlockIds();
+
+        for (int i = 0; i < pending.Count; i++)
+            changed |= TrySyncAchievementToSteam(pending[i]);
+
+        if (changed)
+            StoreStatsIfNeeded();
+    }
+
+    string ResolveSteamApiName(string achievementId)
+    {
+        if (database)
+        {
+            var def = database.Get(achievementId);
+            if (def && !string.IsNullOrWhiteSpace(def.steamApiName))
+                return def.steamApiName;
+        }
+
+        return achievementId;
+    }
+
+    string ResolveAchievementId(string steamApiName)
+    {
+        if (string.IsNullOrWhiteSpace(steamApiName))
+            return steamApiName;
+
+        if (_apiNameToAchievementId.TryGetValue(steamApiName, out var achievementId))
+            return achievementId;
+
+        return steamApiName;
+    }
+
+    bool TrySyncAchievementToSteam(string achievementId)
+    {
+#if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
+        if (string.IsNullOrWhiteSpace(achievementId))
+            return false;
+
+        if (!_steam)
+            _steam = SteamPlatformService.Ensure();
+
+        if (!_steam || !_steam.IsAvailable)
+            return false;
+
+        string steamApiName = ResolveSteamApiName(achievementId);
+        if (string.IsNullOrWhiteSpace(steamApiName))
+            return false;
+
+        try
+        {
+            if (SteamUserStats.GetAchievement(steamApiName, out bool alreadyAchieved) && alreadyAchieved)
+            {
+                PlayerProgress.I?.ClearPendingExternalUnlock(achievementId);
+                return false;
+            }
+
+            if (!SteamUserStats.SetAchievement(steamApiName))
+            {
+                if (logSteamStatus)
+                    Debug.LogWarning($"SteamAchievementService: Steam rejected achievement id '{steamApiName}'. Check the API name in Steamworks.");
+                return false;
+            }
+
+            _submittedAchievementIds.Add(achievementId);
+            _apiNameToAchievementId[steamApiName] = achievementId;
+            _storeStatsNeeded = true;
+            return true;
+        }
+        catch (Exception ex)
+        {
+            if (logSteamStatus)
+                Debug.LogWarning($"SteamAchievementService: Failed to unlock '{steamApiName}' on Steam. {ex.Message}");
+            return false;
+        }
+#else
+        return false;
+#endif
+    }
+
+    void StoreStatsIfNeeded()
+    {
+#if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
+        if (!_storeStatsNeeded || !_steam || !_steam.IsAvailable)
+            return;
+
+        try
+        {
+            if (SteamUserStats.StoreStats())
+            {
+                _storeStatsNeeded = false;
+                return;
+            }
+
+            if (logSteamStatus)
+                Debug.LogWarning("SteamAchievementService: SteamUserStats.StoreStats returned false; achievement unlocks will be retried next launch.");
+        }
+        catch (Exception ex)
+        {
+            if (logSteamStatus)
+                Debug.LogWarning($"SteamAchievementService: Failed to store Steam stats. {ex.Message}");
+        }
+#endif
+    }
+
+#if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
+    void CreateCallbacksIfAvailable()
+    {
+        if (_callbacksCreated || !_steam || !_steam.IsAvailable)
+            return;
+
+        _userStatsStoredCallback = Callback<UserStatsStored_t>.Create(OnUserStatsStored);
+        _achievementStoredCallback = Callback<UserAchievementStored_t>.Create(OnAchievementStored);
+        _callbacksCreated = true;
+    }
+
+    void OnAchievementStored(UserAchievementStored_t result)
+    {
+        if (!_steam || !_steam.IsForCurrentApp(result.m_nGameID))
+            return;
+
+        string achievementId = ResolveAchievementId(result.m_rgchAchievementName);
+        PlayerProgress.I?.ClearPendingExternalUnlock(achievementId);
+        _submittedAchievementIds.Remove(achievementId);
+    }
+
+    void OnUserStatsStored(UserStatsStored_t result)
+    {
+        if (!_steam || !_steam.IsForCurrentApp(result.m_nGameID))
+            return;
+
+        if (result.m_eResult != EResult.k_EResultOK)
+        {
+            if (logSteamStatus)
+                Debug.LogWarning($"SteamAchievementService: Steam stats were not stored successfully ({result.m_eResult}).");
+            return;
+        }
+
+        if (PlayerProgress.I == null || _submittedAchievementIds.Count == 0)
+            return;
+
+        var submitted = new List<string>(_submittedAchievementIds);
+        for (int i = 0; i < submitted.Count; i++)
+        {
+            string achievementId = submitted[i];
+            string steamApiName = ResolveSteamApiName(achievementId);
+
+            if (SteamUserStats.GetAchievement(steamApiName, out bool achieved) && achieved)
+            {
+                PlayerProgress.I.ClearPendingExternalUnlock(achievementId);
+                _submittedAchievementIds.Remove(achievementId);
+            }
         }
     }
 #endif

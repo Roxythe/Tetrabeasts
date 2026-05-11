@@ -632,9 +632,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RunModRowUI
   icon: {fileID: 856707843274440850}
   nameText: {fileID: 4207872807279646451}
-  nameShadowText: {fileID: 0}
+  nameShadowText: {fileID: 2930231123414333428}
   descText: {fileID: 8862253447905925466}
-  descShadowText: {fileID: 0}
+  descShadowText: {fileID: 6355459381639770677}
   commonNameColor: {r: 0.85, g: 0.85, b: 0.85, a: 1}
   uncommonNameColor: {r: 0.105882354, g: 0.8901961, b: 0.105882354, a: 1}
   rareNameColor: {r: 0.3, g: 0.6, b: 1, a: 1}
@@ -679,7 +679,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 50.20943, y: -16}
+  m_AnchoredPosition: {x: 49.70943, y: -16}
   m_SizeDelta: {x: 330, y: 64}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3180960832496687123

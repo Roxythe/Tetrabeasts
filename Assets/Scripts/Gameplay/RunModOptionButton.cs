@@ -1,4 +1,3 @@
-// File: Assets/Scripts/UI/RunModOptionButton.cs
 using System;
 using TMPro;
 using UnityEngine;
@@ -12,7 +11,9 @@ public class RunModOptionButton : MonoBehaviour, IPointerEnterHandler, IPointerE
     public Image backgroundImage;
     public Image icon;
     public TMP_Text nameText;
+    public TMP_Text nameShadowText;
     public TMP_Text descText;
+    public TMP_Text descShadowText;
     public Outline highlightOutline;
 
     [Header("Hover/Select Tint (multiplies prefab BG color)")]
@@ -67,7 +68,9 @@ public class RunModOptionButton : MonoBehaviour, IPointerEnterHandler, IPointerE
 
         if (icon) icon.sprite = mod.icon;
         if (nameText) nameText.text = mod.displayName;
+        if (nameShadowText) nameShadowText.text = mod.displayName;
         if (descText) descText.text = mod.description;
+        if (descShadowText) descShadowText.text = mod.description;
 
         if (mod is RunModifier generic)
         {

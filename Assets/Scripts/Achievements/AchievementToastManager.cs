@@ -51,6 +51,9 @@ public class AchievementToastManager : MonoBehaviour
 
     void OnAchievementUnlocked(string achievementId)
     {
+        if (SteamAchievementService.ShouldUseSteamAchievementNotifications)
+            return;
+
         _queue.Enqueue(achievementId);
         if (!_processing) StartCoroutine(ProcessQueue());
     }
