@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda4cdb9ac28a5642b5aa73bc1b714a2, type: 3}
+  m_Name: SlowGravity
+  m_EditorClassIdentifier: Assembly-CSharp::HelpTopicSO
+  category: Special Blocks
+  title: Slow Gravity
+  description: The Slow Gravity special block will activate immedialtey upon being
+    set. It will significantly reduce the speed at which pieces fall and the how
+    quickly gravity increases over time.
+  image: {fileID: -6605040193917352901, guid: 48da2eb413088c14ebaa183806cf5891, type: 3}
+  videoClip: {fileID: 0}

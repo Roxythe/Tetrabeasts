@@ -1,0 +1,4864 @@
+fileFormatVersion: 2
+guid: d0a5e63c2c080484f829713b9cb19ace
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3263842399908222564
+    second: Lieutenant_SpriteSheet_256_0
+  - first:
+      213: -2806092676812872751
+    second: Lieutenant_SpriteSheet_256_1
+  - first:
+      213: -3874391551556795042
+    second: Lieutenant_SpriteSheet_256_2
+  - first:
+      213: 2257455034271314513
+    second: Lieutenant_SpriteSheet_256_3
+  - first:
+      213: 1051118855428707782
+    second: Lieutenant_SpriteSheet_256_4
+  - first:
+      213: -9057102386249311398
+    second: Lieutenant_SpriteSheet_256_5
+  - first:
+      213: 6801825841836812801
+    second: Lieutenant_SpriteSheet_256_6
+  - first:
+      213: -7735584197109490981
+    second: Lieutenant_SpriteSheet_256_7
+  - first:
+      213: -722591502914036986
+    second: Lieutenant_SpriteSheet_256_8
+  - first:
+      213: -1796480196890769053
+    second: Lieutenant_SpriteSheet_256_9
+  - first:
+      213: 8826247999755886010
+    second: Lieutenant_SpriteSheet_256_10
+  - first:
+      213: 8751796255723877490
+    second: Lieutenant_SpriteSheet_256_11
+  - first:
+      213: -977894216475117054
+    second: Lieutenant_SpriteSheet_256_12
+  - first:
+      213: -2350765169558515179
+    second: Lieutenant_SpriteSheet_256_13
+  - first:
+      213: -314767248997690952
+    second: Lieutenant_SpriteSheet_256_14
+  - first:
+      213: 330432936698765142
+    second: Lieutenant_SpriteSheet_256_15
+  - first:
+      213: 869157854901608809
+    second: Lieutenant_SpriteSheet_256_16
+  - first:
+      213: -6847517090564122650
+    second: Lieutenant_SpriteSheet_256_17
+  - first:
+      213: 6752030388569855247
+    second: Lieutenant_SpriteSheet_256_18
+  - first:
+      213: 3548974903587334954
+    second: Lieutenant_SpriteSheet_256_19
+  - first:
+      213: -4728068348211749727
+    second: Lieutenant_SpriteSheet_256_20
+  - first:
+      213: 6995665213370731
+    second: Lieutenant_SpriteSheet_256_21
+  - first:
+      213: -4060311520262629028
+    second: Lieutenant_SpriteSheet_256_22
+  - first:
+      213: -1690980014717134978
+    second: Lieutenant_SpriteSheet_256_23
+  - first:
+      213: 7451613957810293068
+    second: Lieutenant_SpriteSheet_256_24
+  - first:
+      213: 6503292582707540941
+    second: Lieutenant_SpriteSheet_256_25
+  - first:
+      213: 7555230525847203508
+    second: Lieutenant_SpriteSheet_256_26
+  - first:
+      213: 1067635822659471916
+    second: Lieutenant_SpriteSheet_256_27
+  - first:
+      213: 2472715927760568109
+    second: Lieutenant_SpriteSheet_256_28
+  - first:
+      213: 7663322381020033681
+    second: Lieutenant_SpriteSheet_256_29
+  - first:
+      213: 4177659077530060092
+    second: Lieutenant_SpriteSheet_256_30
+  - first:
+      213: -3284559196151995903
+    second: Lieutenant_SpriteSheet_256_31
+  - first:
+      213: 4575482031638989840
+    second: Lieutenant_SpriteSheet_256_32
+  - first:
+      213: -4864446351148118204
+    second: Lieutenant_SpriteSheet_256_33
+  - first:
+      213: -2120223603567716044
+    second: Lieutenant_SpriteSheet_256_34
+  - first:
+      213: -4511334340200428509
+    second: Lieutenant_SpriteSheet_256_35
+  - first:
+      213: 3899429214882766383
+    second: Lieutenant_SpriteSheet_256_36
+  - first:
+      213: 957243295740048187
+    second: Lieutenant_SpriteSheet_256_37
+  - first:
+      213: -8705277336541479216
+    second: Lieutenant_SpriteSheet_256_38
+  - first:
+      213: -6404919551757230733
+    second: Lieutenant_SpriteSheet_256_39
+  - first:
+      213: 5406128194617436381
+    second: Lieutenant_SpriteSheet_256_40
+  - first:
+      213: -5791394037416845144
+    second: Lieutenant_SpriteSheet_256_41
+  - first:
+      213: 8145061030939853345
+    second: Lieutenant_SpriteSheet_256_42
+  - first:
+      213: 2307054165922167212
+    second: Lieutenant_SpriteSheet_256_43
+  - first:
+      213: 3609234624049015198
+    second: Lieutenant_SpriteSheet_256_44
+  - first:
+      213: -1302222572096199467
+    second: Lieutenant_SpriteSheet_256_45
+  - first:
+      213: 8554970311312147945
+    second: Lieutenant_SpriteSheet_256_46
+  - first:
+      213: -719391951683937445
+    second: Lieutenant_SpriteSheet_256_47
+  - first:
+      213: -7779329778796099577
+    second: Lieutenant_SpriteSheet_256_48
+  - first:
+      213: -1976584217651274500
+    second: Lieutenant_SpriteSheet_256_49
+  - first:
+      213: 2959856411984167052
+    second: Lieutenant_SpriteSheet_256_50
+  - first:
+      213: 2763220099770015915
+    second: Lieutenant_SpriteSheet_256_51
+  - first:
+      213: -7098733207922884932
+    second: Lieutenant_SpriteSheet_256_52
+  - first:
+      213: -518554515099642999
+    second: Lieutenant_SpriteSheet_256_53
+  - first:
+      213: -6594557637743423281
+    second: Lieutenant_SpriteSheet_256_54
+  - first:
+      213: 1098632445609769882
+    second: Lieutenant_SpriteSheet_256_55
+  - first:
+      213: -5945881672337935753
+    second: Lieutenant_SpriteSheet_256_56
+  - first:
+      213: -5865119105879934083
+    second: Lieutenant_SpriteSheet_256_57
+  - first:
+      213: -4227757651877895485
+    second: Lieutenant_SpriteSheet_256_58
+  - first:
+      213: 8219106831691305847
+    second: Lieutenant_SpriteSheet_256_59
+  - first:
+      213: 8666752789345836826
+    second: Lieutenant_SpriteSheet_256_60
+  - first:
+      213: -1008428746664114999
+    second: Lieutenant_SpriteSheet_256_61
+  - first:
+      213: -8049799332470366089
+    second: Lieutenant_SpriteSheet_256_62
+  - first:
+      213: 2247833759591631949
+    second: Lieutenant_SpriteSheet_256_63
+  - first:
+      213: 5528930473899748964
+    second: Lieutenant_SpriteSheet_256_64
+  - first:
+      213: 1064222047894550497
+    second: Lieutenant_SpriteSheet_256_65
+  - first:
+      213: -7872433236586831735
+    second: Lieutenant_SpriteSheet_256_66
+  - first:
+      213: 3783688872402925838
+    second: Lieutenant_SpriteSheet_256_67
+  - first:
+      213: 3554430183953300316
+    second: Lieutenant_SpriteSheet_256_68
+  - first:
+      213: -4590967061054072073
+    second: Lieutenant_SpriteSheet_256_69
+  - first:
+      213: 7071979880181112044
+    second: Lieutenant_SpriteSheet_256_70
+  - first:
+      213: 3376665126061258297
+    second: Lieutenant_SpriteSheet_256_71
+  - first:
+      213: 8287256815380053509
+    second: Lieutenant_SpriteSheet_256_72
+  - first:
+      213: 4912228469693608924
+    second: Lieutenant_SpriteSheet_256_73
+  - first:
+      213: 3773755117229644709
+    second: Lieutenant_SpriteSheet_256_74
+  - first:
+      213: -6091410589565822185
+    second: Lieutenant_SpriteSheet_256_75
+  - first:
+      213: 8803241096362789786
+    second: Lieutenant_SpriteSheet_256_76
+  - first:
+      213: -2927972945871505426
+    second: Lieutenant_SpriteSheet_256_77
+  - first:
+      213: 435194216326461909
+    second: Lieutenant_SpriteSheet_256_78
+  - first:
+      213: -8757120943379913551
+    second: Lieutenant_SpriteSheet_256_79
+  - first:
+      213: -8549703893345321968
+    second: Lieutenant_SpriteSheet_256_80
+  - first:
+      213: -3682986424443547588
+    second: Lieutenant_SpriteSheet_256_81
+  - first:
+      213: 564601821079947209
+    second: Lieutenant_SpriteSheet_256_82
+  - first:
+      213: 9165439923200540655
+    second: Lieutenant_SpriteSheet_256_83
+  - first:
+      213: 2599001697865715912
+    second: Lieutenant_SpriteSheet_256_84
+  - first:
+      213: 4382482957728139778
+    second: Lieutenant_SpriteSheet_256_85
+  - first:
+      213: -4669868537263431385
+    second: Lieutenant_SpriteSheet_256_86
+  - first:
+      213: -6990818206088485584
+    second: Lieutenant_SpriteSheet_256_87
+  - first:
+      213: 3504343073121538161
+    second: Lieutenant_SpriteSheet_256_88
+  - first:
+      213: -1239768159535319145
+    second: Lieutenant_SpriteSheet_256_89
+  - first:
+      213: -8943426044109311745
+    second: Lieutenant_SpriteSheet_256_90
+  - first:
+      213: -4536274914012424621
+    second: Lieutenant_SpriteSheet_256_91
+  - first:
+      213: -9021769077902193225
+    second: Lieutenant_SpriteSheet_256_92
+  - first:
+      213: -2871101832319511399
+    second: Lieutenant_SpriteSheet_256_93
+  - first:
+      213: 361328531781890245
+    second: Lieutenant_SpriteSheet_256_94
+  - first:
+      213: -281110397965932438
+    second: Lieutenant_SpriteSheet_256_95
+  - first:
+      213: 7353337441089192466
+    second: Lieutenant_SpriteSheet_256_96
+  - first:
+      213: 1421629376358284500
+    second: Lieutenant_SpriteSheet_256_97
+  - first:
+      213: 5742190010729766651
+    second: Lieutenant_SpriteSheet_256_98
+  - first:
+      213: 3083900427761388357
+    second: Lieutenant_SpriteSheet_256_99
+  - first:
+      213: 2766583361723202884
+    second: Lieutenant_SpriteSheet_256_100
+  - first:
+      213: -3886791414378367929
+    second: Lieutenant_SpriteSheet_256_101
+  - first:
+      213: 5387564906863026889
+    second: Lieutenant_SpriteSheet_256_102
+  - first:
+      213: 7441847195400434747
+    second: Lieutenant_SpriteSheet_256_103
+  - first:
+      213: 556848654133202408
+    second: Lieutenant_SpriteSheet_256_104
+  - first:
+      213: -7627310324230251954
+    second: Lieutenant_SpriteSheet_256_105
+  - first:
+      213: -2568805800142161588
+    second: Lieutenant_SpriteSheet_256_106
+  - first:
+      213: 1387993071770613246
+    second: Lieutenant_SpriteSheet_256_107
+  - first:
+      213: 3612026419998469751
+    second: Lieutenant_SpriteSheet_256_108
+  - first:
+      213: 8377465905874823538
+    second: Lieutenant_SpriteSheet_256_109
+  - first:
+      213: -4280787485560531968
+    second: Lieutenant_SpriteSheet_256_110
+  - first:
+      213: -431856903967510322
+    second: Lieutenant_SpriteSheet_256_111
+  - first:
+      213: 8022806493480099412
+    second: Lieutenant_SpriteSheet_256_112
+  - first:
+      213: 4707081724176351732
+    second: Lieutenant_SpriteSheet_256_113
+  - first:
+      213: -4729647323006577085
+    second: Lieutenant_SpriteSheet_256_114
+  - first:
+      213: -1691945550588182333
+    second: Lieutenant_SpriteSheet_256_115
+  - first:
+      213: -6071816948113850708
+    second: Lieutenant_SpriteSheet_256_116
+  - first:
+      213: 5422283134835662026
+    second: Lieutenant_SpriteSheet_256_117
+  - first:
+      213: -4457669771754164437
+    second: Lieutenant_SpriteSheet_256_118
+  - first:
+      213: -869397833200143657
+    second: Lieutenant_SpriteSheet_256_119
+  - first:
+      213: -3009156388362028998
+    second: Lieutenant_SpriteSheet_256_120
+  - first:
+      213: -1812639791148152624
+    second: Lieutenant_SpriteSheet_256_121
+  - first:
+      213: 4469578327065398520
+    second: Lieutenant_SpriteSheet_256_122
+  - first:
+      213: -7414225257856452399
+    second: Lieutenant_SpriteSheet_256_123
+  - first:
+      213: -7084834463548632502
+    second: Lieutenant_SpriteSheet_256_124
+  - first:
+      213: 7791783796841241878
+    second: Lieutenant_SpriteSheet_256_125
+  - first:
+      213: 4304682233588169541
+    second: Lieutenant_SpriteSheet_256_126
+  - first:
+      213: 3210747293600446150
+    second: Lieutenant_SpriteSheet_256_127
+  - first:
+      213: -1342730663063370052
+    second: Lieutenant_SpriteSheet_256_128
+  - first:
+      213: 542060488436715682
+    second: Lieutenant_SpriteSheet_256_129
+  - first:
+      213: -1820285762670225157
+    second: Lieutenant_SpriteSheet_256_130
+  - first:
+      213: -8186012853086758506
+    second: Lieutenant_SpriteSheet_256_131
+  - first:
+      213: -2009646033175186605
+    second: Lieutenant_SpriteSheet_256_132
+  - first:
+      213: -9001028293458162326
+    second: Lieutenant_SpriteSheet_256_133
+  - first:
+      213: -6228574980796444467
+    second: Lieutenant_SpriteSheet_256_134
+  - first:
+      213: -4892680385560561026
+    second: Lieutenant_SpriteSheet_256_135
+  - first:
+      213: 5013813612276165625
+    second: Lieutenant_SpriteSheet_256_136
+  - first:
+      213: -2376728532866610827
+    second: Lieutenant_SpriteSheet_256_137
+  - first:
+      213: 4226027291058147642
+    second: Lieutenant_SpriteSheet_256_138
+  - first:
+      213: 8624630470067220579
+    second: Lieutenant_SpriteSheet_256_139
+  - first:
+      213: -3502426223571715975
+    second: Lieutenant_SpriteSheet_256_140
+  - first:
+      213: 46367033890018412
+    second: Lieutenant_SpriteSheet_256_141
+  - first:
+      213: -2136630872479722993
+    second: Lieutenant_SpriteSheet_256_142
+  - first:
+      213: 3442740476708554846
+    second: Lieutenant_SpriteSheet_256_143
+  - first:
+      213: 6889587591307066762
+    second: Lieutenant_SpriteSheet_256_144
+  - first:
+      213: -558038539155119411
+    second: Lieutenant_SpriteSheet_256_145
+  - first:
+      213: 6451257102387048163
+    second: Lieutenant_SpriteSheet_256_146
+  - first:
+      213: -7787893673481716577
+    second: Lieutenant_SpriteSheet_256_147
+  - first:
+      213: 4739237967058504659
+    second: Lieutenant_SpriteSheet_256_148
+  - first:
+      213: -8903073965920676410
+    second: Lieutenant_SpriteSheet_256_149
+  - first:
+      213: 3452172750577907417
+    second: Lieutenant_SpriteSheet_256_150
+  - first:
+      213: 1181610365386718307
+    second: Lieutenant_SpriteSheet_256_151
+  - first:
+      213: -4423544179051770855
+    second: Lieutenant_SpriteSheet_256_152
+  - first:
+      213: 6543886302006381594
+    second: Lieutenant_SpriteSheet_256_153
+  - first:
+      213: 4369426516684372289
+    second: Lieutenant_SpriteSheet_256_154
+  - first:
+      213: 1995683448753046154
+    second: Lieutenant_SpriteSheet_256_155
+  - first:
+      213: 1817184489801781826
+    second: Lieutenant_SpriteSheet_256_156
+  - first:
+      213: -1609885290475456191
+    second: Lieutenant_SpriteSheet_256_157
+  - first:
+      213: -3761944518265500913
+    second: Lieutenant_SpriteSheet_256_158
+  - first:
+      213: -1412106570947015471
+    second: Lieutenant_SpriteSheet_256_159
+  - first:
+      213: 5345953920362609861
+    second: Lieutenant_SpriteSheet_256_160
+  - first:
+      213: -3965301965307302161
+    second: Lieutenant_SpriteSheet_256_161
+  - first:
+      213: -1909006093288700925
+    second: Lieutenant_SpriteSheet_256_162
+  - first:
+      213: -1762035612176490694
+    second: Lieutenant_SpriteSheet_256_163
+  - first:
+      213: 4195614588400471258
+    second: Lieutenant_SpriteSheet_256_164
+  - first:
+      213: 1842893176525801284
+    second: Lieutenant_SpriteSheet_256_165
+  - first:
+      213: 196604451574153135
+    second: Lieutenant_SpriteSheet_256_166
+  - first:
+      213: -5254666103677352841
+    second: Lieutenant_SpriteSheet_256_167
+  - first:
+      213: 1254571729601291533
+    second: Lieutenant_SpriteSheet_256_168
+  - first:
+      213: 8468095466978646110
+    second: Lieutenant_SpriteSheet_256_169
+  - first:
+      213: 1758035192677578805
+    second: Lieutenant_SpriteSheet_256_170
+  - first:
+      213: 3543103617066080014
+    second: Lieutenant_SpriteSheet_256_171
+  - first:
+      213: 8141375008542558039
+    second: Lieutenant_SpriteSheet_256_172
+  - first:
+      213: -8221257053874732051
+    second: Lieutenant_SpriteSheet_256_173
+  - first:
+      213: 8813775856243323004
+    second: Lieutenant_SpriteSheet_256_174
+  - first:
+      213: 427417299512780079
+    second: Lieutenant_SpriteSheet_256_175
+  - first:
+      213: 1168484178054643705
+    second: Lieutenant_SpriteSheet_256_176
+  - first:
+      213: 4233414465973511365
+    second: Lieutenant_SpriteSheet_256_177
+  - first:
+      213: -8643714826902698816
+    second: Lieutenant_SpriteSheet_256_178
+  - first:
+      213: -6719051667946112325
+    second: Lieutenant_SpriteSheet_256_179
+  - first:
+      213: -7005647922257511567
+    second: Lieutenant_SpriteSheet_256_180
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4665361ce5f7b4d20800000000000000
+      internalID: 3263842399908222564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_1
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d36eb7e391ce09d0800000000000000
+      internalID: -2806092676812872751
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_2
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e55cea849656b3ac0800000000000000
+      internalID: -3874391551556795042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_3
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 152b826a467145f10800000000000000
+      internalID: 2257455034271314513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_4
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c51b8aa703569e00800000000000000
+      internalID: 1051118855428707782
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_5
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a5b5445cd55be4280800000000000000
+      internalID: -9057102386249311398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_6
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10a61c6c090f46e50800000000000000
+      internalID: 6801825841836812801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_7
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bdad929582fa5a490800000000000000
+      internalID: -7735584197109490981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_8
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60bd7174bd6d8f5f0800000000000000
+      internalID: -722591502914036986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_9
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3694d4277ce9117e0800000000000000
+      internalID: -1796480196890769053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_10
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abd93f4dac12d7a70800000000000000
+      internalID: 8826247999755886010
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_11
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 274f3095350a47970800000000000000
+      internalID: 8751796255723877490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_12
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20a77172462dd62f0800000000000000
+      internalID: -977894216475117054
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_13
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5129a1e7887606fd0800000000000000
+      internalID: -2350765169558515179
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_14
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b1d090dad8b1abf0800000000000000
+      internalID: -314767248997690952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_15
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65fd406510fe59400800000000000000
+      internalID: 330432936698765142
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_16
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 961a62bc67edf0c00800000000000000
+      internalID: 869157854901608809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_17
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e7528f5c7bb8f0a0800000000000000
+      internalID: -6847517090564122650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_18
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0559575dd704bd50800000000000000
+      internalID: 6752030388569855247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_19
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2b691d1fdd704130800000000000000
+      internalID: 3548974903587334954
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_20
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ac121f33e6826eb0800000000000000
+      internalID: -4728068348211749727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_21
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b61b20c358ad81000800000000000000
+      internalID: 6995665213370731
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_22
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c59d15d4f20e6a7c0800000000000000
+      internalID: -4060311520262629028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_23
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e771084c2ae6888e0800000000000000
+      internalID: -1690980014717134978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_24
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c4900ae0a63796760800000000000000
+      internalID: 7451613957810293068
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_25
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc337b6e526504a50800000000000000
+      internalID: 6503292582707540941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_26
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4be6f49422299d860800000000000000
+      internalID: 7555230525847203508
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_27
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2a8917cf1101de00800000000000000
+      internalID: 1067635822659471916
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_28
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2f7e98090ad05220800000000000000
+      internalID: 2472715927760568109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_29
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 192ffff7a17995a60800000000000000
+      internalID: 7663322381020033681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_30
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c358ddcfbc60af930800000000000000
+      internalID: 4177659077530060092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_31
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1022e9d30d6ea62d0800000000000000
+      internalID: -3284559196151995903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_32
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01c46047aa06f7f30800000000000000
+      internalID: 4575482031638989840
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_33
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44f0fda01d30e7cb0800000000000000
+      internalID: -4864446351148118204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_34
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43992f0bdd37392e0800000000000000
+      internalID: -2120223603567716044
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_35
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32c0555d1558461c0800000000000000
+      internalID: -4511334340200428509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_36
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2e1edbf53e8d1630800000000000000
+      internalID: 3899429214882766383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_37
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b33b53ea4bfc84d00800000000000000
+      internalID: 957243295740048187
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_38
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0debf2c8264a03780800000000000000
+      internalID: -8705277336541479216
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_39
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37d5e863a972d17a0800000000000000
+      internalID: -6404919551757230733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_40
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd8656a33fc660b40800000000000000
+      internalID: 5406128194617436381
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_41
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a0247d9ec5d0afa0800000000000000
+      internalID: -5791394037416845144
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_42
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1220c0f6ad1190170800000000000000
+      internalID: 8145061030939853345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_43
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca930656a8d440020800000000000000
+      internalID: 2307054165922167212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_44
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e996b7d94c3961230800000000000000
+      internalID: 3609234624049015198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_45
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d4e5bb58739dede0800000000000000
+      internalID: -1302222572096199467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_46
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e506c50c2c59b670800000000000000
+      internalID: 8554970311312147945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_47
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5b9a99d4d43406f0800000000000000
+      internalID: -719391951683937445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_48
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7088d3868c44a0490800000000000000
+      internalID: -7779329778796099577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_49
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cfc904e5023c194e0800000000000000
+      internalID: -1976584217651274500
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_50
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c808a7689b5831920800000000000000
+      internalID: 2959856411984167052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_51
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba0e2036a0ee85620800000000000000
+      internalID: 2763220099770015915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_52
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbebc7212cb3c7d90800000000000000
+      internalID: -7098733207922884932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_53
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9839fca7a69bdc8f0800000000000000
+      internalID: -518554515099642999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_54
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc0d67794cc6b74a0800000000000000
+      internalID: -6594557637743423281
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_55
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9bf94373602f3f00800000000000000
+      internalID: 1098632445609769882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_56
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 772bac32f1cfb7da0800000000000000
+      internalID: -5945881672337935753
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_57
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7b7ba87f39ea9ea0800000000000000
+      internalID: -5865119105879934083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_58
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c2e063b0dcf355c0800000000000000
+      internalID: -4227757651877895485
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_59
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 77352f1ed12201270800000000000000
+      internalID: 8219106831691305847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_60
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1f95155ebd764870800000000000000
+      internalID: 8666752789345836826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_61
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c40bc5d5675102f0800000000000000
+      internalID: -1008428746664114999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_62
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7706de2282e594090800000000000000
+      internalID: -8049799332470366089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_63
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4c079215e8e13f10800000000000000
+      internalID: 2247833759591631949
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_64
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46e60a4f8f4babc40800000000000000
+      internalID: 5528930473899748964
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_65
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e7b4e66050e4ce00800000000000000
+      internalID: 1064222047894550497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_66
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98063476eaf7fb290800000000000000
+      internalID: -7872433236586831735
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_67
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e09bc2c8bfc528430800000000000000
+      internalID: 3783688872402925838
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_68
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5b767d8b6fd35130800000000000000
+      internalID: 3554430183953300316
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_69
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fa5a5e28cb9940c0800000000000000
+      internalID: -4590967061054072073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_70
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cec97e86b38b42260800000000000000
+      internalID: 7071979880181112044
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_71
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 936b454ba035cde20800000000000000
+      internalID: 3376665126061258297
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_72
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50eb9237a20420370800000000000000
+      internalID: 8287256815380053509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_73
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd3f5af54cdbb2440800000000000000
+      internalID: 4912228469693608924
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_74
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ab19cfe8421f5430800000000000000
+      internalID: 3773755117229644709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_75
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71b50eba756f67ba0800000000000000
+      internalID: -6091410589565822185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_76
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9b03d4b2256b2a70800000000000000
+      internalID: 8803241096362789786
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_77
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee7ff596e10cd57d0800000000000000
+      internalID: -2927972945871505426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_78
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d9717085de1a0600800000000000000
+      internalID: 435194216326461909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_79
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b4e4b236e4787680800000000000000
+      internalID: -8757120943379913551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_80
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01cb0667b99595980800000000000000
+      internalID: -8549703893345321968
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_81
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c30d47a3c5763ecc0800000000000000
+      internalID: -3682986424443547588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_82
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c742096d5ed5d700800000000000000
+      internalID: 564601821079947209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_83
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fef3d80bc0f223f70800000000000000
+      internalID: 9165439923200540655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_84
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c05ceb2642811420800000000000000
+      internalID: 2599001697865715912
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_85
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20ac699d705b1dc30800000000000000
+      internalID: 4382482957728139778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_86
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 721e3a0be4b413fb0800000000000000
+      internalID: -4669868537263431385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_87
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03523c861ef9bfe90800000000000000
+      internalID: -6990818206088485584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_88
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 170928c457de1a030800000000000000
+      internalID: 3504343073121538161
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_89
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 797be0f6d657bcee0800000000000000
+      internalID: -1239768159535319145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_90
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff033eda56192e380800000000000000
+      internalID: -8943426044109311745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_91
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35616cafff9eb01c0800000000000000
+      internalID: -4536274914012424621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_92
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7bd4902b2dc3cc280800000000000000
+      internalID: -9021769077902193225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_93
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9945f92681cc728d0800000000000000
+      internalID: -2871101832319511399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_94
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c0b210a262b30500800000000000000
+      internalID: 361328531781890245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_95
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a68629a159b491cf0800000000000000
+      internalID: -281110397965932438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_96
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21283b9617d4c0660800000000000000
+      internalID: 7353337441089192466
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_97
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4dc781cb264aab310800000000000000
+      internalID: 1421629376358284500
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_98
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bfe185e246b50bf40800000000000000
+      internalID: 5742190010729766651
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_99
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54b846f89173cca20800000000000000
+      internalID: 3083900427761388357
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_100
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44d7405d8e0e46620800000000000000
+      internalID: 2766583361723202884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_101
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74470fd3dc75f0ac0800000000000000
+      internalID: -3886791414378367929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_102
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c26eedfcb974ca40800000000000000
+      internalID: 5387564906863026889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_103
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b34749a7890c64760800000000000000
+      internalID: 7441847195400434747
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_104
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ed834f86e25ab700800000000000000
+      internalID: 556848654133202408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_105
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4a169cdba9562690800000000000000
+      internalID: -7627310324230251954
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_106
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c4930912cb4c95cd0800000000000000
+      internalID: -2568805800142161588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_107
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef537994854234310800000000000000
+      internalID: 1387993071770613246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_108
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 77ea55344ee702230800000000000000
+      internalID: 3612026419998469751
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_109
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2796d9d0bdcb24470800000000000000
+      internalID: 8377465905874823538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_110
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0041a3466769794c0800000000000000
+      internalID: -4280787485560531968
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_111
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec077351f6cb10af0800000000000000
+      internalID: -431856903967510322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_112
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45e1499cffbb65f60800000000000000
+      internalID: 8022806493480099412
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_113
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f1c34293e9e25140800000000000000
+      internalID: 4707081724176351732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_114
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 346d05781daec5eb0800000000000000
+      internalID: -4729647323006577085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_115
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c083ed6c700588e0800000000000000
+      internalID: -1691945550588182333
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_116
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cae3a72d7a29cbba0800000000000000
+      internalID: -6071816948113850708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_117
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: acc987b58c1df3b40800000000000000
+      internalID: 5422283134835662026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_118
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2fa898d5fc2322c0800000000000000
+      internalID: -4457669771754164437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_119
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d27c97e6474fe3f0800000000000000
+      internalID: -869397833200143657
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_120
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a38751e35345d36d0800000000000000
+      internalID: -3009156388362028998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_121
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d840e6b6b538d6e0800000000000000
+      internalID: -1812639791148152624
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_122
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8fc8480cec1270e30800000000000000
+      internalID: 4469578327065398520
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_123
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d8bcb409616b1990800000000000000
+      internalID: -7414225257856452399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_124
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a421dbba79c9dad90800000000000000
+      internalID: -7084834463548632502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_125
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61ddd51a41af12c60800000000000000
+      internalID: 7791783796841241878
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_126
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54b35fb2fad4dbb30800000000000000
+      internalID: 4304682233588169541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_127
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c6f99af6adde8c20800000000000000
+      internalID: 3210747293600446150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_128
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb645177399ad5de0800000000000000
+      internalID: -1342730663063370052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_129
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a09b0c6429c58700800000000000000
+      internalID: 542060488436715682
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_130
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf8175e3ebb0db6e0800000000000000
+      internalID: -1820285762670225157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_131
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6995bf47ea0756e80800000000000000
+      internalID: -8186012853086758506
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_132
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 353f154949d4c14e0800000000000000
+      internalID: -2009646033175186605
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_133
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6d8f23e47ce51380800000000000000
+      internalID: -9001028293458162326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_134
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc01ebc2e08af89a0800000000000000
+      internalID: -6228574980796444467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_135
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7a3423ac15b91cb0800000000000000
+      internalID: -4892680385560561026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_136
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9fb2db18ae4a49540800000000000000
+      internalID: 5013813612276165625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_137
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57943f6edf9240fd0800000000000000
+      internalID: -2376728532866610827
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_138
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3190a64e6dd5aa30800000000000000
+      internalID: 4226027291058147642
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_139
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 360fd5f97b7d0b770800000000000000
+      internalID: 8624630470067220579
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_140
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 978bef308e1e46fc0800000000000000
+      internalID: -3502426223571715975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_141
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c649d48529ab4a000800000000000000
+      internalID: 46367033890018412
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_142
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0296b5ba892952e0800000000000000
+      internalID: -2136630872479722993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_143
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e588210293217cf20800000000000000
+      internalID: 3442740476708554846
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_144
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8dfbc4696bbc9f50800000000000000
+      internalID: 6889587591307066762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_145
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc26eaeb7e27148f0800000000000000
+      internalID: -558038539155119411
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_146
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3eeee768728778950800000000000000
+      internalID: 6451257102387048163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_147
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9c3c9b47f7dbe390800000000000000
+      internalID: -7787893673481716577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_148
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3db019c42d725c140800000000000000
+      internalID: 4739237967058504659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_149
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c51544066de17480800000000000000
+      internalID: -8903073965920676410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_150
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d6ba7583d498ef20800000000000000
+      internalID: 3452172750577907417
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_151
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36c7bcbed5ce56010800000000000000
+      internalID: 1181610365386718307
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_152
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91c4f5f810a6c92c0800000000000000
+      internalID: -4423544179051770855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_153
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1c82a1bbed80da50800000000000000
+      internalID: 6543886302006381594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_154
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 149f427444253ac30800000000000000
+      internalID: 4369426516684372289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_155
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a824d07e58712bb10800000000000000
+      internalID: 1995683448753046154
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_156
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2421cf56aafe73910800000000000000
+      internalID: 1817184489801781826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_157
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 149751c9bd988a9e0800000000000000
+      internalID: -1609885290475456191
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_158
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0b8e0c6463eacbc0800000000000000
+      internalID: -3761944518265500913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_159
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1dc45bd2e80376ce0800000000000000
+      internalID: -1412106570947015471
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_160
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ccf1d834c4a03a40800000000000000
+      internalID: 5345953920362609861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_161
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fee23b22fda68f8c0800000000000000
+      internalID: -3965301965307302161
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_162
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 304887f8219d185e0800000000000000
+      internalID: -1909006093288700925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_163
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3fd1a642fdfb87e0800000000000000
+      internalID: -1762035612176490694
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_164
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: adc8e042d31d93a30800000000000000
+      internalID: 4195614588400471258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_165
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 447cfc97495439910800000000000000
+      internalID: 1842893176525801284
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_166
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: faf765105ba7ab200800000000000000
+      internalID: 196604451574153135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_167
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7748605e40da317b0800000000000000
+      internalID: -5254666103677352841
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_168
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d05e1205752296110800000000000000
+      internalID: 1254571729601291533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_169
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e589b5916f7b48570800000000000000
+      internalID: 8468095466978646110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_170
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 538be2a71bbc56810800000000000000
+      internalID: 1758035192677578805
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_171
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0710a1b7f1ab2130800000000000000
+      internalID: 3543103617066080014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_172
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7570c677f69fbf070800000000000000
+      internalID: 8141375008542558039
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_173
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de34f90844a38ed80800000000000000
+      internalID: -8221257053874732051
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_174
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c703c41a172d05a70800000000000000
+      internalID: 8813775856243323004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_175
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f25e054f4cd7ee500800000000000000
+      internalID: 427417299512780079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_176
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ff7c964b2a473010800000000000000
+      internalID: 1168484178054643705
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_177
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c4e957f60c10ca30800000000000000
+      internalID: 4233414465973511365
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_178
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c400ba492b5b0880800000000000000
+      internalID: -8643714826902698816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_179
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bba73986b1221c2a0800000000000000
+      internalID: -6719051667946112325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lieutenant_SpriteSheet_256_180
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17b336c0550f6ce90800000000000000
+      internalID: -7005647922257511567
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: d0d15664285376f49969c06692e61727
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":256.0,"y":256.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Lieutenant_SpriteSheet_256_0: 3263842399908222564
+      Lieutenant_SpriteSheet_256_1: -2806092676812872751
+      Lieutenant_SpriteSheet_256_10: 8826247999755886010
+      Lieutenant_SpriteSheet_256_100: 2766583361723202884
+      Lieutenant_SpriteSheet_256_101: -3886791414378367929
+      Lieutenant_SpriteSheet_256_102: 5387564906863026889
+      Lieutenant_SpriteSheet_256_103: 7441847195400434747
+      Lieutenant_SpriteSheet_256_104: 556848654133202408
+      Lieutenant_SpriteSheet_256_105: -7627310324230251954
+      Lieutenant_SpriteSheet_256_106: -2568805800142161588
+      Lieutenant_SpriteSheet_256_107: 1387993071770613246
+      Lieutenant_SpriteSheet_256_108: 3612026419998469751
+      Lieutenant_SpriteSheet_256_109: 8377465905874823538
+      Lieutenant_SpriteSheet_256_11: 8751796255723877490
+      Lieutenant_SpriteSheet_256_110: -4280787485560531968
+      Lieutenant_SpriteSheet_256_111: -431856903967510322
+      Lieutenant_SpriteSheet_256_112: 8022806493480099412
+      Lieutenant_SpriteSheet_256_113: 4707081724176351732
+      Lieutenant_SpriteSheet_256_114: -4729647323006577085
+      Lieutenant_SpriteSheet_256_115: -1691945550588182333
+      Lieutenant_SpriteSheet_256_116: -6071816948113850708
+      Lieutenant_SpriteSheet_256_117: 5422283134835662026
+      Lieutenant_SpriteSheet_256_118: -4457669771754164437
+      Lieutenant_SpriteSheet_256_119: -869397833200143657
+      Lieutenant_SpriteSheet_256_12: -977894216475117054
+      Lieutenant_SpriteSheet_256_120: -3009156388362028998
+      Lieutenant_SpriteSheet_256_121: -1812639791148152624
+      Lieutenant_SpriteSheet_256_122: 4469578327065398520
+      Lieutenant_SpriteSheet_256_123: -7414225257856452399
+      Lieutenant_SpriteSheet_256_124: -7084834463548632502
+      Lieutenant_SpriteSheet_256_125: 7791783796841241878
+      Lieutenant_SpriteSheet_256_126: 4304682233588169541
+      Lieutenant_SpriteSheet_256_127: 3210747293600446150
+      Lieutenant_SpriteSheet_256_128: -1342730663063370052
+      Lieutenant_SpriteSheet_256_129: 542060488436715682
+      Lieutenant_SpriteSheet_256_13: -2350765169558515179
+      Lieutenant_SpriteSheet_256_130: -1820285762670225157
+      Lieutenant_SpriteSheet_256_131: -8186012853086758506
+      Lieutenant_SpriteSheet_256_132: -2009646033175186605
+      Lieutenant_SpriteSheet_256_133: -9001028293458162326
+      Lieutenant_SpriteSheet_256_134: -6228574980796444467
+      Lieutenant_SpriteSheet_256_135: -4892680385560561026
+      Lieutenant_SpriteSheet_256_136: 5013813612276165625
+      Lieutenant_SpriteSheet_256_137: -2376728532866610827
+      Lieutenant_SpriteSheet_256_138: 4226027291058147642
+      Lieutenant_SpriteSheet_256_139: 8624630470067220579
+      Lieutenant_SpriteSheet_256_14: -314767248997690952
+      Lieutenant_SpriteSheet_256_140: -3502426223571715975
+      Lieutenant_SpriteSheet_256_141: 46367033890018412
+      Lieutenant_SpriteSheet_256_142: -2136630872479722993
+      Lieutenant_SpriteSheet_256_143: 3442740476708554846
+      Lieutenant_SpriteSheet_256_144: 6889587591307066762
+      Lieutenant_SpriteSheet_256_145: -558038539155119411
+      Lieutenant_SpriteSheet_256_146: 6451257102387048163
+      Lieutenant_SpriteSheet_256_147: -7787893673481716577
+      Lieutenant_SpriteSheet_256_148: 4739237967058504659
+      Lieutenant_SpriteSheet_256_149: -8903073965920676410
+      Lieutenant_SpriteSheet_256_15: 330432936698765142
+      Lieutenant_SpriteSheet_256_150: 3452172750577907417
+      Lieutenant_SpriteSheet_256_151: 1181610365386718307
+      Lieutenant_SpriteSheet_256_152: -4423544179051770855
+      Lieutenant_SpriteSheet_256_153: 6543886302006381594
+      Lieutenant_SpriteSheet_256_154: 4369426516684372289
+      Lieutenant_SpriteSheet_256_155: 1995683448753046154
+      Lieutenant_SpriteSheet_256_156: 1817184489801781826
+      Lieutenant_SpriteSheet_256_157: -1609885290475456191
+      Lieutenant_SpriteSheet_256_158: -3761944518265500913
+      Lieutenant_SpriteSheet_256_159: -1412106570947015471
+      Lieutenant_SpriteSheet_256_16: 869157854901608809
+      Lieutenant_SpriteSheet_256_160: 5345953920362609861
+      Lieutenant_SpriteSheet_256_161: -3965301965307302161
+      Lieutenant_SpriteSheet_256_162: -1909006093288700925
+      Lieutenant_SpriteSheet_256_163: -1762035612176490694
+      Lieutenant_SpriteSheet_256_164: 4195614588400471258
+      Lieutenant_SpriteSheet_256_165: 1842893176525801284
+      Lieutenant_SpriteSheet_256_166: 196604451574153135
+      Lieutenant_SpriteSheet_256_167: -5254666103677352841
+      Lieutenant_SpriteSheet_256_168: 1254571729601291533
+      Lieutenant_SpriteSheet_256_169: 8468095466978646110
+      Lieutenant_SpriteSheet_256_17: -6847517090564122650
+      Lieutenant_SpriteSheet_256_170: 1758035192677578805
+      Lieutenant_SpriteSheet_256_171: 3543103617066080014
+      Lieutenant_SpriteSheet_256_172: 8141375008542558039
+      Lieutenant_SpriteSheet_256_173: -8221257053874732051
+      Lieutenant_SpriteSheet_256_174: 8813775856243323004
+      Lieutenant_SpriteSheet_256_175: 427417299512780079
+      Lieutenant_SpriteSheet_256_176: 1168484178054643705
+      Lieutenant_SpriteSheet_256_177: 4233414465973511365
+      Lieutenant_SpriteSheet_256_178: -8643714826902698816
+      Lieutenant_SpriteSheet_256_179: -6719051667946112325
+      Lieutenant_SpriteSheet_256_18: 6752030388569855247
+      Lieutenant_SpriteSheet_256_180: -7005647922257511567
+      Lieutenant_SpriteSheet_256_19: 3548974903587334954
+      Lieutenant_SpriteSheet_256_2: -3874391551556795042
+      Lieutenant_SpriteSheet_256_20: -4728068348211749727
+      Lieutenant_SpriteSheet_256_21: 6995665213370731
+      Lieutenant_SpriteSheet_256_22: -4060311520262629028
+      Lieutenant_SpriteSheet_256_23: -1690980014717134978
+      Lieutenant_SpriteSheet_256_24: 7451613957810293068
+      Lieutenant_SpriteSheet_256_25: 6503292582707540941
+      Lieutenant_SpriteSheet_256_26: 7555230525847203508
+      Lieutenant_SpriteSheet_256_27: 1067635822659471916
+      Lieutenant_SpriteSheet_256_28: 2472715927760568109
+      Lieutenant_SpriteSheet_256_29: 7663322381020033681
+      Lieutenant_SpriteSheet_256_3: 2257455034271314513
+      Lieutenant_SpriteSheet_256_30: 4177659077530060092
+      Lieutenant_SpriteSheet_256_31: -3284559196151995903
+      Lieutenant_SpriteSheet_256_32: 4575482031638989840
+      Lieutenant_SpriteSheet_256_33: -4864446351148118204
+      Lieutenant_SpriteSheet_256_34: -2120223603567716044
+      Lieutenant_SpriteSheet_256_35: -4511334340200428509
+      Lieutenant_SpriteSheet_256_36: 3899429214882766383
+      Lieutenant_SpriteSheet_256_37: 957243295740048187
+      Lieutenant_SpriteSheet_256_38: -8705277336541479216
+      Lieutenant_SpriteSheet_256_39: -6404919551757230733
+      Lieutenant_SpriteSheet_256_4: 1051118855428707782
+      Lieutenant_SpriteSheet_256_40: 5406128194617436381
+      Lieutenant_SpriteSheet_256_41: -5791394037416845144
+      Lieutenant_SpriteSheet_256_42: 8145061030939853345
+      Lieutenant_SpriteSheet_256_43: 2307054165922167212
+      Lieutenant_SpriteSheet_256_44: 3609234624049015198
+      Lieutenant_SpriteSheet_256_45: -1302222572096199467
+      Lieutenant_SpriteSheet_256_46: 8554970311312147945
+      Lieutenant_SpriteSheet_256_47: -719391951683937445
+      Lieutenant_SpriteSheet_256_48: -7779329778796099577
+      Lieutenant_SpriteSheet_256_49: -1976584217651274500
+      Lieutenant_SpriteSheet_256_5: -9057102386249311398
+      Lieutenant_SpriteSheet_256_50: 2959856411984167052
+      Lieutenant_SpriteSheet_256_51: 2763220099770015915
+      Lieutenant_SpriteSheet_256_52: -7098733207922884932
+      Lieutenant_SpriteSheet_256_53: -518554515099642999
+      Lieutenant_SpriteSheet_256_54: -6594557637743423281
+      Lieutenant_SpriteSheet_256_55: 1098632445609769882
+      Lieutenant_SpriteSheet_256_56: -5945881672337935753
+      Lieutenant_SpriteSheet_256_57: -5865119105879934083
+      Lieutenant_SpriteSheet_256_58: -4227757651877895485
+      Lieutenant_SpriteSheet_256_59: 8219106831691305847
+      Lieutenant_SpriteSheet_256_6: 6801825841836812801
+      Lieutenant_SpriteSheet_256_60: 8666752789345836826
+      Lieutenant_SpriteSheet_256_61: -1008428746664114999
+      Lieutenant_SpriteSheet_256_62: -8049799332470366089
+      Lieutenant_SpriteSheet_256_63: 2247833759591631949
+      Lieutenant_SpriteSheet_256_64: 5528930473899748964
+      Lieutenant_SpriteSheet_256_65: 1064222047894550497
+      Lieutenant_SpriteSheet_256_66: -7872433236586831735
+      Lieutenant_SpriteSheet_256_67: 3783688872402925838
+      Lieutenant_SpriteSheet_256_68: 3554430183953300316
+      Lieutenant_SpriteSheet_256_69: -4590967061054072073
+      Lieutenant_SpriteSheet_256_7: -7735584197109490981
+      Lieutenant_SpriteSheet_256_70: 7071979880181112044
+      Lieutenant_SpriteSheet_256_71: 3376665126061258297
+      Lieutenant_SpriteSheet_256_72: 8287256815380053509
+      Lieutenant_SpriteSheet_256_73: 4912228469693608924
+      Lieutenant_SpriteSheet_256_74: 3773755117229644709
+      Lieutenant_SpriteSheet_256_75: -6091410589565822185
+      Lieutenant_SpriteSheet_256_76: 8803241096362789786
+      Lieutenant_SpriteSheet_256_77: -2927972945871505426
+      Lieutenant_SpriteSheet_256_78: 435194216326461909
+      Lieutenant_SpriteSheet_256_79: -8757120943379913551
+      Lieutenant_SpriteSheet_256_8: -722591502914036986
+      Lieutenant_SpriteSheet_256_80: -8549703893345321968
+      Lieutenant_SpriteSheet_256_81: -3682986424443547588
+      Lieutenant_SpriteSheet_256_82: 564601821079947209
+      Lieutenant_SpriteSheet_256_83: 9165439923200540655
+      Lieutenant_SpriteSheet_256_84: 2599001697865715912
+      Lieutenant_SpriteSheet_256_85: 4382482957728139778
+      Lieutenant_SpriteSheet_256_86: -4669868537263431385
+      Lieutenant_SpriteSheet_256_87: -6990818206088485584
+      Lieutenant_SpriteSheet_256_88: 3504343073121538161
+      Lieutenant_SpriteSheet_256_89: -1239768159535319145
+      Lieutenant_SpriteSheet_256_9: -1796480196890769053
+      Lieutenant_SpriteSheet_256_90: -8943426044109311745
+      Lieutenant_SpriteSheet_256_91: -4536274914012424621
+      Lieutenant_SpriteSheet_256_92: -9021769077902193225
+      Lieutenant_SpriteSheet_256_93: -2871101832319511399
+      Lieutenant_SpriteSheet_256_94: 361328531781890245
+      Lieutenant_SpriteSheet_256_95: -281110397965932438
+      Lieutenant_SpriteSheet_256_96: 7353337441089192466
+      Lieutenant_SpriteSheet_256_97: 1421629376358284500
+      Lieutenant_SpriteSheet_256_98: 5742190010729766651
+      Lieutenant_SpriteSheet_256_99: 3083900427761388357
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

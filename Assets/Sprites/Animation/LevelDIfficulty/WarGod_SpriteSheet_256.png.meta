@@ -1,0 +1,3254 @@
+fileFormatVersion: 2
+guid: ec8860cda0ba58f4bbfb05e808d3f307
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5147653154744630458
+    second: WarGod_SpriteSheet_256_0
+  - first:
+      213: 810730281017855877
+    second: WarGod_SpriteSheet_256_1
+  - first:
+      213: 3101993718898235128
+    second: WarGod_SpriteSheet_256_2
+  - first:
+      213: 4720103330876281571
+    second: WarGod_SpriteSheet_256_3
+  - first:
+      213: 4974031141210615012
+    second: WarGod_SpriteSheet_256_4
+  - first:
+      213: -3979731801080042620
+    second: WarGod_SpriteSheet_256_5
+  - first:
+      213: 8277379887553991919
+    second: WarGod_SpriteSheet_256_6
+  - first:
+      213: 7035570300916768830
+    second: WarGod_SpriteSheet_256_7
+  - first:
+      213: 4934614546203712134
+    second: WarGod_SpriteSheet_256_8
+  - first:
+      213: -7120052963335943238
+    second: WarGod_SpriteSheet_256_9
+  - first:
+      213: -7929444693625110019
+    second: WarGod_SpriteSheet_256_10
+  - first:
+      213: -1645585103218409002
+    second: WarGod_SpriteSheet_256_11
+  - first:
+      213: 2271602105173814812
+    second: WarGod_SpriteSheet_256_12
+  - first:
+      213: -4457009878478194717
+    second: WarGod_SpriteSheet_256_13
+  - first:
+      213: -659272740602599261
+    second: WarGod_SpriteSheet_256_14
+  - first:
+      213: -8593724304957767413
+    second: WarGod_SpriteSheet_256_15
+  - first:
+      213: -7100116904159793501
+    second: WarGod_SpriteSheet_256_16
+  - first:
+      213: 3131388528604466747
+    second: WarGod_SpriteSheet_256_17
+  - first:
+      213: 1791077573572556053
+    second: WarGod_SpriteSheet_256_18
+  - first:
+      213: -956955073665742006
+    second: WarGod_SpriteSheet_256_19
+  - first:
+      213: -7385977551990401717
+    second: WarGod_SpriteSheet_256_20
+  - first:
+      213: -7843670926261903052
+    second: WarGod_SpriteSheet_256_21
+  - first:
+      213: 3462330011757174900
+    second: WarGod_SpriteSheet_256_22
+  - first:
+      213: 1381543706909868269
+    second: WarGod_SpriteSheet_256_23
+  - first:
+      213: -5252932034852363468
+    second: WarGod_SpriteSheet_256_24
+  - first:
+      213: -3820458636788658511
+    second: WarGod_SpriteSheet_256_25
+  - first:
+      213: -7133929189150192578
+    second: WarGod_SpriteSheet_256_26
+  - first:
+      213: -2086620140160802953
+    second: WarGod_SpriteSheet_256_27
+  - first:
+      213: 7341124052161720089
+    second: WarGod_SpriteSheet_256_28
+  - first:
+      213: -8308573275028449583
+    second: WarGod_SpriteSheet_256_29
+  - first:
+      213: 5567641972143601289
+    second: WarGod_SpriteSheet_256_30
+  - first:
+      213: -7516981957887629229
+    second: WarGod_SpriteSheet_256_31
+  - first:
+      213: -8526499084407728192
+    second: WarGod_SpriteSheet_256_32
+  - first:
+      213: -7277638452940038204
+    second: WarGod_SpriteSheet_256_33
+  - first:
+      213: -4301748219247382439
+    second: WarGod_SpriteSheet_256_34
+  - first:
+      213: -786625289283278981
+    second: WarGod_SpriteSheet_256_35
+  - first:
+      213: 4369954307628141809
+    second: WarGod_SpriteSheet_256_36
+  - first:
+      213: 5135877177338345125
+    second: WarGod_SpriteSheet_256_37
+  - first:
+      213: 839987660926720930
+    second: WarGod_SpriteSheet_256_38
+  - first:
+      213: 25799396372606502
+    second: WarGod_SpriteSheet_256_39
+  - first:
+      213: 8283207373446225320
+    second: WarGod_SpriteSheet_256_40
+  - first:
+      213: 7639899173386425451
+    second: WarGod_SpriteSheet_256_41
+  - first:
+      213: -4986933439019387402
+    second: WarGod_SpriteSheet_256_42
+  - first:
+      213: -7373346426399862867
+    second: WarGod_SpriteSheet_256_43
+  - first:
+      213: 6002695525184994592
+    second: WarGod_SpriteSheet_256_44
+  - first:
+      213: -1837422546044705900
+    second: WarGod_SpriteSheet_256_45
+  - first:
+      213: -636306774434721440
+    second: WarGod_SpriteSheet_256_46
+  - first:
+      213: 8923998828238566888
+    second: WarGod_SpriteSheet_256_47
+  - first:
+      213: 2848247908509420811
+    second: WarGod_SpriteSheet_256_48
+  - first:
+      213: -9191780640830915417
+    second: WarGod_SpriteSheet_256_49
+  - first:
+      213: -5770881612384020369
+    second: WarGod_SpriteSheet_256_50
+  - first:
+      213: -7698327786169627160
+    second: WarGod_SpriteSheet_256_51
+  - first:
+      213: -7985478550322832091
+    second: WarGod_SpriteSheet_256_52
+  - first:
+      213: -992511835716206710
+    second: WarGod_SpriteSheet_256_53
+  - first:
+      213: -37960198669242792
+    second: WarGod_SpriteSheet_256_54
+  - first:
+      213: -932570399757866219
+    second: WarGod_SpriteSheet_256_55
+  - first:
+      213: -94821602928837027
+    second: WarGod_SpriteSheet_256_56
+  - first:
+      213: -7515327618863137761
+    second: WarGod_SpriteSheet_256_57
+  - first:
+      213: 1001405995176552107
+    second: WarGod_SpriteSheet_256_58
+  - first:
+      213: -8461095563420531580
+    second: WarGod_SpriteSheet_256_59
+  - first:
+      213: 3217254741024289650
+    second: WarGod_SpriteSheet_256_60
+  - first:
+      213: -7078828235275748975
+    second: WarGod_SpriteSheet_256_61
+  - first:
+      213: 1823671452341365284
+    second: WarGod_SpriteSheet_256_62
+  - first:
+      213: 8686231593499929679
+    second: WarGod_SpriteSheet_256_63
+  - first:
+      213: 2766510389866621245
+    second: WarGod_SpriteSheet_256_64
+  - first:
+      213: -6416437235928771270
+    second: WarGod_SpriteSheet_256_65
+  - first:
+      213: 998975150616986650
+    second: WarGod_SpriteSheet_256_66
+  - first:
+      213: 2355066591826132910
+    second: WarGod_SpriteSheet_256_67
+  - first:
+      213: -138276468475901542
+    second: WarGod_SpriteSheet_256_68
+  - first:
+      213: -8957870687632999098
+    second: WarGod_SpriteSheet_256_69
+  - first:
+      213: -5129780507583501908
+    second: WarGod_SpriteSheet_256_70
+  - first:
+      213: -2629164948562912405
+    second: WarGod_SpriteSheet_256_71
+  - first:
+      213: 3743217022625357133
+    second: WarGod_SpriteSheet_256_72
+  - first:
+      213: 5684778433378700210
+    second: WarGod_SpriteSheet_256_73
+  - first:
+      213: -638120525244595200
+    second: WarGod_SpriteSheet_256_74
+  - first:
+      213: 6798976179700845929
+    second: WarGod_SpriteSheet_256_75
+  - first:
+      213: 405329712672582072
+    second: WarGod_SpriteSheet_256_76
+  - first:
+      213: 3436997737188552192
+    second: WarGod_SpriteSheet_256_77
+  - first:
+      213: -3485305290453369720
+    second: WarGod_SpriteSheet_256_78
+  - first:
+      213: 8121360821062871867
+    second: WarGod_SpriteSheet_256_79
+  - first:
+      213: -4976601155969484613
+    second: WarGod_SpriteSheet_256_80
+  - first:
+      213: 3455788549958559446
+    second: WarGod_SpriteSheet_256_81
+  - first:
+      213: 8910238338328894904
+    second: WarGod_SpriteSheet_256_82
+  - first:
+      213: 5504295326374844454
+    second: WarGod_SpriteSheet_256_83
+  - first:
+      213: -3383258506547753566
+    second: WarGod_SpriteSheet_256_84
+  - first:
+      213: 7418346932515880558
+    second: WarGod_SpriteSheet_256_85
+  - first:
+      213: -4882798974103103312
+    second: WarGod_SpriteSheet_256_86
+  - first:
+      213: 1916034302928964595
+    second: WarGod_SpriteSheet_256_87
+  - first:
+      213: 6430800099828530699
+    second: WarGod_SpriteSheet_256_88
+  - first:
+      213: 3952349293815245085
+    second: WarGod_SpriteSheet_256_89
+  - first:
+      213: -8655720964477086745
+    second: WarGod_SpriteSheet_256_90
+  - first:
+      213: -2105019583736127525
+    second: WarGod_SpriteSheet_256_91
+  - first:
+      213: 15357250460180460
+    second: WarGod_SpriteSheet_256_92
+  - first:
+      213: -1662519043636610027
+    second: WarGod_SpriteSheet_256_93
+  - first:
+      213: 7410446532149194970
+    second: WarGod_SpriteSheet_256_94
+  - first:
+      213: -6789402570584194831
+    second: WarGod_SpriteSheet_256_95
+  - first:
+      213: -4759579312275405551
+    second: WarGod_SpriteSheet_256_96
+  - first:
+      213: -8597221932821012622
+    second: WarGod_SpriteSheet_256_97
+  - first:
+      213: -2872297295395383530
+    second: WarGod_SpriteSheet_256_98
+  - first:
+      213: 8383998200479753442
+    second: WarGod_SpriteSheet_256_99
+  - first:
+      213: 3167281148219463191
+    second: WarGod_SpriteSheet_256_100
+  - first:
+      213: -5057811538270324071
+    second: WarGod_SpriteSheet_256_101
+  - first:
+      213: -1957694712459950116
+    second: WarGod_SpriteSheet_256_102
+  - first:
+      213: 848971974820791862
+    second: WarGod_SpriteSheet_256_103
+  - first:
+      213: -869782820812118893
+    second: WarGod_SpriteSheet_256_104
+  - first:
+      213: 3578754441890523763
+    second: WarGod_SpriteSheet_256_105
+  - first:
+      213: -4001370444264481937
+    second: WarGod_SpriteSheet_256_106
+  - first:
+      213: -2186489758037062025
+    second: WarGod_SpriteSheet_256_107
+  - first:
+      213: 1431266672707404199
+    second: WarGod_SpriteSheet_256_108
+  - first:
+      213: 3827700428682583935
+    second: WarGod_SpriteSheet_256_109
+  - first:
+      213: -7749184441287509655
+    second: WarGod_SpriteSheet_256_110
+  - first:
+      213: -6810003184677069142
+    second: WarGod_SpriteSheet_256_111
+  - first:
+      213: 1820581983776831493
+    second: WarGod_SpriteSheet_256_112
+  - first:
+      213: -4395068626199902459
+    second: WarGod_SpriteSheet_256_113
+  - first:
+      213: 368351236784426862
+    second: WarGod_SpriteSheet_256_114
+  - first:
+      213: 3718289979611389554
+    second: WarGod_SpriteSheet_256_115
+  - first:
+      213: -3076433919020562942
+    second: WarGod_SpriteSheet_256_116
+  - first:
+      213: -2059723100283367660
+    second: WarGod_SpriteSheet_256_117
+  - first:
+      213: -3169442766502440865
+    second: WarGod_SpriteSheet_256_118
+  - first:
+      213: 115516268561114027
+    second: WarGod_SpriteSheet_256_119
+  - first:
+      213: -4937353163929105484
+    second: WarGod_SpriteSheet_256_120
+  - first:
+      213: -2473090284497909966
+    second: WarGod_SpriteSheet_256_121
+  - first:
+      213: -7346089218992501092
+    second: WarGod_SpriteSheet_256_122
+  - first:
+      213: -9020873551135564954
+    second: WarGod_SpriteSheet_256_123
+  - first:
+      213: 5088740747702572519
+    second: WarGod_SpriteSheet_256_124
+  - first:
+      213: 4618123238440538849
+    second: WarGod_SpriteSheet_256_125
+  - first:
+      213: 5357050933271555000
+    second: WarGod_SpriteSheet_256_126
+  - first:
+      213: -2502841568650290817
+    second: WarGod_SpriteSheet_256_127
+  - first:
+      213: 1003863560751675665
+    second: WarGod_SpriteSheet_256_128
+  - first:
+      213: -5798342837975332838
+    second: WarGod_SpriteSheet_256_129
+  - first:
+      213: -4389281254862907716
+    second: WarGod_SpriteSheet_256_130
+  - first:
+      213: -4478084065580494755
+    second: WarGod_SpriteSheet_256_131
+  - first:
+      213: -1438381590312089789
+    second: WarGod_SpriteSheet_256_132
+  - first:
+      213: 3691300232705429385
+    second: WarGod_SpriteSheet_256_133
+  - first:
+      213: 5354013862005021585
+    second: WarGod_SpriteSheet_256_134
+  - first:
+      213: 6230100434034590586
+    second: WarGod_SpriteSheet_256_135
+  - first:
+      213: 2316054007132605704
+    second: WarGod_SpriteSheet_256_136
+  - first:
+      213: 4640045922820529784
+    second: WarGod_SpriteSheet_256_137
+  - first:
+      213: -4407402355038614156
+    second: WarGod_SpriteSheet_256_138
+  - first:
+      213: -8043145764713834352
+    second: WarGod_SpriteSheet_256_139
+  - first:
+      213: 5978461861178746331
+    second: WarGod_SpriteSheet_256_140
+  - first:
+      213: -8595495607959152854
+    second: WarGod_SpriteSheet_256_141
+  - first:
+      213: -1648340674391705191
+    second: WarGod_SpriteSheet_256_142
+  - first:
+      213: 5508437990973910647
+    second: WarGod_SpriteSheet_256_143
+  - first:
+      213: 56809429996496303
+    second: WarGod_SpriteSheet_256_144
+  - first:
+      213: 2367253862085473350
+    second: WarGod_SpriteSheet_256_145
+  - first:
+      213: -5830080334875036710
+    second: WarGod_SpriteSheet_256_146
+  - first:
+      213: -984334037092519174
+    second: WarGod_SpriteSheet_256_147
+  - first:
+      213: 8353431639519331614
+    second: WarGod_SpriteSheet_256_148
+  - first:
+      213: 6321516349978426020
+    second: WarGod_SpriteSheet_256_149
+  - first:
+      213: -1831834458134523568
+    second: WarGod_SpriteSheet_256_150
+  - first:
+      213: 2171817898020228101
+    second: WarGod_SpriteSheet_256_151
+  - first:
+      213: 7643021282174260488
+    second: WarGod_SpriteSheet_256_152
+  - first:
+      213: 1575936343106922639
+    second: WarGod_SpriteSheet_256_153
+  - first:
+      213: 2668024092198125223
+    second: WarGod_SpriteSheet_256_154
+  - first:
+      213: 1930175243865429063
+    second: WarGod_SpriteSheet_256_155
+  - first:
+      213: -5597850263777229236
+    second: WarGod_SpriteSheet_256_156
+  - first:
+      213: 5198922392212153587
+    second: WarGod_SpriteSheet_256_157
+  - first:
+      213: -5472706679880021345
+    second: WarGod_SpriteSheet_256_158
+  - first:
+      213: -4201177630912377362
+    second: WarGod_SpriteSheet_256_159
+  - first:
+      213: -4942135968615441731
+    second: WarGod_SpriteSheet_256_160
+  - first:
+      213: -9033806061465934003
+    second: WarGod_SpriteSheet_256_161
+  - first:
+      213: -4486230066131462608
+    second: WarGod_SpriteSheet_256_162
+  - first:
+      213: -1985938258238434727
+    second: WarGod_SpriteSheet_256_163
+  - first:
+      213: -1496453560889399864
+    second: WarGod_SpriteSheet_256_164
+  - first:
+      213: -6825609114665384380
+    second: WarGod_SpriteSheet_256_165
+  - first:
+      213: 1319155760776624841
+    second: WarGod_SpriteSheet_256_166
+  - first:
+      213: 5651893277466918780
+    second: WarGod_SpriteSheet_256_167
+  - first:
+      213: 8114587986880555432
+    second: WarGod_SpriteSheet_256_168
+  - first:
+      213: -7066519974963771299
+    second: WarGod_SpriteSheet_256_169
+  - first:
+      213: -2734961639182529574
+    second: WarGod_SpriteSheet_256_170
+  - first:
+      213: -1333721092163968777
+    second: WarGod_SpriteSheet_256_171
+  - first:
+      213: 3919704350302612233
+    second: WarGod_SpriteSheet_256_172
+  - first:
+      213: 7859968887585704133
+    second: WarGod_SpriteSheet_256_173
+  - first:
+      213: -671590863141347167
+    second: WarGod_SpriteSheet_256_174
+  - first:
+      213: -767596194353152253
+    second: WarGod_SpriteSheet_256_175
+  - first:
+      213: 6206671383358534785
+    second: WarGod_SpriteSheet_256_176
+  - first:
+      213: 6336059014709934900
+    second: WarGod_SpriteSheet_256_177
+  - first:
+      213: 428301183779352150
+    second: WarGod_SpriteSheet_256_178
+  - first:
+      213: 5293202114780493140
+    second: WarGod_SpriteSheet_256_179
+  - first:
+      213: -5887427005961785984
+    second: WarGod_SpriteSheet_256_180
+  - first:
+      213: 1921842878352314105
+    second: WarGod_SpriteSheet_256_181
+  - first:
+      213: -7586221333193491948
+    second: WarGod_SpriteSheet_256_182
+  - first:
+      213: 95191472701466608
+    second: WarGod_SpriteSheet_256_183
+  - first:
+      213: 1729652967371762755
+    second: WarGod_SpriteSheet_256_184
+  - first:
+      213: -6185938723591543006
+    second: WarGod_SpriteSheet_256_185
+  - first:
+      213: 8678553931422743715
+    second: WarGod_SpriteSheet_256_186
+  - first:
+      213: 429265421514722559
+    second: WarGod_SpriteSheet_256_187
+  - first:
+      213: -5386572513221273548
+    second: WarGod_SpriteSheet_256_188
+  - first:
+      213: -2369935147007156775
+    second: WarGod_SpriteSheet_256_189
+  - first:
+      213: -5316720788379972922
+    second: WarGod_SpriteSheet_256_190
+  - first:
+      213: -6574898311137951064
+    second: WarGod_SpriteSheet_256_191
+  - first:
+      213: -765240267401161091
+    second: WarGod_SpriteSheet_256_192
+  - first:
+      213: -8895103978250892802
+    second: WarGod_SpriteSheet_256_193
+  - first:
+      213: 4753086194311436756
+    second: WarGod_SpriteSheet_256_194
+  - first:
+      213: 5166988763728238459
+    second: WarGod_SpriteSheet_256_195
+  - first:
+      213: 4006299698191138368
+    second: WarGod_SpriteSheet_256_196
+  - first:
+      213: 5436775729764330394
+    second: WarGod_SpriteSheet_256_197
+  - first:
+      213: 6498992287356193603
+    second: WarGod_SpriteSheet_256_198
+  - first:
+      213: 5795529169893123780
+    second: WarGod_SpriteSheet_256_199
+  - first:
+      213: 5124817400385896144
+    second: WarGod_SpriteSheet_256_200
+  - first:
+      213: 394088340813017251
+    second: WarGod_SpriteSheet_256_201
+  - first:
+      213: -6409451909179753736
+    second: WarGod_SpriteSheet_256_202
+  - first:
+      213: -5732447275431867385
+    second: WarGod_SpriteSheet_256_203
+  - first:
+      213: -1421092798201463043
+    second: WarGod_SpriteSheet_256_204
+  - first:
+      213: -779355781632787116
+    second: WarGod_SpriteSheet_256_205
+  - first:
+      213: -904739843944019978
+    second: WarGod_SpriteSheet_256_206
+  - first:
+      213: -1743665893699897258
+    second: WarGod_SpriteSheet_256_207
+  - first:
+      213: 372541439942568302
+    second: WarGod_SpriteSheet_256_208
+  - first:
+      213: -4816855699058016200
+    second: WarGod_SpriteSheet_256_209
+  - first:
+      213: 4796976544571908890
+    second: WarGod_SpriteSheet_256_210
+  - first:
+      213: -6967472404874072987
+    second: WarGod_SpriteSheet_256_211
+  - first:
+      213: 6240556800722604639
+    second: WarGod_SpriteSheet_256_212
+  - first:
+      213: -7628074619323052412
+    second: WarGod_SpriteSheet_256_213
+  - first:
+      213: 879239922909227495
+    second: WarGod_SpriteSheet_256_214
+  - first:
+      213: 1560354777618588851
+    second: WarGod_SpriteSheet_256_215
+  - first:
+      213: 2045324847944536633
+    second: WarGod_SpriteSheet_256_216
+  - first:
+      213: 6064622926329753784
+    second: WarGod_SpriteSheet_256_217
+  - first:
+      213: -3417812886724123489
+    second: WarGod_SpriteSheet_256_218
+  - first:
+      213: 1832462323508179737
+    second: WarGod_SpriteSheet_256_219
+  - first:
+      213: -9050790854519361376
+    second: WarGod_SpriteSheet_256_220
+  - first:
+      213: -4887650707159066506
+    second: WarGod_SpriteSheet_256_221
+  - first:
+      213: -158321494782440140
+    second: WarGod_SpriteSheet_256_222
+  - first:
+      213: 1060498033078882248
+    second: WarGod_SpriteSheet_256_223
+  - first:
+      213: -5864000285537023447
+    second: WarGod_SpriteSheet_256_224
+  - first:
+      213: -8324891394923015442
+    second: WarGod_SpriteSheet_256_225
+  - first:
+      213: -3678045735348599198
+    second: WarGod_SpriteSheet_256_226
+  - first:
+      213: 2129119315561716275
+    second: WarGod_SpriteSheet_256_227
+  - first:
+      213: 6415042959653097988
+    second: WarGod_SpriteSheet_256_228
+  - first:
+      213: -5635345130373585122
+    second: WarGod_SpriteSheet_256_229
+  - first:
+      213: -4238501063828800295
+    second: WarGod_SpriteSheet_256_230
+  - first:
+      213: -6688506000143455651
+    second: WarGod_SpriteSheet_256_231
+  - first:
+      213: -6243270930104474907
+    second: WarGod_SpriteSheet_256_232
+  - first:
+      213: -6410880514845930695
+    second: WarGod_SpriteSheet_256_233
+  - first:
+      213: -377066112328746991
+    second: WarGod_SpriteSheet_256_234
+  - first:
+      213: 7866423779647275769
+    second: WarGod_SpriteSheet_256_235
+  - first:
+      213: -579085866720359124
+    second: WarGod_SpriteSheet_256_236
+  - first:
+      213: 527690280027213095
+    second: WarGod_SpriteSheet_256_237
+  - first:
+      213: 4655778716979327561
+    second: WarGod_SpriteSheet_256_238
+  - first:
+      213: 3438795636848515209
+    second: WarGod_SpriteSheet_256_239
+  - first:
+      213: -1542230673865995458
+    second: WarGod_SpriteSheet_256_240
+  - first:
+      213: -2234706165680615650
+    second: WarGod_SpriteSheet_256_241
+  - first:
+      213: 6036685451492653572
+    second: WarGod_SpriteSheet_256_242
+  - first:
+      213: 909435731470320795
+    second: WarGod_SpriteSheet_256_243
+  - first:
+      213: -6719641869551500369
+    second: WarGod_SpriteSheet_256_244
+  - first:
+      213: 2500488257305542818
+    second: WarGod_SpriteSheet_256_245
+  - first:
+      213: -6536279751147149164
+    second: WarGod_SpriteSheet_256_246
+  - first:
+      213: 7289532434225041752
+    second: WarGod_SpriteSheet_256_247
+  - first:
+      213: -5989685555965284892
+    second: WarGod_SpriteSheet_256_248
+  - first:
+      213: -7301570443722253551
+    second: WarGod_SpriteSheet_256_249
+  - first:
+      213: 738518360475217616
+    second: WarGod_SpriteSheet_256_250
+  - first:
+      213: -2792632286729994155
+    second: WarGod_SpriteSheet_256_251
+  - first:
+      213: -8222969221679183887
+    second: WarGod_SpriteSheet_256_252
+  - first:
+      213: 4021036209648899048
+    second: WarGod_SpriteSheet_256_253
+  - first:
+      213: -6573125639127247645
+    second: WarGod_SpriteSheet_256_254
+  - first:
+      213: 7971296583652627104
+    second: WarGod_SpriteSheet_256_255
+  - first:
+      213: -661425386157268623
+    second: WarGod_SpriteSheet_256_256
+  - first:
+      213: -4150597479413991856
+    second: WarGod_SpriteSheet_256_257
+  - first:
+      213: 645693874685914152
+    second: WarGod_SpriteSheet_256_258
+  - first:
+      213: 4353239437516786899
+    second: WarGod_SpriteSheet_256_259
+  - first:
+      213: -4373898113512604999
+    second: WarGod_SpriteSheet_256_260
+  - first:
+      213: -8756463821571836015
+    second: WarGod_SpriteSheet_256_261
+  - first:
+      213: 7571507369751968552
+    second: WarGod_SpriteSheet_256_262
+  - first:
+      213: -5154869324011815378
+    second: WarGod_SpriteSheet_256_263
+  - first:
+      213: 6933409081035353376
+    second: WarGod_SpriteSheet_256_264
+  - first:
+      213: 2142526778835417870
+    second: WarGod_SpriteSheet_256_265
+  - first:
+      213: -7858381120291319162
+    second: WarGod_SpriteSheet_256_266
+  - first:
+      213: -528534566351054191
+    second: WarGod_SpriteSheet_256_267
+  - first:
+      213: 4415839372997934922
+    second: WarGod_SpriteSheet_256_268
+  - first:
+      213: 5654742051018397070
+    second: WarGod_SpriteSheet_256_269
+  - first:
+      213: 5025395087756220784
+    second: WarGod_SpriteSheet_256_270
+  - first:
+      213: -2608814443172247874
+    second: WarGod_SpriteSheet_256_271
+  - first:
+      213: -382870738848837770
+    second: WarGod_SpriteSheet_256_272
+  - first:
+      213: 5404675685044955876
+    second: WarGod_SpriteSheet_256_273
+  - first:
+      213: 8456283379821048555
+    second: WarGod_SpriteSheet_256_274
+  - first:
+      213: 1052397230011443309
+    second: WarGod_SpriteSheet_256_275
+  - first:
+      213: 3108442089172172443
+    second: WarGod_SpriteSheet_256_276
+  - first:
+      213: 2110249810877820818
+    second: WarGod_SpriteSheet_256_277
+  - first:
+      213: 2044796439668130713
+    second: WarGod_SpriteSheet_256_278
+  - first:
+      213: -3849518652492286028
+    second: WarGod_SpriteSheet_256_279
+  - first:
+      213: 5529612009461217557
+    second: WarGod_SpriteSheet_256_280
+  - first:
+      213: 2748866212169604424
+    second: WarGod_SpriteSheet_256_281
+  - first:
+      213: -9191426966971816190
+    second: WarGod_SpriteSheet_256_282
+  - first:
+      213: 4915838381483833013
+    second: WarGod_SpriteSheet_256_283
+  - first:
+      213: 5212649772864402615
+    second: WarGod_SpriteSheet_256_284
+  - first:
+      213: 8607813370381255494
+    second: WarGod_SpriteSheet_256_285
+  - first:
+      213: -7124918866695030877
+    second: WarGod_SpriteSheet_256_286
+  - first:
+      213: 1553106407203514826
+    second: WarGod_SpriteSheet_256_287
+  - first:
+      213: 2309508549905827134
+    second: WarGod_SpriteSheet_256_288
+  - first:
+      213: 2385083263267589562
+    second: WarGod_SpriteSheet_256_289
+  - first:
+      213: -1697818331228380321
+    second: WarGod_SpriteSheet_256_290
+  - first:
+      213: -743403897778328501
+    second: WarGod_SpriteSheet_256_291
+  - first:
+      213: -1381316922333346187
+    second: WarGod_SpriteSheet_256_292
+  - first:
+      213: 9127476583068529632
+    second: WarGod_SpriteSheet_256_293
+  - first:
+      213: -5782428034184805139
+    second: WarGod_SpriteSheet_256_294
+  - first:
+      213: 1670764866844777202
+    second: WarGod_SpriteSheet_256_295
+  - first:
+      213: -6657666245592214561
+    second: WarGod_SpriteSheet_256_296
+  - first:
+      213: -7024261094026156378
+    second: WarGod_SpriteSheet_256_297
+  - first:
+      213: 46446595016391692
+    second: WarGod_SpriteSheet_256_298
+  - first:
+      213: 6441917039472212778
+    second: WarGod_SpriteSheet_256_299
+  - first:
+      213: 4462659023642300917
+    second: WarGod_SpriteSheet_256_300
+  - first:
+      213: -1129052241781328738
+    second: WarGod_SpriteSheet_256_301
+  - first:
+      213: 6849947788871305397
+    second: WarGod_SpriteSheet_256_302
+  - first:
+      213: -618786752483910842
+    second: WarGod_SpriteSheet_256_303
+  - first:
+      213: -8214818642115156712
+    second: WarGod_SpriteSheet_256_304
+  - first:
+      213: 5161883682379327660
+    second: WarGod_SpriteSheet_256_305
+  - first:
+      213: -1117542972761019925
+    second: WarGod_SpriteSheet_256_306
+  - first:
+      213: -8365710322984303528
+    second: WarGod_SpriteSheet_256_307
+  - first:
+      213: -7360359963625165336
+    second: WarGod_SpriteSheet_256_308
+  - first:
+      213: -8033307298864413422
+    second: WarGod_SpriteSheet_256_309
+  - first:
+      213: 1290132414137336356
+    second: WarGod_SpriteSheet_256_310
+  - first:
+      213: 3038368646576690592
+    second: WarGod_SpriteSheet_256_311
+  - first:
+      213: 1216128229904822859
+    second: WarGod_SpriteSheet_256_312
+  - first:
+      213: -5686725376458125386
+    second: WarGod_SpriteSheet_256_313
+  - first:
+      213: -6711296756743202537
+    second: WarGod_SpriteSheet_256_314
+  - first:
+      213: 4545781679592243384
+    second: WarGod_SpriteSheet_256_315
+  - first:
+      213: -2681300630079594776
+    second: WarGod_SpriteSheet_256_316
+  - first:
+      213: 4342714594849115352
+    second: WarGod_SpriteSheet_256_317
+  - first:
+      213: -678871252254060789
+    second: WarGod_SpriteSheet_256_318
+  - first:
+      213: 4273601928831971896
+    second: WarGod_SpriteSheet_256_319
+  - first:
+      213: 5998685614654498845
+    second: WarGod_SpriteSheet_256_320
+  - first:
+      213: -3351030728732688132
+    second: WarGod_SpriteSheet_256_321
+  - first:
+      213: 2832082446392209661
+    second: WarGod_SpriteSheet_256_322
+  - first:
+      213: 8297654397348900228
+    second: WarGod_SpriteSheet_256_323
+  - first:
+      213: 8633966614745740930
+    second: WarGod_SpriteSheet_256_324
+  - first:
+      213: -3742933093192611385
+    second: WarGod_SpriteSheet_256_325
+  - first:
+      213: 5811301991383329046
+    second: WarGod_SpriteSheet_256_326
+  - first:
+      213: 8780486366747110375
+    second: WarGod_SpriteSheet_256_327
+  - first:
+      213: 3962256651068337718
+    second: WarGod_SpriteSheet_256_328
+  - first:
+      213: 8980591042367318849
+    second: WarGod_SpriteSheet_256_329
+  - first:
+      213: 8340420543397834037
+    second: WarGod_SpriteSheet_256_330
+  - first:
+      213: 7994534220533739617
+    second: WarGod_SpriteSheet_256_331
+  - first:
+      213: 3221412001457160490
+    second: WarGod_SpriteSheet_256_332
+  - first:
+      213: -7185737537900397050
+    second: WarGod_SpriteSheet_256_333
+  - first:
+      213: -3505602404701468161
+    second: WarGod_SpriteSheet_256_334
+  - first:
+      213: 8242373172911648474
+    second: WarGod_SpriteSheet_256_335
+  - first:
+      213: -8199672245525919350
+    second: WarGod_SpriteSheet_256_336
+  - first:
+      213: -5278070755319302117
+    second: WarGod_SpriteSheet_256_337
+  - first:
+      213: -4638861377589040374
+    second: WarGod_SpriteSheet_256_338
+  - first:
+      213: 5457846397693209477
+    second: WarGod_SpriteSheet_256_339
+  - first:
+      213: -7880611651169913483
+    second: WarGod_SpriteSheet_256_340
+  - first:
+      213: -1812753436571185520
+    second: WarGod_SpriteSheet_256_341
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abcf8735543207740800000000000000
+      internalID: 5147653154744630458
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_1
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58fc8b825ea404b00800000000000000
+      internalID: 810730281017855877
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_2
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f61c6e2ade7c0b20800000000000000
+      internalID: 3101993718898235128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_3
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e2d404a8fc218140800000000000000
+      internalID: 4720103330876281571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_4
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ece69928fe470540800000000000000
+      internalID: 4974031141210615012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_5
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 48b6c4f230725c8c0800000000000000
+      internalID: -3979731801080042620
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_6
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe45e9cf6292fd270800000000000000
+      internalID: 8277379887553991919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_7
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e30ae62a9ed53a160800000000000000
+      internalID: 7035570300916768830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_8
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68a92f9f8c54b7440800000000000000
+      internalID: 4934614546203712134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_9
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abbc462bd8d703d90800000000000000
+      internalID: -7120052963335943238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df18e5a2014f4f190800000000000000
+      internalID: -7929444693625110019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_11
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d10efa3115b929e0800000000000000
+      internalID: -1645585103218409002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_12
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1e2ae5441a568f10800000000000000
+      internalID: 2271602105173814812
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_13
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e776e831258522c0800000000000000
+      internalID: -4457009878478194717
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_14
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a8a8467feac9d6f0800000000000000
+      internalID: -659272740602599261
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_15
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b010a51b645fcb880800000000000000
+      internalID: -8593724304957767413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_16
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ae2fcf2b41577d90800000000000000
+      internalID: -7100116904159793501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_17
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3ec335a64de47b20800000000000000
+      internalID: 3131388528604466747
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_18
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 515f5f9409f2bd810800000000000000
+      internalID: 1791077573572556053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_19
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4b45204e6638b2f0800000000000000
+      internalID: -956955073665742006
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_20
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b455a9e8c8cbf7990800000000000000
+      internalID: -7385977551990401717
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_21
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 431a911a9dea52390800000000000000
+      internalID: -7843670926261903052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_22
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 470e5fd2dcaac0030800000000000000
+      internalID: 3462330011757174900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_23
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de00a048eaa3c2310800000000000000
+      internalID: 1381543706909868269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_24
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 433ea514526d917b0800000000000000
+      internalID: -5252932034852363468
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_25
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1be832b8c110bfac0800000000000000
+      internalID: -3820458636788658511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_26
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3c89eb13313ffc90800000000000000
+      internalID: -7133929189150192578
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_27
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 77f1a84b906da03e0800000000000000
+      internalID: -2086620140160802953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_28
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91fec253e69e0e560800000000000000
+      internalID: 7341124052161720089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_29
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d610a780a402bc80800000000000000
+      internalID: -8308573275028449583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_30
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 986bc2200ec344d40800000000000000
+      internalID: 5567641972143601289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_31
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35866196cb05ea790800000000000000
+      internalID: -7516981957887629229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_32
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c71f20124acba980800000000000000
+      internalID: -8526499084407728192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_33
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4cf19c8b262a00b90800000000000000
+      internalID: -7277638452940038204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_34
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 950379649ce1d44c0800000000000000
+      internalID: -4301748219247382439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_35
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b776ee497785515f0800000000000000
+      internalID: -786625289283278981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_36
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1fc0dde2a4235ac30800000000000000
+      internalID: 4369954307628141809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_37
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5a6b94de41d464740800000000000000
+      internalID: 5135877177338345125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_38
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ab9f31c35c38ab00800000000000000
+      internalID: 839987660926720930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_39
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62e65301a68ab5000800000000000000
+      internalID: 25799396372606502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_40
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ad9827483dd3f270800000000000000
+      internalID: 8283207373446225320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_41
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b649f7df1df560a60800000000000000
+      internalID: 7639899173386425451
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_42
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f57bb8857adacab0800000000000000
+      internalID: -4986933439019387402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_43
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: daf4a88ad7c9ca990800000000000000
+      internalID: -7373346426399862867
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_44
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02d7a79c6cbdd4350800000000000000
+      internalID: 6002695525184994592
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_45
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49326b0fde92086e0800000000000000
+      internalID: -1837422546044705900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_46
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 061d4a52c526b27f0800000000000000
+      internalID: -636306774434721440
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_47
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e5792527a968db70800000000000000
+      internalID: 8923998828238566888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_48
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0d04f2d162078720800000000000000
+      internalID: 2848247908509420811
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_49
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7acf5f1153c307080800000000000000
+      internalID: -9191780640830915417
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_50
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f68540dbfb5b9efa0800000000000000
+      internalID: -5770881612384020369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_51
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ed07dc7aab0a2590800000000000000
+      internalID: -7698327786169627160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_52
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52d918e3191ed2190800000000000000
+      internalID: -7985478550322832091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_53
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8fb3c47eb3e932f0800000000000000
+      internalID: -992511835716206710
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_54
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85e67b28663297ff0800000000000000
+      internalID: -37960198669242792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_55
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 51b63629928de03f0800000000000000
+      internalID: -932570399757866219
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_56
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5eb46821402faef0800000000000000
+      internalID: -94821602928837027
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_57
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1cfafa395134b790800000000000000
+      internalID: -7515327618863137761
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_58
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba6e17a6275b5ed00800000000000000
+      internalID: 1001405995176552107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_59
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4848fa3f966249a80800000000000000
+      internalID: -8461095563420531580
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_60
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 273b1b6242cf5ac20800000000000000
+      internalID: 3217254741024289650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_61
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 199326aa933f2cd90800000000000000
+      internalID: -7078828235275748975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_62
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42ae3df068bfe4910800000000000000
+      internalID: 1823671452341365284
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_63
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4ca657dc91bb8870800000000000000
+      internalID: 8686231593499929679
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_64
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d396d6fba8e946620800000000000000
+      internalID: 2766510389866621245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_65
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3550e4645c34f6a0800000000000000
+      internalID: -6416437235928771270
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_66
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a14c7ff4b921ddd00800000000000000
+      internalID: 998975150616986650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_67
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eafbf2c6690eea020800000000000000
+      internalID: 2355066591826132910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_68
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a99c2b7d84eb41ef0800000000000000
+      internalID: -138276468475901542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_69
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64d30c702104fa380800000000000000
+      internalID: -8957870687632999098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_70
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca923cd9ecb5fc8b0800000000000000
+      internalID: -5129780507583501908
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_71
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6bdff0c864538bd0800000000000000
+      internalID: -2629164948562912405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_72
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4d97c6bc0492f330800000000000000
+      internalID: 3743217022625357133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_73
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2bbc65cadd364ee40800000000000000
+      internalID: 5684778433378700210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_74
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00409e063c0f427f0800000000000000
+      internalID: -638120525244595200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_75
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96d496b10d0da5e50800000000000000
+      internalID: 6798976179700845929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_76
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b9a2c4e93500a500800000000000000
+      internalID: 405329712672582072
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_77
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00ee1f26b3ba2bf20800000000000000
+      internalID: 3436997737188552192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_78
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88cbcb4ed45b1afc0800000000000000
+      internalID: -3485305290453369720
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_79
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3b2a3053aed4b070800000000000000
+      internalID: 8121360821062871867
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_80
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb8f3a5ad9f8feab0800000000000000
+      internalID: -4976601155969484613
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_81
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d6642b606d65ff20800000000000000
+      internalID: 3455788549958559446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_82
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8bd192c6f8687ab70800000000000000
+      internalID: 8910238338328894904
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_83
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6285a63bf6f236c40800000000000000
+      internalID: 5504295326374844454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_84
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ad07e540504c01d0800000000000000
+      internalID: -3383258506547753566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_85
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6eb7352b3343f660800000000000000
+      internalID: 7418346932515880558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_86
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b851f60430dc3cb0800000000000000
+      internalID: -4882798974103103312
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_87
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fb4b830c0f179a10800000000000000
+      internalID: 1916034302928964595
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_88
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0e73d37e9ace3950800000000000000
+      internalID: 6430800099828530699
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarGod_SpriteSheet_256_89
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d19af160eb099d630800000000000000
+      internalID: 3952349293815245085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 0518d9a549917ac42a097199856f8593
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":256.0,"y":256.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      WarGod_SpriteSheet_256_0: 5147653154744630458
+      WarGod_SpriteSheet_256_1: 810730281017855877
+      WarGod_SpriteSheet_256_10: -7929444693625110019
+      WarGod_SpriteSheet_256_11: -1645585103218409002
+      WarGod_SpriteSheet_256_12: 2271602105173814812
+      WarGod_SpriteSheet_256_13: -4457009878478194717
+      WarGod_SpriteSheet_256_14: -659272740602599261
+      WarGod_SpriteSheet_256_15: -8593724304957767413
+      WarGod_SpriteSheet_256_16: -7100116904159793501
+      WarGod_SpriteSheet_256_17: 3131388528604466747
+      WarGod_SpriteSheet_256_18: 1791077573572556053
+      WarGod_SpriteSheet_256_19: -956955073665742006
+      WarGod_SpriteSheet_256_2: 3101993718898235128
+      WarGod_SpriteSheet_256_20: -7385977551990401717
+      WarGod_SpriteSheet_256_21: -7843670926261903052
+      WarGod_SpriteSheet_256_22: 3462330011757174900
+      WarGod_SpriteSheet_256_23: 1381543706909868269
+      WarGod_SpriteSheet_256_24: -5252932034852363468
+      WarGod_SpriteSheet_256_25: -3820458636788658511
+      WarGod_SpriteSheet_256_26: -7133929189150192578
+      WarGod_SpriteSheet_256_27: -2086620140160802953
+      WarGod_SpriteSheet_256_28: 7341124052161720089
+      WarGod_SpriteSheet_256_29: -8308573275028449583
+      WarGod_SpriteSheet_256_3: 4720103330876281571
+      WarGod_SpriteSheet_256_30: 5567641972143601289
+      WarGod_SpriteSheet_256_31: -7516981957887629229
+      WarGod_SpriteSheet_256_32: -8526499084407728192
+      WarGod_SpriteSheet_256_33: -7277638452940038204
+      WarGod_SpriteSheet_256_34: -4301748219247382439
+      WarGod_SpriteSheet_256_35: -786625289283278981
+      WarGod_SpriteSheet_256_36: 4369954307628141809
+      WarGod_SpriteSheet_256_37: 5135877177338345125
+      WarGod_SpriteSheet_256_38: 839987660926720930
+      WarGod_SpriteSheet_256_39: 25799396372606502
+      WarGod_SpriteSheet_256_4: 4974031141210615012
+      WarGod_SpriteSheet_256_40: 8283207373446225320
+      WarGod_SpriteSheet_256_41: 7639899173386425451
+      WarGod_SpriteSheet_256_42: -4986933439019387402
+      WarGod_SpriteSheet_256_43: -7373346426399862867
+      WarGod_SpriteSheet_256_44: 6002695525184994592
+      WarGod_SpriteSheet_256_45: -1837422546044705900
+      WarGod_SpriteSheet_256_46: -636306774434721440
+      WarGod_SpriteSheet_256_47: 8923998828238566888
+      WarGod_SpriteSheet_256_48: 2848247908509420811
+      WarGod_SpriteSheet_256_49: -9191780640830915417
+      WarGod_SpriteSheet_256_5: -3979731801080042620
+      WarGod_SpriteSheet_256_50: -5770881612384020369
+      WarGod_SpriteSheet_256_51: -7698327786169627160
+      WarGod_SpriteSheet_256_52: -7985478550322832091
+      WarGod_SpriteSheet_256_53: -992511835716206710
+      WarGod_SpriteSheet_256_54: -37960198669242792
+      WarGod_SpriteSheet_256_55: -932570399757866219
+      WarGod_SpriteSheet_256_56: -94821602928837027
+      WarGod_SpriteSheet_256_57: -7515327618863137761
+      WarGod_SpriteSheet_256_58: 1001405995176552107
+      WarGod_SpriteSheet_256_59: -8461095563420531580
+      WarGod_SpriteSheet_256_6: 8277379887553991919
+      WarGod_SpriteSheet_256_60: 3217254741024289650
+      WarGod_SpriteSheet_256_61: -7078828235275748975
+      WarGod_SpriteSheet_256_62: 1823671452341365284
+      WarGod_SpriteSheet_256_63: 8686231593499929679
+      WarGod_SpriteSheet_256_64: 2766510389866621245
+      WarGod_SpriteSheet_256_65: -6416437235928771270
+      WarGod_SpriteSheet_256_66: 998975150616986650
+      WarGod_SpriteSheet_256_67: 2355066591826132910
+      WarGod_SpriteSheet_256_68: -138276468475901542
+      WarGod_SpriteSheet_256_69: -8957870687632999098
+      WarGod_SpriteSheet_256_7: 7035570300916768830
+      WarGod_SpriteSheet_256_70: -5129780507583501908
+      WarGod_SpriteSheet_256_71: -2629164948562912405
+      WarGod_SpriteSheet_256_72: 3743217022625357133
+      WarGod_SpriteSheet_256_73: 5684778433378700210
+      WarGod_SpriteSheet_256_74: -638120525244595200
+      WarGod_SpriteSheet_256_75: 6798976179700845929
+      WarGod_SpriteSheet_256_76: 405329712672582072
+      WarGod_SpriteSheet_256_77: 3436997737188552192
+      WarGod_SpriteSheet_256_78: -3485305290453369720
+      WarGod_SpriteSheet_256_79: 8121360821062871867
+      WarGod_SpriteSheet_256_8: 4934614546203712134
+      WarGod_SpriteSheet_256_80: -4976601155969484613
+      WarGod_SpriteSheet_256_81: 3455788549958559446
+      WarGod_SpriteSheet_256_82: 8910238338328894904
+      WarGod_SpriteSheet_256_83: 5504295326374844454
+      WarGod_SpriteSheet_256_84: -3383258506547753566
+      WarGod_SpriteSheet_256_85: 7418346932515880558
+      WarGod_SpriteSheet_256_86: -4882798974103103312
+      WarGod_SpriteSheet_256_87: 1916034302928964595
+      WarGod_SpriteSheet_256_88: 6430800099828530699
+      WarGod_SpriteSheet_256_89: 3952349293815245085
+      WarGod_SpriteSheet_256_9: -7120052963335943238
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

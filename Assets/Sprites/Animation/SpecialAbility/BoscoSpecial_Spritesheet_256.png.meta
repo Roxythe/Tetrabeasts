@@ -1,0 +1,4370 @@
+fileFormatVersion: 2
+guid: aa80e6b6bb4ba7146812e072a9d9f126
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5011641371761091360
+    second: BoscoSpecial_Spritesheet_256_0
+  - first:
+      213: -7787598305416130079
+    second: BoscoSpecial_Spritesheet_256_1
+  - first:
+      213: 2565405266408142003
+    second: BoscoSpecial_Spritesheet_256_2
+  - first:
+      213: -9060430868356167836
+    second: BoscoSpecial_Spritesheet_256_3
+  - first:
+      213: 5103639054992015287
+    second: BoscoSpecial_Spritesheet_256_4
+  - first:
+      213: 712081645873666473
+    second: BoscoSpecial_Spritesheet_256_5
+  - first:
+      213: -2006619055625510639
+    second: BoscoSpecial_Spritesheet_256_6
+  - first:
+      213: -4022399910347790976
+    second: BoscoSpecial_Spritesheet_256_7
+  - first:
+      213: 6598639332432502931
+    second: BoscoSpecial_Spritesheet_256_8
+  - first:
+      213: -1716768394562959201
+    second: BoscoSpecial_Spritesheet_256_9
+  - first:
+      213: -344452201248560589
+    second: BoscoSpecial_Spritesheet_256_10
+  - first:
+      213: 8825572908337477662
+    second: BoscoSpecial_Spritesheet_256_11
+  - first:
+      213: -5261902290337346546
+    second: BoscoSpecial_Spritesheet_256_12
+  - first:
+      213: -4781868285510106152
+    second: BoscoSpecial_Spritesheet_256_13
+  - first:
+      213: -5903023376226548868
+    second: BoscoSpecial_Spritesheet_256_14
+  - first:
+      213: 7765749190730194850
+    second: BoscoSpecial_Spritesheet_256_15
+  - first:
+      213: -2525169091973278594
+    second: BoscoSpecial_Spritesheet_256_16
+  - first:
+      213: 6262216966563491359
+    second: BoscoSpecial_Spritesheet_256_17
+  - first:
+      213: -6586094824435061650
+    second: BoscoSpecial_Spritesheet_256_18
+  - first:
+      213: -3861221931693308568
+    second: BoscoSpecial_Spritesheet_256_19
+  - first:
+      213: -2739860827281591758
+    second: BoscoSpecial_Spritesheet_256_20
+  - first:
+      213: 246166716796909008
+    second: BoscoSpecial_Spritesheet_256_21
+  - first:
+      213: 4880604088010955648
+    second: BoscoSpecial_Spritesheet_256_22
+  - first:
+      213: 6266553743515909627
+    second: BoscoSpecial_Spritesheet_256_23
+  - first:
+      213: 6453733718745504360
+    second: BoscoSpecial_Spritesheet_256_24
+  - first:
+      213: 2779239071719666681
+    second: BoscoSpecial_Spritesheet_256_25
+  - first:
+      213: 8557805715503416147
+    second: BoscoSpecial_Spritesheet_256_26
+  - first:
+      213: -4351820061926033392
+    second: BoscoSpecial_Spritesheet_256_27
+  - first:
+      213: 2516683445572137543
+    second: BoscoSpecial_Spritesheet_256_28
+  - first:
+      213: -456449209261539728
+    second: BoscoSpecial_Spritesheet_256_29
+  - first:
+      213: -7183766247104335209
+    second: BoscoSpecial_Spritesheet_256_30
+  - first:
+      213: -3294111905626590431
+    second: BoscoSpecial_Spritesheet_256_31
+  - first:
+      213: -6468219367086155151
+    second: BoscoSpecial_Spritesheet_256_32
+  - first:
+      213: 7273056597423936024
+    second: BoscoSpecial_Spritesheet_256_33
+  - first:
+      213: 3035227939081310731
+    second: BoscoSpecial_Spritesheet_256_34
+  - first:
+      213: -5531865963345846861
+    second: BoscoSpecial_Spritesheet_256_35
+  - first:
+      213: -831477903580421104
+    second: BoscoSpecial_Spritesheet_256_36
+  - first:
+      213: -4916463457249460643
+    second: BoscoSpecial_Spritesheet_256_37
+  - first:
+      213: 816403940794271817
+    second: BoscoSpecial_Spritesheet_256_38
+  - first:
+      213: -8597004312393336849
+    second: BoscoSpecial_Spritesheet_256_39
+  - first:
+      213: 7957906990498973556
+    second: BoscoSpecial_Spritesheet_256_40
+  - first:
+      213: -9145092793736219588
+    second: BoscoSpecial_Spritesheet_256_41
+  - first:
+      213: 5296818466203694447
+    second: BoscoSpecial_Spritesheet_256_42
+  - first:
+      213: 23381903798753070
+    second: BoscoSpecial_Spritesheet_256_43
+  - first:
+      213: 1484268702737266505
+    second: BoscoSpecial_Spritesheet_256_44
+  - first:
+      213: 5827451291299713864
+    second: BoscoSpecial_Spritesheet_256_45
+  - first:
+      213: -6319801929536956605
+    second: BoscoSpecial_Spritesheet_256_46
+  - first:
+      213: -4022514411253921835
+    second: BoscoSpecial_Spritesheet_256_47
+  - first:
+      213: 3802994556747305359
+    second: BoscoSpecial_Spritesheet_256_48
+  - first:
+      213: -4689512253357557463
+    second: BoscoSpecial_Spritesheet_256_49
+  - first:
+      213: 6917685541986052668
+    second: BoscoSpecial_Spritesheet_256_50
+  - first:
+      213: 2628572283590628849
+    second: BoscoSpecial_Spritesheet_256_51
+  - first:
+      213: 7154829190380611960
+    second: BoscoSpecial_Spritesheet_256_52
+  - first:
+      213: -2686117020055522703
+    second: BoscoSpecial_Spritesheet_256_53
+  - first:
+      213: 1477802120439664116
+    second: BoscoSpecial_Spritesheet_256_54
+  - first:
+      213: -3716500414735024658
+    second: BoscoSpecial_Spritesheet_256_55
+  - first:
+      213: -6713656150640428106
+    second: BoscoSpecial_Spritesheet_256_56
+  - first:
+      213: -6316280700562669686
+    second: BoscoSpecial_Spritesheet_256_57
+  - first:
+      213: 5717064407302985376
+    second: BoscoSpecial_Spritesheet_256_58
+  - first:
+      213: -3315675313241954703
+    second: BoscoSpecial_Spritesheet_256_59
+  - first:
+      213: 7249513710919407770
+    second: BoscoSpecial_Spritesheet_256_60
+  - first:
+      213: 5954655681123458276
+    second: BoscoSpecial_Spritesheet_256_61
+  - first:
+      213: 195592591927927659
+    second: BoscoSpecial_Spritesheet_256_62
+  - first:
+      213: -1681890987002752793
+    second: BoscoSpecial_Spritesheet_256_63
+  - first:
+      213: -6803256167074064776
+    second: BoscoSpecial_Spritesheet_256_64
+  - first:
+      213: -8379435674907811600
+    second: BoscoSpecial_Spritesheet_256_65
+  - first:
+      213: 5706073617649679233
+    second: BoscoSpecial_Spritesheet_256_66
+  - first:
+      213: -4378770112001687903
+    second: BoscoSpecial_Spritesheet_256_67
+  - first:
+      213: 6672959108517157744
+    second: BoscoSpecial_Spritesheet_256_68
+  - first:
+      213: 6214976542530979099
+    second: BoscoSpecial_Spritesheet_256_69
+  - first:
+      213: -77756291010956468
+    second: BoscoSpecial_Spritesheet_256_70
+  - first:
+      213: 5554425471609084906
+    second: BoscoSpecial_Spritesheet_256_71
+  - first:
+      213: 3055014732418542828
+    second: BoscoSpecial_Spritesheet_256_72
+  - first:
+      213: 401810421886905639
+    second: BoscoSpecial_Spritesheet_256_73
+  - first:
+      213: 827399316957023406
+    second: BoscoSpecial_Spritesheet_256_74
+  - first:
+      213: 3099174599926119543
+    second: BoscoSpecial_Spritesheet_256_75
+  - first:
+      213: -2908048853700960149
+    second: BoscoSpecial_Spritesheet_256_76
+  - first:
+      213: 7025135702683968283
+    second: BoscoSpecial_Spritesheet_256_77
+  - first:
+      213: -5639732665662566545
+    second: BoscoSpecial_Spritesheet_256_78
+  - first:
+      213: -4574166678055382295
+    second: BoscoSpecial_Spritesheet_256_79
+  - first:
+      213: -4164955730506241052
+    second: BoscoSpecial_Spritesheet_256_80
+  - first:
+      213: -7042097512348798117
+    second: BoscoSpecial_Spritesheet_256_81
+  - first:
+      213: -9130968840039681070
+    second: BoscoSpecial_Spritesheet_256_82
+  - first:
+      213: -5476213553777161345
+    second: BoscoSpecial_Spritesheet_256_83
+  - first:
+      213: 1150686311845619465
+    second: BoscoSpecial_Spritesheet_256_84
+  - first:
+      213: -8006891962259307959
+    second: BoscoSpecial_Spritesheet_256_85
+  - first:
+      213: -6026423965371357959
+    second: BoscoSpecial_Spritesheet_256_86
+  - first:
+      213: -7223274782192486534
+    second: BoscoSpecial_Spritesheet_256_87
+  - first:
+      213: 7544440983550481500
+    second: BoscoSpecial_Spritesheet_256_88
+  - first:
+      213: -3700291023675868386
+    second: BoscoSpecial_Spritesheet_256_89
+  - first:
+      213: 1940091216985976132
+    second: BoscoSpecial_Spritesheet_256_90
+  - first:
+      213: 6397691953882404173
+    second: BoscoSpecial_Spritesheet_256_91
+  - first:
+      213: -2164959617158312420
+    second: BoscoSpecial_Spritesheet_256_92
+  - first:
+      213: 385067317190136641
+    second: BoscoSpecial_Spritesheet_256_93
+  - first:
+      213: 5036677111695396076
+    second: BoscoSpecial_Spritesheet_256_94
+  - first:
+      213: -4117593506493273797
+    second: BoscoSpecial_Spritesheet_256_95
+  - first:
+      213: -1467207132561785505
+    second: BoscoSpecial_Spritesheet_256_96
+  - first:
+      213: 7663078168847400588
+    second: BoscoSpecial_Spritesheet_256_97
+  - first:
+      213: -2283534722161044358
+    second: BoscoSpecial_Spritesheet_256_98
+  - first:
+      213: -2638279548569629169
+    second: BoscoSpecial_Spritesheet_256_99
+  - first:
+      213: 5010841675614246460
+    second: BoscoSpecial_Spritesheet_256_100
+  - first:
+      213: 3087668496264969801
+    second: BoscoSpecial_Spritesheet_256_101
+  - first:
+      213: -2633944234960874587
+    second: BoscoSpecial_Spritesheet_256_102
+  - first:
+      213: -2046092586069183649
+    second: BoscoSpecial_Spritesheet_256_103
+  - first:
+      213: -8557165357043170796
+    second: BoscoSpecial_Spritesheet_256_104
+  - first:
+      213: -4977112255164958227
+    second: BoscoSpecial_Spritesheet_256_105
+  - first:
+      213: -9202087662277607249
+    second: BoscoSpecial_Spritesheet_256_106
+  - first:
+      213: 7263851259439383015
+    second: BoscoSpecial_Spritesheet_256_107
+  - first:
+      213: 2660762944651620833
+    second: BoscoSpecial_Spritesheet_256_108
+  - first:
+      213: 3839110013012869445
+    second: BoscoSpecial_Spritesheet_256_109
+  - first:
+      213: -3216061946699071937
+    second: BoscoSpecial_Spritesheet_256_110
+  - first:
+      213: 2760404677756341374
+    second: BoscoSpecial_Spritesheet_256_111
+  - first:
+      213: -8995530565358261183
+    second: BoscoSpecial_Spritesheet_256_112
+  - first:
+      213: 3012150718500100525
+    second: BoscoSpecial_Spritesheet_256_113
+  - first:
+      213: 2061646248952636508
+    second: BoscoSpecial_Spritesheet_256_114
+  - first:
+      213: 8201681394505736481
+    second: BoscoSpecial_Spritesheet_256_115
+  - first:
+      213: -6292242241253457845
+    second: BoscoSpecial_Spritesheet_256_116
+  - first:
+      213: -7328107514507225491
+    second: BoscoSpecial_Spritesheet_256_117
+  - first:
+      213: -9050020651642814930
+    second: BoscoSpecial_Spritesheet_256_118
+  - first:
+      213: 2677530294921622418
+    second: BoscoSpecial_Spritesheet_256_119
+  - first:
+      213: 3031992551340205414
+    second: BoscoSpecial_Spritesheet_256_120
+  - first:
+      213: 5113964195895453409
+    second: BoscoSpecial_Spritesheet_256_121
+  - first:
+      213: -499444654874230940
+    second: BoscoSpecial_Spritesheet_256_122
+  - first:
+      213: -3203618521728681978
+    second: BoscoSpecial_Spritesheet_256_123
+  - first:
+      213: -8682654466384991643
+    second: BoscoSpecial_Spritesheet_256_124
+  - first:
+      213: 1274082370122593504
+    second: BoscoSpecial_Spritesheet_256_125
+  - first:
+      213: -2226827256412310451
+    second: BoscoSpecial_Spritesheet_256_126
+  - first:
+      213: -1531315522710033172
+    second: BoscoSpecial_Spritesheet_256_127
+  - first:
+      213: -6769297313730681334
+    second: BoscoSpecial_Spritesheet_256_128
+  - first:
+      213: -7959937898623164278
+    second: BoscoSpecial_Spritesheet_256_129
+  - first:
+      213: -6195612328036441510
+    second: BoscoSpecial_Spritesheet_256_130
+  - first:
+      213: -7323758574177094813
+    second: BoscoSpecial_Spritesheet_256_131
+  - first:
+      213: -998562910837297277
+    second: BoscoSpecial_Spritesheet_256_132
+  - first:
+      213: -2068053152165806963
+    second: BoscoSpecial_Spritesheet_256_133
+  - first:
+      213: -4968000212853719559
+    second: BoscoSpecial_Spritesheet_256_134
+  - first:
+      213: 1322245966612024544
+    second: BoscoSpecial_Spritesheet_256_135
+  - first:
+      213: 5619692747453279110
+    second: BoscoSpecial_Spritesheet_256_136
+  - first:
+      213: -4323587052584177233
+    second: BoscoSpecial_Spritesheet_256_137
+  - first:
+      213: -7912261681961789654
+    second: BoscoSpecial_Spritesheet_256_138
+  - first:
+      213: 8407223814001294571
+    second: BoscoSpecial_Spritesheet_256_139
+  - first:
+      213: 1562156931466873858
+    second: BoscoSpecial_Spritesheet_256_140
+  - first:
+      213: 4397664844938025449
+    second: BoscoSpecial_Spritesheet_256_141
+  - first:
+      213: 3292065350990276162
+    second: BoscoSpecial_Spritesheet_256_142
+  - first:
+      213: -3692708443539658304
+    second: BoscoSpecial_Spritesheet_256_143
+  - first:
+      213: -1815060348530474551
+    second: BoscoSpecial_Spritesheet_256_144
+  - first:
+      213: 6900399207707608790
+    second: BoscoSpecial_Spritesheet_256_145
+  - first:
+      213: 7168948133544199744
+    second: BoscoSpecial_Spritesheet_256_146
+  - first:
+      213: -8717013469001557722
+    second: BoscoSpecial_Spritesheet_256_147
+  - first:
+      213: -535456581385642273
+    second: BoscoSpecial_Spritesheet_256_148
+  - first:
+      213: 4618909013709847482
+    second: BoscoSpecial_Spritesheet_256_149
+  - first:
+      213: 276015371031926562
+    second: BoscoSpecial_Spritesheet_256_150
+  - first:
+      213: -9151219896483649281
+    second: BoscoSpecial_Spritesheet_256_151
+  - first:
+      213: 4463754031635158131
+    second: BoscoSpecial_Spritesheet_256_152
+  - first:
+      213: 1386190537985255451
+    second: BoscoSpecial_Spritesheet_256_153
+  - first:
+      213: -2819863637039701174
+    second: BoscoSpecial_Spritesheet_256_154
+  - first:
+      213: 7166891209779380260
+    second: BoscoSpecial_Spritesheet_256_155
+  - first:
+      213: -6774614467767600387
+    second: BoscoSpecial_Spritesheet_256_156
+  - first:
+      213: -257556933083559732
+    second: BoscoSpecial_Spritesheet_256_157
+  - first:
+      213: -7877114994146116211
+    second: BoscoSpecial_Spritesheet_256_158
+  - first:
+      213: 4961472719242584198
+    second: BoscoSpecial_Spritesheet_256_159
+  - first:
+      213: -3755210732962222753
+    second: BoscoSpecial_Spritesheet_256_160
+  - first:
+      213: -9061976581758835007
+    second: BoscoSpecial_Spritesheet_256_161
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ec5786a9b2137ab0800000000000000
+      internalID: -5011641371761091360
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_1
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e1dc380a94ece390800000000000000
+      internalID: -7787598305416130079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_2
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b47c296f762a9320800000000000000
+      internalID: 2565405266408142003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_3
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46785a32122e24280800000000000000
+      internalID: -9060430868356167836
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_4
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7bffb962ea4c3d640800000000000000
+      internalID: 5103639054992015287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_5
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a91061fb72d1e900800000000000000
+      internalID: 712081645873666473
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_6
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11169e5b99e0724e0800000000000000
+      internalID: -2006619055625510639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_7
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0852827d7909d28c0800000000000000
+      internalID: -4022399910347790976
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_8
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3906f820383139b50800000000000000
+      internalID: 6598639332432502931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_9
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f980570bd30dc28e0800000000000000
+      internalID: -1716768394562959201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_10
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33a6a764c82483bf0800000000000000
+      internalID: -344452201248560589
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_11
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1834ccdccbba7a70800000000000000
+      internalID: 8825572908337477662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_12
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0cc0a5eeb7f9f6b0800000000000000
+      internalID: -5261902290337346546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_13
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d3c677312463adb0800000000000000
+      internalID: -4781868285510106152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_14
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c73803fc38f341ea0800000000000000
+      internalID: -5903023376226548868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_15
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2af10488ebb75cb60800000000000000
+      internalID: 7765749190730194850
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_16
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e74132bf61cc4fcd0800000000000000
+      internalID: -2525169091973278594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_17
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1ee076072dd7e650800000000000000
+      internalID: 6262216966563491359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_18
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6c628cd6ad7994a0800000000000000
+      internalID: -6586094824435061650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_19
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 865097a5c1f2a6ac0800000000000000
+      internalID: -3861221931693308568
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_20
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2327fdf081f0af9d0800000000000000
+      internalID: -2739860827281591758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_21
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d5343e135f8a6300800000000000000
+      internalID: 246166716796909008
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_22
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08b563b3f836bb340800000000000000
+      internalID: 4880604088010955648
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_23
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bfdf8289d6547f650800000000000000
+      internalID: 6266553743515909627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_24
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86a59c4bf94409950800000000000000
+      internalID: 6453733718745504360
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_25
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f3bcbfe537d19620800000000000000
+      internalID: 2779239071719666681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_26
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 353836105fe63c670800000000000000
+      internalID: 8557805715503416147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_27
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 018fa7ae5ba3b93c0800000000000000
+      internalID: -4351820061926033392
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_28
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 742fe61824e0de220800000000000000
+      internalID: 2516683445572137543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_29
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07e35ffccdd5aa9f0800000000000000
+      internalID: -456449209261539728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_30
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 792b7e3d8a22e4c90800000000000000
+      internalID: -7183766247104335209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_31
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 123fdbebca6f842d0800000000000000
+      internalID: -3294111905626590431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_32
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17a178771c44c36a0800000000000000
+      internalID: -6468219367086155151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_33
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 812d3c8e0761fe460800000000000000
+      internalID: 7273056597423936024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_34
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b025841babb4f1a20800000000000000
+      internalID: 3035227939081310731
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_35
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3bd52b5273dda33b0800000000000000
+      internalID: -5531865963345846861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_36
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 014a086804ff574f0800000000000000
+      internalID: -831477903580421104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_37
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5ef47fb88635cbb0800000000000000
+      internalID: -4916463457249460643
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_38
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94885440f03745b00800000000000000
+      internalID: 816403940794271817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_39
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe73b43702e41b880800000000000000
+      internalID: -8597004312393336849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_40
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4770a4cbe3a207e60800000000000000
+      internalID: 7957906990498973556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_41
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c343e5f8e8a161180800000000000000
+      internalID: -9145092793736219588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_42
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f65fccdc454128940800000000000000
+      internalID: 5296818466203694447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_43
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e27d816b7b1135000800000000000000
+      internalID: 23381903798753070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_44
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94772e9658e299410800000000000000
+      internalID: 1484268702737266505
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_45
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8439fc303144fd050800000000000000
+      internalID: 5827451291299713864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_46
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3471f1bf0ad8b48a0800000000000000
+      internalID: -6319801929536956605
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_47
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d7025584782d28c0800000000000000
+      internalID: -4022514411253921835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_48
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f81daa57663f6c430800000000000000
+      internalID: 3802994556747305359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_49
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 929f7c0a3718beeb0800000000000000
+      internalID: -4689512253357557463
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_50
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c3a2fe5595e800060800000000000000
+      internalID: 6917685541986052668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_51
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f55bdda0909a7420800000000000000
+      internalID: 2628572283590628849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_52
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8796b31ad3f0b4360800000000000000
+      internalID: 7154829190380611960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_53
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 172b57a4dcef8bad0800000000000000
+      internalID: -2686117020055522703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_54
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4fd0025e235328410800000000000000
+      internalID: 1477802120439664116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_55
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eed702c40965c6cc0800000000000000
+      internalID: -3716500414735024658
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_56
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6bbf5fc2d4d44d2a0800000000000000
+      internalID: -6713656150640428106
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_57
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8f7e4dfa201858a0800000000000000
+      internalID: -6316280700562669686
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_58
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a6d253c9c7175f40800000000000000
+      internalID: 5717064407302985376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_59
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1766eabaeda5cf1d0800000000000000
+      internalID: -3315675313241954703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_60
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a98dcad7f427b9460800000000000000
+      internalID: 7249513710919407770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_61
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ec1029facf23a250800000000000000
+      internalID: 5954655681123458276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_62
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b63ef821d62e6b200800000000000000
+      internalID: 195592591927927659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_63
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e015c0fe09b8a8e0800000000000000
+      internalID: -1681890987002752793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_64
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 876909daf8af591a0800000000000000
+      internalID: -6803256167074064776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_65
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f062ea56a346bb80800000000000000
+      internalID: -8379435674907811600
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_66
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18bbc3229bb003f40800000000000000
+      internalID: 5706073617649679233
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_67
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1aeba0968cb7b33c0800000000000000
+      internalID: -4378770112001687903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_68
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07b5fdf44fc1b9c50800000000000000
+      internalID: 6672959108517157744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_69
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b15c1f0bc38004650800000000000000
+      internalID: 6214976542530979099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_70
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c437d37b011cbeef0800000000000000
+      internalID: -77756291010956468
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_71
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aeb14aea988451d40800000000000000
+      internalID: 5554425471609084906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_72
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cec646586b7956a20800000000000000
+      internalID: 3055014732418542828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_73
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72d6e972374839500800000000000000
+      internalID: 401810421886905639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_74
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eaccf968b438b7b00800000000000000
+      internalID: 827399316957023406
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_75
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 77c7285e0ea720b20800000000000000
+      internalID: 3099174599926119543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_76
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b602cad99f884a7d0800000000000000
+      internalID: -2908048853700960149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_77
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b13646963bb4e7160800000000000000
+      internalID: 7025135702683968283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_78
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6f040b6505abb1b0800000000000000
+      internalID: -5639732665662566545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_79
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e2941b24ab4580c0800000000000000
+      internalID: -4574166678055382295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_80
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4eba2f974da1336c0800000000000000
+      internalID: -4164955730506241052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_81
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b53b9c68f91754e90800000000000000
+      internalID: -7042097512348798117
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_82
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d3364ac738484180800000000000000
+      internalID: -9130968840039681070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_83
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7bceec79c49004b0800000000000000
+      internalID: -5476213553777161345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_84
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9076671aa1f08ff00800000000000000
+      internalID: 1150686311845619465
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_85
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9428a92ce2ec1e090800000000000000
+      internalID: -8006891962259307959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_86
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f4a3263557dd5ca0800000000000000
+      internalID: -6026423965371357959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_87
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a77316c2bd5c1cb90800000000000000
+      internalID: -7223274782192486534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_88
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c54dc653a1d33b860800000000000000
+      internalID: 7544440983550481500
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_89
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1bbb304bece5acc0800000000000000
+      internalID: -3700291023675868386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_90
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44ded4ccea69cea10800000000000000
+      internalID: 1940091216985976132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_91
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4519858fea29c850800000000000000
+      internalID: 6397691953882404173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_92
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1e863ad2b484f1e0800000000000000
+      internalID: -2164959617158312420
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_93
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1431bbf4fa8085500800000000000000
+      internalID: 385067317190136641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_94
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cecc1fac52fd5e540800000000000000
+      internalID: 5036677111695396076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_95
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b396304958e5bd6c0800000000000000
+      internalID: -4117593506493273797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_96
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5d3cb3f2ee63abe0800000000000000
+      internalID: -1467207132561785505
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_97
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8e333c6ef8b85a60800000000000000
+      internalID: 7663078168847400588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_98
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a741255d4414f40e0800000000000000
+      internalID: -2283534722161044358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_99
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0e44519ab2f26bd0800000000000000
+      internalID: -2638279548569629169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_100
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c36d5b494f51a8540800000000000000
+      internalID: 5010841675614246460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_101
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94eb900632a99da20800000000000000
+      internalID: 3087668496264969801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_102
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5a318fc6ca9527bd0800000000000000
+      internalID: -2633944234960874587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_103
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5339c532a1da93e0800000000000000
+      internalID: -2046092586069183649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_104
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 412c9211277de3980800000000000000
+      internalID: -8557165357043170796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_105
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de936a716cebdeab0800000000000000
+      internalID: -4977112255164958227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_106
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa040f1a60e9b4080800000000000000
+      internalID: -9202087662277607249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_107
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e188242c326ec460800000000000000
+      internalID: 7263851259439383015
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_108
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e17b730dcdece420800000000000000
+      internalID: 2660762944651620833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_109
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54107436732474530800000000000000
+      internalID: 3839110013012869445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_110
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3eb95be2b04e53d0800000000000000
+      internalID: -3216061946699071937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_111
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7c4efddd6dee4620800000000000000
+      internalID: 2760404677756341374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_112
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14ce6a57c94792380800000000000000
+      internalID: -8995530565358261183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_113
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da9d2229e1f4dc920800000000000000
+      internalID: 3012150718500100525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_114
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c54a65127507c9c10800000000000000
+      internalID: 2061646248952636508
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_115
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 121e17026c932d170800000000000000
+      internalID: 8201681394505736481
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_116
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b404161f4077da8a0800000000000000
+      internalID: -6292242241253457845
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_117
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d661de1aa055d4a90800000000000000
+      internalID: -7328107514507225491
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_118
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e2e71e89a2ed76280800000000000000
+      internalID: -9050020651642814930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_119
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2937628fd9f782520800000000000000
+      internalID: 2677530294921622418
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_120
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6656348492dc31a20800000000000000
+      internalID: 3031992551340205414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_121
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e62a6a575378f640800000000000000
+      internalID: 5113964195895453409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_122
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46ff0498bbd9119f0800000000000000
+      internalID: -499444654874230940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_123
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 608ff709de57a83d0800000000000000
+      internalID: -3203618521728681978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_124
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56ae9a7f3c3018780800000000000000
+      internalID: -8682654466384991643
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_125
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e4bebd4a237ea110800000000000000
+      internalID: 1274082370122593504
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_126
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d44f2659868b811e0800000000000000
+      internalID: -2226827256412310451
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_127
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ceca3d535acafbae0800000000000000
+      internalID: -1531315522710033172
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_128
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a06a31c55ff9e02a0800000000000000
+      internalID: -6769297313730681334
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_129
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a80a56e97ae988190800000000000000
+      internalID: -7959937898623164278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_130
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a526b55d963c40aa0800000000000000
+      internalID: -6195612328036441510
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_131
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 363f3753168cc5a90800000000000000
+      internalID: -7323758574177094813
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_132
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38fa9adb2546422f0800000000000000
+      internalID: -998562910837297277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_133
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d8cb7887d9ccc43e0800000000000000
+      internalID: -2068053152165806963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_134
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9fdf9c4c02e1e0bb0800000000000000
+      internalID: -4968000212853719559
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_135
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ec4a9973bf895210800000000000000
+      internalID: 1322245966612024544
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_136
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68baac687c82dfd40800000000000000
+      internalID: 5619692747453279110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_137
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa1fd37ab788ff3c0800000000000000
+      internalID: -4323587052584177233
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_138
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a279bb4dbeff13290800000000000000
+      internalID: -7912261681961789654
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_139
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bec70c4f3857ca470800000000000000
+      internalID: 8407223814001294571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_140
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20c4f77d375eda510800000000000000
+      internalID: 1562156931466873858
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_141
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e911cb60e4a70d30800000000000000
+      internalID: 4397664844938025449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_142
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 246a52f9ef3cfad20800000000000000
+      internalID: 3292065350990276162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_143
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c9abb34c3dd0ccc0800000000000000
+      internalID: -3692708443539658304
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_144
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c1c1f7ca3c9fc6e0800000000000000
+      internalID: -1815060348530474551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_145
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d68ccff48423cf50800000000000000
+      internalID: 6900399207707608790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_146
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0460a1148583d7360800000000000000
+      internalID: 7168948133544199744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_147
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 629ddd54f62f60780800000000000000
+      internalID: -8717013469001557722
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_148
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fde1dd1831da198f0800000000000000
+      internalID: -535456581385642273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_149
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abb7604a649a91040800000000000000
+      internalID: 4618909013709847482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_150
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 227d7ee748a94d300800000000000000
+      internalID: 276015371031926562
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_151
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff8ea984df5500180800000000000000
+      internalID: -9151219896483649281
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_152
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 374d45c44a072fd30800000000000000
+      internalID: 4463754031635158131
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_153
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b186e9f23fcbc3310800000000000000
+      internalID: 1386190537985255451
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_154
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a43253f56f4ddd8d0800000000000000
+      internalID: -2819863637039701174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_155
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42005ce5599e57360800000000000000
+      internalID: 7166891209779380260
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_156
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dfa7d76f80cbbf1a0800000000000000
+      internalID: -6774614467767600387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_157
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc88d1e7559fc6cf0800000000000000
+      internalID: -257556933083559732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_158
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d8d7407c5addea290800000000000000
+      internalID: -7877114994146116211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_159
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 680ee31b621bad440800000000000000
+      internalID: 4961472719242584198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_160
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5d6d0dfbbfc2ebc0800000000000000
+      internalID: -3755210732962222753
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BoscoSpecial_Spritesheet_256_161
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c62b51bf446d3280800000000000000
+      internalID: -9061976581758835007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5a8201232faf33a4788b5a584a4c694c
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":256.0,"y":256.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      BoscoSpecial_Spritesheet_256_0: -5011641371761091360
+      BoscoSpecial_Spritesheet_256_1: -7787598305416130079
+      BoscoSpecial_Spritesheet_256_10: -344452201248560589
+      BoscoSpecial_Spritesheet_256_100: 5010841675614246460
+      BoscoSpecial_Spritesheet_256_101: 3087668496264969801
+      BoscoSpecial_Spritesheet_256_102: -2633944234960874587
+      BoscoSpecial_Spritesheet_256_103: -2046092586069183649
+      BoscoSpecial_Spritesheet_256_104: -8557165357043170796
+      BoscoSpecial_Spritesheet_256_105: -4977112255164958227
+      BoscoSpecial_Spritesheet_256_106: -9202087662277607249
+      BoscoSpecial_Spritesheet_256_107: 7263851259439383015
+      BoscoSpecial_Spritesheet_256_108: 2660762944651620833
+      BoscoSpecial_Spritesheet_256_109: 3839110013012869445
+      BoscoSpecial_Spritesheet_256_11: 8825572908337477662
+      BoscoSpecial_Spritesheet_256_110: -3216061946699071937
+      BoscoSpecial_Spritesheet_256_111: 2760404677756341374
+      BoscoSpecial_Spritesheet_256_112: -8995530565358261183
+      BoscoSpecial_Spritesheet_256_113: 3012150718500100525
+      BoscoSpecial_Spritesheet_256_114: 2061646248952636508
+      BoscoSpecial_Spritesheet_256_115: 8201681394505736481
+      BoscoSpecial_Spritesheet_256_116: -6292242241253457845
+      BoscoSpecial_Spritesheet_256_117: -7328107514507225491
+      BoscoSpecial_Spritesheet_256_118: -9050020651642814930
+      BoscoSpecial_Spritesheet_256_119: 2677530294921622418
+      BoscoSpecial_Spritesheet_256_12: -5261902290337346546
+      BoscoSpecial_Spritesheet_256_120: 3031992551340205414
+      BoscoSpecial_Spritesheet_256_121: 5113964195895453409
+      BoscoSpecial_Spritesheet_256_122: -499444654874230940
+      BoscoSpecial_Spritesheet_256_123: -3203618521728681978
+      BoscoSpecial_Spritesheet_256_124: -8682654466384991643
+      BoscoSpecial_Spritesheet_256_125: 1274082370122593504
+      BoscoSpecial_Spritesheet_256_126: -2226827256412310451
+      BoscoSpecial_Spritesheet_256_127: -1531315522710033172
+      BoscoSpecial_Spritesheet_256_128: -6769297313730681334
+      BoscoSpecial_Spritesheet_256_129: -7959937898623164278
+      BoscoSpecial_Spritesheet_256_13: -4781868285510106152
+      BoscoSpecial_Spritesheet_256_130: -6195612328036441510
+      BoscoSpecial_Spritesheet_256_131: -7323758574177094813
+      BoscoSpecial_Spritesheet_256_132: -998562910837297277
+      BoscoSpecial_Spritesheet_256_133: -2068053152165806963
+      BoscoSpecial_Spritesheet_256_134: -4968000212853719559
+      BoscoSpecial_Spritesheet_256_135: 1322245966612024544
+      BoscoSpecial_Spritesheet_256_136: 5619692747453279110
+      BoscoSpecial_Spritesheet_256_137: -4323587052584177233
+      BoscoSpecial_Spritesheet_256_138: -7912261681961789654
+      BoscoSpecial_Spritesheet_256_139: 8407223814001294571
+      BoscoSpecial_Spritesheet_256_14: -5903023376226548868
+      BoscoSpecial_Spritesheet_256_140: 1562156931466873858
+      BoscoSpecial_Spritesheet_256_141: 4397664844938025449
+      BoscoSpecial_Spritesheet_256_142: 3292065350990276162
+      BoscoSpecial_Spritesheet_256_143: -3692708443539658304
+      BoscoSpecial_Spritesheet_256_144: -1815060348530474551
+      BoscoSpecial_Spritesheet_256_145: 6900399207707608790
+      BoscoSpecial_Spritesheet_256_146: 7168948133544199744
+      BoscoSpecial_Spritesheet_256_147: -8717013469001557722
+      BoscoSpecial_Spritesheet_256_148: -535456581385642273
+      BoscoSpecial_Spritesheet_256_149: 4618909013709847482
+      BoscoSpecial_Spritesheet_256_15: 7765749190730194850
+      BoscoSpecial_Spritesheet_256_150: 276015371031926562
+      BoscoSpecial_Spritesheet_256_151: -9151219896483649281
+      BoscoSpecial_Spritesheet_256_152: 4463754031635158131
+      BoscoSpecial_Spritesheet_256_153: 1386190537985255451
+      BoscoSpecial_Spritesheet_256_154: -2819863637039701174
+      BoscoSpecial_Spritesheet_256_155: 7166891209779380260
+      BoscoSpecial_Spritesheet_256_156: -6774614467767600387
+      BoscoSpecial_Spritesheet_256_157: -257556933083559732
+      BoscoSpecial_Spritesheet_256_158: -7877114994146116211
+      BoscoSpecial_Spritesheet_256_159: 4961472719242584198
+      BoscoSpecial_Spritesheet_256_16: -2525169091973278594
+      BoscoSpecial_Spritesheet_256_160: -3755210732962222753
+      BoscoSpecial_Spritesheet_256_161: -9061976581758835007
+      BoscoSpecial_Spritesheet_256_17: 6262216966563491359
+      BoscoSpecial_Spritesheet_256_18: -6586094824435061650
+      BoscoSpecial_Spritesheet_256_19: -3861221931693308568
+      BoscoSpecial_Spritesheet_256_2: 2565405266408142003
+      BoscoSpecial_Spritesheet_256_20: -2739860827281591758
+      BoscoSpecial_Spritesheet_256_21: 246166716796909008
+      BoscoSpecial_Spritesheet_256_22: 4880604088010955648
+      BoscoSpecial_Spritesheet_256_23: 6266553743515909627
+      BoscoSpecial_Spritesheet_256_24: 6453733718745504360
+      BoscoSpecial_Spritesheet_256_25: 2779239071719666681
+      BoscoSpecial_Spritesheet_256_26: 8557805715503416147
+      BoscoSpecial_Spritesheet_256_27: -4351820061926033392
+      BoscoSpecial_Spritesheet_256_28: 2516683445572137543
+      BoscoSpecial_Spritesheet_256_29: -456449209261539728
+      BoscoSpecial_Spritesheet_256_3: -9060430868356167836
+      BoscoSpecial_Spritesheet_256_30: -7183766247104335209
+      BoscoSpecial_Spritesheet_256_31: -3294111905626590431
+      BoscoSpecial_Spritesheet_256_32: -6468219367086155151
+      BoscoSpecial_Spritesheet_256_33: 7273056597423936024
+      BoscoSpecial_Spritesheet_256_34: 3035227939081310731
+      BoscoSpecial_Spritesheet_256_35: -5531865963345846861
+      BoscoSpecial_Spritesheet_256_36: -831477903580421104
+      BoscoSpecial_Spritesheet_256_37: -4916463457249460643
+      BoscoSpecial_Spritesheet_256_38: 816403940794271817
+      BoscoSpecial_Spritesheet_256_39: -8597004312393336849
+      BoscoSpecial_Spritesheet_256_4: 5103639054992015287
+      BoscoSpecial_Spritesheet_256_40: 7957906990498973556
+      BoscoSpecial_Spritesheet_256_41: -9145092793736219588
+      BoscoSpecial_Spritesheet_256_42: 5296818466203694447
+      BoscoSpecial_Spritesheet_256_43: 23381903798753070
+      BoscoSpecial_Spritesheet_256_44: 1484268702737266505
+      BoscoSpecial_Spritesheet_256_45: 5827451291299713864
+      BoscoSpecial_Spritesheet_256_46: -6319801929536956605
+      BoscoSpecial_Spritesheet_256_47: -4022514411253921835
+      BoscoSpecial_Spritesheet_256_48: 3802994556747305359
+      BoscoSpecial_Spritesheet_256_49: -4689512253357557463
+      BoscoSpecial_Spritesheet_256_5: 712081645873666473
+      BoscoSpecial_Spritesheet_256_50: 6917685541986052668
+      BoscoSpecial_Spritesheet_256_51: 2628572283590628849
+      BoscoSpecial_Spritesheet_256_52: 7154829190380611960
+      BoscoSpecial_Spritesheet_256_53: -2686117020055522703
+      BoscoSpecial_Spritesheet_256_54: 1477802120439664116
+      BoscoSpecial_Spritesheet_256_55: -3716500414735024658
+      BoscoSpecial_Spritesheet_256_56: -6713656150640428106
+      BoscoSpecial_Spritesheet_256_57: -6316280700562669686
+      BoscoSpecial_Spritesheet_256_58: 5717064407302985376
+      BoscoSpecial_Spritesheet_256_59: -3315675313241954703
+      BoscoSpecial_Spritesheet_256_6: -2006619055625510639
+      BoscoSpecial_Spritesheet_256_60: 7249513710919407770
+      BoscoSpecial_Spritesheet_256_61: 5954655681123458276
+      BoscoSpecial_Spritesheet_256_62: 195592591927927659
+      BoscoSpecial_Spritesheet_256_63: -1681890987002752793
+      BoscoSpecial_Spritesheet_256_64: -6803256167074064776
+      BoscoSpecial_Spritesheet_256_65: -8379435674907811600
+      BoscoSpecial_Spritesheet_256_66: 5706073617649679233
+      BoscoSpecial_Spritesheet_256_67: -4378770112001687903
+      BoscoSpecial_Spritesheet_256_68: 6672959108517157744
+      BoscoSpecial_Spritesheet_256_69: 6214976542530979099
+      BoscoSpecial_Spritesheet_256_7: -4022399910347790976
+      BoscoSpecial_Spritesheet_256_70: -77756291010956468
+      BoscoSpecial_Spritesheet_256_71: 5554425471609084906
+      BoscoSpecial_Spritesheet_256_72: 3055014732418542828
+      BoscoSpecial_Spritesheet_256_73: 401810421886905639
+      BoscoSpecial_Spritesheet_256_74: 827399316957023406
+      BoscoSpecial_Spritesheet_256_75: 3099174599926119543
+      BoscoSpecial_Spritesheet_256_76: -2908048853700960149
+      BoscoSpecial_Spritesheet_256_77: 7025135702683968283
+      BoscoSpecial_Spritesheet_256_78: -5639732665662566545
+      BoscoSpecial_Spritesheet_256_79: -4574166678055382295
+      BoscoSpecial_Spritesheet_256_8: 6598639332432502931
+      BoscoSpecial_Spritesheet_256_80: -4164955730506241052
+      BoscoSpecial_Spritesheet_256_81: -7042097512348798117
+      BoscoSpecial_Spritesheet_256_82: -9130968840039681070
+      BoscoSpecial_Spritesheet_256_83: -5476213553777161345
+      BoscoSpecial_Spritesheet_256_84: 1150686311845619465
+      BoscoSpecial_Spritesheet_256_85: -8006891962259307959
+      BoscoSpecial_Spritesheet_256_86: -6026423965371357959
+      BoscoSpecial_Spritesheet_256_87: -7223274782192486534
+      BoscoSpecial_Spritesheet_256_88: 7544440983550481500
+      BoscoSpecial_Spritesheet_256_89: -3700291023675868386
+      BoscoSpecial_Spritesheet_256_9: -1716768394562959201
+      BoscoSpecial_Spritesheet_256_90: 1940091216985976132
+      BoscoSpecial_Spritesheet_256_91: 6397691953882404173
+      BoscoSpecial_Spritesheet_256_92: -2164959617158312420
+      BoscoSpecial_Spritesheet_256_93: 385067317190136641
+      BoscoSpecial_Spritesheet_256_94: 5036677111695396076
+      BoscoSpecial_Spritesheet_256_95: -4117593506493273797
+      BoscoSpecial_Spritesheet_256_96: -1467207132561785505
+      BoscoSpecial_Spritesheet_256_97: 7663078168847400588
+      BoscoSpecial_Spritesheet_256_98: -2283534722161044358
+      BoscoSpecial_Spritesheet_256_99: -2638279548569629169
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

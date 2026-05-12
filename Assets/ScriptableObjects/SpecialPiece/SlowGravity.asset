@@ -21,6 +21,6 @@ MonoBehaviour:
   spawnWeight: 0.25
   specialFlashSprite: {fileID: -6605040193917352901, guid: 48da2eb413088c14ebaa183806cf5891, type: 3}
   flashOnlyOccupied: 0
-  specialSFX: {fileID: 0}
+  specialSFX: {fileID: 8300000, guid: dc571d080b5ebf54a82e0b9e672fbded, type: 3}
   slowGravityMultiplier: 0.5
   slowGravityRampRateMultiplier: 0.2

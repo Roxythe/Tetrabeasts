@@ -73,7 +73,18 @@ public class LevelModifierSelectionUI : MonoBehaviour
     [SerializeField] float leverReturnDuration = 0.14f;
     [SerializeField] float rerollRebuildDelaySeconds = 0.06f;
 
+    [Header("Slot Machine Lights")]
+    [SerializeField] SlotMachineLightUI[] slotMachineLights;
+    [SerializeField] bool autoFindSlotMachineLights = true;
+    [SerializeField, Min(0f)] float revealLightPulseSpeedMultiplier = 1.35f;
+    [SerializeField, Min(0f)] float revealLightColorSpeedMultiplier = 1.2f;
+    [SerializeField, Range(0f, 0.5f)] float revealLightSyncedPulseScale = 0.12f;
+    [SerializeField, Range(0f, 1f)] float revealLightSyncedBrightness = 1f;
+    [SerializeField, Range(0f, 1f)] float revealLightSyncedPhaseOffset;
+    [SerializeField] float revealLightSyncedColorOffset;
+
     readonly List<SlotColumn> _columns = new();
+    readonly List<SlotMachineLightUI> _runtimeSlotMachineLights = new();
 
     bool _spinClicked;
     bool _continueClicked;
@@ -112,6 +123,9 @@ public class LevelModifierSelectionUI : MonoBehaviour
         _rerollClicked = false;
         _isSpinning = false;
         _currentChosenModifier = chosen;
+
+        CacheSlotMachineLights();
+        ResetSlotMachineLights();
 
         UIPanelTransition.Show(root.gameObject);
 
@@ -173,6 +187,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
                          rebuildColumnsAfterSpinStarts: pendingRebuildForNextSpin,
                          rebuildPool: sprites, rebuildChosenSprite: chosen.icon));
 
+            SyncSlotMachineLightsForReveal();
             RevealModifier(chosen);
 
             if (leverArrowVisual)
@@ -206,6 +221,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
 
                 chosen = rerolledModifier;
                 _currentChosenModifier = rerolledModifier;
+                ResetSlotMachineLights();
                 shouldSpinAgain = true;
                 break;
             }
@@ -228,7 +244,13 @@ public class LevelModifierSelectionUI : MonoBehaviour
 
         StopModNameAnimation();
 
+        ResetSlotMachineLights();
         UIPanelTransition.Hide(root.gameObject);
+    }
+
+    void OnDisable()
+    {
+        ResetSlotMachineLights();
     }
 
     void Update()
@@ -268,6 +290,60 @@ public class LevelModifierSelectionUI : MonoBehaviour
 
         if (viewports == null || viewports.Length != 3 || contents == null || contents.Length != 3)
             Debug.LogWarning("LevelModifierSelectionUI: Assign exactly 3 viewports and 3 contents.");
+    }
+
+    void CacheSlotMachineLights()
+    {
+        _runtimeSlotMachineLights.Clear();
+
+        if (slotMachineLights != null)
+        {
+            for (int i = 0; i < slotMachineLights.Length; i++)
+            {
+                if (slotMachineLights[i] && !_runtimeSlotMachineLights.Contains(slotMachineLights[i]))
+                    _runtimeSlotMachineLights.Add(slotMachineLights[i]);
+            }
+        }
+
+        if (autoFindSlotMachineLights && _runtimeSlotMachineLights.Count == 0)
+        {
+            var searchRoot = root ? root : transform;
+            var foundLights = searchRoot.GetComponentsInChildren<SlotMachineLightUI>(true);
+            for (int i = 0; i < foundLights.Length; i++)
+            {
+                if (foundLights[i] && !_runtimeSlotMachineLights.Contains(foundLights[i]))
+                    _runtimeSlotMachineLights.Add(foundLights[i]);
+            }
+        }
+
+        for (int i = 0; i < _runtimeSlotMachineLights.Count; i++)
+            _runtimeSlotMachineLights[i].CaptureStartingSettings();
+    }
+
+    void SyncSlotMachineLightsForReveal()
+    {
+        for (int i = 0; i < _runtimeSlotMachineLights.Count; i++)
+        {
+            if (!_runtimeSlotMachineLights[i])
+                continue;
+
+            _runtimeSlotMachineLights[i].PlaySyncedFlash(
+                revealLightPulseSpeedMultiplier,
+                revealLightColorSpeedMultiplier,
+                revealLightSyncedPulseScale,
+                revealLightSyncedBrightness,
+                revealLightSyncedPhaseOffset,
+                revealLightSyncedColorOffset);
+        }
+    }
+
+    void ResetSlotMachineLights()
+    {
+        for (int i = 0; i < _runtimeSlotMachineLights.Count; i++)
+        {
+            if (_runtimeSlotMachineLights[i])
+                _runtimeSlotMachineLights[i].RestoreStartingSettings();
+        }
     }
 
     void BuildColumns()
@@ -349,6 +425,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
         if (_isSpinning)
             return;
 
+        ResetSlotMachineLights();
         _rerollClicked = true;
     }
 
