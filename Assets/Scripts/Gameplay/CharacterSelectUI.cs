@@ -116,6 +116,9 @@ public class CharacterSelectUI : MonoBehaviour
                 unlockBtn.onClick.RemoveAllListeners();
                 unlockBtn.onClick.AddListener(() =>
                 {
+                    if (DemoBuildGuardRails.TryBlockPurchase(errorSFX))
+                        return;
+
                     if (CurrencyStore.Total < data.unlockCost)
                     {
                         if (AudioManager.I && errorSFX)

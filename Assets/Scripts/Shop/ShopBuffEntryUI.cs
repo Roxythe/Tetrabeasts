@@ -46,6 +46,13 @@ public class ShopBuffEntryUI : MonoBehaviour
 
     void TryPurchase()
     {
+        if (DemoBuildGuardRails.TryBlockPurchase(errorSFX))
+        {
+            shopPanel?.RefreshAll();
+            Refresh();
+            return;
+        }
+
         int cost = ShopBuffStore.GetNextCost(buffType);
 
         // If currency is insufficient

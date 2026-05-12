@@ -179,6 +179,9 @@ public class MonsterSelectUI : MonoBehaviour
                 unlockBtn.onClick.RemoveAllListeners();
                 unlockBtn.onClick.AddListener(() =>
                 {
+                    if (DemoBuildGuardRails.TryBlockPurchase(errorSFX))
+                        return;
+
                     if (CurrencyStore.Total < md.unlockCost)
                     {
                         if (AudioManager.I && errorSFX)
@@ -666,6 +669,9 @@ public class MonsterSelectUI : MonoBehaviour
         previewUnlockButton.onClick.RemoveAllListeners();
         previewUnlockButton.onClick.AddListener(() =>
         {
+            if (DemoBuildGuardRails.TryBlockPurchase(errorSFX))
+                return;
+
             if (CurrencyStore.Total < cost)
             {
                 if (AudioManager.I && errorSFX) AudioManager.I.PlaySFX(errorSFX);

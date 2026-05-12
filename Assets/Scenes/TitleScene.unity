@@ -5745,6 +5745,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70436eaf9cd254c44b442a4e1cf5e7e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TitleMenuUI
+  demoBuildGuardRailsEnabled: 1
+  demoPurchaseBlockedMessage: Purchases are disabled in the demo. Your earned progress
+    will still carry into the full game.
   gameplaySceneName: GameplayScene
   highScorePanel: {fileID: 45832898}
   settingsPanel: {fileID: 499214994}

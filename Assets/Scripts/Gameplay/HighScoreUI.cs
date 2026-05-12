@@ -21,6 +21,7 @@ public class HighScoreUI : MonoBehaviour
 
     int pendingScore = 0;
     int _highlightRankIndex = -1;
+    bool _suppressRestartButton;
 
     [Header("Colors")]
     public Color newHighScoreColor = new Color(1f, 0.84f, 0f, 1f); // Gold
@@ -95,8 +96,16 @@ public class HighScoreUI : MonoBehaviour
 
     void SetPostSubmitButtonsActive(bool active)
     {
-        if (restartButton) restartButton.gameObject.SetActive(active);
+        if (restartButton) restartButton.gameObject.SetActive(active && !_suppressRestartButton);
         if (mainMenuButton) mainMenuButton.gameObject.SetActive(active);
+    }
+
+    public void SetRestartButtonSuppressed(bool suppressed)
+    {
+        _suppressRestartButton = suppressed;
+
+        if (restartButton && suppressed)
+            restartButton.gameObject.SetActive(false);
     }
 
     public void Hide()

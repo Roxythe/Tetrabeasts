@@ -19,6 +19,7 @@ public class PlayerProgress : MonoBehaviour
 
         public HashSet<string> unlockedAchievements = new();
         public HashSet<string> pendingExternalUnlocks = new();
+        public HashSet<string> deferredDemoAchievementUnlocks = new();
         public HashSet<string> completedTutorials = new();
 
         public int selectedStarDifficulty = 0;
@@ -81,7 +82,12 @@ public class PlayerProgress : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         Load();
-        SteamAchievementService.Ensure();
+    }
+
+    void Start()
+    {
+        if (!DemoBuildGuardRails.IsDemoBuild)
+            SteamAchievementService.Ensure();
     }
 
     // ---------------- Run lifecycle ----------------
@@ -234,12 +240,48 @@ public class PlayerProgress : MonoBehaviour
         if (_data.unlockedAchievements.Contains(achievementId)) return;
 
         _data.unlockedAchievements.Add(achievementId);
+        _data.deferredDemoAchievementUnlocks.Remove(achievementId);
 
         // If Steam backend present, attempt unlock now, otherwise queue
         _data.pendingExternalUnlocks.Add(achievementId);
 
         Save();
         AchievementUnlocked?.Invoke(achievementId);
+    }
+
+    public void DeferDemoAchievementUnlock(string achievementId)
+    {
+        if (string.IsNullOrEmpty(achievementId)) return;
+        if (_data.unlockedAchievements.Contains(achievementId)) return;
+        if (_data.deferredDemoAchievementUnlocks.Add(achievementId))
+            Save();
+    }
+
+    public int UnlockDeferredDemoAchievements()
+    {
+        if (_data.deferredDemoAchievementUnlocks.Count == 0)
+            return 0;
+
+        var deferred = new List<string>(_data.deferredDemoAchievementUnlocks);
+        int unlocked = 0;
+
+        for (int i = 0; i < deferred.Count; i++)
+        {
+            string achievementId = deferred[i];
+            if (string.IsNullOrEmpty(achievementId))
+                continue;
+
+            if (!_data.unlockedAchievements.Contains(achievementId))
+            {
+                UnlockAchievement(achievementId);
+                unlocked++;
+            }
+
+            _data.deferredDemoAchievementUnlocks.Remove(achievementId);
+        }
+
+        Save();
+        return unlocked;
     }
 
     public List<string> GetUnlockedAchievementIds()
@@ -367,6 +409,7 @@ public class PlayerProgress : MonoBehaviour
 
         public List<string> unlocked = new();
         public List<string> pending = new();
+        public List<string> deferredDemo = new();
         public List<string> completedTutorials = new();
 
         public int selectedStarDifficulty = 0;
@@ -383,6 +426,7 @@ public class PlayerProgress : MonoBehaviour
 
             w.unlocked.AddRange(d.unlockedAchievements);
             w.pending.AddRange(d.pendingExternalUnlocks);
+            w.deferredDemo.AddRange(d.deferredDemoAchievementUnlocks);
             w.completedTutorials.AddRange(d.completedTutorials);
             w.selectedStarDifficulty = d.selectedStarDifficulty;
             w.maxUnlockedStarDifficulty = d.maxUnlockedStarDifficulty;
@@ -393,6 +437,19 @@ public class PlayerProgress : MonoBehaviour
         public SaveData ToData()
         {
             var d = new SaveData();
+
+            lifetimeIntKeys ??= new List<string>();
+            lifetimeIntVals ??= new List<long>();
+            lifetimeFloatKeys ??= new List<string>();
+            lifetimeFloatVals ??= new List<double>();
+            runIntKeys ??= new List<string>();
+            runIntVals ??= new List<long>();
+            runFloatKeys ??= new List<string>();
+            runFloatVals ??= new List<double>();
+            unlocked ??= new List<string>();
+            pending ??= new List<string>();
+            deferredDemo ??= new List<string>();
+            completedTutorials ??= new List<string>();
 
             for (int i = 0; i < lifetimeIntKeys.Count && i < lifetimeIntVals.Count; i++)
                 d.lifetimeInt[lifetimeIntKeys[i]] = lifetimeIntVals[i];
@@ -408,6 +465,7 @@ public class PlayerProgress : MonoBehaviour
 
             d.unlockedAchievements = new HashSet<string>(unlocked);
             d.pendingExternalUnlocks = new HashSet<string>(pending);
+            d.deferredDemoAchievementUnlocks = new HashSet<string>(deferredDemo);
             d.completedTutorials = new HashSet<string>(completedTutorials);
             d.selectedStarDifficulty = selectedStarDifficulty;
             d.maxUnlockedStarDifficulty = maxUnlockedStarDifficulty;

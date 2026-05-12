@@ -884,12 +884,18 @@ public class SteamAchievementService : MonoBehaviour
 
     void OnLocalAchievementUnlocked(string achievementId)
     {
+        if (DemoBuildGuardRails.IsDemoBuild)
+            return;
+
         if (TrySyncAchievementToSteam(achievementId))
             StoreStatsIfNeeded();
     }
 
     public void SyncPendingExternalUnlocks()
     {
+        if (DemoBuildGuardRails.IsDemoBuild)
+            return;
+
         if (PlayerProgress.I == null)
             return;
 
@@ -929,6 +935,9 @@ public class SteamAchievementService : MonoBehaviour
     bool TrySyncAchievementToSteam(string achievementId)
     {
 #if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
+        if (DemoBuildGuardRails.IsDemoBuild)
+            return false;
+
         if (string.IsNullOrWhiteSpace(achievementId))
             return false;
 

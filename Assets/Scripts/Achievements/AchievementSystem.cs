@@ -280,13 +280,31 @@ public static class AchievementSystem
             var d = _defs[i];
             if (d.statKey != statKey) continue;
 
-            if (PlayerProgress.I.IsUnlocked(d.id)) continue;
-
-            double v = ReadStat(d.scope, d.statKey);
-
-            bool ok = d.compare == Compare.Gte ? (v >= d.target) : (v <= d.target);
-            if (ok) PlayerProgress.I.UnlockAchievement(d.id);
+            TryUnlockOrDefer(d);
         }
+    }
+
+    public static void EvaluateStoredProgressForUnlocks()
+    {
+        if (!_init) EnsureInitialized();
+        if (PlayerProgress.I == null) return;
+
+        for (int i = 0; i < _defs.Count; i++)
+            TryUnlockOrDefer(_defs[i]);
+    }
+
+    static void TryUnlockOrDefer(Def d)
+    {
+        if (PlayerProgress.I.IsUnlocked(d.id)) return;
+
+        double v = ReadStat(d.scope, d.statKey);
+        bool ok = d.compare == Compare.Gte ? (v >= d.target) : (v <= d.target && v > 0);
+        if (!ok) return;
+
+        if (DemoBuildGuardRails.ShouldDeferAchievementUnlocks)
+            PlayerProgress.I.DeferDemoAchievementUnlock(d.id);
+        else
+            PlayerProgress.I.UnlockAchievement(d.id);
     }
 
     static double ReadStat(Scope scope, string key)

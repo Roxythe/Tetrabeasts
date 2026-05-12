@@ -9,6 +9,11 @@ using UnityEditor;
 
 public class TitleMenuUI : MonoBehaviour
 {
+    [Header("Demo Build Guard Rails")]
+    [SerializeField] bool demoBuildGuardRailsEnabled = false;
+    [SerializeField, TextArea(2, 4)] string demoPurchaseBlockedMessage =
+        "Purchases are disabled in the demo. Your earned progress will still carry into the full game.";
+
     [Header("Scenes")]
     public string gameplaySceneName = "GameplayScene";
 
@@ -92,6 +97,9 @@ public class TitleMenuUI : MonoBehaviour
 
     void Awake()
     {
+        ApplyDemoBuildGuardRailsSetting();
+        UnlockDeferredDemoAchievementsIfRetail();
+
         // --- Character ---
         if (characterSelectUI && characterSelectUI.roster != null && characterSelectUI.roster.Length > 0)
         {
@@ -130,6 +138,9 @@ public class TitleMenuUI : MonoBehaviour
 
     void Start()
     {
+        ApplyDemoBuildGuardRailsSetting();
+        UnlockDeferredDemoAchievementsIfRetail();
+
         SettingsStore.ApplySavedVolumesToAudio();
 
         // Start title BGM
@@ -148,6 +159,24 @@ public class TitleMenuUI : MonoBehaviour
         RefreshTempRunUI();
         RefreshSteamLeaderboardIfVisible();
         HookAllButtonsForSFX(); // Auto-hook all buttons under this menu for click/hover sounds
+    }
+
+    void ApplyDemoBuildGuardRailsSetting()
+    {
+        DemoBuildGuardRails.Configure(
+            demoBuildGuardRailsEnabled,
+            DemoBuildGuardRails.DefaultMaxCompletedLevel,
+            demoPurchaseBlockedMessage);
+    }
+
+    void UnlockDeferredDemoAchievementsIfRetail()
+    {
+        if (DemoBuildGuardRails.IsDemoBuild || PlayerProgress.I == null)
+            return;
+
+        PlayerProgress.I.UnlockDeferredDemoAchievements();
+        AchievementSystem.EvaluateStoredProgressForUnlocks();
+        SteamAchievementService.Ensure().SyncPendingExternalUnlocks();
     }
 
     // --- Button hooks ---

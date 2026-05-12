@@ -14,6 +14,12 @@ public class GameController : MonoBehaviour
     public NextPreviewUI nextPreview;
     public TetrominoData[] allTetrominoes;
 
+    [Header("Demo Build Guard Rails")]
+    [SerializeField] bool demoBuildGuardRailsEnabled = false;
+    [SerializeField, Min(1)] int demoMaxCompletedLevel = DemoBuildGuardRails.DefaultMaxCompletedLevel;
+    [SerializeField, TextArea(3, 6)] string demoLevelLimitMessage =
+        "Thank you for playing the Tetrabeasts demo!\n\nYou have cleared the final demo level. If you enjoyed your time with the game, please consider buying the full version.";
+
     [Header("XP Tuning")]
     [SerializeField] int baseXpPerLevel = 3;
 
@@ -312,6 +318,7 @@ public class GameController : MonoBehaviour
     bool _finalWinStateApplied = false;
     bool _postFinalSurvivalActive = false;
     bool _pendingPostFinalSurvivalIntro = false;
+    bool _demoLimitRunEnding = false;
 
     public int currencyPerRoundWinAdd = 0;
     public float currencyPerRoundWinMult = 1f;
@@ -481,8 +488,20 @@ public class GameController : MonoBehaviour
     const string QuitWithoutSavingWarningMessage =
     "Quit without saving? Your current run will be lost and will not be available to continue later.";
 
+    void Awake()
+    {
+        ApplyDemoBuildGuardRailsSetting();
+    }
+
+    void ApplyDemoBuildGuardRailsSetting()
+    {
+        DemoBuildGuardRails.Configure(demoBuildGuardRailsEnabled, demoMaxCompletedLevel);
+    }
+
     void Start()
     {
+        ApplyDemoBuildGuardRailsSetting();
+
         // Ensure PlayerProgress exists (stats + achievements)
         if (PlayerProgress.I == null)
         {
@@ -781,6 +800,7 @@ public class GameController : MonoBehaviour
         levelWon = false;
         winQueued = false;
         _pendingMainMenuAfterXp = false;
+        _demoLimitRunEnding = false;
 
         if (scoreUI) scoreUI.Set(score);
 
@@ -822,6 +842,7 @@ public class GameController : MonoBehaviour
         levelWon = false;
         winQueued = false;
         _pendingMainMenuAfterXp = false;
+        _demoLimitRunEnding = false;
         _finalWinStateApplied = saveData.standardFinalWinApplied;
         _newDifficultyUnlockedThisRun = false;
         _firstFullRowTutorialShownThisRun = false;
@@ -1617,7 +1638,10 @@ public class GameController : MonoBehaviour
         SubmitSteamLeaderboardScore();
 
         if (highScoreUI)
+        {
+            highScoreUI.SetRestartButtonSuppressed(false);
             highScoreUI.TryShow(score);
+        }
 
         if (restartButton)
             restartButton.gameObject.SetActive(true);
@@ -2116,6 +2140,12 @@ public class GameController : MonoBehaviour
         var roster = GetActiveMonsterRoster();
         var computed = ComputeRoundWinXp(completedLevelNumber);
 
+        if (DemoBuildGuardRails.HasReachedLevelLimit(completedLevelNumber))
+        {
+            ShowDemoLevelLimitPopupThenEndRun(roster, computed);
+            yield break;
+        }
+
         void ContinueAfterRoundXp()
         {
             if (finalLevel)
@@ -2149,6 +2179,112 @@ public class GameController : MonoBehaviour
         }
 
         ContinueAfterRoundWinRewards();
+    }
+
+    void ShowDemoLevelLimitPopupThenEndRun(List<MonsterData> roster, ComputedRoundXp computed)
+    {
+        if (_demoLimitRunEnding)
+            return;
+
+        _demoLimitRunEnding = true;
+
+        if (xpAwardUI)
+            xpAwardUI.HideAll();
+
+        EnterUICursorMode();
+        StartCoroutine(ReapplyUICursorNextFrame());
+
+        string message = string.IsNullOrWhiteSpace(demoLevelLimitMessage)
+            ? "Thank you for playing the demo. If you enjoyed yourself, please consider buying the full game."
+            : demoLevelLimitMessage;
+
+        ShowAlertPopup(message, () => StartCoroutine(CoEndDemoLimitRunAfterPopup(roster, computed)), "Continue");
+    }
+
+    IEnumerator CoEndDemoLimitRunAfterPopup(List<MonsterData> roster, ComputedRoundXp computed)
+    {
+        yield return CoAwardDemoLimitRoundXp(roster, computed);
+
+        ApplyFinalLevelRoundWinBookkeeping();
+
+        gameOver = true;
+        ClearTempRunCheckpoint();
+        PlayerProgress.I?.EndRun();
+
+        ShowDemoLimitRunEndXpTransfer(roster);
+    }
+
+    IEnumerator CoAwardDemoLimitRoundXp(List<MonsterData> roster, ComputedRoundXp computed)
+    {
+        if (xpAwardUI)
+        {
+            bool done = false;
+
+            OpenXpUiMode();
+
+            if (AudioManager.I)
+                AudioManager.I.PlayIntermissionWinMusic();
+
+            xpAwardUI.ShowRoundWin(computed.breakdown, roster, computed.perMonsterAwardXp, () => done = true);
+            yield return new WaitUntil(() => done);
+            yield break;
+        }
+
+        foreach (var kv in computed.perMonsterAwardXp)
+            RunMonsterProgress.AddRunXp(kv.Key, kv.Value);
+    }
+
+    void ShowDemoLimitRunEndXpTransfer(List<MonsterData> roster)
+    {
+        if (xpAwardUI && RunMonsterProgress.RunActive)
+        {
+            OpenXpUiMode();
+
+            if (AudioManager.I)
+                AudioManager.I.PlayIntermissionLoseMusic();
+
+            xpAwardUI.ShowRunEndCommit(
+                roster,
+                GetRunEndXpConversionFraction(finalLevelWin: false),
+                () =>
+                {
+                    CloseXpUiMode();
+                    ShowDemoLimitHighScore();
+                });
+
+            return;
+        }
+
+        CommitRunEndXpSilently(finalLevelWin: false);
+        ShowDemoLimitHighScore();
+    }
+
+    void ShowDemoLimitHighScore()
+    {
+        if (xpAwardUI)
+            xpAwardUI.HideAll();
+
+        if (highScoreUI)
+        {
+            if (highScoreUI.mainMenuButton)
+            {
+                highScoreUI.mainMenuButton.onClick.RemoveListener(DoReturnToMainMenuNow);
+                highScoreUI.mainMenuButton.onClick.AddListener(DoReturnToMainMenuNow);
+            }
+
+            highScoreUI.SetRestartButtonSuppressed(true);
+            highScoreUI.TryShow(score);
+        }
+        else
+        {
+            DoReturnToMainMenuNow();
+            return;
+        }
+
+        if (restartButton)
+            restartButton.gameObject.SetActive(false);
+
+        EnterUICursorMode();
     }
 
     void ContinueAfterRoundWinRewards()
@@ -2503,7 +2639,11 @@ public class GameController : MonoBehaviour
         {
             if (AudioManager.I) AudioManager.I.StopMusic();
             SubmitSteamLeaderboardScore();
-            if (highScoreUI) highScoreUI.TryShow(score);
+            if (highScoreUI)
+            {
+                highScoreUI.SetRestartButtonSuppressed(false);
+                highScoreUI.TryShow(score);
+            }
             if (restartButton) restartButton.gameObject.SetActive(true);
             EnterUICursorMode();
         }
@@ -3690,6 +3830,7 @@ public class GameController : MonoBehaviour
 
         RunSummaryStats.BeginRun();
         _finalWinStateApplied = false;
+        _demoLimitRunEnding = false;
 
         // Reset bag and preview
         StartCoroutine(BeginCurrentLevelSequence());
@@ -3842,16 +3983,17 @@ public class GameController : MonoBehaviour
         onConfirm?.Invoke();
     }
 
-    void ShowAlertPopup(string body)
+    void ShowAlertPopup(string body, System.Action onClosed = null, string continueText = "OK")
     {
         var popup = ConfirmationPopupUI.FindOrCreate();
         if (popup)
         {
-            popup.ShowAlert(body, showWarningVisual: true);
+            popup.ShowAlert(body, onClosed, continueText, showWarningVisual: true);
             return;
         }
 
         Debug.LogWarning(body);
+        onClosed?.Invoke();
     }
 
     public void OpenRunModsPanel()
