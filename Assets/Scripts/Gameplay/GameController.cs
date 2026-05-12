@@ -591,7 +591,7 @@ public class GameController : MonoBehaviour
         if (selectedCharacter && selectedCharacter.specialGaugeMax > 0f)
             specialGaugeMax = selectedCharacter.specialGaugeMax;
 
-        specialGauge = 100f; // Initialize Special gauge
+        specialGauge = 0f; // Initialize Special gauge
         UpdateSpecialUI();
         ResetSpecialChargedVisuals();
 

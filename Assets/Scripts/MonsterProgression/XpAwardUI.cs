@@ -107,6 +107,7 @@ public class XpAwardUI : MonoBehaviour
     public float breakdownSkipInputDelaySeconds = 0.5f;
 
     const float XpPerLevel = 100f;
+    const int XpPerOrbPair = 2;
     float _permanentXpConversion = 0.10f;
 
     readonly List<XpMonsterRowUI> _rows = new();
@@ -707,7 +708,7 @@ public class XpAwardUI : MonoBehaviour
             float shapedInterval = Mathf.Lerp(orbSpawnIntervalStartSeconds, orbSpawnIntervalEndSeconds, accel);
             float travelSeconds = Mathf.Lerp(orbTravelStartSeconds, orbTravelEndSeconds, accel);
 
-            int spawnsNeeded = Mathf.CeilToInt((float)any / Mathf.Max(1, maxOrbsPerFrame));
+            int spawnsNeeded = Mathf.CeilToInt((float)CountOrbPacketsRemaining(remaining) / Mathf.Max(1, maxOrbsPerFrame));
             float remainingTime = Mathf.Max(0.01f, orbTransferMaxSeconds - elapsedSpawn);
             float budgetInterval = remainingTime / Mathf.Max(1, spawnsNeeded);
 
@@ -727,21 +728,26 @@ public class XpAwardUI : MonoBehaviour
                 var end = row.GetDrainOrbAnchor();
                 if (!start || !end) continue;
 
-                remaining[i] -= 1;
-                processed += 1;
+                bool startsUp = (processed % 2) == 0;
+                int orbXp = Mathf.Min(XpPerOrbPair, remaining[i]);
+
+                remaining[i] -= orbXp;
+                processed += orbXp;
                 spawnedThisFrame += 1;
 
                 int rowIndex = i;
                 var rowRef = row;
 
-                StartCoroutine(CoSpawnOrbArc(start, end, gain: false, travelSeconds: travelSeconds, accel01: accel,
+                StartCoroutine(CoSpawnOrbWave(start, end, gain: false, startsUp: startsUp, travelSeconds: travelSeconds, accel01: accel,
                                              onArrive: () =>
                                              {
-                                                 rowRef.SubtractXpFromOrb(1f, XpPerLevel);
+                                                 rowRef.SubtractXpFromOrb(orbXp, XpPerLevel);
 
-                                                 preservedShown[rowIndex] += _permanentXpConversion;
+                                                 preservedShown[rowIndex] += orbXp * _permanentXpConversion;
                                                  rowRef.ShowXpDrainPreserved(preservedShown[rowIndex]);
                                              }));
+                StartCoroutine(CoSpawnOrbWave(start, end, gain: false, startsUp: !startsUp, travelSeconds: travelSeconds, accel01: accel,
+                                             onArrive: null, playArrivalSfx: false));
             }
 
             float wait = Mathf.Max(0.001f, spawnInterval);
@@ -752,7 +758,7 @@ public class XpAwardUI : MonoBehaviour
         yield return CoWaitForActiveOrbsToArrive();
     }
 
-    IEnumerator CoSpawnOrbArc(RectTransform start, RectTransform end, bool gain, float travelSeconds, float accel01, Action onArrive)
+    IEnumerator CoSpawnOrbWave(RectTransform start, RectTransform end, bool gain, bool startsUp, float travelSeconds, float accel01, Action onArrive, bool playArrivalSfx = true)
     {
         var orb = Instantiate(xpOrbPrefab, vfxRoot);
         _activeOrbGos.Add(orb.gameObject);
@@ -763,9 +769,6 @@ public class XpAwardUI : MonoBehaviour
         Vector2 p0 = WorldToLocal(vfxRoot, start.position);
         Vector2 p2 = WorldToLocal(vfxRoot, end.position);
 
-        Vector2 mid = (p0 + p2) * 0.5f;
-        Vector2 p1 = mid + Vector2.up * orbArcHeight;
-
         float t = 0f;
 
         while (t < travelSeconds)
@@ -775,7 +778,7 @@ public class XpAwardUI : MonoBehaviour
             t += Time.unscaledDeltaTime;
             float a = Mathf.Clamp01(t / Mathf.Max(0.001f, travelSeconds));
 
-            Vector2 pos = Bezier2(p0, p1, p2, a);
+            Vector2 pos = OscillatingPath(p0, p2, a, startsUp, orbArcHeight);
             orbRect.anchoredPosition = pos;
 
             yield return null;
@@ -784,17 +787,37 @@ public class XpAwardUI : MonoBehaviour
         if (!orb) yield break;
 
         orbRect.anchoredPosition = p2;
-        TryPlayOrbSfx(gain, accel01);
+        if (playArrivalSfx)
+            TryPlayOrbSfx(gain, accel01);
+
         onArrive?.Invoke();
 
         _activeOrbGos.Remove(orb.gameObject);
         Destroy(orb.gameObject);
     }
 
-    static Vector2 Bezier2(Vector2 p0, Vector2 p1, Vector2 p2, float t)
+    static Vector2 OscillatingPath(Vector2 p0, Vector2 p1, float t, bool startsUp, float amplitude)
     {
-        float u = 1f - t;
-        return (u * u) * p0 + (2f * u * t) * p1 + (t * t) * p2;
+        const float halfCycles = 4f;
+
+        Vector2 basePos = Vector2.Lerp(p0, p1, t);
+        float direction = startsUp ? 1f : -1f;
+        float offset = Mathf.Sin(t * Mathf.PI * halfCycles) * amplitude * direction;
+
+        return basePos + (Vector2.up * offset);
+    }
+
+    static int CountOrbPacketsRemaining(int[] remaining)
+    {
+        int count = 0;
+
+        if (remaining == null)
+            return count;
+
+        for (int i = 0; i < remaining.Length; i++)
+            count += Mathf.CeilToInt((float)Mathf.Max(0, remaining[i]) / XpPerOrbPair);
+
+        return count;
     }
 
     static Vector2 WorldToLocal(RectTransform root, Vector3 worldPos)
@@ -910,7 +933,7 @@ public class XpAwardUI : MonoBehaviour
             float shapedInterval = Mathf.Lerp(orbSpawnIntervalStartSeconds, orbSpawnIntervalEndSeconds, a);
             float travelSeconds = Mathf.Lerp(orbTravelStartSeconds, orbTravelEndSeconds, a);
 
-            int spawnsNeeded = Mathf.CeilToInt((float)any / Mathf.Max(1, maxOrbsPerFrame));
+            int spawnsNeeded = Mathf.CeilToInt((float)CountOrbPacketsRemaining(remaining) / Mathf.Max(1, maxOrbsPerFrame));
             float remainingTime = Mathf.Max(0.01f, orbTransferMaxSeconds - elapsedSpawn);
             float budgetInterval = remainingTime / Mathf.Max(1, spawnsNeeded);
 
@@ -930,8 +953,11 @@ public class XpAwardUI : MonoBehaviour
                 var end = row.GetXpBarCenter();
                 if (!start || !end) continue;
 
-                remaining[i] -= 1;
-                processed += 1;
+                bool startsUp = (processed % 2) == 0;
+                int orbXp = Mathf.Min(XpPerOrbPair, remaining[i]);
+
+                remaining[i] -= orbXp;
+                processed += orbXp;
                 spawnedThisFrame += 1;
 
                 row.ShowXpDist(remaining[i]);
@@ -939,9 +965,9 @@ public class XpAwardUI : MonoBehaviour
                 int rowIndex = i;
                 var rowRef = row;
 
-                StartCoroutine(CoSpawnOrbArc(start, end, gain: true, travelSeconds: travelSeconds, accel01: a, onArrive: () =>
+                StartCoroutine(CoSpawnOrbWave(start, end, gain: true, startsUp: startsUp, travelSeconds: travelSeconds, accel01: a, onArrive: () =>
                 {
-                    int gained = rowRef.AddXpFromOrb(1f, XpPerLevel);
+                    int gained = rowRef.AddXpFromOrb(orbXp, XpPerLevel);
                     if (gained > 0)
                     {
                         for (int k = 0; k < gained; k++)
@@ -967,6 +993,8 @@ public class XpAwardUI : MonoBehaviour
                         }
                     }
                 }));
+                StartCoroutine(CoSpawnOrbWave(start, end, gain: true, startsUp: !startsUp, travelSeconds: travelSeconds, accel01: a,
+                                             onArrive: null, playArrivalSfx: false));
             }
 
             float wait = Mathf.Max(0.001f, spawnInterval);
