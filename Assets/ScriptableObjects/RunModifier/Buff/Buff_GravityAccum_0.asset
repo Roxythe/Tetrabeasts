@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: Gravity Accel SPD Down
   description: Slightly decreases the rate falling speed builds up over time for
-    blocks
+    blocks.
   icon: {fileID: 21300000, guid: 9549deba1a3c28941ad888f3fbed9eaf, type: 3}
   isBuff: 1
   rarity: 0

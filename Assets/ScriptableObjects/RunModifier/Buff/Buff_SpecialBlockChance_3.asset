@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Buff_SpecialBlockChance_3
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: Special Block Up
-  description: Significantly incecreases the chance of special blocks appearing
+  description: Significantly incecreases the chance of special blocks appearing.
   icon: {fileID: -6166464007423887329, guid: b150c915d9e3c5643bc2f225b2a9a6dc, type: 3}
   isBuff: 1
   rarity: 3

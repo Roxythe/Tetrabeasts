@@ -23,6 +23,19 @@ public class RoundTransitionUI : MonoBehaviour
     [SerializeField] TMP_FontAsset transitionFont;
     [SerializeField] Button continueButtonPrefab;
 
+    [Header("Animation")]
+    [SerializeField] Animator transitionAnimator;
+    [SerializeField] bool useUnscaledAnimationTime = true;
+    [SerializeField] string showAnimationStateName;
+    [SerializeField] string showAnimationTrigger = "Show";
+    [SerializeField] string hideAnimationTrigger;
+
+    [Header("Audio")]
+    [SerializeField] AudioClip appearSfxClip;
+    [SerializeField, Range(0f, 1f)] float appearSfxVolume = 1f;
+    [SerializeField] AudioClip activeLoopSfxClip;
+    [SerializeField, Range(0f, 1f)] float activeLoopSfxVolume = 1f;
+
     [Header("Timing")]
     [SerializeField, Min(0.01f)] float fadeInSeconds = 1.85f;
     [SerializeField, Range(0f, 1f)] float backgroundAlpha = 0.72f;
@@ -39,7 +52,7 @@ public class RoundTransitionUI : MonoBehaviour
     public static RoundTransitionUI CreateRuntimeInstance(TMP_FontAsset font = null, Button buttonPrefab = null)
     {
         var canvasGo = new GameObject(
-            "RoundTransition_Canvas",
+            "RoundTransitionUI",
             typeof(RectTransform),
             typeof(Canvas),
             typeof(CanvasScaler),
@@ -91,6 +104,8 @@ public class RoundTransitionUI : MonoBehaviour
         gameObject.SetActive(true);
         rootPanel.SetActive(true);
         rootPanel.transform.SetAsLastSibling();
+        PlayShowAnimation();
+        PlayShowAudio();
 
         var rootGroup = rootPanel.GetComponent<CanvasGroup>();
         if (rootGroup)
@@ -148,6 +163,8 @@ public class RoundTransitionUI : MonoBehaviour
 
         _onContinue = null;
         _onOptOutContinue = null;
+        StopActiveLoopSfx();
+        PlayHideAnimation();
 
         if (continueButton)
         {
@@ -168,6 +185,18 @@ public class RoundTransitionUI : MonoBehaviour
 
             rootPanel.SetActive(false);
         }
+    }
+
+    [ContextMenu("Build Missing UI For Inspector")]
+    public void BuildMissingUiForInspector()
+    {
+        EnsureBuilt();
+        HideImmediate();
+    }
+
+    void OnDisable()
+    {
+        StopActiveLoopSfx();
     }
 
     System.Collections.IEnumerator CoFadeIn()
@@ -251,8 +280,10 @@ public class RoundTransitionUI : MonoBehaviour
         if (!rootPanel)
             BuildRuntimeUi();
 
+        ResolveAnimator();
         ApplyFont();
         WireContinueButton();
+        HookContinueButtonSfx();
         WireOptOutToggle();
 
         _builtRuntimeUi = true;
@@ -633,5 +664,64 @@ public class RoundTransitionUI : MonoBehaviour
 
         if (sfxHook)
             sfxHook.HookButton(continueButton);
+    }
+
+    void ResolveAnimator()
+    {
+        if (!transitionAnimator && rootPanel)
+            transitionAnimator = rootPanel.GetComponent<Animator>();
+
+        if (!transitionAnimator)
+            transitionAnimator = GetComponent<Animator>();
+
+        if (transitionAnimator && useUnscaledAnimationTime)
+            transitionAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+    }
+
+    void PlayShowAnimation()
+    {
+        ResolveAnimator();
+        if (!transitionAnimator)
+            return;
+
+        if (useUnscaledAnimationTime)
+            transitionAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+
+        if (!string.IsNullOrWhiteSpace(showAnimationStateName))
+            transitionAnimator.Play(showAnimationStateName, 0, 0f);
+
+        if (!string.IsNullOrWhiteSpace(showAnimationTrigger))
+        {
+            transitionAnimator.ResetTrigger(showAnimationTrigger);
+            transitionAnimator.SetTrigger(showAnimationTrigger);
+        }
+    }
+
+    void PlayHideAnimation()
+    {
+        ResolveAnimator();
+        if (!transitionAnimator || string.IsNullOrWhiteSpace(hideAnimationTrigger))
+            return;
+
+        transitionAnimator.ResetTrigger(hideAnimationTrigger);
+        transitionAnimator.SetTrigger(hideAnimationTrigger);
+    }
+
+    void PlayShowAudio()
+    {
+        if (!AudioManager.I)
+            return;
+
+        if (appearSfxClip)
+            AudioManager.I.PlayRoundTransitionAppearSFX(appearSfxClip, appearSfxVolume);
+
+        if (activeLoopSfxClip)
+            AudioManager.I.PlayRoundTransitionLoopSFX(activeLoopSfxClip, activeLoopSfxVolume);
+    }
+
+    void StopActiveLoopSfx()
+    {
+        if (activeLoopSfxClip && AudioManager.I)
+            AudioManager.I.StopRoundTransitionLoopSFX(activeLoopSfxClip);
     }
 }

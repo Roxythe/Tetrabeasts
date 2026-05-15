@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Debuff_MonHPMult_1
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: HP Down
-  description: Modestly decrease friendly monster pieces maximum Hit Points
+  description: Modestly decrease friendly monster pieces maximum Hit Points.
   icon: {fileID: 21300000, guid: 2e36ef1a5a498784c9ccd5c452a3ab4f, type: 3}
   isBuff: 0
   rarity: 1

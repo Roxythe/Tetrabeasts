@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Buff_SpecialGain_0
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: All Special Gain Up
-  description: Slightly increase the amount of special gained from all sources
+  description: Slightly increase the amount of special gained from all sources.
   icon: {fileID: 5658726092475101043, guid: 0738f7787076a40469df3ed467eac09d, type: 3}
   isBuff: 1
   rarity: 0

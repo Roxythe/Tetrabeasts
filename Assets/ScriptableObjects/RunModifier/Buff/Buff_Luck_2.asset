@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: Luck Up
   description: Moderatley increase luck raising the chance of getting higher rarity
-    buffs
+    buffs.
   icon: {fileID: -3420943125301509092, guid: 9334548252c4c074797343cc387c4128, type: 3}
   isBuff: 1
   rarity: 2

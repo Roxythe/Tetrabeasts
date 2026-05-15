@@ -90,13 +90,13 @@ MonoBehaviour:
   bossTrapOptions:
   - kind: 0
     pattern: 2
-    weight: 1
+    weight: 2
   - kind: 1
     pattern: 5
     weight: 1
   - kind: 2
     pattern: 2
-    weight: 1
+    weight: 2
   - kind: 3
     pattern: 5
     weight: 5

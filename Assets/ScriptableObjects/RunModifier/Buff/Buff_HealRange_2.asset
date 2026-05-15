@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Buff_HealRange_2
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: Healing Range Up
-  description: Increases the healing range of all friendly monsters by 1
+  description: Increases the healing range of all friendly monsters by 1.
   icon: {fileID: 4397577389740731362, guid: 972299321fbab844ab6b88404769e918, type: 3}
   isBuff: 1
   rarity: 2

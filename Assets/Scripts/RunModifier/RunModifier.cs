@@ -39,7 +39,16 @@ public enum RunModStat
 
     // Currency drops from cleared lines
     LineClearCurrencyChanceAdd,  // +0.05 = +5%
-    LineClearCurrencyAmountMult, // 1.25 = +25% 
+    LineClearCurrencyAmountMult, // 1.25 = +25%
+
+    // Stone obstacle run modifier drops
+    StoneBuffDropChanceAdd,
+    StoneObstacleDropsDebuffsOnly,
+
+    // Unit reserves
+    ReserveUnitsRestoredOnWinAdd,
+    MaxReserveUnitsAdd,
+    DisableRoundWinReserveRestore,
 }
 
 public enum RunModOp { Add, Multiply }
@@ -72,6 +81,17 @@ public class RunModifier : RunModifierSO
 
             case RunModStat.LineClearCurrencyAmountMult:
                 ApplyFloat(ref gc.lineClearCurrencyAmountMult);
+                break;
+
+            // ---------------- Stone obstacle drops ----------------
+            case RunModStat.StoneBuffDropChanceAdd:
+                if (op == RunModOp.Add) gc.stoneBuffDropChanceAdd += value;
+                else gc.stoneBuffDropChanceAdd *= value;
+                break;
+
+            case RunModStat.StoneObstacleDropsDebuffsOnly:
+                if (op == RunModOp.Add) gc.stoneObstacleDropsDebuffsOnly = (value >= 0.5f) || gc.stoneObstacleDropsDebuffsOnly;
+                else gc.stoneObstacleDropsDebuffsOnly = value >= 0.5f;
                 break;
 
             // ---------------- Currency Per Round ----------------
@@ -131,6 +151,22 @@ public class RunModifier : RunModifierSO
 
             case RunModStat.MonsterMaxHpMult:
                 ApplyFloat(ref gc.monsterMaxHpMult);
+                break;
+
+            // ---------------- Unit reserves ----------------
+            case RunModStat.ReserveUnitsRestoredOnWinAdd:
+                if (op == RunModOp.Add) gc.reserveUnitsRestoredOnWinAdd += Mathf.RoundToInt(value);
+                else gc.reserveUnitsRestoredOnWinAdd = Mathf.RoundToInt(gc.reserveUnitsRestoredOnWinAdd * value);
+                break;
+
+            case RunModStat.MaxReserveUnitsAdd:
+                if (op == RunModOp.Add) gc.AddMaxReserveUnitsModifier(Mathf.RoundToInt(value));
+                else gc.MultiplyMaxReserveUnitsModifier(value);
+                break;
+
+            case RunModStat.DisableRoundWinReserveRestore:
+                if (op == RunModOp.Add) gc.disableRoundWinReserveRestore = (value >= 0.5f) || gc.disableRoundWinReserveRestore;
+                else gc.disableRoundWinReserveRestore = value >= 0.5f;
                 break;
 
             // ---------------- Rarity Chance ----------------

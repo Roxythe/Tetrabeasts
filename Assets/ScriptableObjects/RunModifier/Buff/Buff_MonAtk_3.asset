@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: ATK Up
   description: Significantly increases the attack value for all monsters in your
-    current roster
+    current roster.
   icon: {fileID: 422595395969729942, guid: dbafa8ba4703ac744ab93d833031a898, type: 3}
   isBuff: 1
   rarity: 3

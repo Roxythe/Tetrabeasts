@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5390763372958081377}
   - component: {fileID: 5153201869555059677}
   - component: {fileID: 2196395614492688875}
-  - component: {fileID: 9044601466302473938}
+  - component: {fileID: 4465298423811588003}
   m_Layer: 5
   m_Name: RecruitLevelDifficulty_Animatiion
   m_TagString: Untagged
@@ -244,7 +244,7 @@ MonoBehaviour:
   - {fileID: -3593227037352680074, guid: f40bcc36aa96a21418a228a38431e2d3, type: 3}
   framesPerSecond: 15
   playOnEnable: 1
---- !u!95 &9044601466302473938
+--- !u!95 &4465298423811588003
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0
@@ -254,7 +254,7 @@ Animator:
   m_GameObject: {fileID: 5254359806377119897}
   m_Enabled: 0
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b58c90839b7556b4a904ab844ef9f468, type: 2}
+  m_Controller: {fileID: 9100000, guid: 7ea19833a40c9e74e9c3af1f3d27be3a, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

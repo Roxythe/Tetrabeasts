@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Debuff_MonSpecialGain_0
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: Special Gain Stat Down
-  description: Slightly decrease the special gained from each monster
+  description: Slightly decrease the special gained from each monster.
   icon: {fileID: 6364873838037445351, guid: dd0e12ed9c44bf045afcddc4dad82390, type: 3}
   isBuff: 0
   rarity: 0

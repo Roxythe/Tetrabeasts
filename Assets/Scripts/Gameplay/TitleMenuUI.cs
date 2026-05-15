@@ -157,6 +157,7 @@ public class TitleMenuUI : MonoBehaviour
 
         EnsureStarDifficultyUI();
         RefreshTempRunUI();
+        HideSteamLeaderboardIfUnavailable();
         RefreshSteamLeaderboardIfVisible();
         HookAllButtonsForSFX(); // Auto-hook all buttons under this menu for click/hover sounds
     }
@@ -733,6 +734,13 @@ public class TitleMenuUI : MonoBehaviour
 
     bool TryToggleSteamLeaderboard()
     {
+        if (!IsSteamLeaderboardAvailable())
+        {
+            HideSteamLeaderboardIfUnavailable();
+            if (pauseOnPanels) Time.timeScale = 1f;
+            return false;
+        }
+
         var leaderboard = EnsureSteamLeaderboardUI();
         if (!leaderboard)
             return false;
@@ -790,6 +798,12 @@ public class TitleMenuUI : MonoBehaviour
 
     void RefreshSteamLeaderboardIfVisible()
     {
+        if (!IsSteamLeaderboardAvailable())
+        {
+            HideSteamLeaderboardIfUnavailable();
+            return;
+        }
+
         if (!steamLeaderboardUI)
             steamLeaderboardUI = FindFirstObjectByType<SteamLeaderboardUI>(FindObjectsInactive.Include);
 
@@ -798,6 +812,22 @@ public class TitleMenuUI : MonoBehaviour
 
         steamLeaderboardUI.SetCommanderRoster(GetCommanderRosterForLeaderboard());
         steamLeaderboardUI.RefreshLeaderboard();
+    }
+
+    bool IsSteamLeaderboardAvailable()
+    {
+        var service = SteamLeaderboardService.Ensure();
+        return service && service.IsAvailable;
+    }
+
+    void HideSteamLeaderboardIfUnavailable()
+    {
+        if (IsSteamLeaderboardAvailable())
+            return;
+
+        GameObject panel = steamLeaderboardPanel ? steamLeaderboardPanel : (steamLeaderboardUI ? steamLeaderboardUI.gameObject : null);
+        if (panel)
+            UIPanelTransition.Hide(panel, true);
     }
 
     PlayerCharacterData[] GetCommanderRosterForLeaderboard()

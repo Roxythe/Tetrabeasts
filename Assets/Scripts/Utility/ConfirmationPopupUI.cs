@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 [DisallowMultipleComponent]
 public class ConfirmationPopupUI : MonoBehaviour
@@ -16,6 +17,9 @@ public class ConfirmationPopupUI : MonoBehaviour
     Action _onConfirm;
     Action _onCancel;
     bool _explicitShowInProgress;
+    ButtonLayoutState _continueButtonDefaultLayout;
+    ButtonLayoutState _cancelButtonDefaultLayout;
+    bool _buttonLayoutsCaptured;
 
     public bool IsShowing => popupView && popupView.IsShowing;
 
@@ -101,6 +105,8 @@ public class ConfirmationPopupUI : MonoBehaviour
         }
 
         CleanupListeners();
+        CaptureButtonLayoutsIfNeeded();
+        ApplyButtonLayout(onCancel != null);
 
         _onConfirm = onConfirm;
         _onCancel = onCancel;
@@ -160,6 +166,7 @@ public class ConfirmationPopupUI : MonoBehaviour
         if (warningVisual)
             warningVisual.SetActive(false);
 
+        RestoreButtonLayouts();
         popupView?.Hide();
     }
 
@@ -173,6 +180,45 @@ public class ConfirmationPopupUI : MonoBehaviour
 
         _onConfirm = null;
         _onCancel = null;
+    }
+
+    void CaptureButtonLayoutsIfNeeded()
+    {
+        if (_buttonLayoutsCaptured || !popupView)
+            return;
+
+        _continueButtonDefaultLayout = ButtonLayoutState.Capture(popupView.ContinueButton);
+        _cancelButtonDefaultLayout = ButtonLayoutState.Capture(popupView.SkipButton);
+        _buttonLayoutsCaptured = true;
+    }
+
+    void ApplyButtonLayout(bool hasCancel)
+    {
+        if (hasCancel)
+        {
+            RestoreButtonLayouts();
+            return;
+        }
+
+        var continueRect = popupView && popupView.ContinueButton
+            ? popupView.ContinueButton.transform as RectTransform
+            : null;
+
+        if (!continueRect)
+            return;
+
+        var position = continueRect.anchoredPosition;
+        position.x = 0f;
+        continueRect.anchoredPosition = position;
+    }
+
+    void RestoreButtonLayouts()
+    {
+        if (!_buttonLayoutsCaptured || !popupView)
+            return;
+
+        _continueButtonDefaultLayout.Apply(popupView.ContinueButton);
+        _cancelButtonDefaultLayout.Apply(popupView.SkipButton);
     }
 
     void EnsureReferences()
@@ -194,5 +240,48 @@ public class ConfirmationPopupUI : MonoBehaviour
     {
         if (label)
             label.text = text ?? string.Empty;
+    }
+
+    struct ButtonLayoutState
+    {
+        public bool IsValid;
+        public Vector2 AnchorMin;
+        public Vector2 AnchorMax;
+        public Vector2 AnchoredPosition;
+        public Vector2 SizeDelta;
+        public Vector2 Pivot;
+
+        public static ButtonLayoutState Capture(Button button)
+        {
+            var rect = button ? button.transform as RectTransform : null;
+            if (!rect)
+                return default;
+
+            return new ButtonLayoutState
+            {
+                IsValid = true,
+                AnchorMin = rect.anchorMin,
+                AnchorMax = rect.anchorMax,
+                AnchoredPosition = rect.anchoredPosition,
+                SizeDelta = rect.sizeDelta,
+                Pivot = rect.pivot
+            };
+        }
+
+        public void Apply(Button button)
+        {
+            if (!IsValid)
+                return;
+
+            var rect = button ? button.transform as RectTransform : null;
+            if (!rect)
+                return;
+
+            rect.anchorMin = AnchorMin;
+            rect.anchorMax = AnchorMax;
+            rect.anchoredPosition = AnchoredPosition;
+            rect.sizeDelta = SizeDelta;
+            rect.pivot = Pivot;
+        }
     }
 }

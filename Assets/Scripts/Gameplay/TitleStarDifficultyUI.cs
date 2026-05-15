@@ -405,19 +405,23 @@ public class TitleStarDifficultyUI : MonoBehaviour
         if (!instance)
             return;
 
+        var animators = instance.GetComponentsInChildren<Animator>(true);
+        for (int i = 0; i < animators.Length; i++)
+        {
+            Animator animator = animators[i];
+            if (!animator || !animator.isActiveAndEnabled || !animator.runtimeAnimatorController)
+                continue;
+
+            animator.Rebind();
+            animator.Play(0, 0, 0f);
+            animator.Update(0f);
+        }
+
         var pingPongAnimators = instance.GetComponentsInChildren<UIImagePingPongAnimator>(true);
         for (int i = 0; i < pingPongAnimators.Length; i++)
         {
             pingPongAnimators[i].ResetAnimation();
             pingPongAnimators[i].Play();
-        }
-
-        var animators = instance.GetComponentsInChildren<Animator>(true);
-        for (int i = 0; i < animators.Length; i++)
-        {
-            animators[i].Rebind();
-            animators[i].Update(0f);
-            animators[i].Play(0, 0, 0f);
         }
     }
 }

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Buff_HealPower_4
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: Healing STR Up
-  description: Massivley increase the healing power of all friendly monsters
+  description: Massivley increase the healing power of all friendly monsters.
   icon: {fileID: 9211337712182654451, guid: 026b811aec1693f44a9c5b60d148c139, type: 3}
   isBuff: 1
   rarity: 4

@@ -324,6 +324,11 @@ public class GameController : MonoBehaviour
     public float currencyPerRoundWinMult = 1f;
     public float lineClearCurrencyChanceAdd = 0f;
     public float lineClearCurrencyAmountMult = 1f;
+    public float stoneBuffDropChanceAdd = 0f;
+    public bool stoneObstacleDropsDebuffsOnly = false;
+    public int reserveUnitsRestoredOnWinAdd = 0;
+    public int maxReserveUnitsAdd = 0;
+    public bool disableRoundWinReserveRestore = false;
 
     // =========== Player Special Timers ===========
     float _playerGravityMultActive = 1f;     // 1 = normal
@@ -336,10 +341,10 @@ public class GameController : MonoBehaviour
     public float PlayerMonsterAttackMult => _playerDoubleStatsAttackMult; // Exposed for monster damage calculations
 
     // =========== Shop Buff Effective Values ===========
-    int EffectiveMaxUnitLives => maxUnitLives + ShopBuffEffects.UnitLivesBonus + _partyPassiveBonuses.startingReserveUnits;
+    int EffectiveMaxUnitLives => Mathf.Max(1, maxUnitLives + ShopBuffEffects.UnitLivesBonus + _partyPassiveBonuses.startingReserveUnits + maxReserveUnitsAdd);
     float CurrentComboWindowSeconds => comboWindowSeconds + _partyPassiveBonuses.comboDurationSeconds;
-    float CurrentStoneBuffDropChance => Mathf.Clamp01(stoneBuffDropChance + _partyPassiveBonuses.stoneBuffDropChance);
-    int CurrentReinforcementsPerWin => Mathf.Max(0, reinforcementsPerWin + _partyPassiveBonuses.reserveUnitsRestoredOnWin);
+    float CurrentStoneBuffDropChance => Mathf.Clamp01(stoneBuffDropChance + _partyPassiveBonuses.stoneBuffDropChance + stoneBuffDropChanceAdd);
+    int CurrentReinforcementsPerWin => disableRoundWinReserveRestore ? 0 : Mathf.Max(0, reinforcementsPerWin + _partyPassiveBonuses.reserveUnitsRestoredOnWin + reserveUnitsRestoredOnWinAdd);
     float AllyMonsterOutgoingDamageMultiplier => Mathf.Max(0f, 1f - _partyPassiveBonuses.allyMonsterDamageDoneReduction);
     public float AllyMonsterDamageTakenMultiplier => Mathf.Max(0f, 1f - _partyPassiveBonuses.allyMonsterDamageTakenReduction);
 
@@ -421,13 +426,33 @@ public class GameController : MonoBehaviour
     public int MaxReserveUnits => EffectiveMaxUnitLives;
     public int CurrentStarDifficulty => _starDifficulty;
     public float CurrentMisfortune => misfortune + _starDifficultyModifiers.misfortuneAdd;
-    public bool IsGameplaySuspended => isPaused || tutorialSuspended || _roundTransitionActive || _specialAbilityCinematicActive || _levelStartBlocked || (levelModifierController && levelModifierController.IsSelectionRunning);
+    public bool IsGameplaySuspended => gameOver || levelWon || isPaused || tutorialSuspended || _roundTransitionActive || _specialAbilityCinematicActive || _levelStartBlocked || (levelModifierController && levelModifierController.IsSelectionRunning);
     public bool IsRoundActive => !IsGameplaySuspended && !gameOver && !levelWon;
 
     private CastleData currentCastleData;
 
     // Used by reward UI and other systems that need to know what type of level just ended
     public bool LastLevelWasBoss => currentCastleData != null && IsCastleBossForCurrentMode(currentCastleData);
+
+    public void AddMaxReserveUnitsModifier(int amount)
+    {
+        maxReserveUnitsAdd += amount;
+        ClampUnitLivesToEffectiveMax();
+    }
+
+    public void MultiplyMaxReserveUnitsModifier(float multiplier)
+    {
+        int baseMax = maxUnitLives + ShopBuffEffects.UnitLivesBonus + _partyPassiveBonuses.startingReserveUnits;
+        int targetMax = Mathf.RoundToInt(EffectiveMaxUnitLives * multiplier);
+        maxReserveUnitsAdd = targetMax - baseMax;
+        ClampUnitLivesToEffectiveMax();
+    }
+
+    void ClampUnitLivesToEffectiveMax()
+    {
+        unitLives = Mathf.Clamp(unitLives, 0, EffectiveMaxUnitLives);
+        UpdateUnitLivesUI();
+    }
 
     // ========== Stone Block Buffs ==========
 
@@ -443,6 +468,13 @@ public class GameController : MonoBehaviour
     public RunModifierSO[] stoneBuffPoolRare;
     public RunModifierSO[] stoneBuffPoolEpic;
     public RunModifierSO[] stoneBuffPoolLegendary;
+
+    [Header("Stone Debuff Pools By Rarity (Optional)")]
+    public RunModifierSO[] stoneDebuffPoolCommon;
+    public RunModifierSO[] stoneDebuffPoolUncommon;
+    public RunModifierSO[] stoneDebuffPoolRare;
+    public RunModifierSO[] stoneDebuffPoolEpic;
+    public RunModifierSO[] stoneDebuffPoolLegendary;
 
     [Header("Stone Buff Rarity Weights By Level")]
     [Tooltip("Levels 1-3")]
@@ -753,6 +785,11 @@ public class GameController : MonoBehaviour
         RunModsStore.EnemyCastleHpMult = snapshot.enemyCastleHpMult;
         RunModsStore.Luck = snapshot.luck;
         RunModsStore.Misfortune = snapshot.misfortune;
+        RunModsStore.StoneBuffDropChanceAdd = snapshot.stoneBuffDropChanceAdd;
+        RunModsStore.StoneObstacleDropsDebuffsOnly = snapshot.stoneObstacleDropsDebuffsOnly;
+        RunModsStore.ReserveUnitsRestoredOnWinAdd = snapshot.reserveUnitsRestoredOnWinAdd;
+        RunModsStore.MaxReserveUnitsAdd = snapshot.maxReserveUnitsAdd;
+        RunModsStore.DisableRoundWinReserveRestore = snapshot.disableRoundWinReserveRestore;
     }
 
     void ApplySelectedCharacterUI()
@@ -937,7 +974,22 @@ public class GameController : MonoBehaviour
         resolved = FindRunModifierInPool(stoneBuffPoolEpic, modifierName);
         if (resolved) return resolved;
 
-        return FindRunModifierInPool(stoneBuffPoolLegendary, modifierName);
+        resolved = FindRunModifierInPool(stoneBuffPoolLegendary, modifierName);
+        if (resolved) return resolved;
+
+        resolved = FindRunModifierInPool(stoneDebuffPoolCommon, modifierName);
+        if (resolved) return resolved;
+
+        resolved = FindRunModifierInPool(stoneDebuffPoolUncommon, modifierName);
+        if (resolved) return resolved;
+
+        resolved = FindRunModifierInPool(stoneDebuffPoolRare, modifierName);
+        if (resolved) return resolved;
+
+        resolved = FindRunModifierInPool(stoneDebuffPoolEpic, modifierName);
+        if (resolved) return resolved;
+
+        return FindRunModifierInPool(stoneDebuffPoolLegendary, modifierName);
     }
 
     RunModifierSO FindRunModifierInPool(RunModifierSO[] pool, string modifierName)
@@ -1212,6 +1264,11 @@ public class GameController : MonoBehaviour
         lineClearCurrencyAmountMult = RunModsStore.LineClearCurrencyAmountMult;
 
         enemyCastleHpMult = RunModsStore.EnemyCastleHpMult;
+        stoneBuffDropChanceAdd = RunModsStore.StoneBuffDropChanceAdd;
+        stoneObstacleDropsDebuffsOnly = RunModsStore.StoneObstacleDropsDebuffsOnly;
+        reserveUnitsRestoredOnWinAdd = RunModsStore.ReserveUnitsRestoredOnWinAdd;
+        maxReserveUnitsAdd = RunModsStore.MaxReserveUnitsAdd;
+        disableRoundWinReserveRestore = RunModsStore.DisableRoundWinReserveRestore;
     }
 
     void RefreshStarDifficultyState()
@@ -1439,7 +1496,12 @@ public class GameController : MonoBehaviour
                 lineClearCurrencyAmountMult = lineClearCurrencyAmountMult,
                 enemyCastleHpMult = enemyCastleHpMult,
                 luck = luck,
-                misfortune = misfortune
+                misfortune = misfortune,
+                stoneBuffDropChanceAdd = stoneBuffDropChanceAdd,
+                stoneObstacleDropsDebuffsOnly = stoneObstacleDropsDebuffsOnly,
+                reserveUnitsRestoredOnWinAdd = reserveUnitsRestoredOnWinAdd,
+                maxReserveUnitsAdd = maxReserveUnitsAdd,
+                disableRoundWinReserveRestore = disableRoundWinReserveRestore
             },
             playerProgressRun = PlayerProgress.I != null ? PlayerProgress.I.CaptureRunState() : new PlayerProgress.RunStateSnapshot(),
             runSummary = RunSummaryStats.CaptureSerializableSnapshot(),
@@ -1541,6 +1603,19 @@ public class GameController : MonoBehaviour
         ResolveRoundTransitionUI();
 
         _roundTransitionActive = true;
+        isPaused = true;
+        Time.timeScale = 0f;
+        AudioListener.pause = false;
+
+        if (pausePanel)
+            UIPanelTransition.Hide(pausePanel, true);
+
+        EnterUICursorMode();
+        StartCoroutine(ReapplyUICursorNextFrame());
+    }
+
+    void PauseGameplayForBlockingPopup()
+    {
         isPaused = true;
         Time.timeScale = 0f;
         AudioListener.pause = false;
@@ -2191,8 +2266,7 @@ public class GameController : MonoBehaviour
         if (xpAwardUI)
             xpAwardUI.HideAll();
 
-        EnterUICursorMode();
-        StartCoroutine(ReapplyUICursorNextFrame());
+        PauseGameplayForBlockingPopup();
 
         string message = string.IsNullOrWhiteSpace(demoLevelLimitMessage)
             ? "Thank you for playing the demo. If you enjoyed yourself, please consider buying the full game."
@@ -2407,6 +2481,12 @@ public class GameController : MonoBehaviour
 
         RunModsStore.Luck = EffectiveLuck;
         RunModsStore.Misfortune = CurrentMisfortune;
+
+        RunModsStore.StoneBuffDropChanceAdd = stoneBuffDropChanceAdd;
+        RunModsStore.StoneObstacleDropsDebuffsOnly = stoneObstacleDropsDebuffsOnly;
+        RunModsStore.ReserveUnitsRestoredOnWinAdd = reserveUnitsRestoredOnWinAdd;
+        RunModsStore.MaxReserveUnitsAdd = maxReserveUnitsAdd;
+        RunModsStore.DisableRoundWinReserveRestore = disableRoundWinReserveRestore;
     }
 
     void ContinueAfterRoundRewards()
@@ -4530,28 +4610,24 @@ public class GameController : MonoBehaviour
         _obstaclesDestroyedThisLevel += 1;
         RunSummaryStats.AddObstaclesDestroyed();
 
-        // Stone existing run buff drops
+        // Stone run modifier drops
         if (type == Board.ObstacleType.Stone)
         {
             if (Random.value > CurrentStoneBuffDropChance) return;
 
             int levelNumber = Mathf.Max(1, currentLevel + 1);
 
-            if (!TryPickStoneBuffForLevel(levelNumber, out var buff, out var rarity)) return;
-
-            RunModsStore.Buffs.Add(buff);
-            buff.Apply(this);
-            CodexProgressStore.Unlock(buff);
-
-            if (AudioManager.I)
+            if (stoneObstacleDropsDebuffsOnly)
             {
-                var clip = sfxStoneBuffGranted ? sfxStoneBuffGranted : AudioManager.I.sfxStoneBuffGranted;
-                if (clip) AudioManager.I.PlayUISFX(clip);
+                if (!TryPickStoneDebuffForLevel(levelNumber, out var debuff, out var debuffRarity)) return;
+
+                GrantStoneRunModifier(cell, debuff, debuffRarity, isBuff: false);
+                return;
             }
 
-            if (runModsPanelUI) runModsPanelUI.Refresh();
+            if (!TryPickStoneBuffForLevel(levelNumber, out var buff, out var rarity)) return;
 
-            ShowStoneBuffGrantedPopup(cell, buff, rarity);
+            GrantStoneRunModifier(cell, buff, rarity, isBuff: true);
             return;
         }
 
@@ -4561,6 +4637,30 @@ public class GameController : MonoBehaviour
             RefreshPylonShieldState();
             return;
         }
+    }
+
+    void GrantStoneRunModifier(Vector2Int cell, RunModifierSO modifier, RunModRarity rarity, bool isBuff)
+    {
+        if (!modifier) return;
+
+        if (isBuff)
+            RunModsStore.Buffs.Add(modifier);
+        else
+            RunModsStore.Debuffs.Add(modifier);
+
+        modifier.Apply(this);
+        CodexProgressStore.Unlock(modifier);
+        SyncRunModsToStore();
+
+        if (AudioManager.I)
+        {
+            var clip = sfxStoneBuffGranted ? sfxStoneBuffGranted : AudioManager.I.sfxStoneBuffGranted;
+            if (clip) AudioManager.I.PlayUISFX(clip);
+        }
+
+        if (runModsPanelUI) runModsPanelUI.Refresh();
+
+        ShowStoneRunModifierGrantedPopup(cell, modifier, rarity);
     }
 
     Vector4 GetStoneWeightsForLevel(int levelNumber)
@@ -4584,31 +4684,73 @@ public class GameController : MonoBehaviour
 
     bool TryPickStoneBuffForLevel(int levelNumber, out RunModifierSO buff, out RunModRarity rarity)
     {
-        buff = null;
+        return TryPickStoneModifierForLevel(
+            levelNumber,
+            buffPool,
+            stoneBuffPoolCommon,
+            stoneBuffPoolUncommon,
+            stoneBuffPoolRare,
+            stoneBuffPoolEpic,
+            stoneBuffPoolLegendary,
+            useFallbackPoolRarityWeights: false,
+            out buff,
+            out rarity);
+    }
+
+    bool TryPickStoneDebuffForLevel(int levelNumber, out RunModifierSO debuff, out RunModRarity rarity)
+    {
+        return TryPickStoneModifierForLevel(
+            levelNumber,
+            debuffPool,
+            stoneDebuffPoolCommon,
+            stoneDebuffPoolUncommon,
+            stoneDebuffPoolRare,
+            stoneDebuffPoolEpic,
+            stoneDebuffPoolLegendary,
+            useFallbackPoolRarityWeights: true,
+            out debuff,
+            out rarity);
+    }
+
+    bool TryPickStoneModifierForLevel(int levelNumber,
+        RunModifierSO[] fallbackPool,
+        RunModifierSO[] commonPool,
+        RunModifierSO[] uncommonPool,
+        RunModifierSO[] rarePool,
+        RunModifierSO[] epicPool,
+        RunModifierSO[] legendaryPool,
+        bool useFallbackPoolRarityWeights,
+        out RunModifierSO modifier,
+        out RunModRarity rarity)
+    {
+        modifier = null;
         rarity = RunModRarity.Common;
 
         bool hasAnyRarityPools =
-            (stoneBuffPoolCommon != null && stoneBuffPoolCommon.Length > 0) ||
-            (stoneBuffPoolUncommon != null && stoneBuffPoolUncommon.Length > 0) ||
-            (stoneBuffPoolRare != null && stoneBuffPoolRare.Length > 0) ||
-            (stoneBuffPoolEpic != null && stoneBuffPoolEpic.Length > 0) ||
-            (stoneBuffPoolLegendary != null && stoneBuffPoolLegendary.Length > 0);
+            (commonPool != null && commonPool.Length > 0) ||
+            (uncommonPool != null && uncommonPool.Length > 0) ||
+            (rarePool != null && rarePool.Length > 0) ||
+            (epicPool != null && epicPool.Length > 0) ||
+            (legendaryPool != null && legendaryPool.Length > 0);
 
         if (!hasAnyRarityPools)
         {
-            buff = PickRandomNonNull(buffPool);
-            rarity = GetRaritySafe(buff, RunModRarity.Common);
-            return buff != null;
+            if (useFallbackPoolRarityWeights)
+                return TryPickStoneModifierFromFallbackPoolByRarity(levelNumber, fallbackPool, out modifier, out rarity);
+
+            modifier = PickRandomNonNull(fallbackPool);
+            rarity = GetRaritySafe(modifier, RunModRarity.Common);
+            return modifier != null;
         }
 
-        if (levelNumber >= 10 && stoneBuffPoolLegendary != null && stoneBuffPoolLegendary.Length > 0)
+        if (levelNumber >= 10 && legendaryPool != null && legendaryPool.Length > 0)
         {
             float pLeg = Mathf.Clamp01(stoneLegendaryChance_L10P);
             if (Random.value < pLeg)
             {
-                buff = PickRandomNonNull(stoneBuffPoolLegendary);
+                modifier = PickRandomNonNull(legendaryPool);
                 rarity = RunModRarity.Legendary;
-                return buff != null;
+                return modifier != null;
             }
         }
 
@@ -4618,50 +4760,157 @@ public class GameController : MonoBehaviour
         float wr = Mathf.Max(0f, w.z);
         float we = Mathf.Max(0f, w.w);
 
-        if (stoneBuffPoolCommon == null || stoneBuffPoolCommon.Length == 0) wc = 0f;
-        if (stoneBuffPoolUncommon == null || stoneBuffPoolUncommon.Length == 0) wu = 0f;
-        if (stoneBuffPoolRare == null || stoneBuffPoolRare.Length == 0) wr = 0f;
-        if (stoneBuffPoolEpic == null || stoneBuffPoolEpic.Length == 0) we = 0f;
+        if (commonPool == null || commonPool.Length == 0) wc = 0f;
+        if (uncommonPool == null || uncommonPool.Length == 0) wu = 0f;
+        if (rarePool == null || rarePool.Length == 0) wr = 0f;
+        if (epicPool == null || epicPool.Length == 0) we = 0f;
 
         float sum = wc + wu + wr + we;
         if (sum <= 0.0001f)
         {
-            buff = PickRandomNonNull(buffPool);
-            rarity = GetRaritySafe(buff, RunModRarity.Common);
-            return buff != null;
+            modifier = PickRandomNonNull(fallbackPool);
+            rarity = GetRaritySafe(modifier, RunModRarity.Common);
+            return modifier != null;
         }
 
         float roll = Random.value * sum;
 
         if (roll < wc)
         {
-            buff = PickRandomNonNull(stoneBuffPoolCommon);
+            modifier = PickRandomNonNull(commonPool);
             rarity = RunModRarity.Common;
-            return buff != null;
+            return modifier != null;
         }
         roll -= wc;
 
         if (roll < wu)
         {
-            buff = PickRandomNonNull(stoneBuffPoolUncommon);
+            modifier = PickRandomNonNull(uncommonPool);
             rarity = RunModRarity.Uncommon;
-            return buff != null;
+            return modifier != null;
         }
         roll -= wu;
 
         if (roll < wr)
         {
-            buff = PickRandomNonNull(stoneBuffPoolRare);
+            modifier = PickRandomNonNull(rarePool);
             rarity = RunModRarity.Rare;
-            return buff != null;
+            return modifier != null;
         }
 
-        buff = PickRandomNonNull(stoneBuffPoolEpic);
+        modifier = PickRandomNonNull(epicPool);
         rarity = RunModRarity.Epic;
-        return buff != null;
+        return modifier != null;
     }
 
-    void ShowStoneBuffGrantedPopup(Vector2Int cell, RunModifierSO buff, RunModRarity rarity)
+    bool TryPickStoneModifierFromFallbackPoolByRarity(int levelNumber, RunModifierSO[] pool, out RunModifierSO modifier, out RunModRarity rarity)
+    {
+        modifier = null;
+        rarity = RunModRarity.Common;
+
+        if (pool == null || pool.Length == 0)
+            return false;
+
+        if (levelNumber >= 10 && HasModifierWithRarity(pool, RunModRarity.Legendary))
+        {
+            float pLeg = Mathf.Clamp01(stoneLegendaryChance_L10P);
+            if (Random.value < pLeg)
+            {
+                modifier = PickRandomNonNullByRarity(pool, RunModRarity.Legendary);
+                rarity = RunModRarity.Legendary;
+                return modifier != null;
+            }
+        }
+
+        Vector4 w = GetStoneWeightsForLevel(levelNumber);
+        float wc = HasModifierWithRarity(pool, RunModRarity.Common) ? Mathf.Max(0f, w.x) : 0f;
+        float wu = HasModifierWithRarity(pool, RunModRarity.Uncommon) ? Mathf.Max(0f, w.y) : 0f;
+        float wr = HasModifierWithRarity(pool, RunModRarity.Rare) ? Mathf.Max(0f, w.z) : 0f;
+        float we = HasModifierWithRarity(pool, RunModRarity.Epic) ? Mathf.Max(0f, w.w) : 0f;
+
+        float sum = wc + wu + wr + we;
+        if (sum <= 0.0001f)
+        {
+            modifier = PickRandomNonNull(pool);
+            rarity = GetRaritySafe(modifier, RunModRarity.Common);
+            return modifier != null;
+        }
+
+        float roll = Random.value * sum;
+
+        if (roll < wc)
+        {
+            modifier = PickRandomNonNullByRarity(pool, RunModRarity.Common);
+            rarity = RunModRarity.Common;
+            return modifier != null;
+        }
+        roll -= wc;
+
+        if (roll < wu)
+        {
+            modifier = PickRandomNonNullByRarity(pool, RunModRarity.Uncommon);
+            rarity = RunModRarity.Uncommon;
+            return modifier != null;
+        }
+        roll -= wu;
+
+        if (roll < wr)
+        {
+            modifier = PickRandomNonNullByRarity(pool, RunModRarity.Rare);
+            rarity = RunModRarity.Rare;
+            return modifier != null;
+        }
+
+        modifier = PickRandomNonNullByRarity(pool, RunModRarity.Epic);
+        rarity = RunModRarity.Epic;
+        return modifier != null;
+    }
+
+    static bool HasModifierWithRarity(RunModifierSO[] pool, RunModRarity rarity)
+    {
+        if (pool == null) return false;
+
+        for (int i = 0; i < pool.Length; i++)
+        {
+            var modifier = pool[i];
+            if (modifier && GetRaritySafe(modifier, RunModRarity.Common) == rarity)
+                return true;
+        }
+
+        return false;
+    }
+
+    static RunModifierSO PickRandomNonNullByRarity(RunModifierSO[] pool, RunModRarity rarity)
+    {
+        if (pool == null || pool.Length == 0) return null;
+
+        int count = 0;
+        for (int i = 0; i < pool.Length; i++)
+        {
+            var modifier = pool[i];
+            if (modifier && GetRaritySafe(modifier, RunModRarity.Common) == rarity)
+                count++;
+        }
+
+        if (count == 0) return null;
+
+        int pickIndex = Random.Range(0, count);
+        for (int i = 0; i < pool.Length; i++)
+        {
+            var modifier = pool[i];
+            if (!modifier || GetRaritySafe(modifier, RunModRarity.Common) != rarity)
+                continue;
+
+            if (pickIndex == 0)
+                return modifier;
+
+            pickIndex--;
+        }
+
+        return null;
+    }
+
+    void ShowStoneRunModifierGrantedPopup(Vector2Int cell, RunModifierSO buff, RunModRarity rarity)
     {
         if (!showStoneBuffPopup) return;
         if (!gameBoard || !buff) return;

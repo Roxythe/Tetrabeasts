@@ -62,6 +62,11 @@ public static class TempRunSaveStore
         public float enemyCastleHpMult = 1f;
         public float luck = 0f;
         public float misfortune = 0f;
+        public float stoneBuffDropChanceAdd = 0f;
+        public bool stoneObstacleDropsDebuffsOnly = false;
+        public int reserveUnitsRestoredOnWinAdd = 0;
+        public int maxReserveUnitsAdd = 0;
+        public bool disableRoundWinReserveRestore = false;
     }
 
     [Serializable]

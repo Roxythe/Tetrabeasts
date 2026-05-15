@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: Win Currency Down
   description: Moderatley reduces the amount of currency the player gains after winning
-    the round
+    the round.
   icon: {fileID: -1027617818028424244, guid: ea98b3cef7aa5c64e95cc08bef496841, type: 3}
   isBuff: 0
   rarity: 2

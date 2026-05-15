@@ -92,10 +92,9 @@ public class RoundRewardUI : MonoBehaviour
 
         if (reinforcementsGained)
         {
-            // Only show reinforcements gained if it's >0, otherwise show maxed out text
             reinforcementsGained.text = reinforcementsReceived > 0
                 ? $"+{reinforcementsReceived} Reinforcements"
-                : "+0 Unit Lives at Max Capacity";
+                : "+0 Reinforcements";
         }
 
         Populate(buffContainer, Pick3UniqueWeighted(buffPool, luck, wasBossLevel), isBuff: true);

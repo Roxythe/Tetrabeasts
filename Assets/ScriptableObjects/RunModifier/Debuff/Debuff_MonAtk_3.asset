@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Debuff_MonAtk_3
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: ATK Down
-  description: 'Significantly decreases the attack value for all monsters in your
-    current roster '
+  description: Significantly decreases the attack value for all monsters in your
+    current roster.
   icon: {fileID: -3157723759101800247, guid: ee4af914b66acc1418e50185b0600fa4, type: 3}
   isBuff: 0
   rarity: 3

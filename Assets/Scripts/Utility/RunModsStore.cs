@@ -35,6 +35,13 @@ public static class RunModsStore
     public static float Luck = 0f;
     public static float Misfortune = 0f;
 
+    public static float StoneBuffDropChanceAdd = 0f;
+    public static bool StoneObstacleDropsDebuffsOnly = false;
+
+    public static int ReserveUnitsRestoredOnWinAdd = 0;
+    public static int MaxReserveUnitsAdd = 0;
+    public static bool DisableRoundWinReserveRestore = false;
+
 
     public static void ResetAll()
     {
@@ -69,5 +76,12 @@ public static class RunModsStore
 
         Luck = 0f;
         Misfortune = 0f;
+
+        StoneBuffDropChanceAdd = 0f;
+        StoneObstacleDropsDebuffsOnly = false;
+
+        ReserveUnitsRestoredOnWinAdd = 0;
+        MaxReserveUnitsAdd = 0;
+        DisableRoundWinReserveRestore = false;
     }
 }

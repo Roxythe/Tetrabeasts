@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Debuff_Gravity_2
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: Gravity SPD Up
-  description: Moderatley increases the initial falling speed of blocks
+  description: Moderatley increases the initial falling speed of blocks.
   icon: {fileID: 5050173363409499257, guid: 90a5271ed2b6c9f41b73bb0ebef9c720, type: 3}
   isBuff: 0
   rarity: 2

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,9 +39,16 @@ public class XpAwardUI : MonoBehaviour
     public TMP_Text breakdownTitleShadowText;
     public TMP_Text breakdownLinesText;
     public TMP_Text breakdownLinesShadowText;
+    public TMP_Text breakdownResultsText;
+    public TMP_Text breakdownResultsShadowText;
     public TMP_Text breakdownTotalText;
     public TMP_Text breakdownTotalShadowText;
     public Button breakdownContinueButton;
+
+    [Header("Breakdown Result Colors")]
+    public Color breakdownPositiveResultColor = new Color32(0x41, 0xE6, 0x6F, 0xFF);
+    public Color breakdownNegativeResultColor = new Color32(0xFF, 0x58, 0x58, 0xFF);
+    public Color breakdownTotalColor = new Color32(0xFF, 0xD7, 0x6A, 0xFF);
 
     [Header("Round Win - XP Distribution")]
     public GameObject roundDistributePanel;
@@ -118,6 +126,21 @@ public class XpAwardUI : MonoBehaviour
     bool _orbAnimating;
     bool _skipRequested;
     bool _hideOnRunEndFinalContinue = true;
+
+    struct BreakdownLine
+    {
+        public string label;
+        public int value;
+        public bool showPlus;
+
+        public BreakdownLine(string label, int value, bool showPlus = false)
+        {
+            this.label = label;
+            this.value = value;
+            this.showPlus = showPlus;
+        }
+    }
+
     float _breakdownSkipAllowedAt = 0f;
 
     int _levelUpSfxFrame = -1;
@@ -259,23 +282,27 @@ public class XpAwardUI : MonoBehaviour
         if (breakdownTitleShadowText)
             breakdownTitleShadowText.text = titleStr;
 
-        string linesStr =
-            $"Base XP: {b.baseXp}\n\n" +
-            $"Clear Time: {b.levelClearTime:0.#}s  ->  {b.clearTimeBonus}\n\n" +
-            $"Reserve Change = {b.endReserve - b.startReserve}  =>  {b.reserveBonus}\n\n" +
-            $"Largest Combo: {b.comboBonus}\n\n" +
-            $"Obstacles Cleared: {b.obstacleBonus}";
-
-        if (b.difficultyStars > 0 && b.difficultyBonus > 0)
-        {
-            linesStr += $"\n\nStar Difficulty ({b.difficultyStars}): +{b.difficultyBonus}";
-        }
+        bool hasResultsText = breakdownResultsText || breakdownResultsShadowText;
+        string linesStr = hasResultsText
+            ? BuildBreakdownLabels(b)
+            : BuildBreakdownCombinedLines(b, colorValues: true);
+        string shadowLinesStr = hasResultsText
+            ? BuildBreakdownLabels(b)
+            : BuildBreakdownCombinedLines(b, colorValues: false);
+        string resultsStr = BuildBreakdownResults(b, colorValues: true);
+        string shadowResultsStr = BuildBreakdownResults(b, colorValues: false);
 
         if (breakdownLinesText)
             breakdownLinesText.text = linesStr;
 
         if (breakdownLinesShadowText)
-            breakdownLinesShadowText.text = linesStr;
+            breakdownLinesShadowText.text = shadowLinesStr;
+
+        if (breakdownResultsText)
+            breakdownResultsText.text = resultsStr;
+
+        if (breakdownResultsShadowText)
+            breakdownResultsShadowText.text = shadowResultsStr;
 
         if (breakdownContinueButton)
             breakdownContinueButton.interactable = false;
@@ -286,6 +313,105 @@ public class XpAwardUI : MonoBehaviour
 
         if (_breakdownCountCR != null) { StopCoroutine(_breakdownCountCR); _breakdownCountCR = null; }
         _breakdownCountCR = StartCoroutine(CoBreakdownCountUp(b.totalBeforeReduction));
+    }
+
+    List<BreakdownLine> BuildBreakdownRows(RoundXpBreakdown b)
+    {
+        int unitsLost = Mathf.Max(0, b.startReserve - b.endReserve);
+
+        return new List<BreakdownLine>
+        {
+            new BreakdownLine("Base Level XP", b.baseXp),
+            new BreakdownLine($"Clear time {FormatClearTime(b.levelClearTime)}", b.clearTimeBonus),
+            new BreakdownLine($"Units lost {unitsLost}", b.reserveBonus),
+            new BreakdownLine($"Largest Combo {b.comboBonus}", b.comboBonus),
+            new BreakdownLine($"Obstacles Cleared {b.obstacleBonus}", b.obstacleBonus),
+            new BreakdownLine($"Star Difficulty ({b.difficultyStars}):", b.difficultyBonus, showPlus: true)
+        };
+    }
+
+    string BuildBreakdownLabels(RoundXpBreakdown b)
+    {
+        var rows = BuildBreakdownRows(b);
+        var sb = new StringBuilder();
+
+        for (int i = 0; i < rows.Count; i++)
+        {
+            if (i > 0)
+                sb.Append("\n\n");
+
+            sb.Append(rows[i].label);
+        }
+
+        return sb.ToString();
+    }
+
+    string BuildBreakdownResults(RoundXpBreakdown b, bool colorValues)
+    {
+        var rows = BuildBreakdownRows(b);
+        var sb = new StringBuilder();
+
+        for (int i = 0; i < rows.Count; i++)
+        {
+            if (i > 0)
+                sb.Append("\n\n");
+
+            sb.Append(FormatBreakdownValue(rows[i].value, rows[i].showPlus, colorValues));
+        }
+
+        return sb.ToString();
+    }
+
+    string BuildBreakdownCombinedLines(RoundXpBreakdown b, bool colorValues)
+    {
+        var rows = BuildBreakdownRows(b);
+        var sb = new StringBuilder();
+
+        for (int i = 0; i < rows.Count; i++)
+        {
+            if (i > 0)
+                sb.Append("\n\n");
+
+            sb.Append(rows[i].label);
+            sb.Append(' ');
+            sb.Append(FormatBreakdownValue(rows[i].value, rows[i].showPlus, colorValues));
+        }
+
+        return sb.ToString();
+    }
+
+    static string FormatClearTime(float seconds)
+    {
+        seconds = Mathf.Max(0f, seconds);
+        int totalSeconds = Mathf.RoundToInt(seconds);
+        int minutes = totalSeconds / 60;
+        int remainingSeconds = totalSeconds % 60;
+        return $"{minutes}m {remainingSeconds}s";
+    }
+
+    string FormatBreakdownValue(int value, bool showPlus, bool colorValue)
+    {
+        string valueText;
+
+        if (value < 0)
+            valueText = $"-{Mathf.Abs(value)}";
+        else if (showPlus)
+            valueText = $" {value}";
+        else
+            valueText = value.ToString();
+
+        return colorValue ? ColorBreakdownValue(value, valueText) : valueText;
+    }
+
+    string ColorBreakdownValue(int value, string valueText)
+    {
+        if (value > 0)
+            return $"<color=#{ColorUtility.ToHtmlStringRGBA(breakdownPositiveResultColor)}>{valueText}</color>";
+
+        if (value < 0)
+            return $"<color=#{ColorUtility.ToHtmlStringRGBA(breakdownNegativeResultColor)}>{valueText}</color>";
+
+        return valueText;
     }
 
     IEnumerator CoRoundDistribute(List<MonsterData> roster, Dictionary<string, float> perMonsterAwardXp, Action onContinue)
@@ -370,7 +496,10 @@ public class XpAwardUI : MonoBehaviour
             var md = roster[i];
             if (!md) continue;
 
-            _rows[i].SetLevel(RunMonsterProgress.GetCurrentLevel(md.monsterName));
+            int finalLevel = RunMonsterProgress.GetCurrentLevel(md.monsterName);
+            if (!_rows[i].IsShowingLevelTransition() || _rows[i].GetUiLevel() != finalLevel)
+                _rows[i].SetLevel(finalLevel);
+
             _rows[i].SetXp(RunMonsterProgress.GetCurrentXpIntoLevel(md.monsterName), XpPerLevel);
         }
 
@@ -496,7 +625,10 @@ public class XpAwardUI : MonoBehaviour
             var md = roster[i];
             if (!md) continue;
 
-            _rows[i].SetLevel(MonsterProgressStore.GetPermanentLevel(md.monsterName));
+            int finalLevel = MonsterProgressStore.GetPermanentLevel(md.monsterName);
+            if (!_rows[i].IsShowingLevelTransition() || _rows[i].GetUiLevel() != finalLevel)
+                _rows[i].SetLevel(finalLevel);
+
             _rows[i].SetXp(MonsterProgressStore.GetPermanentXpIntoLevel(md.monsterName), XpPerLevel);
         }
 
@@ -632,10 +764,10 @@ public class XpAwardUI : MonoBehaviour
 
     void SetBreakdownTotal(int total)
     {
-        string totalStr = $"Total XP Earned = {total}";
+        string totalStr = $"Total XP Earned {total}";
 
         if (breakdownTotalText)
-            breakdownTotalText.text = totalStr;
+            breakdownTotalText.text = $"<color=#{ColorUtility.ToHtmlStringRGBA(breakdownTotalColor)}>{totalStr}</color>";
 
         if (breakdownTotalShadowText)
             breakdownTotalShadowText.text = totalStr;

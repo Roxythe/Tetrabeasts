@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Buff_Gravity_1
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: Gravity Base SPD Down
-  description: Modestly decreases the initial falling speed of blocks
+  description: Modestly decreases the initial falling speed of blocks.
   icon: {fileID: 21300000, guid: cef3a63a5585a0e4bbea81b0486d55b9, type: 3}
   isBuff: 1
   rarity: 1

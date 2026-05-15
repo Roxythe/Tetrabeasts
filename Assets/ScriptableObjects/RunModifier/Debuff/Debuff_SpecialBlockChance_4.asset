@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Debuff_SpecialBlockChance_4
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: Special Block Down
-  description: Massivley decreases the chance of special blocks appearing
+  description: Massivley decreases the chance of special blocks appearing.
   icon: {fileID: 21300000, guid: 75baa20c493e4f247a9e1bb1a2186671, type: 3}
   isBuff: 0
   rarity: 4

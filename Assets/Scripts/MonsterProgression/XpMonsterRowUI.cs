@@ -51,6 +51,8 @@ public class XpMonsterRowUI : MonoBehaviour
 
     int _uiLevel = 1;
     float _uiXpInto = 0f;
+    int _levelTransitionStartLevel = 1;
+    bool _showingLevelTransition;
 
     public void BindStatic(Sprite portrait, string displayName)
     {
@@ -61,7 +63,11 @@ public class XpMonsterRowUI : MonoBehaviour
 
     public void SetLevel(int level)
     {
-        if (levelText) levelText.text = $"Lv.{level}";
+        level = Mathf.Max(1, level);
+        _levelTransitionStartLevel = level;
+        _showingLevelTransition = false;
+
+        if (levelText) levelText.text = $"Level {level}";
     }
 
     public void SetXp(float xpInto, float xpPerLevel = 100f)
@@ -277,6 +283,8 @@ public class XpMonsterRowUI : MonoBehaviour
 
         _uiLevel = Mathf.Max(1, level);
         _uiXpInto = Mathf.Clamp(xpInto, 0f, xpPerLevel - 0.0001f);
+        _levelTransitionStartLevel = _uiLevel;
+        _showingLevelTransition = false;
 
         SetLevel(_uiLevel);
         SetXp(_uiXpInto, xpPerLevel);
@@ -297,12 +305,21 @@ public class XpMonsterRowUI : MonoBehaviour
             levelsGained += 1;
 
             // Reset bar immediately on level-up
-            SetLevel(_uiLevel);
+            ShowLevelTransition(_uiLevel);
             SetXp(0f, xpPerLevel);
         }
 
         SetXp(_uiXpInto, xpPerLevel);
         return levelsGained;
+    }
+
+    void ShowLevelTransition(int newLevel)
+    {
+        newLevel = Mathf.Max(1, newLevel);
+        _showingLevelTransition = true;
+
+        if (levelText)
+            levelText.text = $"Level {_levelTransitionStartLevel} -> Level {newLevel}";
     }
 
     public int SubtractXpFromOrb(float deltaXp, float xpPerLevel = 100f)
@@ -430,6 +447,7 @@ public class XpMonsterRowUI : MonoBehaviour
 
     public int GetUiLevel() => _uiLevel;
     public float GetUiXpInto() => _uiXpInto;
+    public bool IsShowingLevelTransition() => _showingLevelTransition;
 
     // Expose anchors for orbs to animate towards
     public RectTransform GetXpBarCenter() => xpBarCenterRect;

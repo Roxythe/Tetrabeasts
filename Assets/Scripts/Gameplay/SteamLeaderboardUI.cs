@@ -62,6 +62,9 @@ public class SteamLeaderboardUI : MonoBehaviour
 
     void OnEnable()
     {
+        if (HideIfSteamUnavailable())
+            return;
+
         UpdateResetTimer(true);
         RefreshLeaderboard();
     }
@@ -92,11 +95,17 @@ public class SteamLeaderboardUI : MonoBehaviour
         if (_isRefreshing)
             return;
 
+        var service = SteamLeaderboardService.Ensure(leaderboardName);
+        if (!service || !service.IsAvailable)
+        {
+            HideIfSteamUnavailable();
+            return;
+        }
+
         _isRefreshing = true;
         SetStatus("Refreshing leaderboards...");
         ShowLoadingRows();
 
-        var service = SteamLeaderboardService.Ensure(leaderboardName);
         service.AvatarsChanged -= HandleAvatarsChanged;
         service.AvatarsChanged += HandleAvatarsChanged;
 
@@ -107,6 +116,18 @@ public class SteamLeaderboardUI : MonoBehaviour
             RebuildRows();
             SetStatus(snapshot != null ? snapshot.statusMessage : "Leaderboard refresh failed.");
         });
+    }
+
+    public bool HideIfSteamUnavailable(bool instant = true)
+    {
+        var service = SteamLeaderboardService.Ensure(leaderboardName);
+        if (service && service.IsAvailable)
+            return false;
+
+        _isRefreshing = false;
+        _snapshot = null;
+        UIPanelTransition.Hide(gameObject, instant);
+        return true;
     }
 
     void HandleAvatarsChanged()

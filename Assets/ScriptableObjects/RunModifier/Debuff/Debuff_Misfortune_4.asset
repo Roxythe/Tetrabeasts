@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Debuff_Misfortune_4
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: Misfortune Up
-  description: Massivley increases the likelihood of finding higher rarity debuffs
+  description: Massivley increases the likelihood of finding higher rarity debuffs.
   icon: {fileID: -6126958129149628037, guid: 069f870ed62476944a4570eb914263a7, type: 3}
   isBuff: 0
   rarity: 4

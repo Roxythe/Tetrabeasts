@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Buff_EnmProjDmgMult_2
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: Enemy ATK Down
-  description: Moderatley decrease the damage of enemy projectiles
+  description: Moderatley decrease the damage of enemy projectiles.
   icon: {fileID: 21300000, guid: 4f47b01a3f5a1da4887f882eaed2ec03, type: 3}
   isBuff: 1
   rarity: 2

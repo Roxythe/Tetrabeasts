@@ -16,9 +16,7 @@ public class UIImagePingPongAnimator : MonoBehaviour
 
     void Awake()
     {
-        if (!targetImage)
-            targetImage = GetComponent<Image>();
-
+        EnsureTargetImage();
         ApplyFrame();
     }
 
@@ -30,12 +28,12 @@ public class UIImagePingPongAnimator : MonoBehaviour
 
     void Update()
     {
-        if (!_isPlaying || targetImage == null || frames == null || frames.Length == 0)
+        if (!_isPlaying || !EnsureTargetImage() || frames == null || frames.Length == 0)
             return;
 
         if (frames.Length == 1)
         {
-            targetImage.sprite = frames[0];
+            ApplyFrame();
             return;
         }
 
@@ -63,35 +61,70 @@ public class UIImagePingPongAnimator : MonoBehaviour
     public void ResetAnimation()
     {
         _timer = 0f;
-        _frameIndex = 0;
+        _frameIndex = GetNearestValidFrameIndex(0, 1);
         _direction = 1;
         ApplyFrame();
     }
 
     void StepFrame()
     {
-        _frameIndex += _direction;
+        int nextFrameIndex = _frameIndex + _direction;
 
-        if (_frameIndex >= frames.Length)
+        if (nextFrameIndex >= frames.Length)
         {
-            _frameIndex = Mathf.Max(0, frames.Length - 2);
+            nextFrameIndex = Mathf.Max(0, frames.Length - 2);
             _direction = -1;
         }
-        else if (_frameIndex < 0)
+        else if (nextFrameIndex < 0)
         {
-            _frameIndex = Mathf.Min(frames.Length - 1, 1);
+            nextFrameIndex = Mathf.Min(frames.Length - 1, 1);
             _direction = 1;
         }
 
+        _frameIndex = GetNearestValidFrameIndex(nextFrameIndex, _direction);
         ApplyFrame();
     }
 
     void ApplyFrame()
     {
-        if (!targetImage || frames == null || frames.Length == 0)
+        if (!EnsureTargetImage() || frames == null || frames.Length == 0)
             return;
 
-        _frameIndex = Mathf.Clamp(_frameIndex, 0, frames.Length - 1);
-        targetImage.sprite = frames[_frameIndex];
+        _frameIndex = GetNearestValidFrameIndex(_frameIndex, _direction);
+        Sprite frame = frames[_frameIndex];
+        if (frame)
+            targetImage.sprite = frame;
+    }
+
+    bool EnsureTargetImage()
+    {
+        if (!targetImage)
+            targetImage = GetComponent<Image>();
+
+        return targetImage != null;
+    }
+
+    int GetNearestValidFrameIndex(int desiredIndex, int searchDirection)
+    {
+        if (frames == null || frames.Length == 0)
+            return 0;
+
+        desiredIndex = Mathf.Clamp(desiredIndex, 0, frames.Length - 1);
+        if (frames[desiredIndex])
+            return desiredIndex;
+
+        int direction = searchDirection >= 0 ? 1 : -1;
+        for (int offset = 1; offset < frames.Length; offset++)
+        {
+            int candidateIndex = desiredIndex + (offset * direction);
+            if (candidateIndex >= 0 && candidateIndex < frames.Length && frames[candidateIndex])
+                return candidateIndex;
+
+            candidateIndex = desiredIndex - (offset * direction);
+            if (candidateIndex >= 0 && candidateIndex < frames.Length && frames[candidateIndex])
+                return candidateIndex;
+        }
+
+        return desiredIndex;
     }
 }

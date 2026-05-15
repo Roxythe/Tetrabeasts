@@ -335,6 +335,24 @@ public class AudioManager : MonoBehaviour
         uiLoopSfxSrc.pitch = 1f;
     }
 
+    public void PlayRoundTransitionAppearSFX(AudioClip clip, float vol = 1f)
+    {
+        PlayUISFX(clip, vol, pitch: 1f, jitter: false);
+    }
+
+    public void PlayRoundTransitionLoopSFX(AudioClip clip, float vol = 1f, float pitch = 1f)
+    {
+        PlayLoopingUISFX(clip, vol, pitch);
+    }
+
+    public void StopRoundTransitionLoopSFX(AudioClip clip = null)
+    {
+        if (!uiLoopSfxSrc) return;
+        if (clip && uiLoopSfxSrc.clip != clip) return;
+
+        StopLoopingUISFX();
+    }
+
     public void PlayRainAmbience(float vol = 1f, float pitch = 1f)
     {
         if (!sfxRainLoop || !ambienceLoopSrc)

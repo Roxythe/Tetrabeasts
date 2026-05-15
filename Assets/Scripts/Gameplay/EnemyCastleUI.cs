@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 
 public class EnemyCastleUI : MonoBehaviour
@@ -12,6 +13,18 @@ public class EnemyCastleUI : MonoBehaviour
     public TMP_Text healthBarText;  
     public TMP_Text levelNameText; 
     public Image levelBackgroundImage;
+
+    [Header("Damage Shake")]
+    [SerializeField] bool shakeOnDamage = true;
+    [SerializeField] RectTransform enemyHpShakeRoot;
+    [SerializeField] RectTransform[] additionalDamageShakeTargets;
+    [SerializeField, Min(0f)] float minDamageShakePixels = 1.5f;
+    [SerializeField, Min(0f)] float maxDamageShakePixels = 18f;
+    [SerializeField, Min(0.01f)] float minDamageShakeSeconds = 0.08f;
+    [SerializeField, Min(0.01f)] float maxDamageShakeSeconds = 0.28f;
+    [SerializeField, Min(1f)] float damageShakeSamplesPerSecond = 42f;
+    [SerializeField, Min(0.01f)] float damageShakeAccumulationWindowSeconds = 0.35f;
+    [SerializeField, Range(0.01f, 1f)] float damageForMaxShakeHpFraction = 0.25f;
 
     [Header("Runtime State (read-only for other scripts)")]
     public int maxHP { get; private set; }
@@ -53,6 +66,10 @@ public class EnemyCastleUI : MonoBehaviour
     Vector2 _bossOverlayBaseAnchoredPos;
     bool _bossOverlayBaseCaptured = false;
 
+    Coroutine _damageShakeCR;
+    List<DamageShakeTarget> _damageShakeTargets;
+    readonly Queue<DamageShakeHit> _recentDamageShakeHits = new();
+
     public int CurrentHP => currentHP;
     public bool InfiniteHealth => _infiniteHealth;
 
@@ -88,6 +105,8 @@ public class EnemyCastleUI : MonoBehaviour
             ? baseMax
             : Mathf.Max(1, Mathf.RoundToInt(baseMax * Mathf.Max(0.01f, hpMult)));
         currentHP = maxHP;
+        StopDamageShake();
+        ClearDamageShakeHistory();
 
         this.levelNumber = Mathf.Max(1, levelNumber);
 
@@ -109,6 +128,12 @@ public class EnemyCastleUI : MonoBehaviour
         _lastStageIndex = -1;
         UpdateVisuals();
         SetupBossOverlay();
+    }
+
+    void OnDisable()
+    {
+        StopDamageShake();
+        ClearDamageShakeHistory();
     }
 
     void ApplyLevelBackground(CastleData data)
@@ -143,6 +168,7 @@ public class EnemyCastleUI : MonoBehaviour
         if (_infiniteHealth)
         {
             TriggerBossDamageTakenSprite();
+            TriggerDamageShake(dmg);
             UpdateVisuals();
             return dmg;
         }
@@ -155,6 +181,7 @@ public class EnemyCastleUI : MonoBehaviour
         UpdateVisuals();
 
         TriggerBossDamageTakenSprite(); // Show damage sprite briefly, then return to correct idle
+        TriggerDamageShake(appliedDamage);
 
         if (currentHP <= 0)
             OnCastleDestroyed();
@@ -195,6 +222,235 @@ public class EnemyCastleUI : MonoBehaviour
     void OnCastleDestroyed()
     {
         Debug.Log("Castle destroyed! Player wins level.");  // GameController decides what to do on win
+    }
+
+    void TriggerDamageShake(int appliedDamage)
+    {
+        if (!shakeOnDamage || appliedDamage <= 0)
+            return;
+
+        int recentDamage = RecordRecentDamageShakeHit(appliedDamage, Time.unscaledTime);
+
+        StopDamageShake();
+
+        _damageShakeTargets = BuildDamageShakeTargets();
+        if (_damageShakeTargets == null || _damageShakeTargets.Count == 0)
+            return;
+
+        float maxDamageForShake = Mathf.Max(1f, maxHP * Mathf.Max(0.01f, damageForMaxShakeHpFraction));
+        float intensity = Mathf.Clamp01(recentDamage / maxDamageForShake);
+        float pixels = Mathf.Lerp(minDamageShakePixels, maxDamageShakePixels, intensity);
+        float seconds = Mathf.Lerp(minDamageShakeSeconds, maxDamageShakeSeconds, intensity);
+
+        _damageShakeCR = StartCoroutine(DamageShakeRoutine(seconds, pixels));
+    }
+
+    int RecordRecentDamageShakeHit(int appliedDamage, float now)
+    {
+        PruneRecentDamageShakeHits(now);
+        _recentDamageShakeHits.Enqueue(new DamageShakeHit(now, appliedDamage));
+
+        int total = 0;
+        foreach (DamageShakeHit hit in _recentDamageShakeHits)
+            total += hit.damage;
+
+        return Mathf.Max(appliedDamage, total);
+    }
+
+    void PruneRecentDamageShakeHits(float now)
+    {
+        float window = Mathf.Max(0.01f, damageShakeAccumulationWindowSeconds);
+        while (_recentDamageShakeHits.Count > 0 && now - _recentDamageShakeHits.Peek().time > window)
+            _recentDamageShakeHits.Dequeue();
+    }
+
+    void ClearDamageShakeHistory()
+    {
+        _recentDamageShakeHits.Clear();
+    }
+
+    IEnumerator DamageShakeRoutine(float seconds, float pixels)
+    {
+        seconds = Mathf.Max(0.01f, seconds);
+        pixels = Mathf.Max(0f, pixels);
+
+        float elapsed = 0f;
+        float sampleInterval = 1f / Mathf.Max(1f, damageShakeSamplesPerSecond);
+        float nextSampleTime = 0f;
+        Vector2 currentOffset = Vector2.zero;
+
+        while (elapsed < seconds)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float normalizedTime = Mathf.Clamp01(elapsed / seconds);
+            float decay = 1f - normalizedTime;
+
+            if (elapsed >= nextSampleTime)
+            {
+                Vector2 direction = Random.insideUnitCircle;
+                if (direction.sqrMagnitude < 0.001f)
+                    direction = Vector2.right;
+
+                direction.Normalize();
+                currentOffset = direction * Random.Range(pixels * 0.35f, pixels) * decay;
+                nextSampleTime = elapsed + sampleInterval;
+            }
+
+            ApplyDamageShakeOffset(currentOffset);
+            yield return null;
+        }
+
+        ApplyDamageShakeOffset(Vector2.zero);
+        _damageShakeCR = null;
+        _damageShakeTargets = null;
+    }
+
+    List<DamageShakeTarget> BuildDamageShakeTargets()
+    {
+        var targets = new List<DamageShakeTarget>(5);
+
+        AddDamageShakeTarget(targets, levelBackgroundImage ? levelBackgroundImage.rectTransform : null);
+        AddDamageShakeTarget(targets, castleImage ? castleImage.rectTransform : null);
+        AddDamageShakeTarget(targets, bossOverlayImage ? bossOverlayImage.rectTransform : null);
+        AddDamageShakeTarget(targets, ResolveEnemyHpShakeRoot());
+
+        if (additionalDamageShakeTargets != null)
+        {
+            for (int i = 0; i < additionalDamageShakeTargets.Length; i++)
+                AddDamageShakeTarget(targets, additionalDamageShakeTargets[i]);
+        }
+
+        return targets;
+    }
+
+    RectTransform ResolveEnemyHpShakeRoot()
+    {
+        if (enemyHpShakeRoot)
+            return enemyHpShakeRoot;
+
+        enemyHpShakeRoot = FindChildRectTransform(transform, "EnemyHP_UI");
+
+        Transform parent = transform.parent;
+        while (!enemyHpShakeRoot && parent)
+        {
+            enemyHpShakeRoot = FindChildRectTransform(parent, "EnemyHP_UI");
+            parent = parent.parent;
+        }
+
+        if (!enemyHpShakeRoot && healthBarSlider)
+            enemyHpShakeRoot = healthBarSlider.transform as RectTransform;
+
+        return enemyHpShakeRoot;
+    }
+
+    RectTransform FindChildRectTransform(Transform root, string targetName)
+    {
+        if (!root)
+            return null;
+
+        if (root.name == targetName)
+            return root as RectTransform;
+
+        for (int i = 0; i < root.childCount; i++)
+        {
+            RectTransform match = FindChildRectTransform(root.GetChild(i), targetName);
+            if (match)
+                return match;
+        }
+
+        return null;
+    }
+
+    void AddDamageShakeTarget(List<DamageShakeTarget> targets, RectTransform rectTransform)
+    {
+        if (!rectTransform)
+            return;
+
+        for (int i = 0; i < targets.Count; i++)
+        {
+            if (targets[i].rectTransform == rectTransform)
+                return;
+        }
+
+        targets.Add(new DamageShakeTarget(rectTransform));
+    }
+
+    void ApplyDamageShakeOffset(Vector2 offset)
+    {
+        if (_damageShakeTargets == null)
+            return;
+
+        for (int i = 0; i < _damageShakeTargets.Count; i++)
+        {
+            DamageShakeTarget target = _damageShakeTargets[i];
+            if (target == null || !target.rectTransform)
+                continue;
+
+            Vector2 expectedPosition = target.baseAnchoredPosition + target.previousOffset;
+            if ((target.rectTransform.anchoredPosition - expectedPosition).sqrMagnitude > 0.25f)
+                target.baseAnchoredPosition = target.rectTransform.anchoredPosition;
+
+            target.previousOffset = offset;
+            target.rectTransform.anchoredPosition = target.baseAnchoredPosition + offset;
+        }
+    }
+
+    void StopDamageShake()
+    {
+        if (_damageShakeCR != null)
+        {
+            StopCoroutine(_damageShakeCR);
+            _damageShakeCR = null;
+        }
+
+        ResetDamageShakeTargets();
+    }
+
+    void ResetDamageShakeTargets()
+    {
+        if (_damageShakeTargets == null)
+            return;
+
+        for (int i = 0; i < _damageShakeTargets.Count; i++)
+        {
+            DamageShakeTarget target = _damageShakeTargets[i];
+            if (target == null || !target.rectTransform)
+                continue;
+
+            Vector2 expectedPosition = target.baseAnchoredPosition + target.previousOffset;
+            if ((target.rectTransform.anchoredPosition - expectedPosition).sqrMagnitude <= 0.25f)
+                target.rectTransform.anchoredPosition = target.baseAnchoredPosition;
+
+            target.previousOffset = Vector2.zero;
+        }
+
+        _damageShakeTargets = null;
+    }
+
+    class DamageShakeTarget
+    {
+        public readonly RectTransform rectTransform;
+        public Vector2 baseAnchoredPosition;
+        public Vector2 previousOffset;
+
+        public DamageShakeTarget(RectTransform rectTransform)
+        {
+            this.rectTransform = rectTransform;
+            baseAnchoredPosition = rectTransform.anchoredPosition;
+            previousOffset = Vector2.zero;
+        }
+    }
+
+    struct DamageShakeHit
+    {
+        public readonly float time;
+        public readonly int damage;
+
+        public DamageShakeHit(float time, int damage)
+        {
+            this.time = time;
+            this.damage = damage;
+        }
     }
 
     void SetupBossOverlay()

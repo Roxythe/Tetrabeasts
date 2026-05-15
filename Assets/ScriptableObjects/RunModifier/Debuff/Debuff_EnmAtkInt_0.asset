@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Debuff_EnmAtkInt_0
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: Enemy ATK SPD Up
-  description: Slightly decreases the amount of time between enemy attacks (Bosses
-    Excluded)
+  description: Slightly decreases the amount of time between enemy attacks (Boss
+    Ability Cooldowns Excluded).
   icon: {fileID: -7399302970413481957, guid: 80b366e53d1e03745bf6496fa5ecfb01, type: 3}
   isBuff: 0
   rarity: 0

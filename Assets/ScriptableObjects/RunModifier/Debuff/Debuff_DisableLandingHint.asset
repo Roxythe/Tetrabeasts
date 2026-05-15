@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: No Landing Indicator
   description: A red tinted outline will no longer be shown where your pieces will
-    land
+    land.
   icon: {fileID: 21300000, guid: ed3440ef03088a44283d6d24cd4ed5cc, type: 3}
   isBuff: 0
   rarity: 0
   stat: 18
-  op: 1
+  op: 0
   value: 1
