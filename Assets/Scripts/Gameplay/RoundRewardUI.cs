@@ -104,7 +104,12 @@ public class RoundRewardUI : MonoBehaviour
             UIPanelTransition.Hide(buffPanel);
             UIPanelTransition.Show(debuffPanel);
 
-            Populate(debuffContainer, Pick3UniqueWeighted(debuffPool, misfortune, wasBossLevel), isBuff: false);
+            var excludedLegendaryDebuffs = BuildChosenLegendaryDebuffExclusions();
+            var debuffPicks = wasBossLevel
+                ? Pick3UniqueLegendary(debuffPool, excludedLegendaryDebuffs)
+                : Pick3UniqueWeighted(debuffPool, misfortune, wasBossLevel, excludedLegendaryDebuffs);
+
+            Populate(debuffContainer, debuffPicks, isBuff: false);
         });
 
         confirmDebuffButton.onClick.RemoveAllListeners();
@@ -332,11 +337,86 @@ public class RoundRewardUI : MonoBehaviour
         return list[UnityEngine.Random.Range(0, list.Count)];
     }
 
-    List<RunModifierSO> Pick3UniqueWeighted(RunModifierSO[] pool, float skew, bool wasBossLevel)
+    HashSet<RunModifierSO> BuildChosenLegendaryDebuffExclusions()
+    {
+        var exclusions = new HashSet<RunModifierSO>();
+
+        for (int i = 0; i < RunModsStore.Debuffs.Count; i++)
+        {
+            var debuff = RunModsStore.Debuffs[i];
+            if (debuff && GetRarity(debuff) == RunModRarity.Legendary)
+                exclusions.Add(debuff);
+        }
+
+        return exclusions;
+    }
+
+    RunModifierSO PickByExactRarity(RunModifierSO[] pool, RunModRarity rarity, HashSet<RunModifierSO> excludeAssets,
+                                HashSet<string> excludeGroups)
+    {
+        if (pool == null || pool.Length == 0) return null;
+
+        var candidates = new List<RunModifierSO>();
+        for (int i = 0; i < pool.Length; i++)
+        {
+            var so = pool[i];
+            if (!so) continue;
+            if (GetRarity(so) != rarity) continue;
+            if (excludeAssets != null && excludeAssets.Contains(so)) continue;
+
+            if (excludeGroups != null)
+            {
+                string key = GetGroupKey(so);
+                if (excludeGroups.Contains(key)) continue;
+            }
+
+            candidates.Add(so);
+        }
+
+        if (candidates.Count == 0) return null;
+        return candidates[UnityEngine.Random.Range(0, candidates.Count)];
+    }
+
+    List<RunModifierSO> Pick3UniqueLegendary(RunModifierSO[] pool, HashSet<RunModifierSO> excludeAssets = null)
     {
         var results = new List<RunModifierSO>(3);
         var usedAssets = new HashSet<RunModifierSO>();
         var usedGroups = new HashSet<string>();
+
+        if (excludeAssets != null)
+        {
+            foreach (var excluded in excludeAssets)
+                if (excluded) usedAssets.Add(excluded);
+        }
+
+        int safety = 100;
+        while (results.Count < 3 && safety-- > 0)
+        {
+            var pick = PickByExactRarity(pool, RunModRarity.Legendary, usedAssets, usedGroups);
+            if (!pick) break;
+
+            results.Add(pick);
+            usedAssets.Add(pick);
+            usedGroups.Add(GetGroupKey(pick));
+        }
+
+        if (results.Count < 3)
+            Debug.LogWarning($"RoundRewardUI: Only found {results.Count} available Legendary debuff options.");
+
+        return results;
+    }
+
+    List<RunModifierSO> Pick3UniqueWeighted(RunModifierSO[] pool, float skew, bool wasBossLevel, HashSet<RunModifierSO> excludeAssets = null)
+    {
+        var results = new List<RunModifierSO>(3);
+        var usedAssets = new HashSet<RunModifierSO>();
+        var usedGroups = new HashSet<string>();
+
+        if (excludeAssets != null)
+        {
+            foreach (var excluded in excludeAssets)
+                if (excluded) usedAssets.Add(excluded);
+        }
 
         int safety = 100;
         while (results.Count < 3 && safety-- > 0)

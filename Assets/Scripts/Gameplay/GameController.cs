@@ -32,6 +32,9 @@ public class GameController : MonoBehaviour
     [Header("Battle Log UI")]
     [SerializeField] private BattleLogUI battleLog;
 
+    [Header("Floating Damage Text")]
+    [SerializeField] private FloatingDamageText floatingDamageText;
+
     [Header("Level Progression")]
     public EnemyCastleUI enemyCastleUI;
     public CastleData[] castlesByLevel;
@@ -572,6 +575,7 @@ public class GameController : MonoBehaviour
         if (!piece) piece = GetComponent<Piece>();
         if (!levelModifierController) levelModifierController = GetComponent<LevelModifierController>();
         if (!levelModifierController) levelModifierController = gameObject.AddComponent<LevelModifierController>();
+        EnsureFloatingDamageText();
         EnsureTriggeredTutorialPopups();
 
         if (!obstacleManager)
@@ -1425,6 +1429,8 @@ public class GameController : MonoBehaviour
         bag.Clear();
         monstersBag.Clear();
 
+        yield return CoShowLevelStartTransition();
+
         if (levelModifierController)
         {
             if (useSavedLevelModifier)
@@ -1453,6 +1459,21 @@ public class GameController : MonoBehaviour
 
         if (_pendingPostFinalSurvivalIntro && _postFinalSurvivalActive && spawnedPiece)
             StartCoroutine(CoShowPostFinalSurvivalIntroAfterFirstPiece());
+    }
+
+    IEnumerator CoShowLevelStartTransition()
+    {
+        PauseGameplayForRoundTransition();
+
+        int levelNumber = currentLevel + 1;
+        string castleName = currentCastleData && !string.IsNullOrWhiteSpace(currentCastleData.castleName)
+            ? currentCastleData.castleName
+            : "Castle";
+
+        yield return CoShowTimedRoundTransition($"Level {levelNumber}\n{castleName}");
+
+        ResumeGameplayAfterRoundTransition();
+        EnterGameplayCursorMode();
     }
 
     void CacheAndWriteTempRunCheckpoint()
@@ -1655,6 +1676,19 @@ public class GameController : MonoBehaviour
             continued = true;
 
         yield return new WaitUntil(() => continued);
+    }
+
+    IEnumerator CoShowTimedRoundTransition(string message)
+    {
+        ResolveRoundTransitionUI();
+
+        bool completed = false;
+        if (roundTransitionUI)
+            roundTransitionUI.ShowTimed(message, () => completed = true);
+        else
+            completed = true;
+
+        yield return new WaitUntil(() => completed);
     }
 
     void HideRoundTransitionImmediate()
@@ -3399,13 +3433,22 @@ public class GameController : MonoBehaviour
             yield return null;
         }
 
-        if (rt) Destroy(rt.gameObject);
+        var impactRoot = projectileRoot ? projectileRoot : (gameBoard ? gameBoard.gridRoot : null);
+        Vector2 impactPosition = targetAnchored;
 
-        if (ApplyCastleAttackDamage(damage, attackerMD, impactClip))
+        if (rt)
+        {
+            rt.anchoredPosition = targetAnchored;
+            impactPosition = rt.anchoredPosition;
+            Destroy(rt.gameObject);
+        }
+
+        if (ApplyCastleAttackDamage(damage, attackerMD, impactClip, impactRoot, impactPosition))
             yield break;
     }
 
-    bool ApplyCastleAttackDamage(int damage, MonsterData attackerMD, AudioClip impactClip)
+    bool ApplyCastleAttackDamage(int damage, MonsterData attackerMD, AudioClip impactClip,
+                                 RectTransform impactRoot = null, Vector2 impactAnchoredPosition = default)
     {
         if (damage <= 0 || !enemyCastleUI || levelWon || gameOver)
             return false;
@@ -3433,7 +3476,13 @@ public class GameController : MonoBehaviour
 
         int appliedDamage = enemyCastleUI.ApplyDamage(damage);
         if (appliedDamage > 0)
+        {
             RunSummaryStats.RecordDamageDealt(appliedDamage);
+            ShowCastleFloatingDamageText(appliedDamage,
+                !enemyCastleUI.InfiniteHealth && enemyCastleUI.currentHP <= 0,
+                impactRoot,
+                impactAnchoredPosition);
+        }
 
         if (enemyCastleUI.currentHP <= 0 && !winQueued)
         {
@@ -4429,14 +4478,108 @@ public class GameController : MonoBehaviour
     {
         levelModifierController?.OnTileDamaged(cell, data, amount, src);
 
-        if (!battleLog || !data) return;
+        if (!data) return;
 
         int v = Mathf.RoundToInt(Mathf.Max(0f, amount));
         if (v <= 0) return;
 
+        bool killingBlow = gameBoard && gameBoard.TryGetMonster(cell, out var inst) && inst.hp <= 0f;
+        ShowUnitFloatingDamageText(cell, v, src, killingBlow);
+
+        if (!battleLog) return;
+
         GetDamageTextParts(src, out string damageTypeWord, out Color32? damageTypeColor, out string fromLabel);
 
         battleLog.LogDamageDetailed(data.name, v, damageTypeWord, damageTypeColor, fromLabel);
+    }
+
+    void EnsureFloatingDamageText()
+    {
+        if (!floatingDamageText)
+            floatingDamageText = GetComponent<FloatingDamageText>();
+
+        if (!floatingDamageText)
+            floatingDamageText = FindFirstObjectByType<FloatingDamageText>(FindObjectsInactive.Include);
+
+        if (!floatingDamageText)
+            floatingDamageText = gameObject.AddComponent<FloatingDamageText>();
+
+        RectTransform fallback = projectileRoot ? projectileRoot : (gameBoard ? gameBoard.gridRoot : null);
+        if (floatingDamageText)
+            floatingDamageText.SetFallbackRoot(fallback);
+    }
+
+    void ShowUnitFloatingDamageText(Vector2Int cell, int amount, Board.DamageSource src, bool killingBlow)
+    {
+        if (amount <= 0 || !gameBoard)
+            return;
+
+        EnsureFloatingDamageText();
+        if (!floatingDamageText)
+            return;
+
+        FloatingDamageText.DamageKind kind = FloatingDamageKindForSource(src);
+
+        if (gameBoard.TryGetTileRect(cell, out var tileRect) && tileRect)
+        {
+            floatingDamageText.Show(tileRect, amount, kind, killingBlow);
+            return;
+        }
+
+        if (gameBoard.gridRoot)
+            floatingDamageText.ShowAtLocalPosition(gameBoard.gridRoot, gameBoard.CellToAnchoredPos(cell),
+                gameBoard.GetCellSize(), amount, kind, killingBlow);
+    }
+
+    void ShowCastleFloatingDamageText(int amount, bool killingBlow, RectTransform impactRoot = null,
+                                      Vector2 impactAnchoredPosition = default)
+    {
+        if (amount <= 0 || !enemyCastleUI)
+            return;
+
+        EnsureFloatingDamageText();
+        if (!floatingDamageText)
+            return;
+
+        if (impactRoot)
+        {
+            floatingDamageText.ShowAtLocalPosition(
+                impactRoot,
+                impactAnchoredPosition,
+                Vector2.zero,
+                amount,
+                FloatingDamageText.DamageKind.Normal,
+                killingBlow);
+            return;
+        }
+
+        RectTransform target = null;
+        if (enemyCastleUI.bossOverlayImage && enemyCastleUI.bossOverlayImage.enabled)
+            target = enemyCastleUI.bossOverlayImage.rectTransform;
+        else if (enemyCastleUI.castleImage)
+            target = enemyCastleUI.castleImage.rectTransform;
+
+        if (target)
+            floatingDamageText.Show(target, amount, FloatingDamageText.DamageKind.Normal, killingBlow);
+    }
+
+    FloatingDamageText.DamageKind FloatingDamageKindForSource(Board.DamageSource src)
+    {
+        return src switch
+        {
+            Board.DamageSource.FloorBurn => FloatingDamageText.DamageKind.Fire,
+            Board.DamageSource.FloorPoison => FloatingDamageText.DamageKind.Poison,
+            Board.DamageSource.FloorLightning => FloatingDamageText.DamageKind.Lightning,
+            Board.DamageSource.FloorSpike => FloatingDamageText.DamageKind.Spike,
+            Board.DamageSource.Contagion => FloatingDamageText.DamageKind.Contagion,
+            Board.DamageSource.Rations => FloatingDamageText.DamageKind.Rations,
+            Board.DamageSource.DeathExplosion => FloatingDamageText.DamageKind.DeathExplosion,
+            Board.DamageSource.BossAbility => FloatingDamageText.DamageKind.BossAbility,
+            Board.DamageSource.MagicExplosive => FloatingDamageText.DamageKind.MagicExplosive,
+            Board.DamageSource.Overgrowth => FloatingDamageText.DamageKind.Overgrowth,
+            Board.DamageSource.RearAmbush => FloatingDamageText.DamageKind.RearAmbush,
+            _ => FloatingDamageText.DamageKind.Normal
+        };
     }
 
     string SourceLabel(Board.DamageSource src)
@@ -5383,7 +5526,7 @@ public class GameController : MonoBehaviour
 
         foreach (var c in targets)
             if (gameBoard.InBounds(c))
-                gameBoard.DamageTile(c, damage);
+                gameBoard.DamageTile(c, damage, Board.DamageSource.BossAbility);
     }
 
     IEnumerator BossFullBoardBlastWarnThenDamage(List<Vector2Int> targets, float dmg, float warn)
@@ -5399,7 +5542,7 @@ public class GameController : MonoBehaviour
         if (AudioManager.I) AudioManager.I.PlayBossBoardBlastHit();
 
         foreach (var c in targets)
-            gameBoard.DamageTile(c, dmg);
+            gameBoard.DamageTile(c, dmg, Board.DamageSource.BossAbility);
     }
 
     void Boss_LightningStrike()
@@ -5467,7 +5610,7 @@ public class GameController : MonoBehaviour
 
         foreach (var c in targets)
             if (gameBoard.InBounds(c))
-                gameBoard.DamageTile(c, damage);
+                gameBoard.DamageTile(c, damage, Board.DamageSource.BossAbility);
     }
 
     IEnumerator BossLightningRoutine(Vector2Int cell, float warningSeconds)
@@ -5488,7 +5631,7 @@ public class GameController : MonoBehaviour
         // Initial impact damage if a monster is there now (even if it was empty when chosen)
         float initial = GetScaledEnemyDamage(Mathf.Max(0f, _castleData.bossLightningInitialDamage));
 
-        if (initial > 0f) gameBoard.DamageTile(cell, initial);
+        if (initial > 0f) gameBoard.DamageTile(cell, initial, Board.DamageSource.FloorLightning);
 
         // Spawn temporary hazard (ticks) without destroying monsters
         float tickDmg = GetScaledEnemyDamage(Mathf.Max(0f, _castleData.bossLightningTickDamage));

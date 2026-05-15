@@ -38,6 +38,8 @@ public class RoundTransitionUI : MonoBehaviour
 
     [Header("Timing")]
     [SerializeField, Min(0.01f)] float fadeInSeconds = 1.85f;
+    [SerializeField, Min(0f)] float autoHoldSeconds = 3f;
+    [SerializeField, Min(0.01f)] float autoFadeOutSeconds = 1.35f;
     [SerializeField, Range(0f, 1f)] float backgroundAlpha = 0.72f;
 
     Action _onContinue;
@@ -83,6 +85,60 @@ public class RoundTransitionUI : MonoBehaviour
     public void Show(string message, Action onContinue)
     {
         Show(message, onContinue, string.Empty, false, null);
+    }
+
+    public void ShowTimed(string message, Action onComplete)
+    {
+        ShowTimed(message, autoHoldSeconds, autoFadeOutSeconds, onComplete);
+    }
+
+    public void ShowTimed(string message, float holdSeconds, float fadeOutSeconds, Action onComplete)
+    {
+        EnsureBuilt();
+
+        if (!rootPanel)
+        {
+            onComplete?.Invoke();
+            return;
+        }
+
+        ApplyFont();
+        _onContinue = null;
+        _onOptOutContinue = null;
+
+        gameObject.SetActive(true);
+        rootPanel.SetActive(true);
+        rootPanel.transform.SetAsLastSibling();
+        PlayShowAnimation();
+        PlayShowAudio();
+
+        var rootGroup = rootPanel.GetComponent<CanvasGroup>();
+        if (rootGroup)
+        {
+            rootGroup.alpha = 1f;
+            rootGroup.interactable = false;
+            rootGroup.blocksRaycasts = true;
+        }
+
+        if (backgroundImage)
+            backgroundImage.color = new Color(0f, 0f, 0f, 0f);
+
+        if (messageText)
+        {
+            messageText.text = message;
+            SetTextAlpha(0f);
+        }
+
+        SetActionControlsVisible(false);
+        ConfigureOptOutToggle(string.Empty, false);
+
+        if (_fadeRoutine != null)
+            StopCoroutine(_fadeRoutine);
+
+        _fadeRoutine = StartCoroutine(CoTimedTransition(
+            Mathf.Max(0f, holdSeconds),
+            Mathf.Max(0.01f, fadeOutSeconds),
+            onComplete));
     }
 
     public void Show(string message, Action onContinue, string optOutLabel, bool optOutInitialValue,
@@ -239,6 +295,54 @@ public class RoundTransitionUI : MonoBehaviour
         }
 
         _fadeRoutine = null;
+    }
+
+    System.Collections.IEnumerator CoTimedTransition(float holdSeconds, float fadeOutSeconds, Action onComplete)
+    {
+        float elapsed = 0f;
+        float inDuration = Mathf.Max(0.01f, fadeInSeconds);
+
+        while (elapsed < inDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / inDuration);
+            float alpha = Mathf.SmoothStep(0f, 1f, t);
+
+            SetTextAlpha(alpha);
+            SetBackgroundAlpha(backgroundAlpha * alpha);
+
+            yield return null;
+        }
+
+        SetTextAlpha(1f);
+        SetBackgroundAlpha(backgroundAlpha);
+
+        elapsed = 0f;
+        while (elapsed < holdSeconds)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        elapsed = 0f;
+        while (elapsed < fadeOutSeconds)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / fadeOutSeconds);
+            float alpha = 1f - Mathf.SmoothStep(0f, 1f, t);
+
+            SetTextAlpha(alpha);
+            SetBackgroundAlpha(backgroundAlpha * alpha);
+
+            yield return null;
+        }
+
+        SetTextAlpha(0f);
+        SetBackgroundAlpha(0f);
+        _fadeRoutine = null;
+
+        HideAfterTimedTransition();
+        onComplete?.Invoke();
     }
 
     void Continue()
@@ -553,6 +657,71 @@ public class RoundTransitionUI : MonoBehaviour
         var color = messageText.color;
         color.a = alpha;
         messageText.color = color;
+    }
+
+    void SetBackgroundAlpha(float alpha)
+    {
+        if (!backgroundImage)
+            return;
+
+        var color = backgroundImage.color;
+        color.a = Mathf.Clamp01(alpha);
+        backgroundImage.color = color;
+    }
+
+    void SetActionControlsVisible(bool visible)
+    {
+        if (continueButtonGroup)
+        {
+            continueButtonGroup.alpha = visible ? 1f : 0f;
+            continueButtonGroup.blocksRaycasts = visible;
+            continueButtonGroup.interactable = visible;
+        }
+
+        if (continueButton)
+        {
+            continueButton.gameObject.SetActive(visible);
+            continueButton.interactable = visible;
+        }
+
+        if (optOutToggleGroup)
+        {
+            optOutToggleGroup.alpha = visible ? 1f : 0f;
+            optOutToggleGroup.blocksRaycasts = visible;
+            optOutToggleGroup.interactable = visible;
+        }
+
+        if (optOutToggle)
+        {
+            optOutToggle.gameObject.SetActive(visible && optOutToggle.gameObject.activeSelf);
+            optOutToggle.interactable = visible;
+        }
+    }
+
+    void HideAfterTimedTransition()
+    {
+        _onContinue = null;
+        _onOptOutContinue = null;
+        StopActiveLoopSfx();
+        PlayHideAnimation();
+
+        if (continueButton)
+            continueButton.interactable = false;
+
+        if (optOutToggle)
+            optOutToggle.interactable = false;
+
+        if (rootPanel)
+        {
+            var rootGroup = rootPanel.GetComponent<CanvasGroup>();
+            if (rootGroup)
+            {
+                rootGroup.interactable = false;
+                rootGroup.blocksRaycasts = false;
+            }
+
+            rootPanel.SetActive(false);
+        }
     }
 
     void ApplyFont()

@@ -128,9 +128,9 @@ public static class MonsterPassiveSystem
         switch (data.passiveType)
         {
             case MonsterPassiveType.ComboDuration:
-                return $"Increase combo duration by {GetComboDurationSeconds(level):0} seconds.";
+                return $"Increase combo timer duration by {FormatSeconds(GetComboDurationSeconds(level))}.";
             case MonsterPassiveType.BonusComboChance:
-                return $"Increase combo count an additional time with each row clear with a {FormatPercent(GetBonusComboChance(level))} chance.";
+                return $"Each row clear has a {FormatPercent(GetBonusComboChance(level))} chance to increase combo count one additional time.";
             case MonsterPassiveType.StoneBuffDropChance:
                 return $"Increase chance of buff drop from stone obstacle destruction by {FormatPercent(GetStoneBuffDropChance(level))}.";
             case MonsterPassiveType.StartingReserveUnits:
@@ -199,12 +199,12 @@ public static class MonsterPassiveSystem
 
     static float GetComboDurationSeconds(int level)
     {
-        return 3f + (GetPassiveTierIndex(level) * 3f);
+        return 1f + GetPassiveTierIndex(level);
     }
 
     static float GetBonusComboChance(int level)
     {
-        return 0.25f + (GetPassiveTierIndex(level) * 0.25f);
+        return 0.10f + (GetPassiveTierIndex(level) * 0.10f);
     }
 
     static float GetStoneBuffDropChance(int level)
@@ -230,6 +230,12 @@ public static class MonsterPassiveSystem
     static string FormatPercent(float value)
     {
         return $"{Mathf.RoundToInt(value * 100f)}%";
+    }
+
+    static string FormatSeconds(float seconds)
+    {
+        int rounded = Mathf.RoundToInt(seconds);
+        return rounded == 1 ? "1 second" : $"{rounded} seconds";
     }
 }
 

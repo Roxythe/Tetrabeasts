@@ -818,10 +818,14 @@ public class Board : MonoBehaviour
             amount *= _gc.AllyMonsterDamageTakenMultiplier;
 
         amount = Mathf.Max(0f, amount);
+        float applied = Mathf.Min(inst.hp, amount);
+        if (applied <= 0f)
+            return inst.hp > 0f;
+
         inst.hp = Mathf.Max(0f, inst.hp - amount);
         monsters[cell] = inst;
         UpdateTileHPVisual(cell, inst.hp, inst.maxHp);
-        TileDamaged?.Invoke(cell, inst.data, amount, src);
+        TileDamaged?.Invoke(cell, inst.data, applied, src);
 
         // --- Choose and play a hurt SFX ---
         AudioClip clip = sfxOverride;
@@ -1891,6 +1895,11 @@ public class Board : MonoBehaviour
     }
 
     public bool TryGetMonster(Vector2Int cell, out MonsterInstance inst) => monsters.TryGetValue(cell, out inst);
+
+    public bool TryGetTileRect(Vector2Int cell, out RectTransform rectTransform)
+    {
+        return placed.TryGetValue(cell, out rectTransform) && rectTransform;
+    }
 
     public List<Vector2Int> GetMonsterCells(bool includeDead = false)
     {
