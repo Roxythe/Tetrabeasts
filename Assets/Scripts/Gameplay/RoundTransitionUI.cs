@@ -25,6 +25,7 @@ public class RoundTransitionUI : MonoBehaviour
 
     [Header("Animation")]
     [SerializeField] Animator transitionAnimator;
+    [SerializeField] GameObject fireworkAnimationRoot;
     [SerializeField] bool useUnscaledAnimationTime = true;
     [SerializeField] string showAnimationStateName;
     [SerializeField] string showAnimationTrigger = "Show";
@@ -109,8 +110,7 @@ public class RoundTransitionUI : MonoBehaviour
         gameObject.SetActive(true);
         rootPanel.SetActive(true);
         rootPanel.transform.SetAsLastSibling();
-        PlayShowAnimation();
-        PlayShowAudio();
+        SetFireworkAnimationVisible(false);
 
         var rootGroup = rootPanel.GetComponent<CanvasGroup>();
         if (rootGroup)
@@ -160,6 +160,7 @@ public class RoundTransitionUI : MonoBehaviour
         gameObject.SetActive(true);
         rootPanel.SetActive(true);
         rootPanel.transform.SetAsLastSibling();
+        SetFireworkAnimationVisible(true);
         PlayShowAnimation();
         PlayShowAudio();
 
@@ -702,8 +703,7 @@ public class RoundTransitionUI : MonoBehaviour
     {
         _onContinue = null;
         _onOptOutContinue = null;
-        StopActiveLoopSfx();
-        PlayHideAnimation();
+        SetFireworkAnimationVisible(false);
 
         if (continueButton)
             continueButton.interactable = false;
@@ -845,6 +845,41 @@ public class RoundTransitionUI : MonoBehaviour
 
         if (transitionAnimator && useUnscaledAnimationTime)
             transitionAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+    }
+
+    void SetFireworkAnimationVisible(bool visible)
+    {
+        ResolveFireworkAnimationRoot();
+
+        if (fireworkAnimationRoot)
+            fireworkAnimationRoot.SetActive(visible);
+    }
+
+    void ResolveFireworkAnimationRoot()
+    {
+        if (fireworkAnimationRoot)
+            return;
+
+        Transform root = rootPanel ? rootPanel.transform : transform;
+        fireworkAnimationRoot = FindChildByName(root, "Firework_Animation");
+    }
+
+    GameObject FindChildByName(Transform root, string childName)
+    {
+        if (!root || string.IsNullOrWhiteSpace(childName))
+            return null;
+
+        if (string.Equals(root.name, childName, StringComparison.OrdinalIgnoreCase))
+            return root.gameObject;
+
+        for (int i = 0; i < root.childCount; i++)
+        {
+            GameObject match = FindChildByName(root.GetChild(i), childName);
+            if (match)
+                return match;
+        }
+
+        return null;
     }
 
     void PlayShowAnimation()

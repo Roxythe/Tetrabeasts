@@ -109,6 +109,12 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject runModsPanelRoot;
     [SerializeField] Button closeRunModsButton;
 
+    [Header("Gameplay Stats UI Panel")]
+    [SerializeField] GameplayStatsPanelUI gameplayStatsPanelUI;
+    [SerializeField] Button openGameplayStatsButton;
+    [SerializeField] GameObject gameplayStatsPanelPrefab;
+    [SerializeField] GameObject gameplayStatsMonsterPrefab;
+
     [SerializeField] GameObject helpPanelRoot;
 
     [Header("Player")]
@@ -363,6 +369,15 @@ public class GameController : MonoBehaviour
         Mathf.Clamp01(currencyChancePerClearedRow + lineClearCurrencyChanceAdd + ShopBuffEffects.GoldChanceBonus);
     float EffectiveLuck => luck + ShopBuffEffects.LuckBonus; // Luck Up: +10 per level 
 
+    int _baseCurrencyPerRoundWin;
+    float _baseCurrencyChancePerClearedRow;
+    int _baseMaxUnitLives;
+    int _baseReinforcementsPerWin;
+    float _baseComboWindowSeconds;
+    float _baseStoneBuffDropChance;
+    float _baseSpecialChancePerEnqueue;
+    bool _baseGameplayStatsCached;
+
     // ======== Achievements helpers ========
     [SerializeField] string[] achievementCharacterIds = new string[5]; // Set 5 character asset names
     float _gravityCapAccumSeconds = 0f;
@@ -431,6 +446,59 @@ public class GameController : MonoBehaviour
     public float CurrentMisfortune => misfortune + _starDifficultyModifiers.misfortuneAdd;
     public bool IsGameplaySuspended => gameOver || levelWon || isPaused || tutorialSuspended || _roundTransitionActive || _specialAbilityCinematicActive || _levelStartBlocked || (levelModifierController && levelModifierController.IsSelectionRunning);
     public bool IsRoundActive => !IsGameplaySuspended && !gameOver && !levelWon;
+    public int EffectiveMaxUnitLivesForStats => EffectiveMaxUnitLives;
+    public int BaseMaxUnitLivesForStats => _baseGameplayStatsCached ? _baseMaxUnitLives : maxUnitLives;
+    public int CurrentReinforcementsPerWinForStats => CurrentReinforcementsPerWin;
+    public int BaseReinforcementsPerWinForStats => _baseGameplayStatsCached ? _baseReinforcementsPerWin : reinforcementsPerWin;
+    public int CurrentRoundWinCurrencyForStats => GetRoundWinCurrency();
+    public int BaseCurrencyPerRoundWinForStats => _baseGameplayStatsCached ? _baseCurrencyPerRoundWin : currencyPerRoundWin;
+    public float EffectiveCurrencyChancePerClearedRowForStats => EffectiveCurrencyChancePerClearedRow;
+    public float BaseCurrencyChancePerClearedRowForStats => _baseGameplayStatsCached ? _baseCurrencyChancePerClearedRow : currencyChancePerClearedRow;
+    public float CurrentComboWindowSecondsForStats => CurrentComboWindowSeconds;
+    public float BaseComboWindowSecondsForStats => _baseGameplayStatsCached ? _baseComboWindowSeconds : comboWindowSeconds;
+    public float CurrentStoneBuffDropChanceForStats => CurrentStoneBuffDropChance;
+    public float BaseStoneBuffDropChanceForStats => _baseGameplayStatsCached ? _baseStoneBuffDropChance : stoneBuffDropChance;
+    public float EffectivePieceGravityMultForStats => EffectivePieceGravityMult;
+    public float EffectiveFallRampRateMultForStats => EffectiveFallRampRateMult;
+    public bool BossGravityActiveForStats => _bossGravityBonusActive > 0.0001f;
+    public float EffectiveLuckForStats => EffectiveLuck;
+    public MonsterPassiveBonuses PartyPassiveBonusesForStats => _partyPassiveBonuses;
+    public CastleData CurrentCastleDataForStats => currentCastleData;
+    public int CastleProjectileDamageForStats => castleProjectileDamage;
+    public bool SpecialUsageLockedForStats => levelModifierController && levelModifierController.BlocksSpecialUsage;
+    public bool SpecialBlocksLockedForStats => levelModifierController && levelModifierController.BlocksSpecialPieceSpawns;
+    public float BaseSpecialChancePerEnqueueForStats => _baseGameplayStatsCached ? _baseSpecialChancePerEnqueue : specialChancePerEnqueue;
+    public float EffectiveSpecialGaugeGainMultiplierForStats =>
+        SpecialUsageLockedForStats ? 0f : GetEffectiveSpecialGaugeGainMultiplier();
+    public float AllyMonsterOutgoingDamageMultiplierForStats => AllyMonsterOutgoingDamageMultiplier;
+    public float CurrentSpecialBlockChanceForStats
+    {
+        get
+        {
+            if (SpecialBlocksLockedForStats || specialBlocks == null || specialBlocks.Length == 0)
+                return 0f;
+
+            float chanceCap = Mathf.Max(0f, maxSpecialChance);
+            float chanceFloor = Mathf.Min(Mathf.Clamp01(minSpecialChance), chanceCap);
+            return Mathf.Clamp(specialChancePerEnqueue + specialBlockChanceAdd, chanceFloor, chanceCap);
+        }
+    }
+
+    public float MonsterDamageOutputMultiplierForStats
+    {
+        get
+        {
+            float multiplier = Mathf.Max(0f, monsterDamageMult) * AllyMonsterOutgoingDamageMultiplier * PlayerMonsterAttackMult;
+            LevelModifierSO activeModifier = levelModifierController ? levelModifierController.ActiveModifier : null;
+            if (activeModifier && activeModifier.kind == LevelModifierKind.DoubleDamage)
+                multiplier *= Mathf.Max(0f, activeModifier.dealtDamageMultiplier);
+
+            return multiplier;
+        }
+    }
+
+    public float MonsterSpecialGaugeGainMultiplierForStats =>
+        Mathf.Max(0f, monsterSpecialGainMult) * EffectiveSpecialGaugeGainMultiplierForStats;
 
     private CastleData currentCastleData;
 
@@ -525,7 +593,20 @@ public class GameController : MonoBehaviour
 
     void Awake()
     {
+        CacheBaseGameplayStatsForPanel();
         ApplyDemoBuildGuardRailsSetting();
+    }
+
+    void CacheBaseGameplayStatsForPanel()
+    {
+        _baseCurrencyPerRoundWin = currencyPerRoundWin;
+        _baseCurrencyChancePerClearedRow = currencyChancePerClearedRow;
+        _baseMaxUnitLives = maxUnitLives;
+        _baseReinforcementsPerWin = reinforcementsPerWin;
+        _baseComboWindowSeconds = comboWindowSeconds;
+        _baseStoneBuffDropChance = stoneBuffDropChance;
+        _baseSpecialChancePerEnqueue = specialChancePerEnqueue;
+        _baseGameplayStatsCached = true;
     }
 
     void ApplyDemoBuildGuardRailsSetting()
@@ -638,8 +719,11 @@ public class GameController : MonoBehaviour
         if (closeRunModsButton)
             closeRunModsButton.onClick.AddListener(CloseRunModsPanel);
 
+        SetupGameplayStatsPanel();
+
         // Ensure pause menu sub panels start closed
         if (runModsPanelRoot) UIPanelTransition.Hide(runModsPanelRoot, true);
+        if (gameplayStatsPanelUI) gameplayStatsPanelUI.Close(true);
         if (helpPanelRoot) UIPanelTransition.Hide(helpPanelRoot, true);
 
         // Apply character special gauge max
@@ -1096,6 +1180,13 @@ public class GameController : MonoBehaviour
                     closedSomething = true;
                 }
 
+                // Close Gameplay Stats
+                if (!closedSomething && gameplayStatsPanelUI && gameplayStatsPanelUI.IsVisible)
+                {
+                    gameplayStatsPanelUI.Close();
+                    closedSomething = true;
+                }
+
                 // Close Volume settings panel
                 if (!closedSomething && volumePanelInPause && UIPanelTransition.IsVisible(volumePanelInPause.gameObject))
                 {
@@ -1463,7 +1554,7 @@ public class GameController : MonoBehaviour
 
     IEnumerator CoShowLevelStartTransition()
     {
-        PauseGameplayForRoundTransition();
+        PauseGameplayForRoundTransition(showCursor: false);
 
         int levelNumber = currentLevel + 1;
         string castleName = currentCastleData && !string.IsNullOrWhiteSpace(currentCastleData.castleName)
@@ -1472,7 +1563,7 @@ public class GameController : MonoBehaviour
 
         yield return CoShowTimedRoundTransition($"Level {levelNumber}\n{castleName}");
 
-        ResumeGameplayAfterRoundTransition();
+        ResumeGameplayAfterRoundTransition(showCursor: false);
         EnterGameplayCursorMode();
     }
 
@@ -1619,7 +1710,7 @@ public class GameController : MonoBehaviour
         roundTransitionUI.Configure(roundTransitionFont, roundTransitionContinueButtonPrefab);
     }
 
-    void PauseGameplayForRoundTransition()
+    void PauseGameplayForRoundTransition(bool showCursor = true)
     {
         ResolveRoundTransitionUI();
 
@@ -1631,8 +1722,16 @@ public class GameController : MonoBehaviour
         if (pausePanel)
             UIPanelTransition.Hide(pausePanel, true);
 
-        EnterUICursorMode();
-        StartCoroutine(ReapplyUICursorNextFrame());
+        if (showCursor)
+        {
+            EnterUICursorMode();
+            StartCoroutine(ReapplyUICursorNextFrame());
+        }
+        else
+        {
+            EnterGameplayCursorMode();
+            StartCoroutine(ReapplyGameplayCursorNextFrame());
+        }
     }
 
     void PauseGameplayForBlockingPopup()
@@ -1648,15 +1747,23 @@ public class GameController : MonoBehaviour
         StartCoroutine(ReapplyUICursorNextFrame());
     }
 
-    void ResumeGameplayAfterRoundTransition()
+    void ResumeGameplayAfterRoundTransition(bool showCursor = true)
     {
         _roundTransitionActive = false;
         isPaused = false;
         Time.timeScale = 1f;
         AudioListener.pause = false;
 
-        EnterUICursorMode();
-        StartCoroutine(ReapplyUICursorNextFrame());
+        if (showCursor)
+        {
+            EnterUICursorMode();
+            StartCoroutine(ReapplyUICursorNextFrame());
+        }
+        else
+        {
+            EnterGameplayCursorMode();
+            StartCoroutine(ReapplyGameplayCursorNextFrame());
+        }
     }
 
     IEnumerator CoShowRoundTransition(string message)
@@ -2497,6 +2604,7 @@ public class GameController : MonoBehaviour
         RunModsStore.SpecialBlockChanceAdd = specialBlockChanceAdd;
 
         RunModsStore.PieceGravityMult = pieceGravityMult;
+        RunModsStore.FallRampRateMult = fallRampRateMult;
 
         RunModsStore.MonsterDamageMult = monsterDamageMult;
         RunModsStore.MonsterSpecialGainMult = monsterSpecialGainMult;
@@ -3267,6 +3375,11 @@ public class GameController : MonoBehaviour
             active = new System.Collections.Generic.List<MonsterData>(fallbackMonsters);
         if (active.Count > 4) active = active.GetRange(0, 4);
         return active;
+    }
+
+    public List<MonsterData> GetActiveMonsterRosterSnapshot()
+    {
+        return new List<MonsterData>(GetActiveMonsterRoster());
     }
 
     MonsterData WeightedPick(List<MonsterData> roster)
@@ -4131,12 +4244,85 @@ public class GameController : MonoBehaviour
 
         if (runModsPanelUI) runModsPanelUI.Refresh(); // Make sure the list is up to date before showing
 
+        if (gameplayStatsPanelUI && gameplayStatsPanelUI.IsVisible)
+            gameplayStatsPanelUI.Close();
+
         UIPanelTransition.Show(runModsPanelRoot);
     }
 
     public void CloseRunModsPanel()
     {
         if (runModsPanelRoot) UIPanelTransition.Hide(runModsPanelRoot);
+    }
+
+    public void OpenGameplayStatsPanel()
+    {
+        SetupGameplayStatsPanel();
+        if (!gameplayStatsPanelUI)
+            return;
+
+        if (helpPanelRoot && UIPanelTransition.IsVisible(helpPanelRoot))
+            UIPanelTransition.Hide(helpPanelRoot);
+
+        if (runModsPanelRoot && UIPanelTransition.IsVisible(runModsPanelRoot))
+            UIPanelTransition.Hide(runModsPanelRoot);
+
+        if (volumePanelInPause && UIPanelTransition.IsVisible(volumePanelInPause.gameObject))
+            volumePanelInPause.Close();
+
+        gameplayStatsPanelUI.Open(this);
+    }
+
+    public void CloseGameplayStatsPanel(bool instant = false)
+    {
+        if (gameplayStatsPanelUI)
+            gameplayStatsPanelUI.Close(instant);
+    }
+
+    void SetupGameplayStatsPanel()
+    {
+        if (!gameplayStatsPanelUI)
+            gameplayStatsPanelUI = FindFirstObjectByType<GameplayStatsPanelUI>(FindObjectsInactive.Include);
+
+        if (!gameplayStatsPanelUI && gameplayStatsPanelPrefab && pausePanel)
+        {
+            GameObject instance = Instantiate(gameplayStatsPanelPrefab, pausePanel.transform);
+            instance.name = gameplayStatsPanelPrefab.name;
+            gameplayStatsPanelUI = instance.GetComponent<GameplayStatsPanelUI>();
+            if (!gameplayStatsPanelUI)
+                gameplayStatsPanelUI = instance.AddComponent<GameplayStatsPanelUI>();
+        }
+
+        if (!gameplayStatsPanelUI && pausePanel)
+            gameplayStatsPanelUI = GameplayStatsPanelUI.Create(this, pausePanel.transform, gameplayStatsMonsterPrefab);
+
+        if (gameplayStatsPanelUI)
+            gameplayStatsPanelUI.Initialize(this, gameplayStatsMonsterPrefab);
+
+        if (!openGameplayStatsButton && pausePanel)
+            openGameplayStatsButton = FindPauseMenuButton("Stats_Button");
+
+        if (openGameplayStatsButton)
+        {
+            openGameplayStatsButton.onClick.RemoveListener(OpenGameplayStatsPanel);
+            openGameplayStatsButton.onClick.AddListener(OpenGameplayStatsPanel);
+        }
+    }
+
+    Button FindPauseMenuButton(string buttonName)
+    {
+        if (!pausePanel || string.IsNullOrWhiteSpace(buttonName))
+            return null;
+
+        Button[] buttons = pausePanel.GetComponentsInChildren<Button>(true);
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            Button button = buttons[i];
+            if (button && button.name == buttonName)
+                return button;
+        }
+
+        return null;
     }
 
     void ClosePauseSubPanels(bool instant = false)
@@ -4148,6 +4334,10 @@ public class GameController : MonoBehaviour
         // Close Run Mods
         if (runModsPanelRoot && UIPanelTransition.IsVisible(runModsPanelRoot))
             UIPanelTransition.Hide(runModsPanelRoot, instant);
+
+        // Close Gameplay Stats
+        if (gameplayStatsPanelUI && gameplayStatsPanelUI.IsVisible)
+            gameplayStatsPanelUI.Close(instant);
 
         // Close Volume settings panel
         if (volumePanelInPause && UIPanelTransition.IsVisible(volumePanelInPause.gameObject))
@@ -6634,6 +6824,12 @@ public class GameController : MonoBehaviour
     {
         yield return null;
         EnterUICursorMode();
+    }
+
+    IEnumerator ReapplyGameplayCursorNextFrame()
+    {
+        yield return null;
+        EnterGameplayCursorMode();
     }
 
 }

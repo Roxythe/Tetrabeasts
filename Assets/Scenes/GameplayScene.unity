@@ -6967,6 +6967,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 556149669}
   m_CullTransparentMesh: 1
+--- !u!114 &557835847 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3806403813254985379, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
+  m_PrefabInstance: {fileID: 6270918556720518022}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!114 &565378670 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2882313478382131373, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
@@ -12951,6 +12962,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Firework_Animation
       objectReference: {fileID: 0}
+    - target: {fileID: 4954584651243868360, guid: 9cc77649b15bc0b42ac2abc4a950fd0f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16328,7 +16343,7 @@ MonoBehaviour:
   baseScale: 1
   scalePerCombo: 0.1
   showAtCombo: 2
-  maxScale: 2.5
+  maxScale: 1.5
   baseColorFlickerSpeed: 2
   flickerSpeedPerComboAboveThreshold: 0.2
   colorFlickerSpeedCap: 5
@@ -16348,7 +16363,7 @@ RectTransform:
   m_GameObject: {fileID: 1232209868}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1762590872}
@@ -16362,7 +16377,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 102.09094, y: 9.68103}
+  m_AnchoredPosition: {x: 101.041016, y: 9.68103}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1235340894
@@ -27651,8 +27666,8 @@ RectTransform:
   - {fileID: 1132580155}
   - {fileID: 1534734140}
   - {fileID: 1843446949}
-  - {fileID: 6270918556720518023}
   - {fileID: 1041077126}
+  - {fileID: 6270918556720518023}
   - {fileID: 1902031263}
   - {fileID: 450669738}
   - {fileID: 1047163640}
@@ -27914,6 +27929,10 @@ MonoBehaviour:
   openRunModsButton: {fileID: 6270918556720518024}
   runModsPanelRoot: {fileID: 141708810}
   closeRunModsButton: {fileID: 565378670}
+  gameplayStatsPanelUI: {fileID: 5014264363968421936}
+  openGameplayStatsButton: {fileID: 557835847}
+  gameplayStatsPanelPrefab: {fileID: 3102798338584117908, guid: 94b01129f629d0e4fb602f1a2ceae52b, type: 3}
+  gameplayStatsMonsterPrefab: {fileID: 7629768125668206609, guid: a6b6129f56e142b4bbd01ea45b093b18, type: 3}
   helpPanelRoot: {fileID: 6270918556720518026}
   playerPortrait: {fileID: 73739976}
   playerName: {fileID: 458098584}
@@ -29869,6 +29888,7 @@ MonoBehaviour:
   transitionFont: {fileID: 11400000, guid: a1470b117e5ec7a4c9c2c4151211f423, type: 2}
   continueButtonPrefab: {fileID: 6826685574233894395, guid: 5e7f2b5277a37d041a57b07dbb619341, type: 3}
   transitionAnimator: {fileID: 978409729}
+  fireworkAnimationRoot: {fileID: 0}
   useUnscaledAnimationTime: 1
   showAnimationStateName: 
   showAnimationTrigger: Show
@@ -31142,6 +31162,17 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &5014264363968421936 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4879984797605465010, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
+  m_PrefabInstance: {fileID: 6270918556720518022}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e8b86af86d84f9489070f4a765089d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameplayStatsPanelUI
 --- !u!1001 &5196645333132102235
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31483,14 +31514,6 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2092384764}
-    - target: {fileID: 1271436965288140745, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: RequestSaveAndQuit
-      objectReference: {fileID: 0}
-    - target: {fileID: 1271436965288140745, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: GameController, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 1332198757378613502, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -31509,6 +31532,10 @@ PrefabInstance:
       objectReference: {fileID: 2092384764}
     - target: {fileID: 2910176665840014929, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2092384764}
+    - target: {fileID: 4879984797605465010, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
+      propertyPath: gameController
       value: 
       objectReference: {fileID: 2092384764}
     - target: {fileID: 7882744238120319797, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
