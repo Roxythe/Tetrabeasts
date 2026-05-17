@@ -14,7 +14,7 @@ public class AchievementToastUI : MonoBehaviour
         if (def == null) return;
 
         if (iconImage) iconImage.sprite = def.icon;
-        if (titleText) titleText.text = def.title;
-        if (descText) descText.text = def.description;
+        if (titleText) titleText.text = TetrabeastsLocalization.LocalizeText(def.title);
+        if (descText) descText.text = TetrabeastsLocalization.LocalizeText(def.description);
     }
 }

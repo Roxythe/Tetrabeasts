@@ -48,10 +48,13 @@ public class TitleStarDifficultyUI : MonoBehaviour
     [SerializeField] float tooltipPanelTopGap = 18f;
     [SerializeField] float tooltipScreenEdgePadding = 8f;
     [SerializeField] Vector2 tooltipMinSize = new Vector2(220f, 80f);
-    [SerializeField] Vector2 tooltipMaxSize = new Vector2(420f, 260f);
+    [SerializeField] Vector2 tooltipMaxSize = new Vector2(420f, 0f);
     [SerializeField] Vector2 tooltipTextInsetMin = new Vector2(12f, 10f);
     [SerializeField] Vector2 tooltipTextInsetMax = new Vector2(12f, 10f);
     [SerializeField] bool hideTooltipOnDisable = true;
+
+    int _currentTooltipStars = -1;
+    RectTransform _currentTooltipTarget;
 
     public void Initialize()
     {
@@ -112,30 +115,39 @@ public class TitleStarDifficultyUI : MonoBehaviour
                 : (isUnlocked ? emptyUnlockedStarColor : lockedStarColor);
         }
 
+        string selectionLabel = TetrabeastsLocalization.LocalizeText(StarDifficultySystem.GetSelectionLabel(selectedStars));
+
         if (selectionText)
-            selectionText.text = StarDifficultySystem.GetSelectionLabel(selectedStars);
+            selectionText.text = selectionLabel;
 
         if (shadowSelectionText)
-            shadowSelectionText.text = StarDifficultySystem.GetSelectionLabel(selectedStars);
+            shadowSelectionText.text = selectionLabel;
 
         if (unlockText)
         {
             unlockText.text = maxUnlockedStars >= StarDifficultySystem.MaxStars
-                ? "All star difficulties unlocked."
-                : StarDifficultySystem.GetUnlockInstruction(maxUnlockedStars + 1);
+                ? TetrabeastsLocalization.LocalizeText("All star difficulties unlocked.")
+                : TetrabeastsLocalization.LocalizeText(StarDifficultySystem.GetUnlockInstruction(maxUnlockedStars + 1));
         }
 
         RefreshDifficultyAnimations();
-        HideTooltip();
+
+        if (_currentTooltipTarget && tooltipRoot && tooltipRoot.gameObject.activeSelf)
+            ShowTooltip(_currentTooltipStars, _currentTooltipTarget);
+        else
+            HideTooltip();
     }
 
     void OnEnable()
     {
+        TetrabeastsLocalization.LanguageChanged += RefreshNow;
         RefreshNow();
     }
 
     void OnDisable()
     {
+        TetrabeastsLocalization.LanguageChanged -= RefreshNow;
+
         if (hideTooltipOnDisable)
             HideTooltip();
 
@@ -227,15 +239,19 @@ public class TitleStarDifficultyUI : MonoBehaviour
         if (!tooltipRoot || !tooltipText || !targetRect || PlayerProgress.I == null)
             return;
 
+        stars = StarDifficultySystem.ClampStars(stars);
+        _currentTooltipStars = stars;
+        _currentTooltipTarget = targetRect;
+
         RectTransform panelRect = GetTooltipAnchorPanel();
         RectTransform parentRect = tooltipRoot.parent as RectTransform;
         if (!panelRect || !parentRect)
             return;
 
-        string text = StarDifficultySystem.BuildTooltipText(
+        string text = TetrabeastsLocalization.LocalizeText(StarDifficultySystem.BuildTooltipText(
             stars,
             PlayerProgress.I.GetMaxUnlockedStarDifficulty()
-        );
+        ));
 
         tooltipText.textWrappingMode = TextWrappingModes.Normal;
         tooltipText.overflowMode = TextOverflowModes.Overflow;
@@ -278,28 +294,34 @@ public class TitleStarDifficultyUI : MonoBehaviour
 
         Vector2 preferred = tooltipText.GetPreferredValues(
             text,
-            Mathf.Max(1f, maxWidth - horizontalInsets),
-            0f
+            float.PositiveInfinity,
+            float.PositiveInfinity
         );
 
-        float width = Mathf.Clamp(
+        float width = Mathf.Ceil(Mathf.Clamp(
             preferred.x + horizontalInsets,
             tooltipMinSize.x,
             maxWidth
-        );
+        ));
 
         float wrappedTextWidth = Mathf.Max(1f, width - horizontalInsets);
-        preferred = tooltipText.GetPreferredValues(text, wrappedTextWidth, 0f);
+        tooltipRoot.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+        tooltipRoot.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, tooltipMinSize.y);
+        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(tooltipRoot);
+        tooltipText.ForceMeshUpdate(true, true);
 
-        float height = Mathf.Max(
+        preferred = tooltipText.GetPreferredValues(text, wrappedTextWidth, float.PositiveInfinity);
+        float textHeight = Mathf.Max(preferred.y, tooltipText.preferredHeight, tooltipText.renderedHeight);
+
+        float height = Mathf.Ceil(Mathf.Max(
             tooltipMinSize.y,
-            preferred.y + verticalInsets
-        );
+            textHeight + verticalInsets
+        ));
 
         if (tooltipMaxSize.y > 0f)
             height = Mathf.Min(height, tooltipMaxSize.y);
 
-        tooltipRoot.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
         tooltipRoot.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(tooltipRoot);
@@ -338,8 +360,17 @@ public class TitleStarDifficultyUI : MonoBehaviour
 
     public void HideTooltip()
     {
+        _currentTooltipStars = -1;
+        _currentTooltipTarget = null;
+
         if (tooltipRoot)
             tooltipRoot.gameObject.SetActive(false);
+    }
+
+    public void HideTooltipFor(RectTransform targetRect)
+    {
+        if (_currentTooltipTarget == targetRect)
+            HideTooltip();
     }
 
     RectTransform GetTooltipAnchorPanel()
@@ -385,6 +416,7 @@ public class TitleStarDifficultyUI : MonoBehaviour
 
         currentInstance = Instantiate(prefab, holder);
         currentInstance.name = prefab.name;
+        DisableRaycastTargets(currentInstance);
 
         RectTransform instanceRect = currentInstance.transform as RectTransform;
         if (instanceRect)
@@ -398,6 +430,19 @@ public class TitleStarDifficultyUI : MonoBehaviour
         }
 
         RestartDifficultyAnimation(currentInstance);
+    }
+
+    void DisableRaycastTargets(GameObject root)
+    {
+        if (!root)
+            return;
+
+        var graphics = root.GetComponentsInChildren<Graphic>(true);
+        for (int i = 0; i < graphics.Length; i++)
+        {
+            if (graphics[i])
+                graphics[i].raycastTarget = false;
+        }
     }
 
     void RestartDifficultyAnimation(GameObject instance)
@@ -426,7 +471,7 @@ public class TitleStarDifficultyUI : MonoBehaviour
     }
 }
 
-public class TitleStarDifficultyHoverTarget : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class TitleStarDifficultyHoverTarget : MonoBehaviour, IPointerEnterHandler, IPointerMoveHandler, IPointerExitHandler
 {
     TitleStarDifficultyUI owner;
     int stars;
@@ -443,6 +488,16 @@ public class TitleStarDifficultyHoverTarget : MonoBehaviour, IPointerEnterHandle
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        Show();
+    }
+
+    public void OnPointerMove(PointerEventData eventData)
+    {
+        Show();
+    }
+
+    void Show()
+    {
         if (!owner || !rectTransform || !image || !image.raycastTarget)
             return;
 
@@ -454,7 +509,7 @@ public class TitleStarDifficultyHoverTarget : MonoBehaviour, IPointerEnterHandle
         if (!owner)
             return;
 
-        owner.HideTooltip();
+        owner.HideTooltipFor(rectTransform);
     }
 
 }

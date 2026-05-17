@@ -132,7 +132,7 @@ public class VictoryPanelUI : MonoBehaviour
     void RefreshStats(RunSummaryStats.Snapshot stats)
     {
         if (statsCategoryText && string.IsNullOrWhiteSpace(statsCategoryText.text))
-            statsCategoryText.text = DefaultCategoryText;
+            statsCategoryText.text = TetrabeastsLocalization.LocalizeText(DefaultCategoryText);
 
         if (!statsEarnedText)
             return;
@@ -198,7 +198,9 @@ public class VictoryPanelUI : MonoBehaviour
         if (!rowRoot || !mod)
             return;
 
-        string titleValue = string.IsNullOrWhiteSpace(mod.displayName) ? mod.name : mod.displayName;
+        string titleValue = string.IsNullOrWhiteSpace(mod.displayName)
+            ? mod.name
+            : TetrabeastsLocalization.LocalizeText(mod.displayName);
         string counterValue = $"x{Mathf.Max(1, copies)}";
         Color titleColor = GetTitleColor(rarity);
 
@@ -374,6 +376,6 @@ public class VictoryPanelUI : MonoBehaviour
 
         bool hasMessage = !string.IsNullOrWhiteSpace(message);
         unlockedDifficultyText.gameObject.SetActive(hasMessage);
-        unlockedDifficultyText.text = hasMessage ? message : string.Empty;
+        unlockedDifficultyText.text = hasMessage ? TetrabeastsLocalization.LocalizeText(message) : string.Empty;
     }
 }

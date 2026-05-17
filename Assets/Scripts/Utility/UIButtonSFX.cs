@@ -12,9 +12,12 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerClickHan
     [Header("Options")]
     [Range(0f, 1f)] public float hoverVolume = 1f;
     [Range(0f, 1f)] public float clickVolume = 1f;
+    [Min(0f)] public float hoverCooldownSeconds = 0.08f;
 
     [Tooltip("If true, ignores clicks when the Button is not interactable.")]
     public bool requireInteractable = true;
+
+    static float s_nextHoverSfxTime;
 
     Button _btn;
 
@@ -27,6 +30,15 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerClickHan
     {
         if (!AudioManager.I || !hoverClip) return;
         if (requireInteractable && _btn && !_btn.interactable) return;
+
+        if (hoverCooldownSeconds > 0f)
+        {
+            float now = Time.unscaledTime;
+            if (now < s_nextHoverSfxTime)
+                return;
+
+            s_nextHoverSfxTime = now + hoverCooldownSeconds;
+        }
 
         AudioManager.I.PlayUISFX(hoverClip, vol: hoverVolume);
     }

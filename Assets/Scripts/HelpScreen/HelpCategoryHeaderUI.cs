@@ -25,7 +25,7 @@ public class HelpCategoryHeaderUI : MonoBehaviour
 
     public void SetLabel(string text)
     {
-        if (label) label.text = text;
+        if (label) label.text = TetrabeastsLocalization.LocalizeText(text);
     }
 
     public void SetOnToggle(Action onToggle)

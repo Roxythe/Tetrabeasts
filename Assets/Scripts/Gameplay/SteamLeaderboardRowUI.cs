@@ -93,7 +93,7 @@ public class SteamLeaderboardRowUI : MonoBehaviour
         ResolveMissingReferences();
 
         if (rankText) rankText.text = "-";
-        if (userNameText) userNameText.text = message;
+        if (userNameText) userNameText.text = TetrabeastsLocalization.LocalizeText(message);
         if (scoreText) scoreText.text = "-";
         if (profilePicImage) profilePicImage.enabled = false;
         if (commanderImage) commanderImage.enabled = false;

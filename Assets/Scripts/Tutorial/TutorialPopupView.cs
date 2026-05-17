@@ -94,7 +94,7 @@ public class TutorialPopupView : MonoBehaviour
     public void SetContent(string body)
     {
         if (bodyText)
-            bodyText.text = body ?? string.Empty;
+            bodyText.text = TetrabeastsLocalization.LocalizeText(body ?? string.Empty);
     }
 
     public void SetContinueVisible(bool visible)

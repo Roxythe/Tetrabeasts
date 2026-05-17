@@ -40,7 +40,7 @@ public class MonsterUnitStatsUI : MonoBehaviour
 
         string monsterName = monster ? monster.monsterName : "Monster";
         SetText(nameText, nameShadowText, monsterName);
-        SetText(levelText, levelShadowText, $"Level {Mathf.Max(1, level)}");
+        SetText(levelText, levelShadowText, TetrabeastsLocalization.LocalizeFormat("Level {0}", Mathf.Max(1, level)));
         SetText(stats1Text, stats1ShadowText, stats1);
         SetText(stats2Text, stats2ShadowText, stats2);
 
@@ -115,11 +115,13 @@ public class MonsterUnitStatsUI : MonoBehaviour
 
     void SetText(TMP_Text main, TMP_Text shadow, string value)
     {
+        value = TetrabeastsLocalization.LocalizeText(value ?? string.Empty);
+
         if (main)
-            main.text = value ?? string.Empty;
+            main.text = value;
 
         if (shadow)
-            shadow.text = value ?? string.Empty;
+            shadow.text = value;
     }
 
     void ConfigureText(TMP_Text text, TextWrappingModes wrapping, bool useAutoSizing)

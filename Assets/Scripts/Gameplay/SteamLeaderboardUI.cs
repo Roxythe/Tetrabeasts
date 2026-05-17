@@ -57,11 +57,15 @@ public class SteamLeaderboardUI : MonoBehaviour
         ResolveMissingReferences();
         HookButtons();
         SetActiveTab(_activeTab);
+        RefreshStaticLabels();
         UpdateResetTimer(true);
     }
 
     void OnEnable()
     {
+        TetrabeastsLocalization.LanguageChanged += HandleLanguageChanged;
+        RefreshStaticLabels();
+
         if (HideIfSteamUnavailable())
             return;
 
@@ -72,6 +76,11 @@ public class SteamLeaderboardUI : MonoBehaviour
     void Update()
     {
         UpdateResetTimer(false);
+    }
+
+    void OnDisable()
+    {
+        TetrabeastsLocalization.LanguageChanged -= HandleLanguageChanged;
     }
 
     void OnDestroy()
@@ -143,6 +152,13 @@ public class SteamLeaderboardUI : MonoBehaviour
         ApplyAvatarSprites(_snapshot.friends, service);
         ApplyAvatarSprites(_snapshot.currentRank, service);
         RebuildRows();
+    }
+
+    void HandleLanguageChanged()
+    {
+        RefreshStaticLabels();
+        RebuildRows();
+        UpdateResetTimer(true);
     }
 
     void ApplyAvatarSprites(List<SteamLeaderboardEntry> entries, SteamLeaderboardService service)
@@ -287,6 +303,8 @@ public class SteamLeaderboardUI : MonoBehaviour
 
     void SetStatus(string message)
     {
+        message = TetrabeastsLocalization.LocalizeText(message);
+
         if (statusText)
             statusText.text = message;
 
@@ -314,6 +332,8 @@ public class SteamLeaderboardUI : MonoBehaviour
 
     void SetResetTimerText(string message)
     {
+        message = TetrabeastsLocalization.LocalizeText(message);
+
         if (refreshText)
             refreshText.text = message;
 
@@ -355,6 +375,8 @@ public class SteamLeaderboardUI : MonoBehaviour
             friendsTabButton = FindButton("friends");
         if (!currentRankTabButton)
             currentRankTabButton = FindButton("current", "rank");
+        if (!currentRankTabButton)
+            currentRankTabButton = FindButton("current");
         if (!refreshButton)
             refreshButton = FindButton("refresh", "reset");
         if (!closeButton)
@@ -367,6 +389,56 @@ public class SteamLeaderboardUI : MonoBehaviour
         {
             var rectParent = transform as RectTransform;
             rowPrefab = CreateRuntimeRowTemplate(rectParent).gameObject;
+        }
+
+        RefreshStaticLabels();
+    }
+
+    void RefreshStaticLabels()
+    {
+        SetButtonLabel(globalTabButton, "Global");
+        SetButtonLabel(friendsTabButton, "Friends");
+        SetButtonLabel(currentRankTabButton, "Current");
+        SetButtonLabel(refreshButton, "Refresh");
+        SetButtonLabel(closeButton, "X");
+
+        var texts = GetComponentsInChildren<TMP_Text>(true);
+        for (int i = 0; i < texts.Length; i++)
+        {
+            TMP_Text text = texts[i];
+            if (!text)
+                continue;
+
+            string name = text.name.Replace(" ", string.Empty).ToLowerInvariant();
+            if (name.Contains("ranktitle") || name.Contains("rank_header"))
+                text.text = TetrabeastsLocalization.LocalizeText("Rank");
+            else if (name.Contains("playertitle") || name.Contains("player_header"))
+                text.text = TetrabeastsLocalization.LocalizeText("Player");
+            else if (name.Contains("scoretitle") || name.Contains("score_header"))
+                text.text = TetrabeastsLocalization.LocalizeText("Score");
+            else if (IsLeaderboardTitleText(name))
+                text.text = TetrabeastsLocalization.LocalizeText("Leaderboard");
+        }
+    }
+
+    static bool IsLeaderboardTitleText(string normalizedName)
+    {
+        return normalizedName.Contains("title_text")
+            || normalizedName.Contains("titleshadow_text")
+            || normalizedName.Contains("title_shadow")
+            || normalizedName.Contains("titleshadow")
+            || normalizedName.Contains("leaderboardtitle");
+    }
+
+    void SetButtonLabel(Button button, string englishLabel)
+    {
+        if (!button)
+            return;
+
+        var labels = button.GetComponentsInChildren<TMP_Text>(true);
+        for (int i = 0; i < labels.Length; i++)
+        {
+            labels[i].text = TetrabeastsLocalization.LocalizeText(englishLabel);
         }
     }
 
@@ -406,7 +478,7 @@ public class SteamLeaderboardUI : MonoBehaviour
         headerLayout.childForceExpandWidth = false;
         headerLayout.childForceExpandHeight = false;
 
-        var title = CreateText("Title_Text", "LEADERBOARDS", header, 34f, TextAlignmentOptions.MidlineLeft);
+        var title = CreateText("Title_Text", "Leaderboard", header, 34f, TextAlignmentOptions.MidlineLeft);
         AddLayoutElement(title.gameObject, preferredWidth: 330f, flexibleWidth: 1f);
 
         statusText = CreateText("Status_Text", "Refreshing leaderboards...", header, 18f, TextAlignmentOptions.MidlineRight);
@@ -438,9 +510,9 @@ public class SteamLeaderboardUI : MonoBehaviour
         tabLayout.childForceExpandWidth = true;
         tabLayout.childForceExpandHeight = true;
 
-        globalTabButton = CreateButton("Global_Tab_Button", "GLOBAL", tabs, 0f);
-        friendsTabButton = CreateButton("Friends_Tab_Button", "FRIENDS", tabs, 0f);
-        currentRankTabButton = CreateButton("CurrentRank_Tab_Button", "RANK", tabs, 0f);
+        globalTabButton = CreateButton("Global_Tab_Button", "Global", tabs, 0f);
+        friendsTabButton = CreateButton("Friends_Tab_Button", "Friends", tabs, 0f);
+        currentRankTabButton = CreateButton("CurrentRank_Tab_Button", "Current", tabs, 0f);
 
         var columns = CreateRect("Column_Header", frame);
         AddLayoutElement(columns.gameObject, preferredHeight: 34f, flexibleWidth: 1f);
@@ -453,10 +525,10 @@ public class SteamLeaderboardUI : MonoBehaviour
         columnsLayout.childForceExpandWidth = false;
         columnsLayout.childForceExpandHeight = true;
 
-        AddLayoutElement(CreateText("Rank_Header_Text", "RANK", columns, 19f, TextAlignmentOptions.MidlineLeft).gameObject, preferredWidth: 68f);
+        AddLayoutElement(CreateText("Rank_Header_Text", "Rank", columns, 19f, TextAlignmentOptions.MidlineLeft).gameObject, preferredWidth: 68f);
         AddLayoutElement(CreateText("Avatar_Header_Space", "", columns, 19f, TextAlignmentOptions.MidlineLeft).gameObject, preferredWidth: 38f);
-        AddLayoutElement(CreateText("Player_Header_Text", "PLAYER", columns, 19f, TextAlignmentOptions.MidlineLeft).gameObject, flexibleWidth: 1f);
-        AddLayoutElement(CreateText("Score_Header_Text", "SCORE", columns, 19f, TextAlignmentOptions.MidlineRight).gameObject, preferredWidth: 142f);
+        AddLayoutElement(CreateText("Player_Header_Text", "Player", columns, 19f, TextAlignmentOptions.MidlineLeft).gameObject, flexibleWidth: 1f);
+        AddLayoutElement(CreateText("Score_Header_Text", "Score", columns, 19f, TextAlignmentOptions.MidlineRight).gameObject, preferredWidth: 142f);
         AddLayoutElement(CreateText("Commander_Header_Space", "", columns, 19f, TextAlignmentOptions.MidlineRight).gameObject, preferredWidth: 40f);
 
         var panelHost = CreateRect("Panel_Host", frame);
@@ -529,7 +601,7 @@ public class SteamLeaderboardUI : MonoBehaviour
         go.transform.SetParent(parent, false);
 
         var text = go.GetComponent<TextMeshProUGUI>();
-        text.text = value;
+        text.text = TetrabeastsLocalization.LocalizeText(value);
         text.fontSize = fontSize;
         text.enableAutoSizing = true;
         text.fontSizeMin = Mathf.Max(12f, fontSize - 7f);

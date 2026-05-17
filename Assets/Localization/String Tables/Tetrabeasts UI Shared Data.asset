@@ -1,0 +1,224 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Tetrabeasts UI Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: Tetrabeasts UI
+  m_TableCollectionNameGuidString: ce01bc12d4cd00b42a282dcb0cba5020
+  m_Entries:
+  - m_Id: 3967438848
+    m_Key: settings_language_label
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3992604672
+    m_Key: language_prompt_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3996798976
+    m_Key: language_prompt_body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3996798977
+    m_Key: language_prompt_confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465927417856
+    m_Key: settings_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389376
+    m_Key: settings_music_genre
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389377
+    m_Key: settings_master_volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389378
+    m_Key: settings_music_volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389379
+    m_Key: settings_sfx_volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389380
+    m_Key: settings_cursor_size
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389381
+    m_Key: settings_combat_log
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389382
+    m_Key: settings_skip_trailer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389383
+    m_Key: intro_press_any_key
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389384
+    m_Key: title_select_commander
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389385
+    m_Key: title_monster_units
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389386
+    m_Key: title_active_squad
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389387
+    m_Key: generic_confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389388
+    m_Key: generic_continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389389
+    m_Key: generic_close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389390
+    m_Key: generic_back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389391
+    m_Key: generic_start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389392
+    m_Key: pause_paused
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389393
+    m_Key: pause_resume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389394
+    m_Key: pause_main_menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389395
+    m_Key: pause_restart
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389396
+    m_Key: pause_save_quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389397
+    m_Key: pause_quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389398
+    m_Key: panel_achievements
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389399
+    m_Key: panel_leaderboard
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389400
+    m_Key: panel_submit_name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389401
+    m_Key: panel_help_menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389402
+    m_Key: panel_codex_buffs
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389403
+    m_Key: panel_codex_debuffs
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389404
+    m_Key: panel_codex_level_mod
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389405
+    m_Key: panel_stats
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389406
+    m_Key: panel_units
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389407
+    m_Key: gameplay_controls
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389408
+    m_Key: gameplay_choose_buff
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389409
+    m_Key: gameplay_choose_debuff
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389410
+    m_Key: gameplay_level_modifier
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389411
+    m_Key: gameplay_next_piece
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389412
+    m_Key: gameplay_score
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389413
+    m_Key: gameplay_reroll
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389414
+    m_Key: gameplay_exp_gained
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389415
+    m_Key: gameplay_permanent_exp_gained
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389416
+    m_Key: gameplay_exp_preserved
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389417
+    m_Key: gameplay_unit_reserve
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389418
+    m_Key: gameplay_new_difficulty
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389419
+    m_Key: gameplay_do_not_show_again
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 8504114788239147032
+  references:
+    version: 2
+    RefIds:
+    - rid: 8504114788239147032
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1778946571050

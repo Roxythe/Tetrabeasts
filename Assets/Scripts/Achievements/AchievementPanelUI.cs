@@ -116,8 +116,8 @@ public class AchievementPanelUI : MonoBehaviour
             int remaining = Mathf.Max(0, hiddenTotal - hiddenUnlocked);
 
             string desc = remaining == 1
-                ? "1 secret achievement remaining"
-                : $"{remaining} secret achievements remaining";
+                ? TetrabeastsLocalization.LocalizeText("1 secret achievement remaining")
+                : TetrabeastsLocalization.LocalizeFormat("{0} secret achievements remaining", remaining);
 
             var row = Instantiate(rowPrefab, contentParent);
 

@@ -1,0 +1,220 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Tetrabeasts UI_en
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: ce01bc12d4cd00b42a282dcb0cba5020, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 3967438848
+    m_Localized: Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3992604672
+    m_Localized: Choose Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3996798976
+    m_Localized: Pick the language Tetrabeasts should use. You can change this later
+      in Settings.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3996798977
+    m_Localized: Confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465927417856
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389376
+    m_Localized: BGM Genre
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389377
+    m_Localized: Master Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389378
+    m_Localized: Music Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389379
+    m_Localized: SFX Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389380
+    m_Localized: Cursor Size
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389381
+    m_Localized: Combat Log
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389382
+    m_Localized: Skip Trailer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389383
+    m_Localized: Press Any Key
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389384
+    m_Localized: Select Commander
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389385
+    m_Localized: Monster Units
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389386
+    m_Localized: Active Squad
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389387
+    m_Localized: Confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389388
+    m_Localized: Continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389389
+    m_Localized: Close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389390
+    m_Localized: Back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389391
+    m_Localized: Start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389392
+    m_Localized: PAUSED
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389393
+    m_Localized: Resume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389394
+    m_Localized: Main Menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389395
+    m_Localized: Restart
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389396
+    m_Localized: Save & Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389397
+    m_Localized: Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389398
+    m_Localized: Achievements
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389399
+    m_Localized: Leaderboard
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389400
+    m_Localized: Submit Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389401
+    m_Localized: Help Menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389402
+    m_Localized: Buffs
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389403
+    m_Localized: Debuffs
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389404
+    m_Localized: Level Mod
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389405
+    m_Localized: Stats
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389406
+    m_Localized: Units
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389407
+    m_Localized: Controls
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389408
+    m_Localized: Choose A Buff
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389409
+    m_Localized: Choose A Debuff
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389410
+    m_Localized: Level Modifier
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389411
+    m_Localized: Next Piece
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389412
+    m_Localized: Score
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389413
+    m_Localized: Reroll
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389414
+    m_Localized: EXP Gained
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389415
+    m_Localized: Permanent EXP Gained
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389416
+    m_Localized: EXP Preserved
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389417
+    m_Localized: Unit Reserve
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389418
+    m_Localized: New Difficulty Unlocked!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389419
+    m_Localized: Do not show this message again
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

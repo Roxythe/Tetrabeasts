@@ -239,7 +239,7 @@ public class ConfirmationPopupUI : MonoBehaviour
     static void SetLabel(TMP_Text label, string text)
     {
         if (label)
-            label.text = text ?? string.Empty;
+            label.text = TetrabeastsLocalization.LocalizeText(text ?? string.Empty);
     }
 
     struct ButtonLayoutState

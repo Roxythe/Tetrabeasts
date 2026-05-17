@@ -110,8 +110,8 @@ public class EnemyCastleUI : MonoBehaviour
 
         this.levelNumber = Mathf.Max(1, levelNumber);
 
-        if (castleNameText) castleNameText.text = castleName;
-        if (levelNameText) levelNameText.text = $"Level: {this.levelNumber}";
+        if (castleNameText) castleNameText.text = TetrabeastsLocalization.LocalizeText(castleName);
+        if (levelNameText) levelNameText.text = TetrabeastsLocalization.LocalizeFormat("Level: {0}", this.levelNumber);
         ApplyLevelBackground(data);
 
         if (healthBarSlider)

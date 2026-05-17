@@ -100,7 +100,20 @@ public class GameplayStatsPanelUI : MonoBehaviour
 
     void OnEnable()
     {
+        TetrabeastsLocalization.LanguageChanged += OnLanguageChanged;
+
         if (_built && refreshOnEnable)
+            Refresh();
+    }
+
+    void OnDisable()
+    {
+        TetrabeastsLocalization.LanguageChanged -= OnLanguageChanged;
+    }
+
+    void OnLanguageChanged()
+    {
+        if (_built && isActiveAndEnabled)
             Refresh();
     }
 
@@ -815,20 +828,22 @@ public class GameplayStatsPanelUI : MonoBehaviour
 
     void AddSection(RectTransform parent, string title)
     {
+        string localizedTitle = TetrabeastsLocalization.LocalizeText(title);
+
         if (UsesStatsPairGrid(parent))
         {
             if (_statsHasSection)
                 AddStatsSpacerRow(parent);
             _statsHasSection = true;
 
-            AddStatsGridCell(parent, $"{title}_HeaderLabel", title, headerColor, gameplayStatsHeaderFontSize, FontStyles.Bold,
+            AddStatsGridCell(parent, $"{title}_HeaderLabel", localizedTitle, headerColor, gameplayStatsHeaderFontSize, FontStyles.Bold,
                 allowOverflow: true);
             AddStatsGridCell(parent, $"{title}_HeaderValue", string.Empty, headerColor, gameplayStatsHeaderFontSize, FontStyles.Bold);
             AddStatsGridCell(parent, $"{title}_HeaderSource", string.Empty, headerColor, gameplayStatsHeaderFontSize, FontStyles.Bold);
             return;
         }
 
-        TMP_Text text = AddText($"{title}_Header", parent, title, 26f, FontStyles.Bold, TextAlignmentOptions.Left);
+        TMP_Text text = AddText($"{title}_Header", parent, localizedTitle, 26f, FontStyles.Bold, TextAlignmentOptions.Left);
         text.color = headerColor;
         ApplyGameplayStatsFont(text, gameplayStatsHeaderFontSize);
         var layout = text.gameObject.AddComponent<LayoutElement>();
@@ -837,16 +852,18 @@ public class GameplayStatsPanelUI : MonoBehaviour
 
     void AddInfoText(RectTransform parent, string body)
     {
+        string localizedBody = TetrabeastsLocalization.LocalizeText(body);
+
         if (UsesStatsPairGrid(parent))
         {
-            AddStatsGridCell(parent, "Info_Label", body, unchangedColor, gameplayStatsFontSize, FontStyles.Normal,
+            AddStatsGridCell(parent, "Info_Label", localizedBody, unchangedColor, gameplayStatsFontSize, FontStyles.Normal,
                 allowOverflow: true);
             AddStatsGridCell(parent, "Info_Value", string.Empty, unchangedColor, gameplayStatsFontSize, FontStyles.Normal);
             AddStatsGridCell(parent, "Info_Source", string.Empty, unchangedColor, gameplayStatsFontSize, FontStyles.Normal);
             return;
         }
 
-        TMP_Text text = AddText("Info_Text", parent, body, 24f, FontStyles.Normal, TextAlignmentOptions.Left);
+        TMP_Text text = AddText("Info_Text", parent, localizedBody, 24f, FontStyles.Normal, TextAlignmentOptions.Left);
         text.color = unchangedColor;
         ApplyGameplayStatsFont(text, gameplayStatsFontSize);
         text.textWrappingMode = TextWrappingModes.Normal;
@@ -896,10 +913,13 @@ public class GameplayStatsPanelUI : MonoBehaviour
     void AddStatRow(RectTransform parent, string label, string value, Color color, bool compact = false,
         StatSource[] sources = null)
     {
+        string localizedLabel = TetrabeastsLocalization.LocalizeText(label);
+        string localizedValue = TetrabeastsLocalization.LocalizeText(value);
+
         if (UsesStatsPairGrid(parent))
         {
-            AddStatsGridCell(parent, $"{label}_Label", label, color, gameplayStatsFontSize, FontStyles.Normal);
-            AddStatsGridCell(parent, $"{label}_Value", value, color, gameplayStatsFontSize, FontStyles.Normal);
+            AddStatsGridCell(parent, $"{label}_Label", localizedLabel, color, gameplayStatsFontSize, FontStyles.Normal);
+            AddStatsGridCell(parent, $"{label}_Value", localizedValue, color, gameplayStatsFontSize, FontStyles.Normal);
             AddStatsGridCell(parent, $"{label}_Source", BuildSourceRichText(sources), unchangedColor,
                 gameplayStatsFontSize, FontStyles.Normal, shadowBody: BuildSourcePlainText(sources), allowOverflow: true);
             return;
@@ -918,12 +938,12 @@ public class GameplayStatsPanelUI : MonoBehaviour
         var rowElement = row.gameObject.AddComponent<LayoutElement>();
         rowElement.preferredHeight = compact ? 24f : 32f;
 
-        TMP_Text labelText = AddText("Label", row, label, compact ? 18f : 21f, FontStyles.Normal, TextAlignmentOptions.Left);
+        TMP_Text labelText = AddText("Label", row, localizedLabel, compact ? 18f : 21f, FontStyles.Normal, TextAlignmentOptions.Left);
         labelText.color = color;
         ApplyGameplayStatsFont(labelText, compact ? 18f : gameplayStatsFontSize);
         labelText.gameObject.AddComponent<LayoutElement>().flexibleWidth = compact ? 0.9f : 1.1f;
 
-        TMP_Text valueText = AddText("Value", row, value, compact ? 18f : 21f, FontStyles.Normal, TextAlignmentOptions.Left);
+        TMP_Text valueText = AddText("Value", row, localizedValue, compact ? 18f : 21f, FontStyles.Normal, TextAlignmentOptions.Left);
         valueText.color = color;
         ApplyGameplayStatsFont(valueText, compact ? 18f : gameplayStatsFontSize);
         valueText.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
@@ -1094,25 +1114,36 @@ public class GameplayStatsPanelUI : MonoBehaviour
 
     string SourceLabel(StatSource source)
     {
+        string label;
         switch (source)
         {
             case StatSource.ShopBuff:
-                return "Shop Buff";
+                label = "Shop Buff";
+                break;
             case StatSource.Passive:
-                return "Passive";
+                label = "Passive";
+                break;
             case StatSource.RunModBuff:
-                return "Run Mod Buff";
+                label = "Run Mod Buff";
+                break;
             case StatSource.RunModDebuff:
-                return "Run Mod Debuff";
+                label = "Run Mod Debuff";
+                break;
             case StatSource.LevelMod:
-                return "Level Mod";
+                label = "Level Mod";
+                break;
             case StatSource.BossAbility:
-                return "Boss Ability";
+                label = "Boss Ability";
+                break;
             case StatSource.StarDifficulty:
-                return "Star Difficulty";
+                label = "Star Difficulty";
+                break;
             default:
-                return string.Empty;
+                label = string.Empty;
+                break;
         }
+
+        return TetrabeastsLocalization.LocalizeText(label);
     }
 
     Color SourceColor(StatSource source)
@@ -1324,7 +1355,7 @@ public class GameplayStatsPanelUI : MonoBehaviour
     {
         RectTransform rt = AddRect(name, parent);
         var text = rt.gameObject.AddComponent<TextMeshProUGUI>();
-        text.text = body ?? string.Empty;
+        text.text = TetrabeastsLocalization.LocalizeText(body ?? string.Empty);
         text.fontSize = fontSize;
         text.fontStyle = style;
         text.alignment = alignment;

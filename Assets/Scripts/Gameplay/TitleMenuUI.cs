@@ -138,6 +138,8 @@ public class TitleMenuUI : MonoBehaviour
 
     void Start()
     {
+        TetrabeastsLocalization.EnsureInitialized();
+
         ApplyDemoBuildGuardRailsSetting();
         UnlockDeferredDemoAchievementsIfRetail();
 
@@ -160,6 +162,7 @@ public class TitleMenuUI : MonoBehaviour
         HideSteamLeaderboardIfUnavailable();
         RefreshSteamLeaderboardIfVisible();
         HookAllButtonsForSFX(); // Auto-hook all buttons under this menu for click/hover sounds
+        TetrabeastsFirstLaunchLanguagePrompt.ShowIfNeeded(transform);
     }
 
     void ApplyDemoBuildGuardRailsSetting()

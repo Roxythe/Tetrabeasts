@@ -14,7 +14,7 @@ public class ScoreUI : MonoBehaviour
 
     public void Set(int value)
     {
-        if (scoreText) scoreText.text = $"Score: {value}";
+        if (scoreText) scoreText.text = TetrabeastsLocalization.LocalizeFormat("Score: {0}", value);
     }
 
     public void SetCombo(int combo)
@@ -26,7 +26,7 @@ public class ScoreUI : MonoBehaviour
 
         if (combo <= 0)
         {
-            staticComboText.gameObject.SetActive(true);
+            RefreshStaticComboLabel();
             comboText.gameObject.SetActive(true);
             comboText.text = "x0";
 
@@ -34,7 +34,7 @@ public class ScoreUI : MonoBehaviour
             return;
         }
 
-        staticComboText.gameObject.SetActive(true);
+        RefreshStaticComboLabel();
         comboText.gameObject.SetActive(true);
         comboText.text = $"x{combo}";
 
@@ -48,10 +48,19 @@ public class ScoreUI : MonoBehaviour
 
         if (!comboText) return;
 
-        staticComboText.gameObject.SetActive(true);
+        RefreshStaticComboLabel();
         comboText.gameObject.SetActive(true);
         comboText.text = "x0";
 
         if (comboFireFX) comboFireFX.SetCombo(0);
+    }
+
+    void RefreshStaticComboLabel()
+    {
+        if (!staticComboText)
+            return;
+
+        staticComboText.gameObject.SetActive(true);
+        staticComboText.text = TetrabeastsLocalization.LocalizeText("Combo");
     }
 }

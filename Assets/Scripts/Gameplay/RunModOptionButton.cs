@@ -66,11 +66,14 @@ public class RunModOptionButton : MonoBehaviour, IPointerEnterHandler, IPointerE
     {
         _mod = mod;
 
+        string displayName = TetrabeastsLocalization.LocalizeText(mod.displayName);
+        string description = TetrabeastsLocalization.LocalizeText(mod.description);
+
         if (icon) icon.sprite = mod.icon;
-        if (nameText) nameText.text = mod.displayName;
-        if (nameShadowText) nameShadowText.text = mod.displayName;
-        if (descText) descText.text = mod.description;
-        if (descShadowText) descShadowText.text = mod.description;
+        if (nameText) nameText.text = displayName;
+        if (nameShadowText) nameShadowText.text = displayName;
+        if (descText) descText.text = description;
+        if (descShadowText) descShadowText.text = description;
 
         if (mod is RunModifier generic)
         {

@@ -22,6 +22,18 @@ public class CodexPanelUI : MonoBehaviour
         public Transform contentParent;
     }
 
+    class RunModifierDisplayEntry
+    {
+        public RunModifierSO modifier;
+        public bool unlocked;
+
+        public RunModifierDisplayEntry(RunModifierSO modifier, bool unlocked)
+        {
+            this.modifier = modifier;
+            this.unlocked = unlocked;
+        }
+    }
+
     [Header("Data Sources")]
     [Tooltip("Assign the buff modifier assets you want shown in the Codex.")]
     [SerializeField] RunModifierSO[] buffRunModifiers;
@@ -63,6 +75,7 @@ public class CodexPanelUI : MonoBehaviour
     void OnEnable()
     {
         CodexProgressStore.ProgressChanged += OnCodexProgressChanged;
+        TetrabeastsLocalization.LanguageChanged += OnLanguageChanged;
         RebuildAll();
         ShowSection(_currentSectionIndex, forceRefresh: true);
     }
@@ -70,6 +83,7 @@ public class CodexPanelUI : MonoBehaviour
     void OnDisable()
     {
         CodexProgressStore.ProgressChanged -= OnCodexProgressChanged;
+        TetrabeastsLocalization.LanguageChanged -= OnLanguageChanged;
     }
 
     void Update()
@@ -132,6 +146,15 @@ public class CodexPanelUI : MonoBehaviour
             return;
 
         RebuildAll();
+    }
+
+    void OnLanguageChanged()
+    {
+        if (!isActiveAndEnabled)
+            return;
+
+        RebuildAll();
+        UpdateDiscoverySummary();
     }
 
     void RegisterButtonsIfNeeded()
@@ -232,13 +255,13 @@ public class CodexPanelUI : MonoBehaviour
         if (source == null || source.Length == 0)
             return;
 
-        List<RunModifierSO> sortedModifiers = BuildRunModifierDisplayList(source);
+        List<RunModifierDisplayEntry> sortedModifiers = BuildRunModifierDisplayList(source);
         for (int i = 0; i < sortedModifiers.Count; i++)
         {
-            RunModifierSO modifier = sortedModifiers[i];
+            RunModifierDisplayEntry modifierEntry = sortedModifiers[i];
 
             var entry = Instantiate(entryPrefab, section.contentParent);
-            entry.Bind(modifier, CodexProgressStore.IsUnlocked(modifier), section == buffSection 
+            entry.Bind(modifierEntry.modifier, modifierEntry.unlocked, section == buffSection 
                        ? CodexEntryUI.EntryCategory.RunBuff
                        : CodexEntryUI.EntryCategory.RunDebuff);
         }
@@ -265,25 +288,46 @@ public class CodexPanelUI : MonoBehaviour
         }
     }
 
-    List<RunModifierSO> BuildRunModifierDisplayList(RunModifierSO[] source)
+    List<RunModifierDisplayEntry> BuildRunModifierDisplayList(RunModifierSO[] source)
     {
-        var discovered = new List<RunModifierSO>();
-        var undiscovered = new List<RunModifierSO>();
+        var discovered = new List<RunModifierDisplayEntry>();
+        var undiscovered = new List<RunModifierDisplayEntry>();
 
         if (source == null || source.Length == 0)
             return discovered;
 
-        var seen = new HashSet<RunModifierSO>();
+        var grouped = new Dictionary<string, RunModifierDisplayEntry>(StringComparer.OrdinalIgnoreCase);
+        var groupOrder = new List<string>();
         for (int i = 0; i < source.Length; i++)
         {
             RunModifierSO modifier = source[i];
-            if (!modifier || !seen.Add(modifier))
+            if (!modifier)
                 continue;
 
-            if (CodexProgressStore.IsUnlocked(modifier))
-                discovered.Add(modifier);
+            string key = GetRunModifierCodexKey(modifier);
+            bool isUnlocked = CodexProgressStore.IsUnlocked(modifier);
+
+            if (!grouped.TryGetValue(key, out RunModifierDisplayEntry entry))
+            {
+                grouped[key] = new RunModifierDisplayEntry(modifier, isUnlocked);
+                groupOrder.Add(key);
+                continue;
+            }
+
+            if (isUnlocked && !entry.unlocked)
+            {
+                entry.modifier = modifier;
+                entry.unlocked = true;
+            }
+        }
+
+        for (int i = 0; i < groupOrder.Count; i++)
+        {
+            RunModifierDisplayEntry entry = grouped[groupOrder[i]];
+            if (entry.unlocked)
+                discovered.Add(entry);
             else
-                undiscovered.Add(modifier);
+                undiscovered.Add(entry);
         }
 
         discovered.AddRange(undiscovered);
@@ -330,8 +374,12 @@ public class CodexPanelUI : MonoBehaviour
             ? Mathf.RoundToInt((float)totalUnlocked / totalEntries * 100f)
             : 0;
 
-        discoverySummaryText.text =
-            $"{sectionUnlocked} of {sectionTotal} {sectionLabel} discovered. Total codex unlocked {totalPercent}%";
+        discoverySummaryText.text = TetrabeastsLocalization.LocalizeFormat(
+            "{0} of {1} {2} discovered. Total codex unlocked {3}%",
+            sectionUnlocked,
+            sectionTotal,
+            TetrabeastsLocalization.LocalizeText(sectionLabel),
+            totalPercent);
     }
 
     string GetCurrentSectionLabelAndCounts(out int unlocked, out int total)
@@ -374,16 +422,26 @@ public class CodexPanelUI : MonoBehaviour
         if (source == null || source.Length == 0)
             return 0;
 
-        var seen = new HashSet<RunModifierSO>();
-        int count = 0;
+        var groupedUnlocks = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
 
         for (int i = 0; i < source.Length; i++)
         {
             RunModifierSO modifier = source[i];
-            if (!modifier || !seen.Add(modifier))
+            if (!modifier)
                 continue;
 
+            string key = GetRunModifierCodexKey(modifier);
+            if (!groupedUnlocks.ContainsKey(key))
+                groupedUnlocks[key] = false;
+
             if (CodexProgressStore.IsUnlocked(modifier))
+                groupedUnlocks[key] = true;
+        }
+
+        int count = 0;
+        foreach (bool isUnlocked in groupedUnlocks.Values)
+        {
+            if (isUnlocked)
                 count++;
         }
 
@@ -395,16 +453,30 @@ public class CodexPanelUI : MonoBehaviour
         if (source == null || source.Length == 0)
             return 0;
 
-        var seen = new HashSet<RunModifierSO>();
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         for (int i = 0; i < source.Length; i++)
         {
             RunModifierSO modifier = source[i];
             if (modifier)
-                seen.Add(modifier);
+                seen.Add(GetRunModifierCodexKey(modifier));
         }
 
         return seen.Count;
+    }
+
+    string GetRunModifierCodexKey(RunModifierSO modifier)
+    {
+        if (!modifier)
+            return string.Empty;
+
+        string displayName = string.IsNullOrWhiteSpace(modifier.displayName)
+            ? modifier.name
+            : modifier.displayName;
+
+        return string.IsNullOrWhiteSpace(displayName)
+            ? modifier.GetInstanceID().ToString()
+            : displayName.Trim();
     }
 
     int CountUnlockedLevelModifiers()

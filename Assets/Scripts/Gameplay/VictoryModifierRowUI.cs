@@ -31,14 +31,16 @@ public class VictoryModifierRowUI : MonoBehaviour
             iconImage.enabled = icon != null;
         }
 
+        string localizedTitle = TetrabeastsLocalization.LocalizeText(title ?? string.Empty);
+
         if (titleText)
         {
-            titleText.text = title ?? string.Empty;
+            titleText.text = localizedTitle;
             titleText.color = titleColor;
         }
 
         if (shadowTitleText)
-            shadowTitleText.text = title ?? string.Empty;
+            shadowTitleText.text = localizedTitle;
 
         if (counterText)
             counterText.text = counter ?? string.Empty;

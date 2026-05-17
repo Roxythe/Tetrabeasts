@@ -93,8 +93,8 @@ public class RoundRewardUI : MonoBehaviour
         if (reinforcementsGained)
         {
             reinforcementsGained.text = reinforcementsReceived > 0
-                ? $"+{reinforcementsReceived} Reinforcements"
-                : "+0 Reinforcements";
+                ? $"+{reinforcementsReceived} {TetrabeastsLocalization.LocalizeText("Reinforcements")}"
+                : $"+0 {TetrabeastsLocalization.LocalizeText("Reinforcements")}";
         }
 
         Populate(buffContainer, Pick3UniqueWeighted(buffPool, luck, wasBossLevel), isBuff: true);

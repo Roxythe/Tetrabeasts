@@ -76,7 +76,7 @@ public class CharacterSelectUI : MonoBehaviour
             var borderT = FindDeep(btn.transform, "Border_Image");
             var borderImg = borderT ? borderT.GetComponent<Image>() : null;
 
-            if (txt) txt.text = data.displayName;
+            if (txt) txt.text = TetrabeastsLocalization.LocalizeText(data.displayName);
             if (img && data.portrait) img.sprite = data.portrait;
             if (borderImg) borderImg.sprite = data.defaultBorder;
 
@@ -235,17 +235,19 @@ public class CharacterSelectUI : MonoBehaviour
         var cur = previewCharacter ? previewCharacter : SelectedCharacterStore.Current;
         if (!cur) return;
 
-        if (selectedName) selectedName.text = cur.displayName;
+        if (selectedName) selectedName.text = TetrabeastsLocalization.LocalizeText(cur.displayName);
         if (selectedPortrait && cur.portrait) selectedPortrait.sprite = cur.portrait;
         if (selectedBorder && cur.defaultBorder) selectedBorder.sprite = cur.defaultBorder;
 
         if (selectedSpecialAbilityName)
         {
-            selectedSpecialAbilityName.text = $"Special Ability: {cur.specialAbilityName}";
+            selectedSpecialAbilityName.text = TetrabeastsLocalization.LocalizeFormat(
+                "Special Ability: {0}",
+                TetrabeastsLocalization.LocalizeText(cur.specialAbilityName));
         }
 
         if (selectedSpecialDescription)
-            selectedSpecialDescription.text = cur.specialDescription;
+            selectedSpecialDescription.text = TetrabeastsLocalization.LocalizeText(cur.specialDescription);
     }
 
     void RefreshTitleMenuLoadoutUI()

@@ -125,7 +125,7 @@ public class RoundTransitionUI : MonoBehaviour
 
         if (messageText)
         {
-            messageText.text = message;
+            messageText.text = TetrabeastsLocalization.LocalizeText(message);
             SetTextAlpha(0f);
         }
 
@@ -179,7 +179,7 @@ public class RoundTransitionUI : MonoBehaviour
 
         if (messageText)
         {
-            messageText.text = message;
+            messageText.text = TetrabeastsLocalization.LocalizeText(message);
             SetTextAlpha(0f);
         }
 
@@ -754,7 +754,7 @@ public class RoundTransitionUI : MonoBehaviour
         var labels = continueButton.GetComponentsInChildren<TMP_Text>(true);
         for (int i = 0; i < labels.Length; i++)
         {
-            labels[i].text = "Continue";
+            labels[i].text = TetrabeastsLocalization.LocalizeText("Continue");
             labels[i].alignment = TextAlignmentOptions.Center;
         }
 
@@ -792,7 +792,7 @@ public class RoundTransitionUI : MonoBehaviour
         optOutToggle.isOn = initialValue;
 
         if (optOutToggleLabel)
-            optOutToggleLabel.text = show ? label : string.Empty;
+            optOutToggleLabel.text = show ? TetrabeastsLocalization.LocalizeText(label) : string.Empty;
 
         PositionActionControls();
 

@@ -55,8 +55,12 @@ public class CodexEntryUI : MonoBehaviour
         if (notFoundOverlayImage)
             notFoundOverlayImage.gameObject.SetActive(!unlocked);
 
-        string displayTitle = unlocked ? (title ?? string.Empty) : "???";
-        string displayDescription = unlocked ? (description ?? string.Empty) : "Modifier not yet discovered.";
+        string displayTitle = unlocked
+            ? TetrabeastsLocalization.LocalizeText(title ?? string.Empty)
+            : "???";
+        string displayDescription = unlocked
+            ? TetrabeastsLocalization.LocalizeText(description ?? string.Empty)
+            : TetrabeastsLocalization.LocalizeText("Modifier not yet discovered.");
 
         if (titleText)
             titleText.text = displayTitle;

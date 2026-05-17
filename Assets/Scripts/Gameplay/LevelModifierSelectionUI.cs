@@ -595,17 +595,20 @@ public class LevelModifierSelectionUI : MonoBehaviour
         if (!modifier)
             return;
 
+        string displayName = TetrabeastsLocalization.LocalizeText(modifier.displayName);
+        string description = TetrabeastsLocalization.LocalizeText(modifier.description);
+
         if (modifierInfoTitleText)
-            modifierInfoTitleText.text = modifier.displayName;
+            modifierInfoTitleText.text = displayName;
 
         if (modifierInfoShadowTitleText)
-            modifierInfoShadowTitleText.text = modifier.displayName;
+            modifierInfoShadowTitleText.text = displayName;
 
         if (modifierInfoIcon)
             modifierInfoIcon.sprite = modifier.icon;
 
         if (modifierInfoDescText)
-            modifierInfoDescText.text = modifier.description;
+            modifierInfoDescText.text = description;
     }
 
     void RevealModifier(LevelModifierSO chosen)
@@ -613,11 +616,13 @@ public class LevelModifierSelectionUI : MonoBehaviour
         if (!chosen)
             return;
 
+        string displayName = TetrabeastsLocalization.LocalizeText(chosen.displayName);
+
         if (modDisplayNameText)
-            modDisplayNameText.text = chosen.displayName;
+            modDisplayNameText.text = displayName;
 
         if (modDisplayNameShadowText)
-            modDisplayNameShadowText.text = chosen.displayName;
+            modDisplayNameShadowText.text = displayName;
 
         PlayModNameAnimation();
         PopulateModifierInfoPanel(chosen);

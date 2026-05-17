@@ -892,10 +892,10 @@ public class GameController : MonoBehaviour
             playerBorder.sprite = selectedCharacter.defaultBorder;
 
         if (playerName)
-            playerName.text = selectedCharacter.displayName;
+            playerName.text = TetrabeastsLocalization.LocalizeText(selectedCharacter.displayName);
 
         if (playerSpecialName)
-            playerSpecialName.text = selectedCharacter.specialAbilityName;
+            playerSpecialName.text = TetrabeastsLocalization.LocalizeText(selectedCharacter.specialAbilityName);
     }
 
     void StartFreshRun()
@@ -1558,10 +1558,10 @@ public class GameController : MonoBehaviour
 
         int levelNumber = currentLevel + 1;
         string castleName = currentCastleData && !string.IsNullOrWhiteSpace(currentCastleData.castleName)
-            ? currentCastleData.castleName
-            : "Castle";
+            ? TetrabeastsLocalization.LocalizeText(currentCastleData.castleName)
+            : TetrabeastsLocalization.LocalizeText("Castle");
 
-        yield return CoShowTimedRoundTransition($"Level {levelNumber}\n{castleName}");
+        yield return CoShowTimedRoundTransition($"{TetrabeastsLocalization.LocalizeFormat("Level {0}", levelNumber)}\n{castleName}");
 
         ResumeGameplayAfterRoundTransition(showCursor: false);
         EnterGameplayCursorMode();
@@ -1778,7 +1778,12 @@ public class GameController : MonoBehaviour
 
         bool continued = false;
         if (roundTransitionUI)
-            roundTransitionUI.Show(message, () => continued = true, optOutLabel, optOutInitialValue, onOptOutContinue);
+            roundTransitionUI.Show(
+                TetrabeastsLocalization.LocalizeText(message),
+                () => continued = true,
+                TetrabeastsLocalization.LocalizeText(optOutLabel),
+                optOutInitialValue,
+                onOptOutContinue);
         else
             continued = true;
 
@@ -1791,7 +1796,7 @@ public class GameController : MonoBehaviour
 
         bool completed = false;
         if (roundTransitionUI)
-            roundTransitionUI.ShowTimed(message, () => completed = true);
+            roundTransitionUI.ShowTimed(TetrabeastsLocalization.LocalizeText(message), () => completed = true);
         else
             completed = true;
 
@@ -2301,7 +2306,7 @@ public class GameController : MonoBehaviour
             projectileSpeed = data.projectileSpeed * enemyProjectileSpeedMult;
             castleProjectileDamage = Mathf.Max(1, Mathf.RoundToInt(GetScaledEnemyDamage(data.projectileDamage * enemyProjectileDamageMult)));
 
-            if (levelText) levelText.text = $"Level: {levelNumber}";
+            if (levelText) levelText.text = TetrabeastsLocalization.LocalizeFormat("Level: {0}", levelNumber);
         }
         else
         {
@@ -2989,7 +2994,9 @@ public class GameController : MonoBehaviour
         NotifyTutorialGameplayEvent(TutorialGameplayEvent.SpecialActivated);
 
         if (battleLog && character)
-            battleLog.LogAbilityUse(character.displayName, character.specialAbilityName);
+            battleLog.LogAbilityUse(
+                TetrabeastsLocalization.LocalizeText(character.displayName),
+                TetrabeastsLocalization.LocalizeText(character.specialAbilityName));
 
         if (PlayerProgress.I) // Track total special uses for achievements
         {
@@ -3360,7 +3367,7 @@ public class GameController : MonoBehaviour
                 playerBorder.sprite = selectedCharacter.defaultBorder;
 
             if (playerName)
-                playerName.text = selectedCharacter.displayName;
+                playerName.text = TetrabeastsLocalization.LocalizeText(selectedCharacter.displayName);
         }
     }
 
@@ -4507,7 +4514,7 @@ public class GameController : MonoBehaviour
         _lastShownFallInterval = currentInterval;
 
         float cellsPerSecond = (currentInterval > 0.0001f) ? (1f / currentInterval) : 0f;
-        gravityText.text = $"Gravity: {cellsPerSecond:0.0}";
+        gravityText.text = TetrabeastsLocalization.LocalizeFormat("Gravity: {0:0.0}", cellsPerSecond);
     }
 
     // ================ Unit Lives System ===================
@@ -5249,7 +5256,9 @@ public class GameController : MonoBehaviour
         if (!gameBoard || !buff) return;
         if (!stoneBuffPopupStyle || !stoneBuffPopupStyle.popupPrefab) return;
 
-        string shownName = !string.IsNullOrWhiteSpace(buff.displayName) ? buff.displayName : buff.name;
+        string shownName = !string.IsNullOrWhiteSpace(buff.displayName)
+            ? TetrabeastsLocalization.LocalizeText(buff.displayName)
+            : buff.name;
         string msg = $"{shownName}";
 
         gameBoard.ShowBuffPopupAtCell(cell, msg, stoneBuffPopupStyle, rarity);

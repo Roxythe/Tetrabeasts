@@ -1,0 +1,220 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Tetrabeasts UI_es
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: es
+  m_SharedData: {fileID: 11400000, guid: ce01bc12d4cd00b42a282dcb0cba5020, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 3967438848
+    m_Localized: Idioma
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3992604672
+    m_Localized: Elegir idioma
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3996798976
+    m_Localized: Elige el idioma que debe usar Tetrabeasts. Puedes cambiarlo luego
+      en Ajustes.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3996798977
+    m_Localized: Confirmar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465927417856
+    m_Localized: Ajustes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389376
+    m_Localized: Genero BGM
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389377
+    m_Localized: Volumen general
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389378
+    m_Localized: Volumen de musica
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389379
+    m_Localized: Volumen de efectos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389380
+    m_Localized: Tamano del cursor
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389381
+    m_Localized: Registro de combate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389382
+    m_Localized: Saltar trailer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389383
+    m_Localized: Pulsa cualquier tecla
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389384
+    m_Localized: Seleccionar comandante
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389385
+    m_Localized: Unidades monstruo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389386
+    m_Localized: Escuadron activo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389387
+    m_Localized: Confirmar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389388
+    m_Localized: Continuar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389389
+    m_Localized: Cerrar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389390
+    m_Localized: Atras
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389391
+    m_Localized: Comenzar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389392
+    m_Localized: PAUSA
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389393
+    m_Localized: Reanudar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389394
+    m_Localized: Menu principal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389395
+    m_Localized: Reiniciar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389396
+    m_Localized: Guardar y salir
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389397
+    m_Localized: Salir
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389398
+    m_Localized: Logros
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389399
+    m_Localized: Clasificacion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389400
+    m_Localized: Enviar nombre
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389401
+    m_Localized: Menu de ayuda
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389402
+    m_Localized: Mejoras
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389403
+    m_Localized: Desventajas
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389404
+    m_Localized: Mod. de nivel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389405
+    m_Localized: Estadisticas
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389406
+    m_Localized: Unidades
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389407
+    m_Localized: Controles
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389408
+    m_Localized: Elige una mejora
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389409
+    m_Localized: Elige una desventaja
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389410
+    m_Localized: Modificador de nivel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389411
+    m_Localized: Siguiente pieza
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389412
+    m_Localized: Puntuacion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389413
+    m_Localized: Repetir tirada
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389414
+    m_Localized: EXP ganada
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389415
+    m_Localized: EXP permanente ganada
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389416
+    m_Localized: EXP conservada
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389417
+    m_Localized: Reserva de unidades
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389418
+    m_Localized: Nueva dificultad desbloqueada
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2465948389419
+    m_Localized: No volver a mostrar este mensaje
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

@@ -38,7 +38,7 @@ public class AchievementRowUI : MonoBehaviour
         if (lockedOverlay)
             lockedOverlay.gameObject.SetActive(showLockedOverlay);
 
-        if (titleText) titleText.text = title;
-        if (descText) descText.text = desc;
+        if (titleText) titleText.text = TetrabeastsLocalization.LocalizeText(title);
+        if (descText) descText.text = TetrabeastsLocalization.LocalizeText(desc);
     }
 }

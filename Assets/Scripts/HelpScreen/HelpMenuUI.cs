@@ -30,9 +30,11 @@ public class HelpMenuUI : MonoBehaviour
     readonly Dictionary<string, List<HelpTopicButtonUI>> _topicButtonsByCategory = new();
 
     string _openCategory = null;
+    HelpTopicSO _currentTopic;
 
     void OnEnable()
     {
+        TetrabeastsLocalization.LanguageChanged += OnLanguageChanged;
         HookVideoEvents();
         RebuildSidebar();
         ShowDefault();
@@ -40,6 +42,7 @@ public class HelpMenuUI : MonoBehaviour
 
     void OnDisable()
     {
+        TetrabeastsLocalization.LanguageChanged -= OnLanguageChanged;
         UnhookVideoEvents();
     }
 
@@ -62,13 +65,13 @@ public class HelpMenuUI : MonoBehaviour
         {
             // Create category header
             var header = Instantiate(categoryHeaderPrefab, contentRoot);
-            header.SetLabel(g.Key);
+            header.SetLabel(TetrabeastsLocalization.LocalizeText(g.Key));
 
             _headers[g.Key] = header;
             _topicButtonsByCategory[g.Key] = new List<HelpTopicButtonUI>();
 
             // Create all topic buttons Starts hidden
-            foreach (var topic in g.OrderBy(t => t.title))
+            foreach (var topic in g.OrderBy(t => TetrabeastsLocalization.LocalizeText(t.title)))
             {
                 var btn = Instantiate(topicButtonPrefab, contentRoot);
                 btn.SetTopic(topic, () => ShowTopic(topic));
@@ -83,6 +86,9 @@ public class HelpMenuUI : MonoBehaviour
                 SetCategoryExpandedExclusive(g.Key, expandedNow);
             });
         }
+
+        if (!string.IsNullOrEmpty(_openCategory) && _topicButtonsByCategory.ContainsKey(_openCategory))
+            SetCategoryExpandedExclusive(_openCategory, true);
     }
 
     void SetCategoryExpanded(string category, bool expanded)
@@ -127,8 +133,10 @@ public class HelpMenuUI : MonoBehaviour
     {
         if (!topic) return;
 
-        if (titleText) titleText.text = topic.title;
-        if (descriptionText) descriptionText.text = topic.description ?? "";
+        _currentTopic = topic;
+
+        if (titleText) titleText.text = TetrabeastsLocalization.LocalizeText(topic.title);
+        if (descriptionText) descriptionText.text = TetrabeastsLocalization.LocalizeText(topic.description ?? "");
 
         if (infoImage)
         {
@@ -151,7 +159,9 @@ public class HelpMenuUI : MonoBehaviour
 
     void ShowDefault()
     {
-        if (titleText) titleText.text = "Help Menu";
+        _currentTopic = null;
+
+        if (titleText) titleText.text = TetrabeastsLocalization.LocalizeText("Help Menu");
         if (descriptionText) descriptionText.text = "";
 
         if (infoImage)
@@ -161,6 +171,17 @@ public class HelpMenuUI : MonoBehaviour
         }
 
         StopAndHideVideo(clearTexture: true);
+    }
+
+    void OnLanguageChanged()
+    {
+        HelpTopicSO currentTopic = _currentTopic;
+        RebuildSidebar();
+
+        if (currentTopic)
+            ShowTopic(currentTopic);
+        else
+            ShowDefault();
     }
 
     void HookVideoEvents()

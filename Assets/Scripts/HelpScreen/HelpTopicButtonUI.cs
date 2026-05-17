@@ -12,7 +12,7 @@ public class HelpTopicButtonUI : MonoBehaviour
 
     public void SetTopic(HelpTopicSO topic, Action onClick)
     {
-        if (label) label.text = topic ? topic.title : "(Missing)";
+        if (label) label.text = TetrabeastsLocalization.LocalizeText(topic ? topic.title : "(Missing)");
 
         if (button)
         {

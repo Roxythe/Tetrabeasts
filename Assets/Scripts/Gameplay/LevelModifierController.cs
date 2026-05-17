@@ -300,10 +300,11 @@ public class LevelModifierController : MonoBehaviour
 
         RefreshComboShieldUI(true);
 
+        string modifierName = TetrabeastsLocalization.LocalizeText(ActiveModifier.displayName);
         if (_comboShieldRemaining <= 0)
-            battleLog?.LogPlain($"{ActiveModifier.displayName} is broken.");
+            battleLog?.LogPlain(TetrabeastsLocalization.LocalizeFormat("{0} is broken.", modifierName));
         else
-            battleLog?.LogPlain($"{ActiveModifier.displayName}: {_comboShieldRemaining} shield(s) remain.");
+            battleLog?.LogPlain(TetrabeastsLocalization.LocalizeFormat("{0}: {1} shield(s) remain.", modifierName, _comboShieldRemaining));
     }
 
     public void HandlePieceAutomation(Piece activePiece, float dt)
@@ -524,7 +525,9 @@ public class LevelModifierController : MonoBehaviour
         if (activeModifierTitleText)
         {
             activeModifierTitleText.gameObject.SetActive(true);
-            activeModifierTitleText.text = ActiveModifier ? ActiveModifier.displayName : "No level Modifier";
+            activeModifierTitleText.text = ActiveModifier
+                ? TetrabeastsLocalization.LocalizeText(ActiveModifier.displayName)
+                : TetrabeastsLocalization.LocalizeText("No level Modifier");
         }
     }
 
@@ -533,7 +536,9 @@ public class LevelModifierController : MonoBehaviour
         if (!ActiveModifier)
             return;
 
-        battleLog?.LogPlain($"Level modifier: {ActiveModifier.displayName}.");
+        battleLog?.LogPlain(TetrabeastsLocalization.LocalizeFormat(
+            "Level modifier: {0}.",
+            TetrabeastsLocalization.LocalizeText(ActiveModifier.displayName)));
     }
 
     void UpdateOvergrowth(float dt)

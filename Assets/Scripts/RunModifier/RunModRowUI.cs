@@ -34,24 +34,27 @@ public class RunModRowUI : MonoBehaviour
 
         if (icon) icon.sprite = mod.icon;
 
+        string displayName = TetrabeastsLocalization.LocalizeText(mod.displayName);
+        string description = TetrabeastsLocalization.LocalizeText(mod.description);
+
         if (nameText)
         {
-            nameText.text = copies > 1 ? $"{mod.displayName} x{copies}" : mod.displayName;
+            nameText.text = copies > 1 ? $"{displayName} x{copies}" : displayName;
         }
 
         if (nameShadowText)
         {
-            nameShadowText.text = nameText ? nameText.text : mod.displayName;
+            nameShadowText.text = nameText ? nameText.text : displayName;
         }
 
         if (descText)
         {
-            descText.text = mod.description;
+            descText.text = description;
         }
 
         if (descShadowText)
         {
-            descShadowText.text = descText ? descText.text : mod.description;
+            descShadowText.text = descText ? descText.text : description;
         }
 
         // Color by rarity if it's a generic mod, otherwise use common colors

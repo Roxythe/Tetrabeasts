@@ -15,6 +15,8 @@ public class VolumePanelUI : MonoBehaviour
     public UICursorController uiCursor;
     public Button closeButton;
     public TMP_Dropdown musicModeDropdown; // 0=EDM, 1=Metal, 2=Both
+    public TMP_Dropdown languageDropdown;
+    public TMP_Text languageLabel;
     public Toggle combatLogToggle;
     public GameObject combatLogRoot;
     public Toggle skipIntroToggle;
@@ -32,6 +34,9 @@ public class VolumePanelUI : MonoBehaviour
 
     void Awake()
     {
+        TetrabeastsLocalization.EnsureInitialized();
+        EnsureLanguageDropdown();
+
         cg = GetComponent<CanvasGroup>();
         if (closeButton) closeButton.onClick.AddListener(Close);
 
@@ -41,6 +46,7 @@ public class VolumePanelUI : MonoBehaviour
         if (sfxSlider) sfxSlider.onValueChanged.AddListener(SetSFX);
         if (cursorSizeSlider) cursorSizeSlider.onValueChanged.AddListener(SetCursorSize);
         if (musicModeDropdown) musicModeDropdown.onValueChanged.AddListener(SetMusicMode);
+        if (languageDropdown) languageDropdown.onValueChanged.AddListener(SetLanguage);
         if (combatLogToggle) combatLogToggle.onValueChanged.AddListener(SetCombatLogVisible);
         if (skipIntroToggle) skipIntroToggle.onValueChanged.AddListener(SetSkipIntroEnabled);
     }
@@ -62,6 +68,9 @@ public class VolumePanelUI : MonoBehaviour
 
         if (musicModeDropdown && AudioManager.I)
             musicModeDropdown.SetValueWithoutNotify((int)AudioManager.I.GetMusicMode());
+
+        RefreshLanguageControls();
+        TetrabeastsLocalization.LanguageChanged += RefreshLanguageControls;
 
         if (pauseWhenOpen) Time.timeScale = 0f;
 
@@ -85,6 +94,7 @@ public class VolumePanelUI : MonoBehaviour
 
     void OnDisable()
     {
+        TetrabeastsLocalization.LanguageChanged -= RefreshLanguageControls;
         if (pauseWhenOpen) Time.timeScale = 1f;
     }
 
@@ -124,6 +134,55 @@ public class VolumePanelUI : MonoBehaviour
 
         var mode = (AudioManager.MusicMode)Mathf.Clamp(index, 0, 2);
         AudioManager.I.SetMusicMode(mode);
+    }
+
+    void SetLanguage(int index)
+    {
+        TetrabeastsLocalization.SetLanguageByDropdownIndex(index, persist: true);
+        RefreshLanguageControls();
+    }
+
+    void RefreshLanguageControls()
+    {
+        if (languageLabel)
+            languageLabel.text = TetrabeastsLocalization.GetText("settings_language_label");
+
+        if (languageDropdown)
+            TetrabeastsLocalization.PopulateLanguageDropdown(languageDropdown);
+    }
+
+    void EnsureLanguageDropdown()
+    {
+        if (languageDropdown || !musicModeDropdown)
+            return;
+
+        var parent = musicModeDropdown.transform.parent;
+        if (!parent)
+            return;
+
+        var languageDropdownInstance = Instantiate(musicModeDropdown, parent);
+        languageDropdownInstance.name = "Language_Dropdown";
+        languageDropdown = languageDropdownInstance;
+
+        var dropdownRect = languageDropdown.GetComponent<RectTransform>();
+        var sourceRect = musicModeDropdown.GetComponent<RectTransform>();
+        if (dropdownRect && sourceRect)
+            dropdownRect.anchoredPosition = sourceRect.anchoredPosition + new Vector2(0f, -40f);
+
+        var musicLabel = parent.Find("MusicGenre_Text")?.GetComponent<TMP_Text>();
+        if (musicLabel)
+        {
+            languageLabel = Instantiate(musicLabel, parent);
+            languageLabel.name = "Language_Text";
+            languageLabel.text = TetrabeastsLocalization.GetText("settings_language_label");
+
+            var labelRect = languageLabel.GetComponent<RectTransform>();
+            var musicLabelRect = musicLabel.GetComponent<RectTransform>();
+            if (labelRect && musicLabelRect)
+                labelRect.anchoredPosition = musicLabelRect.anchoredPosition + new Vector2(0f, -40f);
+        }
+
+        TetrabeastsLocalization.PopulateLanguageDropdown(languageDropdown);
     }
 
     System.Collections.IEnumerator PreviewAfterDelay()
