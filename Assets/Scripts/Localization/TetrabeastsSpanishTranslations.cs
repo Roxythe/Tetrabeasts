@@ -130,6 +130,13 @@ public static class TetrabeastsSpanishTranslations
         Add(text, "Continue", "Continuar");
         Add(text, "Confirm", "Confirmar");
         Add(text, "Close", "Cerrar");
+        Add(text, "Start", "Comenzar");
+        Add(text, "PAUSED", "PAUSA");
+        Add(text, "Resume", "Reanudar");
+        Add(text, "Main Menu", "Men\u00fa principal");
+        Add(text, "Restart", "Reiniciar");
+        Add(text, "Save & Quit", "Guardar y salir");
+        Add(text, "Quit", "Salir");
         Add(text, "New Game", "Nueva partida");
         Add(text, "Shop", "Tienda");
         Add(text, "Codex", "C\u00f3dice");
@@ -140,6 +147,11 @@ public static class TetrabeastsSpanishTranslations
         Add(text, "Combat Log", "Registro de combate");
         Add(text, "Skip Trailer", "Saltar tr\u00e1iler");
         Add(text, "BGM Genre", "G\u00e9nero BGM");
+        Add(text, "EDM", "EDM");
+        Add(text, "Metal", "Metal");
+        Add(text, "Random", "Aleatorio");
+        Add(text, "Modifiers", "Modificadores");
+        Add(text, "Active Run Modifiers", "Modificadores de partida activos");
         Add(text, "Back", "Atrás");
         Add(text, "None", "Ninguno");
         Add(text, "Yes", "Sí");
@@ -180,6 +192,7 @@ public static class TetrabeastsSpanishTranslations
         Add(text, "{0}: {1} shield(s) remain.", "{0}: quedan {1} escudo(s).");
 
         AddCommonLabels(text);
+        AddXpBreakdownText(text);
         AddCharacterText(text);
         AddWarningAndTutorialText(text);
         AddHelpTopicText(text);
@@ -187,8 +200,244 @@ public static class TetrabeastsSpanishTranslations
         AddRunModifierNames(text);
         AddRunModifierFixedDescriptions(text);
         AddStatText(text);
+        AddRecentFixupText(text);
 
         return text;
+    }
+
+    static void AddRecentFixupText(Dictionary<string, string> text)
+    {
+        Add(text, "Starting a new game will erase the saved run. Continue?", "Iniciar una nueva partida borrará la partida guardada. ¿Continuar?");
+        Add(text, "Current Level: {0}", "Nivel actual: {0}");
+        Add(text, "Current Level: 0", "Nivel actual: 0");
+        Add(text, " x{0}", " x{0}");
+        Add(text, "Refund", "Reembolsar");
+        Add(text, "Unlock", "Desbloquear");
+        Add(text, " Unlock", " Desbloquear");
+        Add(text, "Selected:", "Seleccionados:");
+        Add(text, "Selected: ", "Seleccionados: ");
+        Add(text, "{0}  Lv.{1}", "{0}  Nv.{1}");
+        Add(text, "Luck Up", "Suerte +");
+        Add(text, "Gravity Down", "Gravedad -");
+        Add(text, "Velocity Down", "Velocidad -");
+        Add(text, "Gold Up", "Oro +");
+        Add(text, "Attack Up", "Ataque +");
+        Add(text, "HP Up", "PV +");
+        Add(text, "Unit Lives Up", "Vidas de unidad +");
+        Add(text, "Role: {0}", "Rol: {0}");
+        Add(text, "Level: {0}  ({1:0.#}/{2})", "Nivel: {0}  ({1:0.#}/{2})");
+        Add(text, "Max HP: {0:0.#}  (+{1}) = {2:0.#}", "PV máx.: {0:0.#}  (+{1}) = {2:0.#}");
+        Add(text, "Attack: {0:0.#}  (+{1}) = {2:0.#}", "Ataque: {0:0.#}  (+{1}) = {2:0.#}");
+        Add(text, "Special Gain: {0:0.#}", "Ganancia especial: {0:0.#}");
+        Add(text, "Heal: {0:0.#}  (+{1}) = {2:0.#}", "Curación: {0:0.#}  (+{1}) = {2:0.#}");
+        Add(text, "Heal Range: {0:0.#}", "Alcance de curación: {0:0.#}");
+        Add(text, "Heal Speed: {0:0.#}s", "Velocidad de curación: {0:0.#} s");
+        Add(text, "Heal: -", "Curación: -");
+        Add(text, "Base Stats + Shop Buff = Total Stats", "Estadísticas base + mejora de tienda = estadísticas totales");
+        Add(text, "Defense", "Defensa");
+        Add(text, "Beefy boy that deals very little damage.", "Un tanque robusto que inflige muy poco daño.");
+        Add(text, "Healer with a wide range, but weak spells.", "Sanadora de gran alcance, pero con hechizos débiles.");
+        Add(text, "A well rounded attacker unit with decent damage, but enough health to survive weaker attacks.", "Unidad atacante equilibrada con daño decente y suficiente salud para resistir ataques débiles.");
+        Add(text, "A specialized attacker unit with high base damage and lower health.", "Unidad atacante especializada con mucho daño base y poca salud.");
+        Add(text, "Can take a hit and keep going, but won't deal much damage.", "Puede aguantar golpes y seguir adelante, pero no inflige mucho daño.");
+        Add(text, "Healer with a short range, but powerful healing spells.", "Sanadora de corto alcance, pero con hechizos de curación potentes.");
+        Add(text, "Combo Extension", "Extensión de combo");
+        Add(text, "Chain Surge", "Impulso de cadena");
+        Add(text, "Stone Scrounger", "Buscador de piedra");
+        Add(text, "Reserve Stockpile", "Reserva acumulada");
+        Add(text, "Reserve Recovery", "Recuperación de reserva");
+        Add(text, "Bulwark Aura", "Aura de baluarte");
+        Add(text, "Increase combo timer duration by {0}.", "Aumenta la duración del temporizador de combo en {0}.");
+        Add(text, "Each row clear has a {0} chance to increase combo count one additional time.", "Cada fila eliminada tiene un {0} de probabilidad de aumentar el combo una vez adicional.");
+        Add(text, "Increase chance of buff drop from stone obstacle destruction by {0}.", "Aumenta en {0} la probabilidad de obtener mejoras al destruir obstáculos de piedra.");
+        Add(text, "Increase the number of starting reserve units by {0}.", "Aumenta en {0} las unidades de reserva iniciales.");
+        Add(text, "Increase the number of reserve units restored on round win by {0}.", "Aumenta en {0} las unidades de reserva restauradas al ganar una ronda.");
+        Add(text, "Decrease damage taken and damage done for all ally monster units by {0}.", "Reduce en {0} el daño recibido e infligido por todas las unidades monstruo aliadas.");
+        Add(text, "Passive - {0}", "Pasiva - {0}");
+        Add(text, "Passive - {0}:", "Pasiva - {0}:");
+        Add(text, "Next upgrade at Lv.{0}:", "Próxima mejora en Nv.{0}:");
+        Add(text, "Passive is fully upgraded.", "La pasiva está al nivel máximo.");
+        Add(text, "1 second", "1 segundo");
+        Add(text, "{0} seconds", "{0} segundos");
+        Add(text, "A = Shift Left", "A = Mover izq.");
+        Add(text, "D = Shift Right", "D = Mover der.");
+        Add(text, "D = Shft Right", "D = Mover der.");
+        Add(text, "R = Character Special", "R = Especial del personaje");
+        Add(text, "= Character Special", "= Especial del personaje");
+        Add(text, "R = Character Special (Special Guage 100%)", "R = Especial del personaje (medidor especial 100%)");
+        Add(text, "R = Character Special (Special Gauge 100%)", "R = Especial del personaje (medidor especial 100%)");
+        Add(text, "R = Character Special (Specaial Gauge 100%)", "R = Especial del personaje (medidor especial 100%)");
+        Add(text, "= Character Special (Special Guage 100%)", "= Especial del personaje (medidor especial 100%)");
+        Add(text, "= Character Special (Special Gauge 100%)", "= Especial del personaje (medidor especial 100%)");
+
+        Add(text, "Gold Won This Round:", "Oro ganado esta ronda:");
+        Add(text, "Gold Won This Round", "Oro ganado esta ronda");
+        Add(text, "Rerolls", "Repeticiones");
+        Add(text, "Rerolls: {0}", "Repeticiones: {0}");
+        Add(text, "Rerolls: 0", "Repeticiones: 0");
+        Add(text, "Modifier", "Modificador");
+        Add(text, "x{0}", "x{0}");
+
+        Add(text, "Level Up", "Sube de nivel");
+        Add(text, "Level Up!", "¡Sube de nivel!");
+        Add(text, "LEVEL UP!", "¡SUBE DE NIVEL!");
+        Add(text, "LEVEL UP! x{0}", "¡SUBE DE NIVEL! x{0}");
+        Add(text, "Level {0} -> Level {1}", "Nivel {0} -> Nivel {1}");
+        Add(text, "+{0} Exp", "+{0} EXP");
+        Add(text, "{0} permanent EXP ({1}% of {2} transferable EXP)", "{0} EXP permanente ({1}% de {2} EXP transferible)");
+        Add(text, "Converted from {0} run EXP at {1}%", "Convertida desde {0} EXP de partida al {1}%");
+
+        Add(text, "Passive+", "Pasiva+");
+        Add(text, "+ 5 HP", "+ 5 PV");
+        Add(text, "+ 1 Attack", "+ 1 Ataque");
+        Add(text, "+ 1 Special", "+ 1 Especial");
+        Add(text, "+ 5 Heal", "+ 5 Curación");
+        Add(text, "+ 1 Range", "+ 1 Alcance");
+        Add(text, "Next, I want you to hard drop your current piece by pressing the [Space Bar]. This will immediatley drop your piece so that you can quickly place your current piece locking it in place and spawning a new one.",
+            "Ahora quiero que hagas una caída rápida de tu pieza actual pulsando la [barra espaciadora]. Esto soltará la pieza al instante para que puedas colocarla rápido, fijarla y generar una nueva.");
+        Add(text, "Next, I want you to hard drop your current piece by pressing the [Space Bar]. This will immediately drop your piece so that you can quickly place your current piece locking it in place and spawning a new one.",
+            "Ahora quiero que hagas una caída rápida de tu pieza actual pulsando la [barra espaciadora]. Esto soltará la pieza al instante para que puedas colocarla rápido, fijarla y generar una nueva.");
+        Add(text, "This will immediatley drop your piece so that you can quickly place your current piece locking it in place and spawning a new one.",
+            "Esto soltará la pieza al instante para que puedas colocarla rápido, fijarla y generar una nueva.");
+        Add(text, "This will immediately drop your piece so that you can quickly place your current piece locking it in place and spawning a new one.",
+            "Esto soltará la pieza al instante para que puedas colocarla rápido, fijarla y generar una nueva.");
+        AddAchievementText(text);
+    }
+
+    static void AddAchievementText(Dictionary<string, string> text)
+    {
+        Add(text, "I Want Every Able Body", "Quiero a todos los disponibles");
+        Add(text, "Unlock all monster units.", "Desbloquea todas las unidades monstruo.");
+        Add(text, "0 Star Victory", "Victoria de 0 estrellas");
+        Add(text, "Beat the final boss.", "Derrota al jefe final.");
+        Add(text, "One Star Victory", "Victoria de una estrella");
+        Add(text, "Beat the final boss on 1-Star difficulty.", "Derrota al jefe final en dificultad de 1 estrella.");
+        Add(text, "Pay To Win", "Pagar para ganar");
+        Add(text, "Upgrade any shop buff to level 5.", "Mejora cualquier mejora de tienda al nivel 5.");
+        Add(text, "Gangs All Here", "La banda está completa");
+        Add(text, "Unlock all Commanders.", "Desbloquea todos los comandantes.");
+        Add(text, "Two Star Victory", "Victoria de dos estrellas");
+        Add(text, "Beat the final boss on 2-Star difficulty.", "Derrota al jefe final en dificultad de 2 estrellas.");
+        Add(text, "Three Star Victory", "Victoria de tres estrellas");
+        Add(text, "Beat the final boss on 3-Star difficulty.", "Derrota al jefe final en dificultad de 3 estrellas.");
+        Add(text, "Four Star Victory", "Victoria de cuatro estrellas");
+        Add(text, "Beat the final boss on 4-Star difficulty.", "Derrota al jefe final en dificultad de 4 estrellas.");
+        Add(text, "Five Star Victory", "Victoria de cinco estrellas");
+        Add(text, "Beat the final boss on 5-Star difficulty.", "Derrota al jefe final en dificultad de 5 estrellas.");
+        Add(text, "This is Fine", "Esto está bien");
+        Add(text, "Take 1,000 burn damage from fire floor effects.", "Recibe 1,000 de daño por quemadura de efectos de suelo de fuego.");
+        Add(text, "That Escalated Quickly", "Eso escaló rápido");
+        Add(text, "Remove 1,000 units using the Death Special Block.", "Elimina 1,000 unidades usando el bloque especial de muerte.");
+        Add(text, "First Time Raider", "Asaltante primerizo");
+        Add(text, "Take 1,000 damage from traps.", "Recibe 1,000 de daño de trampas.");
+        Add(text, "I think I Stepped in Something", "Creo que pisé algo");
+        Add(text, "Take 1,000 toxic damage from posioned floor effects.", "Recibe 1,000 de daño tóxico de efectos de suelo envenenado.");
+        Add(text, "Take 1,000 toxic damage from poisoned floor effects.", "Recibe 1,000 de daño tóxico de efectos de suelo envenenado.");
+        Add(text, "Shake It Until You Break It", "Agítalo hasta romperlo");
+        Add(text, "Clear 250 rows by using the earthquake special block.", "Elimina 250 filas usando el bloque especial de terremoto.");
+        Add(text, "A Little Jiggle Goes A Long Way", "Un pequeño temblor llega lejos");
+        Add(text, "Clear 25 rows by using the earthquake special block.", "Elimina 25 filas usando el bloque especial de terremoto.");
+        Add(text, "Girthquake", "Megaterremoto");
+        Add(text, "Clear 1,000 rows by using the earthquake special block.", "Elimina 1,000 filas usando el bloque especial de terremoto.");
+        Add(text, "Get in Loser, We're Going Shopping", "Sube, vamos de compras");
+        Add(text, "Accumulate 1,000 gold.", "Acumula 1,000 de oro.");
+        Add(text, "Is I Rich Now?", "¿Ya soy rico?");
+        Add(text, "Accumulate 100 gold.", "Acumula 100 de oro.");
+        Add(text, "This Lasted Longer Than Some Collectible Fads", "Esto duró más que algunas modas coleccionables");
+        Add(text, "Take more than 5 minutes to conquer a castle.", "Tarda más de 5 minutos en conquistar un castillo.");
+        Add(text, "Anything You Can Do, I Can Do Slower", "Todo lo que haces, yo lo hago más lento");
+        Add(text, "Take more than 3 minutes to conquer a castle.", "Tarda más de 3 minutos en conquistar un castillo.");
+        Add(text, "Sloth Lord", "Señor de la pereza");
+        Add(text, "Take more than 4 minutes to conquer a castle.", "Tarda más de 4 minutos en conquistar un castillo.");
+        Add(text, "My Fingers Hurt", "Me duelen los dedos");
+        Add(text, "Survive with gravity at 10 for 60 seconds.", "Sobrevive con gravedad 10 durante 60 segundos.");
+        Add(text, "Nevermind...", "Mejor no...");
+        Add(text, "Unlock your first first temporary debuff.", "Desbloquea tu primera desventaja temporal.");
+        Add(text, "A Record That Would Make Lions Blush", "Un récord para avergonzar a cualquiera");
+        Add(text, "Lose 50 Times.", "Pierde 50 veces.");
+        Add(text, "Thrive Under Pressure", "Prospera bajo presión");
+        Add(text, "Survive with gravity at 10 for 30 seconds.", "Sobrevive con gravedad 10 durante 30 segundos.");
+        Add(text, "Is I Strong Now?", "¿Ya soy fuerte?");
+        Add(text, "Unlock your first first temporary buff.", "Desbloquea tu primera mejora temporal.");
+        Add(text, "I Say This Not As An Insult, But As A Statement Of Fact", "No lo digo como insulto, sino como un hecho");
+        Add(text, "Lose 100 Times.", "Pierde 100 veces.");
+        Add(text, "I Think We Need A Bigger Vault", "Creo que necesitamos una bóveda más grande");
+        Add(text, "Accumulate 10,000 gold.", "Acumula 10,000 de oro.");
+        Add(text, "GG EZ", "GG EZ");
+        Add(text, "Beat the final level with every Commander.", "Supera el nivel final con cada comandante.");
+        Add(text, "Participation Trophy", "Trofeo de participación");
+        Add(text, "Lose for the first time.", "Pierde por primera vez.");
+        Add(text, "Immortal Army", "Ejército inmortal");
+        Add(text, "Conquer 100 castles with your Unit Reserve at max capacity.", "Conquista 100 castillos con la reserva de unidades al máximo.");
+        Add(text, "I Guess That Was The Wrong Wire", "Supongo que ese era el cable equivocado");
+        Add(text, "Lose 100 monster units to magic explosives.", "Pierde 100 unidades monstruo por explosivos mágicos.");
+        Add(text, "I Think It's Dead Now", "Creo que ya está muerto");
+        Add(text, "Clear 1,000 rows.", "Elimina 1,000 filas.");
+        Add(text, "Tis But A Scratch", "Solo es un rasguño");
+        Add(text, "Conquer a castle with your Unit Reserve at max capacity.", "Conquista un castillo con la reserva de unidades al máximo.");
+        Add(text, "Meat Shield Tactics", "Tácticas de escudo de carne");
+        Add(text, "Conquer 25 castles with your Unit Reserve at max capacity.", "Conquista 25 castillos con la reserva de unidades al máximo.");
+        Add(text, "You Got Your Marching Orders", "Ya tienes tus órdenes de marcha");
+        Add(text, "Clear 100 rows.", "Elimina 100 filas.");
+        Add(text, "Overwhelming Power", "Poder abrumador");
+        Add(text, "Accumulate 15 buffs in a single run.", "Acumula 15 mejoras en una sola partida.");
+        Add(text, "Is There Anything Left To Attack?", "¿Queda algo que atacar?");
+        Add(text, "Clear 10,000 rows.", "Elimina 10,000 filas.");
+        Add(text, "Shut Up And Takey My Money", "Cállate y toma mi dinero");
+        Add(text, "Buy an upgrade from the shop for the first time.", "Compra una mejora en la tienda por primera vez.");
+        Add(text, "Turning Small Numbers Into Big Numbers", "Convirtiendo números pequeños en grandes");
+        Add(text, "Get a combo of 10 or higher.", "Consigue un combo de 10 o más.");
+        Add(text, "Vewwy Stwong", "Muuuy fuerte");
+        Add(text, "Deal 100 damage or more in a single attack.", "Inflige 100 de daño o más en un solo ataque.");
+        Add(text, "I'll Follow You Anywhere", "Te seguiré a cualquier parte");
+        Add(text, "Unlock a Commander for the first time.", "Desbloquea un comandante por primera vez.");
+        Add(text, "Eenie Meenie Miney Mo", "Pito pito colorito");
+        Add(text, "Unlock a monster unit for the first time.", "Desbloquea una unidad monstruo por primera vez.");
+        Add(text, "Tell Me I'm Pretty", "Dime que soy bonito");
+        Add(text, "Unlock a monster units skin variant for the first time.", "Desbloquea una variante de aspecto de una unidad monstruo por primera vez.");
+        Add(text, "Are We There Yet?", "¿Ya llegamos?");
+        Add(text, "Conquer 10 castles in a single run.", "Conquista 10 castillos en una sola partida.");
+        Add(text, "It's Called Fashion Brenda, Look It Up", "Se llama moda, búscalo");
+        Add(text, "Unlock ten skin variants.", "Desbloquea diez variantes de aspecto.");
+        Add(text, "New Skin Who Dis?", "Nuevo aspecto, ¿quién es?");
+        Add(text, "Unlock five skin variants.", "Desbloquea cinco variantes de aspecto.");
+        Add(text, "A Little Special", "Un poco especial");
+        Add(text, "Use a special for the first time.", "Usa una habilidad especial por primera vez.");
+        Add(text, "Mama's Special Boy", "El niño especial de mamá");
+        Add(text, "Use a special 100 times.", "Usa una habilidad especial 100 veces.");
+        Add(text, "Some Are More Special Than Others", "Algunos son más especiales que otros");
+        Add(text, "Use every Commanders special 100 times.", "Usa la habilidad especial de cada comandante 100 veces.");
+        Add(text, "General Got Me Workin'", "El general me puso a trabajar");
+        Add(text, "Destory 100 stone obstacles.", "Destruye 100 obstáculos de piedra.");
+        Add(text, "Destroy 100 stone obstacles.", "Destruye 100 obstáculos de piedra.");
+        Add(text, "Certified Glue Eater", "Comedor de pegamento certificado");
+        Add(text, "Use a special 1000 times.", "Usa una habilidad especial 1000 veces.");
+        Add(text, "We're All Special", "Todos somos especiales");
+        Add(text, "Use every Commanders special 20 times.", "Usa la habilidad especial de cada comandante 20 veces.");
+        Add(text, "That's A Lot Of Rubble", "Eso es mucho escombro");
+        Add(text, "Conquer 50 castles.", "Conquista 50 castillos.");
+        Add(text, "King of Rubble", "Rey del escombro");
+        Add(text, "Conquer 100 castles.", "Conquista 100 castillos.");
+        Add(text, "I. AM. SPEED!", "¡SOY VELOCIDAD!");
+        Add(text, "Conquer a castle in 30 seconds or less.", "Conquista un castillo en 30 segundos o menos.");
+        Add(text, "Can't Stop, Won't Stop", "No puedo parar, no voy a parar");
+        Add(text, "Conquer your first castle.", "Conquista tu primer castillo.");
+        Add(text, "I Ran Track In Highschool", "Corría atletismo en la escuela");
+        Add(text, "Conquer a castle in 45 seconds or less.", "Conquista un castillo en 45 segundos o menos.");
+        Add(text, "Gotta Go Fast", "Hay que ir rápido");
+        Add(text, "Conquer a castle in 60 seconds or less.", "Conquista un castillo en 60 segundos o menos.");
+    }
+
+    static void AddXpBreakdownText(Dictionary<string, string> text)
+    {
+        Add(text, "Level {0} Complete", "Nivel {0} completado");
+        Add(text, "Base Level XP", "EXP base del nivel");
+        Add(text, "Clear time {0}", "Tiempo de limpieza {0}");
+        Add(text, "Units lost {0}", "Unidades perdidas {0}");
+        Add(text, "Largest Combo {0}", "Mayor combo {0}");
+        Add(text, "Obstacles Cleared {0}", "Obst\u00e1culos eliminados {0}");
+        Add(text, "Star Difficulty ({0}):", "Dificultad de estrellas ({0}):");
+        Add(text, "Total XP Earned {0}", "EXP total obtenida {0}");
     }
 
     static void AddCommonLabels(Dictionary<string, string> text)
@@ -770,7 +1019,7 @@ public static class TetrabeastsSpanishTranslations
                 continue;
 
             string remainder = lookupKey.Substring(englishPrefix.Length + 1).Trim();
-            if (RunModifierTemplates.TryGetValue(remainder, out string template))
+            if (TryGetRunModifierTemplate(remainder, out string template))
             {
                 spanishText = string.Format(template, DegreePrefixes[i].Spanish);
                 return true;
@@ -778,6 +1027,19 @@ public static class TetrabeastsSpanishTranslations
         }
 
         return false;
+    }
+
+    static bool TryGetRunModifierTemplate(string remainder, out string template)
+    {
+        if (RunModifierTemplates.TryGetValue(remainder, out template))
+            return true;
+
+        string normalized = remainder
+            .Replace("winning the round", "winning a round")
+            .Replace(" from a stone obstacle upon destruction.", " from a stone obstacle.");
+
+        return !string.Equals(normalized, remainder, StringComparison.OrdinalIgnoreCase)
+            && RunModifierTemplates.TryGetValue(normalized, out template);
     }
 
     static bool TryTranslateLabelValueLines(string englishText, out string spanishText)

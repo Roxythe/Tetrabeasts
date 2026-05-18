@@ -29,49 +29,6 @@ public class VictoryPanelUI : MonoBehaviour
     [SerializeField] Color epicTitleColor = new Color(0.75f, 0.3f, 1f, 1f);
     [SerializeField] Color legendaryTitleColor = new Color(1f, 0.75f, 0.2f, 1f);
 
-    const string DefaultCategoryText =
-        "Lines Cleared:\n" +
-        "Special Used:\n" +
-        "Obstacles Destroyed:\n" +
-        "Highest Combo:\n" +
-        "Highest Single Attack:\n" +
-        "Units Died:\n" +
-        "Units Healed:\n" +
-        "Total Damage Dealt:\n" +
-        "Clear Time:\n\n" +
-        "Final Score:";
-
-    readonly struct ModKey
-    {
-        public readonly RunModifierSO mod;
-        public readonly RunModRarity rarity;
-
-        public ModKey(RunModifierSO mod, RunModRarity rarity)
-        {
-            this.mod = mod;
-            this.rarity = rarity;
-        }
-    }
-
-    sealed class ModKeyComparer : IEqualityComparer<ModKey>
-    {
-        public bool Equals(ModKey a, ModKey b)
-        {
-            return ReferenceEquals(a.mod, b.mod) && a.rarity == b.rarity;
-        }
-
-        public int GetHashCode(ModKey key)
-        {
-            unchecked
-            {
-                int hash = 17;
-                hash = (hash * 31) + (key.mod ? key.mod.GetInstanceID() : 0);
-                hash = (hash * 31) + (int)key.rarity;
-                return hash;
-            }
-        }
-    }
-
     void Awake()
     {
         AutoWire();
@@ -131,21 +88,21 @@ public class VictoryPanelUI : MonoBehaviour
 
     void RefreshStats(RunSummaryStats.Snapshot stats)
     {
-        if (statsCategoryText && string.IsNullOrWhiteSpace(statsCategoryText.text))
-            statsCategoryText.text = TetrabeastsLocalization.LocalizeText(DefaultCategoryText);
+        if (statsCategoryText)
+            statsCategoryText.text = BuildStatsCategoryText();
 
         if (!statsEarnedText)
             return;
 
         statsEarnedText.text =
-            $"{stats.linesCleared} Lines\n" +
-            $"{stats.specialUsedCount} Times\n" +
-            $"{stats.obstaclesDestroyed} Obstacles\n" +
+            $"{FormatLocalizedCount(stats.linesCleared, "Lines")}\n" +
+            $"{FormatLocalizedCount(stats.specialUsedCount, "Times")}\n" +
+            $"{FormatLocalizedCount(stats.obstaclesDestroyed, "Obstacles")}\n" +
             $"{stats.highestCombo}\n" +
-            $"{stats.highestSingleAttackDamage} Damage\n" +
-            $"{stats.unitsDied} Units\n" +
-            $"{Mathf.RoundToInt(stats.totalHealingDone)} Health\n" +
-            $"{stats.totalDamageDealt} Damage\n" +
+            $"{FormatLocalizedCount(stats.highestSingleAttackDamage, "Damage")}\n" +
+            $"{FormatLocalizedCount(stats.unitsDied, "Units")}\n" +
+            $"{FormatLocalizedCount(Mathf.RoundToInt(stats.totalHealingDone), "Health")}\n" +
+            $"{FormatLocalizedCount(stats.totalDamageDealt, "Damage")}\n" +
             $"{FormatDuration(stats.clearTimeSeconds)}\n\n" +
             $"{stats.finalScore}";
     }
@@ -161,23 +118,32 @@ public class VictoryPanelUI : MonoBehaviour
         if (!modifierRowPrefab || source == null)
             return;
 
-        var comparer = new ModKeyComparer();
-        var counts = new Dictionary<ModKey, int>(comparer);
-        var order = new List<ModKey>();
+        var counts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        var representatives = new Dictionary<string, RunModifierSO>(StringComparer.OrdinalIgnoreCase);
+        var rarities = new Dictionary<string, RunModRarity>(StringComparer.OrdinalIgnoreCase);
+        var order = new List<string>();
 
         for (int i = 0; i < source.Count; i++)
         {
             var mod = source[i];
             if (!mod) continue;
 
-            var key = new ModKey(mod, GetRarity(mod));
+            string key = GetModifierGroupKey(mod);
+            RunModRarity rarity = GetRarity(mod);
             if (counts.TryGetValue(key, out var currentCount))
             {
                 counts[key] = currentCount + 1;
+                if (rarity > rarities[key])
+                {
+                    representatives[key] = mod;
+                    rarities[key] = rarity;
+                }
             }
             else
             {
                 counts[key] = 1;
+                representatives[key] = mod;
+                rarities[key] = rarity;
                 order.Add(key);
             }
         }
@@ -185,11 +151,12 @@ public class VictoryPanelUI : MonoBehaviour
         for (int i = 0; i < order.Count; i++)
         {
             var key = order[i];
-            if (!key.mod) continue;
+            if (!representatives.TryGetValue(key, out RunModifierSO mod) || !mod)
+                continue;
 
             var row = Instantiate(modifierRowPrefab, contentRoot);
-            row.name = $"{key.mod.displayName}_VictoryRow";
-            BindRow(row.transform, key.mod, key.rarity, counts[key]);
+            row.name = $"{key}_VictoryRow";
+            BindRow(row.transform, mod, rarities[key], counts[key]);
         }
     }
 
@@ -201,7 +168,7 @@ public class VictoryPanelUI : MonoBehaviour
         string titleValue = string.IsNullOrWhiteSpace(mod.displayName)
             ? mod.name
             : TetrabeastsLocalization.LocalizeText(mod.displayName);
-        string counterValue = $"x{Mathf.Max(1, copies)}";
+        string counterValue = TetrabeastsLocalization.LocalizeFormat("x{0}", Mathf.Max(1, copies));
         Color titleColor = GetTitleColor(rarity);
 
         var binder = rowRoot.GetComponent<VictoryModifierRowUI>();
@@ -345,6 +312,17 @@ public class VictoryPanelUI : MonoBehaviour
         return mod is RunModifier runModifier ? runModifier.rarity : RunModRarity.Common;
     }
 
+    static string GetModifierGroupKey(RunModifierSO mod)
+    {
+        if (!mod)
+            return string.Empty;
+
+        string displayName = string.IsNullOrWhiteSpace(mod.displayName) ? mod.name : mod.displayName;
+        return string.IsNullOrWhiteSpace(displayName)
+            ? mod.GetInstanceID().ToString()
+            : displayName.Trim();
+    }
+
     Color GetTitleColor(RunModRarity rarity)
     {
         return rarity switch
@@ -355,6 +333,26 @@ public class VictoryPanelUI : MonoBehaviour
             RunModRarity.Legendary => legendaryTitleColor,
             _ => commonTitleColor
         };
+    }
+
+    static string BuildStatsCategoryText()
+    {
+        return string.Join("\n",
+            TetrabeastsLocalization.LocalizeText("Lines Cleared:"),
+            TetrabeastsLocalization.LocalizeText("Special Used:"),
+            TetrabeastsLocalization.LocalizeText("Obstacles Destroyed:"),
+            TetrabeastsLocalization.LocalizeText("Highest Combo:"),
+            TetrabeastsLocalization.LocalizeText("Highest Single Attack:"),
+            TetrabeastsLocalization.LocalizeText("Units Died:"),
+            TetrabeastsLocalization.LocalizeText("Units Healed:"),
+            TetrabeastsLocalization.LocalizeText("Total Damage Dealt:"),
+            TetrabeastsLocalization.LocalizeText("Clear Time:"))
+            + "\n\n" + TetrabeastsLocalization.LocalizeText("Final Score:");
+    }
+
+    static string FormatLocalizedCount(int amount, string englishUnit)
+    {
+        return $"{amount} {TetrabeastsLocalization.LocalizeText(englishUnit)}";
     }
 
     static string FormatDuration(float totalSeconds)

@@ -104,17 +104,17 @@ public static class MonsterPassiveSystem
         switch (data.passiveType)
         {
             case MonsterPassiveType.ComboDuration:
-                return "Combo Extension";
+                return TetrabeastsLocalization.LocalizeText("Combo Extension");
             case MonsterPassiveType.BonusComboChance:
-                return "Chain Surge";
+                return TetrabeastsLocalization.LocalizeText("Chain Surge");
             case MonsterPassiveType.StoneBuffDropChance:
-                return "Stone Scrounger";
+                return TetrabeastsLocalization.LocalizeText("Stone Scrounger");
             case MonsterPassiveType.StartingReserveUnits:
-                return "Reserve Stockpile";
+                return TetrabeastsLocalization.LocalizeText("Reserve Stockpile");
             case MonsterPassiveType.ReserveUnitsRestoredOnWin:
-                return "Reserve Recovery";
+                return TetrabeastsLocalization.LocalizeText("Reserve Recovery");
             case MonsterPassiveType.AllyMonsterBulwark:
-                return "Bulwark Aura";
+                return TetrabeastsLocalization.LocalizeText("Bulwark Aura");
             default:
                 return "";
         }
@@ -128,17 +128,17 @@ public static class MonsterPassiveSystem
         switch (data.passiveType)
         {
             case MonsterPassiveType.ComboDuration:
-                return $"Increase combo timer duration by {FormatSeconds(GetComboDurationSeconds(level))}.";
+                return TetrabeastsLocalization.LocalizeFormat("Increase combo timer duration by {0}.", FormatSeconds(GetComboDurationSeconds(level)));
             case MonsterPassiveType.BonusComboChance:
-                return $"Each row clear has a {FormatPercent(GetBonusComboChance(level))} chance to increase combo count one additional time.";
+                return TetrabeastsLocalization.LocalizeFormat("Each row clear has a {0} chance to increase combo count one additional time.", FormatPercent(GetBonusComboChance(level)));
             case MonsterPassiveType.StoneBuffDropChance:
-                return $"Increase chance of buff drop from stone obstacle destruction by {FormatPercent(GetStoneBuffDropChance(level))}.";
+                return TetrabeastsLocalization.LocalizeFormat("Increase chance of buff drop from stone obstacle destruction by {0}.", FormatPercent(GetStoneBuffDropChance(level)));
             case MonsterPassiveType.StartingReserveUnits:
-                return $"Increase the number of starting reserve units by {GetStartingReserveUnits(level)}.";
+                return TetrabeastsLocalization.LocalizeFormat("Increase the number of starting reserve units by {0}.", GetStartingReserveUnits(level));
             case MonsterPassiveType.ReserveUnitsRestoredOnWin:
-                return $"Increase the number of reserve units restored on round win by {GetReserveUnitsRestoredOnWin(level)}.";
+                return TetrabeastsLocalization.LocalizeFormat("Increase the number of reserve units restored on round win by {0}.", GetReserveUnitsRestoredOnWin(level));
             case MonsterPassiveType.AllyMonsterBulwark:
-                return $"Decrease damage taken and damage done for all ally monster units by {FormatPercent(GetBulwarkReduction(level))}.";
+                return TetrabeastsLocalization.LocalizeFormat("Decrease damage taken and damage done for all ally monster units by {0}.", FormatPercent(GetBulwarkReduction(level)));
             default:
                 return "";
         }
@@ -153,7 +153,7 @@ public static class MonsterPassiveSystem
         string description = GetPassiveDescription(data, level);
         string next = GetNextUpgradePreview(data, level);
 
-        string header = $"<b><color=#FFD700>Passive - {name}</color></b>";
+        string header = $"<b><color=#FFD700>{TetrabeastsLocalization.LocalizeFormat("Passive - {0}", name)}</color></b>";
 
         if (string.IsNullOrEmpty(next))
             return $"{header}\n{description}";
@@ -171,7 +171,7 @@ public static class MonsterPassiveSystem
         if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(description))
             return "";
 
-        return $"<b><color=#FFD700>Passive - {name}:</color></b> {description}";
+        return $"<b><color=#FFD700>{TetrabeastsLocalization.LocalizeFormat("Passive - {0}:", name)}</color></b> {description}";
     }
 
     static string GetNextUpgradePreview(MonsterData data, int level)
@@ -183,9 +183,9 @@ public static class MonsterPassiveSystem
         if (level < 10) nextLevel = 10;
         else if (level < 25) nextLevel = 25;
         else if (level < 50) nextLevel = 50;
-        else return "Passive is fully upgraded.";
+        else return TetrabeastsLocalization.LocalizeText("Passive is fully upgraded.");
 
-        return $"\n<b><color=#FFD700>Next upgrade at Lv.{nextLevel}:</color></b> {GetPassiveDescription(data, nextLevel)}";
+        return $"\n<b><color=#FFD700>{TetrabeastsLocalization.LocalizeFormat("Next upgrade at Lv.{0}:", nextLevel)}</color></b> {GetPassiveDescription(data, nextLevel)}";
     }
 
     static int GetPassiveTierIndex(int level)
@@ -235,7 +235,9 @@ public static class MonsterPassiveSystem
     static string FormatSeconds(float seconds)
     {
         int rounded = Mathf.RoundToInt(seconds);
-        return rounded == 1 ? "1 second" : $"{rounded} seconds";
+        return rounded == 1
+            ? TetrabeastsLocalization.LocalizeText("1 second")
+            : TetrabeastsLocalization.LocalizeFormat("{0} seconds", rounded);
     }
 }
 

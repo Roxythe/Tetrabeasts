@@ -584,7 +584,13 @@ public class GameController : MonoBehaviour
         get
         {
             EnsureTutorialPopupView();
-            return tutorialPopupView != null && tutorialPopupView.IsShowing;
+            if (tutorialPopupView != null && tutorialPopupView.IsShowing)
+                return true;
+
+            if (triggeredTutorialPopups && triggeredTutorialPopups.IsPopupShowing)
+                return true;
+
+            return IsAnyTutorialSequenceRunning();
         }
     }
 
@@ -1157,6 +1163,9 @@ public class GameController : MonoBehaviour
             if (ConfirmationPopupUI.TryCancelShowingPopup())
                 return;
 
+            if (ShouldTutorialConsumeEscape())
+                return;
+
             if (!isPaused)
             {
                 PauseGame();
@@ -1520,8 +1529,6 @@ public class GameController : MonoBehaviour
         bag.Clear();
         monstersBag.Clear();
 
-        yield return CoShowLevelStartTransition();
-
         if (levelModifierController)
         {
             if (useSavedLevelModifier)
@@ -1533,6 +1540,8 @@ public class GameController : MonoBehaviour
                 yield return levelModifierController.BeginLevel(currentCastleData);
             }
         }
+
+        yield return CoShowLevelStartTransition();
 
         RefillBag(forceFirstEntryNormal: true);
         EnsureMinBag(3);
@@ -1856,6 +1865,11 @@ public class GameController : MonoBehaviour
         if (AudioManager.I)
             AudioManager.I.PlayIntermissionLoseMusic();
 
+        ShowFinalStatsBeforeHighScore(ShowGameOverLocalHighScore);
+    }
+
+    void ShowGameOverLocalHighScore()
+    {
         SubmitSteamLeaderboardScore();
 
         if (highScoreUI)
@@ -2484,6 +2498,11 @@ public class GameController : MonoBehaviour
         if (xpAwardUI)
             xpAwardUI.HideAll();
 
+        ShowFinalStatsBeforeHighScore(ShowDemoLimitLocalHighScore);
+    }
+
+    void ShowDemoLimitLocalHighScore()
+    {
         if (highScoreUI)
         {
             if (highScoreUI.mainMenuButton)
@@ -2681,45 +2700,18 @@ public class GameController : MonoBehaviour
         ApplyFinalLevelRoundWinBookkeeping();
         bool canContinueToSurvival = CanStartPostFinalSurvival();
         if (canContinueToSurvival)
+        {
             ApplyStandardFinalWinState();
-        else
-            FinalizeRunAsWinState();
+            if (xpAwardUI)
+                xpAwardUI.HideAll();
 
-        OpenXpUiMode();
-        if (xpAwardUI)
-            xpAwardUI.HideAll();
-
-        ResolveVictoryPanelUi();
-        if (victoryPanelUI)
-            victoryPanelUI.SetRootActive(true);
-
-        ResolveVictoryPanelUi();
-        if (!victoryPanelUI)
-        {
-            if (canContinueToSurvival)
-                StartPostFinalSurvivalLevel();
-            else
-                ShowRunEndCommitAfterFinalWin(roster, playIntermissionMusic: false);
-            return;
+            StartPostFinalSurvivalLevel();
         }
-
-        victoryPanelUI.SetRootActive(true);
-        victoryPanelUI.SetUnlockedDifficultyText(_newDifficultyUnlockedThisRun ? "New Difficulty Unlocked!" : string.Empty);
-        victoryPanelUI.Show(RunSummaryStats.GetSnapshot(), RunModsStore.Buffs, RunModsStore.Debuffs, () =>
+        else
         {
-            if (canContinueToSurvival)
-                StartPostFinalSurvivalLevel();
-            else
-                ContinueAfterVictoryPanel(roster);
-        });
-    }
-
-    void ContinueAfterVictoryPanel(List<MonsterData> roster)
-    {
-        if (victoryPanelUI)
-            victoryPanelUI.Hide();
-
-        ShowRunEndCommitAfterFinalWin(roster, playIntermissionMusic: false);
+            FinalizeRunAsWinState();
+            ShowRunEndCommitAfterFinalWin(roster, playIntermissionMusic: false);
+        }
     }
 
     void StartPostFinalSurvivalLevel()
@@ -2865,6 +2857,11 @@ public class GameController : MonoBehaviour
         void ShowHighScore()
         {
             if (AudioManager.I) AudioManager.I.StopMusic();
+            ShowFinalStatsBeforeHighScore(ShowFinalWinLocalHighScore);
+        }
+
+        void ShowFinalWinLocalHighScore()
+        {
             SubmitSteamLeaderboardScore();
             if (highScoreUI)
             {
@@ -2899,6 +2896,29 @@ public class GameController : MonoBehaviour
 
         CloseXpUiMode();
         ShowHighScore();
+    }
+
+    void ShowFinalStatsBeforeHighScore(System.Action showHighScore)
+    {
+        ResolveVictoryPanelUi(logWarning: false);
+
+        if (!victoryPanelUI)
+        {
+            showHighScore?.Invoke();
+            return;
+        }
+
+        if (roundRewardUI)
+            roundRewardUI.Hide();
+
+        victoryPanelUI.SetUnlockedDifficultyText(_newDifficultyUnlockedThisRun ? "New Difficulty Unlocked!" : string.Empty);
+        victoryPanelUI.Show(RunSummaryStats.GetSnapshot(), RunModsStore.Buffs, RunModsStore.Debuffs, () =>
+        {
+            victoryPanelUI.Hide();
+            showHighScore?.Invoke();
+        });
+
+        EnterUICursorMode();
     }
 
     void ApplyFinalLevelRoundWinBookkeeping()
@@ -6607,14 +6627,15 @@ public class GameController : MonoBehaviour
         StartCoroutine(ReapplyUICursorNextFrame());
     }
 
-    void ResolveVictoryPanelUi()
+    void ResolveVictoryPanelUi(bool logWarning = true)
     {
         if (!victoryPanelUI)
             victoryPanelUI = FindFirstObjectByType<VictoryPanelUI>(FindObjectsInactive.Include);
 
         if (!victoryPanelUI)
         {
-            Debug.LogWarning("GameController: VictoryPanelUI was not found in the scene. Assign the existing inactive Victory Panel in the inspector.");
+            if (logWarning)
+                Debug.LogWarning("GameController: FinalStats_Panel/VictoryPanelUI was not found in the scene. Assign the existing inactive FinalStats panel in the inspector.");
             return;
         }
 
@@ -6787,11 +6808,8 @@ public class GameController : MonoBehaviour
         tutorialAllowHardDrop = allowHardDrop;
     }
 
-    bool HasAnyTutorialPromptActive()
+    bool IsAnyTutorialSequenceRunning()
     {
-        if (triggeredTutorialPopups && triggeredTutorialPopups.IsPopupShowing)
-            return true;
-
         var sequences = FindObjectsByType<TutorialSequenceController>(
             FindObjectsInactive.Include,
             FindObjectsSortMode.None);
@@ -6804,6 +6822,42 @@ public class GameController : MonoBehaviour
         }
 
         return false;
+    }
+
+    bool ShouldTutorialConsumeEscape()
+    {
+        if (triggeredTutorialPopups && triggeredTutorialPopups.IsPopupShowing)
+            return true;
+
+        bool hasRunningSequence = false;
+        var sequences = FindObjectsByType<TutorialSequenceController>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
+
+        for (int i = 0; i < sequences.Length; i++)
+        {
+            var sequence = sequences[i];
+            if (!sequence || !sequence.IsSequenceRunning)
+                continue;
+
+            hasRunningSequence = true;
+            if (sequence.AllowsGameplayPauseInput)
+                return false;
+        }
+
+        if (hasRunningSequence)
+            return true;
+
+        EnsureTutorialPopupView();
+        return tutorialPopupView && tutorialPopupView.IsShowing;
+    }
+
+    bool HasAnyTutorialPromptActive()
+    {
+        if (triggeredTutorialPopups && triggeredTutorialPopups.IsPopupShowing)
+            return true;
+
+        return IsAnyTutorialSequenceRunning();
     }
 
     bool CanLaunchCastleProjectile()

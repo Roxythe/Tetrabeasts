@@ -35,10 +35,10 @@ public class ShopBuffEntryUI : MonoBehaviour
         int cost = ShopBuffStore.GetNextCost(buffType);
 
         if (currentLevelText)
-            currentLevelText.text = $"Current Level: {level}";
+            currentLevelText.text = TetrabeastsLocalization.LocalizeFormat("Current Level: {0}", level);
 
         if (costText)
-            costText.text = $" x{cost}";
+            costText.text = TetrabeastsLocalization.LocalizeFormat(" x{0}", cost);
 
         if (levelUpButton)
             levelUpButton.interactable = CurrencyStore.Total >= cost;

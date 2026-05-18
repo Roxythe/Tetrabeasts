@@ -59,6 +59,8 @@ public class TutorialPopupView : MonoBehaviour
 
     public void Show(bool instant = false)
     {
+        transform.SetAsLastSibling();
+
         EnsureCanvasGroup();
         UIPanelTransition.Show(gameObject, visibleAlpha, instant);
         EnsureCanvasGroup();

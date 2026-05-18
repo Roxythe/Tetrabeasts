@@ -76,7 +76,7 @@ public sealed class TetrabeastsLocalizedTextScanner : MonoBehaviour
 
         if (!TetrabeastsLocalization.TryGetStaticTextKey(text.text, out string key, out string fallback))
         {
-            if (TetrabeastsLocalization.HasSpanishTranslation(text.text))
+            if (TetrabeastsLocalization.HasRuntimeTranslation(text.text))
                 text.gameObject.AddComponent<TetrabeastsLocalizedRawText>().Configure(text, text.text);
 
             return;
@@ -95,7 +95,7 @@ public sealed class TetrabeastsLocalizedTextScanner : MonoBehaviour
 
         if (!TetrabeastsLocalization.TryGetStaticTextKey(text.text, out string key, out string fallback))
         {
-            if (TetrabeastsLocalization.HasSpanishTranslation(text.text))
+            if (TetrabeastsLocalization.HasRuntimeTranslation(text.text))
                 text.gameObject.AddComponent<TetrabeastsLocalizedRawText>().Configure(text, text.text);
 
             return;

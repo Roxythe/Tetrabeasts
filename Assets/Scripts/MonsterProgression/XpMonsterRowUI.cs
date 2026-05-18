@@ -67,7 +67,7 @@ public class XpMonsterRowUI : MonoBehaviour
         _levelTransitionStartLevel = level;
         _showingLevelTransition = false;
 
-        if (levelText) levelText.text = $"Level {level}";
+        if (levelText) levelText.text = TetrabeastsLocalization.LocalizeFormat("Level {0}", level);
     }
 
     public void SetXp(float xpInto, float xpPerLevel = 100f)
@@ -135,7 +135,7 @@ public class XpMonsterRowUI : MonoBehaviour
             BeginLevelUpSequence();
 
         _levelUpCount += 1;
-        _statLines.Add(line);
+        _statLines.Add(TetrabeastsLocalization.LocalizeText(line));
 
         UpdateLevelUpHeader();
 
@@ -154,7 +154,9 @@ public class XpMonsterRowUI : MonoBehaviour
 
     void UpdateLevelUpHeader()
     {
-        string header = _levelUpCount <= 1 ? "LEVEL UP!" : $"LEVEL UP! x{_levelUpCount}";
+        string header = _levelUpCount <= 1
+            ? TetrabeastsLocalization.LocalizeText("LEVEL UP!")
+            : TetrabeastsLocalization.LocalizeFormat("LEVEL UP! x{0}", _levelUpCount);
 
         if (levelUpText) levelUpText.text = header;
         if (levelUpShadowText) levelUpShadowText.text = header;
@@ -166,7 +168,7 @@ public class XpMonsterRowUI : MonoBehaviour
 
         if (!xpDistText) return;
         xpDistText.gameObject.SetActive(true);
-        xpDistText.text = $"+{FormatXp(gainedXp)} Exp";
+        xpDistText.text = TetrabeastsLocalization.LocalizeFormat("+{0} Exp", FormatXp(gainedXp));
     }
 
     public void ShowXpDrainPreserved(float preservedXp)
@@ -176,7 +178,7 @@ public class XpMonsterRowUI : MonoBehaviour
         if (!xpDrainText) return;
         xpDrainText.gameObject.SetActive(true);
 
-        xpDrainText.text = $"+{FormatXp(preservedXp)} Exp";
+        xpDrainText.text = TetrabeastsLocalization.LocalizeFormat("+{0} Exp", FormatXp(preservedXp));
     }
 
     void StopLevelUpEffects()
@@ -319,7 +321,7 @@ public class XpMonsterRowUI : MonoBehaviour
         _showingLevelTransition = true;
 
         if (levelText)
-            levelText.text = $"Level {_levelTransitionStartLevel} -> Level {newLevel}";
+            levelText.text = TetrabeastsLocalization.LocalizeFormat("Level {0} -> Level {1}", _levelTransitionStartLevel, newLevel);
     }
 
     public int SubtractXpFromOrb(float deltaXp, float xpPerLevel = 100f)
@@ -422,7 +424,11 @@ public class XpMonsterRowUI : MonoBehaviour
         xpTransferInfoText.gameObject.SetActive(true);
 
         int percent = Mathf.RoundToInt(Mathf.Clamp01(conversionFraction) * 100f);
-        xpTransferInfoText.text = $"{FormatXp(preservedXp)} permanent EXP ({percent}% of {FormatXp(drainableXp)} transferable EXP)";
+        xpTransferInfoText.text = TetrabeastsLocalization.LocalizeFormat(
+            "{0} permanent EXP ({1}% of {2} transferable EXP)",
+            FormatXp(preservedXp),
+            percent,
+            FormatXp(drainableXp));
     }
 
     public void ShowXpCommitTransferInfo(float preservedXp, float drainableXp, float conversionFraction)
@@ -433,7 +439,10 @@ public class XpMonsterRowUI : MonoBehaviour
         xpTransferInfoText.gameObject.SetActive(true);
 
         int percent = Mathf.RoundToInt(Mathf.Clamp01(conversionFraction) * 100f);
-        xpTransferInfoText.text = $"Converted from {FormatXp(drainableXp)} run EXP at {percent}%";
+        xpTransferInfoText.text = TetrabeastsLocalization.LocalizeFormat(
+            "Converted from {0} run EXP at {1}%",
+            FormatXp(drainableXp),
+            percent);
     }
 
     public void HideXpTransferInfo()

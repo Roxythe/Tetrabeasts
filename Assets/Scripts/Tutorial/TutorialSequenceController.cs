@@ -36,6 +36,8 @@ public class TutorialSequenceController : MonoBehaviour
         public bool autoAdvanceOnComplete = true;
         public bool allowSoftDropDuringStep = false;
         public bool allowHardDropDuringStep = false;
+        [Tooltip("Disables all scene buttons except the watched button and tutorial popup buttons while this step is active.")]
+        public bool lockOtherButtonsDuringStep = false;
 
         [Header("Popup")]
         public TutorialPopupView.PopupAnchorPreset popupAnchorPreset = TutorialPopupView.PopupAnchorPreset.Default;
@@ -54,6 +56,12 @@ public class TutorialSequenceController : MonoBehaviour
         public List<TutorialGameplayEvent> requiredGameplayEvents = new();
         public Button watchedButton;
         public GameObject watchedPanel;
+
+        [Header("Panel Guard")]
+        [Tooltip("Keeps the watched panel at the requested visibility while this step is active.")]
+        public bool enforceWatchedPanelState = false;
+        [Tooltip("The visibility enforced when Enforce Watched Panel State is enabled.")]
+        public bool watchedPanelShouldBeVisible = true;
     }
 
     [Header("Sequence")]
@@ -83,6 +91,7 @@ public class TutorialSequenceController : MonoBehaviour
 
     readonly List<Button> _temporarilyDisabledButtons = new();
     public bool IsSequenceRunning => _sequenceRunning;
+    public bool AllowsGameplayPauseInput => IsCurrentStepWaitingForKey(KeyCode.Escape);
 
     void Awake()
     {
@@ -133,9 +142,20 @@ public class TutorialSequenceController : MonoBehaviour
     IEnumerator Start()
     {
         yield return null;
+        yield return new WaitForEndOfFrame();
 
         if (autoStart)
-            StartSequenceIfNeeded();
+            yield return StartSequenceWhenReady();
+    }
+
+    IEnumerator StartSequenceWhenReady()
+    {
+        EnsureGameController();
+
+        while (gameController && gameController.IsGameplaySuspended)
+            yield return null;
+
+        StartSequenceIfNeeded();
     }
 
     void Update()
@@ -161,6 +181,12 @@ public class TutorialSequenceController : MonoBehaviour
                     MarkCurrentStepRequirementMet();
                 break;
         }
+    }
+
+    void LateUpdate()
+    {
+        EnsureCurrentStepDisplayed();
+        EnforceCurrentStepGuards();
     }
 
     public void StartSequenceIfNeeded()
@@ -285,6 +311,7 @@ public class TutorialSequenceController : MonoBehaviour
         ApplyHighlight(step);
         HookCurrentStepBindings(step);
         ApplyButtonInteractionLock(step);
+        ApplyPanelStateGuard(step, instant: true);
         SetGameplaySuspended(step.pauseGameplay);
         RefreshPopupState(step);
 
@@ -298,6 +325,34 @@ public class TutorialSequenceController : MonoBehaviour
 
         if (_resolvedCompletionMode == TutorialStepCompletionMode.PanelOpened && step.watchedPanel && step.watchedPanel.activeInHierarchy)
             MarkCurrentStepRequirementMet();
+    }
+
+    void EnsureCurrentStepDisplayed()
+    {
+        if (!_sequenceRunning || _currentStepIndex < 0 || _currentStepIndex >= steps.Count || !popupView)
+            return;
+
+        if (popupView.IsShowing)
+            return;
+
+        var step = steps[_currentStepIndex];
+
+        popupView.SetContent(step.body);
+        popupView.SetSkipVisible(step.allowSkip);
+        ApplyPopupPosition(step);
+        popupView.Show(true);
+        ApplyHighlight(step);
+        RefreshPopupState(step);
+    }
+
+    void EnforceCurrentStepGuards()
+    {
+        if (!_sequenceRunning || _currentStepIndex < 0 || _currentStepIndex >= steps.Count)
+            return;
+
+        var step = steps[_currentStepIndex];
+        MaintainButtonInteractionLock(step);
+        ApplyPanelStateGuard(step, instant: true);
     }
 
     void ApplyPopupPosition(TutorialStep step)
@@ -434,6 +489,19 @@ public class TutorialSequenceController : MonoBehaviour
         popupView.SetStepState(waitingForInteraction, _stepRequirementMet);
     }
 
+    public bool IsCurrentStepWaitingForKey(KeyCode key)
+    {
+        if (!_sequenceRunning || _currentStepIndex < 0 || _currentStepIndex >= steps.Count)
+            return false;
+
+        if (_resolvedCompletionMode != TutorialStepCompletionMode.AnyKey &&
+            _resolvedCompletionMode != TutorialStepCompletionMode.AllKeys)
+            return false;
+
+        var requiredKeys = steps[_currentStepIndex].requiredKeys;
+        return requiredKeys != null && requiredKeys.Contains(key);
+    }
+
     void SetGameplaySuspended(bool suspended)
     {
         EnsureGameController();
@@ -511,25 +579,66 @@ public class TutorialSequenceController : MonoBehaviour
     void ApplyButtonInteractionLock(TutorialStep step)
     {
         RestoreButtonInteractionLock();
+        MaintainButtonInteractionLock(step);
+    }
 
-        if (step == null || step.completionMode != TutorialStepCompletionMode.ButtonClick || !step.watchedButton)
+    void MaintainButtonInteractionLock(TutorialStep step)
+    {
+        if (!ShouldLockButtons(step))
             return;
 
         var allButtons = FindObjectsByType<Button>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         for (int i = 0; i < allButtons.Length; i++)
         {
             var button = allButtons[i];
-            if (!button || button == step.watchedButton)
+            if (!button || ShouldKeepButtonInteractable(button, step))
                 continue;
 
             if (!button.interactable)
                 continue;
 
             button.interactable = false;
-            _temporarilyDisabledButtons.Add(button);
+            if (!_temporarilyDisabledButtons.Contains(button))
+                _temporarilyDisabledButtons.Add(button);
         }
 
-        step.watchedButton.interactable = true;
+        if (step.watchedButton)
+            step.watchedButton.interactable = true;
+    }
+
+    bool ShouldLockButtons(TutorialStep step)
+    {
+        if (step == null)
+            return false;
+
+        return step.lockOtherButtonsDuringStep ||
+            (_resolvedCompletionMode == TutorialStepCompletionMode.ButtonClick && step.watchedButton != null);
+    }
+
+    bool ShouldKeepButtonInteractable(Button button, TutorialStep step)
+    {
+        if (!button)
+            return false;
+
+        if (step != null && button == step.watchedButton && IsWatchedButtonAllowedThisStep(step))
+            return true;
+
+        if (popupView)
+        {
+            if (button == popupView.ContinueButton || button == popupView.SkipButton)
+                return true;
+        }
+
+        return false;
+    }
+
+    bool IsWatchedButtonAllowedThisStep(TutorialStep step)
+    {
+        if (step == null || !step.watchedButton)
+            return false;
+
+        return _resolvedCompletionMode == TutorialStepCompletionMode.ButtonClick ||
+            _resolvedCompletionMode == TutorialStepCompletionMode.PanelOpened;
     }
 
     void RestoreButtonInteractionLock()
@@ -542,6 +651,18 @@ public class TutorialSequenceController : MonoBehaviour
         }
 
         _temporarilyDisabledButtons.Clear();
+    }
+
+    void ApplyPanelStateGuard(TutorialStep step, bool instant)
+    {
+        if (step == null || !step.enforceWatchedPanelState || !step.watchedPanel)
+            return;
+
+        bool isVisible = UIPanelTransition.IsVisible(step.watchedPanel);
+        if (isVisible == step.watchedPanelShouldBeVisible)
+            return;
+
+        UIPanelTransition.SetVisible(step.watchedPanel, step.watchedPanelShouldBeVisible, instant);
     }
 
     bool WasKeyPressedThisFrame(KeyCode key)

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 [DisallowMultipleComponent]
 public class TutorialHighlightView : MonoBehaviour
@@ -12,6 +13,9 @@ public class TutorialHighlightView : MonoBehaviour
     [Header("Layout")]
     [SerializeField] Vector2 defaultPadding = new Vector2(24f, 24f);
     [SerializeField] Vector2 minimumSize = new Vector2(96f, 96f);
+
+    [Header("Visuals")]
+    [SerializeField, Range(0, 255)] int highlightAlpha = 200;
 
     readonly Vector3[] _worldCorners = new Vector3[4];
     readonly System.Collections.Generic.List<RectTransform> _targets = new();
@@ -132,6 +136,7 @@ public class TutorialHighlightView : MonoBehaviour
             var clone = Instantiate(highlightTemplate, highlightContainerRoot);
             clone.name = $"{highlightTemplate.name}_Instance_{_instances.Count}";
             clone.SetAsFirstSibling();
+            ApplyHighlightAlpha(clone);
             SetInstanceVisible(clone, true);
             _instances.Add(clone);
         }
@@ -176,7 +181,23 @@ public class TutorialHighlightView : MonoBehaviour
         if (!instance)
             return;
 
+        ApplyHighlightAlpha(instance);
         instance.gameObject.SetActive(visible);
+    }
+
+    void ApplyHighlightAlpha(RectTransform instance)
+    {
+        if (!instance)
+            return;
+
+        float alpha = Mathf.Clamp01(highlightAlpha / 255f);
+        var images = instance.GetComponentsInChildren<Image>(true);
+        for (int i = 0; i < images.Length; i++)
+        {
+            var color = images[i].color;
+            color.a = alpha;
+            images[i].color = color;
+        }
     }
 
     void SetVisible(bool visible)

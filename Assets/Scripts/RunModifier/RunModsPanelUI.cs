@@ -53,7 +53,18 @@ public class RunModsPanelUI : MonoBehaviour
 
     void OnEnable()
     {
+        TetrabeastsLocalization.LanguageChanged += HandleLanguageChanged;
         if (refreshOnEnable) Refresh();
+    }
+
+    void OnDisable()
+    {
+        TetrabeastsLocalization.LanguageChanged -= HandleLanguageChanged;
+    }
+
+    void HandleLanguageChanged()
+    {
+        Refresh();
     }
 
     public void Refresh()

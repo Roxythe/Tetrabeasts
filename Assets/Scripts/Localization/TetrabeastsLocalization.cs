@@ -14,6 +14,7 @@ public static class TetrabeastsLocalization
 {
     public const string EnglishCode = "en";
     public const string SpanishCode = "es";
+    public const string ChineseSimplifiedCode = "zh-CN";
     public const string UiTableName = "Tetrabeasts UI";
 
     const string KeySelectedLanguage = "Settings_LanguageCode";
@@ -21,7 +22,8 @@ public static class TetrabeastsLocalization
     static readonly LanguageOption[] Supported =
     {
         new LanguageOption(EnglishCode, "English", "English", SystemLanguage.English, new[] { "english", "en" }),
-        new LanguageOption(SpanishCode, "Spanish", "Espa\u00f1ol", SystemLanguage.Spanish, new[] { "spanish", "latam", "es", "es-es", "es-mx" })
+        new LanguageOption(SpanishCode, "Spanish", "Espa\u00f1ol", SystemLanguage.Spanish, new[] { "spanish", "latam", "es", "es-es", "es-mx" }),
+        new LanguageOption(ChineseSimplifiedCode, "Simplified Chinese", "\u7b80\u4f53\u4e2d\u6587", SystemLanguage.ChineseSimplified, new[] { "schinese", "simplified chinese", "chinese", "zh", "zh-cn", "zh-hans" })
     };
 
     static readonly Dictionary<string, Dictionary<string, string>> FallbackText = new()
@@ -392,7 +394,7 @@ public static class TetrabeastsLocalization
             return value;
 
         if (FallbackText[EnglishCode].TryGetValue(key, out string englishValue))
-            return englishValue;
+            return LocalizeText(englishValue);
 
         return string.IsNullOrEmpty(englishFallback) ? key : englishFallback;
     }
@@ -404,18 +406,23 @@ public static class TetrabeastsLocalization
 
         EnsureInitialized();
 
-        if (CurrentLanguageCode == SpanishCode && TetrabeastsSpanishTranslations.TryGetText(englishText, out string spanishText))
+        string languageCode = CurrentLanguageCode;
+        if (languageCode == SpanishCode && TetrabeastsSpanishTranslations.TryGetText(englishText, out string spanishText))
             return spanishText;
+
+        if (languageCode == ChineseSimplifiedCode && TetrabeastsChineseTranslations.TryGetText(englishText, out string chineseText))
+            return chineseText;
 
         return englishText;
     }
 
-    public static bool HasSpanishTranslation(string englishText)
+    public static bool HasRuntimeTranslation(string englishText)
     {
         if (string.IsNullOrWhiteSpace(englishText))
             return false;
 
-        return TetrabeastsSpanishTranslations.TryGetText(englishText, out _);
+        return TetrabeastsSpanishTranslations.TryGetText(englishText, out _)
+            || TetrabeastsChineseTranslations.TryGetText(englishText, out _);
     }
 
     public static string LocalizeFormat(string englishFormat, params object[] args)

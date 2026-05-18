@@ -33,8 +33,10 @@ public class TriggeredTutorialPopupController : MonoBehaviour
     readonly HashSet<string> _pendingTutorialIds = new();
 
     bool _processingQueue;
+    bool _popupShowing;
+    bool _anonymousPopupQueuedOrShowing;
     string _activeTutorialId;
-    public bool IsPopupShowing => !string.IsNullOrWhiteSpace(_activeTutorialId);
+    public bool IsPopupShowing => _popupShowing;
 
     void Awake()
     {
@@ -115,13 +117,11 @@ public class TriggeredTutorialPopupController : MonoBehaviour
         RectTransform highlightTarget = null,
         Vector2 highlightPadding = default)
     {
-        if (string.IsNullOrWhiteSpace(tutorialId))
-            yield break;
-
         if (!ignoreSavedCompletionForTesting && PlayerProgress.I != null && PlayerProgress.I.IsTutorialCompleted(tutorialId))
             yield break;
 
-        if (_activeTutorialId == tutorialId || _pendingTutorialIds.Contains(tutorialId))
+        if (!string.IsNullOrWhiteSpace(tutorialId) &&
+            (_activeTutorialId == tutorialId || _pendingTutorialIds.Contains(tutorialId)))
         {
             yield return new WaitUntil(() => _activeTutorialId != tutorialId && !_pendingTutorialIds.Contains(tutorialId));
             yield break;
@@ -160,13 +160,11 @@ public class TriggeredTutorialPopupController : MonoBehaviour
     IReadOnlyList<RectTransform> highlightTargets,
     Vector2 highlightPadding)
     {
-        if (string.IsNullOrWhiteSpace(tutorialId))
-            yield break;
-
         if (!ignoreSavedCompletionForTesting && PlayerProgress.I != null && PlayerProgress.I.IsTutorialCompleted(tutorialId))
             yield break;
 
-        if (_activeTutorialId == tutorialId || _pendingTutorialIds.Contains(tutorialId))
+        if (!string.IsNullOrWhiteSpace(tutorialId) &&
+            (_activeTutorialId == tutorialId || _pendingTutorialIds.Contains(tutorialId)))
         {
             yield return new WaitUntil(() => _activeTutorialId != tutorialId && !_pendingTutorialIds.Contains(tutorialId));
             yield break;
@@ -206,13 +204,11 @@ public class TriggeredTutorialPopupController : MonoBehaviour
     IReadOnlyList<RectTransform> highlightTargets,
     Vector2 highlightPadding)
     {
-        if (string.IsNullOrWhiteSpace(tutorialId))
-            yield break;
-
         if (!ignoreSavedCompletionForTesting && PlayerProgress.I != null && PlayerProgress.I.IsTutorialCompleted(tutorialId))
             yield break;
 
-        if (_activeTutorialId == tutorialId || _pendingTutorialIds.Contains(tutorialId))
+        if (!string.IsNullOrWhiteSpace(tutorialId) &&
+            (_activeTutorialId == tutorialId || _pendingTutorialIds.Contains(tutorialId)))
         {
             yield return new WaitUntil(() => _activeTutorialId != tutorialId && !_pendingTutorialIds.Contains(tutorialId));
             yield break;
@@ -242,7 +238,11 @@ public class TriggeredTutorialPopupController : MonoBehaviour
 
     void Enqueue(PendingRequest request)
     {
-        _pendingTutorialIds.Add(request.tutorialId);
+        if (!string.IsNullOrWhiteSpace(request.tutorialId))
+            _pendingTutorialIds.Add(request.tutorialId);
+        else
+            _anonymousPopupQueuedOrShowing = true;
+
         _queue.Enqueue(request);
 
         if (!_processingQueue)
@@ -252,7 +252,7 @@ public class TriggeredTutorialPopupController : MonoBehaviour
     bool ShouldQueueTutorial(string tutorialId)
     {
         if (string.IsNullOrWhiteSpace(tutorialId))
-            return false;
+            return !_anonymousPopupQueuedOrShowing;
 
         if (_activeTutorialId == tutorialId || _pendingTutorialIds.Contains(tutorialId))
             return false;
@@ -267,26 +267,39 @@ public class TriggeredTutorialPopupController : MonoBehaviour
         while (_queue.Count > 0)
         {
             var request = _queue.Dequeue();
-            _pendingTutorialIds.Remove(request.tutorialId);
+            if (!string.IsNullOrWhiteSpace(request.tutorialId))
+                _pendingTutorialIds.Remove(request.tutorialId);
 
             if (!ignoreSavedCompletionForTesting && PlayerProgress.I != null && PlayerProgress.I.IsTutorialCompleted(request.tutorialId))
             {
+                if (string.IsNullOrWhiteSpace(request.tutorialId))
+                    _anonymousPopupQueuedOrShowing = false;
+
                 request.onClosed?.Invoke();
                 continue;
             }
 
             yield return new WaitUntil(() => !HasBlockingTutorialSequence());
+            yield return new WaitUntil(CanShowQueuedPopup);
 
             EnsureReferences();
             if (!popupView)
             {
                 Debug.LogWarning($"TriggeredTutorialPopupController: No TutorialPopupView found for tutorial '{request.tutorialId}'.");
+                if (string.IsNullOrWhiteSpace(request.tutorialId))
+                    _anonymousPopupQueuedOrShowing = false;
+
                 request.onClosed?.Invoke();
                 continue;
             }
 
             _activeTutorialId = request.tutorialId;
+            _popupShowing = true;
             yield return ShowRequestRoutine(request);
+            _popupShowing = false;
+            if (string.IsNullOrWhiteSpace(request.tutorialId))
+                _anonymousPopupQueuedOrShowing = false;
+
             _activeTutorialId = null;
         }
 
@@ -353,6 +366,18 @@ public class TriggeredTutorialPopupController : MonoBehaviour
 
         yield return new WaitUntil(() =>
         {
+            if (popupView && !popupView.IsShowing)
+            {
+                popupView.ApplyPresetPosition(request.popupAnchorPreset, request.popupAnchoredPosition);
+                popupView.SetVisibleAlpha(request.popupAlpha);
+                popupView.SetContent(pages[Mathf.Clamp(pageIndex, 0, pages.Count - 1)]);
+                popupView.SetContinueVisible(true);
+                popupView.SetContinueInteractable(true);
+                popupView.SetSkipVisible(request.allowSkip);
+                popupView.SetStepState(waitingForInteraction: false, readyToContinue: true);
+                popupView.Show(true);
+            }
+
             if (dismissed)
                 return true;
 
@@ -407,6 +432,12 @@ public class TriggeredTutorialPopupController : MonoBehaviour
         }
 
         return false;
+    }
+
+    bool CanShowQueuedPopup()
+    {
+        EnsureReferences();
+        return !gameController || !gameController.IsGameplaySuspended;
     }
 
     void SetGameplaySuspended(bool suspended, bool freezePieceGravity)

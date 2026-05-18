@@ -677,11 +677,13 @@ public class LevelModifierSelectionUI : MonoBehaviour
     {
         int clampedRerolls = Mathf.Max(0, availableRerolls);
 
+        string rerollText = TetrabeastsLocalization.LocalizeFormat("Rerolls: {0}", clampedRerolls);
+
         if (rerollCountText)
-            rerollCountText.text = $"Rerolls: {clampedRerolls}";
+            rerollCountText.text = rerollText;
 
         if (shadowRerollCountText)
-            shadowRerollCountText.text = $"Rerolls: {clampedRerolls}";
+            shadowRerollCountText.text = rerollText;
 
         if (!rerollButton)
             return;

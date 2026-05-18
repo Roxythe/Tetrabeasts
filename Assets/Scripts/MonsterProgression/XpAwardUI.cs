@@ -274,7 +274,7 @@ public class XpAwardUI : MonoBehaviour
         if (runDrainPanel) runDrainPanel.SetActive(false);
         if (runCommitPanel) runCommitPanel.SetActive(false);
 
-        string titleStr = $"Level {b.gameLevelNumber} Complete";
+        string titleStr = TetrabeastsLocalization.LocalizeFormat("Level {0} Complete", b.gameLevelNumber);
 
         if (breakdownTitleText)
             breakdownTitleText.text = titleStr;
@@ -321,12 +321,12 @@ public class XpAwardUI : MonoBehaviour
 
         return new List<BreakdownLine>
         {
-            new BreakdownLine("Base Level XP", b.baseXp),
-            new BreakdownLine($"Clear time {FormatClearTime(b.levelClearTime)}", b.clearTimeBonus),
-            new BreakdownLine($"Units lost {unitsLost}", b.reserveBonus),
-            new BreakdownLine($"Largest Combo {b.comboBonus}", b.comboBonus),
-            new BreakdownLine($"Obstacles Cleared {b.obstacleBonus}", b.obstacleBonus),
-            new BreakdownLine($"Star Difficulty ({b.difficultyStars}):", b.difficultyBonus, showPlus: true)
+            new BreakdownLine(TetrabeastsLocalization.LocalizeText("Base Level XP"), b.baseXp),
+            new BreakdownLine(TetrabeastsLocalization.LocalizeFormat("Clear time {0}", FormatClearTime(b.levelClearTime)), b.clearTimeBonus),
+            new BreakdownLine(TetrabeastsLocalization.LocalizeFormat("Units lost {0}", unitsLost), b.reserveBonus),
+            new BreakdownLine(TetrabeastsLocalization.LocalizeFormat("Largest Combo {0}", b.comboBonus), b.comboBonus),
+            new BreakdownLine(TetrabeastsLocalization.LocalizeFormat("Obstacles Cleared {0}", b.obstacleBonus), b.obstacleBonus),
+            new BreakdownLine(TetrabeastsLocalization.LocalizeFormat("Star Difficulty ({0}):", b.difficultyStars), b.difficultyBonus)
         };
     }
 
@@ -764,7 +764,7 @@ public class XpAwardUI : MonoBehaviour
 
     void SetBreakdownTotal(int total)
     {
-        string totalStr = $"Total XP Earned {total}";
+        string totalStr = TetrabeastsLocalization.LocalizeFormat("Total XP Earned {0}", total);
 
         if (breakdownTotalText)
             breakdownTotalText.text = $"<color=#{ColorUtility.ToHtmlStringRGBA(breakdownTotalColor)}>{totalStr}</color>";

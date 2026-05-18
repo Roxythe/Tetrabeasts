@@ -172,7 +172,7 @@ public class MonsterSelectUI : MonoBehaviour
 
             var costTextT = unlockBtnT ? FindDeep(unlockBtnT, "Cur_Text (TMP)") : null;
             var costText = costTextT ? costTextT.GetComponent<TMP_Text>() : null;
-            if (costText) costText.text = $"x{md.unlockCost}";
+            if (costText) costText.text = TetrabeastsLocalization.LocalizeFormat("x{0}", md.unlockCost);
 
             if (unlockBtn)
             {
@@ -434,7 +434,9 @@ public class MonsterSelectUI : MonoBehaviour
         {
             bool unlocked = UnlockStore.IsUnlocked(md);
             int lvl = MonsterProgressStore.GetPermanentLevel(md.monsterName);
-            previewNameText.text = unlocked ? $"{md.monsterName}  Lv.{lvl}" : md.monsterName;
+            previewNameText.text = unlocked
+                ? TetrabeastsLocalization.LocalizeFormat("{0}  Lv.{1}", md.monsterName, lvl)
+                : md.monsterName;
         }
 
         if (previewDescriptionText)
@@ -453,11 +455,12 @@ public class MonsterSelectUI : MonoBehaviour
 
         int lvl = MonsterProgressStore.GetPermanentLevel(md.monsterName);
         string passiveBlock = MonsterPassiveSystem.GetPassivePreviewBlock(md, lvl);
+        string description = TetrabeastsLocalization.LocalizeText(md.monsterDescription);
 
         if (string.IsNullOrEmpty(passiveBlock))
-            return md.monsterDescription;
+            return description;
 
-        return $"{md.monsterDescription}\n\n{passiveBlock}";
+        return $"{description}\n\n{passiveBlock}";
     }
 
     string BuildPreviewStatsString(MonsterData md)
@@ -484,28 +487,28 @@ public class MonsterSelectUI : MonoBehaviour
         float totalMaxHp = baseMaxHp + (hpLvl * 5f);
         float totalHeal = (baseHeal > 0f) ? (baseHeal + (healLvl * 2f)) : 0f;
 
-        string roleLine = $"Role: {md.role}";
-        string levelLine = $"Level: {lvl}  ({xpInto:0.#}/{MonsterLeveling.XpPerLevel})";
+        string roleLine = TetrabeastsLocalization.LocalizeFormat("Role: {0}", TetrabeastsLocalization.LocalizeText(md.role.ToString()));
+        string levelLine = TetrabeastsLocalization.LocalizeFormat("Level: {0}  ({1:0.#}/{2})", lvl, xpInto, MonsterLeveling.XpPerLevel);
 
-        string hpLine = $"Max HP: {baseMaxHp:0.#}  (+{hpLvl * 5}) = {totalMaxHp:0.#}";
-        string atkLine = $"Attack: {baseAttack:0.#}  (+{atkLvl}) = {totalAttack:0.#}";
-        string specialLine = $"Special Gain: {baseSpecial:0.#}";
+        string hpLine = TetrabeastsLocalization.LocalizeFormat("Max HP: {0:0.#}  (+{1}) = {2:0.#}", baseMaxHp, hpLvl * 5, totalMaxHp);
+        string atkLine = TetrabeastsLocalization.LocalizeFormat("Attack: {0:0.#}  (+{1}) = {2:0.#}", baseAttack, atkLvl, totalAttack);
+        string specialLine = TetrabeastsLocalization.LocalizeFormat("Special Gain: {0:0.#}", baseSpecial);
 
         string healBlock;
         if (baseHeal > 0f)
         {
             healBlock =
-                $"Heal: {baseHeal:0.#}  (+{healLvl * 2}) = {totalHeal:0.#}\n" +
-                $"Heal Range: {baseRange:0.#}\n" +
-                $"Heal Speed: {baseSpeed:0.#}s";
+                TetrabeastsLocalization.LocalizeFormat("Heal: {0:0.#}  (+{1}) = {2:0.#}", baseHeal, healLvl * 2, totalHeal) + "\n" +
+                TetrabeastsLocalization.LocalizeFormat("Heal Range: {0:0.#}", baseRange) + "\n" +
+                TetrabeastsLocalization.LocalizeFormat("Heal Speed: {0:0.#}s", baseSpeed);
         }
         else
         {
-            healBlock = "Heal: -";
+            healBlock = TetrabeastsLocalization.LocalizeText("Heal: -");
         }
 
         return
-            $"Base Stats + Shop Buff = Total Stats\n" +
+            TetrabeastsLocalization.LocalizeText("Base Stats + Shop Buff = Total Stats") + "\n" +
             $"{roleLine}\n" +
             $"{levelLine}\n" +
             $"{hpLine}\n" +
@@ -664,7 +667,7 @@ public class MonsterSelectUI : MonoBehaviour
         if (!showUnlock) return;
 
         int cost = MonsterSkinStore.GetCost(md, skinIdx);
-        if (previewUnlockCostText) previewUnlockCostText.text = $"x{cost}";
+        if (previewUnlockCostText) previewUnlockCostText.text = TetrabeastsLocalization.LocalizeFormat("x{0}", cost);
 
         previewUnlockButton.onClick.RemoveAllListeners();
         previewUnlockButton.onClick.AddListener(() =>

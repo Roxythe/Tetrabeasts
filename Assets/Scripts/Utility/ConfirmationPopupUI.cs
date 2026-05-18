@@ -17,6 +17,7 @@ public class ConfirmationPopupUI : MonoBehaviour
     Action _onConfirm;
     Action _onCancel;
     bool _explicitShowInProgress;
+    bool _ownsCurrentPopup;
     ButtonLayoutState _continueButtonDefaultLayout;
     ButtonLayoutState _cancelButtonDefaultLayout;
     bool _buttonLayoutsCaptured;
@@ -71,7 +72,7 @@ public class ConfirmationPopupUI : MonoBehaviour
 
     public bool CancelFromInput()
     {
-        if (!IsShowing)
+        if (!_ownsCurrentPopup || !IsShowing)
             return false;
 
         var cancel = _onCancel;
@@ -110,6 +111,7 @@ public class ConfirmationPopupUI : MonoBehaviour
 
         _onConfirm = onConfirm;
         _onCancel = onCancel;
+        _ownsCurrentPopup = true;
 
         popupView.ApplyPresetPosition(anchorPreset, anchoredPosition);
         popupView.SetVisibleAlpha(popupAlpha);
@@ -168,6 +170,7 @@ public class ConfirmationPopupUI : MonoBehaviour
 
         RestoreButtonLayouts();
         popupView?.Hide();
+        _ownsCurrentPopup = false;
     }
 
     void CleanupListeners()

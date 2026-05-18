@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +8,8 @@ using UnityEngine.InputSystem;
 
 public class VolumePanelUI : MonoBehaviour
 {
+    static readonly string[] MusicModeOptionLabels = { "EDM", "Metal", "Random" };
+
     [Header("Refs")]
     public Slider masterSlider;
     public Slider musicSlider;
@@ -36,6 +39,7 @@ public class VolumePanelUI : MonoBehaviour
     {
         TetrabeastsLocalization.EnsureInitialized();
         EnsureLanguageDropdown();
+        RefreshMusicModeDropdown();
 
         cg = GetComponent<CanvasGroup>();
         if (closeButton) closeButton.onClick.AddListener(Close);
@@ -147,8 +151,28 @@ public class VolumePanelUI : MonoBehaviour
         if (languageLabel)
             languageLabel.text = TetrabeastsLocalization.GetText("settings_language_label");
 
+        RefreshMusicModeDropdown();
+
         if (languageDropdown)
             TetrabeastsLocalization.PopulateLanguageDropdown(languageDropdown);
+    }
+
+    void RefreshMusicModeDropdown()
+    {
+        if (!musicModeDropdown)
+            return;
+
+        int selectedIndex = AudioManager.I ? (int)AudioManager.I.GetMusicMode() : musicModeDropdown.value;
+        selectedIndex = Mathf.Clamp(selectedIndex, 0, MusicModeOptionLabels.Length - 1);
+
+        var options = new List<TMP_Dropdown.OptionData>(MusicModeOptionLabels.Length);
+        for (int i = 0; i < MusicModeOptionLabels.Length; i++)
+            options.Add(new TMP_Dropdown.OptionData(TetrabeastsLocalization.LocalizeText(MusicModeOptionLabels[i])));
+
+        musicModeDropdown.ClearOptions();
+        musicModeDropdown.AddOptions(options);
+        musicModeDropdown.SetValueWithoutNotify(selectedIndex);
+        musicModeDropdown.RefreshShownValue();
     }
 
     void EnsureLanguageDropdown()
