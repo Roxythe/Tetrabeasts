@@ -1,0 +1,1775 @@
+fileFormatVersion: 2
+guid: 2d9eede7fdaab3e4d97c01f7cde711d1
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -6708404785823341163
+    second: FlameBorder_Spritesheet_256_0
+  - first:
+      213: -1505299668357938350
+    second: FlameBorder_Spritesheet_256_1
+  - first:
+      213: -4897478487411772843
+    second: FlameBorder_Spritesheet_256_2
+  - first:
+      213: 5902450096877417110
+    second: FlameBorder_Spritesheet_256_3
+  - first:
+      213: 994040565052010242
+    second: FlameBorder_Spritesheet_256_4
+  - first:
+      213: -6396665611390902090
+    second: FlameBorder_Spritesheet_256_5
+  - first:
+      213: 769450581548185478
+    second: FlameBorder_Spritesheet_256_6
+  - first:
+      213: -5011725808355808279
+    second: FlameBorder_Spritesheet_256_7
+  - first:
+      213: -3682943545803282163
+    second: FlameBorder_Spritesheet_256_8
+  - first:
+      213: -518702319301854238
+    second: FlameBorder_Spritesheet_256_9
+  - first:
+      213: -1145103240001715520
+    second: FlameBorder_Spritesheet_256_10
+  - first:
+      213: 2598781937016141941
+    second: FlameBorder_Spritesheet_256_11
+  - first:
+      213: 8574188353685775080
+    second: FlameBorder_Spritesheet_256_12
+  - first:
+      213: -427581826833244962
+    second: FlameBorder_Spritesheet_256_13
+  - first:
+      213: 7536580250321299996
+    second: FlameBorder_Spritesheet_256_14
+  - first:
+      213: -2738467798869134456
+    second: FlameBorder_Spritesheet_256_15
+  - first:
+      213: 7617318098789772335
+    second: FlameBorder_Spritesheet_256_16
+  - first:
+      213: 7977015096219824149
+    second: FlameBorder_Spritesheet_256_17
+  - first:
+      213: -6229592760271629993
+    second: FlameBorder_Spritesheet_256_18
+  - first:
+      213: -8156994110006378148
+    second: FlameBorder_Spritesheet_256_19
+  - first:
+      213: 5494667619872267405
+    second: FlameBorder_Spritesheet_256_20
+  - first:
+      213: 8821410277477083693
+    second: FlameBorder_Spritesheet_256_21
+  - first:
+      213: -3377755164073567161
+    second: FlameBorder_Spritesheet_256_22
+  - first:
+      213: -696701046887706948
+    second: FlameBorder_Spritesheet_256_23
+  - first:
+      213: 3261107012464782753
+    second: FlameBorder_Spritesheet_256_24
+  - first:
+      213: -2745600492555314237
+    second: FlameBorder_Spritesheet_256_25
+  - first:
+      213: 6039654657833906195
+    second: FlameBorder_Spritesheet_256_26
+  - first:
+      213: 6108167277003100624
+    second: FlameBorder_Spritesheet_256_27
+  - first:
+      213: -2802197306379867094
+    second: FlameBorder_Spritesheet_256_28
+  - first:
+      213: -8386292437449707883
+    second: FlameBorder_Spritesheet_256_29
+  - first:
+      213: 1134924188658120040
+    second: FlameBorder_Spritesheet_256_30
+  - first:
+      213: 4070888517432548533
+    second: FlameBorder_Spritesheet_256_31
+  - first:
+      213: 633889643012524778
+    second: FlameBorder_Spritesheet_256_32
+  - first:
+      213: -76151692497127791
+    second: FlameBorder_Spritesheet_256_33
+  - first:
+      213: -3635748157610076375
+    second: FlameBorder_Spritesheet_256_34
+  - first:
+      213: -2650063245328236621
+    second: FlameBorder_Spritesheet_256_35
+  - first:
+      213: -5104086346967725005
+    second: FlameBorder_Spritesheet_256_36
+  - first:
+      213: -5755391581047303801
+    second: FlameBorder_Spritesheet_256_37
+  - first:
+      213: -8204716003246790487
+    second: FlameBorder_Spritesheet_256_38
+  - first:
+      213: 6734091192753982147
+    second: FlameBorder_Spritesheet_256_39
+  - first:
+      213: -3449070585227630765
+    second: FlameBorder_Spritesheet_256_40
+  - first:
+      213: 5356571341535382252
+    second: FlameBorder_Spritesheet_256_41
+  - first:
+      213: 3320007772117866435
+    second: FlameBorder_Spritesheet_256_42
+  - first:
+      213: 1228373464801565793
+    second: FlameBorder_Spritesheet_256_43
+  - first:
+      213: 4262068008137217568
+    second: FlameBorder_Spritesheet_256_44
+  - first:
+      213: -7475563606295464829
+    second: FlameBorder_Spritesheet_256_45
+  - first:
+      213: -482676918867836868
+    second: FlameBorder_Spritesheet_256_46
+  - first:
+      213: -7631468276010508557
+    second: FlameBorder_Spritesheet_256_47
+  - first:
+      213: -4678213167075236226
+    second: FlameBorder_Spritesheet_256_48
+  - first:
+      213: 6473811637419565304
+    second: FlameBorder_Spritesheet_256_49
+  - first:
+      213: -5137730821124354959
+    second: FlameBorder_Spritesheet_256_50
+  - first:
+      213: -8507683728520650345
+    second: FlameBorder_Spritesheet_256_51
+  - first:
+      213: -8906555498889257240
+    second: FlameBorder_Spritesheet_256_52
+  - first:
+      213: 7006800171575416299
+    second: FlameBorder_Spritesheet_256_53
+  - first:
+      213: -6723808711945634800
+    second: FlameBorder_Spritesheet_256_54
+  - first:
+      213: 1063224212795904528
+    second: FlameBorder_Spritesheet_256_55
+  - first:
+      213: 607170257113070901
+    second: FlameBorder_Spritesheet_256_56
+  - first:
+      213: -3447929838816321075
+    second: FlameBorder_Spritesheet_256_57
+  - first:
+      213: -7677885060610213405
+    second: FlameBorder_Spritesheet_256_58
+  - first:
+      213: 1155256497492749874
+    second: FlameBorder_Spritesheet_256_59
+  - first:
+      213: 4043279747005548378
+    second: FlameBorder_Spritesheet_256_60
+  - first:
+      213: -7904665317588724739
+    second: FlameBorder_Spritesheet_256_61
+  - first:
+      213: -8556288301821621107
+    second: FlameBorder_Spritesheet_256_62
+  - first:
+      213: 6473315578499548028
+    second: FlameBorder_Spritesheet_256_63
+  - first:
+      213: 4148096261610274272
+    second: FlameBorder_Spritesheet_256_64
+  - first:
+      213: 5748738790342624477
+    second: FlameBorder_Spritesheet_256_65
+  - first:
+      213: 4628880409760643388
+    second: FlameBorder_Spritesheet_256_66
+  - first:
+      213: -5015010058516715964
+    second: FlameBorder_Spritesheet_256_67
+  - first:
+      213: 146388463319959342
+    second: FlameBorder_Spritesheet_256_68
+  - first:
+      213: 2822513436720564020
+    second: FlameBorder_Spritesheet_256_69
+  - first:
+      213: -3446470432607633057
+    second: FlameBorder_Spritesheet_256_70
+  - first:
+      213: -1106863510548852176
+    second: FlameBorder_Spritesheet_256_71
+  - first:
+      213: -8939743652791057910
+    second: FlameBorder_Spritesheet_256_72
+  - first:
+      213: 1159218232024956413
+    second: FlameBorder_Spritesheet_256_73
+  - first:
+      213: 4155077035708609698
+    second: FlameBorder_Spritesheet_256_74
+  - first:
+      213: 2741380539378417619
+    second: FlameBorder_Spritesheet_256_75
+  - first:
+      213: 381054688449239950
+    second: FlameBorder_Spritesheet_256_76
+  - first:
+      213: -1407817218268721649
+    second: FlameBorder_Spritesheet_256_77
+  - first:
+      213: -7137463790389991244
+    second: FlameBorder_Spritesheet_256_78
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5952873d365f6e2a0800000000000000
+      internalID: -6708404785823341163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_1
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25303035de91c1be0800000000000000
+      internalID: -1505299668357938350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_2
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55234be7349a80cb0800000000000000
+      internalID: -4897478487411772843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_3
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69239d03717b9e150800000000000000
+      internalID: 5902450096877417110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_4
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20fe04490aa8bcd00800000000000000
+      internalID: 994040565052010242
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_5
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b0a616748a7a37a0800000000000000
+      internalID: -6396665611390902090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_6
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 687b5692a33adaa00800000000000000
+      internalID: 769450581548185478
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_7
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9eb6b493ee5c27ab0800000000000000
+      internalID: -5011725808355808279
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d09e390bb5e83ecc0800000000000000
+      internalID: -3682943545803282163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_9
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2eb77d12df23dc8f0800000000000000
+      internalID: -518702319301854238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_10
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c28c849ba6cb10f0800000000000000
+      internalID: -1145103240001715520
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_11
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5787c8c176ab01420800000000000000
+      internalID: 2598781937016141941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_12
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e26bb231e2adf670800000000000000
+      internalID: 8574188353685775080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_13
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: edc113b089ce01af0800000000000000
+      internalID: -427581826833244962
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_14
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1a20a1aecf479860800000000000000
+      internalID: 7536580250321299996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_15
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8833f83cb020ff9d0800000000000000
+      internalID: -2738467798869134456
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_16
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2ca48bd37626b960800000000000000
+      internalID: 7617318098789772335
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_17
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5107c1a47fc04be60800000000000000
+      internalID: 7977015096219824149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_18
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7511aace36a0c89a0800000000000000
+      internalID: -6229592760271629993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_19
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c51cd1613198cce80800000000000000
+      internalID: -8156994110006378148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_20
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d8cd359961bf04c40800000000000000
+      internalID: 5494667619872267405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_21
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2a6007d8e1fb6a70800000000000000
+      internalID: 8821410277477083693
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_22
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74c572b039dcf11d0800000000000000
+      internalID: -3377755164073567161
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_23
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbe8d91d612d456f0800000000000000
+      internalID: -696701046887706948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_24
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1adaf7cbc87c14d20800000000000000
+      internalID: 3261107012464782753
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_25
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3cb5a1a16eaa5e9d0800000000000000
+      internalID: -2745600492555314237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_26
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 310393e69e921d350800000000000000
+      internalID: 6039654657833906195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_27
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d15f66a6c194c450800000000000000
+      internalID: 6108167277003100624
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_28
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2ceba285689c19d0800000000000000
+      internalID: -2802197306379867094
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_29
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59ee34be577ed9b80800000000000000
+      internalID: -8386292437449707883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_30
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86537f7598f00cf00800000000000000
+      internalID: 1134924188658120040
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_31
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5bc98c1c983be7830800000000000000
+      internalID: 4070888517432548533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_32
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aea8f8695470cc800800000000000000
+      internalID: 633889643012524778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_33
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 196f9ab607471fef0800000000000000
+      internalID: -76151692497127791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_34
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 927dedc405a3b8dc0800000000000000
+      internalID: -3635748157610076375
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_35
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3bf34edd485193bd0800000000000000
+      internalID: -2650063245328236621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_36
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33c41129284aa29b0800000000000000
+      internalID: -5104086346967725005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_37
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 781d664b9ddb020b0800000000000000
+      internalID: -5755391581047303801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_38
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a82387f34ef22e80800000000000000
+      internalID: -8204716003246790487
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_39
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ca0035d24c447d50800000000000000
+      internalID: 6734091192753982147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_40
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3572242a3907220d0800000000000000
+      internalID: -3449070585227630765
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_41
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cea014a314d565a40800000000000000
+      internalID: 5356571341535382252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_42
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c71f948a79031e20800000000000000
+      internalID: 3320007772117866435
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_43
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16c5305782f0c0110800000000000000
+      internalID: 1228373464801565793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_44
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0265391a548e52b30800000000000000
+      internalID: 4262068008137217568
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_45
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 384bbeed186714890800000000000000
+      internalID: -7475563606295464829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_46
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c304a9d46ef2d49f0800000000000000
+      internalID: -482676918867836868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_47
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fe1bb54904971690800000000000000
+      internalID: -7631468276010508557
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_48
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e76ece829e5a31fb0800000000000000
+      internalID: -4678213167075236226
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_49
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f0ee2f626997d950800000000000000
+      internalID: 6473811637419565304
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_50
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17c8e4ff90d13b8b0800000000000000
+      internalID: -5137730821124354959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_51
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 791e72c79b2aee980800000000000000
+      internalID: -8507683728520650345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_52
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ee576476fe856480800000000000000
+      internalID: -8906555498889257240
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_53
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be516e6e1a72d3160800000000000000
+      internalID: 7006800171575416299
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_54
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01cbdcac99b30b2a0800000000000000
+      internalID: -6723808711945634800
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_55
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0125b40d9c451ce00800000000000000
+      internalID: 1063224212795904528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_56
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53d3865c12a1d6800800000000000000
+      internalID: 607170257113070901
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_57
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc122ea541e7620d0800000000000000
+      internalID: -3447929838816321075
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_58
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e9bc00773ca27590800000000000000
+      internalID: -7677885060610213405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FlameBorder_Spritesheet_256_59
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 23e6485e9ab480010800000000000000
+      internalID: 1155256497492749874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 28d4590a607b88c41a396a663aee1134
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":256.0,"y":256.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      FlameBorder_Spritesheet_256_0: -6708404785823341163
+      FlameBorder_Spritesheet_256_1: -1505299668357938350
+      FlameBorder_Spritesheet_256_10: -1145103240001715520
+      FlameBorder_Spritesheet_256_11: 2598781937016141941
+      FlameBorder_Spritesheet_256_12: 8574188353685775080
+      FlameBorder_Spritesheet_256_13: -427581826833244962
+      FlameBorder_Spritesheet_256_14: 7536580250321299996
+      FlameBorder_Spritesheet_256_15: -2738467798869134456
+      FlameBorder_Spritesheet_256_16: 7617318098789772335
+      FlameBorder_Spritesheet_256_17: 7977015096219824149
+      FlameBorder_Spritesheet_256_18: -6229592760271629993
+      FlameBorder_Spritesheet_256_19: -8156994110006378148
+      FlameBorder_Spritesheet_256_2: -4897478487411772843
+      FlameBorder_Spritesheet_256_20: 5494667619872267405
+      FlameBorder_Spritesheet_256_21: 8821410277477083693
+      FlameBorder_Spritesheet_256_22: -3377755164073567161
+      FlameBorder_Spritesheet_256_23: -696701046887706948
+      FlameBorder_Spritesheet_256_24: 3261107012464782753
+      FlameBorder_Spritesheet_256_25: -2745600492555314237
+      FlameBorder_Spritesheet_256_26: 6039654657833906195
+      FlameBorder_Spritesheet_256_27: 6108167277003100624
+      FlameBorder_Spritesheet_256_28: -2802197306379867094
+      FlameBorder_Spritesheet_256_29: -8386292437449707883
+      FlameBorder_Spritesheet_256_3: 5902450096877417110
+      FlameBorder_Spritesheet_256_30: 1134924188658120040
+      FlameBorder_Spritesheet_256_31: 4070888517432548533
+      FlameBorder_Spritesheet_256_32: 633889643012524778
+      FlameBorder_Spritesheet_256_33: -76151692497127791
+      FlameBorder_Spritesheet_256_34: -3635748157610076375
+      FlameBorder_Spritesheet_256_35: -2650063245328236621
+      FlameBorder_Spritesheet_256_36: -5104086346967725005
+      FlameBorder_Spritesheet_256_37: -5755391581047303801
+      FlameBorder_Spritesheet_256_38: -8204716003246790487
+      FlameBorder_Spritesheet_256_39: 6734091192753982147
+      FlameBorder_Spritesheet_256_4: 994040565052010242
+      FlameBorder_Spritesheet_256_40: -3449070585227630765
+      FlameBorder_Spritesheet_256_41: 5356571341535382252
+      FlameBorder_Spritesheet_256_42: 3320007772117866435
+      FlameBorder_Spritesheet_256_43: 1228373464801565793
+      FlameBorder_Spritesheet_256_44: 4262068008137217568
+      FlameBorder_Spritesheet_256_45: -7475563606295464829
+      FlameBorder_Spritesheet_256_46: -482676918867836868
+      FlameBorder_Spritesheet_256_47: -7631468276010508557
+      FlameBorder_Spritesheet_256_48: -4678213167075236226
+      FlameBorder_Spritesheet_256_49: 6473811637419565304
+      FlameBorder_Spritesheet_256_5: -6396665611390902090
+      FlameBorder_Spritesheet_256_50: -5137730821124354959
+      FlameBorder_Spritesheet_256_51: -8507683728520650345
+      FlameBorder_Spritesheet_256_52: -8906555498889257240
+      FlameBorder_Spritesheet_256_53: 7006800171575416299
+      FlameBorder_Spritesheet_256_54: -6723808711945634800
+      FlameBorder_Spritesheet_256_55: 1063224212795904528
+      FlameBorder_Spritesheet_256_56: 607170257113070901
+      FlameBorder_Spritesheet_256_57: -3447929838816321075
+      FlameBorder_Spritesheet_256_58: -7677885060610213405
+      FlameBorder_Spritesheet_256_59: 1155256497492749874
+      FlameBorder_Spritesheet_256_6: 769450581548185478
+      FlameBorder_Spritesheet_256_7: -5011725808355808279
+      FlameBorder_Spritesheet_256_8: -3682943545803282163
+      FlameBorder_Spritesheet_256_9: -518702319301854238
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

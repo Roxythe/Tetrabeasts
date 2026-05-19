@@ -58,7 +58,7 @@ public class TutorialSequenceController : MonoBehaviour
         public GameObject watchedPanel;
 
         [Header("Panel Guard")]
-        [Tooltip("Keeps the watched panel at the requested visibility while this step is active.")]
+        [Tooltip("Keeps the watched panel at the requested visibility while this step is active. On Button Click steps with Should Be Visible off, the panel closes after the watched button click.")]
         public bool enforceWatchedPanelState = false;
         [Tooltip("The visibility enforced when Enforce Watched Panel State is enabled.")]
         public bool watchedPanelShouldBeVisible = true;
@@ -83,10 +83,12 @@ public class TutorialSequenceController : MonoBehaviour
 
     Button _currentWatchedButton;
     UnityAction _watchedButtonAction;
+    Coroutine _watchedButtonCompletionRoutine;
     Vector2 _defaultPopupPosition;
     int _currentStepIndex = -1;
     bool _sequenceRunning;
     bool _stepRequirementMet;
+    bool _panelGuardReleasedForCurrentStep;
     TutorialStepCompletionMode _resolvedCompletionMode = TutorialStepCompletionMode.NextButton;
 
     readonly List<Button> _temporarilyDisabledButtons = new();
@@ -297,6 +299,7 @@ public class TutorialSequenceController : MonoBehaviour
 
         _currentStepIndex = stepIndex;
         _stepRequirementMet = false;
+        _panelGuardReleasedForCurrentStep = false;
         _pressedKeys.Clear();
         _receivedGameplayEvents.Clear();
 
@@ -406,6 +409,13 @@ public class TutorialSequenceController : MonoBehaviour
         _currentWatchedButton = null;
         _watchedButtonAction = null;
 
+        if (_watchedButtonCompletionRoutine != null)
+        {
+            StopCoroutine(_watchedButtonCompletionRoutine);
+            _watchedButtonCompletionRoutine = null;
+        }
+
+        _panelGuardReleasedForCurrentStep = false;
         RestoreButtonInteractionLock();
     }
 
@@ -458,7 +468,32 @@ public class TutorialSequenceController : MonoBehaviour
 
     void OnWatchedButtonClicked()
     {
+        if (_watchedButtonCompletionRoutine != null)
+            return;
+
+        var step = GetCurrentStep();
+        _panelGuardReleasedForCurrentStep = ShouldCloseWatchedPanelAfterButtonClick(step);
+        _watchedButtonCompletionRoutine = StartCoroutine(CompleteWatchedButtonClickAfterUiSettles());
+    }
+
+    IEnumerator CompleteWatchedButtonClickAfterUiSettles()
+    {
+        yield return null;
+
+        var step = GetCurrentStep();
+        if (ShouldCloseWatchedPanelAfterButtonClick(step))
+            UIPanelTransition.Hide(step.watchedPanel, true);
+
+        _watchedButtonCompletionRoutine = null;
         MarkCurrentStepRequirementMet();
+    }
+
+    TutorialStep GetCurrentStep()
+    {
+        if (!_sequenceRunning || _currentStepIndex < 0 || _currentStepIndex >= steps.Count)
+            return null;
+
+        return steps[_currentStepIndex];
     }
 
     void MarkCurrentStepRequirementMet()
@@ -655,7 +690,10 @@ public class TutorialSequenceController : MonoBehaviour
 
     void ApplyPanelStateGuard(TutorialStep step, bool instant)
     {
-        if (step == null || !step.enforceWatchedPanelState || !step.watchedPanel)
+        if (step == null || _panelGuardReleasedForCurrentStep || !step.enforceWatchedPanelState || !step.watchedPanel)
+            return;
+
+        if (ShouldCloseWatchedPanelAfterButtonClick(step) && !_stepRequirementMet)
             return;
 
         bool isVisible = UIPanelTransition.IsVisible(step.watchedPanel);
@@ -663,6 +701,15 @@ public class TutorialSequenceController : MonoBehaviour
             return;
 
         UIPanelTransition.SetVisible(step.watchedPanel, step.watchedPanelShouldBeVisible, instant);
+    }
+
+    bool ShouldCloseWatchedPanelAfterButtonClick(TutorialStep step)
+    {
+        return step != null &&
+            _resolvedCompletionMode == TutorialStepCompletionMode.ButtonClick &&
+            step.watchedPanel &&
+            step.enforceWatchedPanelState &&
+            !step.watchedPanelShouldBeVisible;
     }
 
     bool WasKeyPressedThisFrame(KeyCode key)

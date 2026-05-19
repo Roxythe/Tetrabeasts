@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Debuff_StoneDropDebuffs
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: Debuffs Only
-  description: Stone obstacles no longer have a chance of dropping buffs and now
-    only drop debuffs. Debuff drop chance is the same as prior buff drop chance.
+  description: Stone obstacles only drop debuffs now. Debuff drop chance is the same
+    as prior buff drop chance.
   icon: {fileID: 21300000, guid: a1bda4f63b256ba4db1b1dc83d63aadf, type: 3}
   isBuff: 0
   rarity: 4
