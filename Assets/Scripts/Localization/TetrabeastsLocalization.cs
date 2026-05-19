@@ -14,6 +14,7 @@ public static class TetrabeastsLocalization
 {
     public const string EnglishCode = "en";
     public const string SpanishCode = "es";
+    public const string RussianCode = "ru";
     public const string ChineseSimplifiedCode = "zh-CN";
     public const string UiTableName = "Tetrabeasts UI";
 
@@ -23,6 +24,7 @@ public static class TetrabeastsLocalization
     {
         new LanguageOption(EnglishCode, "English", "English", SystemLanguage.English, new[] { "english", "en" }),
         new LanguageOption(SpanishCode, "Spanish", "Espa\u00f1ol", SystemLanguage.Spanish, new[] { "spanish", "latam", "es", "es-es", "es-mx" }),
+        new LanguageOption(RussianCode, "Russian", "\u0420\u0443\u0441\u0441\u043a\u0438\u0439", SystemLanguage.Russian, new[] { "russian", "ru" }),
         new LanguageOption(ChineseSimplifiedCode, "Simplified Chinese", "\u7b80\u4f53\u4e2d\u6587", SystemLanguage.ChineseSimplified, new[] { "schinese", "simplified chinese", "chinese", "zh", "zh-cn", "zh-hans" })
     };
 
@@ -410,6 +412,9 @@ public static class TetrabeastsLocalization
         if (languageCode == SpanishCode && TetrabeastsSpanishTranslations.TryGetText(englishText, out string spanishText))
             return spanishText;
 
+        if (languageCode == RussianCode && TetrabeastsRussianTranslations.TryGetText(englishText, out string russianText))
+            return russianText;
+
         if (languageCode == ChineseSimplifiedCode && TetrabeastsChineseTranslations.TryGetText(englishText, out string chineseText))
             return chineseText;
 
@@ -422,6 +427,7 @@ public static class TetrabeastsLocalization
             return false;
 
         return TetrabeastsSpanishTranslations.TryGetText(englishText, out _)
+            || TetrabeastsRussianTranslations.TryGetText(englishText, out _)
             || TetrabeastsChineseTranslations.TryGetText(englishText, out _);
     }
 
