@@ -1147,18 +1147,13 @@ public class GameController : MonoBehaviour
         if (_specialAbilityCinematicActive)
             return;
 
-#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
-    if (UnityEngine.InputSystem.Keyboard.current.rKey.wasPressedThisFrame)
-        ActivateSpecial();
-#else
-        if (Input.GetKeyDown(KeyCode.R))
+        if (TetrabeastsControls.WasPressed(TetrabeastsControlAction.Special))
             ActivateSpecial();
-#endif
 
         if (IsRoundActive && !IsTutorialPromptActive)
             RunSummaryStats.AddActiveTime(Time.deltaTime);
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (TetrabeastsControls.WasPressed(TetrabeastsControlAction.Pause))
         {
             if (ConfirmationPopupUI.TryCancelShowingPopup())
                 return;

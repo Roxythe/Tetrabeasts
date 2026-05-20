@@ -1,12 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
 using System.Collections;
-
-
-#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
-using UnityEngine.InputSystem;
-#endif
 using System.Collections.Generic;
 
 public class Piece : MonoBehaviour
@@ -93,52 +87,23 @@ public class Piece : MonoBehaviour
         bool allowSoftDrop = !tutorialPromptActive || (gc != null && gc.IsTutorialSoftDropAllowed);
         bool allowHardDrop = !tutorialPromptActive || (gc != null && gc.IsTutorialHardDropAllowed);
 
-        // Input handling
-#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
-    var keyboard = Keyboard.current;
-
-    bool moveLeftPressed = keyboard != null &&
-                           !blockHorizontal &&
-                           (keyboard.leftArrowKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame);
-
-    bool moveRightPressed = keyboard != null &&
-                            !blockHorizontal &&
-                            (keyboard.rightArrowKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame);
-
-    bool softDropPressed = keyboard != null &&
-                           allowSoftDrop &&
-                           (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame);
-
-    bool rotateCwPressed = keyboard != null &&
-                           !blockRotation &&
-                           (keyboard.upArrowKey.wasPressedThisFrame || keyboard.eKey.wasPressedThisFrame);
-
-    bool rotateCcwPressed = keyboard != null &&
-                            !blockRotation &&
-                            (keyboard.zKey.wasPressedThisFrame || keyboard.qKey.wasPressedThisFrame);
-
-    bool hardDropPressed = keyboard != null &&
-                           allowHardDrop &&
-                           keyboard.spaceKey.wasPressedThisFrame;
-#else
         bool moveLeftPressed = !blockHorizontal &&
-                               (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A));
+                               TetrabeastsControls.WasPressed(TetrabeastsControlAction.MoveLeft);
 
         bool moveRightPressed = !blockHorizontal &&
-                                (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D));
+                                TetrabeastsControls.WasPressed(TetrabeastsControlAction.MoveRight);
 
         bool softDropPressed = allowSoftDrop &&
-                               (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S));
+                               TetrabeastsControls.WasPressed(TetrabeastsControlAction.SoftDrop);
 
         bool rotateCwPressed = !blockRotation &&
-                               (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.E));
+                               TetrabeastsControls.WasPressed(TetrabeastsControlAction.RotateClockwise);
 
         bool rotateCcwPressed = !blockRotation &&
-                                (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Q));
+                                TetrabeastsControls.WasPressed(TetrabeastsControlAction.RotateCounterClockwise);
 
         bool hardDropPressed = allowHardDrop &&
-                               Input.GetKeyDown(KeyCode.Space);
-#endif
+                               TetrabeastsControls.WasPressed(TetrabeastsControlAction.HardDrop);
 
         if (moveLeftPressed && TryMove(Vector2Int.left))
             NotifyTutorialEvent(TutorialGameplayEvent.MoveLeft);

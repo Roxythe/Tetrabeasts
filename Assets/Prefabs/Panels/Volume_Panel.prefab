@@ -2404,7 +2404,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6971118031758212447
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6421,6 +6421,14 @@ MonoBehaviour:
   combatLogRoot: {fileID: 0}
   skipIntroToggle: {fileID: 7335034778991384502}
   gameplayController: {fileID: 0}
+  controlsButton: {fileID: 8704105082613386819}
+  controlsPanelRoot: {fileID: 2314241163912024613}
+  controlsProfileDropdown: {fileID: 0}
+  controlsRowsRoot: {fileID: 0}
+  controlsResetButton: {fileID: 0}
+  controlsBackButton: {fileID: 0}
+  buildControlsPanelIfEmpty: 1
+  focusFirstSelectableWhenOpened: 1
   previewOnChange: 1
   previewDelay: 0.3
   pauseWhenOpen: 1
