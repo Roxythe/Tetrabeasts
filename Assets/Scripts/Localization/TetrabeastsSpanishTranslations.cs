@@ -148,7 +148,7 @@ public static class TetrabeastsSpanishTranslations
         Add(text, "Skip Trailer", "Saltar tr\u00e1iler");
         Add(text, "BGM Genre", "G\u00e9nero BGM");
         Add(text, "EDM", "EDM");
-        Add(text, "Metal", "Metal");
+        Add(text, "Metal", "Música metal");
         Add(text, "Random", "Aleatorio");
         Add(text, "Modifiers", "Modificadores");
         Add(text, "Active Run Modifiers", "Modificadores de partida activos");

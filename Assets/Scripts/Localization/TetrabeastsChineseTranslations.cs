@@ -406,7 +406,7 @@ public static class TetrabeastsChineseTranslations
         Add(text, "Skip Trailer", "跳过预告");
         Add(text, "BGM Genre", "背景音乐类型");
         Add(text, "EDM", "电子舞曲");
-        Add(text, "Metal", "金属");
+        Add(text, "Metal", "金属乐");
         Add(text, "Random", "随机");
         Add(text, "Modifiers", "修改器");
         Add(text, "Active Run Modifiers", "当前征战修改器");

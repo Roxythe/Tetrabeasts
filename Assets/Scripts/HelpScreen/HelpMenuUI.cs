@@ -18,6 +18,7 @@ public class HelpMenuUI : MonoBehaviour
     [Header("Right Content")]
     public TMP_Text titleText;
     public TMP_Text descriptionText;
+    public GameObject descriptionBackgroundBox;
     public Image infoImage;
 
     [Header("Optional Video")]
@@ -36,6 +37,7 @@ public class HelpMenuUI : MonoBehaviour
     {
         TetrabeastsLocalization.LanguageChanged += OnLanguageChanged;
         HookVideoEvents();
+        ResolveDescriptionBackgroundBox();
         RebuildSidebar();
         ShowDefault();
     }
@@ -44,6 +46,7 @@ public class HelpMenuUI : MonoBehaviour
     {
         TetrabeastsLocalization.LanguageChanged -= OnLanguageChanged;
         UnhookVideoEvents();
+        SetDescriptionBackgroundVisible(false);
     }
 
     public void RebuildSidebar()
@@ -136,7 +139,10 @@ public class HelpMenuUI : MonoBehaviour
         _currentTopic = topic;
 
         if (titleText) titleText.text = TetrabeastsLocalization.LocalizeText(topic.title);
-        if (descriptionText) descriptionText.text = TetrabeastsLocalization.LocalizeText(topic.description ?? "");
+
+        string localizedDescription = TetrabeastsLocalization.LocalizeText(topic.description ?? "");
+        if (descriptionText) descriptionText.text = localizedDescription;
+        SetDescriptionBackgroundVisible(!string.IsNullOrWhiteSpace(localizedDescription));
 
         if (infoImage)
         {
@@ -163,6 +169,7 @@ public class HelpMenuUI : MonoBehaviour
 
         if (titleText) titleText.text = TetrabeastsLocalization.LocalizeText("Help Menu");
         if (descriptionText) descriptionText.text = "";
+        SetDescriptionBackgroundVisible(false);
 
         if (infoImage)
         {
@@ -182,6 +189,45 @@ public class HelpMenuUI : MonoBehaviour
             ShowTopic(currentTopic);
         else
             ShowDefault();
+    }
+
+    void ResolveDescriptionBackgroundBox()
+    {
+        if (descriptionBackgroundBox)
+            return;
+
+        if (descriptionText && descriptionText.transform.parent)
+        {
+            var sibling = descriptionText.transform.parent.Find("BackgroundBox");
+            if (sibling)
+            {
+                descriptionBackgroundBox = sibling.gameObject;
+                return;
+            }
+        }
+
+        var direct = transform.Find("Description_Panel/Description_Box/BackgroundBox");
+        if (direct)
+        {
+            descriptionBackgroundBox = direct.gameObject;
+            return;
+        }
+
+        foreach (var child in GetComponentsInChildren<Transform>(true))
+        {
+            if (child.name == "BackgroundBox")
+            {
+                descriptionBackgroundBox = child.gameObject;
+                return;
+            }
+        }
+    }
+
+    void SetDescriptionBackgroundVisible(bool visible)
+    {
+        ResolveDescriptionBackgroundBox();
+        if (descriptionBackgroundBox)
+            descriptionBackgroundBox.SetActive(visible);
     }
 
     void HookVideoEvents()

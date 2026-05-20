@@ -165,7 +165,7 @@ public static class TetrabeastsRussianTranslations
         Add(text, "Skip Trailer", "Пропустить ролик");
         Add(text, "BGM Genre", "Жанр музыки");
         Add(text, "EDM", "EDM");
-        Add(text, "Metal", "Метал");
+        Add(text, "Metal", "Метал-музыка");
         Add(text, "Random", "Случайно");
         Add(text, "Language", "Язык");
         Add(text, "Settings", "Настройки");

@@ -165,7 +165,7 @@ public static class TetrabeastsPortugueseBrazilTranslations
         Add(text, "Skip Trailer", "Pular trailer");
         Add(text, "BGM Genre", "Gênero da música");
         Add(text, "EDM", "EDM");
-        Add(text, "Metal", "Metal");
+        Add(text, "Metal", "Música metal");
         Add(text, "Random", "Aleatório");
         Add(text, "Language", "Idioma");
         Add(text, "Settings", "Configurações");
