@@ -37,6 +37,7 @@ public class VolumePanelUI : MonoBehaviour
     [SerializeField] Button controlsBackButton;
     [SerializeField] bool buildControlsPanelIfEmpty = true;
     [SerializeField] bool focusFirstSelectableWhenOpened = true;
+    [SerializeField] bool trapNavigationWhileOpen = true;
 
     [Header("SFX Preview")]
     public bool previewOnChange = true;
@@ -47,6 +48,7 @@ public class VolumePanelUI : MonoBehaviour
     public bool pauseWhenOpen = true;
 
     CanvasGroup cg;
+    readonly Dictionary<Selectable, bool> modalScopedSelectables = new();
 
     void Awake()
     {
@@ -119,6 +121,7 @@ public class VolumePanelUI : MonoBehaviour
         TetrabeastsControls.ProfileChanged += HandleControlsProfileChanged;
         RefreshControlsPanel();
         CloseControlsPanel(true);
+        RefreshModalSelectableScope();
 
         if (focusFirstSelectableWhenOpened)
             StartCoroutine(SelectFirstVisibleControlNextFrame(gameObject));
@@ -128,6 +131,7 @@ public class VolumePanelUI : MonoBehaviour
     {
         TetrabeastsLocalization.LanguageChanged -= RefreshLanguageControls;
         TetrabeastsControls.ProfileChanged -= HandleControlsProfileChanged;
+        RestoreModalSelectableScope();
         if (pauseWhenOpen) Time.timeScale = 1f;
     }
 
@@ -268,6 +272,12 @@ public class VolumePanelUI : MonoBehaviour
             if (!controlsProfileDropdown)
                 controlsProfileDropdown = existingRoot.GetComponentInChildren<TMP_Dropdown>(true);
 
+            if (!controlsResetButton)
+                controlsResetButton = FindChildComponent<Button>(existingRoot, "Controls_Reset_Button");
+
+            if (!controlsBackButton)
+                controlsBackButton = FindChildComponent<Button>(existingRoot, "Controls_Back_Button");
+
             return;
         }
 
@@ -292,12 +302,20 @@ public class VolumePanelUI : MonoBehaviour
         rootLayout.childForceExpandWidth = true;
         rootLayout.childForceExpandHeight = false;
 
-        var profileRow = CreateHorizontalLayout(root.transform, "Controls_Profile_Row", 10f);
-        var profileLabel = CreateText(profileRow, "Controls_Profile_Label", "Control Profile", 26f, FontStyles.Bold, TextAlignmentOptions.Left);
-        AddLayout(profileLabel.gameObject, 280f, 48f, flexibleWidth: 0f);
+        float profileRowHeight = 48f;
+        var profileRow = CreateHorizontalLayout(root.transform, "Controls_Profile_Row", 10f, profileRowHeight);
+        var profileLabel = CreateText(
+            profileRow,
+            "Controls_Profile_Label",
+            "Control Profile",
+            26f,
+            FontStyles.Bold,
+            TextAlignmentOptions.Left,
+            Color.white);
+        AddLayout(profileLabel.gameObject, 280f, profileRowHeight, flexibleWidth: 0f);
 
         controlsProfileDropdown = CreateProfileDropdown(profileRow);
-        AddLayout(controlsProfileDropdown.gameObject, 420f, 48f, flexibleWidth: 1f);
+        AddLayout(controlsProfileDropdown.gameObject, 420f, profileRowHeight, flexibleWidth: 1f);
 
         var divider = CreateImage(root.transform, "Controls_Divider", new Color(1f, 0.62f, 0.08f, 0.65f));
         AddLayout(divider.gameObject, -1f, 2f, flexibleWidth: 1f);
@@ -314,11 +332,12 @@ public class VolumePanelUI : MonoBehaviour
         rowsLayout.childForceExpandHeight = false;
         AddLayout(rowsGo, -1f, -1f, flexibleWidth: 1f, flexibleHeight: 1f);
 
-        var buttonRow = CreateHorizontalLayout(root.transform, "Controls_Button_Row", 12f);
+        float footerButtonHeight = 54f;
+        var buttonRow = CreateHorizontalLayout(root.transform, "Controls_Button_Row", 12f, footerButtonHeight);
         controlsResetButton = CreateSimpleButton(buttonRow, "Controls_Reset_Button", "Reset Defaults");
         controlsBackButton = CreateSimpleButton(buttonRow, "Controls_Back_Button", "Back");
-        AddLayout(controlsResetButton.gameObject, 210f, 54f);
-        AddLayout(controlsBackButton.gameObject, 160f, 54f);
+        AddLayout(controlsResetButton.gameObject, 210f, footerButtonHeight);
+        AddLayout(controlsBackButton.gameObject, 160f, footerButtonHeight);
     }
 
     void HookControlsPanelCallbacks()
@@ -396,33 +415,65 @@ public class VolumePanelUI : MonoBehaviour
         if (!controlsRowsRoot)
             return;
 
-        for (int i = controlsRowsRoot.childCount - 1; i >= 0; i--)
-        {
-            var child = controlsRowsRoot.GetChild(i).gameObject;
-            child.SetActive(false);
-            Destroy(child);
-        }
-
         var rows = TetrabeastsControls.GetBindingRows(TetrabeastsControls.SavedProfile);
+        var usedRows = new HashSet<Transform>();
+
         for (int i = 0; i < rows.Length; i++)
         {
             var row = rows[i];
-            var rowRoot = CreateHorizontalLayout(controlsRowsRoot, $"Controls_Row_{row.Action}", 10f);
-            var bg = rowRoot.gameObject.AddComponent<Image>();
-            bg.color = i % 2 == 0
-                ? new Color(1f, 1f, 1f, 0.055f)
-                : new Color(0f, 0f, 0f, 0.14f);
-            bg.raycastTarget = false;
+            Transform rowRoot = FindDirectChild(controlsRowsRoot, $"Controls_Row_{row.Action}");
+            if (!rowRoot)
+                rowRoot = CreateControlsBindingRow(controlsRowsRoot, row.Action);
 
-            var actionText = CreateText(rowRoot, "Action_Text", row.ActionLabel, 20f, FontStyles.Bold, TextAlignmentOptions.Left);
-            var bindingText = CreateText(rowRoot, "Binding_Text", row.BindingLabel, 20f, FontStyles.Normal, TextAlignmentOptions.Right);
+            rowRoot.gameObject.SetActive(true);
+            UpdateControlsBindingRow(rowRoot, row, i);
+            usedRows.Add(rowRoot);
+        }
 
-            AddLayout(actionText.gameObject, 300f, 38f, flexibleWidth: 0f);
-            AddLayout(bindingText.gameObject, 360f, 38f, flexibleWidth: 1f);
+        for (int i = 0; i < controlsRowsRoot.childCount; i++)
+        {
+            Transform child = controlsRowsRoot.GetChild(i);
+            if (child && child.name.StartsWith("Controls_Row_") && !usedRows.Contains(child))
+                child.gameObject.SetActive(false);
         }
     }
 
-    Transform CreateHorizontalLayout(Transform parent, string name, float spacing)
+    Transform CreateControlsBindingRow(Transform parent, TetrabeastsControlAction action)
+    {
+        var rowRoot = CreateHorizontalLayout(parent, $"Controls_Row_{action}", 10f, 38f);
+        var bg = rowRoot.gameObject.AddComponent<Image>();
+        bg.raycastTarget = false;
+
+        var actionText = CreateText(rowRoot, "Action_Text", string.Empty, 20f, FontStyles.Bold, TextAlignmentOptions.Left);
+        var bindingText = CreateText(rowRoot, "Binding_Text", string.Empty, 20f, FontStyles.Normal, TextAlignmentOptions.Right);
+
+        AddLayout(actionText.gameObject, 300f, 38f, flexibleWidth: 0f);
+        AddLayout(bindingText.gameObject, 360f, 38f, flexibleWidth: 1f);
+
+        return rowRoot;
+    }
+
+    void UpdateControlsBindingRow(Transform rowRoot, TetrabeastsControlBindingRow row, int rowIndex)
+    {
+        var bg = rowRoot.GetComponent<Image>();
+        if (bg)
+        {
+            bg.color = rowIndex % 2 == 0
+                ? new Color(1f, 1f, 1f, 0.055f)
+                : new Color(0f, 0f, 0f, 0.14f);
+            bg.raycastTarget = false;
+        }
+
+        var actionText = FindChildComponent<TMP_Text>(rowRoot, "Action_Text");
+        if (actionText)
+            actionText.text = row.ActionLabel;
+
+        var bindingText = FindChildComponent<TMP_Text>(rowRoot, "Binding_Text");
+        if (bindingText)
+            bindingText.text = row.BindingLabel;
+    }
+
+    Transform CreateHorizontalLayout(Transform parent, string name, float spacing, float preferredHeight = 42f)
     {
         var go = new GameObject(name, typeof(RectTransform), typeof(HorizontalLayoutGroup));
         go.transform.SetParent(parent, false);
@@ -435,11 +486,16 @@ public class VolumePanelUI : MonoBehaviour
         layout.childForceExpandWidth = false;
         layout.childForceExpandHeight = false;
 
-        AddLayout(go, -1f, 42f, flexibleWidth: 1f);
+        AddLayout(go, -1f, preferredHeight, flexibleWidth: 1f);
         return go.transform;
     }
 
     TMP_Text CreateText(Transform parent, string name, string text, float fontSize, FontStyles style, TextAlignmentOptions alignment)
+    {
+        return CreateText(parent, name, text, fontSize, style, alignment, Color.white);
+    }
+
+    TMP_Text CreateText(Transform parent, string name, string text, float fontSize, FontStyles style, TextAlignmentOptions alignment, Color color)
     {
         var go = new GameObject(name, typeof(RectTransform), typeof(TextMeshProUGUI));
         go.transform.SetParent(parent, false);
@@ -452,7 +508,7 @@ public class VolumePanelUI : MonoBehaviour
         tmp.enableAutoSizing = true;
         tmp.fontSizeMin = 12f;
         tmp.fontSizeMax = fontSize;
-        tmp.color = Color.white;
+        tmp.color = color;
         tmp.raycastTarget = false;
 
         return tmp;
@@ -481,8 +537,14 @@ public class VolumePanelUI : MonoBehaviour
         var button = go.GetComponent<Button>();
         button.targetGraphic = image;
 
-        var labelText = CreateText(go.transform, "Text (TMP)", label, 24f, FontStyles.Bold, TextAlignmentOptions.Center);
-        labelText.color = new Color(0.12f, 0.1f, 0.08f, 1f);
+        var labelText = CreateText(
+            go.transform,
+            "Text (TMP)",
+            label,
+            24f,
+            FontStyles.Bold,
+            TextAlignmentOptions.Center,
+            new Color(0.12f, 0.1f, 0.08f, 1f));
 
         var labelRect = labelText.rectTransform;
         labelRect.anchorMin = Vector2.zero;
@@ -564,6 +626,7 @@ public class VolumePanelUI : MonoBehaviour
         RefreshControlsPanel();
         controlsPanelRoot.transform.SetAsLastSibling();
         UIPanelTransition.Show(controlsPanelRoot);
+        RefreshModalSelectableScope();
 
         if (focusFirstSelectableWhenOpened)
             StartCoroutine(SelectFirstVisibleControlNextFrame(controlsPanelRoot));
@@ -581,6 +644,8 @@ public class VolumePanelUI : MonoBehaviour
 
         UIPanelTransition.Hide(controlsPanelRoot, instant);
 
+        RefreshModalSelectableScope();
+
         if (!instant)
             SelectSelectable(controlsButton);
     }
@@ -596,9 +661,17 @@ public class VolumePanelUI : MonoBehaviour
 
     void BringToFront() => transform.SetAsLastSibling();
 
-    public void Open() { UIPanelTransition.Show(gameObject); }
+    public void Open()
+    {
+        UIPanelTransition.Show(gameObject);
+        RefreshModalSelectableScope();
+    }
     public void Close() { Close(false); }
-    public void Close(bool instant) { UIPanelTransition.Hide(gameObject, instant); }
+    public void Close(bool instant)
+    {
+        RestoreModalSelectableScope();
+        UIPanelTransition.Hide(gameObject, instant);
+    }
 
     public void Toggle()
     {
@@ -678,8 +751,7 @@ public class VolumePanelUI : MonoBehaviour
         }
 
         var current = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
-        if (controlsPanelRoot && UIPanelTransition.IsVisible(controlsPanelRoot) &&
-            (!current || !current.transform.IsChildOf(controlsPanelRoot.transform)))
+        if (ShouldPullSelectionBackToScope(current, navigationRoot))
             SelectFirstVisibleSelectable(navigationRoot);
     }
 
@@ -689,6 +761,59 @@ public class VolumePanelUI : MonoBehaviour
             return controlsPanelRoot;
 
         return gameObject;
+    }
+
+    void RefreshModalSelectableScope()
+    {
+        RestoreModalSelectableScope();
+
+        if (!trapNavigationWhileOpen || !UIPanelTransition.IsVisible(gameObject))
+            return;
+
+        GameObject navigationRoot = GetCurrentNavigationRoot();
+        if (!navigationRoot)
+            return;
+
+        var selectables = FindObjectsByType<Selectable>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        for (int i = 0; i < selectables.Length; i++)
+        {
+            var selectable = selectables[i];
+            if (!selectable || selectable.transform.IsChildOf(navigationRoot.transform))
+                continue;
+
+            modalScopedSelectables[selectable] = selectable.interactable;
+            selectable.interactable = false;
+        }
+
+        var current = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
+        if (ShouldPullSelectionBackToScope(current, navigationRoot))
+            SelectFirstVisibleSelectable(navigationRoot);
+    }
+
+    void RestoreModalSelectableScope()
+    {
+        foreach (var pair in modalScopedSelectables)
+        {
+            if (pair.Key)
+                pair.Key.interactable = pair.Value;
+        }
+
+        modalScopedSelectables.Clear();
+    }
+
+    bool ShouldPullSelectionBackToScope(GameObject current, GameObject navigationRoot)
+    {
+        if (!navigationRoot)
+            return false;
+
+        if (!current)
+            return true;
+
+        if (current.transform.IsChildOf(navigationRoot.transform))
+            return false;
+
+        var selectable = current.GetComponentInParent<Selectable>();
+        return !selectable || modalScopedSelectables.ContainsKey(selectable);
     }
 
     IEnumerator SelectFirstVisibleControlNextFrame(GameObject root)
@@ -802,6 +927,21 @@ public class VolumePanelUI : MonoBehaviour
     {
         var child = FindDeepChild(root, childName);
         return child ? child.GetComponent<T>() : null;
+    }
+
+    static Transform FindDirectChild(Transform root, string childName)
+    {
+        if (!root || string.IsNullOrWhiteSpace(childName))
+            return null;
+
+        for (int i = 0; i < root.childCount; i++)
+        {
+            var child = root.GetChild(i);
+            if (child && child.name == childName)
+                return child;
+        }
+
+        return null;
     }
 
     static Transform FindDeepChild(Transform root, string childName)

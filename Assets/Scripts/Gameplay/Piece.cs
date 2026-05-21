@@ -12,6 +12,12 @@ public class Piece : MonoBehaviour
     public float fallInterval = 0.8f;
     public float lockDelay = 0.3f;
 
+    [Header("Input Repeat")]
+    [SerializeField, Min(0.01f)] float moveRepeatDelay = 0.18f;
+    [SerializeField, Min(0.01f)] float moveRepeatInterval = 0.07f;
+    [SerializeField, Min(0.01f)] float rotateRepeatDelay = 0.22f;
+    [SerializeField, Min(0.01f)] float rotateRepeatInterval = 0.12f;
+
     [HideInInspector] public TetrominoData data; // Assigned by controller
     [HideInInspector] public Color color = Color.cyan;
 
@@ -88,19 +94,34 @@ public class Piece : MonoBehaviour
         bool allowHardDrop = !tutorialPromptActive || (gc != null && gc.IsTutorialHardDropAllowed);
 
         bool moveLeftPressed = !blockHorizontal &&
-                               TetrabeastsControls.WasPressed(TetrabeastsControlAction.MoveLeft);
+                               TetrabeastsControls.WasPressedOrRepeated(
+                                   TetrabeastsControlAction.MoveLeft,
+                                   moveRepeatDelay,
+                                   moveRepeatInterval);
 
         bool moveRightPressed = !blockHorizontal &&
-                                TetrabeastsControls.WasPressed(TetrabeastsControlAction.MoveRight);
+                                TetrabeastsControls.WasPressedOrRepeated(
+                                    TetrabeastsControlAction.MoveRight,
+                                    moveRepeatDelay,
+                                    moveRepeatInterval);
 
         bool softDropPressed = allowSoftDrop &&
-                               TetrabeastsControls.WasPressed(TetrabeastsControlAction.SoftDrop);
+                               TetrabeastsControls.WasPressedOrRepeated(
+                                   TetrabeastsControlAction.SoftDrop,
+                                   moveRepeatDelay,
+                                   moveRepeatInterval);
 
         bool rotateCwPressed = !blockRotation &&
-                               TetrabeastsControls.WasPressed(TetrabeastsControlAction.RotateClockwise);
+                               TetrabeastsControls.WasPressedOrRepeated(
+                                   TetrabeastsControlAction.RotateClockwise,
+                                   rotateRepeatDelay,
+                                   rotateRepeatInterval);
 
         bool rotateCcwPressed = !blockRotation &&
-                                TetrabeastsControls.WasPressed(TetrabeastsControlAction.RotateCounterClockwise);
+                                TetrabeastsControls.WasPressedOrRepeated(
+                                    TetrabeastsControlAction.RotateCounterClockwise,
+                                    rotateRepeatDelay,
+                                    rotateRepeatInterval);
 
         bool hardDropPressed = allowHardDrop &&
                                TetrabeastsControls.WasPressed(TetrabeastsControlAction.HardDrop);

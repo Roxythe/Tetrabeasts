@@ -26,12 +26,14 @@ public sealed class BattleLogUI : MonoBehaviour
     [SerializeField] private Color32 bossName = new(255, 205, 60, 255);      // Gold
     [SerializeField] private Color32 playerAbility = new(80, 230, 255, 255); // Cyan
 
-    private string B(string s) => $"<b>{E(s)}</b>";
+    private string B(string s) => $"<b>{E(L(s))}</b>";
     private string C(string s, Color32 c) => $"<color=#{c.r:X2}{c.g:X2}{c.b:X2}{c.a:X2}>{E(s)}</color>";
-    private string Unit(string s) => $"<b>{C(s, unitName)}</b>";
-    private string Enemy(string s) => $"<b>{C(s, enemyName)}</b>";
-    private string Boss(string s) => $"<b>{C(s, bossName)}</b>";
-    private string PlayerAbility(string s) => $"<b>{C(s, playerAbility)}</b>";
+    private string Unit(string s) => $"<b>{C(L(s), unitName)}</b>";
+    private string Enemy(string s) => $"<b>{C(L(s), enemyName)}</b>";
+    private string Boss(string s) => $"<b>{C(L(s), bossName)}</b>";
+    private string PlayerAbility(string s) => $"<b>{C(L(s), playerAbility)}</b>";
+    private string L(string s) => TetrabeastsLocalization.LocalizeText(s);
+    private string LF(string englishFormat, params object[] args) => TetrabeastsLocalization.LocalizeFormat(englishFormat, args);
 
     private readonly Queue<TMP_Text> _active = new();
     private readonly Queue<string> _buffer = new();
@@ -76,24 +78,24 @@ public sealed class BattleLogUI : MonoBehaviour
     }
 
     public void LogDamage(string unitName, int amount) =>
-        AddLine($"{B(unitName)} takes {C(amount.ToString(), damage)} damage.");
+        AddLine(LF("{0} takes {1} damage.", Unit(unitName), C(amount.ToString(), damage)));
 
     public void LogHeal(string unitName, int amount) =>
-        AddLine($"{B(unitName)} heals {C(amount.ToString(), heal)}.");
+        AddLine(LF("{0} heals {1}.", Unit(unitName), C(amount.ToString(), heal)));
 
-    public void LogDeath(string unitName) => AddLine($"{Unit(unitName)} dies.");
+    public void LogDeath(string unitName) => AddLine(LF("{0} dies.", Unit(unitName)));
 
     public void LogAbilityUse(string actorName, string abilityName) =>
-    AddLine($"{Unit(actorName)} uses {PlayerAbility(abilityName)}.");
+        AddLine(LF("{0} uses {1}.", Unit(actorName), PlayerAbility(abilityName)));
 
     public void LogBossAbility(string abilityName) =>
-    AddLine($"{Boss("Boss")} casts {B(GetBossAbilitySpellTitle(abilityName))}.");
+        AddLine(LF("{0} casts {1}.", Boss("Boss"), B(GetBossAbilitySpellTitle(abilityName))));
 
     public void LogBossTrapAbility(CastleData.BossTrapKind trapKind) =>
-    AddLine($"{Boss("Boss")} casts {B(GetBossTrapSpellTitle(trapKind))}.");
+        AddLine(LF("{0} casts {1}.", Boss("Boss"), B(GetBossTrapSpellTitle(trapKind))));
 
     public void LogPlain(string msg) =>
-        AddLine(C(E(msg), normal));
+        AddLine(C(L(msg), normal));
 
     public void LogDamageFrom(string unitName, int amount, string source) =>
     LogDamageDetailed(unitName, amount, null, null, source);
@@ -102,18 +104,18 @@ public sealed class BattleLogUI : MonoBehaviour
     {
         string typePart = string.IsNullOrWhiteSpace(damageTypeWord)
             ? string.Empty
-            : $" {ColorizeWord(damageTypeWord, damageTypeColor)}";
+            : $" {ColorizeWord(L(damageTypeWord), damageTypeColor)}";
 
         string fromPart = string.IsNullOrWhiteSpace(fromWhoOrWhat)
             ? string.Empty
-            : $" from {(fromWhoOrWhat == "Boss" ? Boss("Boss") : Enemy(fromWhoOrWhat))}";
+            : LF(" from {0}", fromWhoOrWhat == "Boss" ? Boss("Boss") : Enemy(fromWhoOrWhat));
 
-        AddLine($"{Unit(unitName)} took {C(amount.ToString(), damage)}{typePart} damage{fromPart}.");
+        AddLine(LF("{0} took {1}{2} damage{3}.", Unit(unitName), C(amount.ToString(), damage), typePart, fromPart));
     }
 
     public void LogHealDetailed(string healSourceName, int healedAmount, string targetName)
     {
-        AddLine($"{Unit(healSourceName)} restored {C(healedAmount.ToString(), heal)} health for {Unit(targetName)}.");
+        AddLine(LF("{0} restored {1} health for {2}.", Unit(healSourceName), C(healedAmount.ToString(), heal), Unit(targetName)));
     }
 
     private string ColorizeWord(string word, Color32? c)
@@ -125,8 +127,8 @@ public sealed class BattleLogUI : MonoBehaviour
 
     public void LogCastleHit(string attackerName, int amount, bool pylonsReduced)
     {
-        string note = pylonsReduced ? " (shielded)" : string.Empty;
-        AddLine($"{Unit(attackerName)} dealt {C(amount.ToString(), damage)} damage to {Enemy("Castle")}.{note}");
+        string note = pylonsReduced ? $" {L("(shielded)")}" : string.Empty;
+        AddLine(LF("{0} dealt {1} damage to {2}.{3}", Unit(attackerName), C(amount.ToString(), damage), Enemy("Castle"), note));
     }
 
     private void AddLine(string richText)

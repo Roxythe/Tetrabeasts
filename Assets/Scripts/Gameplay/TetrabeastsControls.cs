@@ -47,6 +47,7 @@ public readonly struct TetrabeastsControlBindingRow
 public static class TetrabeastsControls
 {
     const string KeyControlProfile = "Settings_ControlProfile";
+    const float StickPressedThreshold = 0.5f;
 
     static readonly TetrabeastsControlProfile[] ProfileOptions =
     {
@@ -56,6 +57,8 @@ public static class TetrabeastsControls
         TetrabeastsControlProfile.PlayStationController,
         TetrabeastsControlProfile.HandheldController
     };
+
+    static readonly Dictionary<TetrabeastsControlAction, HoldRepeatState> RepeatStates = new();
 
     public static event Action<TetrabeastsControlProfile> ProfileChanged;
 
@@ -211,6 +214,87 @@ public static class TetrabeastsControls
         return pressed;
     }
 
+    public static bool WasPressedOrRepeated(TetrabeastsControlAction action, float initialDelaySeconds, float repeatIntervalSeconds)
+    {
+        return WasPressedOrRepeated(action, EffectiveProfile, initialDelaySeconds, repeatIntervalSeconds);
+    }
+
+    public static bool WasPressedOrRepeated(
+        TetrabeastsControlAction action,
+        TetrabeastsControlProfile profile,
+        float initialDelaySeconds,
+        float repeatIntervalSeconds)
+    {
+        if (!IsRepeatableGameplayAction(action))
+            return WasPressed(action, profile);
+
+        TetrabeastsControlProfile effectiveProfile = ResolveProfile(profile);
+        bool pressed = WasPressed(action, effectiveProfile);
+        bool held = IsHeld(action, effectiveProfile);
+
+        if (!RepeatStates.TryGetValue(action, out var state))
+            state = default;
+
+        float now = Time.unscaledTime;
+        initialDelaySeconds = Mathf.Max(0.01f, initialDelaySeconds);
+        repeatIntervalSeconds = Mathf.Max(0.01f, repeatIntervalSeconds);
+
+        if (pressed)
+        {
+            state.IsHeld = true;
+            state.NextRepeatTime = now + initialDelaySeconds;
+            RepeatStates[action] = state;
+            return true;
+        }
+
+        if (!held)
+        {
+            if (state.IsHeld)
+                RepeatStates[action] = default;
+
+            return false;
+        }
+
+        if (!state.IsHeld)
+        {
+            state.IsHeld = true;
+            state.NextRepeatTime = now + initialDelaySeconds;
+            RepeatStates[action] = state;
+            return false;
+        }
+
+        if (now < state.NextRepeatTime)
+        {
+            RepeatStates[action] = state;
+            return false;
+        }
+
+        state.NextRepeatTime = now + repeatIntervalSeconds;
+        RepeatStates[action] = state;
+        return true;
+    }
+
+    public static bool IsHeld(TetrabeastsControlAction action)
+    {
+        return IsHeld(action, EffectiveProfile);
+    }
+
+    public static bool IsHeld(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
+    {
+        TetrabeastsControlProfile effectiveProfile = ResolveProfile(profile);
+        bool held = false;
+
+#if ENABLE_INPUT_SYSTEM
+        held |= IsHeldInputSystem(action, effectiveProfile);
+#endif
+
+#if ENABLE_LEGACY_INPUT_MANAGER
+        held |= IsHeldLegacy(action, effectiveProfile);
+#endif
+
+        return held;
+    }
+
     static bool LooksLikeHandheldPc()
     {
         string deviceDescription = $"{SystemInfo.deviceModel} {SystemInfo.deviceName} {SystemInfo.operatingSystem}";
@@ -231,6 +315,15 @@ public static class TetrabeastsControls
     static bool IsValidProfileValue(int value)
     {
         return Enum.IsDefined(typeof(TetrabeastsControlProfile), value);
+    }
+
+    static bool IsRepeatableGameplayAction(TetrabeastsControlAction action)
+    {
+        return action == TetrabeastsControlAction.MoveLeft ||
+               action == TetrabeastsControlAction.MoveRight ||
+               action == TetrabeastsControlAction.SoftDrop ||
+               action == TetrabeastsControlAction.RotateClockwise ||
+               action == TetrabeastsControlAction.RotateCounterClockwise;
     }
 
     static string GetKeyboardMouseBindingLabel(TetrabeastsControlAction action)
@@ -340,6 +433,60 @@ public static class TetrabeastsControls
         };
     }
 
+    static bool IsHeldInputSystem(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
+    {
+        if (profile == TetrabeastsControlProfile.KeyboardMouse)
+            return IsKeyboardActionHeld(action);
+
+        return IsGamepadActionHeld(action);
+    }
+
+    static bool IsKeyboardActionHeld(TetrabeastsControlAction action)
+    {
+        var keyboard = Keyboard.current;
+        if (keyboard == null)
+            return false;
+
+        return action switch
+        {
+            TetrabeastsControlAction.MoveLeft => keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed,
+            TetrabeastsControlAction.MoveRight => keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed,
+            TetrabeastsControlAction.SoftDrop => keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed,
+            TetrabeastsControlAction.RotateClockwise => keyboard.eKey.isPressed || keyboard.upArrowKey.isPressed,
+            TetrabeastsControlAction.RotateCounterClockwise => keyboard.qKey.isPressed || keyboard.zKey.isPressed,
+            TetrabeastsControlAction.HardDrop => keyboard.spaceKey.isPressed,
+            TetrabeastsControlAction.Special => keyboard.rKey.isPressed,
+            TetrabeastsControlAction.Pause => keyboard.escapeKey.isPressed,
+            TetrabeastsControlAction.MenuSubmit => keyboard.enterKey.isPressed || keyboard.numpadEnterKey.isPressed || keyboard.spaceKey.isPressed,
+            TetrabeastsControlAction.MenuCancel => keyboard.escapeKey.isPressed,
+            _ => false
+        };
+    }
+
+    static bool IsGamepadActionHeld(TetrabeastsControlAction action)
+    {
+        var gamepad = Gamepad.current;
+        if (gamepad == null)
+            return false;
+
+        Vector2 leftStick = gamepad.leftStick.ReadValue();
+
+        return action switch
+        {
+            TetrabeastsControlAction.MoveLeft => gamepad.dpad.left.isPressed || leftStick.x <= -StickPressedThreshold,
+            TetrabeastsControlAction.MoveRight => gamepad.dpad.right.isPressed || leftStick.x >= StickPressedThreshold,
+            TetrabeastsControlAction.SoftDrop => gamepad.dpad.down.isPressed || leftStick.y <= -StickPressedThreshold,
+            TetrabeastsControlAction.RotateClockwise => gamepad.buttonEast.isPressed || gamepad.rightShoulder.isPressed,
+            TetrabeastsControlAction.RotateCounterClockwise => gamepad.buttonWest.isPressed || gamepad.leftShoulder.isPressed,
+            TetrabeastsControlAction.HardDrop => gamepad.buttonSouth.isPressed,
+            TetrabeastsControlAction.Special => gamepad.buttonNorth.isPressed,
+            TetrabeastsControlAction.Pause => gamepad.startButton.isPressed,
+            TetrabeastsControlAction.MenuSubmit => gamepad.buttonSouth.isPressed,
+            TetrabeastsControlAction.MenuCancel => gamepad.buttonEast.isPressed,
+            _ => false
+        };
+    }
+
     static bool WasKeyboardEscapePressed()
     {
         var keyboard = Keyboard.current;
@@ -394,10 +541,63 @@ public static class TetrabeastsControls
             _ => false
         };
     }
+
+    static bool IsHeldLegacy(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
+    {
+        if (profile == TetrabeastsControlProfile.KeyboardMouse)
+            return IsKeyboardActionHeldLegacy(action);
+
+        return IsGamepadActionHeldLegacy(action);
+    }
+
+    static bool IsKeyboardActionHeldLegacy(TetrabeastsControlAction action)
+    {
+        return action switch
+        {
+            TetrabeastsControlAction.MoveLeft => Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow),
+            TetrabeastsControlAction.MoveRight => Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow),
+            TetrabeastsControlAction.SoftDrop => Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow),
+            TetrabeastsControlAction.RotateClockwise => Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.UpArrow),
+            TetrabeastsControlAction.RotateCounterClockwise => Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.Z),
+            TetrabeastsControlAction.HardDrop => Input.GetKey(KeyCode.Space),
+            TetrabeastsControlAction.Special => Input.GetKey(KeyCode.R),
+            TetrabeastsControlAction.Pause => Input.GetKey(KeyCode.Escape),
+            TetrabeastsControlAction.MenuSubmit => Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.KeypadEnter) || Input.GetKey(KeyCode.Space),
+            TetrabeastsControlAction.MenuCancel => Input.GetKey(KeyCode.Escape),
+            _ => false
+        };
+    }
+
+    static bool IsGamepadActionHeldLegacy(TetrabeastsControlAction action)
+    {
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+
+        return action switch
+        {
+            TetrabeastsControlAction.MoveLeft => horizontal <= -StickPressedThreshold,
+            TetrabeastsControlAction.MoveRight => horizontal >= StickPressedThreshold,
+            TetrabeastsControlAction.SoftDrop => vertical <= -StickPressedThreshold,
+            TetrabeastsControlAction.RotateClockwise => Input.GetKey(KeyCode.JoystickButton1) || Input.GetKey(KeyCode.JoystickButton5),
+            TetrabeastsControlAction.RotateCounterClockwise => Input.GetKey(KeyCode.JoystickButton2) || Input.GetKey(KeyCode.JoystickButton4),
+            TetrabeastsControlAction.HardDrop => Input.GetKey(KeyCode.JoystickButton0),
+            TetrabeastsControlAction.Special => Input.GetKey(KeyCode.JoystickButton3),
+            TetrabeastsControlAction.Pause => Input.GetKey(KeyCode.JoystickButton7),
+            TetrabeastsControlAction.MenuSubmit => Input.GetKey(KeyCode.JoystickButton0),
+            TetrabeastsControlAction.MenuCancel => Input.GetKey(KeyCode.JoystickButton1),
+            _ => false
+        };
+    }
 #endif
 
     static bool IsMenuCancel(TetrabeastsControlAction action)
     {
         return action == TetrabeastsControlAction.MenuCancel;
+    }
+
+    struct HoldRepeatState
+    {
+        public bool IsHeld;
+        public float NextRepeatTime;
     }
 }
