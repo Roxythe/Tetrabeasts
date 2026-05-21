@@ -383,6 +383,7 @@ public static class TetrabeastsLocalization
         {
             PlayerPrefs.SetString(KeySelectedLanguage, supportedCode);
             PlayerPrefs.Save();
+            SteamCloudSaveService.QueueUpload();
             LastSelectionSource = SelectionSource.User;
         }
 

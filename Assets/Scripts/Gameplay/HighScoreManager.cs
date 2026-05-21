@@ -22,6 +22,7 @@ public static class HighScoreManager
         var wrap = new HighScoreList { entries = list };
         PlayerPrefs.SetString(Key, JsonUtility.ToJson(wrap));
         PlayerPrefs.Save();
+        SteamCloudSaveService.QueueUpload();
     }
 
     public static bool IsHighScore(int score, int max = 10)

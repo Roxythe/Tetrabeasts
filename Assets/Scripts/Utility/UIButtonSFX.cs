@@ -17,6 +17,9 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerClickHan
     [Tooltip("If true, ignores clicks when the Button is not interactable.")]
     public bool requireInteractable = true;
 
+    [Tooltip("Clears the selected button after mouse clicks while the effective control profile is Keyboard / Mouse.")]
+    public bool clearSelectionOnKeyboardMouseClick = true;
+
     static float s_nextHoverSfxTime;
 
     Button _btn;
@@ -45,12 +48,36 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerClickHan
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (!AudioManager.I || !clickClip) return;
         if (requireInteractable && _btn && !_btn.interactable) return;
 
         // Left click / primary tap only
         if (eventData.button != PointerEventData.InputButton.Left) return;
 
-        AudioManager.I.PlayUISFX(clickClip, vol: clickVolume);
+        if (AudioManager.I && clickClip)
+            AudioManager.I.PlayUISFX(clickClip, vol: clickVolume);
+
+        StartCoroutine(ClearSelectionAfterKeyboardMouseClick());
+    }
+
+    System.Collections.IEnumerator ClearSelectionAfterKeyboardMouseClick()
+    {
+        if (!clearSelectionOnKeyboardMouseClick)
+            yield break;
+
+        if (TetrabeastsControls.EffectiveProfile != TetrabeastsControlProfile.KeyboardMouse)
+            yield break;
+
+        ClearCurrentSelection();
+
+        yield return null;
+
+        ClearCurrentSelection();
+    }
+
+    static void ClearCurrentSelection()
+    {
+        var eventSystem = EventSystem.current;
+        if (eventSystem)
+            eventSystem.SetSelectedGameObject(null);
     }
 }

@@ -18,6 +18,7 @@ public static class MonsterProgressStore
         if (string.IsNullOrEmpty(monsterName)) return;
         PlayerPrefs.SetFloat(KeyTotalXp(monsterName), Mathf.Max(0f, totalXp));
         PlayerPrefs.Save();
+        SteamCloudSaveService.QueueUpload();
     }
 
     public static int GetPermanentLevel(string monsterName)
@@ -65,5 +66,6 @@ public static class MonsterProgressStore
         }
 
         PlayerPrefs.Save();
+        SteamCloudSaveService.QueueUpload();
     }
 }

@@ -144,6 +144,7 @@ public static class TempRunSaveStore
 
             string json = JsonUtility.ToJson(data, true);
             File.WriteAllText(SavePath, json);
+            SteamCloudSaveService.QueueUpload();
         }
         catch (Exception ex)
         {
@@ -159,6 +160,8 @@ public static class TempRunSaveStore
         {
             if (File.Exists(SavePath))
                 File.Delete(SavePath);
+
+            SteamCloudSaveService.QueueUpload();
         }
         catch (Exception ex)
         {

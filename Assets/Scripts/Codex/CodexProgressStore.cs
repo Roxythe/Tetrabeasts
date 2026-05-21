@@ -46,6 +46,7 @@ public static class CodexProgressStore
 
         PlayerPrefs.SetInt(key, 1);
         PlayerPrefs.Save();
+        SteamCloudSaveService.QueueUpload();
         ProgressChanged?.Invoke();
     }
 

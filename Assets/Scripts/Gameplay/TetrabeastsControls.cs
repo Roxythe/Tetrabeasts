@@ -87,6 +87,7 @@ public static class TetrabeastsControls
 
         PlayerPrefs.SetInt(KeyControlProfile, (int)profile);
         PlayerPrefs.Save();
+        SteamCloudSaveService.QueueUpload();
         ProfileChanged?.Invoke(profile);
     }
 

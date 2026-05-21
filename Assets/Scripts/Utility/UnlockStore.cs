@@ -24,6 +24,7 @@ public static class UnlockStore
         if (md == null) return;
         PlayerPrefs.SetInt(MonsterKey(md), 1);
         PlayerPrefs.Save();
+        SteamCloudSaveService.QueueUpload();
     }
 
     public static void Unlock(PlayerCharacterData cd)
@@ -31,5 +32,6 @@ public static class UnlockStore
         if (cd == null) return;
         PlayerPrefs.SetInt(CharacterKey(cd), 1);
         PlayerPrefs.Save();
+        SteamCloudSaveService.QueueUpload();
     }
 }

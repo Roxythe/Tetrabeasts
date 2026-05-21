@@ -86,6 +86,8 @@ public class PlayerProgress : MonoBehaviour
 
     void Start()
     {
+        SteamCloudSaveService.Ensure();
+
         if (!DemoBuildGuardRails.IsDemoBuild)
             SteamAchievementService.Ensure();
     }
@@ -387,6 +389,7 @@ public class PlayerProgress : MonoBehaviour
             var wrapper = SaveDataWrapper.FromData(_data);
             string json = JsonUtility.ToJson(wrapper, prettyPrint: true);
             File.WriteAllText(SavePath, json);
+            SteamCloudSaveService.QueueUpload();
         }
         catch { /* ignore */ }
     }
@@ -492,5 +495,10 @@ public class PlayerProgress : MonoBehaviour
         catch { }
 
         Save();
+    }
+
+    public void ReloadFromDiskAfterCloudImport()
+    {
+        Load();
     }
 }

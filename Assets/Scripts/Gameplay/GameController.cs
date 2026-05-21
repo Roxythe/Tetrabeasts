@@ -2797,6 +2797,7 @@ public class GameController : MonoBehaviour
         {
             PlayerPrefs.SetInt(PostFinalSurvivalIntroPrefsKey, 1);
             PlayerPrefs.Save();
+            SteamCloudSaveService.QueueUpload();
         }
 
         _levelStartBlocked = false;

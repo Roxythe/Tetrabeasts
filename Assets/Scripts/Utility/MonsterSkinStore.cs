@@ -18,6 +18,7 @@ public static class MonsterSkinStore
         if (!md || idx <= 0) return;
         PlayerPrefs.SetInt(UnlockKey(md, idx), 1);
         PlayerPrefs.Save();
+        SteamCloudSaveService.QueueUpload();
     }
 
     // This is the "committed" selection (what the monster actually uses)
@@ -40,6 +41,7 @@ public static class MonsterSkinStore
         PlayerPrefs.SetInt(SelKey(md), idx);
         PlayerPrefs.SetInt(LastValidKey(md), idx);
         PlayerPrefs.Save();
+        SteamCloudSaveService.QueueUpload();
     }
 
     // Safety: if selected is locked, fallback to last valid, then default (0)

@@ -632,6 +632,7 @@ public class AudioManager : MonoBehaviour
         musicMode = mode;
         PlayerPrefs.SetInt(K_MusicMode, (int)musicMode);
         PlayerPrefs.Save();
+        SteamCloudSaveService.QueueUpload();
 
         if (AudioListener.pause)
         {

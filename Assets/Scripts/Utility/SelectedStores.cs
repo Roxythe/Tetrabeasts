@@ -14,6 +14,7 @@ public static class SelectedCharacterStore
         Current = data;
         PlayerPrefs.SetString(Key, data ? data.displayName : "");
         PlayerPrefs.Save();
+        SteamCloudSaveService.QueueUpload();
     }
 
     public static string LoadSavedName()
@@ -56,6 +57,7 @@ public static class SelectedMonstersStore
 
         PlayerPrefs.SetString(Key, string.Join(",", names));
         PlayerPrefs.Save();
+        SteamCloudSaveService.QueueUpload();
     }
 
     public static List<string> LoadSavedNames()
@@ -121,6 +123,7 @@ public static class SettingsStore
     {
         PlayerPrefs.SetFloat(KeyCursor, scale);
         PlayerPrefs.Save();
+        SteamCloudSaveService.QueueUpload();
         CursorScaleChanged?.Invoke(scale);
     }
 
@@ -135,6 +138,7 @@ public static class SettingsStore
         PlayerPrefs.SetFloat(KeyMusic, music);
         PlayerPrefs.SetFloat(KeySFX, sfx);
         PlayerPrefs.Save();
+        SteamCloudSaveService.QueueUpload();
         VolumesChanged?.Invoke(master, music, sfx);
     }
 
@@ -155,6 +159,7 @@ public static class SettingsStore
     {
         PlayerPrefs.SetInt(KeyCombatLog, enabled ? 1 : 0);
         PlayerPrefs.Save();
+        SteamCloudSaveService.QueueUpload();
     }
 
     public const bool DefaultSkipIntro = false;
@@ -166,5 +171,6 @@ public static class SettingsStore
     {
         PlayerPrefs.SetInt(KeySkipIntro, enabled ? 1 : 0);
         PlayerPrefs.Save();
+        SteamCloudSaveService.QueueUpload();
     }
 }

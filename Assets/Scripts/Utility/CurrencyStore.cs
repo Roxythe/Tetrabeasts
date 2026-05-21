@@ -7,7 +7,12 @@ public static class CurrencyStore
     public static int Total
     {
         get => PlayerPrefs.GetInt(KEY, 0);
-        set { PlayerPrefs.SetInt(KEY, Mathf.Max(0, value)); PlayerPrefs.Save(); }
+        set
+        {
+            PlayerPrefs.SetInt(KEY, Mathf.Max(0, value));
+            PlayerPrefs.Save();
+            SteamCloudSaveService.QueueUpload();
+        }
     }
 
     public static void Add(int amount)
