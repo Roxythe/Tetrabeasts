@@ -5,6 +5,10 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
+
 public class GameController : MonoBehaviour
 {
     public Board gameBoard;
@@ -623,6 +627,14 @@ public class GameController : MonoBehaviour
     void Start()
     {
         ApplyDemoBuildGuardRailsSetting();
+        SteamInputService.Ensure();
+        SteamInputService.ControllerDisconnected -= HandleControllerDisconnected;
+        SteamInputService.ControllerDisconnected += HandleControllerDisconnected;
+
+#if ENABLE_INPUT_SYSTEM
+        InputSystem.onDeviceChange -= HandleInputDeviceChange;
+        InputSystem.onDeviceChange += HandleInputDeviceChange;
+#endif
 
         // Ensure PlayerProgress exists (stats + achievements)
         if (PlayerProgress.I == null)
@@ -1303,7 +1315,38 @@ public class GameController : MonoBehaviour
 
     void OnDestroy()
     {
+        SteamInputService.ControllerDisconnected -= HandleControllerDisconnected;
+
+#if ENABLE_INPUT_SYSTEM
+        InputSystem.onDeviceChange -= HandleInputDeviceChange;
+#endif
+
         SettingsStore.CursorScaleChanged -= OnCursorScaleChanged;
+    }
+
+    void HandleControllerDisconnected()
+    {
+        PauseForControllerDisconnect();
+    }
+
+#if ENABLE_INPUT_SYSTEM
+    void HandleInputDeviceChange(InputDevice device, InputDeviceChange change)
+    {
+        if (!(device is Gamepad))
+            return;
+
+        if (change == InputDeviceChange.Disconnected || change == InputDeviceChange.Removed)
+            PauseForControllerDisconnect();
+    }
+#endif
+
+    void PauseForControllerDisconnect()
+    {
+        if (!IsRoundActive)
+            return;
+
+        PauseGame();
+        EnterUICursorMode();
     }
 
     public float CurrentFallInterval => GetCurrentFallInterval();

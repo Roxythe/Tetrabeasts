@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [DisallowMultipleComponent]
-public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
+public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerClickHandler, ISelectHandler
 {
     [Header("Assigned by GameplayUI_SFXHook")]
     public AudioClip hoverClip;
@@ -21,6 +21,7 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerClickHan
     public bool clearSelectionOnKeyboardMouseClick = true;
 
     static float s_nextHoverSfxTime;
+    static int s_lastPointerUiFrame = -1000;
 
     Button _btn;
 
@@ -30,6 +31,45 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerClickHan
     }
 
     public void OnPointerEnter(PointerEventData eventData)
+    {
+        s_lastPointerUiFrame = Time.frameCount;
+        PlayHoverSFX();
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        s_lastPointerUiFrame = Time.frameCount;
+    }
+
+    public void OnSelect(BaseEventData eventData)
+    {
+        if (Time.frameCount - s_lastPointerUiFrame <= 1)
+            return;
+
+        if (TetrabeastsControls.EffectiveProfile == TetrabeastsControlProfile.KeyboardMouse &&
+            !TetrabeastsControls.WasButtonNavigationPressedThisFrame() &&
+            !TetrabeastsControls.IsButtonNavigationHeld())
+            return;
+
+        PlayHoverSFX();
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        s_lastPointerUiFrame = Time.frameCount;
+
+        if (requireInteractable && _btn && !_btn.interactable) return;
+
+        // Left click / primary tap only
+        if (eventData.button != PointerEventData.InputButton.Left) return;
+
+        if (AudioManager.I && clickClip)
+            AudioManager.I.PlayUISFX(clickClip, vol: clickVolume);
+
+        StartCoroutine(ClearSelectionAfterKeyboardMouseClick());
+    }
+
+    void PlayHoverSFX()
     {
         if (!AudioManager.I || !hoverClip) return;
         if (requireInteractable && _btn && !_btn.interactable) return;
@@ -44,19 +84,6 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerClickHan
         }
 
         AudioManager.I.PlayUISFX(hoverClip, vol: hoverVolume);
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (requireInteractable && _btn && !_btn.interactable) return;
-
-        // Left click / primary tap only
-        if (eventData.button != PointerEventData.InputButton.Left) return;
-
-        if (AudioManager.I && clickClip)
-            AudioManager.I.PlayUISFX(clickClip, vol: clickVolume);
-
-        StartCoroutine(ClearSelectionAfterKeyboardMouseClick());
     }
 
     System.Collections.IEnumerator ClearSelectionAfterKeyboardMouseClick()

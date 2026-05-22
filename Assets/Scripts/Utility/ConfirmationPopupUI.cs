@@ -23,6 +23,7 @@ public class ConfirmationPopupUI : MonoBehaviour
     bool _buttonLayoutsCaptured;
 
     public bool IsShowing => popupView && popupView.IsShowing;
+    public GameObject NavigationRoot => popupView ? popupView.gameObject : gameObject;
 
     void Awake()
     {
@@ -70,6 +71,17 @@ public class ConfirmationPopupUI : MonoBehaviour
         return existing && existing.CancelFromInput();
     }
 
+    public static bool TryGetShowingRoot(out GameObject root)
+    {
+        root = null;
+        var existing = UnityEngine.Object.FindFirstObjectByType<ConfirmationPopupUI>(FindObjectsInactive.Include);
+        if (!existing || !existing.IsShowing)
+            return false;
+
+        root = existing.NavigationRoot;
+        return root != null;
+    }
+
     public bool CancelFromInput()
     {
         if (!_ownsCurrentPopup || !IsShowing)
@@ -101,8 +113,8 @@ public class ConfirmationPopupUI : MonoBehaviour
 
         if (popupView.IsShowing)
         {
-            Debug.LogWarning("ConfirmationPopupUI: Popup requested while another popup is already visible.");
-            return;
+            Debug.LogWarning("ConfirmationPopupUI: Replacing an already visible confirmation popup.");
+            Hide();
         }
 
         CleanupListeners();

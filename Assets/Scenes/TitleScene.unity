@@ -9619,6 +9619,42 @@ PrefabInstance:
       propertyPath: m_enableAutoSizing
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8233119586873476937, guid: 9d4ef43843fd4989b010405225e39a77, type: 3}
+      propertyPath: m_Colors.m_NormalColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8233119586873476937, guid: 9d4ef43843fd4989b010405225e39a77, type: 3}
+      propertyPath: m_Colors.m_NormalColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8233119586873476937, guid: 9d4ef43843fd4989b010405225e39a77, type: 3}
+      propertyPath: m_Colors.m_NormalColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8233119586873476937, guid: 9d4ef43843fd4989b010405225e39a77, type: 3}
+      propertyPath: m_Colors.m_SelectedColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8233119586873476937, guid: 9d4ef43843fd4989b010405225e39a77, type: 3}
+      propertyPath: m_Colors.m_SelectedColor.g
+      value: 0.62352943
+      objectReference: {fileID: 0}
+    - target: {fileID: 8233119586873476937, guid: 9d4ef43843fd4989b010405225e39a77, type: 3}
+      propertyPath: m_Colors.m_SelectedColor.r
+      value: 0.9647059
+      objectReference: {fileID: 0}
+    - target: {fileID: 8233119586873476937, guid: 9d4ef43843fd4989b010405225e39a77, type: 3}
+      propertyPath: m_Colors.m_HighlightedColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8233119586873476937, guid: 9d4ef43843fd4989b010405225e39a77, type: 3}
+      propertyPath: m_Colors.m_HighlightedColor.g
+      value: 0.62352943
+      objectReference: {fileID: 0}
+    - target: {fileID: 8233119586873476937, guid: 9d4ef43843fd4989b010405225e39a77, type: 3}
+      propertyPath: m_Colors.m_HighlightedColor.r
+      value: 0.9647059
+      objectReference: {fileID: 0}
     - target: {fileID: 8395905470403685122, guid: 9d4ef43843fd4989b010405225e39a77, type: 3}
       propertyPath: m_fontSize
       value: 33.3
@@ -12103,9 +12139,6 @@ MonoBehaviour:
   selectionText: {fileID: 852554942}
   shadowSelectionText: {fileID: 71614302}
   unlockText: {fileID: 0}
-  allowKeyboardCycling: 1
-  decreaseDifficultyKey: 97
-  increaseDifficultyKey: 100
   starImages:
   - {fileID: 226723213}
   - {fileID: 208051426}

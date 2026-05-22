@@ -13,11 +13,6 @@ public class TitleStarDifficultyUI : MonoBehaviour
     [SerializeField] TMP_Text shadowSelectionText;
     [SerializeField] TMP_Text unlockText;
 
-    [Header("Keyboard Input")]
-    [SerializeField] bool allowKeyboardCycling = true;
-    [SerializeField] KeyCode decreaseDifficultyKey = KeyCode.A;
-    [SerializeField] KeyCode increaseDifficultyKey = KeyCode.D;
-
     [Header("Stars")]
     [SerializeField] Image[] starImages = new Image[StarDifficultySystem.MaxStars];
     [SerializeField] Sprite filledStarSprite;
@@ -66,21 +61,6 @@ public class TitleStarDifficultyUI : MonoBehaviour
         HookStarHoverTargets();
         RefreshNow();
         RefreshDifficultyAnimations(force: true);
-    }
-
-    void Update()
-    {
-        if (!allowKeyboardCycling || !isActiveAndEnabled)
-            return;
-
-        if (PlayerProgress.I == null)
-            return;
-
-        if (Input.GetKeyDown(decreaseDifficultyKey))
-            OnDecreaseClicked();
-
-        if (Input.GetKeyDown(increaseDifficultyKey))
-            OnIncreaseClicked();
     }
 
     public void RefreshNow()

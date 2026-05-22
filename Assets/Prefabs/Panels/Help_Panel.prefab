@@ -145,6 +145,7 @@ MonoBehaviour:
   topicButtonPrefab: {fileID: -6001149480297679001, guid: 9a74a1f636b69304c99c39e1a9854042, type: 3}
   titleText: {fileID: 1596321522219630402}
   descriptionText: {fileID: 8058271342304334394}
+  descriptionBackgroundBox: {fileID: 0}
   infoImage: {fileID: 2136342077925118327}
   videoRoot: {fileID: 2101069083011147204}
   videoRawImage: {fileID: 1754322985196307417}
@@ -2124,7 +2125,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4588070999493795077, guid: f553da2721377124aaefab10a83de12d, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

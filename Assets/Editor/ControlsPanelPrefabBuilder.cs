@@ -17,7 +17,6 @@ public static class ControlsPanelPrefabBuilder
         TetrabeastsControlAction.HardDrop,
         TetrabeastsControlAction.Special,
         TetrabeastsControlAction.Pause,
-        TetrabeastsControlAction.MenuNavigate,
         TetrabeastsControlAction.MenuSubmit,
         TetrabeastsControlAction.MenuCancel
     };
@@ -116,9 +115,154 @@ public static class ControlsPanelPrefabBuilder
         AssetDatabase.Refresh();
     }
 
+    [MenuItem("Tetrabeasts/UI/Sync Existing Volume Controls Panel")]
+    public static void SyncExistingVolumeControlsPanel()
+    {
+        GameObject prefabRoot = PrefabUtility.LoadPrefabContents(VolumePanelPrefabPath);
+        try
+        {
+            var panelUI = prefabRoot.GetComponent<VolumePanelUI>();
+            if (!panelUI)
+                throw new System.InvalidOperationException("Volume_Panel prefab is missing VolumePanelUI.");
+
+            Transform controlsPanel = panelUI.controlsPanelRoot
+                ? panelUI.controlsPanelRoot.transform
+                : FindDeepChild(prefabRoot.transform, "Controls_Panel");
+
+            if (!controlsPanel)
+                throw new System.InvalidOperationException("Volume_Panel prefab is missing Controls_Panel.");
+
+            Transform runtimeRoot = FindDeepChild(controlsPanel, "Controls_RuntimeRoot");
+            Transform rowsRoot = runtimeRoot ? FindDeepChild(runtimeRoot, "Controls_Rows") : null;
+            if (!runtimeRoot || !rowsRoot)
+                throw new System.InvalidOperationException("Volume_Panel prefab is missing Controls_RuntimeRoot or Controls_Rows. Use Rebuild Volume Controls Panel first.");
+
+            TMP_Text sourceText = prefabRoot.GetComponentInChildren<TMP_Text>(true);
+            SyncControlsRows(rowsRoot, sourceText);
+
+            var serializedPanel = new SerializedObject(panelUI);
+            serializedPanel.FindProperty("controlsProfileDropdown").objectReferenceValue = runtimeRoot.GetComponentInChildren<TMP_Dropdown>(true);
+            serializedPanel.FindProperty("controlsRowsRoot").objectReferenceValue = rowsRoot;
+            serializedPanel.FindProperty("controlsResetButton").objectReferenceValue = FindChildComponent<Button>(runtimeRoot, "Controls_Reset_Button");
+            serializedPanel.FindProperty("controlsBackButton").objectReferenceValue = FindChildComponent<Button>(runtimeRoot, "Controls_Back_Button");
+            serializedPanel.FindProperty("buildControlsPanelIfEmpty").boolValue = true;
+            serializedPanel.ApplyModifiedPropertiesWithoutUndo();
+
+            PrefabUtility.SaveAsPrefabAsset(prefabRoot, VolumePanelPrefabPath);
+        }
+        finally
+        {
+            PrefabUtility.UnloadPrefabContents(prefabRoot);
+        }
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+    }
+
     public static void RebuildVolumeControlsPanelBatch()
     {
         RebuildVolumeControlsPanel();
+    }
+
+    public static void SyncExistingVolumeControlsPanelBatch()
+    {
+        SyncExistingVolumeControlsPanel();
+    }
+
+    static void SyncControlsRows(Transform rowsRoot, TMP_Text sourceText)
+    {
+        for (int i = rowsRoot.childCount - 1; i >= 0; i--)
+        {
+            Transform child = rowsRoot.GetChild(i);
+            if (!child || !child.name.StartsWith("Controls_Row_"))
+                continue;
+
+            string actionName = child.name.Substring("Controls_Row_".Length);
+            if (!System.Enum.TryParse(actionName, out TetrabeastsControlAction action) ||
+                System.Array.IndexOf(DisplayedActions, action) < 0)
+            {
+                Object.DestroyImmediate(child.gameObject);
+            }
+        }
+
+        for (int i = 0; i < DisplayedActions.Length; i++)
+        {
+            var action = DisplayedActions[i];
+            Transform row = FindDirectChild(rowsRoot, $"Controls_Row_{action}");
+            if (!row)
+            {
+                CreateBindingRow(rowsRoot, action, i, sourceText);
+                row = FindDirectChild(rowsRoot, $"Controls_Row_{action}");
+            }
+
+            if (!row)
+                continue;
+
+            row.SetSiblingIndex(i);
+            SyncBindingRow(row, action, i, sourceText);
+        }
+    }
+
+    static void SyncBindingRow(Transform row, TetrabeastsControlAction action, int rowIndex, TMP_Text sourceText)
+    {
+        var rowImage = row.GetComponent<Image>();
+        if (rowImage)
+        {
+            rowImage.color = rowIndex % 2 == 0
+                ? new Color(1f, 1f, 1f, 0.055f)
+                : new Color(0f, 0f, 0f, 0.14f);
+            rowImage.raycastTarget = false;
+        }
+
+        var actionText = FindChildComponent<TMP_Text>(row, "Action_Text");
+        if (!actionText)
+        {
+            actionText = CreateText("Action_Text", row, string.Empty, 20f, FontStyles.Bold, TextAlignmentOptions.Left, Color.white, sourceText);
+            actionText.transform.SetSiblingIndex(0);
+            AddLayout(actionText.gameObject, 300f, 38f);
+        }
+
+        actionText.text = $" {TetrabeastsControls.GetActionLabel(action)}";
+
+        var bindingButton = FindChildComponent<Button>(row, "Binding_Button");
+        var bindingText = bindingButton
+            ? FindChildComponent<TMP_Text>(bindingButton.transform, "Binding_Text")
+            : FindChildComponent<TMP_Text>(row, "Binding_Text");
+
+        if (!bindingButton)
+            bindingButton = WrapBindingTextInButton(row, bindingText);
+
+        if (!bindingText)
+            bindingText = CreateText("Binding_Text", bindingButton.transform, string.Empty, 20f, FontStyles.Normal, TextAlignmentOptions.Right, Color.white, sourceText);
+
+        bindingText.transform.SetParent(bindingButton.transform, false);
+        bindingText.raycastTarget = false;
+        bindingText.text = TetrabeastsControls.GetBindingLabel(action, TetrabeastsControlProfile.PlatformDefault);
+        StretchToFill(bindingText.rectTransform, new Vector2(8f, 0f), new Vector2(-8f, 0f));
+        EnsureBindingButtonGraphic(bindingButton);
+    }
+
+    static Button WrapBindingTextInButton(Transform row, TMP_Text bindingText)
+    {
+        int siblingIndex = bindingText ? bindingText.transform.GetSiblingIndex() : row.childCount;
+        var oldLayout = bindingText ? bindingText.GetComponent<LayoutElement>() : null;
+        float preferredWidth = oldLayout ? oldLayout.preferredWidth : 360f;
+        float preferredHeight = oldLayout ? oldLayout.preferredHeight : 38f;
+        float flexibleWidth = oldLayout ? oldLayout.flexibleWidth : 1f;
+        float flexibleHeight = oldLayout ? oldLayout.flexibleHeight : 0f;
+
+        var bindingButton = CreateBindingButton("Binding_Button", row);
+        bindingButton.transform.SetSiblingIndex(siblingIndex);
+        AddLayout(bindingButton.gameObject, preferredWidth, preferredHeight, flexibleWidth, flexibleHeight);
+
+        if (bindingText)
+        {
+            bindingText.transform.SetParent(bindingButton.transform, false);
+            if (oldLayout)
+                Object.DestroyImmediate(oldLayout);
+        }
+
+        return bindingButton;
     }
 
     static void CreateBindingRow(Transform parent, TetrabeastsControlAction action, int rowIndex, TMP_Text sourceText)
@@ -130,10 +274,12 @@ public static class ControlsPanelPrefabBuilder
             : new Color(0f, 0f, 0f, 0.14f);
         rowImage.raycastTarget = false;
 
-        var actionText = CreateText("Action_Text", row.transform, TetrabeastsControls.GetActionLabel(action), 20f, FontStyles.Bold, TextAlignmentOptions.Left, Color.white, sourceText);
-        var bindingText = CreateText("Binding_Text", row.transform, TetrabeastsControls.GetBindingLabel(action, TetrabeastsControlProfile.PlatformDefault), 20f, FontStyles.Normal, TextAlignmentOptions.Right, Color.white, sourceText);
+        var actionText = CreateText("Action_Text", row.transform, $" {TetrabeastsControls.GetActionLabel(action)}", 20f, FontStyles.Bold, TextAlignmentOptions.Left, Color.white, sourceText);
+        var bindingButton = CreateBindingButton("Binding_Button", row.transform);
+        var bindingText = CreateText("Binding_Text", bindingButton.transform, TetrabeastsControls.GetBindingLabel(action, TetrabeastsControlProfile.PlatformDefault), 20f, FontStyles.Normal, TextAlignmentOptions.Right, Color.white, sourceText);
+        StretchToFill(bindingText.rectTransform, new Vector2(8f, 0f), new Vector2(-8f, 0f));
         AddLayout(actionText.gameObject, 300f, 38f);
-        AddLayout(bindingText.gameObject, 360f, 38f, 1f);
+        AddLayout(bindingButton.gameObject, 360f, 38f, 1f);
     }
 
     static Button CreateButton(string name, Transform parent, string label, TMP_Text sourceText)
@@ -152,6 +298,51 @@ public static class ControlsPanelPrefabBuilder
         labelRect.offsetMax = new Vector2(-8f, -4f);
 
         return button;
+    }
+
+    static Button CreateBindingButton(string name, Transform parent)
+    {
+        var image = CreateObject<Image>(name, parent);
+        image.color = new Color(1f, 1f, 1f, 0.02f);
+
+        var button = image.gameObject.AddComponent<Button>();
+        StyleBindingButton(button);
+
+        return button;
+    }
+
+    static void StyleBindingButton(Button button)
+    {
+        if (!button)
+            return;
+
+        var image = EnsureBindingButtonGraphic(button);
+        image.color = new Color(1f, 1f, 1f, 0.02f);
+
+        var colors = button.colors;
+        colors.normalColor = new Color(1f, 1f, 1f, 0.02f);
+        colors.highlightedColor = new Color(1f, 0.62f, 0.08f, 0.28f);
+        colors.selectedColor = colors.highlightedColor;
+        colors.pressedColor = new Color(1f, 0.82f, 0.22f, 0.45f);
+        colors.disabledColor = new Color(1f, 1f, 1f, 0.05f);
+        button.colors = colors;
+    }
+
+    static Image EnsureBindingButtonGraphic(Button button)
+    {
+        if (!button)
+            return null;
+
+        var image = button.GetComponent<Image>();
+        if (!image)
+            image = button.gameObject.AddComponent<Image>();
+
+        image.raycastTarget = true;
+
+        if (!button.targetGraphic)
+            button.targetGraphic = image;
+
+        return image;
     }
 
     static TMP_Dropdown CreateFallbackDropdown(Transform parent)
@@ -218,6 +409,38 @@ public static class ControlsPanelPrefabBuilder
 
         layout.flexibleWidth = flexibleWidth;
         layout.flexibleHeight = flexibleHeight;
+    }
+
+    static void StretchToFill(RectTransform rect, Vector2 offsetMin, Vector2 offsetMax)
+    {
+        if (!rect)
+            return;
+
+        rect.anchorMin = Vector2.zero;
+        rect.anchorMax = Vector2.one;
+        rect.offsetMin = offsetMin;
+        rect.offsetMax = offsetMax;
+    }
+
+    static T FindChildComponent<T>(Transform root, string childName) where T : Component
+    {
+        var child = FindDeepChild(root, childName);
+        return child ? child.GetComponent<T>() : null;
+    }
+
+    static Transform FindDirectChild(Transform root, string childName)
+    {
+        if (!root || string.IsNullOrWhiteSpace(childName))
+            return null;
+
+        for (int i = 0; i < root.childCount; i++)
+        {
+            var child = root.GetChild(i);
+            if (child && child.name == childName)
+                return child;
+        }
+
+        return null;
     }
 
     static Transform FindDeepChild(Transform root, string childName)

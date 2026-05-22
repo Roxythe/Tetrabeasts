@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -87,8 +90,15 @@ public class TitleMenuUI : MonoBehaviour
     public UICursorController uiCursorController;
 
     TitleStarDifficultyUI _starDifficultyUI;
+    readonly Dictionary<Selectable, Navigation> automaticNavigationScope = new();
+    GameObject automaticNavigationRoot;
+    Vector2 heldNavigationDirection;
+    float nextNavigationTime;
+    bool eventSystemNavigationSuppressed;
 
     const string TutorialIdFirstShopOpen = "title_shop_intro";
+    const float NavigationRepeatDelay = 0.28f;
+    const float NavigationRepeatInterval = 0.12f;
     const string SavedRunLockedMessage =
         "A saved run is waiting. Continue that run or delete the temp save before changing your commander, squad, or shop buffs.";
     const string DeleteTempRunWarningMessage =
@@ -163,6 +173,11 @@ public class TitleMenuUI : MonoBehaviour
         RefreshSteamLeaderboardIfVisible();
         HookAllButtonsForSFX(); // Auto-hook all buttons under this menu for click/hover sounds
         TetrabeastsFirstLaunchLanguagePrompt.ShowIfNeeded(transform);
+    }
+
+    void OnDisable()
+    {
+        RestoreAutomaticNavigationScope();
     }
 
     void ApplyDemoBuildGuardRailsSetting()
@@ -500,13 +515,242 @@ public class TitleMenuUI : MonoBehaviour
     // ESC closes panels
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        TetrabeastsControls.RefreshActiveInputProfile();
+
+        GameObject root = GetCurrentNavigationRoot();
+        RefreshAutomaticNavigationScope(root);
+
+        if (volumePanelUI && settingsPanel && UIPanelTransition.IsVisible(settingsPanel))
+            return;
+
+        if (WasCancelPressedThisFrame() && TryCloseVisiblePanelFromCancelInput(root))
+            return;
+
+        if (TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuSubmit) &&
+            UINavigationUtility.TrySubmitSelected())
+            return;
+
+        HandleSpatialNavigation(root);
+    }
+
+    void HandleSpatialNavigation(GameObject root)
+    {
+        if (!root)
+            return;
+
+        bool tabPressed = WasTabPressedThisFrame();
+        bool navigationInput = tabPressed ||
+            TetrabeastsControls.WasButtonNavigationPressedThisFrame() ||
+            TetrabeastsControls.IsButtonNavigationHeld();
+
+        if (!navigationInput)
         {
-            if (ConfirmationPopupUI.TryCancelShowingPopup()) return;
-            if (codexPanel && UIPanelTransition.IsVisible(codexPanel)) { OnToggleCodex(); return; }
-            if (settingsPanel && UIPanelTransition.IsVisible(settingsPanel)) { OnToggleSettings(); return; }
-            if (highScorePanel && UIPanelTransition.IsVisible(highScorePanel)) { OnToggleHighScore(); return; }
+            ResetNavigationRepeat();
+            return;
         }
+
+        var current = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
+        if (!UINavigationUtility.IsSelectionUsableInside(current, root))
+        {
+            UINavigationUtility.SelectFirstUsable(root);
+            ResetNavigationRepeat();
+            return;
+        }
+
+        if (tabPressed)
+        {
+            UINavigationUtility.SelectNextInOrder(root, IsShiftHeld() ? -1 : 1);
+            ResetNavigationRepeat();
+            return;
+        }
+
+        if (!TryConsumeDirectionalNavigation(out Vector2 direction))
+            return;
+
+        UINavigationUtility.SelectInDirection(root, direction);
+    }
+
+    GameObject GetCurrentNavigationRoot()
+    {
+        if (ConfirmationPopupUI.TryGetShowingRoot(out var popupRoot))
+            return popupRoot;
+
+        if (IsVisiblePanel(settingsPanel)) return settingsPanel;
+        if (characterSelectPanel && IsVisiblePanel(characterSelectPanel.gameObject)) return characterSelectPanel.gameObject;
+        if (monsterSelectPanel && IsVisiblePanel(monsterSelectPanel.gameObject)) return monsterSelectPanel.gameObject;
+        if (IsVisiblePanel(shopPanel)) return shopPanel;
+        if (IsVisiblePanel(helpPanel)) return helpPanel;
+        if (IsVisiblePanel(achievementPanel)) return achievementPanel;
+        if (IsVisiblePanel(codexPanel)) return codexPanel;
+        if (IsVisiblePanel(highScorePanel)) return highScorePanel;
+
+        return gameObject;
+    }
+
+    bool TryConsumeDirectionalNavigation(out Vector2 direction)
+    {
+        direction = UINavigationUtility.GetPrimaryDirection(TetrabeastsControls.GetButtonNavigationDirection());
+        if (direction.sqrMagnitude < 0.5f)
+        {
+            ResetNavigationRepeat();
+            return false;
+        }
+
+        float now = Time.unscaledTime;
+        if (direction != heldNavigationDirection)
+        {
+            heldNavigationDirection = direction;
+            nextNavigationTime = now + NavigationRepeatDelay;
+            return true;
+        }
+
+        if (now < nextNavigationTime)
+            return false;
+
+        nextNavigationTime = now + NavigationRepeatInterval;
+        return true;
+    }
+
+    void ResetNavigationRepeat()
+    {
+        heldNavigationDirection = Vector2.zero;
+        nextNavigationTime = 0f;
+    }
+
+    void RefreshAutomaticNavigationScope(GameObject root)
+    {
+        if (root != automaticNavigationRoot)
+        {
+            RestoreAutomaticNavigationScope();
+            automaticNavigationRoot = root;
+            UINavigationUtility.SuppressEventSystemNavigation();
+            eventSystemNavigationSuppressed = true;
+        }
+
+        UINavigationUtility.SuppressAutomaticNavigation(root, automaticNavigationScope);
+    }
+
+    void RestoreAutomaticNavigationScope()
+    {
+        UINavigationUtility.RestoreAutomaticNavigation(automaticNavigationScope);
+        if (eventSystemNavigationSuppressed)
+        {
+            UINavigationUtility.RestoreEventSystemNavigation();
+            eventSystemNavigationSuppressed = false;
+        }
+
+        automaticNavigationRoot = null;
+    }
+
+    bool TryCloseVisiblePanelFromCancelInput(GameObject root)
+    {
+        if (ConfirmationPopupUI.TryCancelShowingPopup())
+            return true;
+
+        if (root && root != gameObject && TryPressPanelBackOrCloseButton(root))
+            return true;
+
+        if (settingsPanel && UIPanelTransition.IsVisible(settingsPanel))
+        {
+            if (volumePanelUI)
+                volumePanelUI.Close();
+            else
+                HideTitlePanel(settingsPanel);
+
+            return true;
+        }
+
+        if (codexPanel && UIPanelTransition.IsVisible(codexPanel)) { HideTitlePanel(codexPanel); return true; }
+        if (helpPanel && UIPanelTransition.IsVisible(helpPanel)) { HideTitlePanel(helpPanel); return true; }
+        if (achievementPanel && UIPanelTransition.IsVisible(achievementPanel)) { HideTitlePanel(achievementPanel); return true; }
+        if (shopPanel && UIPanelTransition.IsVisible(shopPanel)) { HideTitlePanel(shopPanel); return true; }
+
+        if (monsterSelectPanel && UIPanelTransition.IsVisible(monsterSelectPanel.gameObject))
+        {
+            if (monsterSelectPanel.TryCloseFromInput())
+                SetPanelPause(false);
+
+            return true;
+        }
+
+        if (characterSelectPanel && UIPanelTransition.IsVisible(characterSelectPanel.gameObject))
+        {
+            HideTitlePanel(characterSelectPanel.gameObject);
+            return true;
+        }
+
+        if (highScorePanel && UIPanelTransition.IsVisible(highScorePanel)) { HideTitlePanel(highScorePanel); return true; }
+
+        return false;
+    }
+
+    bool TryPressPanelBackOrCloseButton(GameObject root)
+    {
+        if (!root)
+            return false;
+
+        if (monsterSelectPanel && root == monsterSelectPanel.gameObject)
+            return false;
+
+        return UINavigationUtility.TryPressNamedButton(root, "Back", "Close", "Cancel");
+    }
+
+    void HideTitlePanel(GameObject panel)
+    {
+        if (!panel)
+            return;
+
+        UIPanelTransition.Hide(panel);
+        SetPanelPause(false);
+    }
+
+    void SetPanelPause(bool paused)
+    {
+        if (pauseOnPanels)
+            Time.timeScale = paused ? 0f : 1f;
+    }
+
+    static bool WasCancelPressedThisFrame()
+    {
+        return Input.GetKeyDown(KeyCode.Escape) ||
+               TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuCancel);
+    }
+
+    static bool WasTabPressedThisFrame()
+    {
+        bool pressed = false;
+
+#if ENABLE_INPUT_SYSTEM
+        var keyboard = Keyboard.current;
+        pressed |= keyboard != null && keyboard.tabKey.wasPressedThisFrame;
+#endif
+
+#if ENABLE_LEGACY_INPUT_MANAGER
+        pressed |= Input.GetKeyDown(KeyCode.Tab);
+#endif
+
+        return pressed;
+    }
+
+    static bool IsShiftHeld()
+    {
+        bool held = false;
+
+#if ENABLE_INPUT_SYSTEM
+        var keyboard = Keyboard.current;
+        held |= keyboard != null && (keyboard.leftShiftKey.isPressed || keyboard.rightShiftKey.isPressed);
+#endif
+
+#if ENABLE_LEGACY_INPUT_MANAGER
+        held |= Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+#endif
+
+        return held;
+    }
+
+    static bool IsVisiblePanel(GameObject panel)
+    {
+        return panel && UIPanelTransition.IsVisible(panel);
     }
 
     bool TryGetValidTempRun(out TempRunSaveStore.SaveData saveData)

@@ -1,0 +1,58 @@
+"In Game Actions"
+{
+    "actions"
+    {
+        "Gameplay"
+        {
+            "title" "#Set_Gameplay"
+
+            "StickPadGyro"
+            {
+                "Move"
+                {
+                    "title" "#Action_Move"
+                    "input_mode" "joystick_move"
+                }
+                "MenuNavigate"
+                {
+                    "title" "#Action_MenuNavigate"
+                    "input_mode" "joystick_move"
+                }
+            }
+
+            "Button"
+            {
+                "MoveLeft" "#Action_MoveLeft"
+                "MoveRight" "#Action_MoveRight"
+                "SoftDrop" "#Action_SoftDrop"
+                "RotateClockwise" "#Action_RotateClockwise"
+                "RotateCounterClockwise" "#Action_RotateCounterClockwise"
+                "HardDrop" "#Action_HardDrop"
+                "Special" "#Action_Special"
+                "Pause" "#Action_Pause"
+                "MenuSubmit" "#Action_MenuSubmit"
+                "MenuCancel" "#Action_MenuCancel"
+            }
+        }
+    }
+
+    "localization"
+    {
+        "english"
+        {
+            "Set_Gameplay" "Gameplay"
+            "Action_Move" "Move Piece / Menu Navigate"
+            "Action_MenuNavigate" "Menu Navigate"
+            "Action_MoveLeft" "Move Left"
+            "Action_MoveRight" "Move Right"
+            "Action_SoftDrop" "Soft Drop"
+            "Action_RotateClockwise" "Rotate Clockwise"
+            "Action_RotateCounterClockwise" "Rotate Counterclockwise"
+            "Action_HardDrop" "Hard Drop"
+            "Action_Special" "Special Ability"
+            "Action_Pause" "Pause"
+            "Action_MenuSubmit" "Menu Confirm"
+            "Action_MenuCancel" "Menu Back"
+        }
+    }
+}

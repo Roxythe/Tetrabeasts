@@ -39,6 +39,13 @@ public class VolumePanelUI : MonoBehaviour
     [SerializeField] bool focusFirstSelectableWhenOpened = true;
     [SerializeField] bool trapNavigationWhileOpen = true;
 
+    [Header("Navigation")]
+    [SerializeField] float navigationRepeatDelay = 0.28f;
+    [SerializeField] float navigationRepeatInterval = 0.12f;
+    [SerializeField] Vector2 sliderSelectionArrowSize = new Vector2(20f, 16f);
+    [SerializeField] float sliderSelectionArrowYOffset = 6f;
+    [SerializeField] float selectionArrowSideOffset = 12f;
+
     [Header("SFX Preview")]
     public bool previewOnChange = true;
     [Range(0.05f, 0.5f)] public float previewDelay = 0.15f;
@@ -49,6 +56,17 @@ public class VolumePanelUI : MonoBehaviour
 
     CanvasGroup cg;
     readonly Dictionary<Selectable, bool> modalScopedSelectables = new();
+    readonly Dictionary<Selectable, Navigation> automaticNavigationScope = new();
+    readonly Dictionary<TetrabeastsControlAction, Button> bindingButtons = new();
+    Coroutine rebindCaptureCo;
+    TetrabeastsControlAction? rebindingAction;
+    Image sliderSelectionArrow;
+    Sprite sliderSelectionArrowSprite;
+    GameObject automaticNavigationRoot;
+    Vector2 heldNavigationDirection;
+    float nextNavigationTime;
+    bool navigationSelectionActive;
+    bool eventSystemNavigationSuppressed;
 
     void Awake()
     {
@@ -119,6 +137,8 @@ public class VolumePanelUI : MonoBehaviour
             skipIntroToggle.SetIsOnWithoutNotify(SettingsStore.LoadSkipIntroEnabled());
 
         TetrabeastsControls.ProfileChanged += HandleControlsProfileChanged;
+        TetrabeastsControls.BindingsChanged += HandleControlsBindingsChanged;
+        TetrabeastsControls.PlatformDefaultProfileChanged += HandlePlatformDefaultProfileChanged;
         RefreshControlsPanel();
         CloseControlsPanel(true);
         RefreshModalSelectableScope();
@@ -131,7 +151,11 @@ public class VolumePanelUI : MonoBehaviour
     {
         TetrabeastsLocalization.LanguageChanged -= RefreshLanguageControls;
         TetrabeastsControls.ProfileChanged -= HandleControlsProfileChanged;
+        TetrabeastsControls.BindingsChanged -= HandleControlsBindingsChanged;
+        TetrabeastsControls.PlatformDefaultProfileChanged -= HandlePlatformDefaultProfileChanged;
+        CancelRebindCapture();
         RestoreModalSelectableScope();
+        RestoreAutomaticNavigationScope();
         if (pauseWhenOpen) Time.timeScale = 1f;
     }
 
@@ -387,6 +411,7 @@ public class VolumePanelUI : MonoBehaviour
     void RefreshControlsPanel()
     {
         EnsureControlsPanelUI();
+        HookControlsPanelCallbacks();
         PopulateControlsProfileDropdown();
         RefreshControlsRows();
     }
@@ -445,10 +470,12 @@ public class VolumePanelUI : MonoBehaviour
         bg.raycastTarget = false;
 
         var actionText = CreateText(rowRoot, "Action_Text", string.Empty, 20f, FontStyles.Bold, TextAlignmentOptions.Left);
-        var bindingText = CreateText(rowRoot, "Binding_Text", string.Empty, 20f, FontStyles.Normal, TextAlignmentOptions.Right);
+        var bindingButton = CreateBindingButton(rowRoot, action);
+        var bindingText = CreateText(bindingButton.transform, "Binding_Text", string.Empty, 20f, FontStyles.Normal, TextAlignmentOptions.Right);
+        StretchToFill(bindingText.rectTransform, new Vector2(8f, 0f), new Vector2(-8f, 0f));
 
         AddLayout(actionText.gameObject, 300f, 38f, flexibleWidth: 0f);
-        AddLayout(bindingText.gameObject, 360f, 38f, flexibleWidth: 1f);
+        AddLayout(bindingButton.gameObject, 360f, 38f, flexibleWidth: 1f);
 
         return rowRoot;
     }
@@ -468,9 +495,114 @@ public class VolumePanelUI : MonoBehaviour
         if (actionText)
             actionText.text = row.ActionLabel;
 
-        var bindingText = FindChildComponent<TMP_Text>(rowRoot, "Binding_Text");
+        var bindingButton = EnsureBindingButton(rowRoot, row.Action);
+        WireBindingButton(bindingButton, row.Action);
+
+        var bindingText = bindingButton ? FindChildComponent<TMP_Text>(bindingButton.transform, "Binding_Text") : FindChildComponent<TMP_Text>(rowRoot, "Binding_Text");
         if (bindingText)
-            bindingText.text = row.BindingLabel;
+            bindingText.text = rebindingAction.HasValue && rebindingAction.Value == row.Action ? "Press input..." : row.BindingLabel;
+    }
+
+    Button CreateBindingButton(Transform parent, TetrabeastsControlAction action)
+    {
+        var go = new GameObject("Binding_Button", typeof(RectTransform), typeof(Image), typeof(Button));
+        go.transform.SetParent(parent, false);
+
+        var button = go.GetComponent<Button>();
+        StyleBindingButton(button);
+        WireBindingButton(button, action);
+        return button;
+    }
+
+    Button EnsureBindingButton(Transform rowRoot, TetrabeastsControlAction action)
+    {
+        if (!rowRoot)
+            return null;
+
+        var existingButton = FindChildComponent<Button>(rowRoot, "Binding_Button");
+        if (existingButton)
+        {
+            EnsureBindingButtonGraphic(existingButton);
+            return existingButton;
+        }
+
+        var bindingText = FindChildComponent<TMP_Text>(rowRoot, "Binding_Text");
+        if (!bindingText)
+            return CreateBindingButton(rowRoot, action);
+
+        int siblingIndex = bindingText.transform.GetSiblingIndex();
+        var oldLayout = bindingText.GetComponent<LayoutElement>();
+        float preferredWidth = oldLayout ? oldLayout.preferredWidth : 360f;
+        float preferredHeight = oldLayout ? oldLayout.preferredHeight : 38f;
+        float flexibleWidth = oldLayout ? oldLayout.flexibleWidth : 1f;
+        float flexibleHeight = oldLayout ? oldLayout.flexibleHeight : 0f;
+
+        var button = CreateBindingButton(rowRoot, action);
+        button.transform.SetSiblingIndex(siblingIndex);
+        AddLayout(button.gameObject, preferredWidth, preferredHeight, flexibleWidth, flexibleHeight);
+
+        bindingText.transform.SetParent(button.transform, false);
+        bindingText.raycastTarget = false;
+        StretchToFill(bindingText.rectTransform, new Vector2(8f, 0f), new Vector2(-8f, 0f));
+
+        if (oldLayout)
+            Destroy(oldLayout);
+
+        return button;
+    }
+
+    void StyleBindingButton(Button button)
+    {
+        if (!button)
+            return;
+
+        EnsureBindingButtonGraphic(button);
+
+        var colors = button.colors;
+        colors.normalColor = new Color(1f, 1f, 1f, 0.02f);
+        colors.highlightedColor = new Color(1f, 0.62f, 0.08f, 0.28f);
+        colors.selectedColor = colors.highlightedColor;
+        colors.pressedColor = new Color(1f, 0.82f, 0.22f, 0.45f);
+        colors.disabledColor = new Color(1f, 1f, 1f, 0.05f);
+        button.colors = colors;
+    }
+
+    Image EnsureBindingButtonGraphic(Button button)
+    {
+        if (!button)
+            return null;
+
+        var image = button.GetComponent<Image>();
+        if (!image)
+            image = button.gameObject.AddComponent<Image>();
+
+        image.raycastTarget = true;
+
+        if (!button.targetGraphic)
+            button.targetGraphic = image;
+
+        return image;
+    }
+
+    void WireBindingButton(Button button, TetrabeastsControlAction action)
+    {
+        if (!button)
+            return;
+
+        bindingButtons[action] = button;
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() => BeginRebind(action));
+    }
+
+    void StretchToFill(RectTransform rect, Vector2 offsetMin, Vector2 offsetMax)
+    {
+        if (!rect)
+            return;
+
+        rect.anchorMin = Vector2.zero;
+        rect.anchorMax = Vector2.one;
+        rect.offsetMin = offsetMin;
+        rect.offsetMax = offsetMax;
     }
 
     Transform CreateHorizontalLayout(Transform parent, string name, float spacing, float preferredHeight = 42f)
@@ -587,6 +719,8 @@ public class VolumePanelUI : MonoBehaviour
 
     void SetControlsProfile(int index)
     {
+        CancelRebindCapture();
+
         var profiles = TetrabeastsControls.SelectableProfiles;
         if (index < 0 || index >= profiles.Count)
             return;
@@ -597,6 +731,7 @@ public class VolumePanelUI : MonoBehaviour
 
     void ResetControlsToPlatformDefault()
     {
+        TetrabeastsControls.ResetBindingsToDefault(GetActiveControlsProfile());
         TetrabeastsControls.ResetToPlatformDefault();
         RefreshControlsPanel();
         SelectSelectable(controlsProfileDropdown);
@@ -607,13 +742,104 @@ public class VolumePanelUI : MonoBehaviour
         RefreshControlsPanel();
     }
 
+    void HandleControlsBindingsChanged(TetrabeastsControlProfile _)
+    {
+        RefreshControlsPanel();
+    }
+
+    void HandlePlatformDefaultProfileChanged(TetrabeastsControlProfile _)
+    {
+        RefreshControlsPanel();
+        RefreshModalSelectableScope();
+    }
+
+    TetrabeastsControlProfile GetActiveControlsProfile()
+    {
+        return TetrabeastsControls.GetEditableProfile(TetrabeastsControls.SavedProfile);
+    }
+
+    void BeginRebind(TetrabeastsControlAction action)
+    {
+        CancelRebindCapture();
+        rebindingAction = action;
+        RefreshControlsRows();
+        ClearCurrentSelection();
+        rebindCaptureCo = StartCoroutine(CaptureRebindInput(action));
+    }
+
+    IEnumerator CaptureRebindInput(TetrabeastsControlAction action)
+    {
+        yield return null;
+
+        var profile = GetActiveControlsProfile();
+        while (TetrabeastsControls.AnyRebindInputHeld(profile))
+            yield return null;
+
+        while (rebindingAction.HasValue && rebindingAction.Value == action)
+        {
+            profile = GetActiveControlsProfile();
+            if (TetrabeastsControls.TryReadRebindInput(profile, action, out var binding, out bool cancelled))
+            {
+                if (!cancelled && binding.IsValid)
+                    TryApplyCapturedBinding(profile, action, binding);
+
+                FinishRebindCapture();
+                yield break;
+            }
+
+            yield return null;
+        }
+    }
+
+    void TryApplyCapturedBinding(TetrabeastsControlProfile profile, TetrabeastsControlAction action, TetrabeastsControlBinding binding)
+    {
+        if (TetrabeastsControls.TryFindActionUsingBinding(profile, binding, action, out var conflictAction))
+        {
+            ShowControlsConfirmation(
+                $"{binding.Label} is already bound to {TetrabeastsControls.GetActionLabel(conflictAction)}.\n\nContinue and move this binding to {TetrabeastsControls.GetActionLabel(action)}?",
+                () =>
+                {
+                    TetrabeastsControls.ClearActionBinding(profile, conflictAction);
+                    TetrabeastsControls.SetActionBinding(profile, action, binding);
+                    RefreshControlsPanel();
+                },
+                RefreshControlsPanel);
+            return;
+        }
+
+        TetrabeastsControls.SetActionBinding(profile, action, binding);
+        RefreshControlsPanel();
+    }
+
+    void FinishRebindCapture()
+    {
+        rebindCaptureCo = null;
+        rebindingAction = null;
+        RefreshControlsRows();
+    }
+
+    void CancelRebindCapture()
+    {
+        if (rebindCaptureCo != null)
+        {
+            StopCoroutine(rebindCaptureCo);
+            rebindCaptureCo = null;
+        }
+
+        if (rebindingAction.HasValue)
+        {
+            rebindingAction = null;
+            RefreshControlsRows();
+        }
+    }
+
     public void ToggleControlsPanel()
     {
         if (!controlsPanelRoot)
             return;
 
         if (UIPanelTransition.IsVisible(controlsPanelRoot))
-            CloseControlsPanel();
+            RequestCloseControlsPanel(false);
         else
             OpenControlsPanel();
     }
@@ -634,10 +860,48 @@ public class VolumePanelUI : MonoBehaviour
 
     public void CloseControlsPanel()
     {
-        CloseControlsPanel(false);
+        RequestCloseControlsPanel(false);
     }
 
     public void CloseControlsPanel(bool instant)
+    {
+        RequestCloseControlsPanel(instant);
+    }
+
+    void RequestCloseControlsPanel(bool instant, System.Action afterClosed = null)
+    {
+        if (!controlsPanelRoot)
+        {
+            afterClosed?.Invoke();
+            return;
+        }
+
+        if (instant || !UIPanelTransition.IsVisible(controlsPanelRoot))
+        {
+            CloseControlsPanelNow(instant);
+            afterClosed?.Invoke();
+            return;
+        }
+
+        CancelRebindCapture();
+        var profile = GetActiveControlsProfile();
+        if (TetrabeastsControls.HasUnboundActions(profile))
+        {
+            ShowUnboundControlsWarning(profile, () => SaveAndCloseControlsPanel(profile, afterClosed));
+            return;
+        }
+
+        SaveAndCloseControlsPanel(profile, afterClosed);
+    }
+
+    void SaveAndCloseControlsPanel(TetrabeastsControlProfile profile, System.Action afterClosed)
+    {
+        TetrabeastsControls.SaveBindings(profile);
+        CloseControlsPanelNow(false);
+        afterClosed?.Invoke();
+    }
+
+    void CloseControlsPanelNow(bool instant)
     {
         if (!controlsPanelRoot)
             return;
@@ -648,6 +912,56 @@ public class VolumePanelUI : MonoBehaviour
 
         if (!instant)
             SelectSelectable(controlsButton);
+    }
+
+    void ShowUnboundControlsWarning(TetrabeastsControlProfile profile, System.Action onConfirm)
+    {
+        var unboundActions = TetrabeastsControls.GetUnboundActions(profile);
+        string names = string.Empty;
+        for (int i = 0; i < unboundActions.Count; i++)
+        {
+            if (i > 0)
+                names += ", ";
+
+            names += TetrabeastsControls.GetActionLabel(unboundActions[i]);
+        }
+
+        ShowControlsConfirmation(
+            $"The following controls are unbound:\n\n{names}\n\nContinue and save these controls anyway?",
+            onConfirm,
+            () => SelectFirstVisibleSelectable(controlsPanelRoot));
+    }
+
+    void ShowControlsConfirmation(string body, System.Action onConfirm, System.Action onCancel = null)
+    {
+        var popup = ConfirmationPopupUI.FindOrCreate();
+        if (!popup)
+        {
+            Debug.LogWarning("VolumePanelUI: No confirmation popup was available for controls warning.");
+            onConfirm?.Invoke();
+            return;
+        }
+
+        popup.ShowConfirmation(
+            body,
+            () =>
+            {
+                onConfirm?.Invoke();
+                RefreshModalSelectableScope();
+            },
+            () =>
+            {
+                onCancel?.Invoke();
+                RefreshModalSelectableScope();
+            },
+            "Continue",
+            "Cancel",
+            showWarningVisual: true);
+
+        RefreshModalSelectableScope();
+
+        if (ConfirmationPopupUI.TryGetShowingRoot(out var popupRoot))
+            StartCoroutine(SelectFirstVisibleControlNextFrame(popupRoot));
     }
 
     System.Collections.IEnumerator PreviewAfterDelay()
@@ -669,7 +983,19 @@ public class VolumePanelUI : MonoBehaviour
     public void Close() { Close(false); }
     public void Close(bool instant)
     {
+        if (!instant && controlsPanelRoot && UIPanelTransition.IsVisible(controlsPanelRoot))
+        {
+            RequestCloseControlsPanel(false, () => CloseVolumePanelNow(false));
+            return;
+        }
+
+        CloseVolumePanelNow(instant);
+    }
+
+    void CloseVolumePanelNow(bool instant)
+    {
         RestoreModalSelectableScope();
+        RestoreAutomaticNavigationScope();
         UIPanelTransition.Hide(gameObject, instant);
     }
 
@@ -717,7 +1043,23 @@ public class VolumePanelUI : MonoBehaviour
         if (!UIPanelTransition.IsVisible(gameObject))
             return;
 
-        HandleTabNavigation();
+        TetrabeastsControls.RefreshActiveInputProfile();
+
+        if (rebindingAction.HasValue)
+        {
+            SetSliderSelectionArrowVisible(false);
+            return;
+        }
+
+        if (WasMousePressedThisFrame())
+            navigationSelectionActive = false;
+
+        HandlePanelNavigation();
+        UpdateSelectionArrow();
+
+        if (TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuSubmit) &&
+            UINavigationUtility.TrySubmitSelected())
+            return;
 
         bool pausePressed = TetrabeastsControls.WasPressed(TetrabeastsControlAction.Pause);
         bool cancelPressed = TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuCancel);
@@ -730,33 +1072,112 @@ public class VolumePanelUI : MonoBehaviour
 
         if (controlsPanelRoot && UIPanelTransition.IsVisible(controlsPanelRoot))
         {
-            CloseControlsPanel();
+            if (!UINavigationUtility.TryPressButton(controlsBackButton))
+                RequestCloseControlsPanel(false);
+
             return;
         }
 
-        if (!ConfirmationPopupUI.TryCancelShowingPopup())
+        if (ConfirmationPopupUI.TryCancelShowingPopup())
+            return;
+
+        if (!UINavigationUtility.TryPressButton(closeButton))
             Toggle();
     }
 
-    void HandleTabNavigation()
+    void HandlePanelNavigation()
     {
         GameObject navigationRoot = GetCurrentNavigationRoot();
         if (!navigationRoot)
             return;
 
+        bool menuNavigationInput = TetrabeastsControls.WasButtonNavigationPressedThisFrame() ||
+            TetrabeastsControls.IsButtonNavigationHeld();
+
+        if (menuNavigationInput)
+            navigationSelectionActive = true;
+
+        if (menuNavigationInput && EnsureSelectionInside(navigationRoot, true))
+        {
+            ResetNavigationRepeat();
+            return;
+        }
+
         if (WasTabPressedThisFrame())
         {
-            SelectRelativeSelectable(navigationRoot, IsShiftHeld() ? -1 : 1);
+            if (UINavigationUtility.SelectNextInOrder(navigationRoot, IsShiftHeld() ? -1 : 1))
+                navigationSelectionActive = true;
+
+            ResetNavigationRepeat();
+            return;
+        }
+
+        if (TryConsumeDirectionalNavigation(out Vector2 direction))
+        {
+            var selectedObject = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
+            var selectedSlider = selectedObject ? selectedObject.GetComponentInParent<Slider>() : null;
+            if (selectedSlider && Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+                return;
+
+            if (UINavigationUtility.SelectInDirection(navigationRoot, direction))
+                navigationSelectionActive = true;
+
             return;
         }
 
         var current = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
         if (ShouldPullSelectionBackToScope(current, navigationRoot))
-            SelectFirstVisibleSelectable(navigationRoot);
+            UINavigationUtility.SelectFirstUsable(navigationRoot);
+    }
+
+    bool EnsureSelectionInside(GameObject root, bool fromNavigation)
+    {
+        var current = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
+        if (!ShouldPullSelectionBackToScope(current, root))
+            return false;
+
+        bool selected = UINavigationUtility.SelectFirstUsable(root);
+        if (selected && fromNavigation)
+            navigationSelectionActive = true;
+
+        return selected;
+    }
+
+    bool TryConsumeDirectionalNavigation(out Vector2 direction)
+    {
+        direction = UINavigationUtility.GetPrimaryDirection(TetrabeastsControls.GetButtonNavigationDirection());
+        if (direction.sqrMagnitude < 0.5f)
+        {
+            ResetNavigationRepeat();
+            return false;
+        }
+
+        float now = Time.unscaledTime;
+        if (direction != heldNavigationDirection)
+        {
+            heldNavigationDirection = direction;
+            nextNavigationTime = now + Mathf.Max(0.01f, navigationRepeatDelay);
+            return true;
+        }
+
+        if (now < nextNavigationTime)
+            return false;
+
+        nextNavigationTime = now + Mathf.Max(0.01f, navigationRepeatInterval);
+        return true;
+    }
+
+    void ResetNavigationRepeat()
+    {
+        heldNavigationDirection = Vector2.zero;
+        nextNavigationTime = 0f;
     }
 
     GameObject GetCurrentNavigationRoot()
     {
+        if (ConfirmationPopupUI.TryGetShowingRoot(out var popupRoot))
+            return popupRoot;
+
         if (controlsPanelRoot && UIPanelTransition.IsVisible(controlsPanelRoot))
             return controlsPanelRoot;
 
@@ -766,13 +1187,19 @@ public class VolumePanelUI : MonoBehaviour
     void RefreshModalSelectableScope()
     {
         RestoreModalSelectableScope();
+        RestoreAutomaticNavigationScope();
 
-        if (!trapNavigationWhileOpen || !UIPanelTransition.IsVisible(gameObject))
+        bool panelVisible = UIPanelTransition.IsVisible(gameObject) ||
+            (controlsPanelRoot && UIPanelTransition.IsVisible(controlsPanelRoot));
+
+        if (!trapNavigationWhileOpen || !panelVisible)
             return;
 
         GameObject navigationRoot = GetCurrentNavigationRoot();
         if (!navigationRoot)
             return;
+
+        RefreshAutomaticNavigationScope(navigationRoot);
 
         var selectables = FindObjectsByType<Selectable>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
         for (int i = 0; i < selectables.Length; i++)
@@ -787,7 +1214,7 @@ public class VolumePanelUI : MonoBehaviour
 
         var current = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
         if (ShouldPullSelectionBackToScope(current, navigationRoot))
-            SelectFirstVisibleSelectable(navigationRoot);
+            UINavigationUtility.SelectFirstUsable(navigationRoot);
     }
 
     void RestoreModalSelectableScope()
@@ -801,6 +1228,31 @@ public class VolumePanelUI : MonoBehaviour
         modalScopedSelectables.Clear();
     }
 
+    void RefreshAutomaticNavigationScope(GameObject root)
+    {
+        if (root != automaticNavigationRoot)
+        {
+            RestoreAutomaticNavigationScope();
+            automaticNavigationRoot = root;
+            UINavigationUtility.SuppressEventSystemNavigation();
+            eventSystemNavigationSuppressed = true;
+        }
+
+        UINavigationUtility.SuppressAutomaticNavigation(root, automaticNavigationScope);
+    }
+
+    void RestoreAutomaticNavigationScope()
+    {
+        UINavigationUtility.RestoreAutomaticNavigation(automaticNavigationScope);
+        if (eventSystemNavigationSuppressed)
+        {
+            UINavigationUtility.RestoreEventSystemNavigation();
+            eventSystemNavigationSuppressed = false;
+        }
+
+        automaticNavigationRoot = null;
+    }
+
     bool ShouldPullSelectionBackToScope(GameObject current, GameObject navigationRoot)
     {
         if (!navigationRoot)
@@ -812,8 +1264,7 @@ public class VolumePanelUI : MonoBehaviour
         if (current.transform.IsChildOf(navigationRoot.transform))
             return false;
 
-        var selectable = current.GetComponentInParent<Selectable>();
-        return !selectable || modalScopedSelectables.ContainsKey(selectable);
+        return true;
     }
 
     IEnumerator SelectFirstVisibleControlNextFrame(GameObject root)
@@ -826,16 +1277,17 @@ public class VolumePanelUI : MonoBehaviour
         SelectFirstVisibleSelectable(root);
     }
 
-    void SelectFirstVisibleSelectable(GameObject root)
+    bool SelectFirstVisibleSelectable(GameObject root, bool fromNavigation = false)
     {
         var selectables = GetUsableSelectables(root);
         if (selectables.Count == 0)
-            return;
+            return false;
 
-        SelectSelectable(selectables[0]);
+        SelectSelectable(selectables[0], fromNavigation);
+        return true;
     }
 
-    void SelectRelativeSelectable(GameObject root, int direction)
+    void SelectRelativeSelectable(GameObject root, int direction, bool fromNavigation = false)
     {
         var selectables = GetUsableSelectables(root);
         if (selectables.Count == 0)
@@ -861,7 +1313,7 @@ public class VolumePanelUI : MonoBehaviour
             ? (direction >= 0 ? 0 : selectables.Count - 1)
             : (currentIndex + direction + selectables.Count) % selectables.Count;
 
-        SelectSelectable(selectables[nextIndex]);
+        SelectSelectable(selectables[nextIndex], fromNavigation);
     }
 
     List<Selectable> GetUsableSelectables(GameObject root)
@@ -883,12 +1335,182 @@ public class VolumePanelUI : MonoBehaviour
         return usable;
     }
 
-    void SelectSelectable(Selectable selectable)
+    void SelectSelectable(Selectable selectable, bool fromNavigation = false)
     {
         if (!selectable || !selectable.gameObject.activeInHierarchy || !selectable.interactable || !EventSystem.current)
             return;
 
         EventSystem.current.SetSelectedGameObject(selectable.gameObject);
+
+        if (fromNavigation)
+            navigationSelectionActive = true;
+    }
+
+    void UpdateSelectionArrow()
+    {
+        EnsureSliderSelectionArrow();
+
+        if (!sliderSelectionArrow)
+            return;
+
+        var current = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
+        Slider selectedSlider = current ? current.GetComponentInParent<Slider>() : null;
+        Toggle selectedToggle = current ? current.GetComponentInParent<Toggle>() : null;
+        TMP_Dropdown selectedDropdown = current ? current.GetComponentInParent<TMP_Dropdown>() : null;
+
+        if (!navigationSelectionActive || !current)
+        {
+            SetSliderSelectionArrowVisible(false);
+            return;
+        }
+
+        if (selectedSlider && selectedSlider.gameObject.activeInHierarchy)
+        {
+            PositionSelectionArrow(
+                selectedSlider.handleRect ? selectedSlider.handleRect : selectedSlider.GetComponent<RectTransform>(),
+                new Vector2(0.5f, 1f),
+                new Vector2(0.5f, 0f),
+                new Vector2(0f, sliderSelectionArrowYOffset),
+                0f);
+            return;
+        }
+
+        if (selectedToggle && selectedToggle.gameObject.activeInHierarchy)
+        {
+            PositionSelectionArrow(
+                GetToggleBoxRect(selectedToggle),
+                new Vector2(1f, 0.5f),
+                new Vector2(0.5f, 0.5f),
+                new Vector2(selectionArrowSideOffset, 0f),
+                -90f);
+            return;
+        }
+
+        if (selectedDropdown && selectedDropdown.gameObject.activeInHierarchy)
+        {
+            PositionSelectionArrow(
+                selectedDropdown.GetComponent<RectTransform>(),
+                new Vector2(0f, 0.5f),
+                new Vector2(0.5f, 0.5f),
+                new Vector2(-selectionArrowSideOffset, 0f),
+                90f);
+            return;
+        }
+
+        SetSliderSelectionArrowVisible(false);
+    }
+
+    RectTransform GetToggleBoxRect(Toggle toggle)
+    {
+        if (!toggle)
+            return null;
+
+        if (toggle.targetGraphic)
+            return toggle.targetGraphic.rectTransform;
+
+        if (toggle.graphic)
+            return toggle.graphic.rectTransform;
+
+        return toggle.GetComponent<RectTransform>();
+    }
+
+    void PositionSelectionArrow(
+        RectTransform anchor,
+        Vector2 anchorPosition,
+        Vector2 pivot,
+        Vector2 offset,
+        float zRotation)
+    {
+        if (!anchor)
+        {
+            SetSliderSelectionArrowVisible(false);
+            return;
+        }
+
+        var arrowTransform = sliderSelectionArrow.rectTransform;
+        if (arrowTransform.parent != anchor)
+            arrowTransform.SetParent(anchor, false);
+
+        arrowTransform.anchorMin = anchorPosition;
+        arrowTransform.anchorMax = anchorPosition;
+        arrowTransform.pivot = pivot;
+        arrowTransform.sizeDelta = sliderSelectionArrowSize;
+        arrowTransform.anchoredPosition = offset;
+        arrowTransform.localEulerAngles = new Vector3(0f, 0f, zRotation);
+        arrowTransform.localScale = Vector3.one;
+
+        SetSliderSelectionArrowVisible(true);
+    }
+
+    void EnsureSliderSelectionArrow()
+    {
+        if (sliderSelectionArrow)
+            return;
+
+        var go = new GameObject("SliderSelection_Arrow", typeof(RectTransform), typeof(Image));
+        go.transform.SetParent(transform, false);
+        sliderSelectionArrow = go.GetComponent<Image>();
+        sliderSelectionArrow.raycastTarget = false;
+        sliderSelectionArrow.sprite = GetSliderSelectionArrowSprite();
+        sliderSelectionArrow.color = Color.white;
+        SetSliderSelectionArrowVisible(false);
+    }
+
+    Sprite GetSliderSelectionArrowSprite()
+    {
+        if (sliderSelectionArrowSprite)
+            return sliderSelectionArrowSprite;
+
+        const int width = 20;
+        const int height = 16;
+        var texture = new Texture2D(width, height, TextureFormat.RGBA32, false)
+        {
+            name = "Runtime_RedSliderSelectionArrow",
+            filterMode = FilterMode.Point,
+            wrapMode = TextureWrapMode.Clamp
+        };
+
+        Color clear = new Color(1f, 1f, 1f, 0f);
+        Color red = new Color(1f, 0.04f, 0.02f, 1f);
+        Color edge = new Color(0.35f, 0f, 0f, 1f);
+        float center = (width - 1) * 0.5f;
+
+        for (int y = 0; y < height; y++)
+        {
+            float halfWidth = Mathf.Lerp(1f, center, y / (float)(height - 1));
+            for (int x = 0; x < width; x++)
+            {
+                float distance = Mathf.Abs(x - center);
+                if (distance > halfWidth)
+                {
+                    texture.SetPixel(x, y, clear);
+                    continue;
+                }
+
+                texture.SetPixel(x, y, distance > halfWidth - 1.5f ? edge : red);
+            }
+        }
+
+        texture.Apply();
+        sliderSelectionArrowSprite = Sprite.Create(
+            texture,
+            new Rect(0f, 0f, width, height),
+            new Vector2(0.5f, 0f),
+            100f);
+        sliderSelectionArrowSprite.name = "Runtime_RedSliderSelectionArrow";
+        return sliderSelectionArrowSprite;
+    }
+
+    void SetSliderSelectionArrowVisible(bool visible)
+    {
+        if (sliderSelectionArrow && sliderSelectionArrow.gameObject.activeSelf != visible)
+            sliderSelectionArrow.gameObject.SetActive(visible);
+    }
+
+    static void ClearCurrentSelection()
+    {
+        if (EventSystem.current)
+            EventSystem.current.SetSelectedGameObject(null);
     }
 
     static bool WasTabPressedThisFrame()
@@ -921,6 +1543,25 @@ public class VolumePanelUI : MonoBehaviour
 #endif
 
         return held;
+    }
+
+    static bool WasMousePressedThisFrame()
+    {
+        bool pressed = false;
+
+#if ENABLE_INPUT_SYSTEM
+        var mouse = Mouse.current;
+        pressed |= mouse != null &&
+            (mouse.leftButton.wasPressedThisFrame ||
+             mouse.rightButton.wasPressedThisFrame ||
+             mouse.middleButton.wasPressedThisFrame);
+#endif
+
+#if ENABLE_LEGACY_INPUT_MANAGER
+        pressed |= Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2);
+#endif
+
+        return pressed;
     }
 
     static T FindChildComponent<T>(Transform root, string childName) where T : Component

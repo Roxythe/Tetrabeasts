@@ -345,7 +345,11 @@ public sealed class SteamCloudSaveService : MonoBehaviour
             "SelectedCharacterName",
             "SelectedMonstersCSV",
             "HighScores_v1",
-            "Settings_LanguageCode"
+            "Settings_LanguageCode",
+            "Settings_ControlBindings_KeyboardMouse",
+            "Settings_ControlBindings_XboxController",
+            "Settings_ControlBindings_PlayStationController",
+            "Settings_ControlBindings_HandheldController"
         };
 
         var ints = new HashSet<string>

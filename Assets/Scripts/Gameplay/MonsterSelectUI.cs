@@ -565,6 +565,21 @@ public class MonsterSelectUI : MonoBehaviour
         UIPanelTransition.Hide(gameObject);
     }
 
+    public bool TryCloseFromInput()
+    {
+        if (selected.Count < MinSelect)
+        {
+            if (AudioManager.I && errorSFX)
+                AudioManager.I.PlaySFX(errorSFX);
+
+            RefreshAllUI();
+            return false;
+        }
+
+        ConfirmAndClose();
+        return true;
+    }
+
     static Transform FindDeep(Transform root, string name)
     {
         if (!root) return null;
