@@ -24,7 +24,10 @@ public enum MonsterPassiveType
     StoneBuffDropChance = 3,
     StartingReserveUnits = 4,
     ReserveUnitsRestoredOnWin = 5,
-    AllyMonsterBulwark = 6
+    AllyMonsterBulwark = 6,
+    CurrencyGain = 7,
+    PartyExperienceGain = 8,
+    StoneForager = 9
 }
 
 [CreateAssetMenu(menuName = "Run/Monster Piece", fileName = "NewMonsterPiece")]

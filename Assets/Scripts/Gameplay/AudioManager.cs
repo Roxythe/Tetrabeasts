@@ -68,6 +68,8 @@ public class AudioManager : MonoBehaviour
 
     private AudioSource musicSrc;
     private AudioSource sfxSrc;
+    AudioSource[] sfxOneShotSources;
+    int sfxOneShotSourceIndex;
     AudioSource uiSfxSrc;
     AudioSource uiLoopSfxSrc;
     AudioSource[] specialAbilityLoopSfxSources;
@@ -94,6 +96,7 @@ public class AudioManager : MonoBehaviour
     const string K_Master = "vol_master";
     const string K_Music = "vol_music";
     const string K_SFX = "vol_sfx";
+    const int SfxOneShotSourceCount = 12;
     const int SpecialAbilityLoopSfxLayerCount = 12;
 
     public enum MusicMode { EDM = 0, Metal = 1, Both = 2 }
@@ -108,6 +111,7 @@ public class AudioManager : MonoBehaviour
 
         musicSrc = gameObject.AddComponent<AudioSource>();
         sfxSrc = gameObject.AddComponent<AudioSource>();
+        BuildSfxOneShotSources();
         uiSfxSrc = gameObject.AddComponent<AudioSource>();
         uiLoopSfxSrc = gameObject.AddComponent<AudioSource>();
         specialAbilityLoopSfxSources = new AudioSource[SpecialAbilityLoopSfxLayerCount];
@@ -124,7 +128,6 @@ public class AudioManager : MonoBehaviour
 
         musicSrc.loop = false; // Change manually
         musicSrc.playOnAwake = false;
-        sfxSrc.playOnAwake = false;
 
         uiSfxSrc.ignoreListenerPause = true;
         uiSfxSrc.playOnAwake = false;
@@ -152,10 +155,9 @@ public class AudioManager : MonoBehaviour
         if (sfxGroup) ambienceLoopSrc.outputAudioMixerGroup = sfxGroup;
 
         musicSrc.spatialBlend = 0f;  // 2D
-        sfxSrc.spatialBlend = 0f;
 
         if (musicGroup) musicSrc.outputAudioMixerGroup = musicGroup;
-        if (sfxGroup) sfxSrc.outputAudioMixerGroup = sfxGroup;
+        ApplySfxOneShotSourceSettings();
 
         // Use SettingsStore values
         masterVolume = SettingsStore.LoadMaster();
@@ -190,6 +192,83 @@ public class AudioManager : MonoBehaviour
 
         if (sfxGroup)
             source.outputAudioMixerGroup = sfxGroup;
+    }
+
+    void BuildSfxOneShotSources()
+    {
+        sfxOneShotSources = new AudioSource[SfxOneShotSourceCount];
+        sfxOneShotSources[0] = sfxSrc;
+
+        ConfigureSfxOneShotSource(sfxSrc);
+
+        for (int i = 1; i < sfxOneShotSources.Length; i++)
+        {
+            AudioSource source = gameObject.AddComponent<AudioSource>();
+            ConfigureSfxOneShotSource(source);
+            sfxOneShotSources[i] = source;
+        }
+    }
+
+    void ConfigureSfxOneShotSource(AudioSource source)
+    {
+        if (!source) return;
+
+        source.ignoreListenerPause = false;
+        source.playOnAwake = false;
+        source.loop = false;
+        source.spatialBlend = 0f;
+        source.volume = masterVolume * sfxVolume;
+
+        if (sfxGroup)
+            source.outputAudioMixerGroup = sfxGroup;
+    }
+
+    void ApplySfxOneShotSourceSettings()
+    {
+        if (sfxOneShotSources == null || sfxOneShotSources.Length == 0)
+        {
+            ConfigureSfxOneShotSource(sfxSrc);
+            return;
+        }
+
+        for (int i = 0; i < sfxOneShotSources.Length; i++)
+            ConfigureSfxOneShotSource(sfxOneShotSources[i]);
+    }
+
+    void ApplySfxOneShotSourceVolume()
+    {
+        float volume = masterVolume * sfxVolume;
+
+        if (sfxOneShotSources == null || sfxOneShotSources.Length == 0)
+        {
+            if (sfxSrc) sfxSrc.volume = volume;
+            return;
+        }
+
+        for (int i = 0; i < sfxOneShotSources.Length; i++)
+        {
+            AudioSource source = sfxOneShotSources[i];
+            if (source) source.volume = volume;
+        }
+    }
+
+    AudioSource GetNextSfxOneShotSource()
+    {
+        if (sfxOneShotSources == null || sfxOneShotSources.Length == 0)
+            return sfxSrc;
+
+        int start = sfxOneShotSourceIndex;
+        for (int i = 0; i < sfxOneShotSources.Length; i++)
+        {
+            int index = (start + i) % sfxOneShotSources.Length;
+            AudioSource source = sfxOneShotSources[index];
+            if (!source) continue;
+
+            sfxOneShotSourceIndex = (index + 1) % sfxOneShotSources.Length;
+            return source;
+        }
+
+        return sfxSrc;
     }
 
     void Start()
@@ -236,11 +315,13 @@ public class AudioManager : MonoBehaviour
     public void PlaySFX(AudioClip clip, float vol = 1f, float pitch = 1f, bool jitter = true)
     {
         if (!clip) return;
+        AudioSource source = GetNextSfxOneShotSource();
+        if (!source) return;
+
         float p = pitch;
         if (jitter) p += Random.Range(-sfxPitchJitter, sfxPitchJitter);
-        sfxSrc.pitch = Mathf.Clamp(p, 0.5f, 2f);
-        sfxSrc.PlayOneShot(clip, vol);
-        sfxSrc.pitch = 1f; // Reset
+        source.pitch = Mathf.Clamp(p, 0.5f, 2f);
+        source.PlayOneShot(clip, vol);
     }
 
     public void PlayPreviewSFX()
@@ -272,7 +353,7 @@ public class AudioManager : MonoBehaviour
             mixer.SetFloat("MasterVolume", Mathf.Log10(Mathf.Max(0.0001f, masterVolume)) * 20f);
 
         musicSrc.volume = masterVolume * musicVolume;
-        sfxSrc.volume = masterVolume * sfxVolume;
+        ApplySfxOneShotSourceVolume();
         uiSfxSrc.volume = masterVolume * sfxVolume;
         uiLoopSfxSrc.volume = masterVolume * sfxVolume;
         ApplySpecialAbilityLoopSfxVolume();
@@ -302,7 +383,7 @@ public class AudioManager : MonoBehaviour
         if (mixer && sfxGroup && MixerHasParam("SFXVolume"))
             mixer.SetFloat("SFXVolume", Mathf.Log10(Mathf.Max(0.0001f, sfxVolume)) * 20f);
 
-        sfxSrc.volume = masterVolume * sfxVolume;
+        ApplySfxOneShotSourceVolume();
         uiSfxSrc.volume = masterVolume * sfxVolume;
         uiLoopSfxSrc.volume = masterVolume * sfxVolume;
         ApplySpecialAbilityLoopSfxVolume();

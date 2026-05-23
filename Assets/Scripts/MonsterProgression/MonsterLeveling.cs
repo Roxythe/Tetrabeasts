@@ -6,6 +6,8 @@ public struct MonsterPassiveBonuses
     public float comboDurationSeconds;
     public float bonusComboChance;
     public float stoneBuffDropChance;
+    public float currencyGainMultiplierAdd;
+    public float partyExperienceGainMultiplierAdd;
     public int startingReserveUnits;
     public int reserveUnitsRestoredOnWin;
     public float allyMonsterDamageDoneReduction;
@@ -18,6 +20,8 @@ public struct MonsterPassiveBonuses
             comboDurationSeconds = a.comboDurationSeconds + b.comboDurationSeconds,
             bonusComboChance = a.bonusComboChance + b.bonusComboChance,
             stoneBuffDropChance = a.stoneBuffDropChance + b.stoneBuffDropChance,
+            currencyGainMultiplierAdd = a.currencyGainMultiplierAdd + b.currencyGainMultiplierAdd,
+            partyExperienceGainMultiplierAdd = a.partyExperienceGainMultiplierAdd + b.partyExperienceGainMultiplierAdd,
             startingReserveUnits = a.startingReserveUnits + b.startingReserveUnits,
             reserveUnitsRestoredOnWin = a.reserveUnitsRestoredOnWin + b.reserveUnitsRestoredOnWin,
             allyMonsterDamageDoneReduction = a.allyMonsterDamageDoneReduction + b.allyMonsterDamageDoneReduction,
@@ -71,6 +75,18 @@ public static class MonsterPassiveSystem
                 bonuses.allyMonsterDamageDoneReduction = reduction;
                 bonuses.allyMonsterDamageTakenReduction = reduction;
                 break;
+
+            case MonsterPassiveType.CurrencyGain:
+                bonuses.currencyGainMultiplierAdd = GetCurrencyGainBonus(level);
+                break;
+
+            case MonsterPassiveType.PartyExperienceGain:
+                bonuses.partyExperienceGainMultiplierAdd = GetPartyExperienceGainBonus(level);
+                break;
+
+            case MonsterPassiveType.StoneForager:
+                bonuses.stoneBuffDropChance = GetStoneForagerBuffDropChance(level);
+                break;
         }
 
         return bonuses;
@@ -92,6 +108,8 @@ public static class MonsterPassiveSystem
 
         total.bonusComboChance = Mathf.Clamp01(total.bonusComboChance);
         total.stoneBuffDropChance = Mathf.Clamp(total.stoneBuffDropChance, 0f, 1f);
+        total.currencyGainMultiplierAdd = Mathf.Max(0f, total.currencyGainMultiplierAdd);
+        total.partyExperienceGainMultiplierAdd = Mathf.Max(0f, total.partyExperienceGainMultiplierAdd);
         total.allyMonsterDamageDoneReduction = Mathf.Clamp01(total.allyMonsterDamageDoneReduction);
         total.allyMonsterDamageTakenReduction = Mathf.Clamp01(total.allyMonsterDamageTakenReduction);
         return total;
@@ -115,6 +133,12 @@ public static class MonsterPassiveSystem
                 return TetrabeastsLocalization.LocalizeText("Reserve Recovery");
             case MonsterPassiveType.AllyMonsterBulwark:
                 return TetrabeastsLocalization.LocalizeText("Bulwark Aura");
+            case MonsterPassiveType.CurrencyGain:
+                return TetrabeastsLocalization.LocalizeText("Treasure Aura");
+            case MonsterPassiveType.PartyExperienceGain:
+                return TetrabeastsLocalization.LocalizeText("Shared Wisdom");
+            case MonsterPassiveType.StoneForager:
+                return TetrabeastsLocalization.LocalizeText("Terra's Blessing");
             default:
                 return "";
         }
@@ -139,6 +163,12 @@ public static class MonsterPassiveSystem
                 return TetrabeastsLocalization.LocalizeFormat("Increase the number of reserve units restored on round win by {0}.", GetReserveUnitsRestoredOnWin(level));
             case MonsterPassiveType.AllyMonsterBulwark:
                 return TetrabeastsLocalization.LocalizeFormat("Decrease damage taken and damage done for all ally monster units by {0}.", FormatPercent(GetBulwarkReduction(level)));
+            case MonsterPassiveType.CurrencyGain:
+                return TetrabeastsLocalization.LocalizeFormat("Increase all currency gained by {0}.", FormatPercent(GetCurrencyGainBonus(level)));
+            case MonsterPassiveType.PartyExperienceGain:
+                return TetrabeastsLocalization.LocalizeFormat("Increase EXP gained by all party members by {0}.", FormatPercent(GetPartyExperienceGainBonus(level)));
+            case MonsterPassiveType.StoneForager:
+                return TetrabeastsLocalization.LocalizeFormat("Increase chance of buff drop from stone obstacle destruction by {0}.", FormatPercent(GetStoneForagerBuffDropChance(level)));
             default:
                 return "";
         }
@@ -225,6 +255,21 @@ public static class MonsterPassiveSystem
     static float GetBulwarkReduction(int level)
     {
         return 0.05f + (GetPassiveTierIndex(level) * 0.05f);
+    }
+
+    static float GetCurrencyGainBonus(int level)
+    {
+        return 0.05f + (GetPassiveTierIndex(level) * 0.05f);
+    }
+
+    static float GetPartyExperienceGainBonus(int level)
+    {
+        return 0.05f + (GetPassiveTierIndex(level) * 0.05f);
+    }
+
+    static float GetStoneForagerBuffDropChance(int level)
+    {
+        return 0.02f + (GetPassiveTierIndex(level) * 0.01f);
     }
 
     static string FormatPercent(float value)

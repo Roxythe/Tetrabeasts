@@ -282,8 +282,10 @@ public class GameplayStatsPanelUI : MonoBehaviour
             higherIsBetter: false, sources: SourcesFor(starDifficulty: gc.CurrentStarDifficulty > 0));
         AddComparedFloat(_statsContent, "Score Gain", stars.scoreGainMultiplier, 1f, FormatMultiplier, FormatSignedPercentDelta,
             higherIsBetter: true, sources: SourcesFor(starDifficulty: gc.CurrentStarDifficulty > 0));
-        AddComparedFloat(_statsContent, "EXP Gain", stars.expGainMultiplier, 1f, FormatMultiplier, FormatSignedPercentDelta,
-            higherIsBetter: true, sources: SourcesFor(starDifficulty: gc.CurrentStarDifficulty > 0));
+        AddComparedFloat(_statsContent, "EXP Gain", stars.expGainMultiplier * gc.CurrentPartyExperienceGainMultiplierForStats, 1f,
+            FormatMultiplier, FormatSignedPercentDelta, higherIsBetter: true,
+            sources: SourcesFor(passive: passives.partyExperienceGainMultiplierAdd > Epsilon,
+                starDifficulty: gc.CurrentStarDifficulty > 0));
         AddTextStat(_statsContent, "Level Modifier", levelModifier ? levelModifier.displayName : "None",
             levelModifier ? negativeColor : unchangedColor,
             sources: SourcesFor(levelMod: levelModifier != null));
@@ -300,14 +302,16 @@ public class GameplayStatsPanelUI : MonoBehaviour
                 runModStats: new[] { RunModStat.ReserveUnitsRestoredOnWinAdd, RunModStat.DisableRoundWinReserveRestore }));
         AddComparedFloat(_statsContent, "Round Win Currency", gc.CurrentRoundWinCurrencyForStats, gc.BaseCurrencyPerRoundWinForStats,
             FormatWhole, FormatSignedWhole, higherIsBetter: true,
-            sources: SourcesFor(runModStats: new[] { RunModStat.CurrencyPerRoundWin }));
+            sources: SourcesFor(passive: passives.currencyGainMultiplierAdd > Epsilon,
+                runModStats: new[] { RunModStat.CurrencyPerRoundWin }));
         AddComparedFloat(_statsContent, "Line Clear Currency Chance", gc.EffectiveCurrencyChancePerClearedRowForStats,
             gc.BaseCurrencyChancePerClearedRowForStats, FormatPercent, FormatSignedPercentDelta, higherIsBetter: true,
             sources: SourcesFor(shopBuff: ShopBuffEffects.GoldChanceBonus > Epsilon,
                 runModStats: new[] { RunModStat.LineClearCurrencyChanceAdd }));
-        AddComparedFloat(_statsContent, "Line Clear Currency Amount", gc.lineClearCurrencyAmountMult, 1f,
+        AddComparedFloat(_statsContent, "Line Clear Currency Amount", gc.LineClearCurrencyAmountMultiplierForStats, 1f,
             FormatMultiplier, FormatSignedPercentDelta, higherIsBetter: true,
-            sources: SourcesFor(runModStats: new[] { RunModStat.LineClearCurrencyAmountMult }));
+            sources: SourcesFor(passive: passives.currencyGainMultiplierAdd > Epsilon,
+                runModStats: new[] { RunModStat.LineClearCurrencyAmountMult }));
 
         AddSection(_statsContent, "Monster Combat");
         AddComparedFloat(_statsContent, "Monster Damage", gc.MonsterDamageOutputMultiplierForStats, 1f,
@@ -353,6 +357,12 @@ public class GameplayStatsPanelUI : MonoBehaviour
         AddComparedFloat(_statsContent, "Round Win Reserve Passive", passives.reserveUnitsRestoredOnWin, 0f,
             FormatSignedWhole, FormatSignedWhole, higherIsBetter: true,
             sources: SourcesFor(passive: passives.reserveUnitsRestoredOnWin != 0));
+        AddComparedFloat(_statsContent, "Currency Gain Passive", passives.currencyGainMultiplierAdd, 0f,
+            FormatPercent, FormatSignedPercentDelta, higherIsBetter: true,
+            sources: SourcesFor(passive: passives.currencyGainMultiplierAdd > Epsilon));
+        AddComparedFloat(_statsContent, "Party EXP Passive", passives.partyExperienceGainMultiplierAdd, 0f,
+            FormatPercent, FormatSignedPercentDelta, higherIsBetter: true,
+            sources: SourcesFor(passive: passives.partyExperienceGainMultiplierAdd > Epsilon));
 
         AddSection(_statsContent, "Enemy");
         AddComparedFloat(_statsContent, "Enemy Castle HP", gc.enemyCastleHpMult * stars.enemyHealthMultiplier, 1f,

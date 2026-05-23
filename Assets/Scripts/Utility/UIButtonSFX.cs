@@ -66,7 +66,7 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerDownHand
         if (AudioManager.I && clickClip)
             AudioManager.I.PlayUISFX(clickClip, vol: clickVolume);
 
-        StartCoroutine(ClearSelectionAfterKeyboardMouseClick());
+        ClearSelectionAfterKeyboardMouseClick();
     }
 
     void PlayHoverSFX()
@@ -86,16 +86,24 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerDownHand
         AudioManager.I.PlayUISFX(hoverClip, vol: hoverVolume);
     }
 
-    System.Collections.IEnumerator ClearSelectionAfterKeyboardMouseClick()
+    void ClearSelectionAfterKeyboardMouseClick()
     {
         if (!clearSelectionOnKeyboardMouseClick)
-            yield break;
+            return;
 
         if (TetrabeastsControls.EffectiveProfile != TetrabeastsControlProfile.KeyboardMouse)
-            yield break;
+            return;
 
         ClearCurrentSelection();
 
+        if (!isActiveAndEnabled || !gameObject.activeInHierarchy)
+            return;
+
+        StartCoroutine(ClearSelectionAgainNextFrame());
+    }
+
+    System.Collections.IEnumerator ClearSelectionAgainNextFrame()
+    {
         yield return null;
 
         ClearCurrentSelection();

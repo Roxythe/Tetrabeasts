@@ -24830,6 +24830,11 @@ MonoBehaviour:
   maxSpecialChance: 0.25
   projectileRoot: {fileID: 304730603}
   projectileSpeed: 1000
+  attackExplosionPrefabs:
+  - {fileID: 5654528781081035838, guid: 44a7be546a8faad468a28ee5e3dc3a88, type: 3}
+  - {fileID: 8273399797428033530, guid: 54eb03e9ec236f548a866a4b1c08ad58, type: 3}
+  - {fileID: 8100660416183401501, guid: 8ccec66c72762e74d9a66a0baed634d2, type: 3}
+  - {fileID: 1401769373296664743, guid: aa131b7d08ce2cb44ac0e44aad4a64dc, type: 3}
   minBagPieces: 2
   forceOneSpecialPerRefill: 0
   castleAttackInterval: 3

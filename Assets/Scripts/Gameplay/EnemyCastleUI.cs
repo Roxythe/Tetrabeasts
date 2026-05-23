@@ -151,18 +151,17 @@ public class EnemyCastleUI : MonoBehaviour
     {
         if (dmg <= 0 || sourceData == null) return 0;
 
-        if (_invulnerable)
+        if (_magicShield)
+        {
+            if (AudioManager.I && sourceData.bossPylonReducedHitSFX)
+                AudioManager.I.PlaySFX(sourceData.bossPylonReducedHitSFX);
+        }
+        else if (_invulnerable)
         {
             // Play special invuln hit SFX (different from normal)
             if (AudioManager.I && sourceData.bossInvulnHitSFX)
                 AudioManager.I.PlaySFX(sourceData.bossInvulnHitSFX);
             return 0;
-        }
-
-        if (_magicShield)
-        {
-            if (AudioManager.I && sourceData.bossPylonReducedHitSFX)
-                AudioManager.I.PlaySFX(sourceData.bossPylonReducedHitSFX);
         }
 
         if (_infiniteHealth)

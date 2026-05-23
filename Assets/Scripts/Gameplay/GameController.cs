@@ -203,6 +203,7 @@ public class GameController : MonoBehaviour
     [Header("Projectiles")]
     public RectTransform projectileRoot;
     public float projectileSpeed = 800f;
+    public GameObject[] attackExplosionPrefabs;
 
     [Header("Bag Settings")]
     public int minBagPieces = 2;
@@ -360,6 +361,8 @@ public class GameController : MonoBehaviour
     int CurrentReinforcementsPerWin => disableRoundWinReserveRestore ? 0 : Mathf.Max(0, reinforcementsPerWin + _partyPassiveBonuses.reserveUnitsRestoredOnWin + reserveUnitsRestoredOnWinAdd);
     float AllyMonsterOutgoingDamageMultiplier => Mathf.Max(0f, 1f - _partyPassiveBonuses.allyMonsterDamageDoneReduction);
     public float AllyMonsterDamageTakenMultiplier => Mathf.Max(0f, 1f - _partyPassiveBonuses.allyMonsterDamageTakenReduction);
+    float CurrentCurrencyGainMultiplier => Mathf.Max(0f, 1f + _partyPassiveBonuses.currencyGainMultiplierAdd);
+    float CurrentPartyExperienceGainMultiplier => Mathf.Max(0f, 1f + _partyPassiveBonuses.partyExperienceGainMultiplierAdd);
 
     float EffectivePieceGravityMult =>
     Mathf.Max(0.01f, pieceGravityMult) *
@@ -462,6 +465,9 @@ public class GameController : MonoBehaviour
     public float BaseComboWindowSecondsForStats => _baseGameplayStatsCached ? _baseComboWindowSeconds : comboWindowSeconds;
     public float CurrentStoneBuffDropChanceForStats => CurrentStoneBuffDropChance;
     public float BaseStoneBuffDropChanceForStats => _baseGameplayStatsCached ? _baseStoneBuffDropChance : stoneBuffDropChance;
+    public float CurrentCurrencyGainMultiplierForStats => CurrentCurrencyGainMultiplier;
+    public float CurrentPartyExperienceGainMultiplierForStats => CurrentPartyExperienceGainMultiplier;
+    public float LineClearCurrencyAmountMultiplierForStats => lineClearCurrencyAmountMult * CurrentCurrencyGainMultiplier;
     public float EffectivePieceGravityMultForStats => EffectivePieceGravityMult;
     public float EffectiveFallRampRateMultForStats => EffectiveFallRampRateMult;
     public bool BossGravityActiveForStats => _bossGravityBonusActive > 0.0001f;
@@ -2077,7 +2083,7 @@ public class GameController : MonoBehaviour
 
                 if (Random.value <= chance)
                 {
-                    int amount = Mathf.Max(1, Mathf.RoundToInt(1f * lineClearCurrencyAmountMult));
+                    int amount = Mathf.Max(1, Mathf.RoundToInt(1f * lineClearCurrencyAmountMult * CurrentCurrencyGainMultiplier));
                     CurrencyStore.Add(amount);
 
                     if (PlayerProgress.I && amount > 0) // Track total gold earned for achievements
@@ -2104,7 +2110,7 @@ public class GameController : MonoBehaviour
                     if (AudioManager.I && sfxCurrencyLineGain)
                         AudioManager.I.PlaySFX(sfxCurrencyLineGain);
 
-                    ShowCurrencyPopup(start, +1);
+                    ShowCurrencyPopup(start, amount);
                 }
             }
         }
@@ -3500,7 +3506,10 @@ public class GameController : MonoBehaviour
     {
         if (!sprite)
         {
-            ApplyCastleAttackDamage(damage, attackerMD, null);
+            RectTransform impactRoot = projectileRoot ? projectileRoot : (gameBoard ? gameBoard.gridRoot : null);
+            AudioClip fallbackImpactClip = attackerMD ? attackerMD.PickRandomAttackSFX() : null;
+            ApplyCastleAttackDamage(damage, attackerMD, fallbackImpactClip, impactRoot, targetAnchored);
+            SpawnAttackExplosion(impactRoot, targetAnchored);
             return;
         }
 
@@ -3619,11 +3628,96 @@ public class GameController : MonoBehaviour
         {
             rt.anchoredPosition = targetAnchored;
             impactPosition = rt.anchoredPosition;
-            Destroy(rt.gameObject);
         }
 
-        if (ApplyCastleAttackDamage(damage, attackerMD, impactClip, impactRoot, impactPosition))
+        bool impactEndedLevel = ApplyCastleAttackDamage(damage, attackerMD, impactClip, impactRoot, impactPosition);
+
+        if (rt)
+            Destroy(rt.gameObject);
+
+        SpawnAttackExplosion(impactRoot, impactPosition);
+
+        if (impactEndedLevel)
             yield break;
+    }
+
+    void SpawnAttackExplosion(RectTransform parent, Vector2 anchoredPosition)
+    {
+        if (!parent || attackExplosionPrefabs == null || attackExplosionPrefabs.Length == 0)
+            return;
+
+        GameObject prefab = PickRandomAttackExplosionPrefab();
+        if (!prefab)
+            return;
+
+        GameObject go = Instantiate(prefab, parent, false);
+
+        foreach (var graphic in go.GetComponentsInChildren<Graphic>(true))
+            graphic.raycastTarget = false;
+
+        if (go.transform is RectTransform rt)
+        {
+            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.anchoredPosition = anchoredPosition;
+
+            if (gameBoard)
+                rt.sizeDelta = gameBoard.GetCellSize();
+        }
+        else
+        {
+            go.transform.localPosition = new Vector3(anchoredPosition.x, anchoredPosition.y, 0f);
+        }
+
+        Animator animator = go.GetComponent<Animator>();
+        if (animator)
+        {
+            animator.Rebind();
+            animator.Update(0f);
+            StartCoroutine(DestroyAttackExplosionAfterAnimation(go, animator));
+        }
+        else
+        {
+            Destroy(go, 0.5f);
+        }
+    }
+
+    GameObject PickRandomAttackExplosionPrefab()
+    {
+        for (int tries = 0; tries < 12; tries++)
+        {
+            GameObject prefab = attackExplosionPrefabs[Random.Range(0, attackExplosionPrefabs.Length)];
+            if (prefab) return prefab;
+        }
+
+        for (int i = 0; i < attackExplosionPrefabs.Length; i++)
+        {
+            if (attackExplosionPrefabs[i]) return attackExplosionPrefabs[i];
+        }
+
+        return null;
+    }
+
+    IEnumerator DestroyAttackExplosionAfterAnimation(GameObject instance, Animator animator)
+    {
+        float duration = 0f;
+
+        if (animator && animator.runtimeAnimatorController)
+        {
+            AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
+            for (int i = 0; i < clips.Length; i++)
+            {
+                if (clips[i])
+                    duration = Mathf.Max(duration, clips[i].length);
+            }
+        }
+
+        if (duration <= 0.01f)
+            duration = 0.5f;
+
+        yield return new WaitForSeconds(duration + 0.05f);
+
+        if (instance)
+            Destroy(instance);
     }
 
     bool ApplyCastleAttackDamage(int damage, MonsterData attackerMD, AudioClip impactClip,
@@ -3634,8 +3728,9 @@ public class GameController : MonoBehaviour
 
         int originalDamage = damage;
 
-        if (AudioManager.I && impactClip)
-            AudioManager.I.PlaySFX(impactClip);
+        AudioClip resolvedImpactClip = impactClip ? impactClip : (attackerMD ? attackerMD.PickRandomAttackSFX() : null);
+        if (AudioManager.I && resolvedImpactClip)
+            AudioManager.I.PlaySFX(resolvedImpactClip);
 
         bool pylonsAlive = gameBoard && gameBoard.CountObstaclesOfType(Board.ObstacleType.MagicPylon) > 0;
         if (pylonsAlive)
@@ -4481,7 +4576,7 @@ public class GameController : MonoBehaviour
     int GetRoundWinCurrency()
     {
         int baseAmt = currencyPerRoundWin; // Base is inspector value
-        float raw = (baseAmt + currencyPerRoundWinAdd) * currencyPerRoundWinMult; // Apply run mods
+        float raw = (baseAmt + currencyPerRoundWinAdd) * currencyPerRoundWinMult * CurrentCurrencyGainMultiplier; // Apply run mods and passives
 
         return Mathf.Max(0, Mathf.RoundToInt(raw)); // Round and clamp
     }
@@ -6599,6 +6694,8 @@ public class GameController : MonoBehaviour
         int totalBeforeDifficulty = baseXp + bonusBucket;
         int difficultyBonus = Mathf.RoundToInt(totalBeforeDifficulty * (_starDifficultyModifiers.expGainMultiplier - 1f));
         int totalBeforeReduction = Mathf.Max(0, totalBeforeDifficulty + difficultyBonus);
+        int partyPassiveBonus = Mathf.RoundToInt(totalBeforeReduction * (CurrentPartyExperienceGainMultiplier - 1f));
+        totalBeforeReduction = Mathf.Max(0, totalBeforeReduction + partyPassiveBonus);
 
         var roster = GetActiveMonsterRoster();
         var perMonster = new Dictionary<string, float>();
@@ -6637,6 +6734,7 @@ public class GameController : MonoBehaviour
                 obstacleBonus = obstacleBonus,
                 difficultyStars = _starDifficulty,
                 difficultyBonus = difficultyBonus,
+                partyPassiveBonus = partyPassiveBonus,
                 totalBeforeDifficulty = totalBeforeDifficulty,
                 totalBeforeReduction = totalBeforeReduction
             },

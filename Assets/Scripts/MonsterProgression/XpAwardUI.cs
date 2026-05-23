@@ -26,6 +26,7 @@ public class XpAwardUI : MonoBehaviour
 
         public int difficultyStars;
         public int difficultyBonus;
+        public int partyPassiveBonus;
         public int totalBeforeDifficulty;
         public int totalBeforeReduction;
     }
@@ -319,7 +320,7 @@ public class XpAwardUI : MonoBehaviour
     {
         int unitsLost = Mathf.Max(0, b.startReserve - b.endReserve);
 
-        return new List<BreakdownLine>
+        var rows = new List<BreakdownLine>
         {
             new BreakdownLine(TetrabeastsLocalization.LocalizeText("Base Level XP"), b.baseXp),
             new BreakdownLine(TetrabeastsLocalization.LocalizeFormat("Clear time {0}", FormatClearTime(b.levelClearTime)), b.clearTimeBonus),
@@ -328,6 +329,11 @@ public class XpAwardUI : MonoBehaviour
             new BreakdownLine(TetrabeastsLocalization.LocalizeFormat("Obstacles Cleared {0}", b.obstacleBonus), b.obstacleBonus),
             new BreakdownLine(TetrabeastsLocalization.LocalizeFormat("Star Difficulty ({0}):", b.difficultyStars), b.difficultyBonus)
         };
+
+        if (b.partyPassiveBonus != 0)
+            rows.Add(new BreakdownLine(TetrabeastsLocalization.LocalizeText("Party Passive EXP"), b.partyPassiveBonus));
+
+        return rows;
     }
 
     string BuildBreakdownLabels(RoundXpBreakdown b)

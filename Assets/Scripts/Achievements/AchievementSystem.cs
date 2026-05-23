@@ -182,8 +182,7 @@ public static class AchievementSystem
 
         Add(Ach.AllCharsUnlocked, Scope.LifetimeInt, Stat.CharactersUnlocked, 4); // Number of unlockable Commanders 
 
-        // Monster total varies by roster count
-        Add(Ach.AllMonstersUnlocked, Scope.LifetimeInt, Stat.MonstersUnlocked, 4); // Number of unlockable monsters
+        Add(Ach.AllMonstersUnlocked, Scope.LifetimeInt, Stat.MonstersUnlocked, 9);
 
         Add(Ach.Skins_5, Scope.LifetimeInt, Stat.SkinsUnlocked, 5);
         Add(Ach.Skins_10, Scope.LifetimeInt, Stat.SkinsUnlocked, 10);

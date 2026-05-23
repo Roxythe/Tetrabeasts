@@ -15,7 +15,7 @@ MonoBehaviour:
   monsterName: Sherry
   portrait: {fileID: -1704313008493716336, guid: 5f1b56746843ab648ae7aefea3471a42, type: 3}
   monsterDescription: Self-acclaimed legendary healer, probably not a charlatan...maybe.
-  passiveType: 0
+  passiveType: 8
   role: 2
   startsLocked: 1
   unlockCost: 150
@@ -33,7 +33,7 @@ MonoBehaviour:
   weightedSpawnRate: 1
   healAmount: 5
   healRange: 2
-  healSpeed: 3
+  healSpeed: 4.5
   specialGaugeGain: 3
   attackAnim: 1
   attackSprite: {fileID: 21300000, guid: 01dd16c9a0e680943a460eb9dbf6f684, type: 3}
