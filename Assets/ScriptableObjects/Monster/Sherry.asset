@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb8a4948cc13aaa4fa2dab935dc7542b, type: 3}
+  m_Name: Sherry
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterData
+  monsterName: Sherry
+  portrait: {fileID: -1704313008493716336, guid: 5f1b56746843ab648ae7aefea3471a42, type: 3}
+  monsterDescription: Self-acclaimed legendary healer, probably not a charlatan...maybe.
+  passiveType: 0
+  role: 2
+  startsLocked: 1
+  unlockCost: 150
+  skinPortraits:
+  - {fileID: -1704313008493716336, guid: 5f1b56746843ab648ae7aefea3471a42, type: 3}
+  - {fileID: 1679679927638894718, guid: 16632027aa51a234faa9372375268f81, type: 3}
+  - {fileID: 5291467264600716302, guid: 0946a138659af2347b0eb8633c98aae7, type: 3}
+  - {fileID: 1752767081735056035, guid: 636b218c38d044747910eb115b628705, type: 3}
+  - {fileID: -5385198158297047415, guid: c65e30af750e1bf479d74ee4715f95e1, type: 3}
+  skinCosts: 0000000064000000640000006400000064000000
+  maxHealth: 10
+  minHealth: 0
+  currentHealth: 10
+  attackPower: 0.5
+  weightedSpawnRate: 1
+  healAmount: 5
+  healRange: 2
+  healSpeed: 3
+  specialGaugeGain: 3
+  attackAnim: 1
+  attackSprite: {fileID: 21300000, guid: 01dd16c9a0e680943a460eb9dbf6f684, type: 3}
+  attackSpriteAlt: {fileID: 21300000, guid: 5aa426aa4f52fe44ba279921fda22487, type: 3}
+  skinAttackSprites:
+  - {fileID: 21300000, guid: 01dd16c9a0e680943a460eb9dbf6f684, type: 3}
+  - {fileID: 21300000, guid: c82e4a8c461a65444a7a296e0b8220f8, type: 3}
+  - {fileID: 21300000, guid: 27b4c78c979e7924786c55fb2075e1cf, type: 3}
+  - {fileID: 21300000, guid: 171d0898e3c06aa44b877d45f059cb3c, type: 3}
+  - {fileID: 21300000, guid: e1f6875401259044d8b2c74f0891d433, type: 3}
+  skinAttackSpritesAlt:
+  - {fileID: 21300000, guid: 5aa426aa4f52fe44ba279921fda22487, type: 3}
+  - {fileID: 21300000, guid: 29b36d5cd2ec25b42baf10b032cd7061, type: 3}
+  - {fileID: 21300000, guid: 94e59a29b8a4a8f41a25bb7e2a37589f, type: 3}
+  - {fileID: 21300000, guid: e25641bad948d244cb386b847b46fa1b, type: 3}
+  - {fileID: 21300000, guid: 773b77195efd7564b8a24607960bcda1, type: 3}
+  healSprite: {fileID: 21300000, guid: dc6ff6b0cfcef97419f4edc308db832a, type: 3}
+  attackToggleInterval: 0.08
+  spinDegreesPerSecond: 720
+  sfxHeal: {fileID: 8300000, guid: 34353f397d51cb0439d343c0fe9f0090, type: 3}
+  sfxHealClips:
+  - {fileID: 8300000, guid: 34353f397d51cb0439d343c0fe9f0090, type: 3}
+  - {fileID: 8300000, guid: 107b1cbc0bffe3f41947955a4d8b954a, type: 3}
+  - {fileID: 8300000, guid: 438cd4940a0c5b24abc3f87151ce5ab8, type: 3}
+  - {fileID: 8300000, guid: bc31d365dc5eea64bb7de00a218d259e, type: 3}
+  sfxAttack: {fileID: 8300000, guid: ebbc786614ed4ce40a6c4b8dd7150231, type: 3}
+  sfxAttackClips:
+  - {fileID: 8300000, guid: 41b3f34a39795c945a3ba5cc14bb02b9, type: 3}
+  - {fileID: 8300000, guid: e93d0aeabb7cc5d4d8b70ff71393aaf2, type: 3}
+  - {fileID: 8300000, guid: ebbc786614ed4ce40a6c4b8dd7150231, type: 3}
