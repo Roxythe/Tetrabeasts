@@ -99,6 +99,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
     Color _modNameBaseColor = Color.white;
     Color _modNameShadowBaseColor = Color.white;
     Coroutine _modNameAnimCR;
+    ScopedMenuNavigator _navigator;
 
     public LevelModifierSO CurrentChosenModifier => _currentChosenModifier;
     public RectTransform TutorialTarget => root ? root : transform as RectTransform;
@@ -175,6 +176,8 @@ public class LevelModifierSelectionUI : MonoBehaviour
         for (int i = 0; i < _columns.Count; i++)
             PopulateColumn(_columns[i], sprites, chosen.icon);
 
+        RefreshMenuNavigation(selectFirst: true);
+
         yield return new WaitUntil(() => _spinClicked);
 
         if (leverButton)
@@ -197,6 +200,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
             _rerollClicked = false;
 
             RefreshRerollUI(GetAvailableRerolls(getAvailableRerolls), showButton: true, rerollHandler);
+            RefreshMenuNavigation(selectFirst: true);
 
             bool shouldSpinAgain = false;
             while (!_continueClicked)
@@ -245,16 +249,25 @@ public class LevelModifierSelectionUI : MonoBehaviour
         StopModNameAnimation();
 
         ResetSlotMachineLights();
+        DisableMenuNavigation();
         UIPanelTransition.Hide(root.gameObject);
     }
 
     void OnDisable()
     {
+        DisableMenuNavigation();
         ResetSlotMachineLights();
     }
 
     void Update()
     {
+        if (modifierInfoPanel && UIPanelTransition.IsVisible(modifierInfoPanel) &&
+            TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuCancel))
+        {
+            OnCloseInfoClicked();
+            return;
+        }
+
         if (!leverArrowVisual || !leverArrowVisual.gameObject.activeSelf)
             return;
 
@@ -581,13 +594,19 @@ public class LevelModifierSelectionUI : MonoBehaviour
     void OnModifierInfoClicked()
     {
         if (modifierInfoPanel)
+        {
             UIPanelTransition.Show(modifierInfoPanel);
+            RefreshMenuNavigation(selectFirst: true);
+        }
     }
 
     void OnCloseInfoClicked()
     {
         if (modifierInfoPanel)
+        {
             UIPanelTransition.Hide(modifierInfoPanel);
+            RefreshMenuNavigation(selectFirst: true);
+        }
     }
 
     void PopulateModifierInfoPanel(LevelModifierSO modifier)
@@ -690,6 +709,36 @@ public class LevelModifierSelectionUI : MonoBehaviour
 
         rerollButton.gameObject.SetActive(showButton);
         rerollButton.interactable = showButton && rerollHandler != null && clampedRerolls > 0;
+    }
+
+    void RefreshMenuNavigation(bool selectFirst)
+    {
+        if (!root || !root.gameObject.activeInHierarchy)
+            return;
+
+        GameObject navigationRoot = GetMenuNavigationRoot();
+        if (!navigationRoot)
+            return;
+
+        if (!_navigator)
+            _navigator = ScopedMenuNavigator.Attach(root.gameObject, navigationRoot);
+
+        _navigator.SetNavigationRoot(navigationRoot, selectFirst);
+        _navigator.enabled = true;
+    }
+
+    GameObject GetMenuNavigationRoot()
+    {
+        if (modifierInfoPanel && UIPanelTransition.IsVisible(modifierInfoPanel))
+            return modifierInfoPanel;
+
+        return root ? root.gameObject : gameObject;
+    }
+
+    void DisableMenuNavigation()
+    {
+        if (_navigator)
+            _navigator.enabled = false;
     }
 
     static int GetAvailableRerolls(Func<int> getAvailableRerolls)

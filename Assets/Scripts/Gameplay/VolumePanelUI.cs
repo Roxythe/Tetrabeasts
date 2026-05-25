@@ -769,6 +769,7 @@ public class VolumePanelUI : MonoBehaviour
     void BeginRebind(TetrabeastsControlAction action)
     {
         CancelRebindCapture();
+        RememberCurrentSelection(controlsPanelRoot);
         rebindingAction = action;
         RefreshControlsRows();
         ClearCurrentSelection();
@@ -791,7 +792,13 @@ public class VolumePanelUI : MonoBehaviour
                 FinishRebindCapture();
 
                 if (!cancelled && binding.IsValid)
+                {
                     TryApplyCapturedBinding(profile, action, binding);
+                }
+                else
+                {
+                    SelectFirstVisibleSelectable(controlsPanelRoot, true);
+                }
 
                 yield break;
             }
@@ -810,14 +817,20 @@ public class VolumePanelUI : MonoBehaviour
                 {
                     TetrabeastsControls.ClearActionBinding(profile, conflictAction);
                     TetrabeastsControls.SetActionBinding(profile, action, binding);
-                    RefreshControlsPanel();
+                    RefreshControlsPanelAndRestoreSelection();
                 },
-                RefreshControlsPanel);
+                RefreshControlsPanelAndRestoreSelection);
             return;
         }
 
         TetrabeastsControls.SetActionBinding(profile, action, binding);
+        RefreshControlsPanelAndRestoreSelection();
+    }
+
+    void RefreshControlsPanelAndRestoreSelection()
+    {
         RefreshControlsPanel();
+        SelectFirstVisibleSelectable(controlsPanelRoot, true);
     }
 
     void FinishRebindCapture()
@@ -925,7 +938,7 @@ public class VolumePanelUI : MonoBehaviour
         RefreshModalSelectableScope();
 
         if (!instant)
-            SelectSelectable(controlsButton);
+            SelectSelectable(controlsButton, UICursorController.IsButtonNavigationMode);
     }
 
     void ShowUnboundControlsWarning(TetrabeastsControlProfile profile, System.Action onConfirm)
@@ -1505,13 +1518,7 @@ public class VolumePanelUI : MonoBehaviour
         if (!navigationRoot)
             return false;
 
-        if (!current)
-            return true;
-
-        if (current.transform.IsChildOf(navigationRoot.transform))
-            return false;
-
-        return true;
+        return !UINavigationUtility.IsSelectionUsableInside(current, navigationRoot);
     }
 
     IEnumerator SelectFirstVisibleControlNextFrame(GameObject root)
@@ -1526,11 +1533,13 @@ public class VolumePanelUI : MonoBehaviour
 
     bool SelectFirstVisibleSelectable(GameObject root, bool fromNavigation = false)
     {
-        var selectables = GetUsableSelectables(root);
-        if (selectables.Count == 0)
+        bool selected = UINavigationUtility.SelectFirstUsable(root);
+        if (!selected)
             return false;
 
-        SelectSelectable(selectables[0], fromNavigation);
+        if (fromNavigation)
+            navigationSelectionActive = true;
+
         return true;
     }
 
@@ -1573,7 +1582,7 @@ public class VolumePanelUI : MonoBehaviour
         for (int i = 0; i < selectables.Length; i++)
         {
             var selectable = selectables[i];
-            if (!selectable || !selectable.isActiveAndEnabled || !selectable.interactable || !selectable.gameObject.activeInHierarchy)
+            if (!selectable || !selectable.isActiveAndEnabled || !selectable.IsInteractable() || !selectable.gameObject.activeInHierarchy)
                 continue;
 
             usable.Add(selectable);
@@ -1588,9 +1597,18 @@ public class VolumePanelUI : MonoBehaviour
             return;
 
         EventSystem.current.SetSelectedGameObject(selectable.gameObject);
+        UINavigationUtility.RememberSelection(GetCurrentNavigationRoot(), selectable.gameObject);
 
         if (fromNavigation)
             navigationSelectionActive = true;
+    }
+
+    void RememberCurrentSelection(GameObject root)
+    {
+        if (!root || !EventSystem.current)
+            return;
+
+        UINavigationUtility.RememberSelection(root, EventSystem.current.currentSelectedGameObject);
     }
 
     void UpdateSelectionArrow()

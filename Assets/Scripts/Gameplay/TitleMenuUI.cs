@@ -92,8 +92,10 @@ public class TitleMenuUI : MonoBehaviour
     TitleStarDifficultyUI _starDifficultyUI;
     readonly Dictionary<Selectable, Navigation> automaticNavigationScope = new();
     GameObject automaticNavigationRoot;
+    GameObject lastNavigationRoot;
     Vector2 heldNavigationDirection;
     float nextNavigationTime;
+    bool navigationRootPrimed;
     bool eventSystemNavigationSuppressed;
 
     const string TutorialIdFirstShopOpen = "title_shop_intro";
@@ -518,9 +520,21 @@ public class TitleMenuUI : MonoBehaviour
         TetrabeastsControls.RefreshActiveInputProfile();
 
         GameObject root = GetCurrentNavigationRoot();
+        bool rootChanged = root != lastNavigationRoot;
+        if (rootChanged)
+        {
+            lastNavigationRoot = root;
+            navigationRootPrimed = false;
+            ResetNavigationRepeat();
+        }
+
         RefreshAutomaticNavigationScope(root);
 
-        if (volumePanelUI && settingsPanel && UIPanelTransition.IsVisible(settingsPanel))
+        bool settingsHandledByVolumePanel = volumePanelUI && settingsPanel && UIPanelTransition.IsVisible(settingsPanel);
+        if (rootChanged && !settingsHandledByVolumePanel)
+            RestoreNavigationRootSelectionIfNeeded(root);
+
+        if (settingsHandledByVolumePanel)
             return;
 
         if (WasCancelPressedThisFrame() && TryCloseVisiblePanelFromCancelInput(root))
@@ -549,10 +563,20 @@ public class TitleMenuUI : MonoBehaviour
             return;
         }
 
+        if (!navigationRootPrimed)
+        {
+            navigationRootPrimed = true;
+            if (SelectInitialNavigationTarget(root))
+            {
+                ResetNavigationRepeat();
+                return;
+            }
+        }
+
         var current = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
         if (!UINavigationUtility.IsSelectionUsableInside(current, root))
         {
-            UINavigationUtility.SelectFirstUsable(root);
+            SelectInitialNavigationTarget(root);
             ResetNavigationRepeat();
             return;
         }
@@ -568,6 +592,25 @@ public class TitleMenuUI : MonoBehaviour
             return;
 
         UINavigationUtility.SelectInDirection(root, direction);
+    }
+
+    bool SelectInitialNavigationTarget(GameObject root)
+    {
+        if (!root)
+            return false;
+
+        return root == gameObject
+            ? UINavigationUtility.SelectFirstUsable(root, "New", "Game")
+            : UINavigationUtility.SelectFirstUsable(root);
+    }
+
+    void RestoreNavigationRootSelectionIfNeeded(GameObject root)
+    {
+        if (!root || !UICursorController.IsButtonNavigationMode)
+            return;
+
+        if (SelectInitialNavigationTarget(root))
+            navigationRootPrimed = true;
     }
 
     GameObject GetCurrentNavigationRoot()

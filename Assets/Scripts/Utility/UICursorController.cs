@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -21,6 +22,7 @@ public class UICursorController : MonoBehaviour
     [Range(0.05f, 0.9f)] public float gamepadCursorDeadzone = 0.2f;
 
     static bool s_virtualCursorMode;
+    static bool s_buttonNavigationMode;
     static int s_lastVirtualCursorFrame = -1000;
     static int s_lastVirtualSubmitFrame = -1000;
     static Vector2 s_currentScreenPosition;
@@ -35,6 +37,7 @@ public class UICursorController : MonoBehaviour
     GameObject virtualClickTarget;
 
     public static bool IsVirtualCursorMode => s_virtualCursorMode;
+    public static bool IsButtonNavigationMode => s_buttonNavigationMode;
     public static bool VirtualCursorActiveThisFrame => Time.frameCount == s_lastVirtualCursorFrame;
     public static bool ConsumedVirtualSubmitThisFrame => Time.frameCount == s_lastVirtualSubmitFrame;
     public static Vector2 CurrentScreenPosition => s_currentScreenPosition;
@@ -80,6 +83,7 @@ public class UICursorController : MonoBehaviour
         if (mouseUsed)
         {
             s_virtualCursorMode = false;
+            s_buttonNavigationMode = false;
             inputVisible = true;
             if (wasInputHidden && TryGetSelectedScreenCenter(out var selectedCenter))
             {
@@ -95,6 +99,7 @@ public class UICursorController : MonoBehaviour
         else if (virtualCursorUsed)
         {
             s_virtualCursorMode = true;
+            s_buttonNavigationMode = false;
             s_lastVirtualCursorFrame = Time.frameCount;
             inputVisible = true;
 
@@ -111,6 +116,7 @@ public class UICursorController : MonoBehaviour
         else if (buttonNavigationUsed)
         {
             s_virtualCursorMode = false;
+            s_buttonNavigationMode = true;
             inputVisible = false;
             ClearVirtualPointerTarget();
         }
@@ -554,7 +560,10 @@ public class ScopedMenuNavigator : MonoBehaviour
 
         var current = eventSystem.currentSelectedGameObject;
         if (current && current.transform.IsChildOf(navigationRoot.transform))
+        {
+            UINavigationUtility.RememberSelection(navigationRoot, current);
             eventSystem.SetSelectedGameObject(null);
+        }
     }
 
     static bool WasTabPressedThisFrame()
@@ -588,6 +597,7 @@ public static class UINavigationUtility
 
     static readonly List<Selectable> SelectableScratch = new();
     static readonly Dictionary<EventSystem, EventSystemNavigationState> EventSystemNavigationStates = new();
+    static readonly Dictionary<int, string> LastSelectionPathsByRoot = new();
     static int s_lastSubmitFrame = -1000;
 
     public static bool IsSelectionUsableInside(GameObject selected, GameObject root)
@@ -599,15 +609,22 @@ public static class UINavigationUtility
         return IsUsable(selectable);
     }
 
-    public static bool SelectFirstUsable(GameObject root)
+    public static bool SelectFirstUsable(GameObject root, params string[] preferredNameParts)
     {
         var selectables = GetUsableSelectables(root);
         if (selectables.Count == 0 || !EventSystem.current)
             return false;
 
+        var remembered = FindRememberedSelectable(root, selectables);
+        if (remembered)
+            return SelectSelectable(root, remembered);
+
+        var preferred = FindPreferredSelectable(selectables, preferredNameParts);
+        if (preferred)
+            return SelectSelectable(root, preferred);
+
         selectables.Sort(CompareTopToBottom);
-        EventSystem.current.SetSelectedGameObject(selectables[0].gameObject);
-        return true;
+        return SelectSelectable(root, selectables[0]);
     }
 
     public static bool SelectNextInOrder(GameObject root, int direction)
@@ -636,8 +653,7 @@ public static class UINavigationUtility
             ? (direction >= 0 ? 0 : selectables.Count - 1)
             : (currentIndex + direction + selectables.Count) % selectables.Count;
 
-        EventSystem.current.SetSelectedGameObject(selectables[nextIndex].gameObject);
-        return true;
+        return SelectSelectable(root, selectables[nextIndex]);
     }
 
     public static bool SelectInDirection(GameObject root, Vector2 direction)
@@ -688,8 +704,21 @@ public static class UINavigationUtility
         if (!best)
             return false;
 
-        EventSystem.current.SetSelectedGameObject(best.gameObject);
-        return true;
+        return SelectSelectable(root, best);
+    }
+
+    public static void RememberSelection(GameObject root, GameObject selected)
+    {
+        if (!root || !selected || !selected.transform.IsChildOf(root.transform))
+            return;
+
+        var selectable = selected.GetComponentInParent<Selectable>();
+        if (!IsUsable(selectable) || !selectable.transform.IsChildOf(root.transform))
+            return;
+
+        string path = BuildRelativePath(root.transform, selectable.transform);
+        if (!string.IsNullOrEmpty(path))
+            LastSelectionPathsByRoot[root.GetInstanceID()] = path;
     }
 
     public static bool TrySubmitSelected()
@@ -783,7 +812,8 @@ public static class UINavigationUtility
                 if (!IsUsable(button))
                     continue;
 
-                if (button.name.IndexOf(namePart, System.StringComparison.OrdinalIgnoreCase) >= 0)
+                if (button.name.IndexOf(namePart, System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    ObjectMatchesNameParts(button.gameObject, nameParts))
                     return button;
             }
         }
@@ -892,6 +922,97 @@ public static class UINavigationUtility
         return wrapped;
     }
 
+    static bool SelectSelectable(GameObject root, Selectable selectable)
+    {
+        if (!IsUsable(selectable) || !EventSystem.current)
+            return false;
+
+        EventSystem.current.SetSelectedGameObject(selectable.gameObject);
+        RememberSelection(root, selectable.gameObject);
+        return true;
+    }
+
+    static Selectable FindRememberedSelectable(GameObject root, List<Selectable> selectables)
+    {
+        if (!root || selectables == null || selectables.Count == 0)
+            return null;
+
+        if (!LastSelectionPathsByRoot.TryGetValue(root.GetInstanceID(), out string rememberedPath) ||
+            string.IsNullOrEmpty(rememberedPath))
+            return null;
+
+        for (int i = 0; i < selectables.Count; i++)
+        {
+            var selectable = selectables[i];
+            if (!selectable)
+                continue;
+
+            if (BuildRelativePath(root.transform, selectable.transform) == rememberedPath)
+                return selectable;
+        }
+
+        return null;
+    }
+
+    static Selectable FindPreferredSelectable(List<Selectable> selectables, string[] preferredNameParts)
+    {
+        if (selectables == null || selectables.Count == 0 ||
+            preferredNameParts == null || preferredNameParts.Length == 0)
+            return null;
+
+        for (int i = 0; i < selectables.Count; i++)
+        {
+            var selectable = selectables[i];
+            if (selectable && ObjectMatchesNameParts(selectable.gameObject, preferredNameParts))
+                return selectable;
+        }
+
+        return null;
+    }
+
+    static bool ObjectMatchesNameParts(GameObject target, string[] nameParts)
+    {
+        if (!target || nameParts == null || nameParts.Length == 0)
+            return false;
+
+        string searchable = target.name;
+        var labels = target.GetComponentsInChildren<TMP_Text>(true);
+        for (int i = 0; i < labels.Length; i++)
+        {
+            if (labels[i] && !string.IsNullOrWhiteSpace(labels[i].text))
+                searchable += " " + labels[i].text;
+        }
+
+        for (int i = 0; i < nameParts.Length; i++)
+        {
+            string part = nameParts[i];
+            if (string.IsNullOrWhiteSpace(part))
+                continue;
+
+            if (searchable.IndexOf(part, System.StringComparison.OrdinalIgnoreCase) < 0)
+                return false;
+        }
+
+        return true;
+    }
+
+    static string BuildRelativePath(Transform root, Transform child)
+    {
+        if (!root || !child || !child.IsChildOf(root))
+            return null;
+
+        var parts = new List<string>();
+        Transform current = child;
+        while (current && current != root)
+        {
+            parts.Add(current.name);
+            current = current.parent;
+        }
+
+        parts.Reverse();
+        return string.Join("/", parts);
+    }
+
     static int CompareTopToBottom(Selectable left, Selectable right)
     {
         Vector2 leftCenter = GetScreenCenter(left);
@@ -922,7 +1043,7 @@ public static class UINavigationUtility
     {
         return selectable &&
                selectable.isActiveAndEnabled &&
-               selectable.interactable &&
+               selectable.IsInteractable() &&
                selectable.gameObject.activeInHierarchy;
     }
 

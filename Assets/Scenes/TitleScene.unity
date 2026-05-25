@@ -3752,12 +3752,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontSize
-      value: 30.95
+      value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 11400000, guid: 6d6f44b97b706424ab3794740d9d7ffd, type: 2}
+    - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
+      propertyPath: m_fontSizeMax
+      value: 28
+      objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontSizeBase
       value: 30
@@ -4925,12 +4929,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontSize
-      value: 35.45
+      value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 11400000, guid: 6d6f44b97b706424ab3794740d9d7ffd, type: 2}
+    - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
+      propertyPath: m_fontSizeMax
+      value: 28
+      objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontSizeBase
       value: 32
@@ -7815,12 +7823,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontSize
-      value: 32.65
+      value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 11400000, guid: 6d6f44b97b706424ab3794740d9d7ffd, type: 2}
+    - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
+      propertyPath: m_fontSizeMax
+      value: 28
+      objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontSizeBase
       value: 32
@@ -8430,7 +8442,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3955750416279165077, guid: 5e7f2b5277a37d041a57b07dbb619341, type: 3}
       propertyPath: m_fontSize
-      value: 33.25
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 3955750416279165077, guid: 5e7f2b5277a37d041a57b07dbb619341, type: 3}
+      propertyPath: m_fontSizeMax
+      value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 3955750416279165077, guid: 5e7f2b5277a37d041a57b07dbb619341, type: 3}
       propertyPath: m_fontSizeBase
@@ -9112,12 +9128,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontSize
-      value: 35.55
+      value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 11400000, guid: 6d6f44b97b706424ab3794740d9d7ffd, type: 2}
+    - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
+      propertyPath: m_fontSizeMax
+      value: 28
+      objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontSizeBase
       value: 32
@@ -10684,12 +10704,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontSize
-      value: 35.55
+      value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 11400000, guid: 6d6f44b97b706424ab3794740d9d7ffd, type: 2}
+    - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
+      propertyPath: m_fontSizeMax
+      value: 28
+      objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontSizeBase
       value: 32
@@ -12309,12 +12333,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontSize
-      value: 35.55
+      value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 11400000, guid: 6d6f44b97b706424ab3794740d9d7ffd, type: 2}
+    - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
+      propertyPath: m_fontSizeMax
+      value: 28
+      objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontSizeBase
       value: 32
@@ -12882,12 +12910,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontSize
-      value: 35.55
+      value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 11400000, guid: 6d6f44b97b706424ab3794740d9d7ffd, type: 2}
+    - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
+      propertyPath: m_fontSizeMax
+      value: 28
+      objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontSizeBase
       value: 32
@@ -16186,12 +16218,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontSize
-      value: 33.25
+      value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 11400000, guid: 6d6f44b97b706424ab3794740d9d7ffd, type: 2}
+    - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
+      propertyPath: m_fontSizeMax
+      value: 28
+      objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontSizeBase
       value: 32
@@ -16696,12 +16732,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontSize
-      value: 33.25
+      value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 11400000, guid: 6d6f44b97b706424ab3794740d9d7ffd, type: 2}
+    - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
+      propertyPath: m_fontSizeMax
+      value: 28
+      objectReference: {fileID: 0}
     - target: {fileID: 2442071934370275813, guid: 216cf2eb3bdc29c49b27c3de669a8dbb, type: 3}
       propertyPath: m_fontSizeBase
       value: 32
@@ -17810,7 +17850,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3955750416279165077, guid: 5e7f2b5277a37d041a57b07dbb619341, type: 3}
       propertyPath: m_fontSize
-      value: 33.25
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 3955750416279165077, guid: 5e7f2b5277a37d041a57b07dbb619341, type: 3}
+      propertyPath: m_fontSizeMax
+      value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 3955750416279165077, guid: 5e7f2b5277a37d041a57b07dbb619341, type: 3}
       propertyPath: m_fontSizeBase
