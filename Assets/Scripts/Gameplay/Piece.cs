@@ -603,6 +603,8 @@ public class Piece : MonoBehaviour
         for (int i = 0; i < cells.Count; i++)
             board.ApplyFloorEffectOnPlacement(cells[i]); // Apply any floor effects on the cell as the piece locks in, which may damage or heal the monster just placed
 
+        gc?.PlayPieceLockSFX();
+
         foreach (var v in visuals)
 
             // Recompute per-edge border thickness for the new blocks + neighbors

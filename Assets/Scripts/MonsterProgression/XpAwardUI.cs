@@ -122,6 +122,7 @@ public class XpAwardUI : MonoBehaviour
     readonly List<XpMonsterRowUI> _rows = new();
     readonly List<GameObject> _activeOrbGos = new();
     Coroutine _breakdownCountCR;
+    ScopedMenuNavigator _navigator;
 
     bool _breakdownAnimating;
     bool _orbAnimating;
@@ -162,6 +163,7 @@ public class XpAwardUI : MonoBehaviour
 
     void OnDisable()
     {
+        DisableNavigation();
         HardStopAndClearAllVfx();
     }
 
@@ -171,7 +173,10 @@ public class XpAwardUI : MonoBehaviour
         if (_orbAnimating) return;
         if (!_breakdownAnimating) return;
 
-        if (!(Input.anyKeyDown || Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)))
+        if (!(Input.anyKeyDown ||
+              Input.GetMouseButtonDown(0) ||
+              Input.GetMouseButtonDown(1) ||
+              TetrabeastsControls.WasAnyMenuInputPressedThisFrame()))
             return;
 
         if (_breakdownAnimating && Time.unscaledTime < _breakdownSkipAllowedAt)
@@ -185,6 +190,7 @@ public class XpAwardUI : MonoBehaviour
         HardStopAndClearAllVfx();
 
         if (root) root.SetActive(false);
+        DisableNavigation();
 
         if (roundBreakdownPanel) roundBreakdownPanel.SetActive(false);
         if (roundDistributePanel) roundDistributePanel.SetActive(false);
@@ -227,6 +233,7 @@ public class XpAwardUI : MonoBehaviour
 
         root.SetActive(true);
         ShowBreakdown(breakdown);
+        SetNavigationRoot(roundBreakdownPanel);
 
         if (breakdownContinueButton)
         {
@@ -274,6 +281,7 @@ public class XpAwardUI : MonoBehaviour
         if (roundDistributePanel) roundDistributePanel.SetActive(false);
         if (runDrainPanel) runDrainPanel.SetActive(false);
         if (runCommitPanel) runCommitPanel.SetActive(false);
+        SetNavigationRoot(roundBreakdownPanel);
 
         string titleStr = TetrabeastsLocalization.LocalizeFormat("Level {0} Complete", b.gameLevelNumber);
 
@@ -424,6 +432,7 @@ public class XpAwardUI : MonoBehaviour
     {
         if (roundBreakdownPanel) roundBreakdownPanel.SetActive(false);
         if (roundDistributePanel) roundDistributePanel.SetActive(true);
+        SetNavigationRoot(roundDistributePanel);
 
         BuildRosterRows(roundRosterContainer, roster, useRunState: true);
 
@@ -520,6 +529,7 @@ public class XpAwardUI : MonoBehaviour
         if (roundDistributePanel) roundDistributePanel.SetActive(false);
 
         if (runDrainPanel) runDrainPanel.SetActive(true);
+        SetNavigationRoot(runDrainPanel);
 
         if (runDrainContinueButton)
         {
@@ -571,6 +581,7 @@ public class XpAwardUI : MonoBehaviour
             runDrainContinueButton.onClick.RemoveAllListeners();
             runDrainContinueButton.onClick.AddListener(() => proceedToCommit = true);
             runDrainContinueButton.interactable = true;
+            SetNavigationRoot(runDrainPanel);
         }
 
         yield return new WaitUntil(() => proceedToCommit);
@@ -579,6 +590,7 @@ public class XpAwardUI : MonoBehaviour
 
         if (runDrainPanel) runDrainPanel.SetActive(false);
         if (runCommitPanel) runCommitPanel.SetActive(true);
+        SetNavigationRoot(runCommitPanel);
 
         if (runCommitContinueButton)
         {
@@ -653,7 +665,29 @@ public class XpAwardUI : MonoBehaviour
             });
 
             runCommitContinueButton.interactable = true;
+            SetNavigationRoot(runCommitPanel);
         }
+    }
+
+    void SetNavigationRoot(GameObject panel)
+    {
+        if (!root || !panel)
+            return;
+
+        if (!_navigator)
+            _navigator = ScopedMenuNavigator.Attach(root, panel);
+
+        if (_navigator)
+        {
+            _navigator.enabled = true;
+            _navigator.SetNavigationRoot(panel);
+        }
+    }
+
+    void DisableNavigation()
+    {
+        if (_navigator)
+            _navigator.enabled = false;
     }
 
     void BuildRosterRows(Transform container, List<MonsterData> roster, bool useRunState, bool usePermanentState = false,
@@ -764,6 +798,8 @@ public class XpAwardUI : MonoBehaviour
 
         if (breakdownContinueButton)
             breakdownContinueButton.interactable = true;
+
+        SetNavigationRoot(roundBreakdownPanel);
 
         _breakdownCountCR = null;
     }

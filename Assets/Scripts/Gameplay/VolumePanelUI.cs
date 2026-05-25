@@ -56,6 +56,7 @@ public class VolumePanelUI : MonoBehaviour
 
     CanvasGroup cg;
     readonly Dictionary<Selectable, bool> modalScopedSelectables = new();
+    readonly Dictionary<Selectable, bool> dropdownScopedSelectables = new();
     readonly Dictionary<Selectable, Navigation> automaticNavigationScope = new();
     readonly Dictionary<TetrabeastsControlAction, Button> bindingButtons = new();
     Coroutine rebindCaptureCo;
@@ -63,8 +64,11 @@ public class VolumePanelUI : MonoBehaviour
     Image sliderSelectionArrow;
     Sprite sliderSelectionArrowSprite;
     GameObject automaticNavigationRoot;
+    GameObject dropdownNavigationRoot;
+    TMP_Dropdown activeDropdown;
     Vector2 heldNavigationDirection;
     float nextNavigationTime;
+    int suppressDropdownOpenUntilFrame = -1;
     bool navigationSelectionActive;
     bool eventSystemNavigationSuppressed;
 
@@ -497,10 +501,13 @@ public class VolumePanelUI : MonoBehaviour
 
         var bindingButton = EnsureBindingButton(rowRoot, row.Action);
         WireBindingButton(bindingButton, row.Action);
+        bool isCapturingThisRow = rebindingAction.HasValue && rebindingAction.Value == row.Action;
+        if (bindingButton)
+            bindingButton.interactable = !isCapturingThisRow;
 
         var bindingText = bindingButton ? FindChildComponent<TMP_Text>(bindingButton.transform, "Binding_Text") : FindChildComponent<TMP_Text>(rowRoot, "Binding_Text");
         if (bindingText)
-            bindingText.text = rebindingAction.HasValue && rebindingAction.Value == row.Action ? "Press input..." : row.BindingLabel;
+            bindingText.text = isCapturingThisRow ? "Press input..." : row.BindingLabel;
     }
 
     Button CreateBindingButton(Transform parent, TetrabeastsControlAction action)
@@ -720,6 +727,7 @@ public class VolumePanelUI : MonoBehaviour
     void SetControlsProfile(int index)
     {
         CancelRebindCapture();
+        RestoreDropdownSelectableScope();
 
         var profiles = TetrabeastsControls.SelectableProfiles;
         if (index < 0 || index >= profiles.Count)
@@ -780,10 +788,11 @@ public class VolumePanelUI : MonoBehaviour
             profile = GetActiveControlsProfile();
             if (TetrabeastsControls.TryReadRebindInput(profile, action, out var binding, out bool cancelled))
             {
+                FinishRebindCapture();
+
                 if (!cancelled && binding.IsValid)
                     TryApplyCapturedBinding(profile, action, binding);
 
-                FinishRebindCapture();
                 yield break;
             }
 
@@ -852,6 +861,7 @@ public class VolumePanelUI : MonoBehaviour
         RefreshControlsPanel();
         controlsPanelRoot.transform.SetAsLastSibling();
         UIPanelTransition.Show(controlsPanelRoot);
+        suppressDropdownOpenUntilFrame = Time.frameCount + 2;
         RefreshModalSelectableScope();
 
         if (focusFirstSelectableWhenOpened)
@@ -906,6 +916,10 @@ public class VolumePanelUI : MonoBehaviour
         if (!controlsPanelRoot)
             return;
 
+        if (TryGetOpenDropdown(out var dropdown, out _))
+            dropdown.Hide();
+
+        RestoreDropdownSelectableScope();
         UIPanelTransition.Hide(controlsPanelRoot, instant);
 
         RefreshModalSelectableScope();
@@ -994,6 +1008,10 @@ public class VolumePanelUI : MonoBehaviour
 
     void CloseVolumePanelNow(bool instant)
     {
+        if (TryGetOpenDropdown(out var dropdown, out _))
+            dropdown.Hide();
+
+        RestoreDropdownSelectableScope();
         RestoreModalSelectableScope();
         RestoreAutomaticNavigationScope();
         UIPanelTransition.Hide(gameObject, instant);
@@ -1051,6 +1069,20 @@ public class VolumePanelUI : MonoBehaviour
             return;
         }
 
+        if (TryGetOpenDropdown(out var openDropdown, out var dropdownRoot))
+        {
+            if (Time.frameCount <= suppressDropdownOpenUntilFrame)
+            {
+                HideDropdown(openDropdown);
+                return;
+            }
+
+            HandleOpenDropdownNavigation(openDropdown, dropdownRoot);
+            return;
+        }
+
+        RestoreDropdownSelectableScope();
+
         if (WasMousePressedThisFrame())
             navigationSelectionActive = false;
 
@@ -1083,6 +1115,78 @@ public class VolumePanelUI : MonoBehaviour
 
         if (!UINavigationUtility.TryPressButton(closeButton))
             Toggle();
+    }
+
+    void HandleOpenDropdownNavigation(TMP_Dropdown dropdown, GameObject dropdownRoot)
+    {
+        if (!dropdown || !dropdownRoot)
+            return;
+
+        RefreshDropdownSelectableScope(dropdown, dropdownRoot);
+        navigationSelectionActive = true;
+
+        if (TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuCancel))
+        {
+            HideDropdown(dropdown);
+            return;
+        }
+
+        if (WasMousePressedThisFrame() &&
+            !ScreenPointInsideDropdown(dropdown, dropdownRoot, Input.mousePosition))
+        {
+            HideDropdown(dropdown);
+            return;
+        }
+
+        bool submitPressed = TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuSubmit);
+        if (submitPressed && IsSubmitOutsideDropdown(dropdown, dropdownRoot))
+        {
+            HideDropdown(dropdown);
+            return;
+        }
+
+        bool menuNavigationInput = TetrabeastsControls.WasButtonNavigationPressedThisFrame() ||
+            TetrabeastsControls.IsButtonNavigationHeld();
+
+        if (menuNavigationInput && EnsureSelectionInside(dropdownRoot, true))
+        {
+            ResetNavigationRepeat();
+            return;
+        }
+
+        if (WasTabPressedThisFrame())
+        {
+            if (UINavigationUtility.SelectNextInOrder(dropdownRoot, IsShiftHeld() ? -1 : 1))
+                navigationSelectionActive = true;
+
+            ResetNavigationRepeat();
+            return;
+        }
+
+        if (TryConsumeDirectionalNavigation(out Vector2 direction))
+        {
+            if (UINavigationUtility.SelectInDirection(dropdownRoot, direction))
+                navigationSelectionActive = true;
+
+            return;
+        }
+
+        if (submitPressed)
+        {
+            var current = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
+            if (!current || !current.transform.IsChildOf(dropdownRoot.transform))
+            {
+                HideDropdown(dropdown);
+                return;
+            }
+
+            UINavigationUtility.TrySubmitSelected();
+            return;
+        }
+
+        var selected = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
+        if (ShouldPullSelectionBackToScope(selected, dropdownRoot))
+            UINavigationUtility.SelectFirstUsable(dropdownRoot);
     }
 
     void HandlePanelNavigation()
@@ -1226,6 +1330,149 @@ public class VolumePanelUI : MonoBehaviour
         }
 
         modalScopedSelectables.Clear();
+    }
+
+    bool TryGetOpenDropdown(out TMP_Dropdown dropdown, out GameObject dropdownRoot)
+    {
+        if (TryGetOpenDropdown(controlsProfileDropdown, out dropdown, out dropdownRoot))
+            return true;
+
+        if (TryGetOpenDropdown(musicModeDropdown, out dropdown, out dropdownRoot))
+            return true;
+
+        if (TryGetOpenDropdown(languageDropdown, out dropdown, out dropdownRoot))
+            return true;
+
+        dropdown = null;
+        dropdownRoot = null;
+        return false;
+    }
+
+    bool TryGetOpenDropdown(TMP_Dropdown candidate, out TMP_Dropdown dropdown, out GameObject dropdownRoot)
+    {
+        dropdown = null;
+        dropdownRoot = null;
+        if (!candidate || !candidate.gameObject.activeInHierarchy)
+            return false;
+
+        var rects = candidate.GetComponentsInChildren<RectTransform>(true);
+        for (int i = 0; i < rects.Length; i++)
+        {
+            var rect = rects[i];
+            if (!rect || !rect.gameObject.activeInHierarchy)
+                continue;
+
+            if (!rect.name.Contains("Dropdown List"))
+                continue;
+
+            dropdown = candidate;
+            dropdownRoot = rect.gameObject;
+            return true;
+        }
+
+        return false;
+    }
+
+    void RefreshDropdownSelectableScope(TMP_Dropdown dropdown, GameObject dropdownRoot)
+    {
+        if (!dropdown || !dropdownRoot)
+            return;
+
+        if (activeDropdown == dropdown && dropdownNavigationRoot == dropdownRoot)
+        {
+            var selected = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
+            if (ShouldPullSelectionBackToScope(selected, dropdownRoot))
+                UINavigationUtility.SelectFirstUsable(dropdownRoot);
+
+            return;
+        }
+
+        RestoreDropdownSelectableScope();
+        activeDropdown = dropdown;
+        dropdownNavigationRoot = dropdownRoot;
+
+        var selectables = FindObjectsByType<Selectable>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        for (int i = 0; i < selectables.Length; i++)
+        {
+            var selectable = selectables[i];
+            if (!selectable)
+                continue;
+
+            if (selectable.transform.IsChildOf(dropdownRoot.transform) ||
+                selectable.transform.IsChildOf(dropdown.transform))
+                continue;
+
+            dropdownScopedSelectables[selectable] = selectable.interactable;
+            selectable.interactable = false;
+        }
+
+        var current = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
+        if (ShouldPullSelectionBackToScope(current, dropdownRoot))
+            UINavigationUtility.SelectFirstUsable(dropdownRoot);
+    }
+
+    void RestoreDropdownSelectableScope()
+    {
+        foreach (var pair in dropdownScopedSelectables)
+        {
+            if (pair.Key)
+                pair.Key.interactable = pair.Value;
+        }
+
+        dropdownScopedSelectables.Clear();
+        activeDropdown = null;
+        dropdownNavigationRoot = null;
+    }
+
+    void HideDropdown(TMP_Dropdown dropdown)
+    {
+        UICursorController.ConsumeSubmitThisFrame();
+
+        if (dropdown)
+            dropdown.Hide();
+
+        RestoreDropdownSelectableScope();
+
+        if (dropdown)
+            SelectSelectable(dropdown, true);
+    }
+
+    bool IsSubmitOutsideDropdown(TMP_Dropdown dropdown, GameObject dropdownRoot)
+    {
+        if (!dropdown || !dropdownRoot)
+            return false;
+
+        Vector2 screenPosition = UICursorController.IsVirtualCursorMode
+            ? UICursorController.CurrentScreenPosition
+            : (Vector2)Input.mousePosition;
+
+        if (UICursorController.IsVirtualCursorMode)
+            return !ScreenPointInsideDropdown(dropdown, dropdownRoot, screenPosition);
+
+        if (WasMousePressedThisFrame())
+            return !ScreenPointInsideDropdown(dropdown, dropdownRoot, screenPosition);
+
+        var current = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
+        return !current || !current.transform.IsChildOf(dropdownRoot.transform);
+    }
+
+    bool ScreenPointInsideDropdown(TMP_Dropdown dropdown, GameObject dropdownRoot, Vector2 screenPosition)
+    {
+        return ScreenPointInsideRect(dropdownRoot.transform as RectTransform, screenPosition) ||
+               ScreenPointInsideRect(dropdown.transform as RectTransform, screenPosition);
+    }
+
+    bool ScreenPointInsideRect(RectTransform rect, Vector2 screenPosition)
+    {
+        if (!rect)
+            return false;
+
+        Camera camera = null;
+        var canvas = rect.GetComponentInParent<Canvas>();
+        if (canvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay)
+            camera = canvas.worldCamera;
+
+        return RectTransformUtility.RectangleContainsScreenPoint(rect, screenPosition, camera);
     }
 
     void RefreshAutomaticNavigationScope(GameObject root)

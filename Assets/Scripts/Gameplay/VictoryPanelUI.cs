@@ -29,10 +29,15 @@ public class VictoryPanelUI : MonoBehaviour
     [SerializeField] Color epicTitleColor = new Color(0.75f, 0.3f, 1f, 1f);
     [SerializeField] Color legendaryTitleColor = new Color(1f, 0.75f, 0.2f, 1f);
 
+    bool _showRequested;
+    ScopedMenuNavigator _navigator;
+
     void Awake()
     {
         AutoWire();
-        Hide();
+
+        if (!_showRequested)
+            Hide();
     }
 
     void OnValidate()
@@ -49,6 +54,7 @@ public class VictoryPanelUI : MonoBehaviour
     public void Show(RunSummaryStats.Snapshot stats, IReadOnlyList<RunModifierSO> buffs,
                  IReadOnlyList<RunModifierSO> debuffs, Action onContinue)
     {
+        _showRequested = true;
         AutoWire();
 
         if (!root)
@@ -66,6 +72,8 @@ public class VictoryPanelUI : MonoBehaviour
 
         UIPanelTransition.Show(root);
         Canvas.ForceUpdateCanvases();
+        EnableNavigation();
+        _showRequested = false;
     }
 
     public void SetRootActive(bool active)
@@ -82,8 +90,39 @@ public class VictoryPanelUI : MonoBehaviour
         if (!root)
             root = gameObject;
 
+        DisableNavigation();
+
         if (root)
             UIPanelTransition.Hide(root, true);
+    }
+
+    void OnDisable()
+    {
+        DisableNavigation();
+    }
+
+    void EnableNavigation()
+    {
+        if (!root)
+            root = gameObject;
+
+        if (!root)
+            return;
+
+        if (!_navigator)
+            _navigator = ScopedMenuNavigator.Attach(root, root);
+
+        if (_navigator)
+        {
+            _navigator.enabled = true;
+            _navigator.SetNavigationRoot(root, selectFirst: true);
+        }
+    }
+
+    void DisableNavigation()
+    {
+        if (_navigator)
+            _navigator.enabled = false;
     }
 
     void RefreshStats(RunSummaryStats.Snapshot stats)

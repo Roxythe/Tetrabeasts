@@ -22,6 +22,7 @@ public class HighScoreUI : MonoBehaviour
     int pendingScore = 0;
     int _highlightRankIndex = -1;
     bool _suppressRestartButton;
+    ScopedMenuNavigator _navigator;
 
     [Header("Colors")]
     public Color newHighScoreColor = new Color(1f, 0.84f, 0f, 1f); // Gold
@@ -51,6 +52,7 @@ public class HighScoreUI : MonoBehaviour
         }
 
         SetCloseButtonActive(false);
+        EnableNavigation(selectFirst: true);
 
         Debug.Log($"[HS] TryShow: score={score}, qualifies={qualifies}, " +
                   $"panelActiveSelf={panel.activeSelf}, compGOActiveSelf={gameObject.activeSelf}, " +
@@ -78,6 +80,7 @@ public class HighScoreUI : MonoBehaviour
         RefreshTable();
         SetSubmissionUIActive(false);
         SetPostSubmitButtonsActive(true);
+        EnableNavigation(selectFirst: true);
     }
 
     bool TryGetSteamPlayerName(out string playerName)
@@ -110,6 +113,7 @@ public class HighScoreUI : MonoBehaviour
 
     public void Hide()
     {
+        DisableNavigation();
         if (panel) UIPanelTransition.Hide(panel);
     }
 
@@ -147,10 +151,38 @@ public class HighScoreUI : MonoBehaviour
         SetSubmissionUIActive(false);
         SetPostSubmitButtonsActive(false);
         SetCloseButtonActive(true);
+        EnableNavigation(selectFirst: true);
     }
 
     void SetCloseButtonActive(bool active)
     {
         if (closeButton) closeButton.gameObject.SetActive(active);
+    }
+
+    void OnDisable()
+    {
+        DisableNavigation();
+    }
+
+    void EnableNavigation(bool selectFirst)
+    {
+        GameObject root = panel ? panel : gameObject;
+        if (!root)
+            return;
+
+        if (!_navigator)
+            _navigator = ScopedMenuNavigator.Attach(root, root);
+
+        if (_navigator)
+        {
+            _navigator.enabled = true;
+            _navigator.SetNavigationRoot(root, selectFirst);
+        }
+    }
+
+    void DisableNavigation()
+    {
+        if (_navigator)
+            _navigator.enabled = false;
     }
 }

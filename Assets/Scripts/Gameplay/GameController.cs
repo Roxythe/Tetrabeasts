@@ -145,9 +145,14 @@ public class GameController : MonoBehaviour
     public float currencyPopupDuration = 0.6f; // Seconds
     public AudioClip sfxCurrencyLineGain;   // Play when +1 drops from a line clear
 
+    [Header("Piece Lock SFX")]
+    [SerializeField] AudioClip[] pieceLockSfxClips;
+    [SerializeField, Range(0f, 2f)] float pieceLockSfxVolume = 1f;
+
     [Header("Special Gauge UI")]
     public UnityEngine.UI.Slider specialSlider;
     public TMP_Text specialText;
+    [SerializeField] TMP_Text gameplayControlsText;
 
     [Header("Special Ability Popup")]
     [SerializeField] GameObject specialAbilityPopupPrefab;
@@ -168,6 +173,11 @@ public class GameController : MonoBehaviour
     [SerializeField] float specialGradientShiftSpeed = 1.25f;  // How fast the gradient shifts
 
     Coroutine _specialChargedCR;
+    TetrabeastsControlProfile _lastControlsTextSavedProfile;
+    TetrabeastsControlProfile _lastControlsTextEffectiveProfile;
+    string _lastControlsTextSpecialBinding;
+    bool _hasControlsTextSnapshot;
+
     class SpecialTextDefaults
     {
         public Vector3 scale;
@@ -204,6 +214,8 @@ public class GameController : MonoBehaviour
     public RectTransform projectileRoot;
     public float projectileSpeed = 800f;
     public GameObject[] attackExplosionPrefabs;
+    public float attackExplosionSizeMultiplier = 2f;
+    public Vector2 attackExplosionOffsetCells = new Vector2(0f, 0.5f);
 
     [Header("Bag Settings")]
     public int minBagPieces = 2;
@@ -228,6 +240,7 @@ public class GameController : MonoBehaviour
     public VolumePanelUI volumePanelInPause;
     public string titleSceneName = "TitleScene";
     bool isPaused = false;
+    ScopedMenuNavigator pauseMenuNavigator;
     public bool IsPaused => isPaused;
     bool tutorialSuspended = false;
     bool tutorialFreezePieceGravity = false;
@@ -636,6 +649,12 @@ public class GameController : MonoBehaviour
         SteamInputService.Ensure();
         SteamInputService.ControllerDisconnected -= HandleControllerDisconnected;
         SteamInputService.ControllerDisconnected += HandleControllerDisconnected;
+        TetrabeastsControls.ProfileChanged -= HandleControlsDisplayChanged;
+        TetrabeastsControls.ProfileChanged += HandleControlsDisplayChanged;
+        TetrabeastsControls.BindingsChanged -= HandleControlsDisplayChanged;
+        TetrabeastsControls.BindingsChanged += HandleControlsDisplayChanged;
+        TetrabeastsControls.PlatformDefaultProfileChanged -= HandleControlsDisplayChanged;
+        TetrabeastsControls.PlatformDefaultProfileChanged += HandleControlsDisplayChanged;
 
 #if ENABLE_INPUT_SYSTEM
         InputSystem.onDeviceChange -= HandleInputDeviceChange;
@@ -756,6 +775,7 @@ public class GameController : MonoBehaviour
 
         specialGauge = 0f; // Initialize Special gauge
         UpdateSpecialUI();
+        RefreshGameplayControlTexts();
         ResetSpecialChargedVisuals();
 
         if (_specialFillCR != null) StopCoroutine(_specialFillCR);
@@ -1156,6 +1176,9 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
+        TetrabeastsControls.RefreshActiveInputProfile();
+        RefreshGameplayControlTextsIfNeeded();
+
         if (tutorialSuspended)
             return;
 
@@ -1164,12 +1187,6 @@ public class GameController : MonoBehaviour
 
         if (_specialAbilityCinematicActive)
             return;
-
-        if (TetrabeastsControls.WasPressed(TetrabeastsControlAction.Special))
-            ActivateSpecial();
-
-        if (IsRoundActive && !IsTutorialPromptActive)
-            RunSummaryStats.AddActiveTime(Time.deltaTime);
 
         if (TetrabeastsControls.WasPressed(TetrabeastsControlAction.Pause))
         {
@@ -1223,7 +1240,28 @@ public class GameController : MonoBehaviour
                     EnterGameplayCursorMode();
                 }
             }
+
+            RefreshPauseMenuNavigation();
+            return;
         }
+
+        if (isPaused)
+        {
+            RefreshPauseMenuNavigation();
+
+            if (HandlePauseMenuCancelInput())
+                return;
+
+            return;
+        }
+
+        DisablePauseMenuNavigation();
+
+        if (TetrabeastsControls.WasPressed(TetrabeastsControlAction.Special))
+            ActivateSpecial();
+
+        if (IsRoundActive && !IsTutorialPromptActive)
+            RunSummaryStats.AddActiveTime(Time.deltaTime);
 
         // Periodic castle projectile
         if (IsRoundActive && gameBoard)
@@ -1322,6 +1360,9 @@ public class GameController : MonoBehaviour
     void OnDestroy()
     {
         SteamInputService.ControllerDisconnected -= HandleControllerDisconnected;
+        TetrabeastsControls.ProfileChanged -= HandleControlsDisplayChanged;
+        TetrabeastsControls.BindingsChanged -= HandleControlsDisplayChanged;
+        TetrabeastsControls.PlatformDefaultProfileChanged -= HandleControlsDisplayChanged;
 
 #if ENABLE_INPUT_SYSTEM
         InputSystem.onDeviceChange -= HandleInputDeviceChange;
@@ -1821,10 +1862,21 @@ public class GameController : MonoBehaviour
 
     IEnumerator CoShowRoundTransition(string message)
     {
-        yield return CoShowRoundTransition(message, string.Empty, false, null);
+        yield return CoShowRoundTransition(message, RoundTransitionVariant.Default);
+    }
+
+    IEnumerator CoShowRoundTransition(string message, RoundTransitionVariant variant)
+    {
+        yield return CoShowRoundTransition(message, variant, string.Empty, false, null);
     }
 
     IEnumerator CoShowRoundTransition(string message, string optOutLabel, bool optOutInitialValue,
+                                      System.Action<bool> onOptOutContinue)
+    {
+        yield return CoShowRoundTransition(message, RoundTransitionVariant.Default, optOutLabel, optOutInitialValue, onOptOutContinue);
+    }
+
+    IEnumerator CoShowRoundTransition(string message, RoundTransitionVariant variant, string optOutLabel, bool optOutInitialValue,
                                       System.Action<bool> onOptOutContinue)
     {
         ResolveRoundTransitionUI();
@@ -1836,7 +1888,8 @@ public class GameController : MonoBehaviour
                 () => continued = true,
                 TetrabeastsLocalization.LocalizeText(optOutLabel),
                 optOutInitialValue,
-                onOptOutContinue);
+                onOptOutContinue,
+                variant);
         else
             continued = true;
 
@@ -1894,10 +1947,18 @@ public class GameController : MonoBehaviour
     IEnumerator CoShowGameOverTransitionThenHighScore()
     {
         PauseGameplayForRoundTransition();
-        yield return CoShowRoundTransition(RoundLossTransitionText);
+        yield return CoShowRoundTransition(RoundLossTransitionText, RoundTransitionVariant.Loss);
         ResumeGameplayAfterRoundTransition();
 
-        CommitRunEndXpSilently(finalLevelWin: _finalWinStateApplied);
+        try
+        {
+            CommitRunEndXpSilently(finalLevelWin: _finalWinStateApplied);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogException(ex);
+        }
+
         ShowGameOverHighScore();
     }
 
@@ -1909,6 +1970,7 @@ public class GameController : MonoBehaviour
         if (AudioManager.I)
             AudioManager.I.PlayIntermissionLoseMusic();
 
+        EnsureHighScoreUI();
         ShowFinalStatsBeforeHighScore(ShowGameOverLocalHighScore);
     }
 
@@ -1916,7 +1978,7 @@ public class GameController : MonoBehaviour
     {
         SubmitSteamLeaderboardScore();
 
-        if (highScoreUI)
+        if (EnsureHighScoreUI())
         {
             highScoreUI.SetRestartButtonSuppressed(false);
             highScoreUI.TryShow(score);
@@ -1926,6 +1988,20 @@ public class GameController : MonoBehaviour
             restartButton.gameObject.SetActive(true);
 
         EnterUICursorMode();
+    }
+
+    bool EnsureHighScoreUI()
+    {
+        if (!highScoreUI)
+            highScoreUI = FindFirstObjectByType<HighScoreUI>(FindObjectsInactive.Include);
+
+        if (!highScoreUI)
+        {
+            Debug.LogWarning("GameController: HighScoreUI was not found in the scene. Assign the local high score panel in the inspector.");
+            return false;
+        }
+
+        return true;
     }
 
     void CommitRunEndXpSilently(bool finalLevelWin)
@@ -1941,6 +2017,23 @@ public class GameController : MonoBehaviour
             return;
 
         SteamLeaderboardService.Ensure().SubmitScore(score, selectedCharacter, roster);
+    }
+
+    public void PlayPieceLockSFX()
+    {
+        if (!AudioManager.I || pieceLockSfxClips == null || pieceLockSfxClips.Length == 0)
+            return;
+
+        AudioClip clip = null;
+        for (int tries = 0; tries < pieceLockSfxClips.Length; tries++)
+        {
+            clip = pieceLockSfxClips[UnityEngine.Random.Range(0, pieceLockSfxClips.Length)];
+            if (clip)
+                break;
+        }
+
+        if (clip)
+            AudioManager.I.PlaySFX(clip, pieceLockSfxVolume);
     }
 
     void RefillBag(bool forceFirstEntryNormal = false)
@@ -2410,7 +2503,7 @@ public class GameController : MonoBehaviour
         if (delay > 0f)
             yield return new WaitForSecondsRealtime(delay);
 
-        yield return CoShowRoundTransition(RoundWinTransitionText);
+        yield return CoShowRoundTransition(RoundWinTransitionText, RoundTransitionVariant.Win);
         ResumeGameplayAfterRoundTransition();
 
         int completedLevelNumber = currentLevel + 1;
@@ -3655,17 +3748,19 @@ public class GameController : MonoBehaviour
         foreach (var graphic in go.GetComponentsInChildren<Graphic>(true))
             graphic.raycastTarget = false;
 
+        Vector2 visualPosition = anchoredPosition + GetAttackExplosionOffset();
+
         if (go.transform is RectTransform rt)
         {
             rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
-            rt.anchoredPosition = anchoredPosition;
+            rt.anchoredPosition = visualPosition;
 
             if (gameBoard)
-                rt.sizeDelta = gameBoard.GetCellSize();
+                rt.sizeDelta = gameBoard.GetCellSize() * Mathf.Max(0.01f, attackExplosionSizeMultiplier);
         }
         else
         {
-            go.transform.localPosition = new Vector3(anchoredPosition.x, anchoredPosition.y, 0f);
+            go.transform.localPosition = new Vector3(visualPosition.x, visualPosition.y, 0f);
         }
 
         Animator animator = go.GetComponent<Animator>();
@@ -3677,8 +3772,17 @@ public class GameController : MonoBehaviour
         }
         else
         {
-            Destroy(go, 0.5f);
+            StartCoroutine(DestroyAttackExplosionAfterDelay(go, 0.5f));
         }
+    }
+
+    Vector2 GetAttackExplosionOffset()
+    {
+        if (!gameBoard)
+            return Vector2.zero;
+
+        Vector2 cellSize = gameBoard.GetCellSize();
+        return new Vector2(cellSize.x * attackExplosionOffsetCells.x, cellSize.y * attackExplosionOffsetCells.y);
     }
 
     GameObject PickRandomAttackExplosionPrefab()
@@ -3699,8 +3803,38 @@ public class GameController : MonoBehaviour
 
     IEnumerator DestroyAttackExplosionAfterAnimation(GameObject instance, Animator animator)
     {
-        float duration = 0f;
+        yield return null;
 
+        float elapsed = 0f;
+        float timeout = GetAttackExplosionCleanupTimeout(animator);
+
+        while (instance && animator && animator.isActiveAndEnabled && elapsed < timeout)
+        {
+            if (animator.layerCount <= 0)
+                break;
+
+            AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
+            if (!animator.IsInTransition(0) && state.normalizedTime >= 1f)
+                break;
+
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        if (instance)
+            Destroy(instance);
+    }
+
+    float GetAttackExplosionCleanupTimeout(Animator animator)
+    {
+        if (animator && animator.layerCount > 0)
+        {
+            AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
+            if (state.length > 0.01f)
+                return state.length + 0.25f;
+        }
+
+        float duration = 0.5f;
         if (animator && animator.runtimeAnimatorController)
         {
             AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
@@ -3711,10 +3845,12 @@ public class GameController : MonoBehaviour
             }
         }
 
-        if (duration <= 0.01f)
-            duration = 0.5f;
+        return duration + 0.25f;
+    }
 
-        yield return new WaitForSeconds(duration + 0.05f);
+    IEnumerator DestroyAttackExplosionAfterDelay(GameObject instance, float delaySeconds)
+    {
+        yield return new WaitForSecondsRealtime(Mathf.Max(0f, delaySeconds));
 
         if (instance)
             Destroy(instance);
@@ -4109,6 +4245,91 @@ public class GameController : MonoBehaviour
 
     // ================ Pause Menu Button Functions ===================
 
+    void RefreshPauseMenuNavigation()
+    {
+        GameObject root = GetCurrentPauseNavigationRoot();
+        if (!root)
+        {
+            DisablePauseMenuNavigation();
+            return;
+        }
+
+        if (!pauseMenuNavigator)
+            pauseMenuNavigator = ScopedMenuNavigator.Attach(pausePanel, root);
+
+        if (!pauseMenuNavigator)
+            return;
+
+        pauseMenuNavigator.enabled = true;
+        pauseMenuNavigator.SetNavigationRoot(root);
+    }
+
+    void DisablePauseMenuNavigation()
+    {
+        if (pauseMenuNavigator)
+            pauseMenuNavigator.enabled = false;
+    }
+
+    GameObject GetCurrentPauseNavigationRoot()
+    {
+        if (!isPaused || !pausePanel || !UIPanelTransition.IsVisible(pausePanel))
+            return null;
+
+        if (ConfirmationPopupUI.TryGetShowingRoot(out var popupRoot))
+            return popupRoot;
+
+        if (volumePanelInPause && UIPanelTransition.IsVisible(volumePanelInPause.gameObject))
+            return null;
+
+        if (gameplayStatsPanelUI && gameplayStatsPanelUI.IsVisible)
+            return gameplayStatsPanelUI.gameObject;
+
+        if (helpPanelRoot && UIPanelTransition.IsVisible(helpPanelRoot))
+            return helpPanelRoot;
+
+        if (runModsPanelRoot && UIPanelTransition.IsVisible(runModsPanelRoot))
+            return runModsPanelRoot;
+
+        return pausePanel;
+    }
+
+    bool HandlePauseMenuCancelInput()
+    {
+        if (!TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuCancel))
+            return false;
+
+        if (ConfirmationPopupUI.TryCancelShowingPopup())
+            return true;
+
+        if (volumePanelInPause && UIPanelTransition.IsVisible(volumePanelInPause.gameObject))
+            return false;
+
+        if (gameplayStatsPanelUI && gameplayStatsPanelUI.IsVisible)
+        {
+            gameplayStatsPanelUI.Close();
+            RefreshPauseMenuNavigation();
+            return true;
+        }
+
+        if (helpPanelRoot && UIPanelTransition.IsVisible(helpPanelRoot))
+        {
+            UIPanelTransition.Hide(helpPanelRoot);
+            RefreshPauseMenuNavigation();
+            return true;
+        }
+
+        if (runModsPanelRoot && UIPanelTransition.IsVisible(runModsPanelRoot))
+        {
+            UIPanelTransition.Hide(runModsPanelRoot);
+            RefreshPauseMenuNavigation();
+            return true;
+        }
+
+        ResumeGame();
+        EnterGameplayCursorMode();
+        return true;
+    }
+
     public void PauseGame()
     {
         if (gameOver || levelWon || _levelStartBlocked) return;
@@ -4118,6 +4339,7 @@ public class GameController : MonoBehaviour
 
         if (AudioManager.I) AudioManager.I.PlayPauseMusic(); // Play pause menu music if assigned
         if (pausePanel) UIPanelTransition.Show(pausePanel);
+        RefreshPauseMenuNavigation();
 
         NotifyTutorialGameplayEvent(TutorialGameplayEvent.PauseOpened);
 
@@ -4186,6 +4408,7 @@ public class GameController : MonoBehaviour
         AudioListener.pause = false;
         isPaused = false;
         if (pausePanel) UIPanelTransition.Hide(pausePanel, true);
+        DisablePauseMenuNavigation();
 
         ClosePauseSubPanels(true);
 
@@ -4254,6 +4477,7 @@ public class GameController : MonoBehaviour
             AudioManager.I.ApplyPendingMusicModeAfterUnpause(); 
 
         if (pausePanel) UIPanelTransition.Hide(pausePanel);
+        DisablePauseMenuNavigation();
         NotifyTutorialGameplayEvent(TutorialGameplayEvent.PauseClosed);
         EnterGameplayCursorMode();
     }
@@ -4409,11 +4633,13 @@ public class GameController : MonoBehaviour
             gameplayStatsPanelUI.Close();
 
         UIPanelTransition.Show(runModsPanelRoot);
+        RefreshPauseMenuNavigation();
     }
 
     public void CloseRunModsPanel()
     {
         if (runModsPanelRoot) UIPanelTransition.Hide(runModsPanelRoot);
+        RefreshPauseMenuNavigation();
     }
 
     public void OpenGameplayStatsPanel()
@@ -4432,12 +4658,15 @@ public class GameController : MonoBehaviour
             volumePanelInPause.Close();
 
         gameplayStatsPanelUI.Open(this);
+        RefreshPauseMenuNavigation();
     }
 
     public void CloseGameplayStatsPanel(bool instant = false)
     {
         if (gameplayStatsPanelUI)
             gameplayStatsPanelUI.Close(instant);
+
+        RefreshPauseMenuNavigation();
     }
 
     void SetupGameplayStatsPanel()
@@ -4503,6 +4732,8 @@ public class GameController : MonoBehaviour
         // Close Volume settings panel
         if (volumePanelInPause && UIPanelTransition.IsVisible(volumePanelInPause.gameObject))
             volumePanelInPause.Close(instant);
+
+        RefreshPauseMenuNavigation();
     }
 
     // ================ Currency Popup System ===================
@@ -6482,6 +6713,115 @@ public class GameController : MonoBehaviour
     }
 
     // ================== Special Gauge & Text Visuals ==================
+
+    void HandleControlsDisplayChanged(TetrabeastsControlProfile _)
+    {
+        RefreshGameplayControlTexts();
+    }
+
+    void RefreshGameplayControlTextsIfNeeded()
+    {
+        TetrabeastsControlProfile savedProfile = TetrabeastsControls.SavedProfile;
+        TetrabeastsControlProfile effectiveProfile = TetrabeastsControls.EffectiveProfile;
+        string specialBinding = GetGameplayBindingLabel(TetrabeastsControlAction.Special);
+
+        if (_hasControlsTextSnapshot &&
+            _lastControlsTextSavedProfile == savedProfile &&
+            _lastControlsTextEffectiveProfile == effectiveProfile &&
+            string.Equals(_lastControlsTextSpecialBinding, specialBinding, System.StringComparison.Ordinal))
+            return;
+
+        RefreshGameplayControlTexts();
+    }
+
+    void RefreshGameplayControlTexts()
+    {
+        ResolveGameplayControlsText();
+
+        TetrabeastsControlProfile savedProfile = TetrabeastsControls.SavedProfile;
+        TetrabeastsControlProfile effectiveProfile = TetrabeastsControls.EffectiveProfile;
+        string specialBinding = GetGameplayBindingLabel(TetrabeastsControlAction.Special);
+
+        if (activateSpecialGaugeText)
+            activateSpecialGaugeText.text = specialBinding;
+
+        if (gameplayControlsText)
+        {
+            string profileLabel = GetGameplayControlsProfileHeader(savedProfile, effectiveProfile);
+            gameplayControlsText.text = string.Join("\n", new[]
+            {
+                profileLabel,
+                FormatGameplayControlLine(TetrabeastsControlAction.Pause),
+                FormatGameplayControlLine(TetrabeastsControlAction.RotateCounterClockwise),
+                FormatGameplayControlLine(TetrabeastsControlAction.RotateClockwise),
+                FormatGameplayControlLine(TetrabeastsControlAction.MoveLeft),
+                FormatGameplayControlLine(TetrabeastsControlAction.MoveRight),
+                FormatGameplayControlLine(TetrabeastsControlAction.SoftDrop),
+                FormatGameplayControlLine(TetrabeastsControlAction.HardDrop),
+                $"{specialBinding} = {TetrabeastsLocalization.LocalizeText("Character Special")}"
+            });
+        }
+
+        _lastControlsTextSavedProfile = savedProfile;
+        _lastControlsTextEffectiveProfile = effectiveProfile;
+        _lastControlsTextSpecialBinding = specialBinding;
+        _hasControlsTextSnapshot = true;
+    }
+
+    void ResolveGameplayControlsText()
+    {
+        if (gameplayControlsText)
+            return;
+
+        var labels = GetComponentsInChildren<TMP_Text>(true);
+        for (int i = 0; i < labels.Length; i++)
+        {
+            var label = labels[i];
+            if (label && label.name == "Control_Text")
+            {
+                gameplayControlsText = label;
+                return;
+            }
+        }
+    }
+
+    string FormatGameplayControlLine(TetrabeastsControlAction action)
+    {
+        return $"{GetGameplayBindingLabel(action)} = {TetrabeastsLocalization.LocalizeText(GetGameplayActionText(action))}";
+    }
+
+    string GetGameplayControlsProfileHeader(TetrabeastsControlProfile savedProfile, TetrabeastsControlProfile effectiveProfile)
+    {
+        TetrabeastsControlProfile profile = savedProfile == TetrabeastsControlProfile.PlatformDefault
+            ? effectiveProfile
+            : savedProfile;
+
+        string label = TetrabeastsControls.GetProfileLabel(profile);
+        return string.Equals(label, "Keyboard / Mouse", System.StringComparison.Ordinal)
+            ? "Mouse/Keyboard"
+            : label;
+    }
+
+    string GetGameplayBindingLabel(TetrabeastsControlAction action)
+    {
+        string label = TetrabeastsControls.GetBindingLabel(action, TetrabeastsControls.SavedProfile);
+        return string.IsNullOrWhiteSpace(label) ? TetrabeastsControls.GetActionLabel(action) : label;
+    }
+
+    static string GetGameplayActionText(TetrabeastsControlAction action)
+    {
+        return action switch
+        {
+            TetrabeastsControlAction.MoveLeft => "Move Left",
+            TetrabeastsControlAction.MoveRight => "Move Right",
+            TetrabeastsControlAction.SoftDrop => "Soft Drop",
+            TetrabeastsControlAction.RotateClockwise => "Rotate Clockwise",
+            TetrabeastsControlAction.RotateCounterClockwise => "Rotate Counterclockwise",
+            TetrabeastsControlAction.HardDrop => "Hard Drop",
+            TetrabeastsControlAction.Pause => "Pause",
+            _ => TetrabeastsControls.GetActionLabel(action)
+        };
+    }
 
     void CacheSpecialDefaultsIfNeeded(TMP_Text t)
     {

@@ -51,6 +51,7 @@ public class RoundRewardUI : MonoBehaviour
 
     RunModifierSO _selectedBuff;
     RunModifierSO _selectedDebuff;
+    ScopedMenuNavigator _navigator;
 
     Action<RunModifierSO, RunModifierSO> _onComplete;
 
@@ -98,18 +99,21 @@ public class RoundRewardUI : MonoBehaviour
         }
 
         Populate(buffContainer, Pick3UniqueWeighted(buffPool, luck, wasBossLevel), isBuff: true);
+        SetNavigationRoot(buffPanel);
+
         confirmBuffButton.onClick.RemoveAllListeners();
         confirmBuffButton.onClick.AddListener(() =>
         {
-            UIPanelTransition.Hide(buffPanel);
-            UIPanelTransition.Show(debuffPanel);
-
             var excludedLegendaryDebuffs = BuildChosenLegendaryDebuffExclusions();
             var debuffPicks = wasBossLevel
                 ? Pick3UniqueLegendary(debuffPool, excludedLegendaryDebuffs)
                 : Pick3UniqueWeighted(debuffPool, misfortune, wasBossLevel, excludedLegendaryDebuffs);
 
             Populate(debuffContainer, debuffPicks, isBuff: false);
+
+            UIPanelTransition.Hide(buffPanel, true);
+            UIPanelTransition.Show(debuffPanel, true);
+            SetNavigationRoot(debuffPanel);
         });
 
         confirmDebuffButton.onClick.RemoveAllListeners();
@@ -166,6 +170,27 @@ public class RoundRewardUI : MonoBehaviour
                 }
             });
         }
+    }
+
+    void SetNavigationRoot(GameObject panel)
+    {
+        if (!rootPanel || !panel)
+            return;
+
+        if (!_navigator)
+            _navigator = ScopedMenuNavigator.Attach(rootPanel, panel);
+
+        if (_navigator)
+        {
+            _navigator.enabled = true;
+            _navigator.SetNavigationRoot(panel);
+        }
+    }
+
+    void DisableNavigation()
+    {
+        if (_navigator)
+            _navigator.enabled = false;
     }
 
     float[] GetRarityProbsFromLuck(float luck, bool wasBossLevel)
@@ -445,6 +470,7 @@ public class RoundRewardUI : MonoBehaviour
         }
 
         StopBlink();
+        DisableNavigation();
         UIPanelTransition.Hide(rootPanel);
     }
 

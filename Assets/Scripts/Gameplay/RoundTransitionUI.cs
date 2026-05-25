@@ -3,6 +3,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum RoundTransitionVariant
+{
+    Default,
+    Win,
+    Loss
+}
+
 public class RoundTransitionUI : MonoBehaviour
 {
     const int RuntimeSortingOrder = 30000;
@@ -37,6 +44,20 @@ public class RoundTransitionUI : MonoBehaviour
     [SerializeField] AudioClip activeLoopSfxClip;
     [SerializeField, Range(0f, 1f)] float activeLoopSfxVolume = 1f;
 
+    [Header("Loss Animation")]
+    [SerializeField] Animator lossTransitionAnimator;
+    [SerializeField] GameObject lossAnimationRoot;
+    [SerializeField] AnimationClip lossShowAnimationClip;
+    [SerializeField] string lossShowAnimationStateName;
+    [SerializeField] string lossShowAnimationTrigger;
+    [SerializeField] string lossHideAnimationTrigger;
+
+    [Header("Loss Audio")]
+    [SerializeField] AudioClip lossAppearSfxClip;
+    [SerializeField, Range(0f, 1f)] float lossAppearSfxVolume = 1f;
+    [SerializeField] AudioClip lossActiveLoopSfxClip;
+    [SerializeField, Range(0f, 1f)] float lossActiveLoopSfxVolume = 1f;
+
     [Header("Timing")]
     [SerializeField, Min(0.01f)] float fadeInSeconds = 1.85f;
     [SerializeField, Min(0f)] float autoHoldSeconds = 3f;
@@ -46,6 +67,9 @@ public class RoundTransitionUI : MonoBehaviour
     Action _onContinue;
     Action<bool> _onOptOutContinue;
     Coroutine _fadeRoutine;
+    ScopedMenuNavigator _navigator;
+    AudioClip _currentActiveLoopSfxClip;
+    RoundTransitionVariant _currentVariant = RoundTransitionVariant.Default;
     bool _builtRuntimeUi;
     bool _continueButtonUsesPrefab;
     const float RuntimeActionGap = 22f;
@@ -88,6 +112,11 @@ public class RoundTransitionUI : MonoBehaviour
         Show(message, onContinue, string.Empty, false, null);
     }
 
+    public void Show(string message, Action onContinue, RoundTransitionVariant variant)
+    {
+        Show(message, onContinue, string.Empty, false, null, variant);
+    }
+
     public void ShowTimed(string message, Action onComplete)
     {
         ShowTimed(message, autoHoldSeconds, autoFadeOutSeconds, onComplete);
@@ -110,7 +139,8 @@ public class RoundTransitionUI : MonoBehaviour
         gameObject.SetActive(true);
         rootPanel.SetActive(true);
         rootPanel.transform.SetAsLastSibling();
-        SetFireworkAnimationVisible(false);
+        _currentVariant = RoundTransitionVariant.Default;
+        SetVariantAnimationVisible(false);
 
         var rootGroup = rootPanel.GetComponent<CanvasGroup>();
         if (rootGroup)
@@ -142,7 +172,7 @@ public class RoundTransitionUI : MonoBehaviour
     }
 
     public void Show(string message, Action onContinue, string optOutLabel, bool optOutInitialValue,
-                     Action<bool> onOptOutContinue)
+                     Action<bool> onOptOutContinue, RoundTransitionVariant variant = RoundTransitionVariant.Default)
     {
         EnsureBuilt();
 
@@ -153,6 +183,7 @@ public class RoundTransitionUI : MonoBehaviour
         }
 
         ApplyFont();
+        _currentVariant = variant;
         _onContinue = onContinue;
         _onOptOutContinue = onOptOutContinue;
         ConfigureOptOutToggle(optOutLabel, optOutInitialValue);
@@ -160,7 +191,7 @@ public class RoundTransitionUI : MonoBehaviour
         gameObject.SetActive(true);
         rootPanel.SetActive(true);
         rootPanel.transform.SetAsLastSibling();
-        SetFireworkAnimationVisible(true);
+        SetVariantAnimationVisible(true);
         PlayShowAnimation();
         PlayShowAudio();
 
@@ -231,6 +262,8 @@ public class RoundTransitionUI : MonoBehaviour
         if (optOutToggle)
             optOutToggle.interactable = false;
 
+        DisableNavigation();
+
         if (rootPanel)
         {
             var rootGroup = rootPanel.GetComponent<CanvasGroup>();
@@ -254,6 +287,7 @@ public class RoundTransitionUI : MonoBehaviour
     void OnDisable()
     {
         StopActiveLoopSfx();
+        DisableNavigation();
     }
 
     System.Collections.IEnumerator CoFadeIn()
@@ -295,6 +329,7 @@ public class RoundTransitionUI : MonoBehaviour
             optOutToggle.interactable = true;
         }
 
+        EnableNavigation();
         _fadeRoutine = null;
     }
 
@@ -703,13 +738,15 @@ public class RoundTransitionUI : MonoBehaviour
     {
         _onContinue = null;
         _onOptOutContinue = null;
-        SetFireworkAnimationVisible(false);
+        SetVariantAnimationVisible(false);
 
         if (continueButton)
             continueButton.interactable = false;
 
         if (optOutToggle)
             optOutToggle.interactable = false;
+
+        DisableNavigation();
 
         if (rootPanel)
         {
@@ -835,6 +872,27 @@ public class RoundTransitionUI : MonoBehaviour
             sfxHook.HookButton(continueButton);
     }
 
+    void EnableNavigation()
+    {
+        if (!rootPanel)
+            return;
+
+        if (!_navigator)
+            _navigator = ScopedMenuNavigator.Attach(rootPanel, rootPanel);
+
+        if (_navigator)
+        {
+            _navigator.enabled = true;
+            _navigator.SetNavigationRoot(rootPanel);
+        }
+    }
+
+    void DisableNavigation()
+    {
+        if (_navigator)
+            _navigator.enabled = false;
+    }
+
     void ResolveAnimator()
     {
         if (!transitionAnimator && rootPanel)
@@ -847,12 +905,18 @@ public class RoundTransitionUI : MonoBehaviour
             transitionAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
     }
 
-    void SetFireworkAnimationVisible(bool visible)
+    void SetVariantAnimationVisible(bool visible)
     {
         ResolveFireworkAnimationRoot();
 
+        if (UsesLossVariant())
+            ResolveLossAnimationRoot();
+
         if (fireworkAnimationRoot)
-            fireworkAnimationRoot.SetActive(visible);
+            fireworkAnimationRoot.SetActive(visible && !UsesLossVariant());
+
+        if (lossAnimationRoot)
+            lossAnimationRoot.SetActive(visible && UsesLossVariant());
     }
 
     void ResolveFireworkAnimationRoot()
@@ -884,31 +948,38 @@ public class RoundTransitionUI : MonoBehaviour
 
     void PlayShowAnimation()
     {
-        ResolveAnimator();
-        if (!transitionAnimator)
+        Animator animator = GetVariantAnimator();
+        if (!animator)
             return;
 
         if (useUnscaledAnimationTime)
-            transitionAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+            animator.updateMode = AnimatorUpdateMode.UnscaledTime;
 
-        if (!string.IsNullOrWhiteSpace(showAnimationStateName))
-            transitionAnimator.Play(showAnimationStateName, 0, 0f);
+        RestartAnimator(animator);
 
-        if (!string.IsNullOrWhiteSpace(showAnimationTrigger))
+        string stateName = GetShowAnimationStateName(animator);
+        string triggerName = GetShowAnimationTriggerName(animator);
+
+        if (!string.IsNullOrWhiteSpace(stateName))
+            animator.Play(stateName, 0, 0f);
+
+        if (!string.IsNullOrWhiteSpace(triggerName) && HasAnimatorTrigger(animator, triggerName))
         {
-            transitionAnimator.ResetTrigger(showAnimationTrigger);
-            transitionAnimator.SetTrigger(showAnimationTrigger);
+            animator.ResetTrigger(triggerName);
+            animator.SetTrigger(triggerName);
         }
     }
 
     void PlayHideAnimation()
     {
-        ResolveAnimator();
-        if (!transitionAnimator || string.IsNullOrWhiteSpace(hideAnimationTrigger))
+        Animator animator = GetVariantAnimator();
+        string triggerName = GetHideAnimationTriggerName(animator);
+
+        if (!animator || string.IsNullOrWhiteSpace(triggerName) || !HasAnimatorTrigger(animator, triggerName))
             return;
 
-        transitionAnimator.ResetTrigger(hideAnimationTrigger);
-        transitionAnimator.SetTrigger(hideAnimationTrigger);
+        animator.ResetTrigger(triggerName);
+        animator.SetTrigger(triggerName);
     }
 
     void PlayShowAudio()
@@ -916,16 +987,201 @@ public class RoundTransitionUI : MonoBehaviour
         if (!AudioManager.I)
             return;
 
-        if (appearSfxClip)
-            AudioManager.I.PlayRoundTransitionAppearSFX(appearSfxClip, appearSfxVolume);
+        AudioClip appearClip = UsesLossVariant() && lossAppearSfxClip ? lossAppearSfxClip : appearSfxClip;
+        float appearVolume = UsesLossVariant() && lossAppearSfxClip ? lossAppearSfxVolume : appearSfxVolume;
+        AudioClip loopClip = UsesLossVariant() && lossActiveLoopSfxClip ? lossActiveLoopSfxClip : activeLoopSfxClip;
+        float loopVolume = UsesLossVariant() && lossActiveLoopSfxClip ? lossActiveLoopSfxVolume : activeLoopSfxVolume;
 
-        if (activeLoopSfxClip)
-            AudioManager.I.PlayRoundTransitionLoopSFX(activeLoopSfxClip, activeLoopSfxVolume);
+        if (appearClip)
+            AudioManager.I.PlayRoundTransitionAppearSFX(appearClip, appearVolume);
+
+        if (loopClip)
+        {
+            _currentActiveLoopSfxClip = loopClip;
+            AudioManager.I.PlayRoundTransitionLoopSFX(loopClip, loopVolume);
+        }
     }
 
     void StopActiveLoopSfx()
     {
-        if (activeLoopSfxClip && AudioManager.I)
+        if (!AudioManager.I)
+            return;
+
+        if (_currentActiveLoopSfxClip)
+        {
+            AudioManager.I.StopRoundTransitionLoopSFX(_currentActiveLoopSfxClip);
+            _currentActiveLoopSfxClip = null;
+            return;
+        }
+
+        if (activeLoopSfxClip)
             AudioManager.I.StopRoundTransitionLoopSFX(activeLoopSfxClip);
+
+        if (lossActiveLoopSfxClip && lossActiveLoopSfxClip != activeLoopSfxClip)
+            AudioManager.I.StopRoundTransitionLoopSFX(lossActiveLoopSfxClip);
+    }
+
+    Animator GetVariantAnimator()
+    {
+        ResolveAnimator();
+
+        if (UsesLossVariant())
+            ResolveLossAnimator();
+
+        if (UsesLossVariant() && lossTransitionAnimator)
+        {
+            if (useUnscaledAnimationTime)
+                lossTransitionAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+
+            return lossTransitionAnimator;
+        }
+
+        return transitionAnimator;
+    }
+
+    void ResolveLossAnimationRoot()
+    {
+        if (!lossAnimationRoot)
+        {
+            Transform root = rootPanel ? rootPanel.transform : transform;
+            lossAnimationRoot = FindChildByName(root, "GameOver_Animation");
+
+            if (!lossAnimationRoot)
+                lossAnimationRoot = FindChildByName(root, "Loss_Animation");
+        }
+
+        if (!lossAnimationRoot && lossTransitionAnimator)
+            lossAnimationRoot = lossTransitionAnimator.gameObject;
+
+        if (lossAnimationRoot && !lossAnimationRoot.scene.IsValid())
+            InstantiateLossAnimationRoot(lossAnimationRoot);
+    }
+
+    void ResolveLossAnimator()
+    {
+        ResolveLossAnimationRoot();
+
+        bool animatorIsSceneObject = lossTransitionAnimator && lossTransitionAnimator.gameObject.scene.IsValid();
+        if ((!lossTransitionAnimator || !animatorIsSceneObject) && lossAnimationRoot)
+            lossTransitionAnimator = lossAnimationRoot.GetComponentInChildren<Animator>(true);
+
+        if (lossTransitionAnimator && useUnscaledAnimationTime)
+            lossTransitionAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+    }
+
+    void InstantiateLossAnimationRoot(GameObject source)
+    {
+        if (!source)
+            return;
+
+        Transform parent = rootPanel ? rootPanel.transform : transform;
+        var instance = Instantiate(source, parent);
+        instance.name = source.name;
+        lossAnimationRoot = instance;
+        lossTransitionAnimator = instance.GetComponentInChildren<Animator>(true);
+
+        foreach (var graphic in instance.GetComponentsInChildren<Graphic>(true))
+            graphic.raycastTarget = false;
+    }
+
+    string GetShowAnimationStateName(Animator animator)
+    {
+        if (!UsesLossVariant())
+            return showAnimationStateName;
+
+        if (!string.IsNullOrWhiteSpace(lossShowAnimationStateName))
+            return lossShowAnimationStateName;
+
+        if (lossShowAnimationClip && AnimatorHasClip(animator, lossShowAnimationClip))
+            return lossShowAnimationClip.name;
+
+        bool usingSeparateLossAnimator = lossTransitionAnimator &&
+                                         animator == lossTransitionAnimator &&
+                                         lossTransitionAnimator != transitionAnimator;
+        return usingSeparateLossAnimator ? GetFirstAnimationClipName(animator) : showAnimationStateName;
+    }
+
+    string GetShowAnimationTriggerName(Animator animator)
+    {
+        if (!UsesLossVariant())
+            return showAnimationTrigger;
+
+        if (!string.IsNullOrWhiteSpace(lossShowAnimationTrigger))
+            return lossShowAnimationTrigger;
+
+        bool usingSeparateLossAnimator = lossTransitionAnimator &&
+                                         animator == lossTransitionAnimator &&
+                                         lossTransitionAnimator != transitionAnimator;
+        return usingSeparateLossAnimator ? string.Empty : showAnimationTrigger;
+    }
+
+    string GetHideAnimationTriggerName(Animator animator)
+    {
+        if (!UsesLossVariant())
+            return hideAnimationTrigger;
+
+        if (!string.IsNullOrWhiteSpace(lossHideAnimationTrigger))
+            return lossHideAnimationTrigger;
+
+        bool usingSeparateLossAnimator = lossTransitionAnimator &&
+                                         animator == lossTransitionAnimator &&
+                                         lossTransitionAnimator != transitionAnimator;
+        return usingSeparateLossAnimator ? string.Empty : hideAnimationTrigger;
+    }
+
+    void RestartAnimator(Animator animator)
+    {
+        if (!animator)
+            return;
+
+        animator.enabled = true;
+        animator.Rebind();
+        animator.Update(0f);
+    }
+
+    bool AnimatorHasClip(Animator animator, AnimationClip clip)
+    {
+        if (!animator || !clip || !animator.runtimeAnimatorController)
+            return false;
+
+        var clips = animator.runtimeAnimatorController.animationClips;
+        for (int i = 0; i < clips.Length; i++)
+        {
+            if (clips[i] == clip || string.Equals(clips[i].name, clip.name, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
+    }
+
+    string GetFirstAnimationClipName(Animator animator)
+    {
+        if (!animator || !animator.runtimeAnimatorController)
+            return string.Empty;
+
+        var clips = animator.runtimeAnimatorController.animationClips;
+        return clips != null && clips.Length > 0 && clips[0] ? clips[0].name : string.Empty;
+    }
+
+    bool HasAnimatorTrigger(Animator animator, string triggerName)
+    {
+        if (!animator || string.IsNullOrWhiteSpace(triggerName))
+            return false;
+
+        var parameters = animator.parameters;
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            var parameter = parameters[i];
+            if (parameter.type == AnimatorControllerParameterType.Trigger &&
+                string.Equals(parameter.name, triggerName, StringComparison.Ordinal))
+                return true;
+        }
+
+        return false;
+    }
+
+    bool UsesLossVariant()
+    {
+        return _currentVariant == RoundTransitionVariant.Loss;
     }
 }

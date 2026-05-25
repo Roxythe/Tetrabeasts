@@ -104,6 +104,7 @@ public static class TetrabeastsControls
     };
 
     static readonly Dictionary<TetrabeastsControlAction, HoldRepeatState> RepeatStates = new();
+    static readonly Dictionary<TetrabeastsControlAction, int> PressConsumedFrames = new();
     static readonly Dictionary<TetrabeastsControlProfile, BindingProfileState> BindingProfiles = new();
     static bool hasLastInputProfile;
     static TetrabeastsControlProfile lastInputProfile = TetrabeastsControlProfile.KeyboardMouse;
@@ -642,10 +643,16 @@ public static class TetrabeastsControls
 
     public static bool WasPressed(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
     {
+        if (IsPressedConsumedThisFrame(action))
+            return false;
+
         TetrabeastsControlProfile effectiveProfile = ResolveProfile(profile);
 
         if (TryWasPressedCustom(action, effectiveProfile, out bool customPressed))
+        {
+            ConsumePressedIfNeeded(action, customPressed);
             return customPressed;
+        }
 
         bool pressed = false;
 
@@ -659,6 +666,7 @@ public static class TetrabeastsControls
         pressed |= WasPressedLegacy(action, effectiveProfile);
 #endif
 
+        ConsumePressedIfNeeded(action, pressed);
         return pressed;
     }
 
@@ -687,7 +695,7 @@ public static class TetrabeastsControls
         initialDelaySeconds = Mathf.Max(0.01f, initialDelaySeconds);
         repeatIntervalSeconds = Mathf.Max(0.01f, repeatIntervalSeconds);
 
-        if (pressed)
+        if (pressed && !state.IsHeld)
         {
             state.IsHeld = true;
             state.NextRepeatTime = now + initialDelaySeconds;
@@ -1771,6 +1779,24 @@ public static class TetrabeastsControls
         return action == TetrabeastsControlAction.MenuNavigate ||
                action == TetrabeastsControlAction.MenuSubmit ||
                action == TetrabeastsControlAction.MenuCancel;
+    }
+
+    static bool IsPressedConsumedThisFrame(TetrabeastsControlAction action)
+    {
+        return ShouldConsumePressedAction(action) &&
+               PressConsumedFrames.TryGetValue(action, out int frame) &&
+               frame == Time.frameCount;
+    }
+
+    static void ConsumePressedIfNeeded(TetrabeastsControlAction action, bool pressed)
+    {
+        if (pressed && ShouldConsumePressedAction(action))
+            PressConsumedFrames[action] = Time.frameCount;
+    }
+
+    static bool ShouldConsumePressedAction(TetrabeastsControlAction action)
+    {
+        return !IsMenuAction(action);
     }
 
     struct HoldRepeatState

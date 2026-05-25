@@ -23,6 +23,7 @@ public class UICursorController : MonoBehaviour
     static bool s_virtualCursorMode;
     static int s_lastVirtualCursorFrame = -1000;
     static int s_lastVirtualSubmitFrame = -1000;
+    static Vector2 s_currentScreenPosition;
 
     readonly System.Collections.Generic.List<RaycastResult> raycastResults = new();
     float _scale = 1f;
@@ -36,6 +37,8 @@ public class UICursorController : MonoBehaviour
     public static bool IsVirtualCursorMode => s_virtualCursorMode;
     public static bool VirtualCursorActiveThisFrame => Time.frameCount == s_lastVirtualCursorFrame;
     public static bool ConsumedVirtualSubmitThisFrame => Time.frameCount == s_lastVirtualSubmitFrame;
+    public static Vector2 CurrentScreenPosition => s_currentScreenPosition;
+    public static void ConsumeSubmitThisFrame() => s_lastVirtualSubmitFrame = Time.frameCount;
 
     void Awake()
     {
@@ -59,12 +62,15 @@ public class UICursorController : MonoBehaviour
         }
 
         virtualScreenPosition = Input.mousePosition;
+        s_currentScreenPosition = virtualScreenPosition;
     }
 
     void Update()
     {
         if (!cursorRect || !rootCanvas) return;
 
+        bool wasInputHidden = !inputVisible;
+        bool useScreenOverrideThisFrame = false;
         bool mouseUsed = WasMouseUsedThisFrame();
         Vector2 stick = ReadGamepadCursorStick();
         bool virtualCursorUsed = allowGamepadCursor && stick.sqrMagnitude >= gamepadCursorDeadzone * gamepadCursorDeadzone;
@@ -75,13 +81,26 @@ public class UICursorController : MonoBehaviour
         {
             s_virtualCursorMode = false;
             inputVisible = true;
-            virtualScreenPosition = Input.mousePosition;
+            if (wasInputHidden && TryGetSelectedScreenCenter(out var selectedCenter))
+            {
+                virtualScreenPosition = selectedCenter;
+                WarpMousePosition(selectedCenter);
+                useScreenOverrideThisFrame = true;
+            }
+            else
+            {
+                virtualScreenPosition = Input.mousePosition;
+            }
         }
         else if (virtualCursorUsed)
         {
             s_virtualCursorMode = true;
             s_lastVirtualCursorFrame = Time.frameCount;
             inputVisible = true;
+
+            if (wasInputHidden && TryGetSelectedScreenCenter(out var selectedCenter))
+                virtualScreenPosition = selectedCenter;
+
             virtualScreenPosition += stick * (gamepadCursorSpeed * Time.unscaledDeltaTime);
             virtualScreenPosition.x = Mathf.Clamp(virtualScreenPosition.x, 0f, Screen.width);
             virtualScreenPosition.y = Mathf.Clamp(virtualScreenPosition.y, 0f, Screen.height);
@@ -101,7 +120,10 @@ public class UICursorController : MonoBehaviour
         if (!cursorRect.gameObject.activeSelf)
             return;
 
-        Vector2 screen = s_virtualCursorMode ? virtualScreenPosition : (Vector2)Input.mousePosition;
+        Vector2 screen = s_virtualCursorMode || useScreenOverrideThisFrame
+            ? virtualScreenPosition
+            : (Vector2)Input.mousePosition;
+        s_currentScreenPosition = screen;
 
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             rootCanvas.transform as RectTransform,
@@ -201,7 +223,7 @@ public class UICursorController : MonoBehaviour
                 ExecuteEvents.Execute(virtualPointerTarget, pointerData, ExecuteEvents.pointerEnterHandler);
         }
 
-        if (!WasGamepadCursorSubmitPressed() || !virtualPointerTarget)
+        if (ConsumedVirtualSubmitThisFrame || !WasGamepadCursorSubmitPressed() || !virtualPointerTarget)
             return;
 
         if (!virtualClickTarget)
@@ -212,7 +234,7 @@ public class UICursorController : MonoBehaviour
         ExecuteEvents.Execute(virtualClickTarget, pointerData, ExecuteEvents.pointerDownHandler);
         ExecuteEvents.Execute(virtualClickTarget, pointerData, ExecuteEvents.pointerUpHandler);
         ExecuteEvents.Execute(virtualClickTarget, pointerData, ExecuteEvents.pointerClickHandler);
-        s_lastVirtualSubmitFrame = Time.frameCount;
+        ConsumeSubmitThisFrame();
     }
 
     void ClearVirtualPointerTarget()
@@ -220,6 +242,7 @@ public class UICursorController : MonoBehaviour
         if (!virtualPointerTarget || !EventSystem.current)
         {
             virtualPointerTarget = null;
+            virtualClickTarget = null;
             return;
         }
 
@@ -272,6 +295,39 @@ public class UICursorController : MonoBehaviour
         return stick.sqrMagnitude > 1f ? stick.normalized : stick;
     }
 
+    static bool TryGetSelectedScreenCenter(out Vector2 screenCenter)
+    {
+        screenCenter = default;
+
+        var eventSystem = EventSystem.current;
+        GameObject selected = eventSystem ? eventSystem.currentSelectedGameObject : null;
+        if (!selected)
+            return false;
+
+        var rectTransform = selected.GetComponentInParent<RectTransform>();
+        if (!rectTransform)
+            return false;
+
+        Camera camera = null;
+        var canvas = selected.GetComponentInParent<Canvas>();
+        if (canvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay)
+            camera = canvas.worldCamera;
+
+        screenCenter = RectTransformUtility.WorldToScreenPoint(
+            camera,
+            rectTransform.TransformPoint(rectTransform.rect.center));
+        return true;
+    }
+
+    static void WarpMousePosition(Vector2 screenPosition)
+    {
+#if ENABLE_INPUT_SYSTEM
+        var mouse = Mouse.current;
+        if (mouse != null)
+            mouse.WarpCursorPosition(screenPosition);
+#endif
+    }
+
     static bool WasGamepadCursorSubmitPressed()
     {
         bool pressed = false;
@@ -298,12 +354,241 @@ public class UICursorController : MonoBehaviour
 
 }
 
+[DisallowMultipleComponent]
+public class ScopedMenuNavigator : MonoBehaviour
+{
+    const float NavigationRepeatDelay = 0.28f;
+    const float NavigationRepeatInterval = 0.12f;
+
+    [SerializeField] GameObject navigationRoot;
+
+    readonly Dictionary<Selectable, Navigation> savedNavigation = new();
+
+    GameObject automaticNavigationRoot;
+    bool eventSystemNavigationSuppressed;
+    Vector2 heldNavigationDirection;
+    float nextNavigationTime;
+
+    public GameObject NavigationRoot => navigationRoot;
+
+    public static ScopedMenuNavigator Attach(GameObject owner, GameObject root = null)
+    {
+        if (!owner)
+            return null;
+
+        var navigator = owner.GetComponent<ScopedMenuNavigator>();
+        if (!navigator)
+            navigator = owner.AddComponent<ScopedMenuNavigator>();
+
+        navigator.SetNavigationRoot(root ? root : owner, selectFirst: false);
+        return navigator;
+    }
+
+    public void SetNavigationRoot(GameObject root, bool selectFirst = false)
+    {
+        if (navigationRoot == root)
+        {
+            if (selectFirst)
+                SelectFirstUsable();
+            return;
+        }
+
+        RestoreAutomaticNavigationScope();
+        navigationRoot = root;
+        ResetNavigationRepeat();
+
+        if (selectFirst)
+            SelectFirstUsable();
+    }
+
+    public bool SelectFirstUsable()
+    {
+        if (!navigationRoot || !navigationRoot.activeInHierarchy)
+            return false;
+
+        return UINavigationUtility.SelectFirstUsable(navigationRoot);
+    }
+
+    void OnDisable()
+    {
+        ClearSelectionIfInside();
+        RestoreAutomaticNavigationScope();
+        ResetNavigationRepeat();
+    }
+
+    void Update()
+    {
+        if (!navigationRoot || !navigationRoot.activeInHierarchy)
+            return;
+
+        TetrabeastsControls.RefreshActiveInputProfile();
+        RefreshAutomaticNavigationScope(navigationRoot);
+
+        var current = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
+        if (current && !UINavigationUtility.IsSelectionUsableInside(current, navigationRoot))
+            EventSystem.current.SetSelectedGameObject(null);
+
+        if (TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuSubmit))
+        {
+            var selected = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
+            if (UINavigationUtility.IsSelectionUsableInside(selected, navigationRoot))
+            {
+                if (UINavigationUtility.TrySubmitSelected())
+                    return;
+            }
+            else if (SelectFirstOrSubmitOnlyControl())
+            {
+                return;
+            }
+        }
+
+        HandleSpatialNavigation();
+    }
+
+    void HandleSpatialNavigation()
+    {
+        bool tabPressed = WasTabPressedThisFrame();
+        bool navigationInput = tabPressed ||
+            TetrabeastsControls.WasButtonNavigationPressedThisFrame() ||
+            TetrabeastsControls.IsButtonNavigationHeld();
+
+        if (!navigationInput)
+        {
+            ResetNavigationRepeat();
+            return;
+        }
+
+        var current = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
+        if (!UINavigationUtility.IsSelectionUsableInside(current, navigationRoot))
+        {
+            SelectFirstUsable();
+            ResetNavigationRepeat();
+            return;
+        }
+
+        if (tabPressed)
+        {
+            UINavigationUtility.SelectNextInOrder(navigationRoot, IsShiftHeld() ? -1 : 1);
+            ResetNavigationRepeat();
+            return;
+        }
+
+        if (!TryConsumeDirectionalNavigation(out Vector2 direction))
+            return;
+
+        UINavigationUtility.SelectInDirection(navigationRoot, direction);
+    }
+
+    bool SelectFirstOrSubmitOnlyControl()
+    {
+        var selectables = UINavigationUtility.GetUsableSelectables(navigationRoot);
+        if (selectables.Count == 0)
+            return false;
+
+        if (!UINavigationUtility.SelectFirstUsable(navigationRoot))
+            return false;
+
+        return selectables.Count > 1 || UINavigationUtility.TrySubmitSelected();
+    }
+
+    bool TryConsumeDirectionalNavigation(out Vector2 direction)
+    {
+        direction = UINavigationUtility.GetPrimaryDirection(TetrabeastsControls.GetButtonNavigationDirection());
+        if (direction.sqrMagnitude < 0.5f)
+        {
+            ResetNavigationRepeat();
+            return false;
+        }
+
+        float now = Time.unscaledTime;
+        if (direction != heldNavigationDirection)
+        {
+            heldNavigationDirection = direction;
+            nextNavigationTime = now + NavigationRepeatDelay;
+            return true;
+        }
+
+        if (now < nextNavigationTime)
+            return false;
+
+        nextNavigationTime = now + NavigationRepeatInterval;
+        return true;
+    }
+
+    void ResetNavigationRepeat()
+    {
+        heldNavigationDirection = Vector2.zero;
+        nextNavigationTime = 0f;
+    }
+
+    void RefreshAutomaticNavigationScope(GameObject root)
+    {
+        if (root != automaticNavigationRoot)
+        {
+            RestoreAutomaticNavigationScope();
+            automaticNavigationRoot = root;
+            UINavigationUtility.SuppressEventSystemNavigation();
+            eventSystemNavigationSuppressed = true;
+        }
+
+        UINavigationUtility.SuppressAutomaticNavigation(root, savedNavigation);
+    }
+
+    void RestoreAutomaticNavigationScope()
+    {
+        UINavigationUtility.RestoreAutomaticNavigation(savedNavigation);
+        if (eventSystemNavigationSuppressed)
+        {
+            UINavigationUtility.RestoreEventSystemNavigation();
+            eventSystemNavigationSuppressed = false;
+        }
+
+        automaticNavigationRoot = null;
+    }
+
+    void ClearSelectionIfInside()
+    {
+        var eventSystem = EventSystem.current;
+        if (!eventSystem || !navigationRoot)
+            return;
+
+        var current = eventSystem.currentSelectedGameObject;
+        if (current && current.transform.IsChildOf(navigationRoot.transform))
+            eventSystem.SetSelectedGameObject(null);
+    }
+
+    static bool WasTabPressedThisFrame()
+    {
+#if ENABLE_INPUT_SYSTEM
+        var keyboard = Keyboard.current;
+        return keyboard != null && keyboard.tabKey.wasPressedThisFrame;
+#elif ENABLE_LEGACY_INPUT_MANAGER
+        return Input.GetKeyDown(KeyCode.Tab);
+#else
+        return false;
+#endif
+    }
+
+    static bool IsShiftHeld()
+    {
+#if ENABLE_INPUT_SYSTEM
+        var keyboard = Keyboard.current;
+        return keyboard != null && (keyboard.leftShiftKey.isPressed || keyboard.rightShiftKey.isPressed);
+#elif ENABLE_LEGACY_INPUT_MANAGER
+        return Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+#else
+        return false;
+#endif
+    }
+}
+
 public static class UINavigationUtility
 {
     const float MinForwardDistance = 0.5f;
 
     static readonly List<Selectable> SelectableScratch = new();
     static readonly Dictionary<EventSystem, EventSystemNavigationState> EventSystemNavigationStates = new();
+    static int s_lastSubmitFrame = -1000;
 
     public static bool IsSelectionUsableInside(GameObject selected, GameObject root)
     {
@@ -410,7 +695,9 @@ public static class UINavigationUtility
     public static bool TrySubmitSelected()
     {
         var eventSystem = EventSystem.current;
-        if (!eventSystem || UICursorController.ConsumedVirtualSubmitThisFrame)
+        if (!eventSystem ||
+            UICursorController.ConsumedVirtualSubmitThisFrame ||
+            s_lastSubmitFrame == Time.frameCount)
             return false;
 
         GameObject selected = eventSystem.currentSelectedGameObject;
@@ -423,10 +710,17 @@ public static class UINavigationUtility
 
         var eventData = new BaseEventData(eventSystem);
         if (ExecuteEvents.Execute(selected, eventData, ExecuteEvents.submitHandler))
+        {
+            s_lastSubmitFrame = Time.frameCount;
             return true;
+        }
 
         var button = selected.GetComponentInParent<Button>();
-        return TryPressButton(button);
+        if (!TryPressButton(button))
+            return false;
+
+        s_lastSubmitFrame = Time.frameCount;
+        return true;
     }
 
     public static bool TryPressButton(Button button)

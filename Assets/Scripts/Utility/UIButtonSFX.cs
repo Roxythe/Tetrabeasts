@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [DisallowMultipleComponent]
-public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerClickHandler, ISelectHandler
+public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerClickHandler, ISelectHandler, ISubmitHandler
 {
     [Header("Assigned by GameplayUI_SFXHook")]
     public AudioClip hoverClip;
@@ -22,6 +22,8 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerDownHand
 
     static float s_nextHoverSfxTime;
     static int s_lastPointerUiFrame = -1000;
+    static int s_lastClickSfxFrame = -1000;
+    static GameObject s_lastClickSfxObject;
 
     Button _btn;
 
@@ -46,12 +48,12 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerDownHand
         if (Time.frameCount - s_lastPointerUiFrame <= 1)
             return;
 
-        if (TetrabeastsControls.EffectiveProfile == TetrabeastsControlProfile.KeyboardMouse &&
-            !TetrabeastsControls.WasButtonNavigationPressedThisFrame() &&
-            !TetrabeastsControls.IsButtonNavigationHeld())
-            return;
-
         PlayHoverSFX();
+    }
+
+    public void OnSubmit(BaseEventData eventData)
+    {
+        PlayClickSFX();
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -63,10 +65,28 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerDownHand
         // Left click / primary tap only
         if (eventData.button != PointerEventData.InputButton.Left) return;
 
-        if (AudioManager.I && clickClip)
-            AudioManager.I.PlayUISFX(clickClip, vol: clickVolume);
+        PlayClickSFX();
 
         ClearSelectionAfterKeyboardMouseClick();
+    }
+
+    public void PlayClickSFX()
+    {
+        if (!AudioManager.I || !clickClip) return;
+        if (requireInteractable && _btn && !_btn.interactable) return;
+        if (ClickSfxPlayedThisFrame()) return;
+
+        AudioManager.I.PlayUISFX(clickClip, vol: clickVolume);
+    }
+
+    bool ClickSfxPlayedThisFrame()
+    {
+        if (s_lastClickSfxFrame == Time.frameCount && s_lastClickSfxObject == gameObject)
+            return true;
+
+        s_lastClickSfxFrame = Time.frameCount;
+        s_lastClickSfxObject = gameObject;
+        return false;
     }
 
     void PlayHoverSFX()

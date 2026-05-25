@@ -1,0 +1,4414 @@
+fileFormatVersion: 2
+guid: 8962fa1c64e98df4384359fc545ee2cc
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5768652705957978891
+    second: ExplosionAttack4_Spritesheet_256_0
+  - first:
+      213: -3414915092983075460
+    second: ExplosionAttack4_Spritesheet_256_1
+  - first:
+      213: -4289271221336504024
+    second: ExplosionAttack4_Spritesheet_256_2
+  - first:
+      213: -6022949062499972135
+    second: ExplosionAttack4_Spritesheet_256_3
+  - first:
+      213: -5224319862307108246
+    second: ExplosionAttack4_Spritesheet_256_4
+  - first:
+      213: 2947942173009469652
+    second: ExplosionAttack4_Spritesheet_256_5
+  - first:
+      213: 826966262599695804
+    second: ExplosionAttack4_Spritesheet_256_6
+  - first:
+      213: 5455479917747917328
+    second: ExplosionAttack4_Spritesheet_256_7
+  - first:
+      213: -4603813469370361974
+    second: ExplosionAttack4_Spritesheet_256_8
+  - first:
+      213: -1528497822779769714
+    second: ExplosionAttack4_Spritesheet_256_9
+  - first:
+      213: -7011230997936325376
+    second: ExplosionAttack4_Spritesheet_256_10
+  - first:
+      213: 5954631625833738305
+    second: ExplosionAttack4_Spritesheet_256_11
+  - first:
+      213: -4033045918739109668
+    second: ExplosionAttack4_Spritesheet_256_12
+  - first:
+      213: 201446829606759664
+    second: ExplosionAttack4_Spritesheet_256_13
+  - first:
+      213: -8338891608558950210
+    second: ExplosionAttack4_Spritesheet_256_14
+  - first:
+      213: -4844760833571486170
+    second: ExplosionAttack4_Spritesheet_256_15
+  - first:
+      213: -2562459614110719566
+    second: ExplosionAttack4_Spritesheet_256_16
+  - first:
+      213: 5888876489166356085
+    second: ExplosionAttack4_Spritesheet_256_17
+  - first:
+      213: 1118928442097708997
+    second: ExplosionAttack4_Spritesheet_256_18
+  - first:
+      213: -225394683055357944
+    second: ExplosionAttack4_Spritesheet_256_19
+  - first:
+      213: 8778635126959670123
+    second: ExplosionAttack4_Spritesheet_256_20
+  - first:
+      213: 2961273333947442681
+    second: ExplosionAttack4_Spritesheet_256_21
+  - first:
+      213: -5136071496518573268
+    second: ExplosionAttack4_Spritesheet_256_22
+  - first:
+      213: 718245878502246043
+    second: ExplosionAttack4_Spritesheet_256_23
+  - first:
+      213: -2550301328694078820
+    second: ExplosionAttack4_Spritesheet_256_24
+  - first:
+      213: -6356069375600946989
+    second: ExplosionAttack4_Spritesheet_256_25
+  - first:
+      213: 423174645095693514
+    second: ExplosionAttack4_Spritesheet_256_26
+  - first:
+      213: -7926566407609087995
+    second: ExplosionAttack4_Spritesheet_256_27
+  - first:
+      213: -2436277643875973775
+    second: ExplosionAttack4_Spritesheet_256_28
+  - first:
+      213: 5830390091884356764
+    second: ExplosionAttack4_Spritesheet_256_29
+  - first:
+      213: -6096040699509367851
+    second: ExplosionAttack4_Spritesheet_256_30
+  - first:
+      213: -4859505282288906078
+    second: ExplosionAttack4_Spritesheet_256_31
+  - first:
+      213: 5223194798368162434
+    second: ExplosionAttack4_Spritesheet_256_32
+  - first:
+      213: 5597878355605958739
+    second: ExplosionAttack4_Spritesheet_256_33
+  - first:
+      213: 4769812321589672449
+    second: ExplosionAttack4_Spritesheet_256_34
+  - first:
+      213: 9156379002428509755
+    second: ExplosionAttack4_Spritesheet_256_35
+  - first:
+      213: -4622323728542251783
+    second: ExplosionAttack4_Spritesheet_256_36
+  - first:
+      213: 1743757004974288585
+    second: ExplosionAttack4_Spritesheet_256_37
+  - first:
+      213: -3458056837342024512
+    second: ExplosionAttack4_Spritesheet_256_38
+  - first:
+      213: 9062896619659596040
+    second: ExplosionAttack4_Spritesheet_256_39
+  - first:
+      213: -7089617649900963800
+    second: ExplosionAttack4_Spritesheet_256_40
+  - first:
+      213: -5842554486829927303
+    second: ExplosionAttack4_Spritesheet_256_41
+  - first:
+      213: -985927468092966909
+    second: ExplosionAttack4_Spritesheet_256_42
+  - first:
+      213: 2072042922324962893
+    second: ExplosionAttack4_Spritesheet_256_43
+  - first:
+      213: 6385667196689590050
+    second: ExplosionAttack4_Spritesheet_256_44
+  - first:
+      213: -5094564621257334444
+    second: ExplosionAttack4_Spritesheet_256_45
+  - first:
+      213: -860144970479468243
+    second: ExplosionAttack4_Spritesheet_256_46
+  - first:
+      213: -7905021375031231207
+    second: ExplosionAttack4_Spritesheet_256_47
+  - first:
+      213: 8636549879535480442
+    second: ExplosionAttack4_Spritesheet_256_48
+  - first:
+      213: 8959620920544869610
+    second: ExplosionAttack4_Spritesheet_256_49
+  - first:
+      213: -4473959733120737614
+    second: ExplosionAttack4_Spritesheet_256_50
+  - first:
+      213: 3295380626113833443
+    second: ExplosionAttack4_Spritesheet_256_51
+  - first:
+      213: -2095229453668132597
+    second: ExplosionAttack4_Spritesheet_256_52
+  - first:
+      213: -2440819924834795505
+    second: ExplosionAttack4_Spritesheet_256_53
+  - first:
+      213: 6893227231750558857
+    second: ExplosionAttack4_Spritesheet_256_54
+  - first:
+      213: 8054147103247566704
+    second: ExplosionAttack4_Spritesheet_256_55
+  - first:
+      213: 1352297493852816364
+    second: ExplosionAttack4_Spritesheet_256_56
+  - first:
+      213: 4295657858438804300
+    second: ExplosionAttack4_Spritesheet_256_57
+  - first:
+      213: 2714591025988261575
+    second: ExplosionAttack4_Spritesheet_256_58
+  - first:
+      213: -7906145428160562352
+    second: ExplosionAttack4_Spritesheet_256_59
+  - first:
+      213: 3882924132992129962
+    second: ExplosionAttack4_Spritesheet_256_60
+  - first:
+      213: -3150774183602536291
+    second: ExplosionAttack4_Spritesheet_256_61
+  - first:
+      213: 6814166341858701352
+    second: ExplosionAttack4_Spritesheet_256_62
+  - first:
+      213: -7360848264242636280
+    second: ExplosionAttack4_Spritesheet_256_63
+  - first:
+      213: 7822649832185486519
+    second: ExplosionAttack4_Spritesheet_256_64
+  - first:
+      213: -7088677920665634930
+    second: ExplosionAttack4_Spritesheet_256_65
+  - first:
+      213: -6477724374328280107
+    second: ExplosionAttack4_Spritesheet_256_66
+  - first:
+      213: 3129740307665172358
+    second: ExplosionAttack4_Spritesheet_256_67
+  - first:
+      213: -1887463894697207983
+    second: ExplosionAttack4_Spritesheet_256_68
+  - first:
+      213: -5263583036888245255
+    second: ExplosionAttack4_Spritesheet_256_69
+  - first:
+      213: 8637006083205010734
+    second: ExplosionAttack4_Spritesheet_256_70
+  - first:
+      213: 53070775830605266
+    second: ExplosionAttack4_Spritesheet_256_71
+  - first:
+      213: 5366413986556917857
+    second: ExplosionAttack4_Spritesheet_256_72
+  - first:
+      213: -1997749311864743028
+    second: ExplosionAttack4_Spritesheet_256_73
+  - first:
+      213: 8873307830981707910
+    second: ExplosionAttack4_Spritesheet_256_74
+  - first:
+      213: -8168444090405276245
+    second: ExplosionAttack4_Spritesheet_256_75
+  - first:
+      213: -6289990579229701374
+    second: ExplosionAttack4_Spritesheet_256_76
+  - first:
+      213: -6193132981900351865
+    second: ExplosionAttack4_Spritesheet_256_77
+  - first:
+      213: 6251091106006803861
+    second: ExplosionAttack4_Spritesheet_256_78
+  - first:
+      213: -4088834606827245543
+    second: ExplosionAttack4_Spritesheet_256_79
+  - first:
+      213: 3465000853676154411
+    second: ExplosionAttack4_Spritesheet_256_80
+  - first:
+      213: -1960666056289399455
+    second: ExplosionAttack4_Spritesheet_256_81
+  - first:
+      213: -1906110479223951074
+    second: ExplosionAttack4_Spritesheet_256_82
+  - first:
+      213: -3116511329136535905
+    second: ExplosionAttack4_Spritesheet_256_83
+  - first:
+      213: -3496503736748770808
+    second: ExplosionAttack4_Spritesheet_256_84
+  - first:
+      213: -7788179472852111612
+    second: ExplosionAttack4_Spritesheet_256_85
+  - first:
+      213: 1639839407231042201
+    second: ExplosionAttack4_Spritesheet_256_86
+  - first:
+      213: -5439282786554187164
+    second: ExplosionAttack4_Spritesheet_256_87
+  - first:
+      213: 389057989131921254
+    second: ExplosionAttack4_Spritesheet_256_88
+  - first:
+      213: 2784664324487120536
+    second: ExplosionAttack4_Spritesheet_256_89
+  - first:
+      213: 7819102699003253911
+    second: ExplosionAttack4_Spritesheet_256_90
+  - first:
+      213: 4572588228251171351
+    second: ExplosionAttack4_Spritesheet_256_91
+  - first:
+      213: 1716702243890121101
+    second: ExplosionAttack4_Spritesheet_256_92
+  - first:
+      213: 4472460306173507391
+    second: ExplosionAttack4_Spritesheet_256_93
+  - first:
+      213: 5968182159102935923
+    second: ExplosionAttack4_Spritesheet_256_94
+  - first:
+      213: 2287755795550709066
+    second: ExplosionAttack4_Spritesheet_256_95
+  - first:
+      213: 8473830466924598497
+    second: ExplosionAttack4_Spritesheet_256_96
+  - first:
+      213: 7880779270089644727
+    second: ExplosionAttack4_Spritesheet_256_97
+  - first:
+      213: 5240121323575569298
+    second: ExplosionAttack4_Spritesheet_256_98
+  - first:
+      213: 6654269851947790718
+    second: ExplosionAttack4_Spritesheet_256_99
+  - first:
+      213: 6756248718191528608
+    second: ExplosionAttack4_Spritesheet_256_100
+  - first:
+      213: -496269188943733160
+    second: ExplosionAttack4_Spritesheet_256_101
+  - first:
+      213: -3125005136626989762
+    second: ExplosionAttack4_Spritesheet_256_102
+  - first:
+      213: 5540616284589309884
+    second: ExplosionAttack4_Spritesheet_256_103
+  - first:
+      213: -5236659319207784621
+    second: ExplosionAttack4_Spritesheet_256_104
+  - first:
+      213: 2467722170942750896
+    second: ExplosionAttack4_Spritesheet_256_105
+  - first:
+      213: -709266793895580645
+    second: ExplosionAttack4_Spritesheet_256_106
+  - first:
+      213: 2086308328876097509
+    second: ExplosionAttack4_Spritesheet_256_107
+  - first:
+      213: 6471509031835306063
+    second: ExplosionAttack4_Spritesheet_256_108
+  - first:
+      213: 5103887150679369686
+    second: ExplosionAttack4_Spritesheet_256_109
+  - first:
+      213: 5618579607247670929
+    second: ExplosionAttack4_Spritesheet_256_110
+  - first:
+      213: -2707561353195907467
+    second: ExplosionAttack4_Spritesheet_256_111
+  - first:
+      213: -1317633837212312322
+    second: ExplosionAttack4_Spritesheet_256_112
+  - first:
+      213: 950138516827056936
+    second: ExplosionAttack4_Spritesheet_256_113
+  - first:
+      213: 1489504877271098024
+    second: ExplosionAttack4_Spritesheet_256_114
+  - first:
+      213: -7926247765018220399
+    second: ExplosionAttack4_Spritesheet_256_115
+  - first:
+      213: 2050170760073903
+    second: ExplosionAttack4_Spritesheet_256_116
+  - first:
+      213: 5826247986256210125
+    second: ExplosionAttack4_Spritesheet_256_117
+  - first:
+      213: 6072839310813773581
+    second: ExplosionAttack4_Spritesheet_256_118
+  - first:
+      213: 5925935712078884073
+    second: ExplosionAttack4_Spritesheet_256_119
+  - first:
+      213: -8171352430873432116
+    second: ExplosionAttack4_Spritesheet_256_120
+  - first:
+      213: -7162212840925925709
+    second: ExplosionAttack4_Spritesheet_256_121
+  - first:
+      213: -4497801049433360509
+    second: ExplosionAttack4_Spritesheet_256_122
+  - first:
+      213: -7137106411722585617
+    second: ExplosionAttack4_Spritesheet_256_123
+  - first:
+      213: -3829864859834652886
+    second: ExplosionAttack4_Spritesheet_256_124
+  - first:
+      213: -2814487935836771435
+    second: ExplosionAttack4_Spritesheet_256_125
+  - first:
+      213: 4526087978143846650
+    second: ExplosionAttack4_Spritesheet_256_126
+  - first:
+      213: -5589712957798101280
+    second: ExplosionAttack4_Spritesheet_256_127
+  - first:
+      213: 6963055790567411630
+    second: ExplosionAttack4_Spritesheet_256_128
+  - first:
+      213: 3590511076098236000
+    second: ExplosionAttack4_Spritesheet_256_129
+  - first:
+      213: 8965526207229074328
+    second: ExplosionAttack4_Spritesheet_256_130
+  - first:
+      213: 2886673970463905864
+    second: ExplosionAttack4_Spritesheet_256_131
+  - first:
+      213: -2570129870061853208
+    second: ExplosionAttack4_Spritesheet_256_132
+  - first:
+      213: 920815048873362128
+    second: ExplosionAttack4_Spritesheet_256_133
+  - first:
+      213: -7399000262429672726
+    second: ExplosionAttack4_Spritesheet_256_134
+  - first:
+      213: 5692886947414293898
+    second: ExplosionAttack4_Spritesheet_256_135
+  - first:
+      213: -3916393554859894190
+    second: ExplosionAttack4_Spritesheet_256_136
+  - first:
+      213: -896824847444345315
+    second: ExplosionAttack4_Spritesheet_256_137
+  - first:
+      213: -2589314556499945451
+    second: ExplosionAttack4_Spritesheet_256_138
+  - first:
+      213: -1346002392972908239
+    second: ExplosionAttack4_Spritesheet_256_139
+  - first:
+      213: 1801987724308191554
+    second: ExplosionAttack4_Spritesheet_256_140
+  - first:
+      213: 5514485675352289504
+    second: ExplosionAttack4_Spritesheet_256_141
+  - first:
+      213: -2650024573083320003
+    second: ExplosionAttack4_Spritesheet_256_142
+  - first:
+      213: 8086790716860969476
+    second: ExplosionAttack4_Spritesheet_256_143
+  - first:
+      213: 815196402123044665
+    second: ExplosionAttack4_Spritesheet_256_144
+  - first:
+      213: 1002224470196241267
+    second: ExplosionAttack4_Spritesheet_256_145
+  - first:
+      213: -2601198723869781168
+    second: ExplosionAttack4_Spritesheet_256_146
+  - first:
+      213: -76007566564385102
+    second: ExplosionAttack4_Spritesheet_256_147
+  - first:
+      213: 4472989016057919837
+    second: ExplosionAttack4_Spritesheet_256_148
+  - first:
+      213: 4002090803236254627
+    second: ExplosionAttack4_Spritesheet_256_149
+  - first:
+      213: -5576178276260585505
+    second: ExplosionAttack4_Spritesheet_256_150
+  - first:
+      213: 5930293826439898880
+    second: ExplosionAttack4_Spritesheet_256_151
+  - first:
+      213: 396256486566360241
+    second: ExplosionAttack4_Spritesheet_256_152
+  - first:
+      213: 876761677930727632
+    second: ExplosionAttack4_Spritesheet_256_153
+  - first:
+      213: -8641917108880755655
+    second: ExplosionAttack4_Spritesheet_256_154
+  - first:
+      213: 513181566435055012
+    second: ExplosionAttack4_Spritesheet_256_155
+  - first:
+      213: 4968570876711301430
+    second: ExplosionAttack4_Spritesheet_256_156
+  - first:
+      213: 1510573382856031305
+    second: ExplosionAttack4_Spritesheet_256_157
+  - first:
+      213: 7590203357968084060
+    second: ExplosionAttack4_Spritesheet_256_158
+  - first:
+      213: -1800756548341466437
+    second: ExplosionAttack4_Spritesheet_256_159
+  - first:
+      213: 2838331156242185189
+    second: ExplosionAttack4_Spritesheet_256_160
+  - first:
+      213: -6226040627890143264
+    second: ExplosionAttack4_Spritesheet_256_161
+  - first:
+      213: 2682622729471613837
+    second: ExplosionAttack4_Spritesheet_256_162
+  - first:
+      213: -3669449364598141882
+    second: ExplosionAttack4_Spritesheet_256_163
+  - first:
+      213: 1747903135780767395
+    second: ExplosionAttack4_Spritesheet_256_164
+  - first:
+      213: 3597504765513702655
+    second: ExplosionAttack4_Spritesheet_256_165
+  - first:
+      213: -94822232741840657
+    second: ExplosionAttack4_Spritesheet_256_166
+  - first:
+      213: 5316179430107895870
+    second: ExplosionAttack4_Spritesheet_256_167
+  - first:
+      213: 5557138958615685408
+    second: ExplosionAttack4_Spritesheet_256_168
+  - first:
+      213: -6844968377874677690
+    second: ExplosionAttack4_Spritesheet_256_169
+  - first:
+      213: 7172937585270410765
+    second: ExplosionAttack4_Spritesheet_256_170
+  - first:
+      213: 1404445659403533999
+    second: ExplosionAttack4_Spritesheet_256_171
+  - first:
+      213: 4993370323531624895
+    second: ExplosionAttack4_Spritesheet_256_172
+  - first:
+      213: -8920554501496630803
+    second: ExplosionAttack4_Spritesheet_256_173
+  - first:
+      213: 6698595835311562565
+    second: ExplosionAttack4_Spritesheet_256_174
+  - first:
+      213: -7458760767886251029
+    second: ExplosionAttack4_Spritesheet_256_175
+  - first:
+      213: -5912628587414592965
+    second: ExplosionAttack4_Spritesheet_256_176
+  - first:
+      213: -2788169783963219192
+    second: ExplosionAttack4_Spritesheet_256_177
+  - first:
+      213: 5200342134499899609
+    second: ExplosionAttack4_Spritesheet_256_178
+  - first:
+      213: 5358567664168709711
+    second: ExplosionAttack4_Spritesheet_256_179
+  - first:
+      213: -8567521873375433638
+    second: ExplosionAttack4_Spritesheet_256_180
+  - first:
+      213: 538217520243621697
+    second: ExplosionAttack4_Spritesheet_256_181
+  - first:
+      213: -1052992423268327156
+    second: ExplosionAttack4_Spritesheet_256_182
+  - first:
+      213: -982150661649032386
+    second: ExplosionAttack4_Spritesheet_256_183
+  - first:
+      213: -6485583314168886212
+    second: ExplosionAttack4_Spritesheet_256_184
+  - first:
+      213: -5639119574147021177
+    second: ExplosionAttack4_Spritesheet_256_185
+  - first:
+      213: 559728235372455454
+    second: ExplosionAttack4_Spritesheet_256_186
+  - first:
+      213: 5390324359578955058
+    second: ExplosionAttack4_Spritesheet_256_187
+  - first:
+      213: 4992852049238610553
+    second: ExplosionAttack4_Spritesheet_256_188
+  - first:
+      213: -4255105526833857454
+    second: ExplosionAttack4_Spritesheet_256_189
+  - first:
+      213: -825910116783533805
+    second: ExplosionAttack4_Spritesheet_256_190
+  - first:
+      213: 3535280066605325220
+    second: ExplosionAttack4_Spritesheet_256_191
+  - first:
+      213: -9169350987108526287
+    second: ExplosionAttack4_Spritesheet_256_192
+  - first:
+      213: 7854020009036791854
+    second: ExplosionAttack4_Spritesheet_256_193
+  - first:
+      213: -6047666755868218508
+    second: ExplosionAttack4_Spritesheet_256_194
+  - first:
+      213: 1660738910533805742
+    second: ExplosionAttack4_Spritesheet_256_195
+  - first:
+      213: -1600208677103084863
+    second: ExplosionAttack4_Spritesheet_256_196
+  - first:
+      213: -3255155049737878045
+    second: ExplosionAttack4_Spritesheet_256_197
+  - first:
+      213: -8460133993024520135
+    second: ExplosionAttack4_Spritesheet_256_198
+  - first:
+      213: -6705406173181521786
+    second: ExplosionAttack4_Spritesheet_256_199
+  - first:
+      213: 1397866007861364687
+    second: ExplosionAttack4_Spritesheet_256_200
+  - first:
+      213: 5768738619249177679
+    second: ExplosionAttack4_Spritesheet_256_201
+  - first:
+      213: 4626546712357149018
+    second: ExplosionAttack4_Spritesheet_256_202
+  - first:
+      213: -2023279480197850336
+    second: ExplosionAttack4_Spritesheet_256_203
+  - first:
+      213: 1193139723628324504
+    second: ExplosionAttack4_Spritesheet_256_204
+  - first:
+      213: 8901995365407892456
+    second: ExplosionAttack4_Spritesheet_256_205
+  - first:
+      213: -4341057823038944167
+    second: ExplosionAttack4_Spritesheet_256_206
+  - first:
+      213: 5889450201262528676
+    second: ExplosionAttack4_Spritesheet_256_207
+  - first:
+      213: -3563175109362960740
+    second: ExplosionAttack4_Spritesheet_256_208
+  - first:
+      213: 3880428590774943262
+    second: ExplosionAttack4_Spritesheet_256_209
+  - first:
+      213: -7581447491714435057
+    second: ExplosionAttack4_Spritesheet_256_210
+  - first:
+      213: 6110942683221970448
+    second: ExplosionAttack4_Spritesheet_256_211
+  - first:
+      213: -1510661056568694635
+    second: ExplosionAttack4_Spritesheet_256_212
+  - first:
+      213: -2947298133014076073
+    second: ExplosionAttack4_Spritesheet_256_213
+  - first:
+      213: -5931121301538937489
+    second: ExplosionAttack4_Spritesheet_256_214
+  - first:
+      213: -8894310629328246598
+    second: ExplosionAttack4_Spritesheet_256_215
+  - first:
+      213: 3039430611079982739
+    second: ExplosionAttack4_Spritesheet_256_216
+  - first:
+      213: 2225281303550023740
+    second: ExplosionAttack4_Spritesheet_256_217
+  - first:
+      213: 7034644807408249277
+    second: ExplosionAttack4_Spritesheet_256_218
+  - first:
+      213: 3120483796018078799
+    second: ExplosionAttack4_Spritesheet_256_219
+  - first:
+      213: 4086402834989966780
+    second: ExplosionAttack4_Spritesheet_256_220
+  - first:
+      213: -5153493184894150745
+    second: ExplosionAttack4_Spritesheet_256_221
+  - first:
+      213: -7263816024137014078
+    second: ExplosionAttack4_Spritesheet_256_222
+  - first:
+      213: -2837010561159631694
+    second: ExplosionAttack4_Spritesheet_256_223
+  - first:
+      213: 1957514811355083422
+    second: ExplosionAttack4_Spritesheet_256_224
+  - first:
+      213: -765162543834675654
+    second: ExplosionAttack4_Spritesheet_256_225
+  - first:
+      213: 3890211388494952328
+    second: ExplosionAttack4_Spritesheet_256_226
+  - first:
+      213: -752945645595059296
+    second: ExplosionAttack4_Spritesheet_256_227
+  - first:
+      213: -4176039362120325937
+    second: ExplosionAttack4_Spritesheet_256_228
+  - first:
+      213: -8291198458486314295
+    second: ExplosionAttack4_Spritesheet_256_229
+  - first:
+      213: 7875390050169230183
+    second: ExplosionAttack4_Spritesheet_256_230
+  - first:
+      213: 3954303594844812535
+    second: ExplosionAttack4_Spritesheet_256_231
+  - first:
+      213: 6441333605127240258
+    second: ExplosionAttack4_Spritesheet_256_232
+  - first:
+      213: 2844913949651347036
+    second: ExplosionAttack4_Spritesheet_256_233
+  - first:
+      213: -5533042744353981794
+    second: ExplosionAttack4_Spritesheet_256_234
+  - first:
+      213: -8912658857859628933
+    second: ExplosionAttack4_Spritesheet_256_235
+  - first:
+      213: 269281853496055529
+    second: ExplosionAttack4_Spritesheet_256_236
+  - first:
+      213: 1820190542443116865
+    second: ExplosionAttack4_Spritesheet_256_237
+  - first:
+      213: 5273337409412949624
+    second: ExplosionAttack4_Spritesheet_256_238
+  - first:
+      213: 7966634011913652621
+    second: ExplosionAttack4_Spritesheet_256_239
+  - first:
+      213: 4052431931446870527
+    second: ExplosionAttack4_Spritesheet_256_240
+  - first:
+      213: -6169281234861256368
+    second: ExplosionAttack4_Spritesheet_256_241
+  - first:
+      213: -8513156325217554850
+    second: ExplosionAttack4_Spritesheet_256_242
+  - first:
+      213: -6664586227002612757
+    second: ExplosionAttack4_Spritesheet_256_243
+  - first:
+      213: 2012776471249703876
+    second: ExplosionAttack4_Spritesheet_256_244
+  - first:
+      213: -86292274806947579
+    second: ExplosionAttack4_Spritesheet_256_245
+  - first:
+      213: 930346990586224033
+    second: ExplosionAttack4_Spritesheet_256_246
+  - first:
+      213: -8368759103267450383
+    second: ExplosionAttack4_Spritesheet_256_247
+  - first:
+      213: -6128754312407779935
+    second: ExplosionAttack4_Spritesheet_256_248
+  - first:
+      213: 2027653840855558025
+    second: ExplosionAttack4_Spritesheet_256_249
+  - first:
+      213: -1364084249506640650
+    second: ExplosionAttack4_Spritesheet_256_250
+  - first:
+      213: 2444694920354377207
+    second: ExplosionAttack4_Spritesheet_256_251
+  - first:
+      213: -6367053079707110639
+    second: ExplosionAttack4_Spritesheet_256_252
+  - first:
+      213: 7933768338181542662
+    second: ExplosionAttack4_Spritesheet_256_253
+  - first:
+      213: -3707650974946407767
+    second: ExplosionAttack4_Spritesheet_256_254
+  - first:
+      213: 2522740967012828821
+    second: ExplosionAttack4_Spritesheet_256_255
+  - first:
+      213: -3780413196099865842
+    second: ExplosionAttack4_Spritesheet_256_256
+  - first:
+      213: -7825207393692999188
+    second: ExplosionAttack4_Spritesheet_256_257
+  - first:
+      213: -6348774986559750631
+    second: ExplosionAttack4_Spritesheet_256_258
+  - first:
+      213: -1535455810529596369
+    second: ExplosionAttack4_Spritesheet_256_259
+  - first:
+      213: -9223189995851058805
+    second: ExplosionAttack4_Spritesheet_256_260
+  - first:
+      213: -4215172622496890837
+    second: ExplosionAttack4_Spritesheet_256_261
+  - first:
+      213: 3104327456658405326
+    second: ExplosionAttack4_Spritesheet_256_262
+  - first:
+      213: 8333683359293447613
+    second: ExplosionAttack4_Spritesheet_256_263
+  - first:
+      213: -2226670802066075200
+    second: ExplosionAttack4_Spritesheet_256_264
+  - first:
+      213: -3722026337097936826
+    second: ExplosionAttack4_Spritesheet_256_265
+  - first:
+      213: -5323775008227794300
+    second: ExplosionAttack4_Spritesheet_256_266
+  - first:
+      213: -7749639492498867618
+    second: ExplosionAttack4_Spritesheet_256_267
+  - first:
+      213: 4076626973345302436
+    second: ExplosionAttack4_Spritesheet_256_268
+  - first:
+      213: 5628589124216000298
+    second: ExplosionAttack4_Spritesheet_256_269
+  - first:
+      213: -3101625269638760666
+    second: ExplosionAttack4_Spritesheet_256_270
+  - first:
+      213: 7978872556209959852
+    second: ExplosionAttack4_Spritesheet_256_271
+  - first:
+      213: 7549207877027535562
+    second: ExplosionAttack4_Spritesheet_256_272
+  - first:
+      213: -3667570327008297909
+    second: ExplosionAttack4_Spritesheet_256_273
+  - first:
+      213: 8072705238844596244
+    second: ExplosionAttack4_Spritesheet_256_274
+  - first:
+      213: 2708006677135732480
+    second: ExplosionAttack4_Spritesheet_256_275
+  - first:
+      213: 6202819787362152255
+    second: ExplosionAttack4_Spritesheet_256_276
+  - first:
+      213: 7214242801502455737
+    second: ExplosionAttack4_Spritesheet_256_277
+  - first:
+      213: 5948190164687906650
+    second: ExplosionAttack4_Spritesheet_256_278
+  - first:
+      213: -8327855467300249047
+    second: ExplosionAttack4_Spritesheet_256_279
+  - first:
+      213: -2241323858330956450
+    second: ExplosionAttack4_Spritesheet_256_280
+  - first:
+      213: -8633400590189644038
+    second: ExplosionAttack4_Spritesheet_256_281
+  - first:
+      213: 2776264880367526495
+    second: ExplosionAttack4_Spritesheet_256_282
+  - first:
+      213: -4703738517609340758
+    second: ExplosionAttack4_Spritesheet_256_283
+  - first:
+      213: -3532789774803804614
+    second: ExplosionAttack4_Spritesheet_256_284
+  - first:
+      213: -7432836450737423421
+    second: ExplosionAttack4_Spritesheet_256_285
+  - first:
+      213: -2316535424226637683
+    second: ExplosionAttack4_Spritesheet_256_286
+  - first:
+      213: -5680408812196245760
+    second: ExplosionAttack4_Spritesheet_256_287
+  - first:
+      213: -524822376485074311
+    second: ExplosionAttack4_Spritesheet_256_288
+  - first:
+      213: 3183056130205552299
+    second: ExplosionAttack4_Spritesheet_256_289
+  - first:
+      213: 6536395896823879742
+    second: ExplosionAttack4_Spritesheet_256_290
+  - first:
+      213: -5520943804389648554
+    second: ExplosionAttack4_Spritesheet_256_291
+  - first:
+      213: -4501697531448472061
+    second: ExplosionAttack4_Spritesheet_256_292
+  - first:
+      213: 6389251576786093528
+    second: ExplosionAttack4_Spritesheet_256_293
+  - first:
+      213: 2624676811831571179
+    second: ExplosionAttack4_Spritesheet_256_294
+  - first:
+      213: 6303032652792748119
+    second: ExplosionAttack4_Spritesheet_256_295
+  - first:
+      213: -3682180761799545534
+    second: ExplosionAttack4_Spritesheet_256_296
+  - first:
+      213: -7498273216305871722
+    second: ExplosionAttack4_Spritesheet_256_297
+  - first:
+      213: -4292847030686580183
+    second: ExplosionAttack4_Spritesheet_256_298
+  - first:
+      213: 7476634500508582189
+    second: ExplosionAttack4_Spritesheet_256_299
+  - first:
+      213: 5654497626175855547
+    second: ExplosionAttack4_Spritesheet_256_300
+  - first:
+      213: 3882072226686459395
+    second: ExplosionAttack4_Spritesheet_256_301
+  - first:
+      213: 8168954142661067654
+    second: ExplosionAttack4_Spritesheet_256_302
+  - first:
+      213: -712887078206071485
+    second: ExplosionAttack4_Spritesheet_256_303
+  - first:
+      213: 1710220051003772504
+    second: ExplosionAttack4_Spritesheet_256_304
+  - first:
+      213: -9055686871330045512
+    second: ExplosionAttack4_Spritesheet_256_305
+  - first:
+      213: 6634711702363541486
+    second: ExplosionAttack4_Spritesheet_256_306
+  - first:
+      213: 2315602038894288529
+    second: ExplosionAttack4_Spritesheet_256_307
+  - first:
+      213: 2166713514545291308
+    second: ExplosionAttack4_Spritesheet_256_308
+  - first:
+      213: -3642564714914327358
+    second: ExplosionAttack4_Spritesheet_256_309
+  - first:
+      213: 7687831445799321306
+    second: ExplosionAttack4_Spritesheet_256_310
+  - first:
+      213: 7251589746916354604
+    second: ExplosionAttack4_Spritesheet_256_311
+  - first:
+      213: -8682737426388954446
+    second: ExplosionAttack4_Spritesheet_256_312
+  - first:
+      213: 6594706988269042081
+    second: ExplosionAttack4_Spritesheet_256_313
+  - first:
+      213: -8827286750610806112
+    second: ExplosionAttack4_Spritesheet_256_314
+  - first:
+      213: -6738736742542834739
+    second: ExplosionAttack4_Spritesheet_256_315
+  - first:
+      213: 4478533611061015168
+    second: ExplosionAttack4_Spritesheet_256_316
+  - first:
+      213: -3709325462389846952
+    second: ExplosionAttack4_Spritesheet_256_317
+  - first:
+      213: 6032400072449668383
+    second: ExplosionAttack4_Spritesheet_256_318
+  - first:
+      213: 8360451058151226986
+    second: ExplosionAttack4_Spritesheet_256_319
+  - first:
+      213: -914211467017067745
+    second: ExplosionAttack4_Spritesheet_256_320
+  - first:
+      213: 1702027186892858025
+    second: ExplosionAttack4_Spritesheet_256_321
+  - first:
+      213: 8130486886349468446
+    second: ExplosionAttack4_Spritesheet_256_322
+  - first:
+      213: -2784037759551386209
+    second: ExplosionAttack4_Spritesheet_256_323
+  - first:
+      213: -7347765042500094945
+    second: ExplosionAttack4_Spritesheet_256_324
+  - first:
+      213: 9108250530919047417
+    second: ExplosionAttack4_Spritesheet_256_325
+  - first:
+      213: -2476665880185424799
+    second: ExplosionAttack4_Spritesheet_256_326
+  - first:
+      213: 5333248953689987382
+    second: ExplosionAttack4_Spritesheet_256_327
+  - first:
+      213: 74866955610822984
+    second: ExplosionAttack4_Spritesheet_256_328
+  - first:
+      213: -6097534560475939857
+    second: ExplosionAttack4_Spritesheet_256_329
+  - first:
+      213: 5147508890795807909
+    second: ExplosionAttack4_Spritesheet_256_330
+  - first:
+      213: -1100165015697759332
+    second: ExplosionAttack4_Spritesheet_256_331
+  - first:
+      213: 4478179141925883785
+    second: ExplosionAttack4_Spritesheet_256_332
+  - first:
+      213: 7984425772395553781
+    second: ExplosionAttack4_Spritesheet_256_333
+  - first:
+      213: 388293084226259875
+    second: ExplosionAttack4_Spritesheet_256_334
+  - first:
+      213: 7596933318760499433
+    second: ExplosionAttack4_Spritesheet_256_335
+  - first:
+      213: -100468686702019066
+    second: ExplosionAttack4_Spritesheet_256_336
+  - first:
+      213: -7451557717392053489
+    second: ExplosionAttack4_Spritesheet_256_337
+  - first:
+      213: 3133679571811789927
+    second: ExplosionAttack4_Spritesheet_256_338
+  - first:
+      213: 4043201086429142606
+    second: ExplosionAttack4_Spritesheet_256_339
+  - first:
+      213: -1993940266605305864
+    second: ExplosionAttack4_Spritesheet_256_340
+  - first:
+      213: 7753821440955811814
+    second: ExplosionAttack4_Spritesheet_256_341
+  - first:
+      213: -6526933655463846450
+    second: ExplosionAttack4_Spritesheet_256_342
+  - first:
+      213: 5563310338103203970
+    second: ExplosionAttack4_Spritesheet_256_343
+  - first:
+      213: -7905506288846837016
+    second: ExplosionAttack4_Spritesheet_256_344
+  - first:
+      213: -8725809015104150244
+    second: ExplosionAttack4_Spritesheet_256_345
+  - first:
+      213: 7368410736130285037
+    second: ExplosionAttack4_Spritesheet_256_346
+  - first:
+      213: 41865956587130131
+    second: ExplosionAttack4_Spritesheet_256_347
+  - first:
+      213: 1269468618817625344
+    second: ExplosionAttack4_Spritesheet_256_348
+  - first:
+      213: 5803151072890003696
+    second: ExplosionAttack4_Spritesheet_256_349
+  - first:
+      213: 2248106342366693978
+    second: ExplosionAttack4_Spritesheet_256_350
+  - first:
+      213: 4602270801101382457
+    second: ExplosionAttack4_Spritesheet_256_351
+  - first:
+      213: 2715242880074285031
+    second: ExplosionAttack4_Spritesheet_256_352
+  - first:
+      213: 8093824376936948114
+    second: ExplosionAttack4_Spritesheet_256_353
+  - first:
+      213: -6488005388263634225
+    second: ExplosionAttack4_Spritesheet_256_354
+  - first:
+      213: 5254262983160131395
+    second: ExplosionAttack4_Spritesheet_256_355
+  - first:
+      213: 3293702120527206517
+    second: ExplosionAttack4_Spritesheet_256_356
+  - first:
+      213: 4518482981689207194
+    second: ExplosionAttack4_Spritesheet_256_357
+  - first:
+      213: -1086610003940517858
+    second: ExplosionAttack4_Spritesheet_256_358
+  - first:
+      213: 2426190117490563447
+    second: ExplosionAttack4_Spritesheet_256_359
+  - first:
+      213: -6757012895551177780
+    second: ExplosionAttack4_Spritesheet_256_360
+  - first:
+      213: -3004129371867878086
+    second: ExplosionAttack4_Spritesheet_256_361
+  - first:
+      213: -2151564611754825695
+    second: ExplosionAttack4_Spritesheet_256_362
+  - first:
+      213: 8953597327054028008
+    second: ExplosionAttack4_Spritesheet_256_363
+  - first:
+      213: 2616922174281360974
+    second: ExplosionAttack4_Spritesheet_256_364
+  - first:
+      213: -4167264112169646570
+    second: ExplosionAttack4_Spritesheet_256_365
+  - first:
+      213: -4597705250777405387
+    second: ExplosionAttack4_Spritesheet_256_366
+  - first:
+      213: 394687643826908050
+    second: ExplosionAttack4_Spritesheet_256_367
+  - first:
+      213: -2680868342307282616
+    second: ExplosionAttack4_Spritesheet_256_368
+  - first:
+      213: -368437802370045383
+    second: ExplosionAttack4_Spritesheet_256_369
+  - first:
+      213: 914523817670357017
+    second: ExplosionAttack4_Spritesheet_256_370
+  - first:
+      213: -2697053888790282851
+    second: ExplosionAttack4_Spritesheet_256_371
+  - first:
+      213: -630302786090599358
+    second: ExplosionAttack4_Spritesheet_256_372
+  - first:
+      213: -575105662161893234
+    second: ExplosionAttack4_Spritesheet_256_373
+  - first:
+      213: -1652406191371987261
+    second: ExplosionAttack4_Spritesheet_256_374
+  - first:
+      213: -5585447686105703449
+    second: ExplosionAttack4_Spritesheet_256_375
+  - first:
+      213: 6060028477389759200
+    second: ExplosionAttack4_Spritesheet_256_376
+  - first:
+      213: 5583740091309024660
+    second: ExplosionAttack4_Spritesheet_256_377
+  - first:
+      213: 5246755546980083818
+    second: ExplosionAttack4_Spritesheet_256_378
+  - first:
+      213: 3540418463199419270
+    second: ExplosionAttack4_Spritesheet_256_379
+  - first:
+      213: 3419187984411713250
+    second: ExplosionAttack4_Spritesheet_256_380
+  - first:
+      213: 4899138864524875902
+    second: ExplosionAttack4_Spritesheet_256_381
+  - first:
+      213: 1615524317524601430
+    second: ExplosionAttack4_Spritesheet_256_382
+  - first:
+      213: -1302848002505532685
+    second: ExplosionAttack4_Spritesheet_256_383
+  - first:
+      213: 1100872121201844551
+    second: ExplosionAttack4_Spritesheet_256_384
+  - first:
+      213: -2476754205348249931
+    second: ExplosionAttack4_Spritesheet_256_385
+  - first:
+      213: -3902080332426424817
+    second: ExplosionAttack4_Spritesheet_256_386
+  - first:
+      213: -5592147777964026145
+    second: ExplosionAttack4_Spritesheet_256_387
+  - first:
+      213: 1541413382642497029
+    second: ExplosionAttack4_Spritesheet_256_388
+  - first:
+      213: -262914994990275742
+    second: ExplosionAttack4_Spritesheet_256_389
+  - first:
+      213: -6681682413314836754
+    second: ExplosionAttack4_Spritesheet_256_390
+  - first:
+      213: -3276640295344514272
+    second: ExplosionAttack4_Spritesheet_256_391
+  - first:
+      213: 8759135022316005119
+    second: ExplosionAttack4_Spritesheet_256_392
+  - first:
+      213: -2997634056341402058
+    second: ExplosionAttack4_Spritesheet_256_393
+  - first:
+      213: 7445010933380227187
+    second: ExplosionAttack4_Spritesheet_256_394
+  - first:
+      213: -613093595408587585
+    second: ExplosionAttack4_Spritesheet_256_395
+  - first:
+      213: 6160295574881293463
+    second: ExplosionAttack4_Spritesheet_256_396
+  - first:
+      213: -2925020440651207760
+    second: ExplosionAttack4_Spritesheet_256_397
+  - first:
+      213: 8615640897909819858
+    second: ExplosionAttack4_Spritesheet_256_398
+  - first:
+      213: 257269648508381126
+    second: ExplosionAttack4_Spritesheet_256_399
+  - first:
+      213: -279173246587776892
+    second: ExplosionAttack4_Spritesheet_256_400
+  - first:
+      213: 20336681744904804
+    second: ExplosionAttack4_Spritesheet_256_401
+  - first:
+      213: 8341297860843691678
+    second: ExplosionAttack4_Spritesheet_256_402
+  - first:
+      213: 1418947045239127064
+    second: ExplosionAttack4_Spritesheet_256_403
+  - first:
+      213: -5897454360896984040
+    second: ExplosionAttack4_Spritesheet_256_404
+  - first:
+      213: -6655000649551349104
+    second: ExplosionAttack4_Spritesheet_256_405
+  - first:
+      213: -2198461023452778421
+    second: ExplosionAttack4_Spritesheet_256_406
+  - first:
+      213: 8740868404506537337
+    second: ExplosionAttack4_Spritesheet_256_407
+  - first:
+      213: -7007370907884598091
+    second: ExplosionAttack4_Spritesheet_256_408
+  - first:
+      213: 6325810122125535231
+    second: ExplosionAttack4_Spritesheet_256_409
+  - first:
+      213: 4934786644244049275
+    second: ExplosionAttack4_Spritesheet_256_410
+  - first:
+      213: -2441831722891893121
+    second: ExplosionAttack4_Spritesheet_256_411
+  - first:
+      213: 6409470239875146435
+    second: ExplosionAttack4_Spritesheet_256_412
+  - first:
+      213: 9156206877481074029
+    second: ExplosionAttack4_Spritesheet_256_413
+  - first:
+      213: 307972930873680802
+    second: ExplosionAttack4_Spritesheet_256_414
+  - first:
+      213: 7932498015875110971
+    second: ExplosionAttack4_Spritesheet_256_415
+  - first:
+      213: -8549220719903275975
+    second: ExplosionAttack4_Spritesheet_256_416
+  - first:
+      213: -2999194682807939270
+    second: ExplosionAttack4_Spritesheet_256_417
+  - first:
+      213: -1643645169170570152
+    second: ExplosionAttack4_Spritesheet_256_418
+  - first:
+      213: 5619310933927608150
+    second: ExplosionAttack4_Spritesheet_256_419
+  - first:
+      213: -4822607151502937558
+    second: ExplosionAttack4_Spritesheet_256_420
+  - first:
+      213: -8620455358709651194
+    second: ExplosionAttack4_Spritesheet_256_421
+  - first:
+      213: -129269725602866655
+    second: ExplosionAttack4_Spritesheet_256_422
+  - first:
+      213: -2083364851378749449
+    second: ExplosionAttack4_Spritesheet_256_423
+  - first:
+      213: -5696835019824765645
+    second: ExplosionAttack4_Spritesheet_256_424
+  - first:
+      213: -1425916029594216094
+    second: ExplosionAttack4_Spritesheet_256_425
+  - first:
+      213: -2871309232186579350
+    second: ExplosionAttack4_Spritesheet_256_426
+  - first:
+      213: 802067174210014384
+    second: ExplosionAttack4_Spritesheet_256_427
+  - first:
+      213: -6253563567924979771
+    second: ExplosionAttack4_Spritesheet_256_428
+  - first:
+      213: 1958033690521171
+    second: ExplosionAttack4_Spritesheet_256_429
+  - first:
+      213: -8335018620972406369
+    second: ExplosionAttack4_Spritesheet_256_430
+  - first:
+      213: -8019427693843223000
+    second: ExplosionAttack4_Spritesheet_256_431
+  - first:
+      213: 5107071425191232493
+    second: ExplosionAttack4_Spritesheet_256_432
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 8192
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5fc57c47de0a1ffa0800000000000000
+      internalID: -5768652705957978891
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_1
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7daf90e0d8cb90d0800000000000000
+      internalID: -3414915092983075460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_2
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8298eeabc827974c0800000000000000
+      internalID: -4289271221336504024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_3
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9dbca651dbf2a6ca0800000000000000
+      internalID: -6022949062499972135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_4
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6aca2ec3cc7f77b0800000000000000
+      internalID: -5224319862307108246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_5
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d06f9899c139e820800000000000000
+      internalID: 2947942173009469652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_6
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbdbc733f69f97b00800000000000000
+      internalID: 826966262599695804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_7
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01254a0b412c5bb40800000000000000
+      internalID: 5455479917747917328
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_8
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a87550aaa08fb10c0800000000000000
+      internalID: -4603813469370361974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_9
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8cf049145fa9cae0800000000000000
+      internalID: -1528497822779769714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_10
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00d3cc1fd8a13be90800000000000000
+      internalID: -7011230997936325376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_11
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 140702a2ae913a250800000000000000
+      internalID: 5954631625833738305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd867bada1eb708c0800000000000000
+      internalID: -4033045918739109668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_13
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0fce6dff2deabc200800000000000000
+      internalID: 201446829606759664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_14
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb8ab5b634e464c80800000000000000
+      internalID: -8338891608558950210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_15
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6260f35c0b3f3ccb0800000000000000
+      internalID: -4844760833571486170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_16
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b165a5be80507cd0800000000000000
+      internalID: -2562459614110719566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_17
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57ef8ee57fd79b150800000000000000
+      internalID: 5888876489166356085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_18
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5cfa0506d7b378f00800000000000000
+      internalID: 1118928442097708997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_19
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 800493edabc3fdcf0800000000000000
+      internalID: -225394683055357944
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_20
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b638233032af3d970800000000000000
+      internalID: 8778635126959670123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_21
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f526c0686e881920800000000000000
+      internalID: 2961273333947442681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_22
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c23600d9f2209b8b0800000000000000
+      internalID: -5136071496518573268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_23
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b96c38132d8b7f900800000000000000
+      internalID: 718245878502246043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_24
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c929bf024728b9cd0800000000000000
+      internalID: -2550301328694078820
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_25
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d0119b2494bac7a0800000000000000
+      internalID: -6356069375600946989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_26
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: acc71eef81b6fd500800000000000000
+      internalID: 423174645095693514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_27
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5088ae959dd2ff190800000000000000
+      internalID: -7926566407609087995
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_28
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1750c8e046a903ed0800000000000000
+      internalID: -2436277643875973775
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_29
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9469b8d5e4b9e050800000000000000
+      internalID: 5830390091884356764
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_30
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5db9b613843866ba0800000000000000
+      internalID: -6096040699509367851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_31
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a0190941b19f8cb0800000000000000
+      internalID: -4859505282288906078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_32
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2820765def38c7840800000000000000
+      internalID: 5223194798368162434
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_33
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 350bdb1a4b8afad40800000000000000
+      internalID: 5597878355605958739
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_34
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10a32a1f807c13240800000000000000
+      internalID: 4769812321589672449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_35
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3ec89ca03ef11f70800000000000000
+      internalID: 9156379002428509755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_36
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f4416b1f053adfb0800000000000000
+      internalID: -4622323728542251783
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_37
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ce6718d1c1133810800000000000000
+      internalID: 1743757004974288585
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_38
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0cc2e15c0a38200d0800000000000000
+      internalID: -3458056837342024512
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_39
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80116e25570e5cd70800000000000000
+      internalID: 9062896619659596040
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_40
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82830505f4e9c9d90800000000000000
+      internalID: -7089617649900963800
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_41
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97433af36a31beea0800000000000000
+      internalID: -5842554486829927303
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_42
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 308b40201384152f0800000000000000
+      internalID: -985927468092966909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_43
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4eaa884f0061cc10800000000000000
+      internalID: 2072042922324962893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_44
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2272c809b727e9850800000000000000
+      internalID: 6385667196689590050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_45
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4512fa818787c49b0800000000000000
+      internalID: -5094564621257334444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_46
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d218b33e4b62014f0800000000000000
+      internalID: -860144970479468243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_47
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91db46721f8bb4290800000000000000
+      internalID: -7905021375031231207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_48
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a7ea7a66b503bd770800000000000000
+      internalID: 8636549879535480442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_49
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aec3c33d1c7f65c70800000000000000
+      internalID: 8959620920544869610
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_50
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2bedfe7a35d49e1c0800000000000000
+      internalID: -4473959733120737614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_51
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e92833483b8bbd20800000000000000
+      internalID: 3295380626113833443
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_52
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b09dc23b9ef3ce2e0800000000000000
+      internalID: -2095229453668132597
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_53
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f00c68bd537702ed0800000000000000
+      internalID: -2440819924834795505
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_54
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9849a8835a9a9af50800000000000000
+      internalID: 6893227231750558857
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_55
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07700d12e1416cf60800000000000000
+      internalID: 8054147103247566704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_56
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce38fb7e76354c210800000000000000
+      internalID: 1352297493852816364
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_57
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c433cd8101e3d9b30800000000000000
+      internalID: 4295657858438804300
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_58
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c65e76d72a2ca520800000000000000
+      internalID: 2714591025988261575
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_59
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05b39e32f9ab74290800000000000000
+      internalID: -7906145428160562352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_60
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aab99c42deae2e530800000000000000
+      internalID: 3882924132992129962
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_61
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9046e2d2933644d0800000000000000
+      internalID: -3150774183602536291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_62
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82039e65f28c09e50800000000000000
+      internalID: 6814166341858701352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_63
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80a544cc08309d990800000000000000
+      internalID: -7360848264242636280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_64
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7bc5fa18392af8c60800000000000000
+      internalID: 7822649832185486519
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_65
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e87f1931df4ff9d90800000000000000
+      internalID: -7088677920665634930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_66
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5dbf54380008a16a0800000000000000
+      internalID: -6477724374328280107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_67
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 687ba9d4a321f6b20800000000000000
+      internalID: 3129740307665172358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_68
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 157923686916ec5e0800000000000000
+      internalID: -1887463894697207983
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_69
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9fb11889d1ff3f6b0800000000000000
+      internalID: -5263583036888245255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_70
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e259258954fccd770800000000000000
+      internalID: 8637006083205010734
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_71
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2dd6655e69b8cb000800000000000000
+      internalID: 53070775830605266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_72
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 168b96a9615597a40800000000000000
+      internalID: 5366413986556917857
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_73
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8b550cd5919644e0800000000000000
+      internalID: -1997749311864743028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_74
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6884b50a572542b70800000000000000
+      internalID: 8873307830981707910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_75
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba531c7c06bd3ae80800000000000000
+      internalID: -8168444090405276245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_76
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20bc57cd4e675b8a0800000000000000
+      internalID: -6289990579229701374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_77
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 786e2179d529d0aa0800000000000000
+      internalID: -6193132981900351865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_78
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 595a320cd3650c650800000000000000
+      internalID: 6251091106006803861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_79
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 910fcb2b69a8147c0800000000000000
+      internalID: -4088834606827245543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_80
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2edac50be7261030800000000000000
+      internalID: 3465000853676154411
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_81
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16d44bf1c905ac4e0800000000000000
+      internalID: -1960666056289399455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_82
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e11f43f3e922c85e0800000000000000
+      internalID: -1906110479223951074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_83
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f961658457defb4d0800000000000000
+      internalID: -3116511329136535905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_84
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80a734f606ce97fc0800000000000000
+      internalID: -3496503736748770808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_85
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 40f29a17804dae390800000000000000
+      internalID: -7788179472852111612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_86
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99281bca041e1c610800000000000000
+      internalID: 1639839407231042201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_87
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4627a8acf19c384b0800000000000000
+      internalID: -5439282786554187164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_88
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6676c370e26366500800000000000000
+      internalID: 389057989131921254
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_89
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89602c7037d15a620800000000000000
+      internalID: 2784664324487120536
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_90
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79413643a78038c60800000000000000
+      internalID: 7819102699003253911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_91
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71a3b0954c8157f30800000000000000
+      internalID: 4572588228251171351
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_92
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d89cf286893f2d710800000000000000
+      internalID: 1716702243890121101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_93
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f37b18dc3fe511e30800000000000000
+      internalID: 4472460306173507391
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_94
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 373872c8d0e33d250800000000000000
+      internalID: 5968182159102935923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_95
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4524a666cdbfbf10800000000000000
+      internalID: 2287755795550709066
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_96
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e45ce3d9e7199570800000000000000
+      internalID: 8473830466924598497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_97
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ba94f2fdf62e5d60800000000000000
+      internalID: 7880779270089644727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_98
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29beba79496a8b840800000000000000
+      internalID: 5240121323575569298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_99
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7170fcac27b85c50800000000000000
+      internalID: 6654269851947790718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_100
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0aa8efdb96403cd50800000000000000
+      internalID: 6756248718191528608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_101
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85e99005dc5ec19f0800000000000000
+      internalID: -496269188943733160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_102
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e35c31e9260c1a4d0800000000000000
+      internalID: -3125005136626989762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_103
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbfb0b7c72934ec40800000000000000
+      internalID: 5540616284589309884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_104
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35f81ec1816a357b0800000000000000
+      internalID: -5236659319207784621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_105
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b0066b6d3c1f3220800000000000000
+      internalID: 2467722170942750896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_106
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1cafdadb9d2826f0800000000000000
+      internalID: -709266793895580645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_107
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ef39921f5e04fc10800000000000000
+      internalID: 2086308328876097509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_108
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f48864b4d2b6fc950800000000000000
+      internalID: 6471509031835306063
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_109
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d7aced6256a4d640800000000000000
+      internalID: 5103887150679369686
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_110
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19e4040626439fd40800000000000000
+      internalID: 5618579607247670929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_111
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5769e276b4fcc6ad0800000000000000
+      internalID: -2707561353195907467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_112
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: efcdce49103d6bde0800000000000000
+      internalID: -1317633837212312322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_113
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82ba4ee62f19f2d00800000000000000
+      internalID: 950138516827056936
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_114
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a2a4fc4bc8cba410800000000000000
+      internalID: 1489504877271098024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_115
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 198ea5c17af400290800000000000000
+      internalID: -7926247765018220399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_116
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa212e39e98470000800000000000000
+      internalID: 2050170760073903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_117
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc8e22abcadfad050800000000000000
+      internalID: 5826247986256210125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_118
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0f351b8d2f074450800000000000000
+      internalID: 6072839310813773581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_119
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ec634812272d3250800000000000000
+      internalID: 5925935712078884073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_120
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ccfa34ff146899e80800000000000000
+      internalID: -8171352430873432116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_121
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3be6ed24e55ba9c90800000000000000
+      internalID: -7162212840925925709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_122
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3873522a6c99491c0800000000000000
+      internalID: -4497801049433360509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_123
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe9cc155887e3fc90800000000000000
+      internalID: -7137106411722585617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_124
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a27edc3933699dac0800000000000000
+      internalID: -3829864859834652886
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_125
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59ba3d7522ee0f8d0800000000000000
+      internalID: -2814487935836771435
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_126
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af01e6f2905efce30800000000000000
+      internalID: 4526087978143846650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ExplosionAttack4_Spritesheet_256_127
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0eecb023ea95d62b0800000000000000
+      internalID: -5589712957798101280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 1d90faadc29191848b8f5ba9b39ebeb2
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":256.0,"y":256.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      ExplosionAttack4_Spritesheet_256_0: -5768652705957978891
+      ExplosionAttack4_Spritesheet_256_1: -3414915092983075460
+      ExplosionAttack4_Spritesheet_256_10: -7011230997936325376
+      ExplosionAttack4_Spritesheet_256_100: 6756248718191528608
+      ExplosionAttack4_Spritesheet_256_101: -496269188943733160
+      ExplosionAttack4_Spritesheet_256_102: -3125005136626989762
+      ExplosionAttack4_Spritesheet_256_103: 5540616284589309884
+      ExplosionAttack4_Spritesheet_256_104: -5236659319207784621
+      ExplosionAttack4_Spritesheet_256_105: 2467722170942750896
+      ExplosionAttack4_Spritesheet_256_106: -709266793895580645
+      ExplosionAttack4_Spritesheet_256_107: 2086308328876097509
+      ExplosionAttack4_Spritesheet_256_108: 6471509031835306063
+      ExplosionAttack4_Spritesheet_256_109: 5103887150679369686
+      ExplosionAttack4_Spritesheet_256_11: 5954631625833738305
+      ExplosionAttack4_Spritesheet_256_110: 5618579607247670929
+      ExplosionAttack4_Spritesheet_256_111: -2707561353195907467
+      ExplosionAttack4_Spritesheet_256_112: -1317633837212312322
+      ExplosionAttack4_Spritesheet_256_113: 950138516827056936
+      ExplosionAttack4_Spritesheet_256_114: 1489504877271098024
+      ExplosionAttack4_Spritesheet_256_115: -7926247765018220399
+      ExplosionAttack4_Spritesheet_256_116: 2050170760073903
+      ExplosionAttack4_Spritesheet_256_117: 5826247986256210125
+      ExplosionAttack4_Spritesheet_256_118: 6072839310813773581
+      ExplosionAttack4_Spritesheet_256_119: 5925935712078884073
+      ExplosionAttack4_Spritesheet_256_12: -4033045918739109668
+      ExplosionAttack4_Spritesheet_256_120: -8171352430873432116
+      ExplosionAttack4_Spritesheet_256_121: -7162212840925925709
+      ExplosionAttack4_Spritesheet_256_122: -4497801049433360509
+      ExplosionAttack4_Spritesheet_256_123: -7137106411722585617
+      ExplosionAttack4_Spritesheet_256_124: -3829864859834652886
+      ExplosionAttack4_Spritesheet_256_125: -2814487935836771435
+      ExplosionAttack4_Spritesheet_256_126: 4526087978143846650
+      ExplosionAttack4_Spritesheet_256_127: -5589712957798101280
+      ExplosionAttack4_Spritesheet_256_13: 201446829606759664
+      ExplosionAttack4_Spritesheet_256_14: -8338891608558950210
+      ExplosionAttack4_Spritesheet_256_15: -4844760833571486170
+      ExplosionAttack4_Spritesheet_256_16: -2562459614110719566
+      ExplosionAttack4_Spritesheet_256_17: 5888876489166356085
+      ExplosionAttack4_Spritesheet_256_18: 1118928442097708997
+      ExplosionAttack4_Spritesheet_256_19: -225394683055357944
+      ExplosionAttack4_Spritesheet_256_2: -4289271221336504024
+      ExplosionAttack4_Spritesheet_256_20: 8778635126959670123
+      ExplosionAttack4_Spritesheet_256_21: 2961273333947442681
+      ExplosionAttack4_Spritesheet_256_22: -5136071496518573268
+      ExplosionAttack4_Spritesheet_256_23: 718245878502246043
+      ExplosionAttack4_Spritesheet_256_24: -2550301328694078820
+      ExplosionAttack4_Spritesheet_256_25: -6356069375600946989
+      ExplosionAttack4_Spritesheet_256_26: 423174645095693514
+      ExplosionAttack4_Spritesheet_256_27: -7926566407609087995
+      ExplosionAttack4_Spritesheet_256_28: -2436277643875973775
+      ExplosionAttack4_Spritesheet_256_29: 5830390091884356764
+      ExplosionAttack4_Spritesheet_256_3: -6022949062499972135
+      ExplosionAttack4_Spritesheet_256_30: -6096040699509367851
+      ExplosionAttack4_Spritesheet_256_31: -4859505282288906078
+      ExplosionAttack4_Spritesheet_256_32: 5223194798368162434
+      ExplosionAttack4_Spritesheet_256_33: 5597878355605958739
+      ExplosionAttack4_Spritesheet_256_34: 4769812321589672449
+      ExplosionAttack4_Spritesheet_256_35: 9156379002428509755
+      ExplosionAttack4_Spritesheet_256_36: -4622323728542251783
+      ExplosionAttack4_Spritesheet_256_37: 1743757004974288585
+      ExplosionAttack4_Spritesheet_256_38: -3458056837342024512
+      ExplosionAttack4_Spritesheet_256_39: 9062896619659596040
+      ExplosionAttack4_Spritesheet_256_4: -5224319862307108246
+      ExplosionAttack4_Spritesheet_256_40: -7089617649900963800
+      ExplosionAttack4_Spritesheet_256_41: -5842554486829927303
+      ExplosionAttack4_Spritesheet_256_42: -985927468092966909
+      ExplosionAttack4_Spritesheet_256_43: 2072042922324962893
+      ExplosionAttack4_Spritesheet_256_44: 6385667196689590050
+      ExplosionAttack4_Spritesheet_256_45: -5094564621257334444
+      ExplosionAttack4_Spritesheet_256_46: -860144970479468243
+      ExplosionAttack4_Spritesheet_256_47: -7905021375031231207
+      ExplosionAttack4_Spritesheet_256_48: 8636549879535480442
+      ExplosionAttack4_Spritesheet_256_49: 8959620920544869610
+      ExplosionAttack4_Spritesheet_256_5: 2947942173009469652
+      ExplosionAttack4_Spritesheet_256_50: -4473959733120737614
+      ExplosionAttack4_Spritesheet_256_51: 3295380626113833443
+      ExplosionAttack4_Spritesheet_256_52: -2095229453668132597
+      ExplosionAttack4_Spritesheet_256_53: -2440819924834795505
+      ExplosionAttack4_Spritesheet_256_54: 6893227231750558857
+      ExplosionAttack4_Spritesheet_256_55: 8054147103247566704
+      ExplosionAttack4_Spritesheet_256_56: 1352297493852816364
+      ExplosionAttack4_Spritesheet_256_57: 4295657858438804300
+      ExplosionAttack4_Spritesheet_256_58: 2714591025988261575
+      ExplosionAttack4_Spritesheet_256_59: -7906145428160562352
+      ExplosionAttack4_Spritesheet_256_6: 826966262599695804
+      ExplosionAttack4_Spritesheet_256_60: 3882924132992129962
+      ExplosionAttack4_Spritesheet_256_61: -3150774183602536291
+      ExplosionAttack4_Spritesheet_256_62: 6814166341858701352
+      ExplosionAttack4_Spritesheet_256_63: -7360848264242636280
+      ExplosionAttack4_Spritesheet_256_64: 7822649832185486519
+      ExplosionAttack4_Spritesheet_256_65: -7088677920665634930
+      ExplosionAttack4_Spritesheet_256_66: -6477724374328280107
+      ExplosionAttack4_Spritesheet_256_67: 3129740307665172358
+      ExplosionAttack4_Spritesheet_256_68: -1887463894697207983
+      ExplosionAttack4_Spritesheet_256_69: -5263583036888245255
+      ExplosionAttack4_Spritesheet_256_7: 5455479917747917328
+      ExplosionAttack4_Spritesheet_256_70: 8637006083205010734
+      ExplosionAttack4_Spritesheet_256_71: 53070775830605266
+      ExplosionAttack4_Spritesheet_256_72: 5366413986556917857
+      ExplosionAttack4_Spritesheet_256_73: -1997749311864743028
+      ExplosionAttack4_Spritesheet_256_74: 8873307830981707910
+      ExplosionAttack4_Spritesheet_256_75: -8168444090405276245
+      ExplosionAttack4_Spritesheet_256_76: -6289990579229701374
+      ExplosionAttack4_Spritesheet_256_77: -6193132981900351865
+      ExplosionAttack4_Spritesheet_256_78: 6251091106006803861
+      ExplosionAttack4_Spritesheet_256_79: -4088834606827245543
+      ExplosionAttack4_Spritesheet_256_8: -4603813469370361974
+      ExplosionAttack4_Spritesheet_256_80: 3465000853676154411
+      ExplosionAttack4_Spritesheet_256_81: -1960666056289399455
+      ExplosionAttack4_Spritesheet_256_82: -1906110479223951074
+      ExplosionAttack4_Spritesheet_256_83: -3116511329136535905
+      ExplosionAttack4_Spritesheet_256_84: -3496503736748770808
+      ExplosionAttack4_Spritesheet_256_85: -7788179472852111612
+      ExplosionAttack4_Spritesheet_256_86: 1639839407231042201
+      ExplosionAttack4_Spritesheet_256_87: -5439282786554187164
+      ExplosionAttack4_Spritesheet_256_88: 389057989131921254
+      ExplosionAttack4_Spritesheet_256_89: 2784664324487120536
+      ExplosionAttack4_Spritesheet_256_9: -1528497822779769714
+      ExplosionAttack4_Spritesheet_256_90: 7819102699003253911
+      ExplosionAttack4_Spritesheet_256_91: 4572588228251171351
+      ExplosionAttack4_Spritesheet_256_92: 1716702243890121101
+      ExplosionAttack4_Spritesheet_256_93: 4472460306173507391
+      ExplosionAttack4_Spritesheet_256_94: 5968182159102935923
+      ExplosionAttack4_Spritesheet_256_95: 2287755795550709066
+      ExplosionAttack4_Spritesheet_256_96: 8473830466924598497
+      ExplosionAttack4_Spritesheet_256_97: 7880779270089644727
+      ExplosionAttack4_Spritesheet_256_98: 5240121323575569298
+      ExplosionAttack4_Spritesheet_256_99: 6654269851947790718
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

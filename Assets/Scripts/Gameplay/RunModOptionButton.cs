@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class RunModOptionButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class RunModOptionButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
     [Header("Refs")]
     public Button button;
@@ -42,7 +42,8 @@ public class RunModOptionButton : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     RunModifierSO _mod;
     bool _selected;
-    bool _isHover;
+    bool _isPointerHover;
+    bool _isNavigationFocus;
 
     Image _bg;
     Color _bgDefaultColor;
@@ -104,13 +105,25 @@ public class RunModOptionButton : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        _isHover = true;
+        _isPointerHover = true;
         ApplyBgVisual();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        _isHover = false;
+        _isPointerHover = false;
+        ApplyBgVisual();
+    }
+
+    public void OnSelect(BaseEventData eventData)
+    {
+        _isNavigationFocus = true;
+        ApplyBgVisual();
+    }
+
+    public void OnDeselect(BaseEventData eventData)
+    {
+        _isNavigationFocus = false;
         ApplyBgVisual();
     }
 
@@ -124,7 +137,7 @@ public class RunModOptionButton : MonoBehaviour, IPointerEnterHandler, IPointerE
             return;
         }
 
-        _bg.color = _isHover ? MultiplyRgb(_bgDefaultColor, hoverTintMult) : _bgDefaultColor;
+        _bg.color = _isPointerHover || _isNavigationFocus ? MultiplyRgb(_bgDefaultColor, hoverTintMult) : _bgDefaultColor;
     }
 
     static Color MultiplyRgb(Color c, float mult)

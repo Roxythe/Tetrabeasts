@@ -961,9 +961,6 @@ public class TitleMenuUI : MonoBehaviour
         var buttons = GetComponentsInChildren<Button>(includeInactive: true);
         foreach (var b in buttons)
         {
-            b.onClick.AddListener(() => { if (AudioManager.I) AudioManager.I.PlaySFX(uiClickSFX); });
-
-            // Hover
             var hover = b.gameObject.GetComponent<global::UIButtonSFX>();
             if (!hover) hover = b.gameObject.AddComponent<global::UIButtonSFX>();
             hover.hoverClip = uiHoverSFX;
