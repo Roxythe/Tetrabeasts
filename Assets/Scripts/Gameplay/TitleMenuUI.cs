@@ -532,8 +532,18 @@ public class TitleMenuUI : MonoBehaviour
         RefreshAutomaticNavigationScope(root);
 
         bool settingsHandledByVolumePanel = volumePanelUI && settingsPanel && UIPanelTransition.IsVisible(settingsPanel);
-        if (rootChanged && !settingsHandledByVolumePanel)
-            RestoreNavigationRootSelectionIfNeeded(root);
+        if (rootChanged)
+        {
+            if (UINavigationUtility.ShouldKeepNavigationSelection)
+            {
+                if (!settingsHandledByVolumePanel)
+                    RestoreNavigationRootSelectionIfNeeded(root);
+            }
+            else
+            {
+                ClearCurrentSelection();
+            }
+        }
 
         if (settingsHandledByVolumePanel)
             return;
@@ -546,6 +556,16 @@ public class TitleMenuUI : MonoBehaviour
             return;
 
         HandleSpatialNavigation(root);
+    }
+
+    void LateUpdate()
+    {
+        if (!UICursorController.IsButtonNavigationMode)
+            return;
+
+        GameObject root = GetCurrentNavigationRoot();
+        if (root)
+            UINavigationUtility.ReleasePointerHoverForNavigation(root, force: true);
     }
 
     void HandleSpatialNavigation(GameObject root)
@@ -564,15 +584,9 @@ public class TitleMenuUI : MonoBehaviour
             return;
         }
 
+        UINavigationUtility.BeginButtonNavigation(root);
         if (!navigationRootPrimed)
-        {
             navigationRootPrimed = true;
-            if (SelectInitialNavigationTarget(root))
-            {
-                ResetNavigationRepeat();
-                return;
-            }
-        }
 
         var current = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
         if (!UINavigationUtility.IsSelectionUsableInside(current, root))
@@ -607,11 +621,17 @@ public class TitleMenuUI : MonoBehaviour
 
     void RestoreNavigationRootSelectionIfNeeded(GameObject root)
     {
-        if (!root || !UICursorController.IsButtonNavigationMode)
+        if (!root || !UINavigationUtility.ShouldKeepNavigationSelection)
             return;
 
         if (SelectInitialNavigationTarget(root))
             navigationRootPrimed = true;
+    }
+
+    static void ClearCurrentSelection()
+    {
+        if (EventSystem.current)
+            EventSystem.current.SetSelectedGameObject(null);
     }
 
     GameObject GetCurrentNavigationRoot()

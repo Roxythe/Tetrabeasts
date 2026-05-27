@@ -8,6 +8,14 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 #endif
 
+public enum UITargetInputSource
+{
+    None,
+    MousePointer,
+    VirtualCursor,
+    ButtonNavigation
+}
+
 public class UICursorController : MonoBehaviour
 {
     public RectTransform cursorRect;   
@@ -28,6 +36,9 @@ public class UICursorController : MonoBehaviour
     static int s_lastVirtualCursorFrame = -1000;
     static int s_lastVirtualSubmitFrame = -1000;
     static Vector2 s_currentScreenPosition;
+    static UITargetInputSource s_targetInputSource = UITargetInputSource.MousePointer;
+    static UITargetInputSource s_previousTargetInputSource = UITargetInputSource.None;
+    static int s_targetInputSourceChangedFrame = -1000;
 
     readonly System.Collections.Generic.List<RaycastResult> raycastResults = new();
     float _scale = 1f;
@@ -40,11 +51,29 @@ public class UICursorController : MonoBehaviour
 
     public static bool IsVirtualCursorMode => s_virtualCursorMode;
     public static bool IsButtonNavigationMode => s_buttonNavigationMode;
+    public static bool IsPointerTargetMode =>
+        s_targetInputSource == UITargetInputSource.MousePointer ||
+        s_targetInputSource == UITargetInputSource.VirtualCursor;
+    public static UITargetInputSource CurrentTargetInputSource => s_targetInputSource;
+    public static UITargetInputSource PreviousTargetInputSource =>
+        Time.frameCount == s_targetInputSourceChangedFrame ? s_previousTargetInputSource : s_targetInputSource;
+    public static bool TargetInputSourceChangedThisFrame => Time.frameCount == s_targetInputSourceChangedFrame;
     public static bool VirtualCursorActiveThisFrame => Time.frameCount == s_lastVirtualCursorFrame;
     public static bool ConsumedVirtualSubmitThisFrame => Time.frameCount == s_lastVirtualSubmitFrame;
     public static bool VirtualCursorSubmitPressedThisFrame => s_virtualCursorMode && WasGamepadCursorSubmitPressed();
+    public static bool ShouldKeepNavigationSelection =>
+        TetrabeastsControls.EffectiveProfile != TetrabeastsControlProfile.KeyboardMouse &&
+        s_targetInputSource == UITargetInputSource.ButtonNavigation;
     public static Vector2 CurrentScreenPosition => s_currentScreenPosition;
     public static void ConsumeSubmitThisFrame() => s_lastVirtualSubmitFrame = Time.frameCount;
+
+    public static bool ActivateButtonNavigationTargetSource()
+    {
+        bool changed = SetTargetInputSource(UITargetInputSource.ButtonNavigation);
+        s_virtualCursorMode = false;
+        s_buttonNavigationMode = true;
+        return changed;
+    }
 
     void Awake()
     {
@@ -85,10 +114,13 @@ public class UICursorController : MonoBehaviour
 
         if (mouseUsed)
         {
+            Vector2 selectedCenter = default;
+            bool hasSelectedCenter = wasInputHidden && TryGetSelectedScreenCenter(out selectedCenter);
+            ActivateMousePointerTargetSource();
             s_virtualCursorMode = false;
             s_buttonNavigationMode = false;
             inputVisible = true;
-            if (wasInputHidden && TryGetSelectedScreenCenter(out var selectedCenter))
+            if (hasSelectedCenter)
             {
                 virtualScreenPosition = selectedCenter;
                 WarpMousePosition(selectedCenter);
@@ -101,12 +133,15 @@ public class UICursorController : MonoBehaviour
         }
         else if (virtualCursorUsed)
         {
+            Vector2 selectedCenter = default;
+            bool hasSelectedCenter = wasInputHidden && TryGetSelectedScreenCenter(out selectedCenter);
+            ActivateVirtualCursorTargetSource();
             s_virtualCursorMode = true;
             s_buttonNavigationMode = false;
             s_lastVirtualCursorFrame = Time.frameCount;
             inputVisible = true;
 
-            if (wasInputHidden && TryGetSelectedScreenCenter(out var selectedCenter))
+            if (hasSelectedCenter)
                 virtualScreenPosition = selectedCenter;
 
             virtualScreenPosition += stick * (gamepadCursorSpeed * Time.unscaledDeltaTime);
@@ -117,8 +152,7 @@ public class UICursorController : MonoBehaviour
         }
         else if (buttonNavigationUsed)
         {
-            s_virtualCursorMode = false;
-            s_buttonNavigationMode = true;
+            ActivateButtonNavigationTargetSource();
             inputVisible = false;
             ClearVirtualPointerTarget();
         }
@@ -296,6 +330,36 @@ public class UICursorController : MonoBehaviour
 #endif
 
         return used;
+    }
+
+    static void ActivateMousePointerTargetSource()
+    {
+        if (SetTargetInputSource(UITargetInputSource.MousePointer))
+            ClearEventSystemSelection();
+    }
+
+    static void ActivateVirtualCursorTargetSource()
+    {
+        if (SetTargetInputSource(UITargetInputSource.VirtualCursor))
+            ClearEventSystemSelection();
+    }
+
+    static bool SetTargetInputSource(UITargetInputSource source)
+    {
+        if (s_targetInputSource == source)
+            return false;
+
+        s_previousTargetInputSource = s_targetInputSource;
+        s_targetInputSource = source;
+        s_targetInputSourceChangedFrame = Time.frameCount;
+        return true;
+    }
+
+    static void ClearEventSystemSelection()
+    {
+        var eventSystem = EventSystem.current;
+        if (eventSystem && eventSystem.currentSelectedGameObject)
+            eventSystem.SetSelectedGameObject(null);
     }
 
     static Vector2 ReadGamepadCursorStick()
@@ -504,6 +568,15 @@ public class ScopedMenuNavigator : MonoBehaviour
         HandleSpatialNavigation();
     }
 
+    void LateUpdate()
+    {
+        if (!navigationRoot || !navigationRoot.activeInHierarchy)
+            return;
+
+        if (UICursorController.IsButtonNavigationMode)
+            UINavigationUtility.ReleasePointerHoverForNavigation(navigationRoot, force: true);
+    }
+
     void HandleSpatialNavigation()
     {
         bool tabPressed = WasTabPressedThisFrame();
@@ -516,6 +589,8 @@ public class ScopedMenuNavigator : MonoBehaviour
             ResetNavigationRepeat();
             return;
         }
+
+        UINavigationUtility.BeginButtonNavigation(navigationRoot);
 
         var current = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
         if (!UINavigationUtility.IsSelectionUsableInside(current, navigationRoot))
@@ -650,11 +725,16 @@ public static class UINavigationUtility
     const float SubmitDebounceSeconds = 0.08f;
 
     static readonly List<Selectable> SelectableScratch = new();
+    static readonly List<RaycastResult> PointerHoverRaycastScratch = new();
+    static readonly HashSet<GameObject> PointerHoverExitTargetsScratch = new();
     static readonly Dictionary<EventSystem, EventSystemNavigationState> EventSystemNavigationStates = new();
     static readonly Dictionary<int, string> LastSelectionPathsByRoot = new();
     static int s_lastSubmitFrame = -1000;
     static float s_lastSubmitTime = -999f;
     static GameObject s_lastSubmitObject;
+    static int s_lastPointerHoverReleaseFrame = -1000;
+
+    public static bool ShouldKeepNavigationSelection => UICursorController.ShouldKeepNavigationSelection;
 
     public static bool IsSelectionUsableInside(GameObject selected, GameObject root)
     {
@@ -671,7 +751,7 @@ public static class UINavigationUtility
         if (selectables.Count == 0 || !EventSystem.current)
             return false;
 
-        var remembered = FindRememberedSelectable(root, selectables);
+        var remembered = ShouldKeepNavigationSelection ? FindRememberedSelectable(root, selectables) : null;
         if (remembered)
             return SelectSelectable(root, remembered);
 
@@ -776,6 +856,9 @@ public static class UINavigationUtility
 
     public static void RememberSelection(GameObject root, GameObject selected)
     {
+        if (!ShouldKeepNavigationSelection)
+            return;
+
         if (!root || !selected || !selected.transform.IsChildOf(root.transform))
             return;
 
@@ -849,6 +932,119 @@ public static class UINavigationUtility
         return TryPressButton(button);
     }
 
+    public static void BeginButtonNavigation(GameObject root)
+    {
+        UITargetInputSource previousSource = UICursorController.TargetInputSourceChangedThisFrame
+            ? UICursorController.PreviousTargetInputSource
+            : UICursorController.CurrentTargetInputSource;
+        Vector2 pointerPosition = GetPointerScreenPosition(previousSource);
+        bool sourceChanged = UICursorController.ActivateButtonNavigationTargetSource();
+        bool adoptPointerTarget = sourceChanged ||
+            (UICursorController.TargetInputSourceChangedThisFrame &&
+             IsPointerSource(UICursorController.PreviousTargetInputSource));
+
+        if (adoptPointerTarget && !SelectPointerTarget(root, pointerPosition))
+            ClearSelectionInside(root);
+
+        ReleasePointerHoverForNavigation(root, pointerPosition);
+    }
+
+    public static void ReleasePointerHoverForNavigation(GameObject root)
+    {
+        ReleasePointerHoverForNavigation(root, force: false);
+    }
+
+    public static void ReleasePointerHoverForNavigation(GameObject root, bool force)
+    {
+        ReleasePointerHoverForNavigation(root, GetPointerScreenPosition(UICursorController.CurrentTargetInputSource), force);
+    }
+
+    static void ReleasePointerHoverForNavigation(GameObject root, Vector2 pointerPosition, bool force = false)
+    {
+        var eventSystem = EventSystem.current;
+        if (!eventSystem || (!force && Time.frameCount == s_lastPointerHoverReleaseFrame))
+            return;
+
+        s_lastPointerHoverReleaseFrame = Time.frameCount;
+
+        var pointerEventData = new PointerEventData(eventSystem)
+        {
+            position = pointerPosition
+        };
+
+        PointerHoverRaycastScratch.Clear();
+        PointerHoverExitTargetsScratch.Clear();
+        eventSystem.RaycastAll(pointerEventData, PointerHoverRaycastScratch);
+
+        for (int i = 0; i < PointerHoverRaycastScratch.Count; i++)
+        {
+            var hit = PointerHoverRaycastScratch[i].gameObject;
+            if (!hit || (root && !hit.transform.IsChildOf(root.transform)))
+                continue;
+
+            var selectable = hit.GetComponentInParent<Selectable>();
+            if (!IsUsable(selectable))
+                continue;
+
+            ExecutePointerExitHandlers(hit.transform, selectable.transform, pointerEventData);
+        }
+
+        PointerHoverRaycastScratch.Clear();
+        PointerHoverExitTargetsScratch.Clear();
+    }
+
+    static bool SelectPointerTarget(GameObject root, Vector2 pointerPosition)
+    {
+        var selectable = FindSelectableUnderPointer(root, pointerPosition);
+        if (!selectable)
+            return false;
+
+        return SelectSelectable(root, selectable);
+    }
+
+    static void ClearSelectionInside(GameObject root)
+    {
+        var eventSystem = EventSystem.current;
+        if (!eventSystem)
+            return;
+
+        var selected = eventSystem.currentSelectedGameObject;
+        if (selected && (!root || selected.transform.IsChildOf(root.transform)))
+            eventSystem.SetSelectedGameObject(null);
+    }
+
+    static Selectable FindSelectableUnderPointer(GameObject root, Vector2 pointerPosition)
+    {
+        var eventSystem = EventSystem.current;
+        if (!eventSystem)
+            return null;
+
+        var pointerEventData = new PointerEventData(eventSystem)
+        {
+            position = pointerPosition
+        };
+
+        PointerHoverRaycastScratch.Clear();
+        eventSystem.RaycastAll(pointerEventData, PointerHoverRaycastScratch);
+
+        for (int i = 0; i < PointerHoverRaycastScratch.Count; i++)
+        {
+            var hit = PointerHoverRaycastScratch[i].gameObject;
+            if (!hit || (root && !hit.transform.IsChildOf(root.transform)))
+                continue;
+
+            var selectable = hit.GetComponentInParent<Selectable>();
+            if (IsUsable(selectable) && (!root || selectable.transform.IsChildOf(root.transform)))
+            {
+                PointerHoverRaycastScratch.Clear();
+                return selectable;
+            }
+        }
+
+        PointerHoverRaycastScratch.Clear();
+        return null;
+    }
+
     public static List<Selectable> GetUsableSelectables(GameObject root)
     {
         SelectableScratch.Clear();
@@ -893,6 +1089,46 @@ public static class UINavigationUtility
         }
 
         return null;
+    }
+
+    static void ExecutePointerExitHandlers(Transform hit, Transform selectable, PointerEventData pointerEventData)
+    {
+        Transform current = hit;
+        while (current)
+        {
+            if (PointerHoverExitTargetsScratch.Add(current.gameObject))
+                ExecuteEvents.Execute(current.gameObject, pointerEventData, ExecuteEvents.pointerExitHandler);
+
+            if (current == selectable)
+                return;
+
+            current = current.parent;
+        }
+    }
+
+    static bool IsPointerSource(UITargetInputSource source)
+    {
+        return source == UITargetInputSource.MousePointer ||
+               source == UITargetInputSource.VirtualCursor ||
+               source == UITargetInputSource.None;
+    }
+
+    static Vector2 GetPointerScreenPosition(UITargetInputSource source)
+    {
+        if (source == UITargetInputSource.VirtualCursor)
+            return UICursorController.CurrentScreenPosition;
+
+#if ENABLE_INPUT_SYSTEM
+        var mouse = Mouse.current;
+        if (mouse != null)
+            return mouse.position.ReadValue();
+#endif
+
+#if ENABLE_LEGACY_INPUT_MANAGER
+        return Input.mousePosition;
+#else
+        return UICursorController.CurrentScreenPosition;
+#endif
     }
 
     public static void SuppressAutomaticNavigation(GameObject root, Dictionary<Selectable, Navigation> savedNavigation)
@@ -1063,7 +1299,8 @@ public static class UINavigationUtility
             return false;
 
         EventSystem.current.SetSelectedGameObject(selectable.gameObject);
-        RememberSelection(root, selectable.gameObject);
+        if (ShouldKeepNavigationSelection)
+            RememberSelection(root, selectable.gameObject);
         return true;
     }
 

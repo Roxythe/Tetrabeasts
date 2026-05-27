@@ -147,7 +147,7 @@ public class VolumePanelUI : MonoBehaviour
         CloseControlsPanel(true);
         RefreshModalSelectableScope();
 
-        if (focusFirstSelectableWhenOpened)
+        if (focusFirstSelectableWhenOpened && UINavigationUtility.ShouldKeepNavigationSelection)
             StartCoroutine(SelectFirstVisibleControlNextFrame(gameObject));
     }
 
@@ -877,7 +877,7 @@ public class VolumePanelUI : MonoBehaviour
         suppressDropdownOpenUntilFrame = Time.frameCount + 2;
         RefreshModalSelectableScope();
 
-        if (focusFirstSelectableWhenOpened)
+        if (focusFirstSelectableWhenOpened && UINavigationUtility.ShouldKeepNavigationSelection)
             StartCoroutine(SelectFirstVisibleControlNextFrame(controlsPanelRoot));
     }
 
@@ -1516,6 +1516,9 @@ public class VolumePanelUI : MonoBehaviour
     bool ShouldPullSelectionBackToScope(GameObject current, GameObject navigationRoot)
     {
         if (!navigationRoot)
+            return false;
+
+        if (!UINavigationUtility.ShouldKeepNavigationSelection)
             return false;
 
         return !UINavigationUtility.IsSelectionUsableInside(current, navigationRoot);

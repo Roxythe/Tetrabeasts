@@ -212,15 +212,14 @@ public class RoundTransitionUI : MonoBehaviour
             rootGroup.blocksRaycasts = true;
         }
 
-        SetBackgroundAlpha(0f);
+        SetCircularRevealProgress(1f);
+        SetBackgroundAlpha(backgroundAlpha);
 
         if (messageText)
         {
             messageText.text = TetrabeastsLocalization.LocalizeText(message);
             SetTextAlpha(0f);
         }
-
-        PrepareCircularReveal();
 
         if (continueButtonGroup)
         {
@@ -308,10 +307,7 @@ public class RoundTransitionUI : MonoBehaviour
             elapsed += Time.unscaledDeltaTime;
             float t = Mathf.Clamp01(elapsed / duration);
             float alpha = Mathf.SmoothStep(0f, 1f, t);
-            float reveal = GetCircularRevealProgress(elapsed);
 
-            SetCircularRevealProgress(reveal);
-            SetBackgroundAlpha(backgroundAlpha * reveal);
             SetTextAlpha(alpha);
 
             yield return null;

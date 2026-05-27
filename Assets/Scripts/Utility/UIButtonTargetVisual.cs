@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [DisallowMultipleComponent]
-public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
+public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointerMoveHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
     public enum ControllerArrowPlacement
     {
@@ -107,6 +107,9 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
         if (selected != nowSelected)
             selected = nowSelected;
 
+        if (!selected && !UICursorController.IsPointerTargetMode)
+            pointerInside = false;
+
         RefreshVisuals();
     }
 
@@ -117,6 +120,15 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
         if (hoverSfx && AudioManager.I)
             AudioManager.I.PlaySFX(hoverSfx);
 
+        RefreshVisuals();
+    }
+
+    public void OnPointerMove(PointerEventData eventData)
+    {
+        if (!UICursorController.IsPointerTargetMode && !selected)
+            return;
+
+        pointerInside = true;
         RefreshVisuals();
     }
 
@@ -140,18 +152,12 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
 
     void RefreshVisuals()
     {
-        bool navigationTargeted = selected && IsMenuNavigationTargetMode();
-        bool showFireBorder = pointerInside || navigationTargeted || persistentFireBorder;
+        bool navigationTargeted = selected && UICursorController.IsButtonNavigationMode;
+        bool pointerTargeted = pointerInside && UICursorController.IsPointerTargetMode;
+        bool showFireBorder = pointerTargeted || navigationTargeted || persistentFireBorder;
         SetFireBorderDesired(showFireBorder);
         ApplyFireBorderTint(showFireBorder && persistentFireBorder);
         SetControllerArrowVisible(controllerArrowPlacement != ControllerArrowPlacement.None && navigationTargeted);
-    }
-
-    static bool IsMenuNavigationTargetMode()
-    {
-        return UICursorController.IsButtonNavigationMode ||
-               TetrabeastsControls.WasButtonNavigationPressedThisFrame() ||
-               TetrabeastsControls.IsButtonNavigationHeld();
     }
 
     void ResolveFireBorderAnimation()
