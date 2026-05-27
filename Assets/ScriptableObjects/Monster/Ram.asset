@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Ram
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   monsterName: Ram
-  portrait: {fileID: 21300000, guid: 6787f75a011703f4baa32af492be2fa0, type: 3}
+  portrait: {fileID: 21300000, guid: d699151806d2476438ac4cc6ff722c5f, type: 3}
   monsterDescription: A well rounded attacker unit with decent damage, but enough
     health to survive weaker attacks.
   passiveType: 2
@@ -21,11 +21,17 @@ MonoBehaviour:
   startsLocked: 0
   unlockCost: 10
   skinPortraits:
-  - {fileID: 21300000, guid: 6787f75a011703f4baa32af492be2fa0, type: 3}
-  - {fileID: 21300000, guid: 8c39dd6b441013e44919f6aebc59f9bd, type: 3}
-  - {fileID: 21300000, guid: 804b3e515aca69244bcd87ba1a6662ee, type: 3}
-  - {fileID: 21300000, guid: 15e31e8487ea91a4882e35463e4c8436, type: 3}
-  - {fileID: 21300000, guid: 6a21bbb45c5e2e145b07fd68eac6ddd9, type: 3}
+  - {fileID: 21300000, guid: d699151806d2476438ac4cc6ff722c5f, type: 3}
+  - {fileID: 21300000, guid: f684aae69db277f48b128d6eff02f271, type: 3}
+  - {fileID: 21300000, guid: 6b7817ebb3b10d24487a04d500a5359b, type: 3}
+  - {fileID: 21300000, guid: e2b77c613af0a2a4c894f0e3da664775, type: 3}
+  - {fileID: 21300000, guid: d42e7bf7b3d5e3a41ad912cfcc826026, type: 3}
+  skinAltPortraits:
+  - {fileID: 21300000, guid: 5f7d05c9cab26fd41a768cdcb3dcc594, type: 3}
+  - {fileID: 21300000, guid: 9c55d24964f5a83448ac80ea891a4898, type: 3}
+  - {fileID: 21300000, guid: 0fca776054a7ef7458ea606a7209e036, type: 3}
+  - {fileID: 21300000, guid: 5353afb7954a02a42bd4aab89af84cce, type: 3}
+  - {fileID: 21300000, guid: 04098cb05c0de57409ba2c515af3b8e0, type: 3}
   skinCosts: 0000000064000000640000006400000064000000
   maxHealth: 20
   minHealth: 0

@@ -471,9 +471,20 @@ public class SteamLeaderboardService : MonoBehaviour
             return;
         }
 
+        int rank = GetUploadResultRank(result);
+        string rankSuffix = rank > 0 ? $" #{rank}" : " unavailable";
+
         _lastStatus = result.m_bScoreChanged != 0
-            ? $"Steam leaderboard updated. New global rank: #{result.m_nGlobalRankNew}."
-            : $"Steam leaderboard kept existing best. Current rank: #{result.m_nGlobalRankNew}.";
+            ? $"Steam leaderboard updated. New global rank:{rankSuffix}."
+            : $"Steam leaderboard kept existing best. Current rank:{rankSuffix}.";
+    }
+
+    static int GetUploadResultRank(LeaderboardScoreUploaded_t result)
+    {
+        if (result.m_bScoreChanged != 0)
+            return result.m_nGlobalRankNew > 0 ? result.m_nGlobalRankNew : result.m_nGlobalRankPrevious;
+
+        return result.m_nGlobalRankPrevious > 0 ? result.m_nGlobalRankPrevious : result.m_nGlobalRankNew;
     }
 
     void DownloadEntries(

@@ -35,6 +35,14 @@ public class Board : MonoBehaviour
     [Header("Line Clear Timing")]
     public float cascadeClearVisualDelay = 0.25f;
 
+    [Header("Monster Alt Portrait Reactions")]
+    public float attackLineClearAltHoldSeconds = 0.12f;
+    public float roleAltPortraitFlashSeconds = 0.18f;
+    public float attackPassiveAltMinSeconds = 3f;
+    public float attackPassiveAltMaxSeconds = 6f;
+    public float attackPassiveAltFlashSeconds = 0.18f;
+    public bool syncAttackPassiveAltByPiece = false;
+
     bool tilesImmune = false;
     public enum DamageSource
     {
@@ -61,6 +69,9 @@ public class Board : MonoBehaviour
     readonly Transform[,] grid = null; // [x,y] grid of tile transforms
     Dictionary<Vector2Int, RectTransform> placed = new();
     readonly Dictionary<Vector2Int, float> healTimers = new();
+    readonly Dictionary<Vector2Int, float> attackPortraitIdleTimers = new();
+    readonly Dictionary<int, float> attackPiecePortraitIdleTimers = new();
+    int nextPieceGroupId = 1;
 
     // ================= Obstacles & Floor Effects =================
 
@@ -123,6 +134,7 @@ public class Board : MonoBehaviour
     public Color contagionSecondaryUnderlayTint = new Color(1f, 0.10f, 0.65f, 1f); // hot pink
 
     readonly Dictionary<Vector2Int, Coroutine> _monsterFlashCo = new();
+    readonly Dictionary<Vector2Int, Coroutine> _portraitAltSwapCo = new();
 
     public enum ObstacleType { Stone, MagicPylon, MagicExplosive, SoldierWall, Overgrowth }
 
@@ -252,6 +264,7 @@ public class Board : MonoBehaviour
         public float healSpeed;
         public float specialGaugeGain;  // leveled base specialGain used for gauge
         public int soulLinkGroupId;
+        public int pieceGroupId;
         public bool contagionInfected;
         public float contagionPercentPerTick;
         public float contagionTickTimer;
@@ -270,12 +283,18 @@ public class Board : MonoBehaviour
             healSpeed = 0f;
             specialGaugeGain = 0f;
             soulLinkGroupId = 0;
+            pieceGroupId = 0;
             contagionInfected = false;
             contagionPercentPerTick = 0f;
             contagionTickTimer = 0f;
             contagionSpreadTimer = 0f;
 
             RecalcFromData(setHpToMax: true);
+        }
+
+        public MonsterInstance(MonsterData d, int groupId) : this(d)
+        {
+            pieceGroupId = groupId;
         }
 
         public void RecalcFromData(bool setHpToMax)
@@ -290,6 +309,7 @@ public class Board : MonoBehaviour
                 healSpeed = 0f;
                 specialGaugeGain = 0f;
                 soulLinkGroupId = 0;
+                pieceGroupId = 0;
                 contagionInfected = false;
                 contagionPercentPerTick = 0f;
                 contagionTickTimer = 0f;
@@ -547,6 +567,7 @@ public class Board : MonoBehaviour
         AnimateSpikes();
         TickMagicExplosives();
         RefreshAllTintUnderlays();
+        TickAttackPortraitIdleSwaps();
 
         // ================== Healers pulse over time ==================
         if (monsters.Count == 0 || healTimers.Count == 0) return;
@@ -558,6 +579,9 @@ public class Board : MonoBehaviour
         foreach (var k in toKeys)
         {
             if (!monsters.TryGetValue(k, out var inst) || inst.data == null)
+            { healTimers.Remove(k); continue; }
+
+            if (inst.hp <= 0f)
             { healTimers.Remove(k); continue; }
 
             var md = inst.data;
@@ -579,6 +603,7 @@ public class Board : MonoBehaviour
             }
 
             healTimers[k] = 0f; // Consume one tick
+            FlashMonsterAltPortrait(k, MonsterRole.Healer);
 
             int range = Mathf.Clamp(Mathf.RoundToInt(inst.healRange + rangeAdd), 0, 99);
             Vector2Int? best = null;
@@ -763,6 +788,295 @@ public class Board : MonoBehaviour
         if (dead) dead.gameObject.SetActive(current <= 0f);
     }
 
+    void FlashMonsterAltPortrait(Vector2Int cell, MonsterRole requiredRole)
+    {
+        FlashMonsterAltPortrait(cell, requiredRole, roleAltPortraitFlashSeconds);
+    }
+
+    void FlashMonsterAltPortrait(Vector2Int cell, MonsterRole requiredRole, float restoreSeconds)
+    {
+        if (!TrySetMonsterAltPortrait(cell, requiredRole, out var monster, out var tile))
+            return;
+
+        _portraitAltSwapCo[cell] = StartCoroutine(CoRestoreMonsterPortrait(cell, monster, tile, restoreSeconds));
+    }
+
+    bool TrySetMonsterAltPortrait(Vector2Int cell, MonsterRole requiredRole, out MonsterData monster, out RectTransform tile)
+    {
+        return TrySetMonsterAltPortrait(cell, (MonsterRole?)requiredRole, out monster, out tile);
+    }
+
+    bool TrySetMonsterAltPortrait(Vector2Int cell, out MonsterData monster, out RectTransform tile)
+    {
+        return TrySetMonsterAltPortrait(cell, null, out monster, out tile);
+    }
+
+    bool TrySetMonsterAltPortrait(Vector2Int cell, MonsterRole? requiredRole, out MonsterData monster, out RectTransform tile)
+    {
+        monster = null;
+        tile = null;
+
+        if (!monsters.TryGetValue(cell, out var inst) || !inst.data || inst.hp <= 0f)
+            return false;
+
+        if (requiredRole.HasValue && inst.data.role != requiredRole.Value)
+            return false;
+
+        if (!placed.TryGetValue(cell, out tile) || !tile)
+            return false;
+
+        var portrait = tile.Find("MonsterPortrait")?.GetComponent<Image>();
+        if (!portrait)
+            return false;
+
+        var alt = GetCurrentMonsterAltPortrait(inst.data);
+        if (!alt)
+            return false;
+
+        StopPortraitAltSwap(cell, restoreNormal: true);
+
+        monster = inst.data;
+        portrait.sprite = alt;
+        return true;
+    }
+
+    IEnumerator CoRestoreMonsterPortrait(Vector2Int cell, MonsterData monster, RectTransform tile, float restoreSeconds)
+    {
+        float seconds = Mathf.Max(0.01f, restoreSeconds);
+        yield return new WaitForSecondsRealtime(seconds);
+
+        RestoreMonsterPortrait(cell, monster, tile);
+        _portraitAltSwapCo.Remove(cell);
+    }
+
+    void StopPortraitAltSwap(Vector2Int cell, bool restoreNormal)
+    {
+        if (_portraitAltSwapCo.TryGetValue(cell, out var running) && running != null)
+            StopCoroutine(running);
+
+        _portraitAltSwapCo.Remove(cell);
+        attackPortraitIdleTimers.Remove(cell);
+
+        if (restoreNormal && monsters.TryGetValue(cell, out var inst))
+            RestoreMonsterPortrait(cell, inst.data, placed.TryGetValue(cell, out var rt) ? rt : null);
+    }
+
+    void StopAllPortraitAltSwaps(bool restoreNormal)
+    {
+        var cells = new List<Vector2Int>(_portraitAltSwapCo.Keys);
+        for (int i = 0; i < cells.Count; i++)
+            StopPortraitAltSwap(cells[i], restoreNormal);
+
+        _portraitAltSwapCo.Clear();
+    }
+
+    void RestoreMonsterPortrait(Vector2Int cell, MonsterData monster, RectTransform tile)
+    {
+        if (!monster || !tile)
+            return;
+
+        if (!placed.TryGetValue(cell, out var currentTile) || currentTile != tile)
+            return;
+
+        if (!monsters.TryGetValue(cell, out var inst) || inst.data != monster)
+            return;
+
+        var portrait = tile.Find("MonsterPortrait")?.GetComponent<Image>();
+        var normal = GetCurrentMonsterPortrait(monster);
+        if (portrait && normal)
+            portrait.sprite = normal;
+    }
+
+    bool ShowAltPortraitsInRow(int row)
+    {
+        bool changedAny = false;
+
+        for (int x = 0; x < width; x++)
+        {
+            var cell = new Vector2Int(x, row);
+            if (TrySetMonsterAltPortrait(cell, out _, out _))
+                changedAny = true;
+        }
+
+        return changedAny;
+    }
+
+    void TickAttackPortraitIdleSwaps()
+    {
+        if (monsters.Count == 0)
+        {
+            attackPortraitIdleTimers.Clear();
+            attackPiecePortraitIdleTimers.Clear();
+            return;
+        }
+
+        PruneAttackPortraitIdleTimers();
+
+        if (syncAttackPassiveAltByPiece)
+            TickSyncedAttackPortraitIdleSwaps();
+        else
+        {
+            attackPiecePortraitIdleTimers.Clear();
+            TickIndividualAttackPortraitIdleSwaps();
+        }
+    }
+
+    void PruneAttackPortraitIdleTimers()
+    {
+        var staleCells = new List<Vector2Int>(attackPortraitIdleTimers.Keys);
+        for (int i = 0; i < staleCells.Count; i++)
+        {
+            var cell = staleCells[i];
+            if (!IsAttackPortraitIdleEligible(cell, out _))
+                attackPortraitIdleTimers.Remove(cell);
+        }
+
+        if (attackPiecePortraitIdleTimers.Count == 0)
+            return;
+
+        var liveGroups = new HashSet<int>();
+        foreach (var pair in monsters)
+        {
+            if (IsAttackPortraitIdleEligible(pair.Key, out _, out var inst) && inst.pieceGroupId > 0)
+                liveGroups.Add(inst.pieceGroupId);
+        }
+
+        var staleGroups = new List<int>(attackPiecePortraitIdleTimers.Keys);
+        for (int i = 0; i < staleGroups.Count; i++)
+        {
+            if (!liveGroups.Contains(staleGroups[i]))
+                attackPiecePortraitIdleTimers.Remove(staleGroups[i]);
+        }
+    }
+
+    void TickIndividualAttackPortraitIdleSwaps()
+    {
+        foreach (var pair in monsters)
+        {
+            var cell = pair.Key;
+            if (!IsAttackPortraitIdleEligible(cell, out _))
+                continue;
+
+            TickAttackPortraitCellTimer(cell);
+        }
+    }
+
+    void TickSyncedAttackPortraitIdleSwaps()
+    {
+        var cellsByGroup = new Dictionary<int, List<Vector2Int>>();
+
+        foreach (var pair in monsters)
+        {
+            var cell = pair.Key;
+            if (!IsAttackPortraitIdleEligible(cell, out _, out var inst))
+                continue;
+
+            if (inst.pieceGroupId <= 0)
+            {
+                TickAttackPortraitCellTimer(cell);
+                continue;
+            }
+
+            if (!cellsByGroup.TryGetValue(inst.pieceGroupId, out var groupCells))
+            {
+                groupCells = new List<Vector2Int>();
+                cellsByGroup[inst.pieceGroupId] = groupCells;
+            }
+
+            groupCells.Add(cell);
+        }
+
+        foreach (var group in cellsByGroup)
+        {
+            if (!attackPiecePortraitIdleTimers.TryGetValue(group.Key, out float timer))
+                timer = RandomAttackPortraitIdleSeconds();
+
+            timer -= Time.deltaTime;
+            if (timer > 0f)
+            {
+                attackPiecePortraitIdleTimers[group.Key] = timer;
+                continue;
+            }
+
+            var groupCells = group.Value;
+            for (int i = 0; i < groupCells.Count; i++)
+                FlashAttackPassiveAltPortrait(groupCells[i]);
+
+            attackPiecePortraitIdleTimers[group.Key] = RandomAttackPortraitIdleSeconds();
+        }
+    }
+
+    void TickAttackPortraitCellTimer(Vector2Int cell)
+    {
+        if (!attackPortraitIdleTimers.TryGetValue(cell, out float timer))
+            timer = RandomAttackPortraitIdleSeconds();
+
+        timer -= Time.deltaTime;
+        if (timer > 0f)
+        {
+            attackPortraitIdleTimers[cell] = timer;
+            return;
+        }
+
+        FlashAttackPassiveAltPortrait(cell);
+        attackPortraitIdleTimers[cell] = RandomAttackPortraitIdleSeconds();
+    }
+
+    bool IsAttackPortraitIdleEligible(Vector2Int cell, out MonsterData monster)
+    {
+        return IsAttackPortraitIdleEligible(cell, out monster, out _);
+    }
+
+    bool IsAttackPortraitIdleEligible(Vector2Int cell, out MonsterData monster, out MonsterInstance inst)
+    {
+        monster = null;
+        inst = default;
+
+        if (!monsters.TryGetValue(cell, out var current) ||
+            !current.data ||
+            current.data.role != MonsterRole.Attack ||
+            current.hp <= 0f)
+        {
+            return false;
+        }
+
+        if (!placed.TryGetValue(cell, out var tile) || !tile)
+            return false;
+
+        if (!GetCurrentMonsterAltPortrait(current.data))
+            return false;
+
+        monster = current.data;
+        inst = current;
+        return true;
+    }
+
+    void FlashAttackPassiveAltPortrait(Vector2Int cell)
+    {
+        FlashMonsterAltPortrait(cell, MonsterRole.Attack, attackPassiveAltFlashSeconds);
+    }
+
+    float RandomAttackPortraitIdleSeconds()
+    {
+        float min = Mathf.Max(0.01f, attackPassiveAltMinSeconds);
+        float max = Mathf.Max(min, attackPassiveAltMaxSeconds);
+        return UnityEngine.Random.Range(min, max);
+    }
+
+    Sprite GetCurrentMonsterPortrait(MonsterData monster)
+    {
+        if (!monster) return null;
+        int skin = MonsterSkinStore.GetValidSelected(monster);
+        return MonsterSkinStore.GetPortrait(monster, skin);
+    }
+
+    Sprite GetCurrentMonsterAltPortrait(MonsterData monster)
+    {
+        if (!monster) return null;
+        int skin = MonsterSkinStore.GetValidSelected(monster);
+        return MonsterSkinStore.GetAltPortrait(monster, skin);
+    }
+
     public void SpawnHealBurst(Vector2Int cell, Sprite sprite, float seconds = 0.5f)
     {
         if (!placed.TryGetValue(cell, out var rt)) return;
@@ -825,6 +1139,8 @@ public class Board : MonoBehaviour
         inst.hp = Mathf.Max(0f, inst.hp - amount);
         monsters[cell] = inst;
         UpdateTileHPVisual(cell, inst.hp, inst.maxHp);
+        if (inst.hp > 0f)
+            FlashMonsterAltPortrait(cell, MonsterRole.Defense);
         TileDamaged?.Invoke(cell, inst.data, applied, src);
 
         // --- Choose and play a hurt SFX ---
@@ -835,6 +1151,7 @@ public class Board : MonoBehaviour
 
         if (inst.hp <= 0f)
         {
+            StopPortraitAltSwap(cell, restoreNormal: true);
             Debug.Log($"Tile at {cell} ({inst.data.name}) died.");
             TileDied?.Invoke(cell, inst.data);
         }
@@ -899,14 +1216,27 @@ public class Board : MonoBehaviour
         visual.sizeDelta = cellSize;
     }
 
+    public int AllocatePieceGroupId()
+    {
+        int groupId = nextPieceGroupId++;
+        if (nextPieceGroupId == int.MaxValue)
+            nextPieceGroupId = 1;
+
+        return groupId;
+    }
+
     public void ClearAll()
     {
+        StopAllPortraitAltSwaps(restoreNormal: false);
+
         placed.Clear();
         monsters.Clear();
         obstacles.Clear();
         floorEffects.Clear();
 
         healTimers.Clear();
+        attackPortraitIdleTimers.Clear();
+        attackPiecePortraitIdleTimers.Clear();
 
         // Clear grid visuals
         if (gridRoot != null)
@@ -1063,6 +1393,8 @@ public class Board : MonoBehaviour
                     rowDominantMonster[rowKey] = dominant;
                 }
 
+                ShowAltPortraitsInRow(y);
+
                 // ===== Remove row contents =====
                 for (int x = 0; x < width; x++)
                 {
@@ -1072,6 +1404,7 @@ public class Board : MonoBehaviour
                     if (TryHandleObstacleAt(key, stonesDamaged, removedCells, detonateExplosive: false))
                         continue;
 
+                    StopPortraitAltSwap(key, restoreNormal: false);
                     monsters.Remove(key); // Normal monster tile, remove completely
 
                     if (placed.TryGetValue(key, out var rt))
@@ -1198,6 +1531,10 @@ public class Board : MonoBehaviour
                 if (rowsCleared == 1 && gc)
                     yield return gc.ShowFirstFullRowTutorialIfNeeded(GetPlacedVisualsInRow(y));
 
+                bool rowAltShown = ShowAltPortraitsInRow(y);
+                if (rowAltShown && attackLineClearAltHoldSeconds > 0f)
+                    yield return new WaitForSecondsRealtime(attackLineClearAltHoldSeconds);
+
                 // ===== Remove row contents =====
                 for (int x = 0; x < width; x++)
                 {
@@ -1206,6 +1543,7 @@ public class Board : MonoBehaviour
                     if (TryHandleObstacleAt(key, stonesDamaged, removedCells, detonateExplosive: false))
                         continue;
 
+                    StopPortraitAltSwap(key, restoreNormal: false);
                     monsters.Remove(key);
 
                     if (placed.TryGetValue(key, out var rt))
@@ -1352,6 +1690,7 @@ public class Board : MonoBehaviour
             if (placed.TryGetValue(key, out var rt))
                 Destroy(rt.gameObject);
 
+            StopPortraitAltSwap(key, restoreNormal: false);
             placed.Remove(key);
             monsters.Remove(key);
             healTimers.Remove(key);
@@ -1390,6 +1729,7 @@ public class Board : MonoBehaviour
             if (placed.TryGetValue(key, out var rt))
                 Destroy(rt.gameObject);
 
+            StopPortraitAltSwap(key, restoreNormal: false);
             placed.Remove(key);
             monsters.Remove(key);
             healTimers.Remove(key);
@@ -1549,6 +1889,7 @@ public class Board : MonoBehaviour
                     }
                 }
 
+                StopPortraitAltSwap(key, restoreNormal: false);
                 monsters.Remove(key);
             }
 
@@ -1557,6 +1898,7 @@ public class Board : MonoBehaviour
 
             if (placed.TryGetValue(key, out var rt))
             {
+                StopPortraitAltSwap(key, restoreNormal: false);
                 Destroy(rt.gameObject);
                 placed.Remove(key);
                 removedCells.Add(key);
@@ -1608,6 +1950,7 @@ public class Board : MonoBehaviour
 
                 if (to != from)
                 {
+                    StopPortraitAltSwap(from, restoreNormal: true);
                     placed.Remove(from);
                     placed[to] = rt;
                     rt.anchoredPosition = CellToAnchoredPos(to);
@@ -1662,6 +2005,7 @@ public class Board : MonoBehaviour
                 continue;
             }
 
+            StopPortraitAltSwap(from, restoreNormal: true);
             placed.Remove(from);
             placed[to] = rt;
             rt.anchoredPosition = CellToAnchoredPos(to);
@@ -1742,6 +2086,7 @@ public class Board : MonoBehaviour
 
                 if (to != from)
                 {
+                    StopPortraitAltSwap(from, restoreNormal: true);
                     placed.Remove(from);
                     placed[to] = rt;
                     rt.anchoredPosition = CellToAnchoredPos(to);
@@ -1929,6 +2274,7 @@ public class Board : MonoBehaviour
         if (placed.TryGetValue(cell, out var rt) && rt)
             Destroy(rt.gameObject);
 
+        StopPortraitAltSwap(cell, restoreNormal: false);
         placed.Remove(cell);
         monsters.Remove(cell);
         healTimers.Remove(cell);
@@ -1946,6 +2292,7 @@ public class Board : MonoBehaviour
             inst.hp = 0f;
             monsters[cell] = inst;
             UpdateTileHPVisual(cell, inst.hp, inst.maxHp);
+            StopPortraitAltSwap(cell, restoreNormal: true);
             TileDamaged?.Invoke(cell, inst.data, applied, src);
             TileDied?.Invoke(cell, inst.data);
         }
@@ -2667,6 +3014,7 @@ public class Board : MonoBehaviour
         if (placed.TryGetValue(cell, out var rt) && rt)
             Destroy(rt.gameObject);
 
+        StopPortraitAltSwap(cell, restoreNormal: false);
         placed.Remove(cell);
         monsters.Remove(cell);
 
@@ -2696,12 +3044,14 @@ public class Board : MonoBehaviour
                 {
                     if (obs.indestructible)
                     {
+                        StopPortraitAltSwap(cell, restoreNormal: false);
                         monsters.Remove(cell);
                         return true;
                     }
 
                     if (stoneGuard != null && !stoneGuard.Add(cell))
                     {
+                        StopPortraitAltSwap(cell, restoreNormal: false);
                         monsters.Remove(cell);
                         return true;
                     }
@@ -2719,6 +3069,7 @@ public class Board : MonoBehaviour
                         UpdateStoneObstacleVisual(cell);
                     }
 
+                    StopPortraitAltSwap(cell, restoreNormal: false);
                     monsters.Remove(cell);
                     return true;
                 }
@@ -2745,6 +3096,7 @@ public class Board : MonoBehaviour
 
             case ObstacleType.SoldierWall:
                 {
+                    StopPortraitAltSwap(cell, restoreNormal: false);
                     monsters.Remove(cell);
                     return true;
                 }
@@ -2758,6 +3110,7 @@ public class Board : MonoBehaviour
                     }
                     else
                     {
+                        StopPortraitAltSwap(cell, restoreNormal: false);
                         monsters.Remove(cell);
                     }
 

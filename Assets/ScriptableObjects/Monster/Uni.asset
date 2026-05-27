@@ -13,18 +13,24 @@ MonoBehaviour:
   m_Name: Uni
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   monsterName: Uni
-  portrait: {fileID: 21300000, guid: 6dfe1e06c67c67d40990364fed164c34, type: 3}
+  portrait: {fileID: 21300000, guid: 554f50473eb2bbe448598a5218c70417, type: 3}
   monsterDescription: Healer with a short range, but powerful healing spells.
   passiveType: 5
   role: 2
   startsLocked: 1
   unlockCost: 100
   skinPortraits:
-  - {fileID: 21300000, guid: 6dfe1e06c67c67d40990364fed164c34, type: 3}
-  - {fileID: 21300000, guid: bae06bb8ddada6e4895c353ae6ef8eb4, type: 3}
-  - {fileID: 21300000, guid: e8fd4be630ea7104f86a3a4c9818633c, type: 3}
-  - {fileID: 21300000, guid: dcf36f58d5e06dc4ca0c1a45481fd684, type: 3}
-  - {fileID: 21300000, guid: 31e760f37eaf5014e81c4d14ce66bc62, type: 3}
+  - {fileID: 21300000, guid: 554f50473eb2bbe448598a5218c70417, type: 3}
+  - {fileID: 21300000, guid: a877f03387e04834da738a9bee4334d8, type: 3}
+  - {fileID: 21300000, guid: 45e21de8dad85da44824fafa48dc2e26, type: 3}
+  - {fileID: 21300000, guid: 3a46cb62b0856b84e8302ab1d14c50d5, type: 3}
+  - {fileID: 21300000, guid: 2afdcae575e891e44a6c55eb66d7d278, type: 3}
+  skinAltPortraits:
+  - {fileID: 21300000, guid: cacab759b8a4b504aa3f026cefb87f39, type: 3}
+  - {fileID: 21300000, guid: 18ff7a3da6acfbc42ba8bfa6780f3dd9, type: 3}
+  - {fileID: 21300000, guid: 8cefc9caea057424893a2dc6e7696240, type: 3}
+  - {fileID: 21300000, guid: a904cd6343d93c1478a67610b1c47895, type: 3}
+  - {fileID: 21300000, guid: 253d9544d9fa93f4e8cd2b971965e11b, type: 3}
   skinCosts: 0000000064000000640000006400000064000000
   maxHealth: 10
   minHealth: 0

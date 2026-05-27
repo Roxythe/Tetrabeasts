@@ -524,6 +524,7 @@ public class TitleMenuUI : MonoBehaviour
         if (rootChanged)
         {
             lastNavigationRoot = root;
+            MenuScrollRectInput.AttachToScrollRects(root);
             navigationRootPrimed = false;
             ResetNavigationRepeat();
         }

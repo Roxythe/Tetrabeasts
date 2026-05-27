@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Tabitha
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   monsterName: Tabitha
-  portrait: {fileID: -5713861770949114686, guid: 17347e98cf283614d8cdf5bea68f8fec, type: 3}
+  portrait: {fileID: 21300000, guid: 652eb0a89f1ad1d4186aaf923e8ea8ed, type: 3}
   monsterDescription: 'A stalwart guardian of the forest, her shields will be the
     bulwark that protects her new allies. '
   passiveType: 9
@@ -21,11 +21,17 @@ MonoBehaviour:
   startsLocked: 1
   unlockCost: 150
   skinPortraits:
-  - {fileID: -1490668730850885932, guid: ef88f0d362605154da3d1b68ee365ac3, type: 3}
-  - {fileID: -1208934195047846744, guid: 6c137c10755111047bdd80315e5ffdcf, type: 3}
-  - {fileID: 3053388393917764968, guid: 534aabf4d563e5c4db74bfab3c3c889e, type: 3}
-  - {fileID: -4355622925320155967, guid: 8d71742830bc25542abae586335e81ec, type: 3}
-  - {fileID: -4451480902979491878, guid: 5337a9992b6bfd24581416baa810f067, type: 3}
+  - {fileID: 21300000, guid: 652eb0a89f1ad1d4186aaf923e8ea8ed, type: 3}
+  - {fileID: 21300000, guid: c12c74eb5fa93434b803ddb5b83a757b, type: 3}
+  - {fileID: 21300000, guid: 00afeddb881de3b4cbfe48c702ac7660, type: 3}
+  - {fileID: 21300000, guid: 5323f2aead9ed544dae5d6aeca639d67, type: 3}
+  - {fileID: 21300000, guid: 954f24cc6fb805449a7648e737cea56b, type: 3}
+  skinAltPortraits:
+  - {fileID: 21300000, guid: 65c70276d03572d4ab3de832cbb4376d, type: 3}
+  - {fileID: 21300000, guid: fe7d2d038eb94d14ebfcd2e0922f2454, type: 3}
+  - {fileID: 21300000, guid: b50710ad60d3dc04fa64c402f86d7165, type: 3}
+  - {fileID: 21300000, guid: b6279ee0222ed5f48a208e13a5786b98, type: 3}
+  - {fileID: 21300000, guid: d4c1818a3639aee4e930b061ebb67ea4, type: 3}
   skinCosts: 0000000064000000640000006400000064000000
   maxHealth: 25
   minHealth: 0

@@ -20,6 +20,8 @@ public class UICursorController : MonoBehaviour
     public bool allowGamepadCursor = true;
     public float gamepadCursorSpeed = 1150f;
     [Range(0.05f, 0.9f)] public float gamepadCursorDeadzone = 0.2f;
+    public bool clampCursorVisualInsideScreen = true;
+    public Vector2 cursorScreenPadding = Vector2.zero;
 
     static bool s_virtualCursorMode;
     static bool s_buttonNavigationMode;
@@ -40,6 +42,7 @@ public class UICursorController : MonoBehaviour
     public static bool IsButtonNavigationMode => s_buttonNavigationMode;
     public static bool VirtualCursorActiveThisFrame => Time.frameCount == s_lastVirtualCursorFrame;
     public static bool ConsumedVirtualSubmitThisFrame => Time.frameCount == s_lastVirtualSubmitFrame;
+    public static bool VirtualCursorSubmitPressedThisFrame => s_virtualCursorMode && WasGamepadCursorSubmitPressed();
     public static Vector2 CurrentScreenPosition => s_currentScreenPosition;
     public static void ConsumeSubmitThisFrame() => s_lastVirtualSubmitFrame = Time.frameCount;
 
@@ -107,8 +110,7 @@ public class UICursorController : MonoBehaviour
                 virtualScreenPosition = selectedCenter;
 
             virtualScreenPosition += stick * (gamepadCursorSpeed * Time.unscaledDeltaTime);
-            virtualScreenPosition.x = Mathf.Clamp(virtualScreenPosition.x, 0f, Screen.width);
-            virtualScreenPosition.y = Mathf.Clamp(virtualScreenPosition.y, 0f, Screen.height);
+            virtualScreenPosition = ClampVirtualCursorScreenPosition(virtualScreenPosition);
 
             if (EventSystem.current)
                 EventSystem.current.SetSelectedGameObject(null);
@@ -229,7 +231,13 @@ public class UICursorController : MonoBehaviour
                 ExecuteEvents.Execute(virtualPointerTarget, pointerData, ExecuteEvents.pointerEnterHandler);
         }
 
-        if (ConsumedVirtualSubmitThisFrame || !WasGamepadCursorSubmitPressed() || !virtualPointerTarget)
+        if (ConsumedVirtualSubmitThisFrame || !VirtualCursorSubmitPressedThisFrame)
+            return;
+
+        ConsumeSubmitThisFrame();
+        eventSystem.SetSelectedGameObject(null);
+
+        if (!virtualPointerTarget)
             return;
 
         if (!virtualClickTarget)
@@ -240,7 +248,9 @@ public class UICursorController : MonoBehaviour
         ExecuteEvents.Execute(virtualClickTarget, pointerData, ExecuteEvents.pointerDownHandler);
         ExecuteEvents.Execute(virtualClickTarget, pointerData, ExecuteEvents.pointerUpHandler);
         ExecuteEvents.Execute(virtualClickTarget, pointerData, ExecuteEvents.pointerClickHandler);
-        ConsumeSubmitThisFrame();
+
+        if (eventSystem)
+            eventSystem.SetSelectedGameObject(null);
     }
 
     void ClearVirtualPointerTarget()
@@ -338,6 +348,8 @@ public class UICursorController : MonoBehaviour
     {
         bool pressed = false;
 
+        pressed |= TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuSubmit);
+
 #if ENABLE_INPUT_SYSTEM
         var gamepad = Gamepad.current;
         pressed |= gamepad != null && gamepad.buttonSouth.wasPressedThisFrame;
@@ -348,6 +360,46 @@ public class UICursorController : MonoBehaviour
 #endif
 
         return pressed;
+    }
+
+    Vector2 ClampVirtualCursorScreenPosition(Vector2 screenPosition)
+    {
+        if (!clampCursorVisualInsideScreen || !cursorRect)
+        {
+            screenPosition.x = Mathf.Clamp(screenPosition.x, 0f, Screen.width);
+            screenPosition.y = Mathf.Clamp(screenPosition.y, 0f, Screen.height);
+            return screenPosition;
+        }
+
+        Vector2 size = cursorRect.rect.size;
+        if (size.x <= 0f || size.y <= 0f)
+            size = Vector2.one * (baseSize * _scale);
+
+        Vector2 hotspot = hotspotPixels * _scale;
+        Vector2 pivot = cursorRect.pivot;
+
+        float scaleFactor = rootCanvas ? Mathf.Max(0.01f, rootCanvas.scaleFactor) : 1f;
+        float leftExtent = Mathf.Max(0f, (hotspot.x + pivot.x * size.x) * scaleFactor);
+        float rightExtent = Mathf.Max(0f, ((1f - pivot.x) * size.x - hotspot.x) * scaleFactor);
+        float bottomExtent = Mathf.Max(0f, (hotspot.y + pivot.y * size.y) * scaleFactor);
+        float topExtent = Mathf.Max(0f, ((1f - pivot.y) * size.y - hotspot.y) * scaleFactor);
+
+        float minX = cursorScreenPadding.x + leftExtent;
+        float maxX = Screen.width - cursorScreenPadding.x - rightExtent;
+        float minY = cursorScreenPadding.y + bottomExtent;
+        float maxY = Screen.height - cursorScreenPadding.y - topExtent;
+
+        if (minX > maxX)
+            screenPosition.x = Screen.width * 0.5f;
+        else
+            screenPosition.x = Mathf.Clamp(screenPosition.x, minX, maxX);
+
+        if (minY > maxY)
+            screenPosition.y = Screen.height * 0.5f;
+        else
+            screenPosition.y = Mathf.Clamp(screenPosition.y, minY, maxY);
+
+        return screenPosition;
     }
 
     void LateUpdate()
@@ -401,6 +453,7 @@ public class ScopedMenuNavigator : MonoBehaviour
 
         RestoreAutomaticNavigationScope();
         navigationRoot = root;
+        MenuScrollRectInput.AttachToScrollRects(navigationRoot);
         ResetNavigationRepeat();
 
         if (selectFirst)
@@ -594,11 +647,14 @@ public class ScopedMenuNavigator : MonoBehaviour
 public static class UINavigationUtility
 {
     const float MinForwardDistance = 0.5f;
+    const float SubmitDebounceSeconds = 0.08f;
 
     static readonly List<Selectable> SelectableScratch = new();
     static readonly Dictionary<EventSystem, EventSystemNavigationState> EventSystemNavigationStates = new();
     static readonly Dictionary<int, string> LastSelectionPathsByRoot = new();
     static int s_lastSubmitFrame = -1000;
+    static float s_lastSubmitTime = -999f;
+    static GameObject s_lastSubmitObject;
 
     public static bool IsSelectionUsableInside(GameObject selected, GameObject root)
     {
@@ -675,6 +731,7 @@ public static class UINavigationUtility
             return SelectFirstUsable(root);
 
         Vector2 currentCenter = GetScreenCenter(currentSelectable);
+        RectTransform currentScrollItem = GetScrollContentItem(currentSelectable.transform);
         Selectable best = null;
         float bestScore = float.PositiveInfinity;
 
@@ -690,7 +747,17 @@ public static class UINavigationUtility
                 continue;
 
             float perpendicular = Mathf.Abs(delta.x * direction.y - delta.y * direction.x);
+            bool sameScrollItem = currentScrollItem &&
+                GetScrollContentItem(candidate.transform) == currentScrollItem;
+            bool perpendicularOverlap = RectsOverlapOnPerpendicularAxis(currentSelectable, candidate, direction);
             float score = (perpendicular * 8f) + forward;
+
+            if (sameScrollItem)
+                score -= 100000f;
+
+            if (perpendicularOverlap)
+                score -= 1000f;
+
             if (score >= bestScore)
                 continue;
 
@@ -726,12 +793,19 @@ public static class UINavigationUtility
         var eventSystem = EventSystem.current;
         if (!eventSystem ||
             UICursorController.ConsumedVirtualSubmitThisFrame ||
+            UICursorController.VirtualCursorSubmitPressedThisFrame ||
             s_lastSubmitFrame == Time.frameCount)
             return false;
 
         GameObject selected = eventSystem.currentSelectedGameObject;
         if (!selected)
             return false;
+
+        if (selected == s_lastSubmitObject &&
+            Time.unscaledTime - s_lastSubmitTime < SubmitDebounceSeconds)
+        {
+            return false;
+        }
 
         var selectable = selected.GetComponentInParent<Selectable>();
         if (!IsUsable(selectable))
@@ -740,7 +814,7 @@ public static class UINavigationUtility
         var eventData = new BaseEventData(eventSystem);
         if (ExecuteEvents.Execute(selected, eventData, ExecuteEvents.submitHandler))
         {
-            s_lastSubmitFrame = Time.frameCount;
+            MarkSubmit(selected);
             return true;
         }
 
@@ -748,7 +822,7 @@ public static class UINavigationUtility
         if (!TryPressButton(button))
             return false;
 
-        s_lastSubmitFrame = Time.frameCount;
+        MarkSubmit(selected);
         return true;
     }
 
@@ -920,6 +994,67 @@ public static class UINavigationUtility
         }
 
         return wrapped;
+    }
+
+    static void MarkSubmit(GameObject selected)
+    {
+        s_lastSubmitFrame = Time.frameCount;
+        s_lastSubmitTime = Time.unscaledTime;
+        s_lastSubmitObject = selected;
+    }
+
+    static RectTransform GetScrollContentItem(Transform target)
+    {
+        if (!target)
+            return null;
+
+        var scrollRect = target.GetComponentInParent<ScrollRect>();
+        var content = scrollRect ? scrollRect.content : null;
+        if (!content || !target.IsChildOf(content))
+            return null;
+
+        Transform current = target;
+        while (current && current.parent && current.parent != content)
+            current = current.parent;
+
+        return current && current.parent == content
+            ? current as RectTransform
+            : null;
+    }
+
+    static bool RectsOverlapOnPerpendicularAxis(Selectable current, Selectable candidate, Vector2 direction)
+    {
+        var currentRect = current ? current.transform as RectTransform : null;
+        var candidateRect = candidate ? candidate.transform as RectTransform : null;
+        if (!currentRect || !candidateRect)
+            return false;
+
+        var currentBounds = GetScreenBounds(currentRect);
+        var candidateBounds = GetScreenBounds(candidateRect);
+
+        if (Mathf.Abs(direction.y) > Mathf.Abs(direction.x))
+            return currentBounds.min.x <= candidateBounds.max.x &&
+                   currentBounds.max.x >= candidateBounds.min.x;
+
+        return currentBounds.min.y <= candidateBounds.max.y &&
+               currentBounds.max.y >= candidateBounds.min.y;
+    }
+
+    static Bounds GetScreenBounds(RectTransform rectTransform)
+    {
+        var corners = new Vector3[4];
+        rectTransform.GetWorldCorners(corners);
+
+        Camera camera = null;
+        var canvas = rectTransform.GetComponentInParent<Canvas>();
+        if (canvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay)
+            camera = canvas.worldCamera;
+
+        Bounds bounds = new Bounds(RectTransformUtility.WorldToScreenPoint(camera, corners[0]), Vector3.zero);
+        for (int i = 1; i < corners.Length; i++)
+            bounds.Encapsulate(RectTransformUtility.WorldToScreenPoint(camera, corners[i]));
+
+        return bounds;
     }
 
     static bool SelectSelectable(GameObject root, Selectable selectable)

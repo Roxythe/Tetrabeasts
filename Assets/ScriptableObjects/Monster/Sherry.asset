@@ -13,18 +13,24 @@ MonoBehaviour:
   m_Name: Sherry
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   monsterName: Sherry
-  portrait: {fileID: -1704313008493716336, guid: 5f1b56746843ab648ae7aefea3471a42, type: 3}
+  portrait: {fileID: 21300000, guid: e821cb982aa261341afe906d65d711a5, type: 3}
   monsterDescription: Self-acclaimed legendary healer, probably not a charlatan...maybe.
   passiveType: 8
   role: 2
   startsLocked: 1
   unlockCost: 150
   skinPortraits:
-  - {fileID: -1704313008493716336, guid: 5f1b56746843ab648ae7aefea3471a42, type: 3}
-  - {fileID: 1679679927638894718, guid: 16632027aa51a234faa9372375268f81, type: 3}
-  - {fileID: 5291467264600716302, guid: 0946a138659af2347b0eb8633c98aae7, type: 3}
-  - {fileID: 1752767081735056035, guid: 636b218c38d044747910eb115b628705, type: 3}
-  - {fileID: -5385198158297047415, guid: c65e30af750e1bf479d74ee4715f95e1, type: 3}
+  - {fileID: 21300000, guid: e821cb982aa261341afe906d65d711a5, type: 3}
+  - {fileID: 21300000, guid: b7d7b3f5df2c31d4585c723f8b080d78, type: 3}
+  - {fileID: 21300000, guid: e04d32c87148603468ad28b806c1eafe, type: 3}
+  - {fileID: 21300000, guid: ea182dd96f7358c4997b1e92e7961b82, type: 3}
+  - {fileID: 21300000, guid: 4684b09a560881f46b08ab32170f976c, type: 3}
+  skinAltPortraits:
+  - {fileID: 21300000, guid: f1e63d2073996da429298e44f215963e, type: 3}
+  - {fileID: 21300000, guid: b3d86f954872e9f458122d6d015c9612, type: 3}
+  - {fileID: 21300000, guid: 19d0ba6452080354287661796d875c5c, type: 3}
+  - {fileID: 21300000, guid: e2214be1f5ab53242be90efc0ed4636d, type: 3}
+  - {fileID: 21300000, guid: 144387df7139bb044a4e48342472d97a, type: 3}
   skinCosts: 0000000064000000640000006400000064000000
   maxHealth: 10
   minHealth: 0

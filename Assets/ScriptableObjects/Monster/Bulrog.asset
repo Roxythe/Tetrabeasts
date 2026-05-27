@@ -13,18 +13,24 @@ MonoBehaviour:
   m_Name: Bulrog
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   monsterName: Bulrog
-  portrait: {fileID: -5713861770949114686, guid: 17347e98cf283614d8cdf5bea68f8fec, type: 3}
+  portrait: {fileID: 21300000, guid: b0d5364d5ab3ce7449c09de20169ba4d, type: 3}
   monsterDescription: Beefy boy that deals very little damage.
   passiveType: 6
   role: 1
   startsLocked: 0
   unlockCost: 10
   skinPortraits:
-  - {fileID: -5713861770949114686, guid: 17347e98cf283614d8cdf5bea68f8fec, type: 3}
-  - {fileID: -4223279023541275457, guid: 4e0655872a88eda49a27d08f71eadc2a, type: 3}
-  - {fileID: -6359602901097175407, guid: 1d4345ecbdf08874484d9d39ea852f1d, type: 3}
-  - {fileID: -7729325893492415067, guid: c68905df12e6c4544ba60d55fa9e792c, type: 3}
-  - {fileID: 5458850292180187239, guid: 5a372d4556274034eb766517a84e4972, type: 3}
+  - {fileID: 21300000, guid: b0d5364d5ab3ce7449c09de20169ba4d, type: 3}
+  - {fileID: 21300000, guid: 57e161989f0daf7419c6c3bd2b9ac3e8, type: 3}
+  - {fileID: 21300000, guid: 51a02121a94de7c46985af45cf64fc01, type: 3}
+  - {fileID: 21300000, guid: 6112d0bd5785ecc4ca13473824ecbef1, type: 3}
+  - {fileID: 21300000, guid: f88bfa1bc8c3eeb489df723c83b90a8c, type: 3}
+  skinAltPortraits:
+  - {fileID: 21300000, guid: 1fa337d02038a7d40bde4749716a547b, type: 3}
+  - {fileID: 21300000, guid: 1fe218bc55f77c642bb8c1ed5443dc82, type: 3}
+  - {fileID: 21300000, guid: e1645e250fa2b4b48a2321daf3e413ca, type: 3}
+  - {fileID: 21300000, guid: 1d20ae13a8c4dac4382ac43624135c05, type: 3}
+  - {fileID: 21300000, guid: d2ee1f28f7b698349bab516998de73ec, type: 3}
   skinCosts: 0000000064000000640000006400000064000000
   maxHealth: 30
   minHealth: 0

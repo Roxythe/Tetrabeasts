@@ -13,18 +13,26 @@ MonoBehaviour:
   m_Name: Toley
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   monsterName: Toley
-  portrait: {fileID: -1066822171247798340, guid: ad70377c34336dc4bbf5567c45944d87, type: 3}
+  portrait: {fileID: 21300000, guid: 40ce8b78a3f77df489b42a0fc56d93cb, type: 3}
   monsterDescription: Can take a hit and keep going, but won't deal much damage.
   passiveType: 4
   role: 1
   startsLocked: 1
   unlockCost: 100
   skinPortraits:
-  - {fileID: -1066822171247798340, guid: ad70377c34336dc4bbf5567c45944d87, type: 3}
-  - {fileID: 4741663511722139051, guid: 302a195f29e9b9c4c91fae686403f817, type: 3}
-  - {fileID: -389223029757091659, guid: 47413807e7072124a94366bdc85cb025, type: 3}
-  - {fileID: 1479112253172282689, guid: 4cd81262691f7ae43adced2e9a20631f, type: 3}
-  - {fileID: -5330551079072898556, guid: 08146e5945115a34b838e6a0832704c6, type: 3}
+  - {fileID: 21300000, guid: 40ce8b78a3f77df489b42a0fc56d93cb, type: 3}
+  - {fileID: 21300000, guid: e9156eddff24e84458bb3b68caa41754, type: 3}
+  - {fileID: 21300000, guid: eae8dad4bb01bf741a9616dddcda3127, type: 3}
+  - {fileID: 21300000, guid: ca91762dcb0a5374ba4c6c2bf6c0c661, type: 3}
+  - {fileID: 21300000, guid: 7b263147a8ff1864bb887a785a8bb037, type: 3}
+  - {fileID: 21300000, guid: e89d8eec35fe47c45a1be4b8bc2757e5, type: 3}
+  skinAltPortraits:
+  - {fileID: 21300000, guid: 7e2bfeb9309d93e4eb4e55dfa8088d26, type: 3}
+  - {fileID: 21300000, guid: 1db11f24ba2568f469ed53be1dd77100, type: 3}
+  - {fileID: 21300000, guid: 93890e79f630ead4ca65008a0276a3cb, type: 3}
+  - {fileID: 21300000, guid: 1a2f9fd6c851722418336c8ddb35e70e, type: 3}
+  - {fileID: 21300000, guid: 42173466657293a4185fd6f851907f80, type: 3}
+  - {fileID: 21300000, guid: 50cfda3ef7ff0bc40830b0e78cbc6233, type: 3}
   skinCosts: 0000000064000000640000006400000064000000
   maxHealth: 30
   minHealth: 0

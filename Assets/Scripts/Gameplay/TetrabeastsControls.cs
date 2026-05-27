@@ -106,6 +106,9 @@ public static class TetrabeastsControls
     static readonly Dictionary<TetrabeastsControlAction, HoldRepeatState> RepeatStates = new();
     static readonly Dictionary<TetrabeastsControlAction, int> PressConsumedFrames = new();
     static readonly Dictionary<TetrabeastsControlProfile, BindingProfileState> BindingProfiles = new();
+#if ENABLE_LEGACY_INPUT_MANAGER
+    static readonly HashSet<string> MissingLegacyAxes = new();
+#endif
     static bool hasLastInputProfile;
     static TetrabeastsControlProfile lastInputProfile = TetrabeastsControlProfile.KeyboardMouse;
 
@@ -174,6 +177,21 @@ public static class TetrabeastsControls
 
 #if ENABLE_LEGACY_INPUT_MANAGER
         direction += GetMenuNavigationDirectionLegacy();
+#endif
+
+        return ClampMenuNavigationDirection(direction);
+    }
+
+    public static Vector2 GetMenuScrollDirection()
+    {
+        Vector2 direction = Vector2.zero;
+
+#if ENABLE_INPUT_SYSTEM
+        direction += GetMenuScrollDirectionInputSystem();
+#endif
+
+#if ENABLE_LEGACY_INPUT_MANAGER
+        direction += GetMenuScrollDirectionLegacy();
 #endif
 
         return ClampMenuNavigationDirection(direction);
@@ -1433,6 +1451,15 @@ public static class TetrabeastsControls
         return ClampMenuNavigationDirection(direction);
     }
 
+    static Vector2 GetMenuScrollDirectionInputSystem()
+    {
+        var gamepad = Gamepad.current;
+        if (gamepad == null)
+            return Vector2.zero;
+
+        return gamepad.rightStick.ReadValue();
+    }
+
     static bool WasButtonNavigationPressedInputSystem()
     {
         var keyboard = Keyboard.current;
@@ -1671,6 +1698,49 @@ public static class TetrabeastsControls
         direction.y += Input.GetAxisRaw("Vertical");
 
         return ClampMenuNavigationDirection(direction);
+    }
+
+    static Vector2 GetMenuScrollDirectionLegacy()
+    {
+        return ClampMenuNavigationDirection(new Vector2(
+            ReadBestLegacyAxis("RightStickHorizontal", "Right Stick X", "JoystickRightStickHorizontal"),
+            ReadBestLegacyAxis("RightStickVertical", "Right Stick Y", "JoystickRightStickVertical")));
+    }
+
+    static float ReadBestLegacyAxis(params string[] axisNames)
+    {
+        float best = 0f;
+        if (axisNames == null)
+            return best;
+
+        for (int i = 0; i < axisNames.Length; i++)
+        {
+            if (!TryReadLegacyAxisRaw(axisNames[i], out float value))
+                continue;
+
+            if (Mathf.Abs(value) > Mathf.Abs(best))
+                best = value;
+        }
+
+        return best;
+    }
+
+    static bool TryReadLegacyAxisRaw(string axisName, out float value)
+    {
+        value = 0f;
+        if (string.IsNullOrWhiteSpace(axisName) || MissingLegacyAxes.Contains(axisName))
+            return false;
+
+        try
+        {
+            value = Input.GetAxisRaw(axisName);
+            return true;
+        }
+        catch (ArgumentException)
+        {
+            MissingLegacyAxes.Add(axisName);
+            return false;
+        }
     }
 
     static bool WasButtonNavigationPressedLegacy()

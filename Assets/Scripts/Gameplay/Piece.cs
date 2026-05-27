@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -29,6 +30,10 @@ public class Piece : MonoBehaviour
     static readonly Color hintColor = new Color(1f, 0f, 0f, 0.5f); // Light red
 
     float fallTimer = 0f, lockTimer;
+    Coroutine visualTransitionCoroutine;
+    bool hardDropVisualLockPending;
+    bool completingVisualTransition;
+    readonly List<Vector2Int> hardDropPreviewBorderCells = new();
 
 
     // Single-pixel white sprite for UI fills (so Image actually renders)
@@ -47,6 +52,9 @@ public class Piece : MonoBehaviour
     {
         fallTimer = 0f; lockTimer = 0f;
         visuals.Clear(); cells.Clear();
+        hardDropVisualLockPending = false;
+        visualTransitionCoroutine = null;
+        completingVisualTransition = false;
     }
 
     public void SpawnAtTop()
@@ -80,6 +88,9 @@ public class Piece : MonoBehaviour
 
         // Allow limited inputs during tutorial prompts, but still block on other suspension states.
         if (gameplaySuspended && !tutorialPromptActive)
+            return;
+
+        if (hardDropVisualLockPending)
             return;
 
         bool blockHorizontal = gc != null &&
@@ -142,7 +153,11 @@ public class Piece : MonoBehaviour
             RotateCCW(true);
 
         if (hardDropPressed)
+        {
             HardDrop(true);
+            if (hardDropVisualLockPending)
+                return;
+        }
 
         if (gc != null && gc.levelModifierController)
             gc.levelModifierController.HandlePieceAutomation(this, Time.deltaTime);
@@ -285,28 +300,68 @@ public class Piece : MonoBehaviour
 
     void SyncVisuals()
     {
+        CancelVisualTransition();
+        if (!EnsureVisualsReady())
+            return;
+
+        SetVisualsToTargetPositions(GetCellTargetPositions());
+        ApplyActiveVisualBorders();
+    }
+
+    bool EnsureVisualsReady()
+    {
         if (visuals.Count != cells.Count)
         {
             BuildVisuals();
-            return;
+            return visuals.Count == cells.Count;
         }
 
         for (int i = 0; i < visuals.Count; i++)
         {
-            // If a tile was destroyed externally, bail out and rebuild.
             if (visuals[i] == null)
             {
                 BuildVisuals();
-                return;
+                return visuals.Count == cells.Count;
             }
+        }
 
-            visuals[i].anchoredPosition = board.CellToAnchoredPos(cells[i]);
+        return true;
+    }
 
-            // Recompute per-edge border thickness
-            var activeSet = new HashSet<Vector2Int>(cells);
+    Vector2[] GetCellTargetPositions()
+    {
+        var targets = new Vector2[cells.Count];
+        for (int i = 0; i < cells.Count; i++)
+            targets[i] = board.CellToAnchoredPos(cells[i]);
+        return targets;
+    }
+
+    Vector2[] CaptureVisualPositions()
+    {
+        var positions = new Vector2[visuals.Count];
+        for (int i = 0; i < visuals.Count; i++)
+            positions[i] = visuals[i] ? visuals[i].anchoredPosition : Vector2.zero;
+        return positions;
+    }
+
+    void SetVisualsToTargetPositions(Vector2[] targets)
+    {
+        int count = Mathf.Min(visuals.Count, targets.Length);
+        for (int i = 0; i < count; i++)
+            if (visuals[i])
+                visuals[i].anchoredPosition = targets[i];
+    }
+
+    void ApplyActiveVisualBorders()
+    {
+        var activeSet = new HashSet<Vector2Int>(cells);
+
+        for (int i = 0; i < visuals.Count && i < cells.Count; i++)
+        {
+            if (!visuals[i])
+                continue;
+
             var c = cells[i];
-
-            // Shared with other active cells or with placed tiles
             bool L = activeSet.Contains(c + Vector2Int.left) || (board.InBounds(c + Vector2Int.left) && !board.IsFree(c + Vector2Int.left));
             bool R = activeSet.Contains(c + Vector2Int.right) || (board.InBounds(c + Vector2Int.right) && !board.IsFree(c + Vector2Int.right));
             bool U = activeSet.Contains(c + Vector2Int.up) || (board.InBounds(c + Vector2Int.up) && !board.IsFree(c + Vector2Int.up));
@@ -316,14 +371,228 @@ public class Piece : MonoBehaviour
         }
     }
 
-    bool TryMove(Vector2Int delta)
+    void ApplyHardDropSettledBorderPreview()
+    {
+        ApplyActiveVisualBorders();
+        RefreshHardDropPreviewNeighborBorders();
+    }
+
+    void RefreshHardDropPreviewNeighborBorders()
+    {
+        RestoreHardDropPreviewNeighborBorders();
+
+        if (data == null || data.special != SpecialType.None || board == null || cells.Count == 0)
+            return;
+
+        var activeSet = new HashSet<Vector2Int>(cells);
+        var previewCells = new HashSet<Vector2Int>();
+
+        for (int i = 0; i < cells.Count; i++)
+        {
+            AddHardDropPreviewNeighbor(cells[i] + Vector2Int.left, activeSet, previewCells);
+            AddHardDropPreviewNeighbor(cells[i] + Vector2Int.right, activeSet, previewCells);
+            AddHardDropPreviewNeighbor(cells[i] + Vector2Int.up, activeSet, previewCells);
+            AddHardDropPreviewNeighbor(cells[i] + Vector2Int.down, activeSet, previewCells);
+        }
+
+        foreach (var c in previewCells)
+        {
+            if (!board.TryGetTileRect(c, out var rt))
+                continue;
+
+            bool L = IsHardDropPreviewShared(c + Vector2Int.left, activeSet);
+            bool R = IsHardDropPreviewShared(c + Vector2Int.right, activeSet);
+            bool U = IsHardDropPreviewShared(c + Vector2Int.up, activeSet);
+            bool D = IsHardDropPreviewShared(c + Vector2Int.down, activeSet);
+
+            board.ApplySharedEdges(rt, L, R, U, D);
+            hardDropPreviewBorderCells.Add(c);
+        }
+    }
+
+    void AddHardDropPreviewNeighbor(Vector2Int cell, HashSet<Vector2Int> activeSet, HashSet<Vector2Int> previewCells)
+    {
+        if (!board.InBounds(cell) || activeSet.Contains(cell) || board.IsFree(cell))
+            return;
+
+        previewCells.Add(cell);
+    }
+
+    bool IsHardDropPreviewShared(Vector2Int cell, HashSet<Vector2Int> activeSet)
+    {
+        return activeSet.Contains(cell) || (board.InBounds(cell) && !board.IsFree(cell));
+    }
+
+    void RestoreHardDropPreviewNeighborBorders()
+    {
+        if (hardDropPreviewBorderCells.Count == 0)
+            return;
+
+        for (int i = 0; i < hardDropPreviewBorderCells.Count; i++)
+        {
+            var c = hardDropPreviewBorderCells[i];
+            if (board && board.InBounds(c))
+                board.RefreshTileBordersAt(c);
+        }
+
+        hardDropPreviewBorderCells.Clear();
+    }
+
+    void AnimateVisualsForRotation(Vector2Int rotationOrigin, float rotationDegrees)
+    {
+        var gc = GetGameController();
+        float duration = gc ? gc.PieceRotationVisualDuration : 0f;
+
+        if (!ShouldSmoothPieceAction(gc, duration))
+        {
+            SyncVisuals();
+            return;
+        }
+
+        StartVisualTransition(duration, true, board.CellToAnchoredPos(rotationOrigin), rotationDegrees, null);
+    }
+
+    bool TryStartHardDropVisualLock()
+    {
+        var gc = GetGameController();
+        float duration = gc ? gc.PieceHardDropVisualDuration : 0f;
+
+        if (!ShouldSmoothPieceAction(gc, duration))
+            return false;
+
+        hardDropVisualLockPending = true;
+        ClearHints();
+        StartVisualTransition(duration, false, Vector2.zero, 0f, FinishHardDropVisualLock, true);
+        return true;
+    }
+
+    bool ShouldSmoothPieceAction(GameController gc, float duration)
+    {
+        return gc != null && gc.SmoothPieceActionVisuals && duration > 0f;
+    }
+
+    void StartVisualTransition(
+        float duration,
+        bool rotateAroundPivot,
+        Vector2 pivot,
+        float rotationDegrees,
+        Action onComplete,
+        bool previewSettledBorders = false)
+    {
+        if (!EnsureVisualsReady())
+        {
+            onComplete?.Invoke();
+            return;
+        }
+
+        Vector2[] starts = CaptureVisualPositions();
+        Vector2[] targets = GetCellTargetPositions();
+        CancelVisualTransition(false);
+
+        if (previewSettledBorders)
+            ApplyHardDropSettledBorderPreview();
+
+        visualTransitionCoroutine = StartCoroutine(CoAnimateVisualTransition(
+            starts,
+            targets,
+            duration,
+            rotateAroundPivot,
+            pivot,
+            rotationDegrees,
+            onComplete));
+    }
+
+    IEnumerator CoAnimateVisualTransition(
+        Vector2[] starts,
+        Vector2[] targets,
+        float duration,
+        bool rotateAroundPivot,
+        Vector2 pivot,
+        float rotationDegrees,
+        Action onComplete)
+    {
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            float eased = t * t * (3f - 2f * t);
+
+            for (int i = 0; i < visuals.Count && i < starts.Length && i < targets.Length; i++)
+            {
+                if (!visuals[i])
+                    continue;
+
+                visuals[i].anchoredPosition = rotateAroundPivot
+                    ? RotatePointAroundPivot(starts[i], pivot, Mathf.Lerp(0f, rotationDegrees, eased))
+                    : Vector2.LerpUnclamped(starts[i], targets[i], eased);
+            }
+
+            yield return null;
+        }
+
+        SetVisualsToTargetPositions(targets);
+        ApplyActiveVisualBorders();
+
+        visualTransitionCoroutine = null;
+
+        if (onComplete != null)
+        {
+            completingVisualTransition = true;
+            onComplete.Invoke();
+            completingVisualTransition = false;
+        }
+    }
+
+    Vector2 RotatePointAroundPivot(Vector2 point, Vector2 pivot, float degrees)
+    {
+        float radians = degrees * Mathf.Deg2Rad;
+        float sin = Mathf.Sin(radians);
+        float cos = Mathf.Cos(radians);
+        Vector2 offset = point - pivot;
+
+        return pivot + new Vector2(
+            offset.x * cos - offset.y * sin,
+            offset.x * sin + offset.y * cos);
+    }
+
+    void FinishHardDropVisualLock()
+    {
+        hardDropVisualLockPending = false;
+        Lock();
+    }
+
+    void CancelVisualTransition(bool clearHardDropPending = true)
+    {
+        if (visualTransitionCoroutine != null && !completingVisualTransition)
+            StopCoroutine(visualTransitionCoroutine);
+
+        visualTransitionCoroutine = null;
+        if (clearHardDropPending)
+        {
+            RestoreHardDropPreviewNeighborBorders();
+            hardDropVisualLockPending = false;
+        }
+    }
+
+    GameController GetGameController()
+    {
+        var gc = GetComponent<GameController>();
+        if (!gc)
+            gc = FindFirstObjectByType<GameController>();
+        return gc;
+    }
+
+    bool TryMove(Vector2Int delta, bool syncVisuals = true)
     {
         var next = new Vector2Int[cells.Count];
         for (int i = 0; i < cells.Count; i++) next[i] = cells[i] + delta;
         if (!board.Valid(next)) return false;
         for (int i = 0; i < cells.Count; i++) cells[i] = next[i];
         origin += delta;
-        SyncVisuals();
+        if (syncVisuals)
+            SyncVisuals();
         return true;
     }
 
@@ -345,16 +614,23 @@ public class Piece : MonoBehaviour
 
     void HardDrop(bool notifyTutorial = false)
     {
-        while (TryMove(Vector2Int.down)) { }
+        bool moved = false;
+        while (TryMove(Vector2Int.down, false))
+            moved = true;
 
         if (notifyTutorial)
             NotifyTutorialEvent(TutorialGameplayEvent.HardDrop);
 
+        if (moved && TryStartHardDropVisualLock())
+            return;
+
+        SyncVisuals();
         Lock();
     }
 
     void RotateCW(bool notifyTutorial = false)
     {
+        Vector2Int rotationOrigin = origin;
         var next = new Vector2Int[cells.Count];
         for (int i = 0; i < cells.Count; i++)
         {
@@ -365,7 +641,7 @@ public class Piece : MonoBehaviour
         if (board.Valid(next))
         {
             for (int i = 0; i < cells.Count; i++) cells[i] = next[i];
-            SyncVisuals();
+            AnimateVisualsForRotation(rotationOrigin, -90f);
             if (notifyTutorial)
                 NotifyTutorialEvent(TutorialGameplayEvent.RotateClockwise);
         }
@@ -373,6 +649,7 @@ public class Piece : MonoBehaviour
 
     void RotateCCW(bool notifyTutorial = false)
     {
+        Vector2Int rotationOrigin = origin;
         var next = new Vector2Int[cells.Count];
         for (int i = 0; i < cells.Count; i++)
         {
@@ -383,7 +660,7 @@ public class Piece : MonoBehaviour
         if (board.Valid(next))
         {
             for (int i = 0; i < cells.Count; i++) cells[i] = next[i];
-            SyncVisuals();
+            AnimateVisualsForRotation(rotationOrigin, 90f);
             if (notifyTutorial)
                 NotifyTutorialEvent(TutorialGameplayEvent.RotateCounterClockwise);
         }
@@ -391,6 +668,12 @@ public class Piece : MonoBehaviour
 
     void Lock()
     {
+        if (visualTransitionCoroutine != null && !completingVisualTransition)
+            StopCoroutine(visualTransitionCoroutine);
+
+        visualTransitionCoroutine = null;
+        hardDropVisualLockPending = false;
+
         bool toppedOut = false;
         bool isSpecial = data.special != SpecialType.None;
 
@@ -399,6 +682,8 @@ public class Piece : MonoBehaviour
 
         if (toppedOut)
         {
+            RestoreHardDropPreviewNeighborBorders();
+
             foreach (var v in visuals) if (v) Destroy(v.gameObject);
             visuals.Clear();
 
@@ -418,6 +703,8 @@ public class Piece : MonoBehaviour
         // ---------- SPECIAL PIECES ----------
         if (isSpecial)
         {
+            RestoreHardDropPreviewNeighborBorders();
+
             // Clean up active visuals + any hint overlays
             ClearHints();
             foreach (var v in visuals) if (v) Destroy(v.gameObject);
@@ -587,6 +874,7 @@ public class Piece : MonoBehaviour
         // ---------- NORMAL PIECES ----------
 
         ClearHints();
+        int pieceGroupId = board.AllocatePieceGroupId();
         for (int i = 0; i < cells.Count; i++)
         {
             MonsterData md = (i < monstersForCells.Count) ? monstersForCells[i] : null;
@@ -595,7 +883,7 @@ public class Piece : MonoBehaviour
 
             placed.anchoredPosition = board.CellToAnchoredPos(cells[i]);
             board.Place(cells[i], placed);
-            board.SetMonsterAt(cells[i], new Board.MonsterInstance(md));
+            board.SetMonsterAt(cells[i], new Board.MonsterInstance(md, pieceGroupId));
         }
 
         gc?.levelModifierController?.OnNormalPiecePlaced(cells);
@@ -610,6 +898,8 @@ public class Piece : MonoBehaviour
             // Recompute per-edge border thickness for the new blocks + neighbors
             for (int i = 0; i < cells.Count; i++)
                 board.RefreshTileBordersAround(cells[i]);
+
+        hardDropPreviewBorderCells.Clear();
 
         foreach (var v in visuals) if (v) Destroy(v.gameObject);
         visuals.Clear();
@@ -640,6 +930,7 @@ public class Piece : MonoBehaviour
     public void ResetPiece()
     {
         enabled = false;
+        CancelVisualTransition();
         ClearHints();
 
         // Remove only the active falling tile visuals spawned

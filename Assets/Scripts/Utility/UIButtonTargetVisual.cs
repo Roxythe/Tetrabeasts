@@ -1,0 +1,391 @@
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+[DisallowMultipleComponent]
+public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
+{
+    public enum ControllerArrowPlacement
+    {
+        None,
+        Right,
+        Above
+    }
+
+    const string FireBorderAnimationName = "FireBorder_Animation";
+    const string FireBorderAnimationAltName = "FireBorderAnimation";
+
+    static readonly Dictionary<GameObject, HashSet<UIButtonTargetVisual>> FireBorderClaims = new();
+    static Sprite sharedControllerArrowSprite;
+
+    [SerializeField] ControllerArrowPlacement controllerArrowPlacement;
+    [SerializeField] Vector2 controllerArrowSize = new Vector2(20f, 16f);
+    [SerializeField] float controllerArrowSideOffset = 12f;
+    [SerializeField] Color persistentFireBorderTint = new Color(0.55f, 0.9f, 1f, 1f);
+
+    AudioClip hoverSfx;
+    Transform visualSearchRoot;
+    GameObject fireBorderAnimation;
+    Image controllerArrow;
+    bool pointerInside;
+    bool selected;
+    bool fireBorderClaimed;
+    bool persistentFireBorder;
+    Graphic[] fireBorderGraphics;
+    Color[] fireBorderGraphicBaseColors;
+    SpriteRenderer[] fireBorderSpriteRenderers;
+    Color[] fireBorderSpriteBaseColors;
+
+    public static UIButtonTargetVisual Ensure(GameObject target)
+    {
+        if (!target)
+            return null;
+
+        var visual = target.GetComponent<UIButtonTargetVisual>();
+        if (!visual)
+            visual = target.AddComponent<UIButtonTargetVisual>();
+
+        return visual;
+    }
+
+    public void SetPersistentFireBorder(bool active, Color tint)
+    {
+        persistentFireBorder = active;
+        persistentFireBorderTint = tint;
+        RefreshVisuals();
+    }
+
+    public void Configure(AudioClip hoverClip, bool enableControllerArrow, Transform fireBorderSearchRoot = null)
+    {
+        Configure(
+            hoverClip,
+            enableControllerArrow ? ControllerArrowPlacement.Right : ControllerArrowPlacement.None,
+            fireBorderSearchRoot);
+    }
+
+    public void Configure(
+        AudioClip hoverClip,
+        ControllerArrowPlacement arrowPlacement,
+        Transform fireBorderSearchRoot = null)
+    {
+        hoverSfx = hoverClip;
+        controllerArrowPlacement = arrowPlacement;
+        visualSearchRoot = fireBorderSearchRoot ? fireBorderSearchRoot : transform;
+        RepositionControllerArrow();
+        ResolveFireBorderAnimation();
+        RefreshVisuals();
+    }
+
+    void Awake()
+    {
+        if (!visualSearchRoot)
+            visualSearchRoot = transform;
+
+        ResolveFireBorderAnimation();
+        RefreshVisuals();
+    }
+
+    void OnEnable()
+    {
+        selected = EventSystem.current && EventSystem.current.currentSelectedGameObject == gameObject;
+        ResolveFireBorderAnimation();
+        RefreshVisuals();
+    }
+
+    void OnDisable()
+    {
+        pointerInside = false;
+        selected = false;
+        SetFireBorderDesired(false);
+        SetControllerArrowVisible(false);
+    }
+
+    void Update()
+    {
+        bool nowSelected = EventSystem.current && EventSystem.current.currentSelectedGameObject == gameObject;
+        if (selected != nowSelected)
+            selected = nowSelected;
+
+        RefreshVisuals();
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        pointerInside = true;
+
+        if (hoverSfx && AudioManager.I)
+            AudioManager.I.PlaySFX(hoverSfx);
+
+        RefreshVisuals();
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        pointerInside = false;
+        RefreshVisuals();
+    }
+
+    public void OnSelect(BaseEventData eventData)
+    {
+        selected = true;
+        RefreshVisuals();
+    }
+
+    public void OnDeselect(BaseEventData eventData)
+    {
+        selected = false;
+        RefreshVisuals();
+    }
+
+    void RefreshVisuals()
+    {
+        bool navigationTargeted = selected && IsMenuNavigationTargetMode();
+        bool showFireBorder = pointerInside || navigationTargeted || persistentFireBorder;
+        SetFireBorderDesired(showFireBorder);
+        ApplyFireBorderTint(showFireBorder && persistentFireBorder);
+        SetControllerArrowVisible(controllerArrowPlacement != ControllerArrowPlacement.None && navigationTargeted);
+    }
+
+    static bool IsMenuNavigationTargetMode()
+    {
+        return UICursorController.IsButtonNavigationMode ||
+               TetrabeastsControls.WasButtonNavigationPressedThisFrame() ||
+               TetrabeastsControls.IsButtonNavigationHeld();
+    }
+
+    void ResolveFireBorderAnimation()
+    {
+        Transform searchRoot = visualSearchRoot ? visualSearchRoot : transform;
+        var found = FindDeep(searchRoot, FireBorderAnimationName);
+        if (!found)
+            found = FindDeep(searchRoot, FireBorderAnimationAltName);
+
+        GameObject next = found ? found.gameObject : null;
+        if (next == fireBorderAnimation)
+            return;
+
+        ApplyFireBorderTint(false);
+        SetFireBorderDesired(false);
+        fireBorderAnimation = next;
+        ClearFireBorderColorCache();
+
+        if (fireBorderAnimation)
+            fireBorderAnimation.SetActive(false);
+    }
+
+    void SetFireBorderDesired(bool desired)
+    {
+        if (!fireBorderAnimation)
+            return;
+
+        if (!desired)
+            ApplyFireBorderTint(false);
+
+        if (fireBorderClaimed == desired)
+        {
+            if (desired && !fireBorderAnimation.activeSelf)
+                fireBorderAnimation.SetActive(true);
+            return;
+        }
+
+        fireBorderClaimed = desired;
+
+        if (desired)
+        {
+            if (!FireBorderClaims.TryGetValue(fireBorderAnimation, out var claims))
+            {
+                claims = new HashSet<UIButtonTargetVisual>();
+                FireBorderClaims[fireBorderAnimation] = claims;
+            }
+
+            claims.Add(this);
+            fireBorderAnimation.SetActive(true);
+            return;
+        }
+
+        if (!FireBorderClaims.TryGetValue(fireBorderAnimation, out var existingClaims))
+        {
+            fireBorderAnimation.SetActive(false);
+            return;
+        }
+
+        existingClaims.Remove(this);
+        if (existingClaims.Count > 0)
+            return;
+
+        FireBorderClaims.Remove(fireBorderAnimation);
+        fireBorderAnimation.SetActive(false);
+    }
+
+    void ApplyFireBorderTint(bool tinted)
+    {
+        if (!fireBorderAnimation)
+            return;
+
+        CacheFireBorderColors();
+
+        if (fireBorderGraphics != null)
+        {
+            for (int i = 0; i < fireBorderGraphics.Length; i++)
+            {
+                var graphic = fireBorderGraphics[i];
+                if (!graphic)
+                    continue;
+
+                Color color = tinted ? persistentFireBorderTint : fireBorderGraphicBaseColors[i];
+                color.a = fireBorderGraphicBaseColors[i].a;
+                graphic.color = color;
+            }
+        }
+
+        if (fireBorderSpriteRenderers != null)
+        {
+            for (int i = 0; i < fireBorderSpriteRenderers.Length; i++)
+            {
+                var spriteRenderer = fireBorderSpriteRenderers[i];
+                if (!spriteRenderer)
+                    continue;
+
+                Color color = tinted ? persistentFireBorderTint : fireBorderSpriteBaseColors[i];
+                color.a = fireBorderSpriteBaseColors[i].a;
+                spriteRenderer.color = color;
+            }
+        }
+    }
+
+    void CacheFireBorderColors()
+    {
+        if (!fireBorderAnimation || fireBorderGraphics != null || fireBorderSpriteRenderers != null)
+            return;
+
+        fireBorderGraphics = fireBorderAnimation.GetComponentsInChildren<Graphic>(true);
+        fireBorderGraphicBaseColors = new Color[fireBorderGraphics.Length];
+        for (int i = 0; i < fireBorderGraphics.Length; i++)
+            fireBorderGraphicBaseColors[i] = fireBorderGraphics[i] ? fireBorderGraphics[i].color : Color.white;
+
+        fireBorderSpriteRenderers = fireBorderAnimation.GetComponentsInChildren<SpriteRenderer>(true);
+        fireBorderSpriteBaseColors = new Color[fireBorderSpriteRenderers.Length];
+        for (int i = 0; i < fireBorderSpriteRenderers.Length; i++)
+            fireBorderSpriteBaseColors[i] = fireBorderSpriteRenderers[i] ? fireBorderSpriteRenderers[i].color : Color.white;
+    }
+
+    void ClearFireBorderColorCache()
+    {
+        fireBorderGraphics = null;
+        fireBorderGraphicBaseColors = null;
+        fireBorderSpriteRenderers = null;
+        fireBorderSpriteBaseColors = null;
+    }
+
+    void SetControllerArrowVisible(bool visible)
+    {
+        if (visible)
+            EnsureControllerArrow();
+
+        if (controllerArrow && controllerArrow.gameObject.activeSelf != visible)
+            controllerArrow.gameObject.SetActive(visible);
+    }
+
+    void EnsureControllerArrow()
+    {
+        if (controllerArrow)
+            return;
+
+        var go = new GameObject("ControllerTarget_Arrow", typeof(RectTransform), typeof(Image));
+        go.transform.SetParent(transform, false);
+
+        controllerArrow = go.GetComponent<Image>();
+        controllerArrow.raycastTarget = false;
+        controllerArrow.sprite = GetControllerArrowSprite();
+        controllerArrow.color = Color.white;
+
+        RepositionControllerArrow();
+        go.SetActive(false);
+    }
+
+    void RepositionControllerArrow()
+    {
+        if (!controllerArrow)
+            return;
+
+        var rt = controllerArrow.rectTransform;
+        rt.sizeDelta = controllerArrowSize;
+        rt.localScale = Vector3.one;
+
+        if (controllerArrowPlacement == ControllerArrowPlacement.Above)
+        {
+            rt.anchorMin = new Vector2(0.5f, 1f);
+            rt.anchorMax = new Vector2(0.5f, 1f);
+            rt.pivot = new Vector2(0.5f, 0f);
+            rt.anchoredPosition = new Vector2(0f, controllerArrowSideOffset);
+            rt.localEulerAngles = Vector3.zero;
+            return;
+        }
+
+        rt.anchorMin = new Vector2(1f, 0.5f);
+        rt.anchorMax = new Vector2(1f, 0.5f);
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.anchoredPosition = new Vector2(controllerArrowSideOffset, 0f);
+        rt.localEulerAngles = new Vector3(0f, 0f, -90f);
+    }
+
+    static Sprite GetControllerArrowSprite()
+    {
+        if (sharedControllerArrowSprite)
+            return sharedControllerArrowSprite;
+
+        const int width = 20;
+        const int height = 16;
+        var texture = new Texture2D(width, height, TextureFormat.RGBA32, false)
+        {
+            name = "Runtime_RedSliderSelectionArrow",
+            filterMode = FilterMode.Point,
+            wrapMode = TextureWrapMode.Clamp
+        };
+
+        Color clear = new Color(1f, 1f, 1f, 0f);
+        Color red = new Color(1f, 0.04f, 0.02f, 1f);
+        Color edge = new Color(0.35f, 0f, 0f, 1f);
+        float center = (width - 1) * 0.5f;
+
+        for (int y = 0; y < height; y++)
+        {
+            float halfWidth = Mathf.Lerp(1f, center, y / (float)(height - 1));
+            for (int x = 0; x < width; x++)
+            {
+                float distance = Mathf.Abs(x - center);
+                if (distance > halfWidth)
+                {
+                    texture.SetPixel(x, y, clear);
+                    continue;
+                }
+
+                texture.SetPixel(x, y, distance > halfWidth - 1.5f ? edge : red);
+            }
+        }
+
+        texture.Apply();
+        sharedControllerArrowSprite = Sprite.Create(
+            texture,
+            new Rect(0f, 0f, width, height),
+            new Vector2(0.5f, 0f),
+            100f);
+        sharedControllerArrowSprite.name = "Runtime_RedSliderSelectionArrow";
+        return sharedControllerArrowSprite;
+    }
+
+    static Transform FindDeep(Transform root, string name)
+    {
+        if (!root)
+            return null;
+
+        foreach (Transform child in root.GetComponentsInChildren<Transform>(true))
+        {
+            if (child.name == name)
+                return child;
+        }
+
+        return null;
+    }
+}

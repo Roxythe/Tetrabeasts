@@ -66,6 +66,19 @@ public class UIImagePingPongAnimator : MonoBehaviour
         ApplyFrame();
     }
 
+    public void Configure(Image image, Sprite[] animationFrames, float newFramesPerSecond, bool shouldPlay = true)
+    {
+        targetImage = image ? image : targetImage;
+        frames = animationFrames;
+        framesPerSecond = Mathf.Max(1f, newFramesPerSecond);
+        ResetAnimation();
+
+        if (shouldPlay)
+            Play();
+        else
+            Stop();
+    }
+
     void StepFrame()
     {
         int nextFrameIndex = _frameIndex + _direction;

@@ -30,6 +30,11 @@ public class GameController : MonoBehaviour
     [Header("Line Clear Visual Timing")]
     public float cascadeSettlePauseSeconds = 0.18f;
 
+    [Header("Piece Action Visuals")]
+    [SerializeField] bool smoothPieceActionVisuals = true;
+    [SerializeField, Min(0f)] float pieceRotationVisualDuration = 0.08f;
+    [SerializeField, Min(0f)] float pieceHardDropVisualDuration = 0.12f;
+
     [Header("Cursor (Gameplay)")]
     public UICursorController pauseCursor;
 
@@ -245,6 +250,9 @@ public class GameController : MonoBehaviour
     bool tutorialSuspended = false;
     bool tutorialFreezePieceGravity = false;
 
+    public bool SmoothPieceActionVisuals => smoothPieceActionVisuals;
+    public float PieceRotationVisualDuration => Mathf.Max(0f, pieceRotationVisualDuration);
+    public float PieceHardDropVisualDuration => Mathf.Max(0f, pieceHardDropVisualDuration);
     public bool IsTutorialPieceGravityFrozen => tutorialFreezePieceGravity;
     public event System.Action<TutorialGameplayEvent> TutorialGameplayEventRaised;
 
@@ -441,6 +449,7 @@ public class GameController : MonoBehaviour
     [SerializeField] RoundTransitionUI roundTransitionUI;
     [SerializeField] TMP_FontAsset roundTransitionFont;
     [SerializeField] Button roundTransitionContinueButtonPrefab;
+    [SerializeField, Min(0f)] float levelStartRoundTransitionDelaySeconds = 1f;
 
     public TMP_Text levelText;
     [HideInInspector] public LevelModifierController levelModifierController;
@@ -1649,6 +1658,9 @@ public class GameController : MonoBehaviour
     IEnumerator CoShowLevelStartTransition()
     {
         PauseGameplayForRoundTransition(showCursor: false);
+
+        if (levelStartRoundTransitionDelaySeconds > 0f)
+            yield return new WaitForSecondsRealtime(levelStartRoundTransitionDelaySeconds);
 
         int levelNumber = currentLevel + 1;
         string castleName = currentCastleData && !string.IsNullOrWhiteSpace(currentCastleData.castleName)

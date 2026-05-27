@@ -1,0 +1,533 @@
+fileFormatVersion: 2
+guid: 6b7817ebb3b10d24487a04d500a5359b
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3039440422211468403
+    second: VixenSprite1_EmeraldVariant_0
+  - first:
+      213: 7032127628047517378
+    second: VixenSprite1_EmeraldVariant_1
+  - first:
+      213: -4248702608875775558
+    second: VixenSprite1_EmeraldVariant_2
+  - first:
+      213: -5426877322104383902
+    second: VixenSprite1_EmeraldVariant_3
+  - first:
+      213: 1899636273164520341
+    second: VixenSprite1_EmeraldVariant_4
+  - first:
+      213: -3070532063558968884
+    second: VixenSprite1_EmeraldVariant_5
+  - first:
+      213: 7673211160132330071
+    second: VixenSprite1_EmeraldVariant_6
+  - first:
+      213: -1043855893095756292
+    second: VixenSprite1_EmeraldVariant_7
+  - first:
+      213: 5794853583353869946
+    second: VixenSprite1_EmeraldVariant_8
+  - first:
+      213: -5702387279967041971
+    second: VixenSprite1_EmeraldVariant_9
+  - first:
+      213: 7495961389521241341
+    second: VixenSprite1_EmeraldVariant_10
+  - first:
+      213: 1652539662160034479
+    second: VixenSprite1_EmeraldVariant_11
+  - first:
+      213: -1131648916861378463
+    second: VixenSprite1_EmeraldVariant_12
+  - first:
+      213: -7509158207155736189
+    second: VixenSprite1_EmeraldVariant_13
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: VixenSprite1_EmeraldVariant_0
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 230
+        width: 37
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37cb0e9d5f24e2a20800000000000000
+      internalID: 3039440422211468403
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_EmeraldVariant_1
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 3
+        width: 603
+        height: 992
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c68bf4e1d2279160800000000000000
+      internalID: 7032127628047517378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_EmeraldVariant_2
+      rect:
+        serializedVersion: 2
+        x: 871
+        y: 238
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab91fa1ec739905c0800000000000000
+      internalID: -4248702608875775558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_EmeraldVariant_3
+      rect:
+        serializedVersion: 2
+        x: 190
+        y: 211
+        width: 14
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 266585014dbdfa4b0800000000000000
+      internalID: -5426877322104383902
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_EmeraldVariant_4
+      rect:
+        serializedVersion: 2
+        x: 115
+        y: 188
+        width: 18
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59b0b60302ddc5a10800000000000000
+      internalID: 1899636273164520341
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_EmeraldVariant_5
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 120
+        width: 9
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc9de184b574365d0800000000000000
+      internalID: -3070532063558968884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_EmeraldVariant_6
+      rect:
+        serializedVersion: 2
+        x: 920
+        y: 135
+        width: 12
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 752204e45e8bc7a60800000000000000
+      internalID: 7673211160132330071
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_EmeraldVariant_7
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 87
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cfd4457889a7381f0800000000000000
+      internalID: -1043855893095756292
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_EmeraldVariant_8
+      rect:
+        serializedVersion: 2
+        x: 821
+        y: 78
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a76f431b1a47b6050800000000000000
+      internalID: 5794853583353869946
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_EmeraldVariant_9
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 66
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d46cbdd3bfc0dd0b0800000000000000
+      internalID: -5702387279967041971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_EmeraldVariant_10
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 22
+        width: 65
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df405702b21070860800000000000000
+      internalID: 7495961389521241341
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_EmeraldVariant_11
+      rect:
+        serializedVersion: 2
+        x: 850
+        y: 0
+        width: 147
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: faafa4431100fe610800000000000000
+      internalID: 1652539662160034479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_EmeraldVariant_12
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 0
+        width: 176
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 160a50c4e439b40f0800000000000000
+      internalID: -1131648916861378463
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VixenSprite1_EmeraldVariant_13
+      rect:
+        serializedVersion: 2
+        x: 699
+        y: 0
+        width: 33
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 381f544556c1ac790800000000000000
+      internalID: -7509158207155736189
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      VixenSprite1_EmeraldVariant_0: 3039440422211468403
+      VixenSprite1_EmeraldVariant_1: 7032127628047517378
+      VixenSprite1_EmeraldVariant_10: 7495961389521241341
+      VixenSprite1_EmeraldVariant_11: 1652539662160034479
+      VixenSprite1_EmeraldVariant_12: -1131648916861378463
+      VixenSprite1_EmeraldVariant_13: -7509158207155736189
+      VixenSprite1_EmeraldVariant_2: -4248702608875775558
+      VixenSprite1_EmeraldVariant_3: -5426877322104383902
+      VixenSprite1_EmeraldVariant_4: 1899636273164520341
+      VixenSprite1_EmeraldVariant_5: -3070532063558968884
+      VixenSprite1_EmeraldVariant_6: 7673211160132330071
+      VixenSprite1_EmeraldVariant_7: -1043855893095756292
+      VixenSprite1_EmeraldVariant_8: 5794853583353869946
+      VixenSprite1_EmeraldVariant_9: -5702387279967041971
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

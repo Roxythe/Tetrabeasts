@@ -70,6 +70,8 @@ public class MonsterSelectUI : MonoBehaviour
 
     void Awake()
     {
+        ConfigureListScrollInput();
+
         if (previewToggleButton)
         {
             previewToggleButton.onClick.RemoveAllListeners();
@@ -100,6 +102,7 @@ public class MonsterSelectUI : MonoBehaviour
 
     void OnEnable()
     {
+        ConfigureListScrollInput();
         SyncFromStore();
         RefreshAllUI();
         ScheduleListLayoutRebuild();
@@ -140,6 +143,10 @@ public class MonsterSelectUI : MonoBehaviour
             if (!md) continue;
 
             var btn = Instantiate(itemButtonPrefab, listParent);
+            UIButtonTargetVisual.Ensure(btn.gameObject)?.Configure(
+                hoverSFX,
+                UIButtonTargetVisual.ControllerArrowPlacement.Above,
+                btn.transform);
 
             var view = btn.GetComponent<MonsterButtonView>();
             if (view)
@@ -160,6 +167,7 @@ public class MonsterSelectUI : MonoBehaviour
             var unlockBtnT = FindDeep(btn.transform, "Unlock_Button");
             var unlockBtn = unlockBtnT ? unlockBtnT.GetComponent<Button>() : null;
             if (unlockBtnT) unlockBtnT.gameObject.SetActive(!monsterUnlocked);
+            if (unlockBtn) UIButtonTargetVisual.Ensure(unlockBtn.gameObject)?.Configure(null, false, btn.transform);
 
             var captured = md;
             ApplyBanner(btn, md);
@@ -228,18 +236,6 @@ public class MonsterSelectUI : MonoBehaviour
                 });
             }
 
-            var evt = btn.gameObject.AddComponent<UnityEngine.EventSystems.EventTrigger>();
-            var enter = new UnityEngine.EventSystems.EventTrigger.Entry
-            {
-                eventID = UnityEngine.EventSystems.EventTriggerType.PointerEnter
-            };
-
-            enter.callback.AddListener(_ =>
-            {
-                if (AudioManager.I && hoverSFX) AudioManager.I.PlaySFX(hoverSFX);
-            });
-            evt.triggers.Add(enter);
-
             buttons[captured] = btn;
             SetupSkinButtons(btn, md);
             SetButtonHighlight(btn, false);
@@ -283,6 +279,7 @@ public class MonsterSelectUI : MonoBehaviour
             return;
 
         scroll.content = content;
+        MenuScrollRectInput.Attach(scroll, gameObject, autoCenterSelected: true);
         if (scroll.transform is RectTransform scrollRectTransform)
             LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRectTransform);
 
@@ -299,6 +296,13 @@ public class MonsterSelectUI : MonoBehaviour
             listScrollRect = listParent.GetComponentInParent<ScrollRect>(true);
 
         return listScrollRect;
+    }
+
+    void ConfigureListScrollInput()
+    {
+        var scroll = ResolveListScrollRect();
+        if (scroll)
+            MenuScrollRectInput.Attach(scroll, gameObject, autoCenterSelected: true);
     }
 
     void ResizeGridContentToChildren(RectTransform content)
@@ -608,8 +612,14 @@ public class MonsterSelectUI : MonoBehaviour
     {
         if (!md) { ClearPreview(); return; }
 
+        if (!MonsterSkinStore.IsSkinAvailable(md, skinIdx))
+            skinIdx = 0;
+
+        previewMonster = md;
+        previewSkinIndex = skinIdx;
+
         if (previewImage)
-            previewImage.sprite = MonsterSkinStore.GetPortrait(md, skinIdx);
+            previewImage.sprite = MonsterSkinStore.GetPreviewPortrait(md, skinIdx);
 
         if (previewNameText)
         {
@@ -779,7 +789,7 @@ public class MonsterSelectUI : MonoBehaviour
 
     void SetupSkinButtons(Button monsterBtn, MonsterData md)
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < MonsterSkinStore.MaxSkinSlots; i++)
         {
             int idx = i;
 
@@ -787,7 +797,14 @@ public class MonsterSelectUI : MonoBehaviour
             if (!t) continue;
 
             var b = t.GetComponent<Button>();
-            if (!b) continue;
+            if (b)
+                b.onClick.RemoveAllListeners();
+
+            bool available = MonsterSkinStore.IsSkinAvailable(md, idx);
+            t.gameObject.SetActive(available);
+            if (!available || !b) continue;
+
+            UIButtonTargetVisual.Ensure(t.gameObject)?.Configure(null, true, monsterBtn.transform);
 
             var icon = t.GetComponent<Image>();
             if (!icon)
@@ -799,7 +816,6 @@ public class MonsterSelectUI : MonoBehaviour
             if (icon)
                 icon.sprite = MonsterSkinStore.GetPortrait(md, idx);
 
-            b.onClick.RemoveAllListeners();
             b.onClick.AddListener(() =>
             {
                 previewMonster = md;
@@ -822,10 +838,14 @@ public class MonsterSelectUI : MonoBehaviour
     {
         int committed = UnlockStore.IsUnlocked(md) ? MonsterSkinStore.GetValidSelected(md) : 0;
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < MonsterSkinStore.MaxSkinSlots; i++)
         {
             var t = FindDeep(monsterBtn.transform, $"SkinVariant_Button{i}");
             if (!t) continue;
+
+            bool available = MonsterSkinStore.IsSkinAvailable(md, i);
+            t.gameObject.SetActive(available);
+            if (!available) continue;
 
             var b = t.GetComponent<Button>();
             if (!b) continue;
@@ -854,8 +874,9 @@ public class MonsterSelectUI : MonoBehaviour
 
         if (!previewUnlockButton) return;
 
-        bool unlocked = MonsterSkinStore.IsUnlocked(md, skinIdx);
-        bool showUnlock = !unlocked && skinIdx > 0;
+        bool available = MonsterSkinStore.IsSkinAvailable(md, skinIdx);
+        bool unlocked = available && MonsterSkinStore.IsUnlocked(md, skinIdx);
+        bool showUnlock = available && !unlocked && skinIdx > 0;
 
         previewUnlockButton.gameObject.SetActive(showUnlock);
         if (previewLockedImage) previewLockedImage.SetActive(showUnlock);
@@ -899,10 +920,14 @@ public class MonsterSelectUI : MonoBehaviour
 
     void ApplyVariantLockVisuals(Button monsterBtn, MonsterData md)
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < MonsterSkinStore.MaxSkinSlots; i++)
         {
             var t = FindDeep(monsterBtn.transform, $"SkinVariant_Button{i}");
             if (!t) continue;
+
+            bool available = MonsterSkinStore.IsSkinAvailable(md, i);
+            t.gameObject.SetActive(available);
+            if (!available) continue;
 
             bool unlocked = MonsterSkinStore.IsUnlocked(md, i);
 

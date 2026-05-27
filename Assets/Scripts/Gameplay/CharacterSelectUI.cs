@@ -16,6 +16,7 @@ public class CharacterSelectUI : MonoBehaviour
     public TMP_Text selectedSpecialAbilityName;
     public TMP_Text selectedSpecialDescription;
     public CurrencyUI currencyUI;
+    [SerializeField] ScrollRect listScrollRect;
 
     [Header("Audio")]
     public AudioClip selectSFX;
@@ -26,12 +27,15 @@ public class CharacterSelectUI : MonoBehaviour
     [Header("Selection Visuals")]
     [Range(0f, 1f)] public float selectedAlpha = 1f;
     [Range(0f, 1f)] public float deselectedAlpha = 0.65f;
+    [SerializeField] Color selectedFireBorderTint = new Color(0.55f, 0.9f, 1f, 1f);
 
     PlayerCharacterData previewCharacter;
     readonly System.Collections.Generic.Dictionary<PlayerCharacterData, Button> buttons = new();
+    readonly System.Collections.Generic.Dictionary<PlayerCharacterData, UIButtonTargetVisual> buttonTargetVisuals = new();
 
     void Awake()
     {
+        ConfigureScrollInput();
         BuildList();
 
         var saved = SelectedCharacterStore.ResolveFromRoster(roster);
@@ -57,12 +61,22 @@ public class CharacterSelectUI : MonoBehaviour
         RefreshButtonAlphas();
     }
 
+    void OnEnable()
+    {
+        ConfigureScrollInput();
+        RefreshButtonAlphas();
+    }
+
     void BuildList()
     {
+        if (!listParent || !characterButtonPrefab)
+            return;
+
         for (int i = listParent.childCount - 1; i >= 0; i--)
             Destroy(listParent.GetChild(i).gameObject);
 
         buttons.Clear();
+        buttonTargetVisuals.Clear();
 
         if (roster == null)
             return;
@@ -70,6 +84,13 @@ public class CharacterSelectUI : MonoBehaviour
         foreach (var data in roster)
         {
             var btn = Instantiate(characterButtonPrefab, listParent);
+            var targetVisual = UIButtonTargetVisual.Ensure(btn.gameObject);
+            if (targetVisual)
+            {
+                targetVisual.Configure(hoverSFX, false, btn.transform);
+                buttonTargetVisuals[data] = targetVisual;
+            }
+
             buttons[data] = btn;
             var txt = btn.GetComponentInChildren<TMP_Text>();
             var img = btn.GetComponentInChildren<Image>();
@@ -88,6 +109,7 @@ public class CharacterSelectUI : MonoBehaviour
             var unlockBtnT = FindDeep(btn.transform, "Unlock_Button");
             var unlockBtn = unlockBtnT ? unlockBtnT.GetComponent<Button>() : null;
             if (unlockBtnT) unlockBtnT.gameObject.SetActive(!unlocked);
+            if (unlockBtn) UIButtonTargetVisual.Ensure(unlockBtn.gameObject)?.Configure(null, false, btn.transform);
 
             // Always preview on click
             btn.interactable = true;
@@ -151,18 +173,30 @@ public class CharacterSelectUI : MonoBehaviour
                 });
             }
 
-            // Hover SFX
-            var evt = btn.gameObject.AddComponent<UnityEngine.EventSystems.EventTrigger>();
-            var enter = new UnityEngine.EventSystems.EventTrigger.Entry
-            {
-                eventID = UnityEngine.EventSystems.EventTriggerType.PointerEnter
-            };
-            enter.callback.AddListener(_ =>
-            {
-                if (hoverSFX && AudioManager.I) AudioManager.I.PlaySFX(hoverSFX);
-            });
-            evt.triggers.Add(enter);
         }
+    }
+
+    void ConfigureScrollInput()
+    {
+        var scroll = ResolveListScrollRect();
+        if (!scroll)
+            return;
+
+        if (listParent is RectTransform content)
+            scroll.content = content;
+
+        MenuScrollRectInput.Attach(scroll, gameObject);
+    }
+
+    ScrollRect ResolveListScrollRect()
+    {
+        if (listScrollRect)
+            return listScrollRect;
+
+        if (listParent)
+            listScrollRect = listParent.GetComponentInParent<ScrollRect>(true);
+
+        return listScrollRect;
     }
 
     void RefreshButtonAlphas()
@@ -195,6 +229,9 @@ public class CharacterSelectUI : MonoBehaviour
                 c.a = alpha;
                 border.color = c;
             }
+
+            if (buttonTargetVisuals.TryGetValue(data, out var targetVisual) && targetVisual)
+                targetVisual.SetPersistentFireBorder(unlocked && isSelected, selectedFireBorderTint);
         }
     }
 

@@ -13,18 +13,24 @@ MonoBehaviour:
   m_Name: Celest
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   monsterName: Celest
-  portrait: {fileID: 21300000, guid: 60f3ffd19b40baf448ca7916afe71fe3, type: 3}
+  portrait: {fileID: 21300000, guid: 40699c6f8b0df344c862ac0e6d4695ab, type: 3}
   monsterDescription: Healer with a wide range, but weak spells.
   passiveType: 3
   role: 2
   startsLocked: 0
   unlockCost: 10
   skinPortraits:
-  - {fileID: 21300000, guid: 60f3ffd19b40baf448ca7916afe71fe3, type: 3}
-  - {fileID: 21300000, guid: 52b2dffc27523224ea269431cc031073, type: 3}
-  - {fileID: 21300000, guid: 08e65760392897341833d88789b7e504, type: 3}
-  - {fileID: 21300000, guid: 2d6cee189529f4046bd754c9284bb26b, type: 3}
-  - {fileID: 21300000, guid: 2051a6f0d7be5e54f8cca6824bf2df54, type: 3}
+  - {fileID: 21300000, guid: 40699c6f8b0df344c862ac0e6d4695ab, type: 3}
+  - {fileID: 21300000, guid: ec6b2548d1717c846b32f9b04159f65c, type: 3}
+  - {fileID: 21300000, guid: cf1dd154a6cab57479cdfdc7bec967e4, type: 3}
+  - {fileID: 21300000, guid: 541e4f86ea1ee554c80412cebb8dc286, type: 3}
+  - {fileID: 21300000, guid: 585de27223f91c945a4de2fcf77ac068, type: 3}
+  skinAltPortraits:
+  - {fileID: 21300000, guid: 58cb393d131960e43859c3c36ca381b9, type: 3}
+  - {fileID: 21300000, guid: a51d018299bfc3247942ce8de0bb6629, type: 3}
+  - {fileID: 21300000, guid: 5816b7c9d30cb0d47884eeae8094cf99, type: 3}
+  - {fileID: 21300000, guid: 6e86d84b18b40014797b854fd0e25794, type: 3}
+  - {fileID: 21300000, guid: 2a8dfa81c81538644a0a2948bcca60be, type: 3}
   skinCosts: 0000000064000000640000006400000064000000
   maxHealth: 10
   minHealth: 0

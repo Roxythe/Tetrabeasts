@@ -13,18 +13,24 @@ MonoBehaviour:
   m_Name: Zog
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   monsterName: Zog
-  portrait: {fileID: 1143173117974297544, guid: 0922e3162b273b94d9d072a90436c6a2, type: 3}
+  portrait: {fileID: 21300000, guid: a440044242ed3634f8891eff570b52dc, type: 3}
   monsterDescription: Money grubbin' goblin. Voted most useless in his village.
   passiveType: 7
   role: 0
   startsLocked: 1
   unlockCost: 150
   skinPortraits:
-  - {fileID: 1143173117974297544, guid: 0922e3162b273b94d9d072a90436c6a2, type: 3}
-  - {fileID: 320451710899915189, guid: 3996273fd9e596b468ea498bf893b424, type: 3}
-  - {fileID: -114847576444845319, guid: f9e045930bd88294a851ef662441403c, type: 3}
-  - {fileID: -2674293270916512110, guid: a439431af3d6282448fb5e302f17b780, type: 3}
-  - {fileID: 8226595679324811909, guid: 49f9ba05ad7665c4f8b1e40359812f0b, type: 3}
+  - {fileID: 21300000, guid: a440044242ed3634f8891eff570b52dc, type: 3}
+  - {fileID: 21300000, guid: ecef6ae8f64e9794bbc32c2e706f4eaa, type: 3}
+  - {fileID: 21300000, guid: d9f5f4d43bb1f124daca74f55ac6bae3, type: 3}
+  - {fileID: 21300000, guid: b5e17a21930f1db44b730e6a6b241399, type: 3}
+  - {fileID: 21300000, guid: acac2a7431d4f9346bc4948b7f6ef852, type: 3}
+  skinAltPortraits:
+  - {fileID: 21300000, guid: 071473a310419c94fad89cf9432a37ad, type: 3}
+  - {fileID: 21300000, guid: 8b908abef79a6b749b7b5ead6ce12729, type: 3}
+  - {fileID: 21300000, guid: bd446420dc91d3843a40e647ef6553e9, type: 3}
+  - {fileID: 21300000, guid: 30fb3737607697443a48eaaa140259de, type: 3}
+  - {fileID: 21300000, guid: c4bda52c050dabf49b61c68c442ee64c, type: 3}
   skinCosts: 0000000064000000640000006400000064000000
   maxHealth: 10
   minHealth: 0

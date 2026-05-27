@@ -63,6 +63,12 @@ public class RoundTransitionUI : MonoBehaviour
     [SerializeField, Min(0f)] float autoHoldSeconds = 3f;
     [SerializeField, Min(0.01f)] float autoFadeOutSeconds = 1.35f;
     [SerializeField, Range(0f, 1f)] float backgroundAlpha = 0.72f;
+    [SerializeField, Min(0f)] float circularRevealSeconds = 0.24f;
+    [SerializeField, Min(1f)] float circularRevealStartDiameter = 48f;
+    [SerializeField] RectTransform revealMaskRoot;
+    [SerializeField] Image revealMaskImage;
+    [SerializeField] Mask revealMask;
+    [SerializeField] Image revealBackgroundImage;
 
     Action _onContinue;
     Action<bool> _onOptOutContinue;
@@ -73,6 +79,7 @@ public class RoundTransitionUI : MonoBehaviour
     bool _builtRuntimeUi;
     bool _continueButtonUsesPrefab;
     const float RuntimeActionGap = 22f;
+    static Sprite s_revealCircleSprite;
 
     public bool IsShowing => rootPanel && rootPanel.activeSelf;
 
@@ -141,6 +148,7 @@ public class RoundTransitionUI : MonoBehaviour
         rootPanel.transform.SetAsLastSibling();
         _currentVariant = RoundTransitionVariant.Default;
         SetVariantAnimationVisible(false);
+        SetDefaultTransitionAnimatorEnabled(false);
 
         var rootGroup = rootPanel.GetComponent<CanvasGroup>();
         if (rootGroup)
@@ -150,8 +158,7 @@ public class RoundTransitionUI : MonoBehaviour
             rootGroup.blocksRaycasts = true;
         }
 
-        if (backgroundImage)
-            backgroundImage.color = new Color(0f, 0f, 0f, 0f);
+        SetBackgroundAlpha(0f);
 
         if (messageText)
         {
@@ -159,6 +166,7 @@ public class RoundTransitionUI : MonoBehaviour
             SetTextAlpha(0f);
         }
 
+        PrepareCircularReveal();
         SetActionControlsVisible(false);
         ConfigureOptOutToggle(string.Empty, false);
 
@@ -192,6 +200,7 @@ public class RoundTransitionUI : MonoBehaviour
         rootPanel.SetActive(true);
         rootPanel.transform.SetAsLastSibling();
         SetVariantAnimationVisible(true);
+        SetDefaultTransitionAnimatorEnabled(true);
         PlayShowAnimation();
         PlayShowAudio();
 
@@ -203,16 +212,15 @@ public class RoundTransitionUI : MonoBehaviour
             rootGroup.blocksRaycasts = true;
         }
 
-        if (backgroundImage)
-        {
-            backgroundImage.color = new Color(0f, 0f, 0f, backgroundAlpha);
-        }
+        SetBackgroundAlpha(0f);
 
         if (messageText)
         {
             messageText.text = TetrabeastsLocalization.LocalizeText(message);
             SetTextAlpha(0f);
         }
+
+        PrepareCircularReveal();
 
         if (continueButtonGroup)
         {
@@ -300,12 +308,17 @@ public class RoundTransitionUI : MonoBehaviour
             elapsed += Time.unscaledDeltaTime;
             float t = Mathf.Clamp01(elapsed / duration);
             float alpha = Mathf.SmoothStep(0f, 1f, t);
+            float reveal = GetCircularRevealProgress(elapsed);
 
+            SetCircularRevealProgress(reveal);
+            SetBackgroundAlpha(backgroundAlpha * reveal);
             SetTextAlpha(alpha);
 
             yield return null;
         }
 
+        SetCircularRevealProgress(1f);
+        SetBackgroundAlpha(backgroundAlpha);
         SetTextAlpha(1f);
 
         if (continueButton)
@@ -336,20 +349,21 @@ public class RoundTransitionUI : MonoBehaviour
     System.Collections.IEnumerator CoTimedTransition(float holdSeconds, float fadeOutSeconds, Action onComplete)
     {
         float elapsed = 0f;
-        float inDuration = Mathf.Max(0.01f, fadeInSeconds);
+        float inDuration = GetCircularRevealDuration();
 
         while (elapsed < inDuration)
         {
             elapsed += Time.unscaledDeltaTime;
-            float t = Mathf.Clamp01(elapsed / inDuration);
-            float alpha = Mathf.SmoothStep(0f, 1f, t);
+            float alpha = GetCircularRevealProgress(elapsed);
 
+            SetCircularRevealProgress(alpha);
             SetTextAlpha(alpha);
             SetBackgroundAlpha(backgroundAlpha * alpha);
 
             yield return null;
         }
 
+        SetCircularRevealProgress(1f);
         SetTextAlpha(1f);
         SetBackgroundAlpha(backgroundAlpha);
 
@@ -421,6 +435,7 @@ public class RoundTransitionUI : MonoBehaviour
             BuildRuntimeUi();
 
         ResolveAnimator();
+        EnsureRevealMask();
         ApplyFont();
         WireContinueButton();
         HookContinueButtonSfx();
@@ -497,6 +512,163 @@ public class RoundTransitionUI : MonoBehaviour
 
         BuildContinueButton(actionGo.transform);
         BuildOptOutToggle(actionGo.transform);
+    }
+
+    void EnsureRevealMask()
+    {
+        if (!rootPanel || !contentRoot)
+            return;
+
+        if (!revealMaskRoot)
+        {
+            var maskGo = new GameObject(
+                "RoundTransition_RevealMask",
+                typeof(RectTransform),
+                typeof(Image),
+                typeof(Mask));
+
+            maskGo.transform.SetParent(rootPanel.transform, false);
+            revealMaskRoot = maskGo.GetComponent<RectTransform>();
+            revealMaskRoot.anchorMin = new Vector2(0.5f, 0.5f);
+            revealMaskRoot.anchorMax = new Vector2(0.5f, 0.5f);
+            revealMaskRoot.pivot = new Vector2(0.5f, 0.5f);
+            revealMaskRoot.anchoredPosition = Vector2.zero;
+            revealMaskRoot.sizeDelta = Vector2.one * GetCircularRevealEndDiameter();
+
+            revealMaskImage = maskGo.GetComponent<Image>();
+            revealMask = maskGo.GetComponent<Mask>();
+        }
+
+        if (!revealMaskImage)
+            revealMaskImage = revealMaskRoot.GetComponent<Image>();
+
+        if (revealMaskImage)
+        {
+            revealMaskImage.sprite = GetRevealCircleSprite();
+            revealMaskImage.type = Image.Type.Simple;
+            revealMaskImage.preserveAspect = true;
+            revealMaskImage.color = Color.white;
+            revealMaskImage.raycastTarget = false;
+        }
+
+        if (!revealMask)
+            revealMask = revealMaskRoot.GetComponent<Mask>();
+
+        if (revealMask)
+            revealMask.showMaskGraphic = false;
+
+        if (!revealBackgroundImage)
+        {
+            var backgroundGo = new GameObject(
+                "RoundTransition_RevealBackground",
+                typeof(RectTransform),
+                typeof(Image));
+
+            backgroundGo.transform.SetParent(revealMaskRoot, false);
+            var backgroundRect = backgroundGo.GetComponent<RectTransform>();
+            backgroundRect.anchorMin = Vector2.zero;
+            backgroundRect.anchorMax = Vector2.one;
+            backgroundRect.offsetMin = Vector2.zero;
+            backgroundRect.offsetMax = Vector2.zero;
+
+            revealBackgroundImage = backgroundGo.GetComponent<Image>();
+            revealBackgroundImage.color = new Color(0f, 0f, 0f, 0f);
+            revealBackgroundImage.raycastTarget = false;
+        }
+
+        if (revealBackgroundImage)
+            revealBackgroundImage.transform.SetAsFirstSibling();
+
+        if (contentRoot.parent != revealMaskRoot)
+        {
+            contentRoot.SetParent(revealMaskRoot, false);
+            contentRoot.SetAsLastSibling();
+        }
+        else
+        {
+            contentRoot.SetAsLastSibling();
+        }
+    }
+
+    void PrepareCircularReveal()
+    {
+        EnsureRevealMask();
+        SetCircularRevealProgress(0f);
+    }
+
+    void SetCircularRevealProgress(float progress)
+    {
+        if (!revealMaskRoot)
+            return;
+
+        float t = Mathf.Clamp01(progress);
+        float startDiameter = Mathf.Max(1f, circularRevealStartDiameter);
+        float endDiameter = Mathf.Max(startDiameter, GetCircularRevealEndDiameter());
+        float diameter = Mathf.Lerp(startDiameter, endDiameter, t);
+        revealMaskRoot.sizeDelta = Vector2.one * diameter;
+    }
+
+    float GetCircularRevealProgress(float elapsed)
+    {
+        if (circularRevealSeconds <= 0f)
+            return 1f;
+
+        return Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(elapsed / circularRevealSeconds));
+    }
+
+    float GetCircularRevealDuration()
+    {
+        return Mathf.Max(0.01f, circularRevealSeconds);
+    }
+
+    float GetCircularRevealEndDiameter()
+    {
+        Vector2 size = Vector2.zero;
+        var rootRect = rootPanel ? rootPanel.transform as RectTransform : null;
+        if (rootRect)
+            size = rootRect.rect.size;
+
+        if (size.x <= 1f || size.y <= 1f)
+            size = new Vector2(Mathf.Max(1f, Screen.width), Mathf.Max(1f, Screen.height));
+
+        return Mathf.Sqrt(size.x * size.x + size.y * size.y) * 1.1f;
+    }
+
+    static Sprite GetRevealCircleSprite()
+    {
+        if (s_revealCircleSprite)
+            return s_revealCircleSprite;
+
+        const int size = 96;
+        var texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        texture.name = "RoundTransition_RevealCircle";
+        texture.hideFlags = HideFlags.HideAndDontSave;
+        texture.wrapMode = TextureWrapMode.Clamp;
+        texture.filterMode = FilterMode.Bilinear;
+
+        float center = (size - 1) * 0.5f;
+        float radius = center;
+        float feather = 1.5f;
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                float dx = x - center;
+                float dy = y - center;
+                float distance = Mathf.Sqrt(dx * dx + dy * dy);
+                float alpha = Mathf.Clamp01((radius - distance) / feather);
+                texture.SetPixel(x, y, new Color(1f, 1f, 1f, alpha));
+            }
+        }
+
+        texture.Apply(false, true);
+        s_revealCircleSprite = Sprite.Create(
+            texture,
+            new Rect(0f, 0f, size, size),
+            new Vector2(0.5f, 0.5f),
+            100f);
+        s_revealCircleSprite.hideFlags = HideFlags.HideAndDontSave;
+        return s_revealCircleSprite;
     }
 
     void RebuildContinueButton()
@@ -697,12 +869,24 @@ public class RoundTransitionUI : MonoBehaviour
 
     void SetBackgroundAlpha(float alpha)
     {
-        if (!backgroundImage)
-            return;
+        float clamped = Mathf.Clamp01(alpha);
 
-        var color = backgroundImage.color;
-        color.a = Mathf.Clamp01(alpha);
-        backgroundImage.color = color;
+        if (backgroundImage)
+        {
+            var color = backgroundImage.color;
+            color.a = revealBackgroundImage ? 0f : clamped;
+            backgroundImage.color = color;
+        }
+
+        if (revealBackgroundImage)
+        {
+            var color = revealBackgroundImage.color;
+            color.r = 0f;
+            color.g = 0f;
+            color.b = 0f;
+            color.a = clamped;
+            revealBackgroundImage.color = color;
+        }
     }
 
     void SetActionControlsVisible(bool visible)
@@ -903,6 +1087,13 @@ public class RoundTransitionUI : MonoBehaviour
 
         if (transitionAnimator && useUnscaledAnimationTime)
             transitionAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+    }
+
+    void SetDefaultTransitionAnimatorEnabled(bool enabled)
+    {
+        ResolveAnimator();
+        if (transitionAnimator)
+            transitionAnimator.enabled = enabled;
     }
 
     void SetVariantAnimationVisible(bool visible)

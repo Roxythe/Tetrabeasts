@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Rem
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   monsterName: Rem
-  portrait: {fileID: 21300000, guid: e5ca9e6396ae8bf4191bb26cbd3e9401, type: 3}
+  portrait: {fileID: 21300000, guid: 87dc67da9fe0e4441985bed5e0c49b03, type: 3}
   monsterDescription: A specialized attacker unit with high base damage and lower
     base health.
   passiveType: 1
@@ -21,11 +21,17 @@ MonoBehaviour:
   startsLocked: 1
   unlockCost: 100
   skinPortraits:
-  - {fileID: 21300000, guid: e5ca9e6396ae8bf4191bb26cbd3e9401, type: 3}
-  - {fileID: 21300000, guid: adf462314858f43418cc1a4d98f4fc4e, type: 3}
-  - {fileID: 21300000, guid: 705eea65819719c4ea966836dac6b6b0, type: 3}
-  - {fileID: 21300000, guid: 62f7e17b84642ec4684352e953dee32f, type: 3}
-  - {fileID: 21300000, guid: 793d36b38d556ec48a449c3873577ed7, type: 3}
+  - {fileID: 21300000, guid: 87dc67da9fe0e4441985bed5e0c49b03, type: 3}
+  - {fileID: 21300000, guid: 2edaabf96759a754884d7359c040ea92, type: 3}
+  - {fileID: 21300000, guid: 2aaaf0a5d827cba49b21cfa0dab7942d, type: 3}
+  - {fileID: 21300000, guid: 14c1fcc62085fec4595005d947ba04fc, type: 3}
+  - {fileID: 21300000, guid: 438fb9ea65b54ac4cb9290632d7aec20, type: 3}
+  skinAltPortraits:
+  - {fileID: 21300000, guid: 0b055ae588557fd4db55b6557a0b936a, type: 3}
+  - {fileID: 21300000, guid: d1460d278e8392849bd4ddd0a318a55e, type: 3}
+  - {fileID: 21300000, guid: 6bb82fb811ac2154eafc944e2fa566d5, type: 3}
+  - {fileID: 21300000, guid: cd73ba1d9fec4cf42947e5f1069fdc00, type: 3}
+  - {fileID: 21300000, guid: de08cfb2e9e7ae44bab228319bf3be13, type: 3}
   skinCosts: 0000000064000000640000006400000064000000
   maxHealth: 15
   minHealth: 0
