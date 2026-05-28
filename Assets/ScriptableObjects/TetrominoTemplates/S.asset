@@ -13,9 +13,18 @@ MonoBehaviour:
   m_Name: S
   m_EditorClassIdentifier: Assembly-CSharp::TetrominoData
   id: S
-  color: {r: 0.21558437, g: 0.85882354, b: 0.109803915, a: 1}
+  color: {r: 0.3853004, g: 0.9716981, b: 0.28875935, a: 1}
+  backgroundImage: {fileID: 3066412145347965409, guid: 31244b13aa6488140b0cbbe8cd4f3454, type: 3}
   cells:
   - {x: 0, y: 0}
   - {x: 1, y: 0}
   - {x: 0, y: 1}
   - {x: -1, y: 1}
+  special: 0
+  specialSprite: {fileID: 0}
+  spawnWeight: 0.05
+  specialFlashSprite: {fileID: 0}
+  flashOnlyOccupied: 1
+  specialSFX: {fileID: 0}
+  slowGravityMultiplier: 0.5
+  slowGravityRampRateMultiplier: 0.2

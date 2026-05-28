@@ -7,6 +7,7 @@ public sealed class SpecialAbilityPopup : MonoBehaviour
 {
     const string DefaultCharacterAnimationName = "SpecialAbility_Animation";
     const string DefaultDimmerPanelName = "Dimmer_Panel";
+    const string RuntimeSlideContentRootName = "SlideContent_Root";
 
     [SerializeField] string characterAnimationName = DefaultCharacterAnimationName;
     [SerializeField] string dimmerPanelName = DefaultDimmerPanelName;
@@ -14,17 +15,18 @@ public sealed class SpecialAbilityPopup : MonoBehaviour
     [SerializeField, Min(0f)] float completionBufferSeconds = 0.05f;
     [SerializeField, Min(0f)] float characterAnimationLastFrameHoldOffsetSeconds = 0.03f;
     [SerializeField, Min(0.1f)] float maxDurationSeconds = 8f;
-    [SerializeField, Min(0f)] float dimmerFadeSeconds = 0.25f;
-    [SerializeField, Min(0f)] float slideInSeconds = 0.55f;
+    [SerializeField, Min(0f)] float dimmerFadeSeconds = 0.18f;
+    [SerializeField, Min(0f)] float slideInSeconds = 0.35f;
     [SerializeField, Min(0f)] float slideOutSeconds = 0.55f;
     [SerializeField, Min(0f)] float loopSfxFadeOutLeadSeconds = 1f;
-    [SerializeField, Min(0f)] float characterAnimationStartDelaySeconds = 0.25f;
+    [SerializeField, Min(0f)] float characterAnimationStartDelaySeconds = 0f;
     [SerializeField, Min(0f)] float slideInOffsetPixels = 0f;
 
     Animator characterAnimator;
     Animator[] popupAnimators;
     Transform characterAnimationRoot;
     Transform dimmerTransform;
+    RectTransform slideContentRoot;
     readonly List<GraphicFadeTarget> dimmerFadeTargets = new();
     readonly List<RectTransform> slideRects = new();
     readonly List<Vector2> slideEndPositions = new();
@@ -38,6 +40,11 @@ public sealed class SpecialAbilityPopup : MonoBehaviour
     public void Prepare(PlayerCharacterData characterData)
     {
         Configure(characterData);
+        PrepareIntroState();
+    }
+
+    public void ResetIntroState()
+    {
         PrepareIntroState();
     }
 
@@ -207,29 +214,93 @@ public sealed class SpecialAbilityPopup : MonoBehaviour
         slideRects.Clear();
         slideEndPositions.Clear();
 
-        RectTransform root = transform as RectTransform;
-        if (!root)
+        slideContentRoot = EnsureSlideContentRoot();
+        if (!slideContentRoot)
             return;
 
-        for (int i = 0; i < root.childCount; i++)
-        {
-            Transform child = root.GetChild(i);
-            if (!child || child == dimmerTransform) continue;
-
-            RectTransform childRect = child as RectTransform;
-            if (!childRect) continue;
-
-            slideRects.Add(childRect);
-            slideEndPositions.Add(childRect.anchoredPosition);
-        }
+        slideContentRoot.anchoredPosition = Vector2.zero;
+        slideRects.Add(slideContentRoot);
+        slideEndPositions.Add(Vector2.zero);
 
         ApplyContentSlide(0f);
     }
 
+    RectTransform EnsureSlideContentRoot()
+    {
+        RectTransform root = transform as RectTransform;
+        if (!root)
+            return null;
+
+        Transform existing = root.Find(RuntimeSlideContentRootName);
+        RectTransform contentRoot = existing as RectTransform;
+        if (!contentRoot)
+        {
+            var go = new GameObject(RuntimeSlideContentRootName, typeof(RectTransform));
+            contentRoot = go.GetComponent<RectTransform>();
+            contentRoot.SetParent(root, false);
+        }
+
+        contentRoot.anchorMin = Vector2.zero;
+        contentRoot.anchorMax = Vector2.one;
+        contentRoot.offsetMin = Vector2.zero;
+        contentRoot.offsetMax = Vector2.zero;
+        contentRoot.pivot = new Vector2(0.5f, 0.5f);
+        contentRoot.localRotation = Quaternion.identity;
+        contentRoot.localScale = Vector3.one;
+        contentRoot.anchoredPosition = Vector2.zero;
+
+        var childrenToMove = new List<Transform>();
+        for (int i = 0; i < root.childCount; i++)
+        {
+            Transform child = root.GetChild(i);
+            if (!child || child == dimmerTransform || child == contentRoot)
+                continue;
+
+            childrenToMove.Add(child);
+        }
+
+        for (int i = 0; i < childrenToMove.Count; i++)
+            childrenToMove[i].SetParent(contentRoot, false);
+
+        contentRoot.SetAsLastSibling();
+        return contentRoot;
+    }
+
     IEnumerator PlayIntro()
     {
-        yield return FadeDimmerIn();
-        yield return SlideContentIn();
+        float dimmerDuration = dimmerFadeTargets.Count > 0 ? Mathf.Max(0f, dimmerFadeSeconds) : 0f;
+        float slideDuration = slideRects.Count > 0 ? Mathf.Max(0f, slideInSeconds) : 0f;
+        float duration = Mathf.Max(dimmerDuration, slideDuration);
+
+        if (duration <= 0f)
+        {
+            ApplyDimmerAlpha(1f);
+            ApplyContentSlide(1f);
+            yield break;
+        }
+
+        float t = 0f;
+        while (t < duration)
+        {
+            t += Time.unscaledDeltaTime;
+
+            if (dimmerFadeTargets.Count > 0)
+            {
+                float dimmerT = dimmerDuration <= 0f ? 1f : Mathf.Clamp01(t / dimmerDuration);
+                ApplyDimmerAlpha(dimmerT);
+            }
+
+            if (slideRects.Count > 0)
+            {
+                float slideT = slideDuration <= 0f ? 1f : Mathf.Clamp01(t / slideDuration);
+                ApplyContentSlide(Mathf.SmoothStep(0f, 1f, slideT));
+            }
+
+            yield return null;
+        }
+
+        ApplyDimmerAlpha(1f);
+        ApplyContentSlide(1f);
     }
 
     IEnumerator PlayOutro(System.Action<float> onClosingStarted)

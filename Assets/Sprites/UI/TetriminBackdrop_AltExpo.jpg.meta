@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 47df1f1d8f3c3e94fa7324ac37a6c652
+guid: c5585b47df3e2fe45a6edbca376837e6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1429439363503931825
-    second: TetrominoBackdrop_0
+      213: 2815996451735065181
+    second: TetriminBackdrop_AltExpo_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -152,7 +152,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: TetrominoBackdrop_0
+      name: TetriminBackdrop_AltExpo_0
       rect:
         serializedVersion: 2
         x: 0
@@ -167,8 +167,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f4e336ee87c992ce0800000000000000
-      internalID: -1429439363503931825
+      spriteID: d52dd626add641720800000000000000
+      internalID: 2815996451735065181
       vertices: []
       indices: 
       edges: []
@@ -177,7 +177,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -187,7 +187,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      TetrominoBackdrop_0: -1429439363503931825
+      TetriminBackdrop_AltExpo_0: 2815996451735065181
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

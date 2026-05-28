@@ -60,6 +60,15 @@ public class UIPanelTransition : MonoBehaviour
         return !transition || !transition.IsHiding;
     }
 
+    public static bool IsFullyShown(GameObject panel)
+    {
+        if (!IsVisible(panel))
+            return false;
+
+        var transition = panel.GetComponent<UIPanelTransition>();
+        return !transition || (!transition._isHiding && transition._fadeRoutine == null);
+    }
+
     static UIPanelTransition Ensure(GameObject panel)
     {
         var transition = panel.GetComponent<UIPanelTransition>();

@@ -598,6 +598,9 @@ public class GameController : MonoBehaviour
     bool _wasSpecialGaugeFullLastFrame;
     bool _specialAbilityCinematicActive;
     Coroutine _specialAbilityCinematicCR;
+    GameObject _prewarmedSpecialAbilityPopup;
+    PlayerCharacterData _prewarmedSpecialAbilityCharacter;
+    SpecialAbilityPopup _prewarmedSpecialAbilityPopupView;
 
     const string TutorialIdFirstFullRow = "tutorial_first_full_row";
     const string TutorialIdFirstSpecialGaugeFull = "tutorial_first_special_gauge_full";
@@ -786,6 +789,7 @@ public class GameController : MonoBehaviour
         UpdateSpecialUI();
         RefreshGameplayControlTexts();
         ResetSpecialChargedVisuals();
+        PrewarmSpecialAbilityPopup();
 
         if (_specialFillCR != null) StopCoroutine(_specialFillCR);
         _specialFillCR = StartCoroutine(SpecialGaugeFillFieryCo());
@@ -1368,6 +1372,8 @@ public class GameController : MonoBehaviour
 
     void OnDestroy()
     {
+        ClearPrewarmedSpecialAbilityPopup();
+
         SteamInputService.ControllerDisconnected -= HandleControllerDisconnected;
         TetrabeastsControls.ProfileChanged -= HandleControlsDisplayChanged;
         TetrabeastsControls.BindingsChanged -= HandleControlsDisplayChanged;
@@ -1962,9 +1968,35 @@ public class GameController : MonoBehaviour
         yield return CoShowRoundTransition(RoundLossTransitionText, RoundTransitionVariant.Loss);
         ResumeGameplayAfterRoundTransition();
 
+        ShowRunEndCommitAfterLoss();
+    }
+
+    void ShowRunEndCommitAfterLoss()
+    {
+        bool skipVisibleRunXp = currentLevel <= 0 || !RunMonsterProgress.RunActive;
+
+        if (!skipVisibleRunXp && xpAwardUI)
+        {
+            OpenXpUiMode();
+
+            if (AudioManager.I)
+                AudioManager.I.PlayIntermissionLoseMusic();
+
+            xpAwardUI.ShowRunEndCommit(
+                GetActiveMonsterRoster(),
+                GetRunEndXpConversionFraction(finalLevelWin: false),
+                () =>
+                {
+                    ShowFinalStatsBeforeHighScore(ShowGameOverLocalHighScore, CloseAndHideXpUiMode);
+                },
+                hideOnFinalContinue: false);
+
+            return;
+        }
+
         try
         {
-            CommitRunEndXpSilently(finalLevelWin: _finalWinStateApplied);
+            CommitRunEndXpSilently(finalLevelWin: false);
         }
         catch (System.Exception ex)
         {
@@ -1976,9 +2008,6 @@ public class GameController : MonoBehaviour
 
     void ShowGameOverHighScore()
     {
-        if (xpAwardUI)
-            xpAwardUI.HideAll();
-
         if (AudioManager.I)
             AudioManager.I.PlayIntermissionLoseMusic();
 
@@ -2538,8 +2567,7 @@ public class GameController : MonoBehaviour
                 return;
             }
 
-            CloseXpUiMode();
-            ContinueAfterRoundWinRewards();
+            ContinueAfterRoundWinRewards(closeXpAfterRewardOpen: true);
         }
 
         if (xpAwardUI)
@@ -2549,7 +2577,12 @@ public class GameController : MonoBehaviour
             if (AudioManager.I)
                 AudioManager.I.PlayIntermissionWinMusic();
 
-            xpAwardUI.ShowRoundWin(computed.breakdown, roster, computed.perMonsterAwardXp, ContinueAfterRoundXp);
+            xpAwardUI.ShowRoundWin(
+                computed.breakdown,
+                roster,
+                computed.perMonsterAwardXp,
+                ContinueAfterRoundXp,
+                hideOnFinalContinue: false);
             yield break;
         }
 
@@ -2631,9 +2664,9 @@ public class GameController : MonoBehaviour
                 GetRunEndXpConversionFraction(finalLevelWin: false),
                 () =>
                 {
-                    CloseXpUiMode();
-                    ShowDemoLimitHighScore();
-                });
+                    ShowFinalStatsBeforeHighScore(ShowDemoLimitLocalHighScore, CloseAndHideXpUiMode);
+                },
+                hideOnFinalContinue: false);
 
             return;
         }
@@ -2675,7 +2708,7 @@ public class GameController : MonoBehaviour
         EnterUICursorMode();
     }
 
-    void ContinueAfterRoundWinRewards()
+    void ContinueAfterRoundWinRewards(bool closeXpAfterRewardOpen = false)
     {
         currentLevel++;
 
@@ -2723,9 +2756,15 @@ public class GameController : MonoBehaviour
         if (roundRewardUI)
         {
             roundRewardUI.Show(buffPool, debuffPool, OnRoundModsChosen, gained, actualReinforcements);
+
+            if (closeXpAfterRewardOpen)
+                StartCoroutine(CoCloseXpAfterPanelFullyShown(roundRewardUI.rootPanel));
         }
         else
         {
+            if (closeXpAfterRewardOpen)
+                CloseAndHideXpUiMode();
+
             ContinueAfterRoundRewards();
         }
 
@@ -3004,10 +3043,10 @@ public class GameController : MonoBehaviour
 
     void ShowRunEndCommitAfterFinalWin(List<MonsterData> roster, bool playIntermissionMusic)
     {
-        void ShowHighScore()
+        void ShowHighScore(System.Action onFinalStatsFullyShown = null)
         {
             if (AudioManager.I) AudioManager.I.StopMusic();
-            ShowFinalStatsBeforeHighScore(ShowFinalWinLocalHighScore);
+            ShowFinalStatsBeforeHighScore(ShowFinalWinLocalHighScore, onFinalStatsFullyShown);
         }
 
         void ShowFinalWinLocalHighScore()
@@ -3033,9 +3072,8 @@ public class GameController : MonoBehaviour
 
             xpAwardUI.ShowRunEndCommit(roster, keepFraction, () =>
             {
-                CloseXpUiMode();
-                ShowHighScore();
-            });
+                ShowHighScore(CloseAndHideXpUiMode);
+            }, hideOnFinalContinue: false);
 
             return;
         }
@@ -3048,12 +3086,13 @@ public class GameController : MonoBehaviour
         ShowHighScore();
     }
 
-    void ShowFinalStatsBeforeHighScore(System.Action showHighScore)
+    void ShowFinalStatsBeforeHighScore(System.Action showHighScore, System.Action onFinalStatsFullyShown = null)
     {
         ResolveVictoryPanelUi(logWarning: false);
 
         if (!victoryPanelUI)
         {
+            onFinalStatsFullyShown?.Invoke();
             showHighScore?.Invoke();
             return;
         }
@@ -3064,11 +3103,47 @@ public class GameController : MonoBehaviour
         victoryPanelUI.SetUnlockedDifficultyText(_newDifficultyUnlockedThisRun ? "New Difficulty Unlocked!" : string.Empty);
         victoryPanelUI.Show(RunSummaryStats.GetSnapshot(), RunModsStore.Buffs, RunModsStore.Debuffs, () =>
         {
-            victoryPanelUI.Hide();
-            showHighScore?.Invoke();
+            StartCoroutine(CoOpenHighScoreBeforeClosingFinalStats(showHighScore));
         });
 
+        if (onFinalStatsFullyShown != null)
+            StartCoroutine(CoInvokeAfterPanelFullyShown(victoryPanelUI.RootPanel, onFinalStatsFullyShown));
+
         EnterUICursorMode();
+    }
+
+    IEnumerator CoOpenHighScoreBeforeClosingFinalStats(System.Action showHighScore)
+    {
+        showHighScore?.Invoke();
+
+        GameObject highScorePanel = highScoreUI ? highScoreUI.PanelRoot : null;
+        yield return CoWaitForPanelFullyShown(highScorePanel);
+
+        if (victoryPanelUI)
+            victoryPanelUI.Hide();
+    }
+
+    IEnumerator CoInvokeAfterPanelFullyShown(GameObject panel, System.Action action)
+    {
+        yield return CoWaitForPanelFullyShown(panel);
+        action?.Invoke();
+    }
+
+    IEnumerator CoCloseXpAfterPanelFullyShown(GameObject panel)
+    {
+        yield return CoWaitForPanelFullyShown(panel);
+        CloseAndHideXpUiMode();
+    }
+
+    IEnumerator CoWaitForPanelFullyShown(GameObject panel)
+    {
+        if (!panel)
+            yield break;
+
+        yield return null;
+
+        while (panel && UIPanelTransition.IsVisible(panel) && !UIPanelTransition.IsFullyShown(panel))
+            yield return null;
     }
 
     void ApplyFinalLevelRoundWinBookkeeping()
@@ -3196,20 +3271,35 @@ public class GameController : MonoBehaviour
 
         if (!gameOver && !levelWon && character)
             ApplySpecialGameplayEffect(character);
+
+        StartCoroutine(CoPrewarmSpecialAbilityPopupDeferred());
+    }
+
+    IEnumerator CoPrewarmSpecialAbilityPopupDeferred()
+    {
+        yield return null;
+
+        if (!_specialAbilityCinematicActive)
+            PrewarmSpecialAbilityPopup();
     }
 
     IEnumerator PlaySpecialAbilityPopup(PlayerCharacterData character)
     {
         Transform parent = ResolveSpecialAbilityPopupParent();
-        GameObject popup = Instantiate(specialAbilityPopupPrefab, parent, false);
-        popup.SetActive(true);
-        PrepareSpecialAbilityPopupRect(popup);
+        SpecialAbilityPopup popupView;
+        GameObject popup = TakePrewarmedSpecialAbilityPopup(character, parent, out popupView);
+        if (!popup)
+        {
+            popup = Instantiate(specialAbilityPopupPrefab, parent, false);
+            popup.SetActive(true);
+            PrepareSpecialAbilityPopupRect(popup);
 
-        SpecialAbilityPopup popupView = popup.GetComponent<SpecialAbilityPopup>();
-        if (!popupView)
-            popupView = popup.AddComponent<SpecialAbilityPopup>();
+            popupView = popup.GetComponent<SpecialAbilityPopup>();
+            if (!popupView)
+                popupView = popup.AddComponent<SpecialAbilityPopup>();
 
-        popupView.Prepare(character);
+            popupView.Prepare(character);
+        }
 
         if (AudioManager.I)
         {
@@ -3239,6 +3329,76 @@ public class GameController : MonoBehaviour
 
         if (popup)
             Destroy(popup);
+    }
+
+    void PrewarmSpecialAbilityPopup()
+    {
+        if (!specialAbilityPopupPrefab || !selectedCharacter)
+            return;
+
+        if (_prewarmedSpecialAbilityPopup && _prewarmedSpecialAbilityCharacter == selectedCharacter)
+            return;
+
+        ClearPrewarmedSpecialAbilityPopup();
+
+        Transform parent = ResolveSpecialAbilityPopupParent();
+        GameObject popup = Instantiate(specialAbilityPopupPrefab, parent, false);
+        popup.SetActive(true);
+        PrepareSpecialAbilityPopupRect(popup);
+
+        SpecialAbilityPopup popupView = popup.GetComponent<SpecialAbilityPopup>();
+        if (!popupView)
+            popupView = popup.AddComponent<SpecialAbilityPopup>();
+
+        popupView.Prepare(selectedCharacter);
+        popup.SetActive(false);
+
+        _prewarmedSpecialAbilityPopup = popup;
+        _prewarmedSpecialAbilityCharacter = selectedCharacter;
+        _prewarmedSpecialAbilityPopupView = popupView;
+    }
+
+    GameObject TakePrewarmedSpecialAbilityPopup(PlayerCharacterData character, Transform parent, out SpecialAbilityPopup popupView)
+    {
+        popupView = null;
+
+        if (!_prewarmedSpecialAbilityPopup || _prewarmedSpecialAbilityCharacter != character)
+            return null;
+
+        GameObject popup = _prewarmedSpecialAbilityPopup;
+        popupView = _prewarmedSpecialAbilityPopupView;
+
+        _prewarmedSpecialAbilityPopup = null;
+        _prewarmedSpecialAbilityCharacter = null;
+        _prewarmedSpecialAbilityPopupView = null;
+
+        if (!popupView && popup)
+            popupView = popup.GetComponent<SpecialAbilityPopup>();
+
+        if (!popup || !popupView)
+        {
+            if (popup)
+                Destroy(popup);
+            return null;
+        }
+
+        if (parent && popup.transform.parent != parent)
+            popup.transform.SetParent(parent, false);
+
+        popup.SetActive(true);
+        PrepareSpecialAbilityPopupRect(popup);
+        popupView.ResetIntroState();
+        return popup;
+    }
+
+    void ClearPrewarmedSpecialAbilityPopup()
+    {
+        if (_prewarmedSpecialAbilityPopup)
+            Destroy(_prewarmedSpecialAbilityPopup);
+
+        _prewarmedSpecialAbilityPopup = null;
+        _prewarmedSpecialAbilityCharacter = null;
+        _prewarmedSpecialAbilityPopupView = null;
     }
 
     Transform ResolveSpecialAbilityPopupParent()
@@ -3529,6 +3689,8 @@ public class GameController : MonoBehaviour
     public void SetCharacter(PlayerCharacterData data)
     {
         selectedCharacter = data;
+        ClearPrewarmedSpecialAbilityPopup();
+
         if (selectedCharacter)
         {
             if (playerPortrait && selectedCharacter.portrait)
@@ -3539,6 +3701,8 @@ public class GameController : MonoBehaviour
 
             if (playerName)
                 playerName.text = TetrabeastsLocalization.LocalizeText(selectedCharacter.displayName);
+
+            PrewarmSpecialAbilityPopup();
         }
     }
 
@@ -7115,6 +7279,14 @@ public class GameController : MonoBehaviour
 
         EnterUICursorMode();
         StartCoroutine(ReapplyUICursorNextFrame());
+    }
+
+    void CloseAndHideXpUiMode()
+    {
+        if (xpAwardUI)
+            xpAwardUI.HideAll();
+
+        CloseXpUiMode();
     }
 
     void ResolveVictoryPanelUi(bool logWarning = true)

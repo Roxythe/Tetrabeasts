@@ -584,6 +584,38 @@ public class RoundTransitionUI : MonoBehaviour
         {
             contentRoot.SetAsLastSibling();
         }
+
+        EnsureVariantAnimationLayering();
+    }
+
+    void EnsureVariantAnimationLayering()
+    {
+        if (!revealMaskRoot)
+            return;
+
+        MoveVariantAnimationAboveRevealBackground(fireworkAnimationRoot);
+        MoveVariantAnimationAboveRevealBackground(lossAnimationRoot);
+
+        if (contentRoot && contentRoot.parent == revealMaskRoot)
+            contentRoot.SetAsLastSibling();
+    }
+
+    void MoveVariantAnimationAboveRevealBackground(GameObject animationRoot)
+    {
+        if (!animationRoot || !revealMaskRoot)
+            return;
+
+        Transform animationTransform = animationRoot.transform;
+        if (animationTransform == revealMaskRoot || animationTransform == contentRoot)
+            return;
+
+        if (animationTransform.parent != revealMaskRoot)
+            animationTransform.SetParent(revealMaskRoot, true);
+
+        int insertIndex = revealBackgroundImage
+            ? Mathf.Min(revealBackgroundImage.transform.GetSiblingIndex() + 1, revealMaskRoot.childCount - 1)
+            : 0;
+        animationTransform.SetSiblingIndex(insertIndex);
     }
 
     void PrepareCircularReveal()
@@ -1099,6 +1131,8 @@ public class RoundTransitionUI : MonoBehaviour
         if (UsesLossVariant())
             ResolveLossAnimationRoot();
 
+        EnsureVariantAnimationLayering();
+
         if (fireworkAnimationRoot)
             fireworkAnimationRoot.SetActive(visible && !UsesLossVariant());
 
@@ -1261,7 +1295,7 @@ public class RoundTransitionUI : MonoBehaviour
         if (!source)
             return;
 
-        Transform parent = rootPanel ? rootPanel.transform : transform;
+        Transform parent = revealMaskRoot ? revealMaskRoot : (rootPanel ? rootPanel.transform : transform);
         var instance = Instantiate(source, parent);
         instance.name = source.name;
         lossAnimationRoot = instance;
@@ -1269,6 +1303,8 @@ public class RoundTransitionUI : MonoBehaviour
 
         foreach (var graphic in instance.GetComponentsInChildren<Graphic>(true))
             graphic.raycastTarget = false;
+
+        EnsureVariantAnimationLayering();
     }
 
     string GetShowAnimationStateName(Animator animator)

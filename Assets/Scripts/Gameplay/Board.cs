@@ -736,7 +736,7 @@ public class Board : MonoBehaviour
         return InstantiateTileUI(color, portrait, null, inset);
     }
 
-    public RectTransform InstantiateTileUI(Color color, Sprite portrait, Sprite backgroundImage, float inset = 4f)
+    public RectTransform InstantiateTileUI(Color color, Sprite portrait, Sprite backgroundImage, float inset = 4f, float portraitScale = 1f)
     {
         var rt = InstantiateTileUIBase(color, backgroundImage);
         if (portrait)
@@ -753,6 +753,7 @@ public class Board : MonoBehaviour
 
             // Slight inset so it sits inside the inline border
             prt.sizeDelta = ((RectTransform)rt.Find("HealthFill")).sizeDelta - new Vector2(2f, 2f);
+            prt.localScale = Vector3.one * Mathf.Max(0f, portraitScale);
             prt.anchoredPosition = Vector2.zero;
 
             prt.SetAsLastSibling(); // Ensure the portrait renders on top

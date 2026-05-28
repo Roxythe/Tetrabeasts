@@ -32,6 +32,8 @@ public class VictoryPanelUI : MonoBehaviour
     bool _showRequested;
     ScopedMenuNavigator _navigator;
 
+    public GameObject RootPanel => root ? root : gameObject;
+
     void Awake()
     {
         AutoWire();
@@ -63,6 +65,9 @@ public class VictoryPanelUI : MonoBehaviour
         RefreshStats(stats);
         RebuildModifierList(buffsContent, buffs);
         RebuildModifierList(debuffsContent, debuffs);
+
+        if (root)
+            root.transform.SetAsLastSibling();
 
         if (continueButton)
         {

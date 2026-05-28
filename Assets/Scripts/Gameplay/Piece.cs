@@ -291,6 +291,7 @@ public class Piece : MonoBehaviour
                     var prt = p.rectTransform; prt.SetParent(innerRT, false);
                     prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
                     prt.sizeDelta = innerRT.sizeDelta - new Vector2(2f, 2f);
+                    prt.localScale = Vector3.one * 0.9f;
                     prt.anchoredPosition = Vector2.zero;
                 }
             }
@@ -880,7 +881,7 @@ public class Piece : MonoBehaviour
         {
             MonsterData md = (i < monstersForCells.Count) ? monstersForCells[i] : null;
             var sprite = GetCurrentMonsterPortrait(md);
-            var placed = board.InstantiateTileUI(color, sprite, data ? data.backgroundImage : null);
+            var placed = board.InstantiateTileUI(color, sprite, data ? data.backgroundImage : null, portraitScale: 0.9f);
 
             placed.anchoredPosition = board.CellToAnchoredPos(cells[i]);
             board.Place(cells[i], placed);

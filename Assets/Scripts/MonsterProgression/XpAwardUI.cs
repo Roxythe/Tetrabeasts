@@ -127,6 +127,7 @@ public class XpAwardUI : MonoBehaviour
     bool _breakdownAnimating;
     bool _orbAnimating;
     bool _skipRequested;
+    bool _hideOnRoundWinFinalContinue = true;
     bool _hideOnRunEndFinalContinue = true;
 
     struct BreakdownLine
@@ -212,7 +213,7 @@ public class XpAwardUI : MonoBehaviour
     }
 
     public void ShowRoundWin(RoundXpBreakdown breakdown, List<MonsterData> roster, Dictionary<string, float> perMonsterAwardXp,
-                             Action onContinueToRewards)
+                             Action onContinueToRewards, bool hideOnFinalContinue = true)
     {
         if (!gameObject.activeSelf)
             gameObject.SetActive(true);
@@ -232,6 +233,7 @@ public class XpAwardUI : MonoBehaviour
         HardStopAndClearAllVfx();
 
         root.SetActive(true);
+        _hideOnRoundWinFinalContinue = hideOnFinalContinue;
         ShowBreakdown(breakdown);
         SetNavigationRoot(roundBreakdownPanel);
 
@@ -494,7 +496,10 @@ public class XpAwardUI : MonoBehaviour
             roundDistributeContinueButton.onClick.AddListener(() =>
             {
                 HardStopAndClearAllVfx();
-                HideAll();
+
+                if (_hideOnRoundWinFinalContinue)
+                    HideAll();
+
                 onContinue?.Invoke();
             });
         }

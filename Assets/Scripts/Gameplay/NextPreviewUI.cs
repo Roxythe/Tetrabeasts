@@ -205,6 +205,7 @@ public class NextPreviewUI : MonoBehaviour
                 prt.SetParent(innerRT, false);
                 prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
                 prt.sizeDelta = innerRT.sizeDelta - new Vector2(2f, 2f);
+                prt.localScale = Vector3.one * 0.9f;
                 prt.anchoredPosition = Vector2.zero;
             }
             else if (monsters != null && i < monsters.Length && monsters[i])

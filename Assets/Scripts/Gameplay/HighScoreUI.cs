@@ -24,6 +24,8 @@ public class HighScoreUI : MonoBehaviour
     bool _suppressRestartButton;
     ScopedMenuNavigator _navigator;
 
+    public GameObject PanelRoot => panel ? panel : gameObject;
+
     [Header("Colors")]
     public Color newHighScoreColor = new Color(1f, 0.84f, 0f, 1f); // Gold
     public Color normalRowColor = Color.white;
@@ -62,6 +64,11 @@ public class HighScoreUI : MonoBehaviour
     void ForceActivate()
     {
         bool hasSeparatePanel = panel && panel != gameObject;
+        if (hasSeparatePanel)
+            panel.transform.SetAsLastSibling();
+        else
+            gameObject.transform.SetAsLastSibling();
+
         if (!UIPanelTransition.IsVisible(gameObject)) UIPanelTransition.Show(gameObject, hasSeparatePanel);
         if (panel && !UIPanelTransition.IsVisible(panel)) UIPanelTransition.Show(panel);
 

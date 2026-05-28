@@ -73,6 +73,9 @@ public class RoundRewardUI : MonoBehaviour
 
         _onComplete = onComplete;
 
+        if (rootPanel)
+            rootPanel.transform.SetAsLastSibling();
+
         UIPanelTransition.Show(rootPanel);
         UIPanelTransition.Show(buffPanel, true);
         UIPanelTransition.Hide(debuffPanel, true);
