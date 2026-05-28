@@ -168,8 +168,9 @@ public class NextPreviewUI : MonoBehaviour
             // Inner fill
             var fillGO = new GameObject("PreviewFill", typeof(Image));
             var fill = fillGO.GetComponent<Image>();
-            fill.sprite = OnePx();
+            fill.sprite = data.backgroundImage ? data.backgroundImage : OnePx();
             fill.type = Image.Type.Simple;
+            fill.preserveAspect = false;
             fill.raycastTarget = false;
             fill.color = color;
 

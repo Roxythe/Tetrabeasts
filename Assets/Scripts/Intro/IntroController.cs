@@ -46,7 +46,7 @@ public class IntroController : MonoBehaviour
         if (uiCursorController)
         {
             uiCursorController.SetScale(SettingsStore.LoadCursorScale());
-            uiCursorController.SetVisible(true);
+            uiCursorController.SetVisible(false);
         }
 
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
@@ -288,6 +288,6 @@ public class IntroController : MonoBehaviour
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
 
         if (uiCursorController)
-            uiCursorController.SetVisible(true);
+            uiCursorController.SetVisible(false);
     }
 }

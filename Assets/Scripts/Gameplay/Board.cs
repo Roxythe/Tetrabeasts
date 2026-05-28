@@ -33,10 +33,10 @@ public class Board : MonoBehaviour
     public AudioClip sfxImmuneHit;
 
     [Header("Line Clear Timing")]
-    public float cascadeClearVisualDelay = 0.25f;
+    public float cascadeClearVisualDelay = 0.125f;
 
     [Header("Monster Alt Portrait Reactions")]
-    public float attackLineClearAltHoldSeconds = 0.12f;
+    public float attackLineClearAltHoldSeconds = 0.06f;
     public float roleAltPortraitFlashSeconds = 0.18f;
     public float attackPassiveAltMinSeconds = 3f;
     public float attackPassiveAltMaxSeconds = 6f;
@@ -71,6 +71,7 @@ public class Board : MonoBehaviour
     readonly Dictionary<Vector2Int, float> healTimers = new();
     readonly Dictionary<Vector2Int, float> attackPortraitIdleTimers = new();
     readonly Dictionary<int, float> attackPiecePortraitIdleTimers = new();
+    readonly HashSet<RectTransform> cleanOrphanLiveScratch = new();
     int nextPieceGroupId = 1;
 
     // ================= Obstacles & Floor Effects =================
@@ -673,6 +674,11 @@ public class Board : MonoBehaviour
 
     public RectTransform InstantiateTileUI(Color color)
     {
+        return InstantiateTileUIBase(color, null);
+    }
+
+    RectTransform InstantiateTileUIBase(Color color, Sprite backgroundImage)
+    {
         // Root rect (1 tile)
         var rt = new GameObject($"Tile_{GetInstanceID()}",
             typeof(RectTransform), typeof(CanvasRenderer),
@@ -709,7 +715,8 @@ public class Board : MonoBehaviour
         frt.anchorMin = frt.anchorMax = new Vector2(0.5f, 0.5f);
         frt.sizeDelta = rt.sizeDelta;      // Fill the whole tile
         frt.anchoredPosition = Vector2.zero;
-        fill.sprite = OnePx(); // Simple 1x1 white pixel
+        fill.sprite = backgroundImage ? backgroundImage : OnePx();
+        fill.preserveAspect = false;
         fill.type = UnityEngine.UI.Image.Type.Filled;
         fill.fillMethod = UnityEngine.UI.Image.FillMethod.Vertical;
         fill.fillOrigin = (int)UnityEngine.UI.Image.OriginVertical.Bottom;
@@ -726,7 +733,12 @@ public class Board : MonoBehaviour
 
     public RectTransform InstantiateTileUI(Color color, Sprite portrait, float inset = 4f)
     {
-        var rt = InstantiateTileUI(color);
+        return InstantiateTileUI(color, portrait, null, inset);
+    }
+
+    public RectTransform InstantiateTileUI(Color color, Sprite portrait, Sprite backgroundImage, float inset = 4f)
+    {
+        var rt = InstantiateTileUIBase(color, backgroundImage);
         if (portrait)
         {
             var go = new GameObject("MonsterPortrait", typeof(UnityEngine.UI.Image));
@@ -1292,6 +1304,34 @@ public class Board : MonoBehaviour
         return Mathf.Max(1f, gauge);
     }
 
+    static MonsterData PickDominantMonster(Dictionary<MonsterData, int> counts)
+    {
+        MonsterData dominant = null;
+        int max = 0;
+        int ties = 0;
+
+        foreach (var kv in counts)
+        {
+            if (!kv.Key || kv.Value <= 0)
+                continue;
+
+            if (kv.Value > max)
+            {
+                max = kv.Value;
+                dominant = kv.Key;
+                ties = 1;
+            }
+            else if (kv.Value == max)
+            {
+                ties++;
+                if (UnityEngine.Random.Range(0, ties) == 0)
+                    dominant = kv.Key;
+            }
+        }
+
+        return dominant;
+    }
+
     public void ClearFullLines(out int rowsCleared,
                        out List<Vector2Int> removedCells,
                        out int damageFromMonsters,
@@ -1305,7 +1345,7 @@ public class Board : MonoBehaviour
         specialChargeFromMonsters = 0f;
         rowDamage = new Dictionary<int, int>();
         rowDominantMonster = new Dictionary<int, MonsterData>();
-        var gc = FindFirstObjectByType<GameController>();
+        var gc = _gc ? _gc : (_gc = FindFirstObjectByType<GameController>());
 
         bool clearedAny = true;
         var stonesDamaged = new HashSet<Vector2Int>();
@@ -1385,12 +1425,9 @@ public class Board : MonoBehaviour
 
                 if (counts.Count > 0)
                 {
-                    int max = 0;
-                    foreach (var kv in counts) if (kv.Value > max) max = kv.Value;
-                    var candidates = new List<MonsterData>();
-                    foreach (var kv in counts) if (kv.Value == max) candidates.Add(kv.Key);
-                    var dominant = candidates[UnityEngine.Random.Range(0, candidates.Count)];
-                    rowDominantMonster[rowKey] = dominant;
+                    var dominant = PickDominantMonster(counts);
+                    if (dominant)
+                        rowDominantMonster[rowKey] = dominant;
                 }
 
                 ShowAltPortraitsInRow(y);
@@ -1441,7 +1478,7 @@ public class Board : MonoBehaviour
         float specialChargeFromMonsters = 0f;
         var rowDamage = new Dictionary<int, int>();
         var rowDominantMonster = new Dictionary<int, MonsterData>();
-        var gc = FindFirstObjectByType<GameController>();
+        var gc = _gc ? _gc : (_gc = FindFirstObjectByType<GameController>());
 
         bool clearedAny = true;
         var stonesDamaged = new HashSet<Vector2Int>();
@@ -1520,12 +1557,9 @@ public class Board : MonoBehaviour
 
                 if (counts.Count > 0)
                 {
-                    int max = 0;
-                    foreach (var kv in counts) if (kv.Value > max) max = kv.Value;
-                    var candidates = new List<MonsterData>();
-                    foreach (var kv in counts) if (kv.Value == max) candidates.Add(kv.Key);
-                    var dominant = candidates[UnityEngine.Random.Range(0, candidates.Count)];
-                    rowDominantMonster[rowKey] = dominant;
+                    var dominant = PickDominantMonster(counts);
+                    if (dominant)
+                        rowDominantMonster[rowKey] = dominant;
                 }
 
                 if (rowsCleared == 1 && gc)
@@ -1589,7 +1623,7 @@ public class Board : MonoBehaviour
         if (rows <= 0) return 0;
         rows = Mathf.Min(rows, height);
 
-        var gc = FindFirstObjectByType<GameController>();
+        var gc = _gc ? _gc : (_gc = FindFirstObjectByType<GameController>());
 
         // ===== Tally combat stats from bottom rows before deletion =====
         for (int y = 0; y < rows; y++)
@@ -1657,14 +1691,9 @@ public class Board : MonoBehaviour
             // Pick dominant monster for this cleared row
             if (countsRow.Count > 0)
             {
-                int max = 0;
-                foreach (var kv in countsRow) if (kv.Value > max) max = kv.Value;
-
-                var candidates = new List<MonsterData>();
-                foreach (var kv in countsRow) if (kv.Value == max) candidates.Add(kv.Key);
-
-                if (candidates.Count > 0)
-                    rowDominantMonster[rowKey] = candidates[UnityEngine.Random.Range(0, candidates.Count)];
+                var dominant = PickDominantMonster(countsRow);
+                if (dominant)
+                    rowDominantMonster[rowKey] = dominant;
             }
         }
 
@@ -1866,7 +1895,7 @@ public class Board : MonoBehaviour
         removedCells = new List<Vector2Int>();
         damageFromMonsters = 0;
         specialChargeFromMonsters = 0f;
-        var gc = FindFirstObjectByType<GameController>();
+        var gc = _gc ? _gc : (_gc = FindFirstObjectByType<GameController>());
         var stonesDamaged = new HashSet<Vector2Int>();
 
         // Remove & tally
@@ -2221,7 +2250,10 @@ public class Board : MonoBehaviour
 
     void CleanOrphanedTiles()
     {
-        var live = new HashSet<RectTransform>(placed.Values);
+        cleanOrphanLiveScratch.Clear();
+        foreach (var tile in placed.Values)
+            if (tile)
+                cleanOrphanLiveScratch.Add(tile);
 
         for (int i = gridRoot.childCount - 1; i >= 0; i--)
         {
@@ -2234,9 +2266,11 @@ public class Board : MonoBehaviour
             if (!t.name.StartsWith("Tile_")) // Grid line exception
                 continue;
 
-            if (!live.Contains(t))
+            if (!cleanOrphanLiveScratch.Contains(t))
                 Destroy(t.gameObject);
         }
+
+        cleanOrphanLiveScratch.Clear();
     }
 
     public bool TryGetMonster(Vector2Int cell, out MonsterInstance inst) => monsters.TryGetValue(cell, out inst);

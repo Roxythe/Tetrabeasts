@@ -7,6 +7,7 @@ public class TetrominoData : ScriptableObject
 {
     public string id;                 // "I", "T", "L", etc.
     public Color color = Color.white; 
+    public Sprite backgroundImage;    // Tinted with color and drawn behind icons/portraits
     public Vector2Int[] cells;        // Relative cell offsets for the 4 tiles
 
     [Header("Special (optional)")]

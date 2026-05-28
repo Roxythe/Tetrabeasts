@@ -244,8 +244,9 @@ public class Piece : MonoBehaviour
             var fillGO = new GameObject("ActiveFill", typeof(UnityEngine.UI.Image));
             var fill = fillGO.GetComponent<UnityEngine.UI.Image>();
             fill.raycastTarget = false;
-            fill.sprite = OnePx();
+            fill.sprite = (data != null && data.backgroundImage != null) ? data.backgroundImage : OnePx();
             fill.type = UnityEngine.UI.Image.Type.Simple;
+            fill.preserveAspect = false;
             fill.color = color;
 
             var frt = fill.rectTransform;
@@ -879,7 +880,7 @@ public class Piece : MonoBehaviour
         {
             MonsterData md = (i < monstersForCells.Count) ? monstersForCells[i] : null;
             var sprite = GetCurrentMonsterPortrait(md);
-            var placed = board.InstantiateTileUI(color, sprite);
+            var placed = board.InstantiateTileUI(color, sprite, data ? data.backgroundImage : null);
 
             placed.anchoredPosition = board.CellToAnchoredPos(cells[i]);
             board.Place(cells[i], placed);

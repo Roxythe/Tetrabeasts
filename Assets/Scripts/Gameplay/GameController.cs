@@ -3202,6 +3202,7 @@ public class GameController : MonoBehaviour
     {
         Transform parent = ResolveSpecialAbilityPopupParent();
         GameObject popup = Instantiate(specialAbilityPopupPrefab, parent, false);
+        popup.SetActive(true);
         PrepareSpecialAbilityPopupRect(popup);
 
         SpecialAbilityPopup popupView = popup.GetComponent<SpecialAbilityPopup>();
@@ -7366,7 +7367,16 @@ public class GameController : MonoBehaviour
     {
         if (!hasFocus) return;
 
-        if (isPaused || (runModsPanelRoot && UIPanelTransition.IsVisible(runModsPanelRoot)))
+        bool levelModifierKeyboardMouseSelection = false;
+        if (levelModifierController && levelModifierController.IsSelectionRunning)
+        {
+            TetrabeastsControls.RefreshActiveInputProfile();
+            levelModifierKeyboardMouseSelection = TetrabeastsControls.EffectiveProfile == TetrabeastsControlProfile.KeyboardMouse;
+        }
+
+        if (isPaused ||
+            (runModsPanelRoot && UIPanelTransition.IsVisible(runModsPanelRoot)) ||
+            levelModifierKeyboardMouseSelection)
             EnterUICursorMode();
         else
             EnterGameplayCursorMode();

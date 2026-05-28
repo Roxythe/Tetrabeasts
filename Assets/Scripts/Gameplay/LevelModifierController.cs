@@ -81,6 +81,9 @@ public class LevelModifierController : MonoBehaviour
 
     void Update()
     {
+        if (IsSelectionRunning)
+            MaintainSelectionCursorState();
+
         if (!_gc || !_gc.IsRoundActive || !ActiveModifier || !board)
             return;
 
@@ -1355,11 +1358,39 @@ public class LevelModifierController : MonoBehaviour
 
     void SetSelectionCursorState(bool active)
     {
-        Cursor.visible = active;
-        Cursor.lockState = active ? CursorLockMode.None : CursorLockMode.Locked;
+        if (active)
+        {
+            MaintainSelectionCursorState();
+            return;
+        }
 
         if (_gc && _gc.pauseCursor)
-            _gc.pauseCursor.gameObject.SetActive(active);
+        {
+            _gc.pauseCursor.SetKeepVisibleDuringButtonNavigation(false);
+            _gc.pauseCursor.SetVisible(false);
+        }
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    void MaintainSelectionCursorState()
+    {
+        TetrabeastsControls.RefreshActiveInputProfile();
+        bool keyboardMouse = TetrabeastsControls.EffectiveProfile == TetrabeastsControlProfile.KeyboardMouse;
+        bool hasCustomCursor = _gc && _gc.pauseCursor;
+
+        Cursor.lockState = keyboardMouse ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = keyboardMouse && !hasCustomCursor;
+
+        if (_gc && _gc.pauseCursor)
+        {
+            _gc.pauseCursor.SetKeepVisibleDuringButtonNavigation(keyboardMouse);
+            _gc.pauseCursor.SetVisible(keyboardMouse);
+
+            if (keyboardMouse)
+                _gc.pauseCursor.SetScale(SettingsStore.LoadCursorScale());
+        }
     }
 
     void RefreshComboShieldUI(bool pulse)

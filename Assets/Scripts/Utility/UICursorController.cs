@@ -44,6 +44,7 @@ public class UICursorController : MonoBehaviour
     float _scale = 1f;
     bool externalVisible = true;
     bool inputVisible = true;
+    bool keepVisibleDuringButtonNavigation;
     CanvasGroup cursorCanvasGroup;
     Vector2 virtualScreenPosition;
     GameObject virtualPointerTarget;
@@ -153,7 +154,7 @@ public class UICursorController : MonoBehaviour
         else if (buttonNavigationUsed)
         {
             ActivateButtonNavigationTargetSource();
-            inputVisible = false;
+            inputVisible = keepVisibleDuringButtonNavigation;
             ClearVirtualPointerTarget();
         }
 
@@ -199,6 +200,16 @@ public class UICursorController : MonoBehaviour
             inputVisible = true;
         else
             ClearVirtualPointerTarget();
+
+        ApplyCursorVisibility();
+    }
+
+    public void SetKeepVisibleDuringButtonNavigation(bool keepVisible)
+    {
+        keepVisibleDuringButtonNavigation = keepVisible;
+
+        if (keepVisible && externalVisible)
+            inputVisible = true;
 
         ApplyCursorVisibility();
     }

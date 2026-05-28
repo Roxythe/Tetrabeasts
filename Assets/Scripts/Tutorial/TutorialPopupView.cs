@@ -27,6 +27,7 @@ public class TutorialPopupView : MonoBehaviour
 
     [Header("Visuals")]
     [SerializeField, Range(0.1f, 1f)] float visibleAlpha = 1f;
+    [SerializeField] bool useAnimatedTransition = false;
 
     [Header("Optional Status Visuals")]
     [SerializeField] GameObject waitingVisual;
@@ -62,7 +63,7 @@ public class TutorialPopupView : MonoBehaviour
         transform.SetAsLastSibling();
 
         EnsureCanvasGroup();
-        UIPanelTransition.Show(gameObject, visibleAlpha, instant);
+        UIPanelTransition.Show(gameObject, visibleAlpha, instant || !useAnimatedTransition);
         EnsureCanvasGroup();
 
         if (canvasGroup)
@@ -90,7 +91,7 @@ public class TutorialPopupView : MonoBehaviour
 
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = false;
-        UIPanelTransition.Hide(gameObject, instant);
+        UIPanelTransition.Hide(gameObject, instant || !useAnimatedTransition);
     }
 
     public void SetContent(string body)

@@ -22,6 +22,10 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
     [SerializeField] ControllerArrowPlacement controllerArrowPlacement;
     [SerializeField] Vector2 controllerArrowSize = new Vector2(20f, 16f);
     [SerializeField] float controllerArrowSideOffset = 12f;
+    [SerializeField, Min(1f)] float controllerArrowPulseScale = 1.12f;
+    [SerializeField, Min(0f)] float controllerArrowPulseSpeed = 2.5f;
+    [SerializeField, Min(1f)] float targetPulseScale = 1.08f;
+    [SerializeField, Min(0f)] float targetPulseSpeed = 5.75f;
     [SerializeField] Color persistentFireBorderTint = new Color(0.55f, 0.9f, 1f, 1f);
 
     AudioClip hoverSfx;
@@ -36,6 +40,12 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
     Color[] fireBorderGraphicBaseColors;
     SpriteRenderer[] fireBorderSpriteRenderers;
     Color[] fireBorderSpriteBaseColors;
+    Vector3 targetBaseScale = Vector3.one;
+    bool targetBaseScaleCaptured;
+    bool targetPulseActive;
+    bool targetCurrentlyTargeted;
+    bool targetPulsePlaying;
+    float targetPulseStartedAt;
 
     public static UIButtonTargetVisual Ensure(GameObject target)
     {
@@ -82,12 +92,14 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
         if (!visualSearchRoot)
             visualSearchRoot = transform;
 
+        CaptureTargetBaseScale();
         ResolveFireBorderAnimation();
         RefreshVisuals();
     }
 
     void OnEnable()
     {
+        CaptureTargetBaseScale();
         selected = EventSystem.current && EventSystem.current.currentSelectedGameObject == gameObject;
         ResolveFireBorderAnimation();
         RefreshVisuals();
@@ -97,8 +109,11 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
     {
         pointerInside = false;
         selected = false;
+        targetCurrentlyTargeted = false;
+        targetPulsePlaying = false;
         SetFireBorderDesired(false);
         SetControllerArrowVisible(false);
+        RestoreTargetPulseScale();
     }
 
     void Update()
@@ -157,7 +172,75 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
         bool showFireBorder = pointerTargeted || navigationTargeted || persistentFireBorder;
         SetFireBorderDesired(showFireBorder);
         ApplyFireBorderTint(showFireBorder && persistentFireBorder);
-        SetControllerArrowVisible(controllerArrowPlacement != ControllerArrowPlacement.None && navigationTargeted);
+        UpdateTargetPulse(pointerTargeted || navigationTargeted);
+
+        bool showControllerArrow = controllerArrowPlacement != ControllerArrowPlacement.None && navigationTargeted;
+        SetControllerArrowVisible(showControllerArrow);
+        UpdateControllerArrowPulse(showControllerArrow);
+    }
+
+    void CaptureTargetBaseScale()
+    {
+        if (targetBaseScaleCaptured)
+            return;
+
+        targetBaseScale = transform.localScale;
+        targetBaseScaleCaptured = true;
+    }
+
+    void UpdateTargetPulse(bool active)
+    {
+        CaptureTargetBaseScale();
+
+        if (!active)
+        {
+            targetCurrentlyTargeted = false;
+            targetPulsePlaying = false;
+            RestoreTargetPulseScale();
+            return;
+        }
+
+        if (!targetCurrentlyTargeted)
+        {
+            targetCurrentlyTargeted = true;
+            targetPulsePlaying = targetPulseSpeed > 0f && targetPulseScale > 1f;
+            targetPulseStartedAt = Time.unscaledTime;
+        }
+
+        if (!active || targetPulseSpeed <= 0f || targetPulseScale <= 1f)
+        {
+            RestoreTargetPulseScale();
+            return;
+        }
+
+        if (!targetPulsePlaying)
+        {
+            RestoreTargetPulseScale();
+            return;
+        }
+
+        float duration = 1f / Mathf.Max(0.01f, targetPulseSpeed);
+        float normalized = (Time.unscaledTime - targetPulseStartedAt) / duration;
+        if (normalized >= 1f)
+        {
+            targetPulsePlaying = false;
+            RestoreTargetPulseScale();
+            return;
+        }
+
+        float t = Mathf.Sin(Mathf.Clamp01(normalized) * Mathf.PI);
+        float pulse = Mathf.Lerp(1f, targetPulseScale, t);
+        transform.localScale = targetBaseScale * pulse;
+        targetPulseActive = true;
+    }
+
+    void RestoreTargetPulseScale()
+    {
+        if (!targetPulseActive || !targetBaseScaleCaptured)
+            return;
+
+        transform.localScale = targetBaseScale;
+        targetPulseActive = false;
     }
 
     void ResolveFireBorderAnimation()
@@ -291,6 +374,24 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
 
         if (controllerArrow && controllerArrow.gameObject.activeSelf != visible)
             controllerArrow.gameObject.SetActive(visible);
+
+        if (!visible && controllerArrow)
+            controllerArrow.rectTransform.localScale = Vector3.one;
+    }
+
+    void UpdateControllerArrowPulse(bool visible)
+    {
+        if (!visible || !controllerArrow)
+            return;
+
+        float pulse = 1f;
+        if (controllerArrowPulseSpeed > 0f && controllerArrowPulseScale > 1f)
+        {
+            float t = 0.5f + 0.5f * Mathf.Sin(Time.unscaledTime * controllerArrowPulseSpeed * Mathf.PI * 2f);
+            pulse = Mathf.Lerp(1f, controllerArrowPulseScale, t);
+        }
+
+        controllerArrow.rectTransform.localScale = Vector3.one * pulse;
     }
 
     void EnsureControllerArrow()

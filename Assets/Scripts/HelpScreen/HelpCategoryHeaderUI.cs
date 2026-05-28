@@ -17,6 +17,11 @@ public class HelpCategoryHeaderUI : MonoBehaviour
 
     public bool IsExpanded => _expanded;
 
+    void Awake()
+    {
+        NormalizeButtonSelectionVisual();
+    }
+
     public void SetExpanded(bool expanded)
     {
         _expanded = expanded;
@@ -32,6 +37,7 @@ public class HelpCategoryHeaderUI : MonoBehaviour
     {
         _onToggle = onToggle;
 
+        NormalizeButtonSelectionVisual();
         UpdateArrow();
 
         if (button)
@@ -50,5 +56,17 @@ public class HelpCategoryHeaderUI : MonoBehaviour
     {
         if (!arrow) return;
         arrow.localEulerAngles = new Vector3(0f, 0f, _expanded ? expandedZ : collapsedZ);
+    }
+
+    void NormalizeButtonSelectionVisual()
+    {
+        if (!button)
+            return;
+
+        var colors = button.colors;
+        colors.selectedColor = colors.highlightedColor;
+        button.colors = colors;
+
+        UIButtonTargetVisual.Ensure(button.gameObject);
     }
 }

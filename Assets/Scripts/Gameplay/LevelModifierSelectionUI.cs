@@ -303,6 +303,19 @@ public class LevelModifierSelectionUI : MonoBehaviour
 
         if (viewports == null || viewports.Length != 3 || contents == null || contents.Length != 3)
             Debug.LogWarning("LevelModifierSelectionUI: Assign exactly 3 viewports and 3 contents.");
+
+        ConfigureLeverTargetVisual();
+    }
+
+    void ConfigureLeverTargetVisual()
+    {
+        if (!leverButton)
+            return;
+
+        UIButtonTargetVisual.Ensure(leverButton.gameObject)?.Configure(
+            null,
+            UIButtonTargetVisual.ControllerArrowPlacement.None,
+            leverButton.transform);
     }
 
     void CacheSlotMachineLights()

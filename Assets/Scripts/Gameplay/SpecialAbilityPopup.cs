@@ -118,6 +118,7 @@ public sealed class SpecialAbilityPopup : MonoBehaviour
         Destroy(slot.gameObject);
 
         GameObject instance = Instantiate(animationPrefab, parent, false);
+        instance.SetActive(true);
         instance.name = characterAnimationName;
         instance.transform.SetSiblingIndex(siblingIndex);
         characterAnimationRoot = instance.transform;
