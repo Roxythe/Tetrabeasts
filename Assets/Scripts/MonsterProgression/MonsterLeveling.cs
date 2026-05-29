@@ -290,6 +290,8 @@ public static class MonsterLeveling
 {
     public const int XpPerLevel = 100;
     public const int MaxLevel = 100;
+    const float AttackPowerPerLevelStep = 0.1f;
+    const float SpecialGaugeGainPerLevelStep = 0.1f;
 
     public struct LeveledStats
     {
@@ -356,10 +358,10 @@ public static class MonsterLeveling
                 s.maxHealth += 5f;
                 break;
             case StatStep.Attack:
-                s.attackPower += 1f;
+                s.attackPower += AttackPowerPerLevelStep;
                 break;
             case StatStep.SpecialGain:
-                s.specialGaugeGain += 1f;
+                s.specialGaugeGain += SpecialGaugeGainPerLevelStep;
                 break;
             case StatStep.HealPower:
                 s.healAmount += 1f;
@@ -377,7 +379,7 @@ public static class MonsterLeveling
         toLevel = Mathf.Clamp(toLevel, 1, MaxLevel);
         if (toLevel <= fromLevel) return "";
 
-        int hp = 0, atk = 0, sp = 0, heal = 0, range = 0;
+        int hp = 0, atkSteps = 0, specialSteps = 0, heal = 0, range = 0;
         var specialLines = new List<string>();
 
         var cycle = GetCycleForRole(data.role);
@@ -395,8 +397,8 @@ public static class MonsterLeveling
             switch (cycle[stepIndex])
             {
                 case StatStep.Hp: hp++; break;
-                case StatStep.Attack: atk++; break;
-                case StatStep.SpecialGain: sp++; break;
+                case StatStep.Attack: atkSteps++; break;
+                case StatStep.SpecialGain: specialSteps++; break;
                 case StatStep.HealPower: heal++; break;
                 case StatStep.HealRange: range++; break;
             }
@@ -405,18 +407,25 @@ public static class MonsterLeveling
         // Build compact UI string
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
-        void Add(string label, int v)
+        void AddInt(string label, int v)
         {
             if (v <= 0) return;
             if (sb.Length > 0) sb.Append(", ");
             sb.Append(label).Append(" +").Append(v);
         }
 
-        Add("HP", hp);
-        Add("ATK", atk);
-        Add("Special", sp);
-        Add("Heal", heal);
-        Add("Range", range);
+        void AddSymbolic(string label, int steps)
+        {
+            if (steps <= 0) return;
+            if (sb.Length > 0) sb.Append(", ");
+            sb.Append(label).Append("+");
+        }
+
+        AddInt("HP", hp);
+        AddSymbolic("ATK", atkSteps);
+        AddSymbolic("Special", specialSteps);
+        AddInt("Heal", heal);
+        AddInt("Range", range);
 
         foreach (var line in specialLines)
         {
@@ -497,10 +506,10 @@ public static class MonsterLeveling
                     lines.Add("+ 5 HP");
                     break;
                 case StatStep.Attack:
-                    lines.Add("+ 1 Attack");
+                    lines.Add("ATK+");
                     break;
                 case StatStep.SpecialGain:
-                    lines.Add("+ 1 Special");
+                    lines.Add("Special+");
                     break;
                 case StatStep.HealPower:
                     lines.Add("+ 5 Heal");

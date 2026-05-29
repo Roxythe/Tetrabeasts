@@ -138,6 +138,9 @@ public class NextPreviewUI : MonoBehaviour
         // Match board outline color when immune
         var gc = GetComponent<GameController>();
         var boardCmp = GetComponent<Board>();
+        if (!boardCmp)
+            boardCmp = FindFirstObjectByType<Board>();
+
         Color borderColor = Color.black;
         if (boardCmp)
             borderColor = (gc && gc.immunityActive) ? boardCmp.immuneBorderColor : boardCmp.normalBorderColor;
@@ -180,6 +183,8 @@ public class NextPreviewUI : MonoBehaviour
             frt.sizeDelta = rt.sizeDelta;
             frt.anchoredPosition = Vector2.zero;
             frt.SetAsFirstSibling();
+            if (boardCmp)
+                boardCmp.ConfigureTetrominoBackgroundPulse(fill, color, data.backgroundImage, i);
 
             // Shared-edge halving
             bool Ls = previewSet.Contains(cell + Vector2Int.left);

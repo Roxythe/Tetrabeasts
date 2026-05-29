@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: T
   m_EditorClassIdentifier: Assembly-CSharp::TetrominoData
   id: T
-  color: {r: 0.75581396, g: 1, b: 0.25, a: 1}
+  color: {r: 1, g: 0, b: 0.14930153, a: 1}
   backgroundImage: {fileID: 3066412145347965409, guid: 31244b13aa6488140b0cbbe8cd4f3454, type: 3}
   cells:
   - {x: 0, y: 0}

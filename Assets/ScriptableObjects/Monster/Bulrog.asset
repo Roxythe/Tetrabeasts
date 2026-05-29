@@ -36,11 +36,11 @@ MonoBehaviour:
   minHealth: 0
   currentHealth: 30
   attackPower: 1
-  weightedSpawnRate: 2
+  weightedSpawnRate: 1
   healAmount: 0
   healRange: 1
   healSpeed: 10
-  specialGaugeGain: 2
+  specialGaugeGain: 1.8
   attackAnim: 2
   attackSprite: {fileID: 3277965205561126117, guid: 63021cc85ed1a114eb501f340c18e737, type: 3}
   attackSpriteAlt: {fileID: 3277965205561126117, guid: 63021cc85ed1a114eb501f340c18e737, type: 3}

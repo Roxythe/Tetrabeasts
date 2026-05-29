@@ -16949,6 +16949,19 @@ MonoBehaviour:
   tilePrefab: {fileID: 1946968788498790587, guid: 1c9906466f5f60b41a8d6e70f0f7b5bd, type: 3}
   normalBorderColor: {r: 0, g: 0, b: 0, a: 1}
   immuneBorderColor: {r: 1, g: 0.84, b: 0, a: 1}
+  animateTetrominoBackgrounds: 1
+  backgroundPassivePulseInterval: 2
+  backgroundPassivePulseSeconds: 1.45
+  backgroundPassivePeakAlpha: 0.365
+  backgroundPassiveStartScale: 0.12
+  backgroundPassiveEndScale: 1
+  backgroundPulseWhiteBlend: 0.45
+  rowClearBackgroundRippleSeconds: 0.16
+  rowClearBackgroundPulseRiseSeconds: 0.055
+  rowClearBackgroundPeakHoldSeconds: 0.08
+  rowClearBackgroundPeakAlpha: 0.569
+  rowClearBackgroundStartScale: 0.1
+  rowClearBackgroundPeakScale: 1
   defaultDeadOverlaySprite: {fileID: 4359828363970621520, guid: 23220f222bf0b93409d8cd73e0c7dd0b, type: 3}
   deadOverlayTint: {r: 1, g: 0, b: 0, a: 1}
   deadOverlayPreserveAspect: 1

@@ -248,6 +248,7 @@ public class Piece : MonoBehaviour
             fill.type = UnityEngine.UI.Image.Type.Simple;
             fill.preserveAspect = false;
             fill.color = color;
+            board.ConfigureTetrominoBackgroundPulse(fill, color, data ? data.backgroundImage : null, i);
 
             var frt = fill.rectTransform;
             frt.SetParent(rt, false);
@@ -844,10 +845,13 @@ public class Piece : MonoBehaviour
             if (AudioManager.I && data.specialSFX) AudioManager.I.PlaySFX(data.specialSFX);
 
             board.ApplySpecialToEnvironment(envAffected, data.special);
-            board.FlashCells(
-                data.special == SpecialType.SlowGravity ? envAffected : toRemove,
-                data.specialFlashSprite,
-                data.flashOnlyOccupied); // Flash on affected cells using data flags
+            if (data.special != SpecialType.SlowGravity)
+            {
+                board.FlashCells(
+                    toRemove,
+                    data.specialFlashSprite,
+                    data.flashOnlyOccupied); // Flash on affected cells using data flags
+            }
 
             // Remove targets and make only the directly-above tiles fall sparsely
             board.RemoveCellsAndFall(toRemove, out var removedA, out int dmgA, out float chargeA);
@@ -926,7 +930,7 @@ public class Piece : MonoBehaviour
 
             if (gc != null && gc.CurrentLevel == levelBefore && gc.CanSpawnNewPiece())
                 gc.SpawnNextPiece();
-        });
+        }, clearOriginColumnsByRow: colsByRow);
     }
 
     public void ResetPiece()

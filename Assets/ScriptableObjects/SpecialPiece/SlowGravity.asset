@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TetrominoData
   id: SlowGravity
   color: {r: 0.55, g: 0.95, b: 1, a: 1}
+  backgroundImage: {fileID: 3066412145347965409, guid: 31244b13aa6488140b0cbbe8cd4f3454, type: 3}
   cells:
   - {x: 0, y: 0}
   special: 5
   specialSprite: {fileID: -6605040193917352901, guid: 48da2eb413088c14ebaa183806cf5891, type: 3}
   spawnWeight: 0.25
-  specialFlashSprite: {fileID: -6605040193917352901, guid: 48da2eb413088c14ebaa183806cf5891, type: 3}
+  specialFlashSprite: {fileID: 0}
   flashOnlyOccupied: 0
   specialSFX: {fileID: 8300000, guid: dc571d080b5ebf54a82e0b9e672fbded, type: 3}
   slowGravityMultiplier: 0.5

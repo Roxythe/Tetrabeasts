@@ -37,7 +37,7 @@ MonoBehaviour:
   minHealth: 0
   currentHealth: 20
   attackPower: 2
-  weightedSpawnRate: 2
+  weightedSpawnRate: 1
   healAmount: 0
   healRange: 1
   healSpeed: 10

@@ -25,6 +25,21 @@ public class Board : MonoBehaviour
     public Color normalBorderColor = Color.black;
     public Color immuneBorderColor = new Color(1f, 0.84f, 0f, 1f); // Gold
 
+    [Header("Tetromino Background Pulse")]
+    public bool animateTetrominoBackgrounds = true;
+    [Min(0.05f)] public float backgroundPassivePulseInterval = 3.25f;
+    [Min(0.01f)] public float backgroundPassivePulseSeconds = 1.45f;
+    [Range(0f, 1f)] public float backgroundPassivePeakAlpha = 0.24f;
+    [Range(0.001f, 1f)] public float backgroundPassiveStartScale = 0.12f;
+    [Min(0.001f)] public float backgroundPassiveEndScale = 1f;
+    [Range(0f, 1f)] public float backgroundPulseWhiteBlend = 0.45f;
+    [Min(0f)] public float rowClearBackgroundRippleSeconds = 0.16f;
+    [Min(0.01f)] public float rowClearBackgroundPulseRiseSeconds = 0.055f;
+    [Min(0f)] public float rowClearBackgroundPeakHoldSeconds = 0.08f;
+    [Range(0f, 1f)] public float rowClearBackgroundPeakAlpha = 0.68f;
+    [Range(0.001f, 1f)] public float rowClearBackgroundStartScale = 0.10f;
+    [Min(0.001f)] public float rowClearBackgroundPeakScale = 1f;
+
     public Sprite defaultDeadOverlaySprite; 
     public Color deadOverlayTint = Color.white; 
     public bool deadOverlayPreserveAspect = true;
@@ -722,6 +737,7 @@ public class Board : MonoBehaviour
         fill.fillOrigin = (int)UnityEngine.UI.Image.OriginVertical.Bottom;
         fill.fillAmount = 1f;
         fill.color = color;
+        ConfigureTetrominoBackgroundPulse(fill, color, backgroundImage);
 
         ApplySharedEdges(rt, false, false, false, false, DEFAULT_BORDER);
         SetInlineBorderColor(rt, TilesDamageImmune ? immuneBorderColor : normalBorderColor);
@@ -729,6 +745,37 @@ public class Board : MonoBehaviour
         backRT.SetAsFirstSibling();
 
         return rt;
+    }
+
+    public void ConfigureTetrominoBackgroundPulse(Image fill, Color tileColor, Sprite backgroundImage, int offsetSeed = 0)
+    {
+        if (!fill)
+            return;
+
+        var pulse = fill.GetComponent<TetrominoBackgroundPulse>();
+        bool shouldAnimate = animateTetrominoBackgrounds && backgroundImage != null;
+
+        if (!shouldAnimate)
+        {
+            if (pulse)
+                pulse.SetPassiveEnabled(false);
+            return;
+        }
+
+        if (!pulse)
+            pulse = fill.gameObject.AddComponent<TetrominoBackgroundPulse>();
+
+        float offset = Mathf.Repeat(offsetSeed * 0.371f, Mathf.Max(0.05f, backgroundPassivePulseInterval));
+        pulse.Configure(
+            tileColor,
+            true,
+            backgroundPassivePulseInterval,
+            backgroundPassivePulseSeconds,
+            backgroundPassivePeakAlpha,
+            backgroundPassiveStartScale,
+            backgroundPassiveEndScale,
+            backgroundPulseWhiteBlend,
+            offset);
     }
 
     public RectTransform InstantiateTileUI(Color color, Sprite portrait, float inset = 4f)
@@ -912,6 +959,66 @@ public class Board : MonoBehaviour
         }
 
         return changedAny;
+    }
+
+    float PlayRowClearBackgroundPulse(int row, Dictionary<int, List<int>> clearOriginColumnsByRow)
+    {
+        if (!animateTetrominoBackgrounds || row < 0 || row >= height)
+            return 0f;
+
+        int originX = GetRowClearPulseOriginX(row, clearOriginColumnsByRow);
+        int leftDistance = Mathf.Max(0, originX);
+        int rightDistance = Mathf.Max(0, width - 1 - originX);
+        float travelSeconds = Mathf.Max(0f, rowClearBackgroundRippleSeconds);
+        float maxDelay = 0f;
+        bool playedAny = false;
+
+        for (int x = 0; x < width; x++)
+        {
+            var cell = new Vector2Int(x, row);
+            if (!placed.TryGetValue(cell, out var tile) || !tile)
+                continue;
+
+            var pulse = tile.Find("HealthFill")?.GetComponent<TetrominoBackgroundPulse>();
+            if (!pulse)
+                continue;
+
+            int distance = Mathf.Abs(x - originX);
+            int sideDistance = x < originX ? leftDistance : (x > originX ? rightDistance : 0);
+            float normalizedDistance = sideDistance > 0 ? Mathf.Clamp01(distance / (float)sideDistance) : 0f;
+            float delay = normalizedDistance * travelSeconds;
+
+            pulse.PlayRowClearPulse(
+                delay,
+                rowClearBackgroundPulseRiseSeconds,
+                rowClearBackgroundPeakHoldSeconds,
+                rowClearBackgroundPeakAlpha,
+                rowClearBackgroundStartScale,
+                rowClearBackgroundPeakScale);
+
+            maxDelay = Mathf.Max(maxDelay, delay);
+            playedAny = true;
+        }
+
+        if (!playedAny)
+            return 0f;
+
+        return maxDelay + Mathf.Max(0.01f, rowClearBackgroundPulseRiseSeconds) + Mathf.Max(0f, rowClearBackgroundPeakHoldSeconds);
+    }
+
+    int GetRowClearPulseOriginX(int row, Dictionary<int, List<int>> clearOriginColumnsByRow)
+    {
+        int originX = width / 2;
+
+        if (clearOriginColumnsByRow != null &&
+            clearOriginColumnsByRow.TryGetValue(row, out var columns) &&
+            columns != null &&
+            columns.Count > 0)
+        {
+            originX = columns[columns.Count - 1];
+        }
+
+        return Mathf.Clamp(originX, 0, Mathf.Max(0, width - 1));
     }
 
     void TickAttackPortraitIdleSwaps()
@@ -1300,9 +1407,9 @@ public class Board : MonoBehaviour
         if (inst.hp <= 0f) return 0f;
 
         float gaugeMult = (gc ? gc.monsterSpecialGainMult : 1f);
-        float gauge = inst.specialGaugeGain * gaugeMult;
+        int gauge = Mathf.RoundToInt(inst.specialGaugeGain * gaugeMult);
 
-        return Mathf.Max(1f, gauge);
+        return Mathf.Max(1, gauge);
     }
 
     static MonsterData PickDominantMonster(Dictionary<MonsterData, int> counts)
@@ -1463,15 +1570,17 @@ public class Board : MonoBehaviour
 
     public void ClearFullLinesAnimated(
     Action<int, List<Vector2Int>, int, float, Dictionary<int, int>, Dictionary<int, MonsterData>> onComplete,
-    float? overrideCascadeDelay = null)
+    float? overrideCascadeDelay = null,
+    Dictionary<int, List<int>> clearOriginColumnsByRow = null)
     {
         float delay = overrideCascadeDelay ?? cascadeClearVisualDelay;
-        StartCoroutine(ClearFullLinesRoutine(delay, onComplete));
+        StartCoroutine(ClearFullLinesRoutine(delay, onComplete, clearOriginColumnsByRow));
     }
 
     IEnumerator ClearFullLinesRoutine(
         float cascadeDelay,
-        Action<int, List<Vector2Int>, int, float, Dictionary<int, int>, Dictionary<int, MonsterData>> onComplete)
+        Action<int, List<Vector2Int>, int, float, Dictionary<int, int>, Dictionary<int, MonsterData>> onComplete,
+        Dictionary<int, List<int>> clearOriginColumnsByRow)
     {
         int rowsCleared = 0;
         var removedCells = new List<Vector2Int>();
@@ -1566,9 +1675,12 @@ public class Board : MonoBehaviour
                 if (rowsCleared == 1 && gc)
                     yield return gc.ShowFirstFullRowTutorialIfNeeded(GetPlacedVisualsInRow(y));
 
+                float backgroundPulseSeconds = PlayRowClearBackgroundPulse(y, clearOriginColumnsByRow);
                 bool rowAltShown = ShowAltPortraitsInRow(y);
-                if (rowAltShown && attackLineClearAltHoldSeconds > 0f)
-                    yield return new WaitForSecondsRealtime(attackLineClearAltHoldSeconds);
+                float altHoldSeconds = (rowAltShown && attackLineClearAltHoldSeconds > 0f) ? attackLineClearAltHoldSeconds : 0f;
+                float preClearHoldSeconds = Mathf.Max(backgroundPulseSeconds, altHoldSeconds);
+                if (preClearHoldSeconds > 0f)
+                    yield return new WaitForSecondsRealtime(preClearHoldSeconds);
 
                 // ===== Remove row contents =====
                 for (int x = 0; x < width; x++)
@@ -3576,5 +3688,219 @@ public class Board : MonoBehaviour
     public bool HasPlacedTiles()
     {
         return placed != null && placed.Count > 0;
+    }
+}
+
+[DisallowMultipleComponent]
+public class TetrominoBackgroundPulse : MonoBehaviour
+{
+    Image targetImage;
+    RectTransform targetRect;
+    Image pulseImage;
+    RectTransform pulseRect;
+
+    Color pulseColor = Color.white;
+    bool passiveEnabled;
+    float passiveClock;
+    float passiveInterval = 3f;
+    float passiveDuration = 1.4f;
+    float passivePeakAlpha = 0.22f;
+    float passiveStartScale = 0.08f;
+    float passiveEndScale = 1.18f;
+
+    bool clearPulseActive;
+    float clearTimer;
+    float clearDelay;
+    float clearRiseSeconds;
+    float clearHoldSeconds;
+    float clearPeakAlpha;
+    float clearStartScale;
+    float clearPeakScale;
+
+    public void Configure(
+        Color tileColor,
+        bool enablePassive,
+        float intervalSeconds,
+        float durationSeconds,
+        float peakAlpha,
+        float startScale,
+        float endScale,
+        float whiteBlend,
+        float cycleOffset)
+    {
+        targetImage = GetComponent<Image>();
+        targetRect = transform as RectTransform;
+
+        passiveEnabled = enablePassive;
+        passiveInterval = Mathf.Max(0.05f, intervalSeconds);
+        passiveDuration = Mathf.Clamp(durationSeconds, 0.01f, passiveInterval);
+        passivePeakAlpha = Mathf.Clamp01(peakAlpha);
+        passiveStartScale = Mathf.Max(0.001f, startScale);
+        passiveEndScale = Mathf.Max(passiveStartScale, endScale);
+
+        pulseColor = Color.Lerp(tileColor, Color.white, Mathf.Clamp01(whiteBlend));
+        pulseColor.a = 1f;
+        passiveClock = Mathf.Repeat(cycleOffset, passiveInterval);
+
+        EnsurePulseImage();
+        SetPulseVisual(0f, passiveStartScale);
+    }
+
+    public void SetPassiveEnabled(bool enabled)
+    {
+        passiveEnabled = enabled;
+        if (!enabled && !clearPulseActive)
+            SetPulseVisual(0f, passiveStartScale);
+    }
+
+    public void PlayRowClearPulse(
+        float delaySeconds,
+        float riseSeconds,
+        float holdSeconds,
+        float peakAlpha,
+        float startScale,
+        float peakScale)
+    {
+        EnsurePulseImage();
+
+        clearPulseActive = true;
+        clearTimer = 0f;
+        clearDelay = Mathf.Max(0f, delaySeconds);
+        clearRiseSeconds = Mathf.Max(0.01f, riseSeconds);
+        clearHoldSeconds = Mathf.Max(0f, holdSeconds);
+        clearPeakAlpha = Mathf.Clamp01(peakAlpha);
+        clearStartScale = Mathf.Max(0.001f, startScale);
+        clearPeakScale = Mathf.Max(clearStartScale, peakScale);
+
+        SetPulseVisual(0f, clearStartScale);
+    }
+
+    void Awake()
+    {
+        targetImage = GetComponent<Image>();
+        targetRect = transform as RectTransform;
+    }
+
+    void Update()
+    {
+        if (!targetImage)
+            targetImage = GetComponent<Image>();
+
+        if (!targetRect)
+            targetRect = transform as RectTransform;
+
+        if (!targetImage || !targetRect)
+            return;
+
+        EnsurePulseImage();
+        SyncPulseImageToTarget();
+
+        if (clearPulseActive)
+        {
+            TickClearPulse();
+            return;
+        }
+
+        TickPassivePulse();
+    }
+
+    void TickPassivePulse()
+    {
+        if (!passiveEnabled)
+        {
+            SetPulseVisual(0f, passiveStartScale);
+            return;
+        }
+
+        passiveClock = Mathf.Repeat(passiveClock + Time.deltaTime, passiveInterval);
+        if (passiveClock > passiveDuration)
+        {
+            SetPulseVisual(0f, passiveStartScale);
+            return;
+        }
+
+        float t = Mathf.Clamp01(passiveClock / passiveDuration);
+        float eased = Mathf.SmoothStep(0f, 1f, t);
+        float alpha = Mathf.Sin(t * Mathf.PI) * passivePeakAlpha;
+        float scale = Mathf.Lerp(passiveStartScale, passiveEndScale, eased);
+        SetPulseVisual(alpha, scale);
+    }
+
+    void TickClearPulse()
+    {
+        clearTimer += Time.unscaledDeltaTime;
+
+        if (clearTimer < clearDelay)
+        {
+            SetPulseVisual(0f, clearStartScale);
+            return;
+        }
+
+        float localTime = clearTimer - clearDelay;
+        if (localTime < clearRiseSeconds)
+        {
+            float t = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(localTime / clearRiseSeconds));
+            SetPulseVisual(Mathf.Lerp(0f, clearPeakAlpha, t), Mathf.Lerp(clearStartScale, clearPeakScale, t));
+            return;
+        }
+
+        if (localTime <= clearRiseSeconds + clearHoldSeconds)
+        {
+            SetPulseVisual(clearPeakAlpha, clearPeakScale);
+            return;
+        }
+
+        clearPulseActive = false;
+        SetPulseVisual(0f, passiveStartScale);
+    }
+
+    void EnsurePulseImage()
+    {
+        if (!targetRect)
+            targetRect = transform as RectTransform;
+
+        if (!targetRect)
+            return;
+
+        if (pulseImage)
+            return;
+
+        var go = new GameObject("BackgroundPulseOverlay", typeof(RectTransform), typeof(Image));
+        pulseImage = go.GetComponent<Image>();
+        pulseImage.raycastTarget = false;
+        pulseImage.preserveAspect = false;
+        pulseImage.type = Image.Type.Simple;
+
+        pulseRect = pulseImage.rectTransform;
+        pulseRect.SetParent(targetRect, false);
+        pulseRect.anchorMin = pulseRect.anchorMax = new Vector2(0.5f, 0.5f);
+        pulseRect.pivot = new Vector2(0.5f, 0.5f);
+        pulseRect.anchoredPosition = Vector2.zero;
+        pulseRect.SetAsFirstSibling();
+    }
+
+    void SyncPulseImageToTarget()
+    {
+        if (!pulseImage || !pulseRect || !targetImage || !targetRect)
+            return;
+
+        pulseImage.sprite = targetImage.sprite;
+        pulseImage.type = Image.Type.Simple;
+        pulseImage.preserveAspect = false;
+        pulseRect.sizeDelta = targetRect.rect.size;
+        pulseRect.anchoredPosition = Vector2.zero;
+        pulseRect.SetAsFirstSibling();
+    }
+
+    void SetPulseVisual(float alpha, float scale)
+    {
+        if (!pulseImage || !pulseRect)
+            return;
+
+        var color = pulseColor;
+        color.a = Mathf.Clamp01(alpha);
+        pulseImage.color = color;
+        pulseImage.enabled = color.a > 0.001f;
+        pulseRect.localScale = Vector3.one * Mathf.Max(0.001f, scale);
     }
 }
