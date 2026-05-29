@@ -48,15 +48,15 @@ MonoBehaviour:
   skinAttackSprites:
   - {fileID: 21300000, guid: bca2edcaa8b724646ba24b72d73c0b27, type: 3}
   - {fileID: 21300000, guid: c08ae9ba382cca341983d73ab9f83c47, type: 3}
-  - {fileID: 21300000, guid: 0f76fe2e51c4d634a97bbe2720a5ec2b, type: 3}
   - {fileID: 21300000, guid: 4cda2d5512c26ca469463ca5fb84b91f, type: 3}
   - {fileID: 21300000, guid: d603c3042c97b3f49a538c7e78405fc1, type: 3}
+  - {fileID: 21300000, guid: 0f76fe2e51c4d634a97bbe2720a5ec2b, type: 3}
   skinAttackSpritesAlt:
   - {fileID: 21300000, guid: 95584465e08b0674396624d0f5b1d603, type: 3}
   - {fileID: 21300000, guid: 3408f498ad4058545b6f4684c8ad9803, type: 3}
-  - {fileID: 21300000, guid: cae1f62c4917d9049b28756e9189e26e, type: 3}
   - {fileID: 21300000, guid: 287265aa894c2f342b7bdbdf8f49b0a9, type: 3}
   - {fileID: 21300000, guid: efe8662b74af5354b8fce412fb7117a5, type: 3}
+  - {fileID: 21300000, guid: cae1f62c4917d9049b28756e9189e26e, type: 3}
   healSprite: {fileID: 0}
   attackToggleInterval: 0.08
   spinDegreesPerSecond: 720

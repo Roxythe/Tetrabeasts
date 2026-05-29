@@ -5951,7 +5951,8 @@ public class GameController : MonoBehaviour
 
     IEnumerator Boss_PylonShieldRoutine()
     {
-        float warn = BossWarnSeconds();
+        float baseWarn = BossWarnSeconds();
+        int blockedPlacements = 0;
         int want = Mathf.Max(1, _castleData.bossPylonCount);
 
         var used = new HashSet<Vector2Int>();
@@ -5987,6 +5988,7 @@ public class GameController : MonoBehaviour
                 break;
 
             // Warn all at once
+            float warn = BossWarnSecondsForBlockedRetry(baseWarn, blockedPlacements);
             PlayBossAbilityWarningSFX();
             for (int i = 0; i < batchCells.Count; i++)
                 FlashBossWarning(batchCells[i], gameBoard.magicPylonSprite, warn);
@@ -6003,6 +6005,8 @@ public class GameController : MonoBehaviour
                     spawnedThisBatch++;
             }
 
+            blockedPlacements += Mathf.Max(0, batchCells.Count - spawnedThisBatch);
+
             RefreshPylonShieldState();
 
             // If none spawned in this batch, don't loop forever
@@ -6017,7 +6021,8 @@ public class GameController : MonoBehaviour
 
     IEnumerator Boss_MagicExplosiveRoutine()
     {
-        float warn = BossWarnSeconds();
+        float baseWarn = BossWarnSeconds();
+        int blockedPlacements = 0;
         var used = new HashSet<Vector2Int>(); // Used cells so retries don't keep flashing the same tile
 
         // Safety cap so it won't loop forever
@@ -6028,6 +6033,7 @@ public class GameController : MonoBehaviour
 
             used.Add(cell);
 
+            float warn = BossWarnSecondsForBlockedRetry(baseWarn, blockedPlacements);
             PlayBossAbilityWarningSFX();
             FlashBossWarning(cell, gameBoard.magicExplosiveSprite, warn);
 
@@ -6044,6 +6050,8 @@ public class GameController : MonoBehaviour
             {
                 yield break;
             }
+
+            blockedPlacements++;
         }
     }
 
@@ -6187,6 +6195,15 @@ public class GameController : MonoBehaviour
     float BossWarnSeconds()
     {
         return (_castleData != null) ? Mathf.Max(0f, _castleData.bossAbilityWarningSeconds) : 3f;
+    }
+
+    float BossWarnSecondsForBlockedRetry(float baseWarnSeconds, int blockedPlacements)
+    {
+        if (baseWarnSeconds <= 0f)
+            return 0f;
+
+        float multiplier = Mathf.Pow(0.67f, Mathf.Max(0, blockedPlacements));
+        return Mathf.Max(0.1f, baseWarnSeconds * multiplier);
     }
 
     Sprite PickWarningSprite(Sprite preferred)

@@ -99,11 +99,13 @@ public class Board : MonoBehaviour
     [Header("Boss Obstacles")]
     public Sprite magicPylonSprite;
     public Sprite magicExplosiveSprite;
+    public Sprite bossObstacleBackgroundSprite;
 
     [Header("Magic Explosive Visuals")]
     public Color explosiveFillColor = new Color(0.25f, 0.65f, 1f, 1f); // starting fill
     public Color explosiveBackColor = new Color(0.55f, 0.55f, 0.55f, 1f); // revealed background
     public Color explosiveFlashColor = new Color(1f, 0.1f, 0.1f, 1f);
+    [Range(0f, 1f)] public float explosiveFuseOverlayAlpha = 0.65f;
 
     struct MagicExplosiveState
     {
@@ -151,6 +153,7 @@ public class Board : MonoBehaviour
 
     readonly Dictionary<Vector2Int, Coroutine> _monsterFlashCo = new();
     readonly Dictionary<Vector2Int, Coroutine> _portraitAltSwapCo = new();
+    static Sprite s_lastTetrominoBackgroundSprite;
 
     public enum ObstacleType { Stone, MagicPylon, MagicExplosive, SoldierWall, Overgrowth }
 
@@ -752,6 +755,9 @@ public class Board : MonoBehaviour
         if (!fill)
             return;
 
+        if (backgroundImage)
+            s_lastTetrominoBackgroundSprite = backgroundImage;
+
         var pulse = fill.GetComponent<TetrominoBackgroundPulse>();
         bool shouldAnimate = animateTetrominoBackgrounds && backgroundImage != null;
 
@@ -842,6 +848,10 @@ public class Board : MonoBehaviour
         var img = fill.GetComponent<UnityEngine.UI.Image>();
         float amt = (max <= 0f) ? 0f : Mathf.Clamp01(current / max);
         img.fillAmount = amt; // Depleted area shows the gray base underneath
+
+        var pulse = fill.GetComponent<TetrominoBackgroundPulse>();
+        if (pulse)
+            pulse.SetPassiveEnabled(current > 0f && animateTetrominoBackgrounds);
 
         // Show/hide the dead overlay
         var dead = rt.Find("DeadOverlay");
@@ -977,6 +987,9 @@ public class Board : MonoBehaviour
         {
             var cell = new Vector2Int(x, row);
             if (!placed.TryGetValue(cell, out var tile) || !tile)
+                continue;
+
+            if (monsters.TryGetValue(cell, out var inst) && inst.hp <= 0f)
                 continue;
 
             var pulse = tile.Find("HealthFill")?.GetComponent<TetrominoBackgroundPulse>();
@@ -2563,7 +2576,7 @@ public class Board : MonoBehaviour
         if (!IsFree(cell)) return false;
         if (!magicPylonSprite) return false;
 
-        var rt = InstantiateTileUI(new Color(1f, 1f, 1f, 1f), magicPylonSprite);
+        var rt = InstantiateTileUI(new Color(1f, 1f, 1f, 1f), magicPylonSprite, GetBossObstacleBackgroundSprite());
         rt.anchoredPosition = CellToAnchoredPos(cell);
         Place(cell, rt);
 
@@ -2579,7 +2592,7 @@ public class Board : MonoBehaviour
         if (!IsFree(cell)) return false;
         if (!magicExplosiveSprite) return false;
 
-        var rt = InstantiateTileUI(new Color(1f, 1f, 1f, 1f), magicExplosiveSprite);
+        var rt = InstantiateTileUI(explosiveFillColor, magicExplosiveSprite, GetBossObstacleBackgroundSprite());
         rt.anchoredPosition = CellToAnchoredPos(cell);
         Place(cell, rt);
 
@@ -2605,6 +2618,14 @@ public class Board : MonoBehaviour
 
         RefreshTileBordersAround(cell);
         return true;
+    }
+
+    Sprite GetBossObstacleBackgroundSprite()
+    {
+        if (bossObstacleBackgroundSprite)
+            return bossObstacleBackgroundSprite;
+
+        return s_lastTetrominoBackgroundSprite;
     }
 
     public void SpawnCellOverlayVFX(Vector2Int cell, Sprite sprite, float seconds = 0.5f, float alpha = 0.95f)
@@ -2647,13 +2668,38 @@ public class Board : MonoBehaviour
         if (fill)
         {
             fill.color = explosiveFillColor;
-            fill.sprite = OnePx();
-            fill.type = Image.Type.Filled;
-            fill.fillMethod = Image.FillMethod.Radial360;
-            fill.fillOrigin = (int)Image.Origin360.Top;
-            fill.fillClockwise = false;
+            fill.type = Image.Type.Simple;
             fill.fillAmount = 1f; // starts full, wipes to 0
         }
+
+        var fuse = rt.Find("ExplosiveFuseFill")?.GetComponent<Image>();
+        if (!fuse)
+        {
+            fuse = new GameObject("ExplosiveFuseFill", typeof(Image)).GetComponent<Image>();
+            fuse.transform.SetParent(rt, false);
+
+            var fuseRt = fuse.rectTransform;
+            fuseRt.anchorMin = fuseRt.anchorMax = new Vector2(0.5f, 0.5f);
+            fuseRt.sizeDelta = rt.sizeDelta;
+            fuseRt.anchoredPosition = Vector2.zero;
+        }
+
+        fuse.sprite = OnePx();
+        fuse.type = Image.Type.Filled;
+        fuse.fillMethod = Image.FillMethod.Radial360;
+        fuse.fillOrigin = (int)Image.Origin360.Top;
+        fuse.fillClockwise = false;
+        fuse.fillAmount = 1f;
+        fuse.raycastTarget = false;
+        fuse.color = new Color(
+            explosiveFillColor.r,
+            explosiveFillColor.g,
+            explosiveFillColor.b,
+            Mathf.Clamp01(explosiveFillColor.a * explosiveFuseOverlayAlpha));
+
+        var fillTransform = fill ? fill.rectTransform : null;
+        if (fillTransform)
+            fuse.rectTransform.SetSiblingIndex(Mathf.Min(fillTransform.GetSiblingIndex() + 1, rt.childCount - 1));
 
         // Flash overlay (red)
         var flash = rt.Find("ExplosiveFlash")?.GetComponent<Image>();
@@ -2673,6 +2719,7 @@ public class Board : MonoBehaviour
         }
 
         flash.color = new Color(explosiveFlashColor.r, explosiveFlashColor.g, explosiveFlashColor.b, 0f);
+        flash.rectTransform.SetAsLastSibling();
     }
 
     void TickMagicExplosives()
@@ -2697,9 +2744,9 @@ public class Board : MonoBehaviour
             float remaining = Mathf.Max(0f, st.fuseSeconds - (now - st.startTime));
 
             // Radial wipe (1 to 0 over time)
-            var fill = rt.Find("HealthFill")?.GetComponent<Image>();
-            if (fill)
-                fill.fillAmount = 1f - t;
+            var fuseFill = rt.Find("ExplosiveFuseFill")?.GetComponent<Image>();
+            if (fuseFill)
+                fuseFill.fillAmount = 1f - t;
 
             // Single pulses at 25%, 50%, 75%
             float nextPulseT = (st.pulseStage == 0) ? 0.25f : (st.pulseStage == 1) ? 0.50f : (st.pulseStage == 2) ? 0.75f : 999f;

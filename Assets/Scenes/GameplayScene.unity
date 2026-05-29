@@ -16978,6 +16978,7 @@ MonoBehaviour:
   stoneCriticalSprite: {fileID: -8822111029399401767, guid: a2046d0780b221d48a775a3ba76c5567, type: 3}
   magicPylonSprite: {fileID: -426408492941337583, guid: c6a96956e20e0134e9634264395fe1f3, type: 3}
   magicExplosiveSprite: {fileID: 21300000, guid: 769a4051cad8b3841828f0aa68867ab0, type: 3}
+  bossObstacleBackgroundSprite: {fileID: 3066412145347965409, guid: 31244b13aa6488140b0cbbe8cd4f3454, type: 3}
   explosiveFillColor: {r: 0.3077478, g: 1, b: 0.25098038, a: 1}
   explosiveBackColor: {r: 0, g: 0, b: 0, a: 1}
   explosiveFlashColor: {r: 1, g: 0.1, b: 0.1, a: 1}
@@ -24634,14 +24635,12 @@ MonoBehaviour:
   sfxCurrencyLineGain: {fileID: 8300000, guid: 8cc2cb58f546add4cad7ed3e5909933a, type: 3}
   pieceLockSfxClips:
   - {fileID: 8300000, guid: 3847d89fb005c924f983232e0d65a158, type: 3}
-  - {fileID: 8300000, guid: 6a1df361a64539e4e96a277488995ac3, type: 3}
-  - {fileID: 8300000, guid: 7f0e7d8d140260049826a13349936640, type: 3}
   - {fileID: 8300000, guid: e37ff176c0d6ad249a21582ecf99b56f, type: 3}
   - {fileID: 8300000, guid: f1d806b0ad2435f4995b7cded1479a26, type: 3}
   - {fileID: 8300000, guid: fd44f083df14aa74ebe63f2fe71a69e9, type: 3}
   - {fileID: 8300000, guid: 4c75a64808be9ff4299d529e27086d01, type: 3}
   - {fileID: 8300000, guid: cdff2a91674d25b4583d6ebef9248b12, type: 3}
-  pieceLockSfxVolume: 1
+  pieceLockSfxVolume: 1.5
   specialSlider: {fileID: 901058035}
   specialText: {fileID: 360363618}
   gameplayControlsText: {fileID: 1402636635}
@@ -27470,7 +27469,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1076897612440379535, guid: 3b14f087e3986b04abf41ccbff2fe2e1, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -406.10568
+      value: -403
       objectReference: {fileID: 0}
     - target: {fileID: 1420811652718792777, guid: 3b14f087e3986b04abf41ccbff2fe2e1, type: 3}
       propertyPath: m_IsActive
@@ -27495,6 +27494,10 @@ PrefabInstance:
     - target: {fileID: 2651743815910021504, guid: 3b14f087e3986b04abf41ccbff2fe2e1, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3858525593349362695, guid: 3b14f087e3986b04abf41ccbff2fe2e1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4582190956100820159, guid: 3b14f087e3986b04abf41ccbff2fe2e1, type: 3}
       propertyPath: m_Name

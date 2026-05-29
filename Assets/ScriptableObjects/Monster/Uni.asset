@@ -48,14 +48,14 @@ MonoBehaviour:
   - {fileID: 5552976981532233964, guid: 5d2c7dcac83fb3041bd4f110777acf29, type: 3}
   - {fileID: 1285527705952191153, guid: 02b7210ffd2b9f54d9160c1c90f4a98d, type: 3}
   - {fileID: 1963485298359168370, guid: 3f060e0aef6cce845a2a1e7444a9158f, type: 3}
-  - {fileID: -8015936652213383700, guid: 0631f52b44ef00540b5ed503e3865d5e, type: 3}
   - {fileID: 2734388418859358967, guid: 0befd796f60db044a896052303ea2713, type: 3}
+  - {fileID: -8015936652213383700, guid: 0631f52b44ef00540b5ed503e3865d5e, type: 3}
   skinAttackSpritesAlt:
   - {fileID: 8410650953135458048, guid: 2e6dc222c6347e24aafc0f4f23521ce5, type: 3}
   - {fileID: 6315655475945864523, guid: ac5eed56202c9af4bbe4fe8d13634bdc, type: 3}
   - {fileID: 1562459477079051622, guid: c347dc6344df0fd4a8298ec984978550, type: 3}
-  - {fileID: 6434624169390713750, guid: 1df4ecfb45f6c5b428aff91289411819, type: 3}
   - {fileID: -984910609674147450, guid: 9c5225352cf03b546b03a5419acc382d, type: 3}
+  - {fileID: 6434624169390713750, guid: 1df4ecfb45f6c5b428aff91289411819, type: 3}
   healSprite: {fileID: 21300000, guid: dc6ff6b0cfcef97419f4edc308db832a, type: 3}
   attackToggleInterval: 0.08
   spinDegreesPerSecond: 720
