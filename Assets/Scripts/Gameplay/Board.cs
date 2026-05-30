@@ -1603,19 +1603,38 @@ public class Board : MonoBehaviour
         var rowDominantMonster = new Dictionary<int, MonsterData>();
         var gc = _gc ? _gc : (_gc = FindFirstObjectByType<GameController>());
 
-        bool clearedAny = true;
         var stonesDamaged = new HashSet<Vector2Int>();
+        var fullRows = new List<int>();
 
-        while (clearedAny)
+        while (true)
         {
-            clearedAny = false;
+            fullRows.Clear();
 
             for (int y = 0; y < height; y++)
             {
                 if (!IsClearableOccupiedRow(y))
                     continue;
 
-                clearedAny = true;
+                fullRows.Add(y);
+            }
+
+            if (fullRows.Count == 0)
+                break;
+
+            if (rowsCleared == 0 && gc)
+            {
+                var tutorialTargets = new List<RectTransform>();
+                for (int i = 0; i < fullRows.Count; i++)
+                    tutorialTargets.AddRange(GetPlacedVisualsInRow(fullRows[i]));
+
+                yield return gc.ShowFirstFullRowTutorialIfNeeded(tutorialTargets);
+            }
+
+            // Animate and score every row that is full in this wave before removing any of them.
+            float preClearHoldSeconds = Mathf.Max(0f, cascadeDelay);
+            for (int i = 0; i < fullRows.Count; i++)
+            {
+                int y = fullRows[i];
                 rowsCleared++;
 
                 int clearIndex = rowsCleared - 1;
@@ -1685,17 +1704,21 @@ public class Board : MonoBehaviour
                         rowDominantMonster[rowKey] = dominant;
                 }
 
-                if (rowsCleared == 1 && gc)
-                    yield return gc.ShowFirstFullRowTutorialIfNeeded(GetPlacedVisualsInRow(y));
-
                 float backgroundPulseSeconds = PlayRowClearBackgroundPulse(y, clearOriginColumnsByRow);
                 bool rowAltShown = ShowAltPortraitsInRow(y);
                 float altHoldSeconds = (rowAltShown && attackLineClearAltHoldSeconds > 0f) ? attackLineClearAltHoldSeconds : 0f;
-                float preClearHoldSeconds = Mathf.Max(backgroundPulseSeconds, altHoldSeconds);
-                if (preClearHoldSeconds > 0f)
-                    yield return new WaitForSecondsRealtime(preClearHoldSeconds);
+                preClearHoldSeconds = Mathf.Max(preClearHoldSeconds, backgroundPulseSeconds, altHoldSeconds);
+            }
 
-                // ===== Remove row contents =====
+            // Keep these reactions in one shared timing window. The full background
+            // flash stays visible, but the cascade pause no longer adds extra time after it.
+            if (preClearHoldSeconds > 0f)
+                yield return new WaitForSecondsRealtime(preClearHoldSeconds);
+
+            // ===== Remove all row contents in this wave =====
+            for (int i = 0; i < fullRows.Count; i++)
+            {
+                int y = fullRows[i];
                 for (int x = 0; x < width; x++)
                 {
                     var key = new Vector2Int(x, y);
@@ -1713,16 +1736,13 @@ public class Board : MonoBehaviour
                         removedCells.Add(key);
                     }
                 }
-
-                SettleAllColumns(false); // Let remaining tiles fall into gaps (stones remain as blockers)
-
-                // Redraw at least one frame so cascade-created full rows are visible before being cleared
-                yield return null;
-                if (cascadeDelay > 0f)
-                    yield return new WaitForSecondsRealtime(cascadeDelay);
-
-                y = -1; // Board changed, restart scanning from bottom
             }
+
+            SettleAllColumns(false); // Let remaining tiles fall into gaps (stones remain as blockers)
+
+            // Redraw at least one frame so cascade-created full rows are visible before being cleared.
+            // The cascade pause is already included in the shared pre-clear timing above.
+            yield return null;
         }
 
         CleanOrphanedTiles();
