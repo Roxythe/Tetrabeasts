@@ -248,7 +248,6 @@ public class Piece : MonoBehaviour
             fill.type = UnityEngine.UI.Image.Type.Simple;
             fill.preserveAspect = false;
             fill.color = color;
-            board.ConfigureTetrominoBackgroundPulse(fill, color, data ? data.backgroundImage : null, i);
 
             var frt = fill.rectTransform;
             frt.SetParent(rt, false);
@@ -256,6 +255,7 @@ public class Piece : MonoBehaviour
             frt.sizeDelta = rt.sizeDelta;
             frt.anchoredPosition = Vector2.zero;
             frt.SetAsFirstSibling(); // Icons/portraits sit on top
+            board.ConfigureTetrominoBackgroundPulse(fill, color, data ? data.backgroundImage : null);
 
             // Halve thickness on shared edges
             bool L = activeSet.Contains(c + Vector2Int.left) || (board.InBounds(c + Vector2Int.left) && !board.IsFree(c + Vector2Int.left));
@@ -266,7 +266,6 @@ public class Piece : MonoBehaviour
             board.ApplySharedEdges(rt, L, R, U, D);
 
             // Portrait/special icon
-            var innerRT = frt;
             if (isSpecial && data.specialSprite != null)
             {
                 var go = new GameObject("SpecialIcon", typeof(UnityEngine.UI.Image));
@@ -274,9 +273,9 @@ public class Piece : MonoBehaviour
                 p.sprite = data.specialSprite; p.preserveAspect = true;
                 p.raycastTarget = false;
 
-                var prt = p.rectTransform; prt.SetParent(innerRT, false);
+                var prt = p.rectTransform; prt.SetParent(rt, false);
                 prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
-                prt.sizeDelta = innerRT.sizeDelta - new Vector2(2f, 2f);
+                prt.sizeDelta = frt.sizeDelta - new Vector2(2f, 2f);
                 prt.anchoredPosition = Vector2.zero;
             }
             else if (!isSpecial && i < monstersForCells.Count && monstersForCells[i])
@@ -289,9 +288,9 @@ public class Piece : MonoBehaviour
                     p.sprite = portrait; p.preserveAspect = true;
                     p.raycastTarget = false;
 
-                    var prt = p.rectTransform; prt.SetParent(innerRT, false);
+                    var prt = p.rectTransform; prt.SetParent(rt, false);
                     prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
-                    prt.sizeDelta = innerRT.sizeDelta - new Vector2(2f, 2f);
+                    prt.sizeDelta = frt.sizeDelta - new Vector2(2f, 2f);
                     prt.localScale = Vector3.one * 0.9f;
                     prt.anchoredPosition = Vector2.zero;
                 }
@@ -677,6 +676,7 @@ public class Piece : MonoBehaviour
         visualTransitionCoroutine = null;
         hardDropVisualLockPending = false;
 
+        var gc = GetComponent<GameController>();
         bool toppedOut = false;
         bool isSpecial = data.special != SpecialType.None;
 
@@ -686,22 +686,26 @@ public class Piece : MonoBehaviour
         if (toppedOut)
         {
             RestoreHardDropPreviewNeighborBorders();
+            ClearHints();
+
+            var topOutColsByRow = PlaceTopOutPieceTiles();
+            gc?.PlayPieceLockSFX();
 
             foreach (var v in visuals) if (v) Destroy(v.gameObject);
             visuals.Clear();
+            hardDropPreviewBorderCells.Clear();
 
-            GetComponent<GameController>().OnPieceLocked(0, new System.Collections.Generic.List<Vector2Int>(),
-                                                         0, 0f, new System.Collections.Generic.Dictionary<int, int>(),
-                                                         new System.Collections.Generic.Dictionary<int, MonsterData>(),
-                                                         new System.Collections.Generic.Dictionary<int,
-                                                         System.Collections.Generic.List<int>>());
+            gc?.OnPieceLocked(0, new List<Vector2Int>(),
+                              0, 0f, new Dictionary<int, int>(),
+                              new Dictionary<int, MonsterData>(),
+                              topOutColsByRow);
 
-            GetComponent<GameController>().GameOver();
+            if (gc)
+                StartCoroutine(CoTriggerGameOverAfterTopOutPlacement(gc));
+
             enabled = false;
             return;
         }
-
-        var gc = GetComponent<GameController>();
 
         // ---------- SPECIAL PIECES ----------
         if (isSpecial)
@@ -884,7 +888,9 @@ public class Piece : MonoBehaviour
         for (int i = 0; i < cells.Count; i++)
         {
             MonsterData md = (i < monstersForCells.Count) ? monstersForCells[i] : null;
-            var sprite = GetCurrentMonsterPortrait(md);
+            var sprite = data && data.special != SpecialType.None
+                ? data.specialSprite
+                : GetCurrentMonsterPortrait(md);
             var placed = board.InstantiateTileUI(color, sprite, data ? data.backgroundImage : null, portraitScale: 0.9f);
 
             placed.anchoredPosition = board.CellToAnchoredPos(cells[i]);
@@ -931,6 +937,55 @@ public class Piece : MonoBehaviour
             if (gc != null && gc.CurrentLevel == levelBefore && gc.CanSpawnNewPiece())
                 gc.SpawnNextPiece();
         }, clearOriginColumnsByRow: colsByRow);
+    }
+
+    Dictionary<int, List<int>> PlaceTopOutPieceTiles()
+    {
+        var colsByRow = new Dictionary<int, List<int>>();
+        if (!board)
+            return colsByRow;
+
+        int pieceGroupId = board.AllocatePieceGroupId();
+
+        for (int i = 0; i < cells.Count; i++)
+        {
+            MonsterData md = (i < monstersForCells.Count) ? monstersForCells[i] : null;
+            var sprite = data && data.special != SpecialType.None
+                ? data.specialSprite
+                : GetCurrentMonsterPortrait(md);
+            var placed = board.InstantiateTileUI(color, sprite, data ? data.backgroundImage : null, portraitScale: 0.9f);
+            var cell = cells[i];
+
+            placed.anchoredPosition = board.CellToAnchoredPos(cell);
+            board.Place(cell, placed);
+
+            if (board.InBounds(cell))
+            {
+                board.SetMonsterAt(cell, new Board.MonsterInstance(md, pieceGroupId));
+
+                if (!colsByRow.TryGetValue(cell.y, out var columns))
+                {
+                    columns = new List<int>();
+                    colsByRow[cell.y] = columns;
+                }
+
+                if (!columns.Contains(cell.x))
+                    columns.Add(cell.x);
+            }
+        }
+
+        for (int i = 0; i < cells.Count; i++)
+            board.RefreshTileBordersAround(cells[i]);
+
+        return colsByRow;
+    }
+
+    IEnumerator CoTriggerGameOverAfterTopOutPlacement(GameController gc)
+    {
+        yield return null;
+
+        if (gc)
+            gc.GameOver();
     }
 
     public void ResetPiece()

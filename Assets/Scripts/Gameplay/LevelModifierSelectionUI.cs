@@ -48,6 +48,9 @@ public class LevelModifierSelectionUI : MonoBehaviour
     [SerializeField] Image modifierInfoIcon;
     [SerializeField] TMP_Text modifierInfoDescText;
     [SerializeField] Button closeInfoButton;
+    [SerializeField] TMP_Text selectedModifierTitleText;
+    [SerializeField] TMP_Text selectedModifierShadowTitleText;
+    [SerializeField] TMP_Text selectedModifierDescText;
 
     [Header("Slot Columns")]
     [SerializeField] RectTransform[] viewports = new RectTransform[3];
@@ -92,6 +95,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
     bool _isSpinning;
 
     LevelModifierSO _currentChosenModifier;
+    LevelModifierSO _lastInfoModifier;
     Quaternion _leverDefaultRotation = Quaternion.identity;
     Vector3 _leverArrowBaseScale = Vector3.one;
     Vector3 _modNameBaseScale = Vector3.one;
@@ -99,16 +103,27 @@ public class LevelModifierSelectionUI : MonoBehaviour
     Color _modNameBaseColor = Color.white;
     Color _modNameShadowBaseColor = Color.white;
     Coroutine _modNameAnimCR;
+    Coroutine _deferredInfoRefreshCR;
     ScopedMenuNavigator _navigator;
 
     public LevelModifierSO CurrentChosenModifier => _currentChosenModifier;
     public RectTransform TutorialTarget => root ? root : transform as RectTransform;
 
+    public void SetActiveModifierInfo(LevelModifierSO modifier)
+    {
+        if (!modifier)
+            return;
+
+        _currentChosenModifier = modifier;
+        PopulateModifierInfoPanel(modifier);
+    }
+
     public IEnumerator PlaySelection(
         IReadOnlyList<LevelModifierSO> pool,
         LevelModifierSO chosen,
         Func<int> getAvailableRerolls = null,
-        RerollHandler rerollHandler = null)
+        RerollHandler rerollHandler = null,
+        Action onPanelFullyShown = null)
     {
         if (!chosen)
             yield break;
@@ -124,14 +139,12 @@ public class LevelModifierSelectionUI : MonoBehaviour
         _rerollClicked = false;
         _isSpinning = false;
         _currentChosenModifier = chosen;
+        RefreshSelectedModifierPanel(chosen);
 
         CacheSlotMachineLights();
         ResetSlotMachineLights();
 
-        UIPanelTransition.Show(root.gameObject);
-
         var gameController = FindFirstObjectByType<GameController>(FindObjectsInactive.Include);
-        gameController?.QueueFirstLevelModifierTutorialIfNeeded(TutorialTarget);
 
         if (leverVisual)
             _leverDefaultRotation = leverVisual.localRotation;
@@ -167,7 +180,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
         if (leverButton)
         {
             leverButton.gameObject.SetActive(true);
-            leverButton.interactable = true;
+            SetLeverButtonEnabled(true);
         }
 
         var sprites = BuildSpritePool(pool, chosen);
@@ -176,12 +189,22 @@ public class LevelModifierSelectionUI : MonoBehaviour
         for (int i = 0; i < _columns.Count; i++)
             PopulateColumn(_columns[i], sprites, chosen.icon);
 
+        root.SetAsLastSibling();
+        UIPanelTransition.Show(root.gameObject);
+
+        if (onPanelFullyShown != null)
+        {
+            yield return WaitForSelectionPanelFullyShown();
+            onPanelFullyShown.Invoke();
+        }
+
+        gameController?.QueueFirstLevelModifierTutorialIfNeeded(TutorialTarget);
+
         RefreshMenuNavigation(selectFirst: true);
 
         yield return new WaitUntil(() => _spinClicked);
 
-        if (leverButton)
-            leverButton.interactable = false;
+        SetLeverButtonEnabled(false);
 
         while (true)
         {
@@ -225,6 +248,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
 
                 chosen = rerolledModifier;
                 _currentChosenModifier = rerolledModifier;
+                RefreshSelectedModifierPanel(chosen);
                 ResetSlotMachineLights();
                 shouldSpinAgain = true;
                 break;
@@ -251,12 +275,36 @@ public class LevelModifierSelectionUI : MonoBehaviour
         ResetSlotMachineLights();
         DisableMenuNavigation();
         UIPanelTransition.Hide(root.gameObject);
+        SetLeverButtonEnabled(true);
+    }
+
+    void OnEnable()
+    {
+        TetrabeastsLocalization.LanguageChanged += HandleLanguageChanged;
+    }
+
+    IEnumerator WaitForSelectionPanelFullyShown()
+    {
+        if (!root)
+            yield break;
+
+        while (root.gameObject.activeInHierarchy && !UIPanelTransition.IsFullyShown(root.gameObject))
+            yield return null;
     }
 
     void OnDisable()
     {
+        TetrabeastsLocalization.LanguageChanged -= HandleLanguageChanged;
+
+        if (_deferredInfoRefreshCR != null)
+        {
+            StopCoroutine(_deferredInfoRefreshCR);
+            _deferredInfoRefreshCR = null;
+        }
+
         DisableMenuNavigation();
         ResetSlotMachineLights();
+        SetLeverButtonEnabled(true);
     }
 
     void Update()
@@ -304,7 +352,68 @@ public class LevelModifierSelectionUI : MonoBehaviour
         if (viewports == null || viewports.Length != 3 || contents == null || contents.Length != 3)
             Debug.LogWarning("LevelModifierSelectionUI: Assign exactly 3 viewports and 3 contents.");
 
+        EnsureSelectedModifierTextRefs();
         ConfigureLeverTargetVisual();
+    }
+
+    void EnsureSelectedModifierTextRefs()
+    {
+        Transform searchRoot = modifierInfoPanel ? modifierInfoPanel.transform : root;
+
+        TMP_Text titleText = FindTextByName(searchRoot, "ModTitle_Text");
+        if (titleText)
+        {
+            modifierInfoTitleText = titleText;
+            selectedModifierTitleText = titleText;
+        }
+        else if (!selectedModifierTitleText)
+        {
+            selectedModifierTitleText = modifierInfoTitleText;
+        }
+
+        TMP_Text shadowTitleText = FindTextByName(searchRoot, "ModShadowTitle_Text", "ShadowModTitle_Text", "ModTitleShadow_Text");
+        if (shadowTitleText)
+        {
+            modifierInfoShadowTitleText = shadowTitleText;
+            selectedModifierShadowTitleText = shadowTitleText;
+        }
+        else if (!selectedModifierShadowTitleText)
+        {
+            selectedModifierShadowTitleText = modifierInfoShadowTitleText;
+        }
+
+        TMP_Text descText = FindTextByName(searchRoot, "ModeDesc_Text", "ModDesc_Text");
+        if (descText)
+        {
+            modifierInfoDescText = descText;
+            selectedModifierDescText = descText;
+        }
+        else if (!selectedModifierDescText)
+        {
+            selectedModifierDescText = modifierInfoDescText;
+        }
+    }
+
+    static TMP_Text FindTextByName(Transform searchRoot, params string[] names)
+    {
+        if (!searchRoot || names == null || names.Length == 0)
+            return null;
+
+        var texts = searchRoot.GetComponentsInChildren<TMP_Text>(true);
+        for (int nameIndex = 0; nameIndex < names.Length; nameIndex++)
+        {
+            string targetName = names[nameIndex];
+            if (string.IsNullOrEmpty(targetName))
+                continue;
+
+            for (int i = 0; i < texts.Length; i++)
+            {
+                if (texts[i] && string.Equals(texts[i].name, targetName, StringComparison.OrdinalIgnoreCase))
+                    return texts[i];
+            }
+        }
+
+        return null;
     }
 
     void ConfigureLeverTargetVisual()
@@ -316,6 +425,18 @@ public class LevelModifierSelectionUI : MonoBehaviour
             null,
             UIButtonTargetVisual.ControllerArrowPlacement.None,
             leverButton.transform);
+    }
+
+    void SetLeverButtonEnabled(bool enabled)
+    {
+        if (!leverButton)
+            return;
+
+        leverButton.interactable = enabled;
+
+        var targetVisual = leverButton.GetComponent<UIButtonTargetVisual>();
+        if (targetVisual)
+            targetVisual.ClearTransientTargeting();
     }
 
     void CacheSlotMachineLights()
@@ -438,6 +559,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
         if (leverArrowVisual)
             leverArrowVisual.gameObject.SetActive(false);
 
+        SetLeverButtonEnabled(false);
         _spinClicked = true;
     }
 
@@ -606,9 +728,13 @@ public class LevelModifierSelectionUI : MonoBehaviour
 
     void OnModifierInfoClicked()
     {
+        LevelModifierSO modifier = ResolveInfoModifier(_currentChosenModifier);
+        PopulateModifierInfoPanel(modifier);
+
         if (modifierInfoPanel)
         {
             UIPanelTransition.Show(modifierInfoPanel);
+            QueueDeferredInfoRefresh(modifier);
             RefreshMenuNavigation(selectFirst: true);
         }
     }
@@ -624,23 +750,124 @@ public class LevelModifierSelectionUI : MonoBehaviour
 
     void PopulateModifierInfoPanel(LevelModifierSO modifier)
     {
+        modifier = ResolveInfoModifier(modifier);
         if (!modifier)
             return;
+
+        ApplyModifierInfoContent(modifier, updateIcon: true, forceMeshUpdate: true);
+    }
+
+    void RefreshSelectedModifierPanel(LevelModifierSO modifier)
+    {
+        modifier = ResolveInfoModifier(modifier);
+        if (!modifier)
+            return;
+
+        ApplyModifierInfoContent(modifier, updateIcon: true, forceMeshUpdate: false);
+    }
+
+    LevelModifierSO ResolveInfoModifier(LevelModifierSO preferred)
+    {
+        var gameController = FindFirstObjectByType<GameController>(FindObjectsInactive.Include);
+        if (gameController && gameController.levelModifierController && gameController.levelModifierController.ActiveModifier)
+            return gameController.levelModifierController.ActiveModifier;
+
+        if (preferred)
+            return preferred;
+
+        if (_currentChosenModifier)
+            return _currentChosenModifier;
+
+        return _lastInfoModifier;
+    }
+
+    void ApplyModifierInfoContent(LevelModifierSO modifier, bool updateIcon, bool forceMeshUpdate)
+    {
+        if (!modifier)
+            return;
+
+        _lastInfoModifier = modifier;
+        EnsureSelectedModifierTextRefs();
 
         string displayName = TetrabeastsLocalization.LocalizeText(modifier.displayName);
         string description = TetrabeastsLocalization.LocalizeText(modifier.description);
 
-        if (modifierInfoTitleText)
-            modifierInfoTitleText.text = displayName;
+        var titles = new List<TMP_Text>(2);
+        AddUniqueText(titles, modifierInfoTitleText);
+        AddUniqueText(titles, selectedModifierTitleText);
+        AddUniqueText(titles, FindTextByName(modifierInfoPanel ? modifierInfoPanel.transform : root, "ModTitle_Text"));
+        for (int i = 0; i < titles.Count; i++)
+            SetDynamicText(titles[i], displayName, forceMeshUpdate);
 
-        if (modifierInfoShadowTitleText)
-            modifierInfoShadowTitleText.text = displayName;
+        var shadows = new List<TMP_Text>(2);
+        AddUniqueText(shadows, modifierInfoShadowTitleText);
+        AddUniqueText(shadows, selectedModifierShadowTitleText);
+        AddUniqueText(shadows, FindTextByName(modifierInfoPanel ? modifierInfoPanel.transform : root, "ModShadowTitle_Text", "ShadowModTitle_Text", "ModTitleShadow_Text"));
+        for (int i = 0; i < shadows.Count; i++)
+            SetDynamicText(shadows[i], displayName, forceMeshUpdate);
 
-        if (modifierInfoIcon)
+        var descriptions = new List<TMP_Text>(2);
+        AddUniqueText(descriptions, modifierInfoDescText);
+        AddUniqueText(descriptions, selectedModifierDescText);
+        AddUniqueText(descriptions, FindTextByName(modifierInfoPanel ? modifierInfoPanel.transform : root, "ModeDesc_Text", "ModDesc_Text"));
+        for (int i = 0; i < descriptions.Count; i++)
+            SetDynamicText(descriptions[i], description, forceMeshUpdate);
+
+        if (updateIcon && modifierInfoIcon)
             modifierInfoIcon.sprite = modifier.icon;
 
-        if (modifierInfoDescText)
-            modifierInfoDescText.text = description;
+        if (forceMeshUpdate)
+            Canvas.ForceUpdateCanvases();
+    }
+
+    void QueueDeferredInfoRefresh(LevelModifierSO modifier)
+    {
+        if (_deferredInfoRefreshCR != null)
+            StopCoroutine(_deferredInfoRefreshCR);
+
+        _deferredInfoRefreshCR = StartCoroutine(DeferredInfoRefreshRoutine(modifier));
+    }
+
+    IEnumerator DeferredInfoRefreshRoutine(LevelModifierSO modifier)
+    {
+        yield return null;
+
+        ApplyModifierInfoContent(ResolveInfoModifier(modifier), updateIcon: true, forceMeshUpdate: true);
+        _deferredInfoRefreshCR = null;
+    }
+
+    void HandleLanguageChanged()
+    {
+        LevelModifierSO modifier = ResolveInfoModifier(_lastInfoModifier);
+        if (modifier)
+            ApplyModifierInfoContent(modifier, updateIcon: true, forceMeshUpdate: true);
+    }
+
+    static void AddUniqueText(List<TMP_Text> texts, TMP_Text text)
+    {
+        if (!text || texts.Contains(text))
+            return;
+
+        texts.Add(text);
+    }
+
+    static void SetDynamicText(TMP_Text text, string value, bool forceMeshUpdate)
+    {
+        if (!text)
+            return;
+
+        var localizedText = text.GetComponent<TetrabeastsLocalizedText>();
+        if (localizedText)
+            localizedText.enabled = false;
+
+        var localizedRawText = text.GetComponent<TetrabeastsLocalizedRawText>();
+        if (localizedRawText)
+            localizedRawText.enabled = false;
+
+        text.text = value ?? string.Empty;
+
+        if (forceMeshUpdate)
+            text.ForceMeshUpdate(true, true);
     }
 
     void RevealModifier(LevelModifierSO chosen)

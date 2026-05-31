@@ -40,6 +40,7 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
     Color[] fireBorderGraphicBaseColors;
     SpriteRenderer[] fireBorderSpriteRenderers;
     Color[] fireBorderSpriteBaseColors;
+    Selectable selectable;
     Vector3 targetBaseScale = Vector3.one;
     bool targetBaseScaleCaptured;
     bool targetPulseActive;
@@ -89,6 +90,8 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
 
     void Awake()
     {
+        selectable = GetComponent<Selectable>();
+
         if (!visualSearchRoot)
             visualSearchRoot = transform;
 
@@ -99,6 +102,9 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
 
     void OnEnable()
     {
+        if (!selectable)
+            selectable = GetComponent<Selectable>();
+
         CaptureTargetBaseScale();
         selected = EventSystem.current && EventSystem.current.currentSelectedGameObject == gameObject;
         ResolveFireBorderAnimation();
@@ -130,6 +136,12 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (!IsTargetInteractable())
+        {
+            ClearTransientTargeting();
+            return;
+        }
+
         pointerInside = true;
 
         if (hoverSfx && AudioManager.I)
@@ -140,6 +152,12 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
 
     public void OnPointerMove(PointerEventData eventData)
     {
+        if (!IsTargetInteractable())
+        {
+            ClearTransientTargeting();
+            return;
+        }
+
         if (!UICursorController.IsPointerTargetMode && !selected)
             return;
 
@@ -155,6 +173,12 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
 
     public void OnSelect(BaseEventData eventData)
     {
+        if (!IsTargetInteractable())
+        {
+            ClearTransientTargeting();
+            return;
+        }
+
         selected = true;
         RefreshVisuals();
     }
@@ -167,16 +191,42 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
 
     void RefreshVisuals()
     {
+        bool canTarget = IsTargetInteractable();
+        if (!canTarget)
+        {
+            pointerInside = false;
+            selected = false;
+        }
+
         bool navigationTargeted = selected && UICursorController.IsButtonNavigationMode;
         bool pointerTargeted = pointerInside && UICursorController.IsPointerTargetMode;
-        bool showFireBorder = pointerTargeted || navigationTargeted || persistentFireBorder;
+        bool showFireBorder = (canTarget && (pointerTargeted || navigationTargeted)) || persistentFireBorder;
         SetFireBorderDesired(showFireBorder);
         ApplyFireBorderTint(showFireBorder && persistentFireBorder);
-        UpdateTargetPulse(pointerTargeted || navigationTargeted);
+        UpdateTargetPulse(canTarget && (pointerTargeted || navigationTargeted));
 
-        bool showControllerArrow = controllerArrowPlacement != ControllerArrowPlacement.None && navigationTargeted;
+        bool showControllerArrow = canTarget && controllerArrowPlacement != ControllerArrowPlacement.None && navigationTargeted;
         SetControllerArrowVisible(showControllerArrow);
         UpdateControllerArrowPulse(showControllerArrow);
+    }
+
+    public void ClearTransientTargeting()
+    {
+        pointerInside = false;
+        selected = false;
+        targetCurrentlyTargeted = false;
+        targetPulsePlaying = false;
+        SetFireBorderDesired(persistentFireBorder);
+        SetControllerArrowVisible(false);
+        RestoreTargetPulseScale();
+    }
+
+    bool IsTargetInteractable()
+    {
+        if (!selectable)
+            selectable = GetComponent<Selectable>();
+
+        return !selectable || selectable.IsInteractable();
     }
 
     void CaptureTargetBaseScale()

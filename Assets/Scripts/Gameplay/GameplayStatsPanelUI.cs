@@ -394,11 +394,13 @@ public class GameplayStatsPanelUI : MonoBehaviour
         AddComparedFloat(_statsContent, "Piece Gravity", gc.EffectivePieceGravityMultForStats, 1f,
             FormatMultiplier, FormatSignedPercentDelta, higherIsBetter: false,
             sources: SourcesFor(shopBuff: !Approximately(ShopBuffEffects.GravityMultiplier, 1f),
+                levelMod: gc.LevelModifierGravitySlowActiveForStats,
                 bossAbility: gc.BossGravityActiveForStats,
                 runModStats: new[] { RunModStat.PieceGravityMult }));
         AddComparedFloat(_statsContent, "Gravity Ramp Rate", gc.EffectiveFallRampRateMultForStats, 1f,
             FormatMultiplier, FormatSignedPercentDelta, higherIsBetter: false,
             sources: SourcesFor(shopBuff: !Approximately(ShopBuffEffects.VelocityMultiplier, 1f),
+                levelMod: gc.LevelModifierGravitySlowActiveForStats,
                 runModStats: new[] { RunModStat.FallRampRateMult }));
         AddComparedFloat(_statsContent, "Special Block Chance", gc.CurrentSpecialBlockChanceForStats,
             gc.BaseSpecialChancePerEnqueueForStats, FormatPercent, FormatSignedPercentDelta, higherIsBetter: true,
@@ -525,6 +527,10 @@ public class GameplayStatsPanelUI : MonoBehaviour
                     sources: levelModSource);
                 AddComparedFloat(_statsContent, "Auto Rotate Interval", modifier.autoRotateInterval, 0f, FormatSeconds,
                     FormatSignedSeconds, false, forceNegative: true, sources: levelModSource);
+                AddComparedFloat(_statsContent, "Base Gravity", LevelModifierController.AutoMovementGravityMultiplier, 1f,
+                    FormatMultiplier, FormatSignedPercentDelta, false, sources: levelModSource);
+                AddComparedFloat(_statsContent, "Gravity Ramp Rate", LevelModifierController.AutoMovementGravityMultiplier, 1f,
+                    FormatMultiplier, FormatSignedPercentDelta, false, sources: levelModSource);
                 break;
 
             case LevelModifierKind.AutoShift:
@@ -532,6 +538,10 @@ public class GameplayStatsPanelUI : MonoBehaviour
                     sources: levelModSource);
                 AddComparedFloat(_statsContent, "Auto Shift Interval", modifier.autoShiftInterval, 0f, FormatSeconds,
                     FormatSignedSeconds, false, forceNegative: true, sources: levelModSource);
+                AddComparedFloat(_statsContent, "Base Gravity", LevelModifierController.AutoMovementGravityMultiplier, 1f,
+                    FormatMultiplier, FormatSignedPercentDelta, false, sources: levelModSource);
+                AddComparedFloat(_statsContent, "Gravity Ramp Rate", LevelModifierController.AutoMovementGravityMultiplier, 1f,
+                    FormatMultiplier, FormatSignedPercentDelta, false, sources: levelModSource);
                 break;
 
             case LevelModifierKind.ComboGated:

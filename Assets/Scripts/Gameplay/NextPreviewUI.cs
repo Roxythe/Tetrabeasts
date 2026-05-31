@@ -184,7 +184,7 @@ public class NextPreviewUI : MonoBehaviour
             frt.anchoredPosition = Vector2.zero;
             frt.SetAsFirstSibling();
             if (boardCmp)
-                boardCmp.ConfigureTetrominoBackgroundPulse(fill, color, data.backgroundImage, i);
+                boardCmp.ConfigureTetrominoBackgroundPulse(fill, color, data.backgroundImage);
 
             // Shared-edge halving
             bool Ls = previewSet.Contains(cell + Vector2Int.left);
@@ -198,8 +198,6 @@ public class NextPreviewUI : MonoBehaviour
             // Special icon or monster portrait
             if (isSpecial && data.specialSprite != null)
             {
-                var innerRT = (rt.Find("PreviewFill") as RectTransform) ?? rt;
-
                 var go = new GameObject("SpecialIcon", typeof(Image));
                 var iconImg = go.GetComponent<Image>();
                 iconImg.sprite = data.specialSprite;
@@ -207,16 +205,14 @@ public class NextPreviewUI : MonoBehaviour
                 iconImg.raycastTarget = false;
 
                 var prt = iconImg.rectTransform;
-                prt.SetParent(innerRT, false);
+                prt.SetParent(rt, false);
                 prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
-                prt.sizeDelta = innerRT.sizeDelta - new Vector2(2f, 2f);
+                prt.sizeDelta = frt.sizeDelta - new Vector2(2f, 2f);
                 prt.localScale = Vector3.one * 0.9f;
                 prt.anchoredPosition = Vector2.zero;
             }
             else if (monsters != null && i < monsters.Length && monsters[i])
             {
-                var innerRT = (rt.Find("PreviewFill") as RectTransform) ?? rt;
-
                 var go = new GameObject("MonsterPortrait", typeof(Image));
                 var portraitImg = go.GetComponent<Image>();
 
@@ -229,9 +225,10 @@ public class NextPreviewUI : MonoBehaviour
                 portraitImg.raycastTarget = false;
 
                 var prt = portraitImg.rectTransform;
-                prt.SetParent(innerRT, false);
+                prt.SetParent(rt, false);
                 prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
-                prt.sizeDelta = innerRT.sizeDelta - new Vector2(2f, 2f);
+                prt.sizeDelta = frt.sizeDelta - new Vector2(2f, 2f);
+                prt.localScale = Vector3.one * 0.9f;
                 prt.anchoredPosition = Vector2.zero;
             }
 

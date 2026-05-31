@@ -91,6 +91,11 @@ public class XpAwardUI : MonoBehaviour
     public float breakdownMaxSeconds = 2.5f;
     public float orbTransferMaxSeconds = 4.0f;
 
+    [Header("Long Drain Speedup")]
+    public float orbDrainSpeedupStartSeconds = 5f;
+    public float orbDrainSpeedupRampSeconds = 6f;
+    [Min(1f)] public float orbDrainMaxSpeedMultiplier = 8f;
+
     [Header("Orb Animation Start Delays")]
     public float orbGainStartDelaySeconds = 0.5f;
     public float orbDrainStartDelaySeconds = 0.5f;
@@ -854,6 +859,7 @@ public class XpAwardUI : MonoBehaviour
 
         int processed = 0;
         float elapsedSpawn = 0f;
+        float drainStartedAt = Time.unscaledTime;
 
         while (true)
         {
@@ -883,11 +889,14 @@ public class XpAwardUI : MonoBehaviour
 
             float progress = total > 0 ? (float)processed / total : 1f;
             float accel = Mathf.Pow(progress, Mathf.Max(0.1f, orbAccelPower));
+            float longDrainSpeed = GetLongDrainSpeedMultiplier(Time.unscaledTime - drainStartedAt);
 
-            float shapedInterval = Mathf.Lerp(orbSpawnIntervalStartSeconds, orbSpawnIntervalEndSeconds, accel);
-            float travelSeconds = Mathf.Lerp(orbTravelStartSeconds, orbTravelEndSeconds, accel);
+            float shapedInterval = Mathf.Lerp(orbSpawnIntervalStartSeconds, orbSpawnIntervalEndSeconds, accel) / longDrainSpeed;
+            float travelSeconds = Mathf.Lerp(orbTravelStartSeconds, orbTravelEndSeconds, accel) /
+                                  Mathf.Lerp(1f, longDrainSpeed, 0.75f);
 
-            int spawnsNeeded = Mathf.CeilToInt((float)CountOrbPacketsRemaining(remaining) / Mathf.Max(1, maxOrbsPerFrame));
+            int frameSpawnLimit = Mathf.Max(1, Mathf.CeilToInt(maxOrbsPerFrame * longDrainSpeed));
+            int spawnsNeeded = Mathf.CeilToInt((float)CountOrbPacketsRemaining(remaining) / frameSpawnLimit);
             float remainingTime = Mathf.Max(0.01f, orbTransferMaxSeconds - elapsedSpawn);
             float budgetInterval = remainingTime / Mathf.Max(1, spawnsNeeded);
 
@@ -897,7 +906,7 @@ public class XpAwardUI : MonoBehaviour
 
             for (int i = 0; i < roster.Count && i < _rows.Count; i++)
             {
-                if (spawnedThisFrame >= maxOrbsPerFrame) break;
+                if (spawnedThisFrame >= frameSpawnLimit) break;
                 if (remaining[i] <= 0) continue;
 
                 var row = _rows[i];
@@ -917,7 +926,9 @@ public class XpAwardUI : MonoBehaviour
                 int rowIndex = i;
                 var rowRef = row;
 
-                StartCoroutine(CoSpawnOrbWave(start, end, gain: false, startsUp: startsUp, travelSeconds: travelSeconds, accel01: accel,
+                float sfxAccel = Mathf.Max(accel, Mathf.InverseLerp(1f, Mathf.Max(1.001f, orbDrainMaxSpeedMultiplier), longDrainSpeed));
+
+                StartCoroutine(CoSpawnOrbWave(start, end, gain: false, startsUp: startsUp, travelSeconds: travelSeconds, accel01: sfxAccel,
                                              onArrive: () =>
                                              {
                                                  rowRef.SubtractXpFromOrb(orbXp, XpPerLevel);
@@ -925,7 +936,7 @@ public class XpAwardUI : MonoBehaviour
                                                  preservedShown[rowIndex] += orbXp * _permanentXpConversion;
                                                  rowRef.ShowXpDrainPreserved(preservedShown[rowIndex]);
                                              }));
-                StartCoroutine(CoSpawnOrbWave(start, end, gain: false, startsUp: !startsUp, travelSeconds: travelSeconds, accel01: accel,
+                StartCoroutine(CoSpawnOrbWave(start, end, gain: false, startsUp: !startsUp, travelSeconds: travelSeconds, accel01: sfxAccel,
                                              onArrive: null, playArrivalSfx: false));
             }
 
@@ -935,6 +946,19 @@ public class XpAwardUI : MonoBehaviour
         }
 
         yield return CoWaitForActiveOrbsToArrive();
+    }
+
+    float GetLongDrainSpeedMultiplier(float elapsedSeconds)
+    {
+        float start = Mathf.Max(0f, orbDrainSpeedupStartSeconds);
+        if (elapsedSeconds <= start)
+            return 1f;
+
+        float ramp = Mathf.Max(0.01f, orbDrainSpeedupRampSeconds);
+        float t = Mathf.Clamp01((elapsedSeconds - start) / ramp);
+        t = Mathf.SmoothStep(0f, 1f, t);
+
+        return Mathf.Lerp(1f, Mathf.Max(1f, orbDrainMaxSpeedMultiplier), t);
     }
 
     IEnumerator CoSpawnOrbWave(RectTransform start, RectTransform end, bool gain, bool startsUp, float travelSeconds, float accel01, Action onArrive, bool playArrivalSfx = true)

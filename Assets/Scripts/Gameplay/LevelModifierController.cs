@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class LevelModifierController : MonoBehaviour
 {
+    public const float AutoMovementGravityMultiplier = 0.333334f;
+
     struct OvergrowthState
     {
         public float elapsed;
@@ -111,7 +113,7 @@ public class LevelModifierController : MonoBehaviour
         SyncPersistentVisuals();
     }
 
-    public IEnumerator BeginLevel(CastleData castleData)
+    public IEnumerator BeginLevel(CastleData castleData, System.Action onSelectionPanelFullyShown = null)
     {
         CacheLevelBackground(castleData);
         ResetLevelState();
@@ -161,7 +163,7 @@ public class LevelModifierController : MonoBehaviour
                 return true;
             }
 
-            yield return _selectionUI.PlaySelection(pool, chosen, () => AvailableRerolls, TryConsumeReroll);
+            yield return _selectionUI.PlaySelection(pool, chosen, () => AvailableRerolls, TryConsumeReroll, onSelectionPanelFullyShown);
             chosen = _selectionUI.CurrentChosenModifier ? _selectionUI.CurrentChosenModifier : chosen;
         }
         IsSelectionRunning = false;
@@ -236,6 +238,9 @@ public class LevelModifierController : MonoBehaviour
     public bool BlocksManualHorizontalShift => ActiveModifier && ActiveModifier.kind == LevelModifierKind.AutoShift;
     public bool BlocksSpecialUsage => ActiveModifier && ActiveModifier.kind == LevelModifierKind.SpecialLock;
     public bool BlocksSpecialPieceSpawns => ActiveModifier && ActiveModifier.kind == LevelModifierKind.NoSpecialPieces;
+    public bool AppliesAutoMovementGravitySlow => ActiveModifier &&
+        (ActiveModifier.kind == LevelModifierKind.AutoRotate || ActiveModifier.kind == LevelModifierKind.AutoShift);
+    public float ActiveGravityMultiplier => AppliesAutoMovementGravitySlow ? AutoMovementGravityMultiplier : 1f;
 
     public float ModifyIncomingDamage(Vector2Int cell, MonsterData target, float amount, Board.DamageSource source)
     {
@@ -500,6 +505,8 @@ public class LevelModifierController : MonoBehaviour
             _gc?.SetSpecialGaugeImmediate(0f);
 
         RefreshModifierUI();
+        EnsureSelectionUI();
+        _selectionUI?.SetActiveModifierInfo(ActiveModifier);
 
         if (ActiveModifier.kind == LevelModifierKind.StormyWeather)
         {

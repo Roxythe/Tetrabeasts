@@ -32,12 +32,17 @@ public class Board : MonoBehaviour
     [Range(0f, 1f)] public float backgroundPassivePeakAlpha = 0.24f;
     [Range(0.001f, 1f)] public float backgroundPassiveStartScale = 0.12f;
     [Min(0.001f)] public float backgroundPassiveEndScale = 1f;
-    [Range(0f, 1f)] public float backgroundPulseWhiteBlend = 0.45f;
+    [Range(0f, 1f)] public float backgroundPulseWhiteBlend = 0f;
+    [Range(0f, 1f)] public float rowClearBackgroundWhiteBlend = 0f;
+    [Range(0f, 1f)] public float rowClearBackgroundMinSaturation = 1f;
+    [Range(1f, 2f)] public float rowClearBackgroundValueBoost = 1.6f;
+    [Range(0f, 1f)] public float rowClearBackgroundGlowAlpha = 0.56f;
+    [Min(1f)] public float rowClearBackgroundGlowScale = 1f;
     [Min(0f)] public float rowClearBackgroundRippleSeconds = 0.16f;
     [Min(0.01f)] public float rowClearBackgroundPulseRiseSeconds = 0.055f;
     [Min(0f)] public float rowClearBackgroundPeakHoldSeconds = 0.08f;
-    [Range(0f, 1f)] public float rowClearBackgroundPeakAlpha = 0.68f;
-    [Range(0.001f, 1f)] public float rowClearBackgroundStartScale = 0.10f;
+    [Range(0f, 1f)] public float rowClearBackgroundPeakAlpha = 0.88f;
+    [Range(0.001f, 1f)] public float rowClearBackgroundStartScale = 1f;
     [Min(0.001f)] public float rowClearBackgroundPeakScale = 1f;
 
     public Sprite defaultDeadOverlaySprite; 
@@ -750,7 +755,12 @@ public class Board : MonoBehaviour
         return rt;
     }
 
-    public void ConfigureTetrominoBackgroundPulse(Image fill, Color tileColor, Sprite backgroundImage, int offsetSeed = 0)
+    public void ConfigureTetrominoBackgroundPulse(
+        Image fill,
+        Color tileColor,
+        Sprite backgroundImage,
+        int offsetSeed = 0,
+        bool useSiblingPulseLayers = true)
     {
         if (!fill)
             return;
@@ -781,6 +791,12 @@ public class Board : MonoBehaviour
             backgroundPassiveStartScale,
             backgroundPassiveEndScale,
             backgroundPulseWhiteBlend,
+            rowClearBackgroundWhiteBlend,
+            rowClearBackgroundMinSaturation,
+            rowClearBackgroundValueBoost,
+            rowClearBackgroundGlowAlpha,
+            rowClearBackgroundGlowScale,
+            useSiblingPulseLayers,
             offset);
     }
 
@@ -3711,7 +3727,7 @@ public class Board : MonoBehaviour
         _activeBuffPopups.Remove(rt);
     }
 
-    bool IsClearableOccupiedRow(int y)
+    public bool IsClearableOccupiedRow(int y)
     {
         bool full = true;
         bool hasClearableContent = false;
@@ -3763,12 +3779,19 @@ public class TetrominoBackgroundPulse : MonoBehaviour
 {
     Image targetImage;
     RectTransform targetRect;
+    Image glowImage;
+    RectTransform glowRect;
     Image pulseImage;
     RectTransform pulseRect;
 
-    Color pulseColor = Color.white;
+    Color passivePulseColor = Color.white;
+    Color rowClearPulseColor = Color.white;
+    float rowClearGlowAlpha = 0.42f;
+    float rowClearGlowScale = 1.22f;
+    bool useSiblingPulseLayers = true;
     bool passiveEnabled;
     float passiveClock;
+    float passiveCycleOffset;
     float passiveInterval = 3f;
     float passiveDuration = 1.4f;
     float passivePeakAlpha = 0.22f;
@@ -3793,6 +3816,12 @@ public class TetrominoBackgroundPulse : MonoBehaviour
         float startScale,
         float endScale,
         float whiteBlend,
+        float rowClearWhiteBlend,
+        float rowClearMinSaturation,
+        float rowClearValueBoost,
+        float rowClearGlowAlpha,
+        float rowClearGlowScale,
+        bool useSiblingPulseLayers,
         float cycleOffset)
     {
         targetImage = GetComponent<Image>();
@@ -3804,10 +3833,19 @@ public class TetrominoBackgroundPulse : MonoBehaviour
         passivePeakAlpha = Mathf.Clamp01(peakAlpha);
         passiveStartScale = Mathf.Max(0.001f, startScale);
         passiveEndScale = Mathf.Max(passiveStartScale, endScale);
+        this.rowClearGlowAlpha = Mathf.Clamp01(rowClearGlowAlpha);
+        this.rowClearGlowScale = Mathf.Max(1f, rowClearGlowScale);
+        this.useSiblingPulseLayers = useSiblingPulseLayers;
 
-        pulseColor = Color.Lerp(tileColor, Color.white, Mathf.Clamp01(whiteBlend));
-        pulseColor.a = 1f;
-        passiveClock = Mathf.Repeat(cycleOffset, passiveInterval);
+        passivePulseColor = Color.Lerp(tileColor, Color.white, Mathf.Clamp01(whiteBlend));
+        passivePulseColor.a = 1f;
+        rowClearPulseColor = BuildNeonPulseColor(
+            tileColor,
+            rowClearWhiteBlend,
+            rowClearMinSaturation,
+            rowClearValueBoost);
+        passiveCycleOffset = Mathf.Repeat(cycleOffset, passiveInterval);
+        passiveClock = Mathf.Repeat(Time.unscaledTime + passiveCycleOffset, passiveInterval);
 
         EnsurePulseImage();
         SetPulseVisual(0f, passiveStartScale);
@@ -3879,7 +3917,7 @@ public class TetrominoBackgroundPulse : MonoBehaviour
             return;
         }
 
-        passiveClock = Mathf.Repeat(passiveClock + Time.deltaTime, passiveInterval);
+        passiveClock = Mathf.Repeat(Time.unscaledTime + passiveCycleOffset, passiveInterval);
         if (passiveClock > passiveDuration)
         {
             SetPulseVisual(0f, passiveStartScale);
@@ -3929,21 +3967,34 @@ public class TetrominoBackgroundPulse : MonoBehaviour
         if (!targetRect)
             return;
 
-        if (pulseImage)
+        if (pulseImage && glowImage)
             return;
 
-        var go = new GameObject("BackgroundPulseOverlay", typeof(RectTransform), typeof(Image));
-        pulseImage = go.GetComponent<Image>();
-        pulseImage.raycastTarget = false;
-        pulseImage.preserveAspect = false;
-        pulseImage.type = Image.Type.Simple;
+        Transform layerParent = GetPulseLayerParent();
 
-        pulseRect = pulseImage.rectTransform;
-        pulseRect.SetParent(targetRect, false);
-        pulseRect.anchorMin = pulseRect.anchorMax = new Vector2(0.5f, 0.5f);
-        pulseRect.pivot = new Vector2(0.5f, 0.5f);
-        pulseRect.anchoredPosition = Vector2.zero;
-        pulseRect.SetAsFirstSibling();
+        if (!glowImage)
+        {
+            var glowGo = new GameObject("BackgroundPulseGlow", typeof(RectTransform), typeof(Image));
+            glowImage = glowGo.GetComponent<Image>();
+            glowImage.raycastTarget = false;
+            glowImage.preserveAspect = false;
+            glowImage.type = Image.Type.Simple;
+
+            glowRect = glowImage.rectTransform;
+            glowRect.SetParent(layerParent, false);
+        }
+
+        if (!pulseImage)
+        {
+            var go = new GameObject("BackgroundPulseOverlay", typeof(RectTransform), typeof(Image));
+            pulseImage = go.GetComponent<Image>();
+            pulseImage.raycastTarget = false;
+            pulseImage.preserveAspect = false;
+            pulseImage.type = Image.Type.Simple;
+
+            pulseRect = pulseImage.rectTransform;
+            pulseRect.SetParent(layerParent, false);
+        }
     }
 
     void SyncPulseImageToTarget()
@@ -3951,12 +4002,81 @@ public class TetrominoBackgroundPulse : MonoBehaviour
         if (!pulseImage || !pulseRect || !targetImage || !targetRect)
             return;
 
-        pulseImage.sprite = targetImage.sprite;
-        pulseImage.type = Image.Type.Simple;
-        pulseImage.preserveAspect = false;
-        pulseRect.sizeDelta = targetRect.rect.size;
-        pulseRect.anchoredPosition = Vector2.zero;
-        pulseRect.SetAsFirstSibling();
+        Transform layerParent = GetPulseLayerParent();
+
+        SyncPulseLayer(glowImage, glowRect, layerParent);
+        SyncPulseLayer(pulseImage, pulseRect, layerParent);
+
+        if (useSiblingPulseLayers)
+        {
+            int backgroundIndex = targetRect.GetSiblingIndex();
+            if (glowRect)
+                glowRect.SetSiblingIndex(backgroundIndex + 1);
+            if (pulseRect)
+                pulseRect.SetSiblingIndex(backgroundIndex + 2);
+        }
+        else
+        {
+            if (glowRect)
+                glowRect.SetAsFirstSibling();
+            if (pulseRect)
+                pulseRect.SetSiblingIndex(glowRect ? glowRect.GetSiblingIndex() + 1 : 0);
+        }
+    }
+
+    Transform GetPulseLayerParent()
+    {
+        return useSiblingPulseLayers && targetRect && targetRect.parent
+            ? targetRect.parent
+            : targetRect;
+    }
+
+    void SyncPulseLayer(Image image, RectTransform rect, Transform layerParent)
+    {
+        if (!image || !rect || !targetRect || !layerParent)
+            return;
+
+        if (rect.parent != layerParent)
+            rect.SetParent(layerParent, false);
+
+        image.sprite = targetImage.sprite;
+        image.type = Image.Type.Simple;
+        image.preserveAspect = false;
+
+        if (layerParent == targetRect)
+        {
+            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.sizeDelta = targetRect.rect.size;
+            rect.anchoredPosition = Vector2.zero;
+        }
+        else
+        {
+            rect.anchorMin = targetRect.anchorMin;
+            rect.anchorMax = targetRect.anchorMax;
+            rect.pivot = targetRect.pivot;
+            rect.sizeDelta = targetRect.sizeDelta;
+            rect.anchoredPosition = targetRect.anchoredPosition;
+        }
+
+        rect.localRotation = targetRect.localRotation;
+    }
+
+    static Color BuildNeonPulseColor(
+        Color baseColor,
+        float whiteBlend,
+        float minSaturation,
+        float valueBoost)
+    {
+        Color.RGBToHSV(baseColor, out float h, out float s, out float v);
+
+        s = Mathf.Clamp01(Mathf.Max(s, minSaturation));
+        v = Mathf.Clamp01(Mathf.Max(v, 0.55f) * Mathf.Max(1f, valueBoost));
+
+        var neon = Color.HSVToRGB(h, s, v);
+        neon = Color.Lerp(neon, Color.white, Mathf.Clamp01(whiteBlend));
+        neon.a = 1f;
+        return neon;
     }
 
     void SetPulseVisual(float alpha, float scale)
@@ -3964,10 +4084,20 @@ public class TetrominoBackgroundPulse : MonoBehaviour
         if (!pulseImage || !pulseRect)
             return;
 
-        var color = pulseColor;
+        bool rowClear = clearPulseActive;
+        var color = rowClear ? rowClearPulseColor : passivePulseColor;
         color.a = Mathf.Clamp01(alpha);
         pulseImage.color = color;
         pulseImage.enabled = color.a > 0.001f;
         pulseRect.localScale = Vector3.one * Mathf.Max(0.001f, scale);
+
+        if (!glowImage || !glowRect)
+            return;
+
+        var glowColor = rowClearPulseColor;
+        glowColor.a = rowClear ? Mathf.Clamp01(alpha * rowClearGlowAlpha) : 0f;
+        glowImage.color = glowColor;
+        glowImage.enabled = glowColor.a > 0.001f;
+        glowRect.localScale = Vector3.one * Mathf.Max(0.001f, scale * rowClearGlowScale);
     }
 }

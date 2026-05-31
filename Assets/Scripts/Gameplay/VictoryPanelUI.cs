@@ -15,6 +15,8 @@ public class VictoryPanelUI : MonoBehaviour
     [SerializeField] TMP_Text unlockedDifficultyText;
 
     [Header("Modifier Lists")]
+    [SerializeField] ScrollRect buffsScrollRect;
+    [SerializeField] ScrollRect debuffsScrollRect;
     [SerializeField] Transform buffsContent;
     [SerializeField] Transform debuffsContent;
     [SerializeField] GameObject modifierRowPrefab;
@@ -76,6 +78,8 @@ public class VictoryPanelUI : MonoBehaviour
         }
 
         UIPanelTransition.Show(root);
+        Canvas.ForceUpdateCanvases();
+        RefreshModifierScrollAreas();
         Canvas.ForceUpdateCanvases();
         EnableNavigation();
         _showRequested = false;
@@ -157,7 +161,11 @@ public class VictoryPanelUI : MonoBehaviour
             return;
 
         for (int i = contentRoot.childCount - 1; i >= 0; i--)
-            Destroy(contentRoot.GetChild(i).gameObject);
+        {
+            var child = contentRoot.GetChild(i);
+            child.SetParent(null, false);
+            Destroy(child.gameObject);
+        }
 
         if (!modifierRowPrefab || source == null)
             return;
@@ -202,6 +210,117 @@ public class VictoryPanelUI : MonoBehaviour
             row.name = $"{key}_VictoryRow";
             BindRow(row.transform, mod, rarities[key], counts[key]);
         }
+    }
+
+    void RefreshModifierScrollAreas()
+    {
+        RefreshModifierScrollArea(buffsScrollRect, buffsContent);
+        RefreshModifierScrollArea(debuffsScrollRect, debuffsContent);
+    }
+
+    void RefreshModifierScrollArea(ScrollRect scrollRect, Transform contentRoot)
+    {
+        if (!contentRoot)
+            return;
+
+        if (!scrollRect)
+            scrollRect = contentRoot.GetComponentInParent<ScrollRect>(true);
+
+        var contentRect = contentRoot as RectTransform;
+        if (!contentRect)
+            return;
+
+        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(contentRect);
+
+        float preferredHeight = LayoutUtility.GetPreferredHeight(contentRect);
+        if (preferredHeight <= 0.01f)
+            preferredHeight = CalculateChildrenHeight(contentRect);
+
+        RectTransform viewport = null;
+        if (scrollRect)
+            viewport = scrollRect.viewport ? scrollRect.viewport : scrollRect.transform as RectTransform;
+
+        float viewportHeight = viewport ? viewport.rect.height : 0f;
+        float targetHeight = viewportHeight > 0f ? Mathf.Max(viewportHeight, preferredHeight) : preferredHeight;
+
+        if (targetHeight > 0.01f)
+            contentRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, targetHeight);
+
+        if (!scrollRect)
+            return;
+
+        bool shouldScroll = preferredHeight > viewportHeight + 0.5f;
+        scrollRect.vertical = shouldScroll;
+        scrollRect.verticalNormalizedPosition = 1f;
+        scrollRect.velocity = Vector2.zero;
+
+        var scrollbar = ResolveVerticalScrollbar(scrollRect);
+        if (!scrollbar)
+            return;
+
+        scrollbar.gameObject.SetActive(shouldScroll);
+        scrollbar.interactable = shouldScroll;
+        scrollbar.size = shouldScroll && targetHeight > 0.01f
+            ? Mathf.Clamp01(viewportHeight / targetHeight)
+            : 1f;
+        scrollbar.value = 1f;
+    }
+
+    static float CalculateChildrenHeight(RectTransform contentRect)
+    {
+        if (!contentRect)
+            return 0f;
+
+        var layoutGroup = contentRect.GetComponent<VerticalLayoutGroup>();
+        float height = layoutGroup ? layoutGroup.padding.top + layoutGroup.padding.bottom : 0f;
+        float spacing = layoutGroup ? layoutGroup.spacing : 0f;
+        int visibleChildren = 0;
+
+        for (int i = 0; i < contentRect.childCount; i++)
+        {
+            var child = contentRect.GetChild(i) as RectTransform;
+            if (!child || !child.gameObject.activeSelf)
+                continue;
+
+            float childHeight = LayoutUtility.GetPreferredHeight(child);
+            if (childHeight <= 0.01f)
+                childHeight = child.rect.height;
+
+            height += Mathf.Max(0f, childHeight);
+            visibleChildren++;
+        }
+
+        if (visibleChildren > 1)
+            height += spacing * (visibleChildren - 1);
+
+        return height;
+    }
+
+    static Scrollbar ResolveVerticalScrollbar(ScrollRect scrollRect)
+    {
+        if (!scrollRect)
+            return null;
+
+        if (scrollRect.verticalScrollbar)
+            return scrollRect.verticalScrollbar;
+
+        var scrollbars = scrollRect.GetComponentsInChildren<Scrollbar>(true);
+        for (int i = 0; i < scrollbars.Length; i++)
+        {
+            var scrollbar = scrollbars[i];
+            if (!scrollbar)
+                continue;
+
+            if (scrollbar.direction == Scrollbar.Direction.BottomToTop ||
+                scrollbar.direction == Scrollbar.Direction.TopToBottom)
+            {
+                scrollRect.verticalScrollbar = scrollbar;
+                return scrollbar;
+            }
+        }
+
+        return null;
     }
 
     void BindRow(Transform rowRoot, RunModifierSO mod, RunModRarity rarity, int copies)
@@ -275,22 +394,37 @@ public class VictoryPanelUI : MonoBehaviour
                 continueButton = continueTransform.GetComponent<Button>();
         }
 
+        if (!buffsScrollRect)
+            buffsScrollRect = ResolveScrollRect(rootTransform, "Buff_ScrollView");
+
+        if (!debuffsScrollRect)
+            debuffsScrollRect = ResolveScrollRect(rootTransform, "Debuff_ScrollView");
+
         if (!buffsContent)
-            buffsContent = ResolveScrollContent(rootTransform, "Buff_ScrollView");
+            buffsContent = ResolveScrollContent(rootTransform, "Buff_ScrollView", buffsScrollRect);
 
         if (!debuffsContent)
-            debuffsContent = ResolveScrollContent(rootTransform, "Debuff_ScrollView");
+            debuffsContent = ResolveScrollContent(rootTransform, "Debuff_ScrollView", debuffsScrollRect);
     }
 
-    Transform ResolveScrollContent(Transform rootTransform, string scrollViewName)
+    ScrollRect ResolveScrollRect(Transform rootTransform, string scrollViewName)
     {
         var scrollView = FindDescendant(rootTransform, scrollViewName, exactMatch: true);
         if (!scrollView)
             return null;
 
-        var scrollRect = scrollView.GetComponent<ScrollRect>();
+        return scrollView.GetComponent<ScrollRect>();
+    }
+
+    Transform ResolveScrollContent(Transform rootTransform, string scrollViewName, ScrollRect knownScrollRect)
+    {
+        var scrollRect = knownScrollRect ? knownScrollRect : ResolveScrollRect(rootTransform, scrollViewName);
         if (scrollRect && scrollRect.content)
             return scrollRect.content;
+
+        var scrollView = FindDescendant(rootTransform, scrollViewName, exactMatch: true);
+        if (!scrollView)
+            return null;
 
         var content = FindDescendant(scrollView, "content", exactMatch: true);
         return content;
@@ -308,7 +442,13 @@ public class VictoryPanelUI : MonoBehaviour
         return found ? found.GetComponent<Image>() : null;
     }
 
-    static Transform FindDescendant(Transform current, string normalizedName, bool exactMatch)
+    static Transform FindDescendant(Transform current, string targetName, bool exactMatch)
+    {
+        string normalizedName = NormalizeName(targetName);
+        return FindDescendantNormalized(current, normalizedName, exactMatch);
+    }
+
+    static Transform FindDescendantNormalized(Transform current, string normalizedName, bool exactMatch)
     {
         if (!current)
             return null;
@@ -323,7 +463,7 @@ public class VictoryPanelUI : MonoBehaviour
 
         for (int i = 0; i < current.childCount; i++)
         {
-            var found = FindDescendant(current.GetChild(i), normalizedName, exactMatch);
+            var found = FindDescendantNormalized(current.GetChild(i), normalizedName, exactMatch);
             if (found)
                 return found;
         }

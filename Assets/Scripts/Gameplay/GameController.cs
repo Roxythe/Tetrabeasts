@@ -26,6 +26,10 @@ public class GameController : MonoBehaviour
 
     [Header("XP Tuning")]
     [SerializeField] int baseXpPerLevel = 3;
+    [SerializeField, Range(0f, 1f)] float overleveledXpMultiplierAtOneLevelGap = 0.90f;
+    [SerializeField, Min(1f)] float overleveledXpGapExponent = 1.35f;
+    [SerializeField, Range(0f, 1f)] float overleveledXpMinimumMultiplier = 0.05f;
+    [SerializeField, Min(0)] int overleveledXpGraceLevelsPerStar = 5;
 
     [Header("Line Clear Visual Timing")]
     public float cascadeSettlePauseSeconds = 0.18f;
@@ -393,6 +397,7 @@ public class GameController : MonoBehaviour
     (1f + _bossGravityBonusActive); // Slows falling (mult < 1 => slower because interval /= mult)
 
     float EffectiveFallRampRateMult => Mathf.Max(0f, fallRampRateMult) * ShopBuffEffects.VelocityMultiplier * _slowGravitySpecialRampRateMultActive; // Velocity Down: slows ramping (mult < 1 => slower ramp)
+    float ActiveLevelModifierGravityMult => levelModifierController ? levelModifierController.ActiveGravityMultiplier : 1f;
     float EffectiveCurrencyChancePerClearedRow => // Gold Up: +2% chance per level
         Mathf.Clamp01(currencyChancePerClearedRow + lineClearCurrencyChanceAdd + ShopBuffEffects.GoldChanceBonus);
     float EffectiveLuck => luck + ShopBuffEffects.LuckBonus; // Luck Up: +10 per level 
@@ -414,6 +419,7 @@ public class GameController : MonoBehaviour
     public int score { get; private set; }
     bool gameOver = false;
     bool levelWon = false;
+    bool _environmentRowClearResolving = false;
     private bool winQueued = false;
 
     [Header("Combo Scoring")]
@@ -473,7 +479,7 @@ public class GameController : MonoBehaviour
     public int MaxReserveUnits => EffectiveMaxUnitLives;
     public int CurrentStarDifficulty => _starDifficulty;
     public float CurrentMisfortune => misfortune + _starDifficultyModifiers.misfortuneAdd;
-    public bool IsGameplaySuspended => gameOver || levelWon || isPaused || tutorialSuspended || _roundTransitionActive || _specialAbilityCinematicActive || _levelStartBlocked || (levelModifierController && levelModifierController.IsSelectionRunning);
+    public bool IsGameplaySuspended => gameOver || levelWon || isPaused || tutorialSuspended || _roundTransitionActive || _specialAbilityCinematicActive || _levelStartBlocked || _environmentRowClearResolving || (levelModifierController && levelModifierController.IsSelectionRunning);
     public bool IsRoundActive => !IsGameplaySuspended && !gameOver && !levelWon;
     public int EffectiveMaxUnitLivesForStats => EffectiveMaxUnitLives;
     public int BaseMaxUnitLivesForStats => _baseGameplayStatsCached ? _baseMaxUnitLives : maxUnitLives;
@@ -490,8 +496,9 @@ public class GameController : MonoBehaviour
     public float CurrentCurrencyGainMultiplierForStats => CurrentCurrencyGainMultiplier;
     public float CurrentPartyExperienceGainMultiplierForStats => CurrentPartyExperienceGainMultiplier;
     public float LineClearCurrencyAmountMultiplierForStats => lineClearCurrencyAmountMult * CurrentCurrencyGainMultiplier;
-    public float EffectivePieceGravityMultForStats => EffectivePieceGravityMult;
-    public float EffectiveFallRampRateMultForStats => EffectiveFallRampRateMult;
+    public float EffectivePieceGravityMultForStats => EffectivePieceGravityMult * ActiveLevelModifierGravityMult;
+    public float EffectiveFallRampRateMultForStats => EffectiveFallRampRateMult * ActiveLevelModifierGravityMult;
+    public bool LevelModifierGravitySlowActiveForStats => levelModifierController && levelModifierController.AppliesAutoMovementGravitySlow;
     public bool BossGravityActiveForStats => _bossGravityBonusActive > 0.0001f;
     public float EffectiveLuckForStats => EffectiveLuck;
     public MonsterPassiveBonuses PartyPassiveBonusesForStats => _partyPassiveBonuses;
@@ -1622,12 +1629,24 @@ public class GameController : MonoBehaviour
     }
 
     IEnumerator BeginCurrentLevelSequence(bool useSavedLevelModifier = false,
-        LevelModifierSO restoredLevelModifier = null, int restoredRerolls = 0)
+        LevelModifierSO restoredLevelModifier = null, int restoredRerolls = 0,
+        bool keepRoundRewardVisibleUntilLevelModifierPanelShown = false)
     {
         _levelStartBlocked = true;
 
         bag.Clear();
         monstersBag.Clear();
+
+        bool roundRewardHiddenByLevelModifierPanel = false;
+        void HideRoundRewardPanelAfterLevelModifierPanelShown()
+        {
+            if (roundRewardHiddenByLevelModifierPanel)
+                return;
+
+            roundRewardHiddenByLevelModifierPanel = true;
+            if (roundRewardUI)
+                roundRewardUI.Hide();
+        }
 
         if (levelModifierController)
         {
@@ -1637,9 +1656,16 @@ public class GameController : MonoBehaviour
             }
             else
             {
-                yield return levelModifierController.BeginLevel(currentCastleData);
+                yield return levelModifierController.BeginLevel(
+                    currentCastleData,
+                    keepRoundRewardVisibleUntilLevelModifierPanelShown
+                        ? HideRoundRewardPanelAfterLevelModifierPanelShown
+                        : null);
             }
         }
+
+        if (keepRoundRewardVisibleUntilLevelModifierPanelShown && !roundRewardHiddenByLevelModifierPanel && roundRewardUI)
+            roundRewardUI.Hide();
 
         yield return CoShowLevelStartTransition();
 
@@ -2335,6 +2361,69 @@ public class GameController : MonoBehaviour
         // No immediate damage, damage applies on impact
     }
 
+    bool ResolveFullRowsAfterBossObstacleSpawn(Dictionary<int, List<int>> clearOriginColumnsByRow)
+    {
+        if (!gameBoard || clearOriginColumnsByRow == null || clearOriginColumnsByRow.Count == 0)
+            return false;
+
+        if (_environmentRowClearResolving || gameOver || levelWon)
+            return false;
+
+        bool hasClearableFullRow = false;
+        foreach (var kv in clearOriginColumnsByRow)
+        {
+            int row = kv.Key;
+            if (row < 0 || row >= gameBoard.height)
+                continue;
+
+            if (gameBoard.IsClearableOccupiedRow(row))
+            {
+                hasClearableFullRow = true;
+                break;
+            }
+        }
+
+        if (!hasClearableFullRow)
+            return false;
+
+        _environmentRowClearResolving = true;
+        gameBoard.ClearFullLinesAnimated((rowsCleared, removedCells, damageFromMonsters, specialChargeFromMonsters, rowDamage, rowDominantMonster) =>
+        {
+            try
+            {
+                OnPieceLocked(
+                    rowsCleared,
+                    removedCells,
+                    damageFromMonsters,
+                    specialChargeFromMonsters,
+                    rowDamage,
+                    rowDominantMonster,
+                    clearOriginColumnsByRow);
+            }
+            finally
+            {
+                _environmentRowClearResolving = false;
+            }
+        }, clearOriginColumnsByRow: clearOriginColumnsByRow);
+
+        return true;
+    }
+
+    static void AddClearOriginColumn(Dictionary<int, List<int>> colsByRow, Vector2Int cell)
+    {
+        if (colsByRow == null)
+            return;
+
+        if (!colsByRow.TryGetValue(cell.y, out var cols))
+        {
+            cols = new List<int>();
+            colsByRow[cell.y] = cols;
+        }
+
+        if (!cols.Contains(cell.x))
+            cols.Add(cell.x);
+    }
+
     // ================= Combo scoring and damage bonus =================
 
     public void ApplyComboForRowClear(int monstersClearedInRow, ref int rowDamage)
@@ -2873,8 +2962,7 @@ public class GameController : MonoBehaviour
         EnterGameplayCursorMode();
 
         levelWon = false; // re-arm
-        if (roundRewardUI) roundRewardUI.Hide();
-        StartCoroutine(BeginCurrentLevelSequence());
+        StartCoroutine(BeginCurrentLevelSequence(keepRoundRewardVisibleUntilLevelModifierPanelShown: roundRewardUI != null));
     }
 
     void EndRunAsWin()
@@ -5051,7 +5139,7 @@ public class GameController : MonoBehaviour
                             _levelTimer;
         float interval = 1f / Mathf.Max(0.0001f, baseGravity + gravityRamp);
 
-        interval /= Mathf.Max(0.01f, EffectivePieceGravityMult);
+        interval /= Mathf.Max(0.01f, EffectivePieceGravityMult * ActiveLevelModifierGravityMult);
 
         return Mathf.Max(minFallInterval, interval);
     }
@@ -5999,19 +6087,27 @@ public class GameController : MonoBehaviour
 
             // Spawn all at once
             int spawnedThisBatch = 0;
+            var spawnedColsByRow = new Dictionary<int, List<int>>();
             for (int i = 0; i < batchCells.Count; i++)
             {
                 if (gameBoard.TrySpawnMagicPylonObstacle(batchCells[i]))
+                {
                     spawnedThisBatch++;
+                    AddClearOriginColumn(spawnedColsByRow, batchCells[i]);
+                }
             }
 
             blockedPlacements += Mathf.Max(0, batchCells.Count - spawnedThisBatch);
 
             RefreshPylonShieldState();
+            bool rowClearStarted = ResolveFullRowsAfterBossObstacleSpawn(spawnedColsByRow);
 
             // If none spawned in this batch, don't loop forever
             if (spawnedThisBatch == 0)
                 continue;
+
+            if (rowClearStarted)
+                yield return new WaitUntil(() => !_environmentRowClearResolving);
 
             remaining -= spawnedThisBatch; // Retry only for those that failed
         }
@@ -6048,6 +6144,9 @@ public class GameController : MonoBehaviour
                     _castleData.bossExplosiveDetonateVFXSprite,
                     _castleData.bossExplosiveDetonateSFX))
             {
+                var spawnedColsByRow = new Dictionary<int, List<int>>();
+                AddClearOriginColumn(spawnedColsByRow, cell);
+                ResolveFullRowsAfterBossObstacleSpawn(spawnedColsByRow);
                 yield break;
             }
 
@@ -7242,13 +7341,8 @@ public class GameController : MonoBehaviour
 
                 int monsterLevel = RunMonsterProgress.GetCurrentLevel(md.monsterName);
 
-                int diff = monsterLevel - gameLevelNumber;
-                int steps = diff > 0 ? (diff / 5) : 0;
-
-                float reduction = Mathf.Clamp01(steps * 0.10f);
-                reduction = Mathf.Min(reduction, 0.90f);
-
-                float finalXp = totalBeforeReduction * (1f - reduction);
+                float levelMultiplier = GetOverleveledRoundXpMultiplier(monsterLevel, gameLevelNumber);
+                float finalXp = totalBeforeReduction * levelMultiplier;
                 perMonster[md.monsterName] = Mathf.Max(0f, finalXp);
             }
         }
@@ -7274,6 +7368,26 @@ public class GameController : MonoBehaviour
             },
             perMonsterAwardXp = perMonster
         };
+    }
+
+    float GetOverleveledRoundXpMultiplier(int monsterLevel, int gameLevelNumber)
+    {
+        int stars = StarDifficultySystem.ClampStars(_starDifficulty);
+        if (stars >= StarDifficultySystem.MaxStars)
+            return 1f;
+
+        int curveStartLevel = Mathf.Max(1, gameLevelNumber) + (stars * Mathf.Max(0, overleveledXpGraceLevelsPerStar));
+        int levelGap = Mathf.Max(0, monsterLevel - curveStartLevel);
+        if (levelGap <= 0)
+            return 1f;
+
+        float oneLevelGapMultiplier = Mathf.Clamp01(overleveledXpMultiplierAtOneLevelGap);
+        float curveExponent = Mathf.Max(1f, overleveledXpGapExponent);
+        float minimumMultiplier = Mathf.Clamp01(overleveledXpMinimumMultiplier);
+        float curvedGap = Mathf.Pow(levelGap, curveExponent);
+        float multiplier = Mathf.Pow(oneLevelGapMultiplier, curvedGap);
+
+        return Mathf.Clamp(multiplier, minimumMultiplier, 1f);
     }
 
     void OpenXpUiMode()
