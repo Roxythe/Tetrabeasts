@@ -24402,6 +24402,10 @@ MonoBehaviour:
     cleared the final demo level. If you enjoyed your time with the game, please
     consider buying the full version.'
   baseXpPerLevel: 50
+  overleveledXpMultiplierAtOneLevelGap: 0.9
+  overleveledXpGapExponent: 1.35
+  overleveledXpMinimumMultiplier: 0.05
+  overleveledXpGraceLevelsPerStar: 5
   cascadeSettlePauseSeconds: 0.18
   smoothPieceActionVisuals: 1
   pieceRotationVisualDuration: 0.08
@@ -25820,6 +25824,9 @@ MonoBehaviour:
   maxOrbsPerFrame: 5
   breakdownMaxSeconds: 2.5
   orbTransferMaxSeconds: 3
+  orbDrainSpeedupStartSeconds: 5
+  orbDrainSpeedupRampSeconds: 6
+  orbDrainMaxSpeedMultiplier: 8
   orbGainStartDelaySeconds: 0.5
   orbDrainStartDelaySeconds: 0.5
   maxOrbSfxPerSecondStart: 10
