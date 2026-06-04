@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -12,6 +13,7 @@ using UnityEngine.InputSystem;
 public class VolumePanelUI : MonoBehaviour
 {
     static readonly string[] MusicModeOptionLabels = { "EDM", "Metal", "Random" };
+    const float VolumeSliderStep = 0.1f;
 
     [Header("Refs")]
     public Slider masterSlider;
@@ -45,6 +47,7 @@ public class VolumePanelUI : MonoBehaviour
     [SerializeField] Vector2 sliderSelectionArrowSize = new Vector2(20f, 16f);
     [SerializeField] float sliderSelectionArrowYOffset = 6f;
     [SerializeField] float selectionArrowSideOffset = 12f;
+    [SerializeField, Range(0.1f, 1f)] float sliderHandleHeldBrightness = 0.72f;
 
     [Header("SFX Preview")]
     public bool previewOnChange = true;
@@ -59,9 +62,15 @@ public class VolumePanelUI : MonoBehaviour
     readonly Dictionary<Selectable, bool> dropdownScopedSelectables = new();
     readonly Dictionary<Selectable, Navigation> automaticNavigationScope = new();
     readonly Dictionary<TetrabeastsControlAction, Button> bindingButtons = new();
+    readonly HashSet<Button> wiredVolumeStepButtons = new();
+    readonly Dictionary<Button, Slider> volumeStepButtonOwners = new();
+    readonly Dictionary<Slider, Button> volumeDecrementButtons = new();
+    readonly Dictionary<Slider, Button> volumeIncrementButtons = new();
+    readonly Dictionary<Graphic, Color> sliderHandleBaseColors = new();
     Coroutine rebindCaptureCo;
     TetrabeastsControlAction? rebindingAction;
     Image sliderSelectionArrow;
+    Graphic activeDraggedSliderHandle;
     Sprite sliderSelectionArrowSprite;
     GameObject automaticNavigationRoot;
     GameObject dropdownNavigationRoot;
@@ -69,6 +78,7 @@ public class VolumePanelUI : MonoBehaviour
     Vector2 heldNavigationDirection;
     float nextNavigationTime;
     int suppressDropdownOpenUntilFrame = -1;
+    int suppressDropdownSubmitUntilFrame = -1;
     bool navigationSelectionActive;
     bool eventSystemNavigationSuppressed;
 
@@ -93,6 +103,7 @@ public class VolumePanelUI : MonoBehaviour
         if (musicSlider) musicSlider.onValueChanged.AddListener(SetMusic);
         if (sfxSlider) sfxSlider.onValueChanged.AddListener(SetSFX);
         if (cursorSizeSlider) cursorSizeSlider.onValueChanged.AddListener(SetCursorSize);
+        HookVolumeSliderStepButtons();
         if (musicModeDropdown) musicModeDropdown.onValueChanged.AddListener(SetMusicMode);
         if (languageDropdown) languageDropdown.onValueChanged.AddListener(SetLanguage);
         if (combatLogToggle) combatLogToggle.onValueChanged.AddListener(SetCombatLogVisible);
@@ -160,6 +171,7 @@ public class VolumePanelUI : MonoBehaviour
         CancelRebindCapture();
         RestoreModalSelectableScope();
         RestoreAutomaticNavigationScope();
+        RestoreActiveSliderHandleColor();
         if (pauseWhenOpen) Time.timeScale = 1f;
     }
 
@@ -191,6 +203,117 @@ public class VolumePanelUI : MonoBehaviour
     {
         uiCursor?.SetScale(v);
         SettingsStore.SaveCursorScale(v);
+    }
+
+    public void IncrementMasterVolume() => AdjustVolumeSlider(masterSlider, 1);
+    public void DecrementMasterVolume() => AdjustVolumeSlider(masterSlider, -1);
+    public void IncrementMusicVolume() => AdjustVolumeSlider(musicSlider, 1);
+    public void DecrementMusicVolume() => AdjustVolumeSlider(musicSlider, -1);
+    public void IncrementSFXVolume() => AdjustVolumeSlider(sfxSlider, 1);
+    public void DecrementSFXVolume() => AdjustVolumeSlider(sfxSlider, -1);
+    public void IncrementCursorSize() => AdjustVolumeSlider(cursorSizeSlider, 1);
+    public void DecrementCursorSize() => AdjustVolumeSlider(cursorSizeSlider, -1);
+
+    void HookVolumeSliderStepButtons()
+    {
+        wiredVolumeStepButtons.Clear();
+        volumeStepButtonOwners.Clear();
+        volumeDecrementButtons.Clear();
+        volumeIncrementButtons.Clear();
+        WireVolumeSliderStepButtons(masterSlider);
+        WireVolumeSliderStepButtons(musicSlider);
+        WireVolumeSliderStepButtons(sfxSlider);
+        WireVolumeSliderStepButtons(cursorSizeSlider);
+    }
+
+    void WireVolumeSliderStepButtons(Slider slider)
+    {
+        if (!slider)
+            return;
+
+        Button decrementButton = FindNearestSliderStepButton(slider, "Decrement");
+        if (decrementButton && wiredVolumeStepButtons.Add(decrementButton))
+        {
+            decrementButton.interactable = true;
+            volumeStepButtonOwners[decrementButton] = slider;
+            volumeDecrementButtons[slider] = decrementButton;
+            decrementButton.onClick.AddListener(() => AdjustVolumeSlider(slider, -1));
+        }
+
+        Button incrementButton = FindNearestSliderStepButton(slider, "Increment");
+        if (incrementButton && wiredVolumeStepButtons.Add(incrementButton))
+        {
+            incrementButton.interactable = true;
+            volumeStepButtonOwners[incrementButton] = slider;
+            volumeIncrementButtons[slider] = incrementButton;
+            incrementButton.onClick.AddListener(() => AdjustVolumeSlider(slider, 1));
+        }
+    }
+
+    Button FindNearestSliderStepButton(Slider slider, string namePart)
+    {
+        if (!slider || string.IsNullOrWhiteSpace(namePart))
+            return null;
+
+        Button[] buttons = GetComponentsInChildren<Button>(true);
+        Button best = null;
+        int bestScore = int.MaxValue;
+
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            Button button = buttons[i];
+            if (!button || button.name.IndexOf(namePart, StringComparison.OrdinalIgnoreCase) < 0)
+                continue;
+
+            int score = GetSharedAncestorDistance(slider.transform, button.transform);
+            if (score < bestScore)
+            {
+                best = button;
+                bestScore = score;
+            }
+        }
+
+        return best;
+    }
+
+    static int GetSharedAncestorDistance(Transform left, Transform right)
+    {
+        int leftDistance = 0;
+        for (Transform ancestor = left; ancestor; ancestor = ancestor.parent)
+        {
+            int rightDistance = GetDistanceToAncestor(right, ancestor);
+            if (rightDistance >= 0)
+                return leftDistance + rightDistance;
+
+            leftDistance++;
+        }
+
+        return int.MaxValue;
+    }
+
+    static int GetDistanceToAncestor(Transform child, Transform ancestor)
+    {
+        int distance = 0;
+        for (Transform current = child; current; current = current.parent)
+        {
+            if (current == ancestor)
+                return distance;
+
+            distance++;
+        }
+
+        return -1;
+    }
+
+    void AdjustVolumeSlider(Slider slider, int direction)
+    {
+        if (!slider || direction == 0)
+            return;
+
+        float range = slider.maxValue - slider.minValue;
+        float step = Mathf.Approximately(range, 0f) ? VolumeSliderStep : range * VolumeSliderStep;
+        float nextValue = Mathf.Clamp(slider.value + step * (direction > 0 ? 1f : -1f), slider.minValue, slider.maxValue);
+        slider.value = Mathf.Round(nextValue * 1000f) / 1000f;
     }
 
     void SetMusicMode(int index)
@@ -1101,10 +1224,16 @@ public class VolumePanelUI : MonoBehaviour
 
         HandlePanelNavigation();
         UpdateSelectionArrow();
+        UpdateSliderHandleInteractionVisual();
 
-        if (TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuSubmit) &&
-            UINavigationUtility.TrySubmitSelected())
-            return;
+        if (TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuSubmit))
+        {
+            if (UINavigationUtility.TrySubmitSelected())
+            {
+                UICursorController.ConsumeSubmitThisFrame();
+                return;
+            }
+        }
 
         bool pausePressed = TetrabeastsControls.WasPressed(TetrabeastsControlAction.Pause);
         bool cancelPressed = TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuCancel);
@@ -1152,6 +1281,12 @@ public class VolumePanelUI : MonoBehaviour
         }
 
         bool submitPressed = TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuSubmit);
+        if (submitPressed && Time.frameCount <= suppressDropdownSubmitUntilFrame)
+        {
+            UICursorController.ConsumeSubmitThisFrame();
+            return;
+        }
+
         if (submitPressed && IsSubmitOutsideDropdown(dropdown, dropdownRoot))
         {
             HideDropdown(dropdown);
@@ -1194,6 +1329,7 @@ public class VolumePanelUI : MonoBehaviour
             }
 
             UINavigationUtility.TrySubmitSelected();
+            UICursorController.ConsumeSubmitThisFrame();
             return;
         }
 
@@ -1234,6 +1370,12 @@ public class VolumePanelUI : MonoBehaviour
             var selectedObject = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
             var selectedSlider = selectedObject ? selectedObject.GetComponentInParent<Slider>() : null;
             if (selectedSlider && Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+            {
+                if (TryAdjustHeldVolumeSlider(selectedSlider, direction.x))
+                    return;
+            }
+
+            if (TrySelectAdjacentVolumeControl(selectedObject, direction))
                 return;
 
             if (UINavigationUtility.SelectInDirection(navigationRoot, direction))
@@ -1245,6 +1387,142 @@ public class VolumePanelUI : MonoBehaviour
         var current = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
         if (ShouldPullSelectionBackToScope(current, navigationRoot))
             UINavigationUtility.SelectFirstUsable(navigationRoot);
+    }
+
+    bool TryAdjustHeldVolumeSlider(Slider slider, float horizontalDirection)
+    {
+        if (!IsVolumeSlider(slider) ||
+            Mathf.Abs(horizontalDirection) < 0.5f ||
+            !TetrabeastsControls.IsHeld(TetrabeastsControlAction.MenuSubmit))
+            return false;
+
+        AdjustVolumeSlider(slider, horizontalDirection > 0f ? 1 : -1);
+        UICursorController.ConsumeSubmitThisFrame();
+        return true;
+    }
+
+    bool IsVolumeSlider(Slider slider)
+    {
+        return slider && (slider == masterSlider || slider == musicSlider || slider == sfxSlider || slider == cursorSizeSlider);
+    }
+
+    void UpdateSliderHandleInteractionVisual()
+    {
+        Slider selectedSlider = GetSelectedVolumeSlider();
+        Graphic targetHandle = selectedSlider && TetrabeastsControls.IsHeld(TetrabeastsControlAction.MenuSubmit)
+            ? GetSliderHandleGraphic(selectedSlider)
+            : null;
+
+        if (activeDraggedSliderHandle && activeDraggedSliderHandle != targetHandle)
+            RestoreSliderHandleColor(activeDraggedSliderHandle);
+
+        if (!targetHandle)
+        {
+            activeDraggedSliderHandle = null;
+            return;
+        }
+
+        if (!sliderHandleBaseColors.ContainsKey(targetHandle))
+            sliderHandleBaseColors[targetHandle] = targetHandle.color;
+
+        activeDraggedSliderHandle = targetHandle;
+        targetHandle.color = DarkenSliderHandleColor(sliderHandleBaseColors[targetHandle]);
+    }
+
+    Slider GetSelectedVolumeSlider()
+    {
+        var current = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
+        if (!current)
+            return null;
+
+        var slider = current.GetComponent<Slider>();
+        return IsVolumeSlider(slider) ? slider : null;
+    }
+
+    Graphic GetSliderHandleGraphic(Slider slider)
+    {
+        if (!slider)
+            return null;
+
+        if (slider.handleRect)
+        {
+            var handleGraphic = slider.handleRect.GetComponent<Graphic>();
+            if (handleGraphic)
+                return handleGraphic;
+
+            handleGraphic = slider.handleRect.GetComponentInChildren<Graphic>(true);
+            if (handleGraphic)
+                return handleGraphic;
+        }
+
+        return slider.targetGraphic;
+    }
+
+    Color DarkenSliderHandleColor(Color color)
+    {
+        float brightness = Mathf.Clamp01(sliderHandleHeldBrightness);
+        return new Color(color.r * brightness, color.g * brightness, color.b * brightness, color.a);
+    }
+
+    void RestoreActiveSliderHandleColor()
+    {
+        if (activeDraggedSliderHandle)
+            RestoreSliderHandleColor(activeDraggedSliderHandle);
+
+        activeDraggedSliderHandle = null;
+    }
+
+    void RestoreSliderHandleColor(Graphic handleGraphic)
+    {
+        if (handleGraphic && sliderHandleBaseColors.TryGetValue(handleGraphic, out Color color))
+            handleGraphic.color = color;
+
+        if (handleGraphic)
+            sliderHandleBaseColors.Remove(handleGraphic);
+    }
+
+    bool TrySelectAdjacentVolumeControl(GameObject selectedObject, Vector2 direction)
+    {
+        if (!selectedObject || Mathf.Abs(direction.x) <= Mathf.Abs(direction.y))
+            return false;
+
+        var selectedSlider = selectedObject.GetComponent<Slider>();
+        if (IsVolumeSlider(selectedSlider))
+        {
+            Button target = direction.x < 0f
+                ? GetUsableVolumeStepButton(volumeDecrementButtons, selectedSlider)
+                : GetUsableVolumeStepButton(volumeIncrementButtons, selectedSlider);
+
+            if (!target)
+                return false;
+
+            SelectSelectable(target, true);
+            return true;
+        }
+
+        var selectedButton = selectedObject.GetComponent<Button>();
+        if (!selectedButton || !volumeStepButtonOwners.TryGetValue(selectedButton, out Slider owner) || !owner)
+            return false;
+
+        bool moveBackToSlider =
+            (direction.x > 0f && volumeDecrementButtons.TryGetValue(owner, out var decrement) && decrement == selectedButton) ||
+            (direction.x < 0f && volumeIncrementButtons.TryGetValue(owner, out var increment) && increment == selectedButton);
+
+        if (!moveBackToSlider)
+            return false;
+
+        SelectSelectable(owner, true);
+        return true;
+    }
+
+    static Button GetUsableVolumeStepButton(Dictionary<Slider, Button> buttonsBySlider, Slider slider)
+    {
+        if (buttonsBySlider == null || !slider || !buttonsBySlider.TryGetValue(slider, out Button button))
+            return null;
+
+        return button && button.isActiveAndEnabled && button.gameObject.activeInHierarchy && button.interactable
+            ? button
+            : null;
     }
 
     bool EnsureSelectionInside(GameObject root, bool fromNavigation)
@@ -1403,6 +1681,7 @@ public class VolumePanelUI : MonoBehaviour
         RestoreDropdownSelectableScope();
         activeDropdown = dropdown;
         dropdownNavigationRoot = dropdownRoot;
+        suppressDropdownSubmitUntilFrame = Time.frameCount + 1;
 
         var selectables = FindObjectsByType<Selectable>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
         for (int i = 0; i < selectables.Length; i++)
@@ -1632,7 +1911,7 @@ public class VolumePanelUI : MonoBehaviour
             return;
         }
 
-        if (selectedSlider && selectedSlider.gameObject.activeInHierarchy)
+        if (selectedSlider && selectedSlider.gameObject.activeInHierarchy && current == selectedSlider.gameObject)
         {
             PositionSelectionArrow(
                 selectedSlider.handleRect ? selectedSlider.handleRect : selectedSlider.GetComponent<RectTransform>(),

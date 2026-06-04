@@ -5947,7 +5947,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialSequenceController
   autoStart: 1
-  ignoreSavedCompletion: 0
+  ignoreSavedCompletion: 1
   markSequenceCompleteOnSkip: 1
   completionKey: Title_intro
   gameController: {fileID: 0}
@@ -5981,7 +5981,6 @@ MonoBehaviour:
   - stepId: Commander_Select_1
     body: Before going into battle, we will first have to select our commander. Press
       the [Select Commander] button in the bottom right to see who is available.
-      (Press [F] to Continue)
     pauseGameplay: 0
     allowSkip: 0
     autoAdvanceOnComplete: 1
@@ -6029,7 +6028,7 @@ MonoBehaviour:
     watchedPanelShouldBeVisible: 1
   - stepId: Commander_Select_3
     body: Since our commander is already selected lets confirm the selection at the
-      bottom and head back to the main lobby.
+      bottom by pressing the [Confirm] button and head back to the main lobby.
     pauseGameplay: 0
     allowSkip: 0
     autoAdvanceOnComplete: 1
@@ -6196,7 +6195,7 @@ MonoBehaviour:
     watchedPanelShouldBeVisible: 1
   - stepId: Monster_Select_6
     body: More monsters can be unlocked with gold and cosmetic skins can also be
-      purchased once you have gained some extra funds. Now, Press the confirm button
+      purchased once you have gained some extra funds. Now, Press the [Confirm] button
       at the bottom of the screen to lock in your team.
     pauseGameplay: 0
     allowSkip: 0
@@ -6219,7 +6218,7 @@ MonoBehaviour:
     enforceWatchedPanelState: 1
     watchedPanelShouldBeVisible: 0
   - stepId: Campaign_1
-    body: Now you are ready to start your first campaign. Press the Start button
+    body: Now you are ready to start your first campaign. Press the [New Game] button
       to begin a new run.
     pauseGameplay: 0
     allowSkip: 0
@@ -6241,6 +6240,7 @@ MonoBehaviour:
     watchedPanel: {fileID: 0}
     enforceWatchedPanelState: 0
     watchedPanelShouldBeVisible: 1
+  activePieceHighlightSizeAdjustment: {x: -6, y: 6}
 --- !u!114 &665172195
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
 using UnityEngine.InputSystem;
@@ -77,6 +78,7 @@ public class TutorialSequenceController : MonoBehaviour
 
     [Header("Steps")]
     [SerializeField] List<TutorialStep> steps = new();
+    [SerializeField] Vector2 activePieceHighlightSizeAdjustment = new Vector2(-6f, 6f);
 
     readonly HashSet<KeyCode> _pressedKeys = new();
     readonly HashSet<TutorialGameplayEvent> _receivedGameplayEvents = new();
@@ -183,6 +185,9 @@ public class TutorialSequenceController : MonoBehaviour
                     MarkCurrentStepRequirementMet();
                 break;
         }
+
+        if (ShouldAcceptDirectContinueInput() && WasContinueInputPressedThisFrame())
+            OnContinueClicked();
     }
 
     void LateUpdate()
@@ -378,7 +383,7 @@ public class TutorialSequenceController : MonoBehaviour
             var targets = gameController ? gameController.GetTutorialActivePieceHighlightTargets() : null;
 
             if (targets != null && targets.Count > 0)
-                highlightView.Show(targets, step.highlightPadding);
+                highlightView.Show(targets, step.highlightPadding, false, activePieceHighlightSizeAdjustment);
             else
                 highlightView.Hide();
 
@@ -456,6 +461,24 @@ public class TutorialSequenceController : MonoBehaviour
 
         if (_resolvedCompletionMode == TutorialStepCompletionMode.NextButton || _stepRequirementMet)
             ShowStep(_currentStepIndex + 1);
+    }
+
+    bool ShouldAcceptDirectContinueInput()
+    {
+        if (!popupView || !popupView.ContinueButton)
+            return false;
+
+        if (!popupView.ContinueButton.gameObject.activeInHierarchy || !popupView.ContinueButton.interactable)
+            return false;
+
+        var selected = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
+        return !selected || !selected.transform.IsChildOf(popupView.ContinueButton.transform);
+    }
+
+    bool WasContinueInputPressedThisFrame()
+    {
+        return TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuSubmit) ||
+            WasKeyPressedThisFrame(KeyCode.F);
     }
 
     void OnSkipClicked()
@@ -714,6 +737,11 @@ public class TutorialSequenceController : MonoBehaviour
 
     bool WasKeyPressedThisFrame(KeyCode key)
     {
+        if (TetrabeastsControls.EffectiveProfile != TetrabeastsControlProfile.KeyboardMouse &&
+            TryGetControlActionForTutorialKey(key, out var action) &&
+            TetrabeastsControls.PeekWasPressed(action))
+            return true;
+
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
     var keyboard = Keyboard.current;
     if (keyboard == null)
@@ -742,5 +770,58 @@ public class TutorialSequenceController : MonoBehaviour
 #else
         return Input.GetKeyDown(key);
 #endif
+    }
+
+    static bool TryGetControlActionForTutorialKey(KeyCode key, out TetrabeastsControlAction action)
+    {
+        switch (key)
+        {
+            case KeyCode.A:
+            case KeyCode.LeftArrow:
+                action = TetrabeastsControlAction.MoveLeft;
+                return true;
+
+            case KeyCode.D:
+            case KeyCode.RightArrow:
+                action = TetrabeastsControlAction.MoveRight;
+                return true;
+
+            case KeyCode.S:
+            case KeyCode.DownArrow:
+                action = TetrabeastsControlAction.SoftDrop;
+                return true;
+
+            case KeyCode.Q:
+            case KeyCode.Z:
+                action = TetrabeastsControlAction.RotateCounterClockwise;
+                return true;
+
+            case KeyCode.E:
+            case KeyCode.UpArrow:
+                action = TetrabeastsControlAction.RotateClockwise;
+                return true;
+
+            case KeyCode.Space:
+                action = TetrabeastsControlAction.HardDrop;
+                return true;
+
+            case KeyCode.R:
+                action = TetrabeastsControlAction.Special;
+                return true;
+
+            case KeyCode.Escape:
+                action = TetrabeastsControlAction.Pause;
+                return true;
+
+            case KeyCode.F:
+            case KeyCode.Return:
+            case KeyCode.KeypadEnter:
+                action = TetrabeastsControlAction.MenuSubmit;
+                return true;
+
+            default:
+                action = default;
+                return false;
+        }
     }
 }

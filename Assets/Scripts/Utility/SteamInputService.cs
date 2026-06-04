@@ -731,16 +731,26 @@ public sealed class SteamInputService : MonoBehaviour
         string name = origin.ToString();
 
         if (name.Contains("_PS4_X") || name.Contains("_PS5_X"))
-            return "\u2715";
+            return "X";
 
         if (name.Contains("_PS4_Circle") || name.Contains("_PS5_Circle"))
-            return "\u25CB";
+            return "Circle";
 
         if (name.Contains("_PS4_Square") || name.Contains("_PS5_Square"))
-            return "\u25A1";
+            return "Square";
 
         if (name.Contains("_PS4_Triangle") || name.Contains("_PS5_Triangle"))
-            return "\u25B3";
+            return "Triangle";
+
+        if (name.Contains("_XBoxOne_Menu") ||
+            name.Contains("_XBox360_Start") ||
+            name.Contains("_SteamDeck_Menu"))
+            return "Start";
+
+        if (name.Contains("_XBoxOne_View") ||
+            name.Contains("_XBox360_Back") ||
+            name.Contains("_SteamDeck_View"))
+            return "Back";
 
         return string.Empty;
     }

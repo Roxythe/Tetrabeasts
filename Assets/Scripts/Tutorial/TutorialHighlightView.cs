@@ -24,6 +24,8 @@ public class TutorialHighlightView : MonoBehaviour
     readonly System.Collections.Generic.List<RectTransform> _targets = new();
     readonly System.Collections.Generic.List<RectTransform> _instances = new();
     Vector2 _padding;
+    Vector2 _sizeAdjustment;
+    bool _useMinimumSize = true;
     Canvas _rootCanvas;
 
     void Awake()
@@ -65,16 +67,32 @@ public class TutorialHighlightView : MonoBehaviour
 
     public void Show(RectTransform target, Vector2 padding)
     {
+        Show(target, padding, true, Vector2.zero);
+    }
+
+    public void Show(RectTransform target, Vector2 padding, bool useMinimumSize, Vector2 sizeAdjustment)
+    {
         _targets.Clear();
 
         if (target)
             _targets.Add(target);
 
         _padding = (padding == Vector2.zero) ? defaultPadding : padding;
+        _useMinimumSize = useMinimumSize;
+        _sizeAdjustment = sizeAdjustment;
         RefreshPositions();
     }
 
     public void Show(System.Collections.Generic.IReadOnlyList<RectTransform> targets, Vector2 padding)
+    {
+        Show(targets, padding, true, Vector2.zero);
+    }
+
+    public void Show(
+        System.Collections.Generic.IReadOnlyList<RectTransform> targets,
+        Vector2 padding,
+        bool useMinimumSize,
+        Vector2 sizeAdjustment)
     {
         _targets.Clear();
 
@@ -88,6 +106,8 @@ public class TutorialHighlightView : MonoBehaviour
         }
 
         _padding = (padding == Vector2.zero) ? defaultPadding : padding;
+        _useMinimumSize = useMinimumSize;
+        _sizeAdjustment = sizeAdjustment;
         RefreshPositions();
     }
 
@@ -177,9 +197,15 @@ public class TutorialHighlightView : MonoBehaviour
             max = Vector2.Max(max, localPoint);
         }
 
-        Vector2 size = (max - min) + (_padding * 2f);
-        size.x = Mathf.Max(size.x, minimumSize.x);
-        size.y = Mathf.Max(size.y, minimumSize.y);
+        Vector2 size = (max - min) + (_padding * 2f) + _sizeAdjustment;
+        if (_useMinimumSize)
+        {
+            size.x = Mathf.Max(size.x, minimumSize.x);
+            size.y = Mathf.Max(size.y, minimumSize.y);
+        }
+
+        size.x = Mathf.Max(1f, size.x);
+        size.y = Mathf.Max(1f, size.y);
 
         instance.anchorMin = new Vector2(0.5f, 0.5f);
         instance.anchorMax = new Vector2(0.5f, 0.5f);

@@ -33,6 +33,8 @@ public class TutorialPopupView : MonoBehaviour
     [SerializeField] GameObject waitingVisual;
     [SerializeField] GameObject readyVisual;
 
+    string rawBody;
+
     public RectTransform PopupRectTransform
     {
         get
@@ -56,6 +58,22 @@ public class TutorialPopupView : MonoBehaviour
 
         if (popupRoot)
             defaultAnchoredPosition = popupRoot.anchoredPosition;
+    }
+
+    void OnEnable()
+    {
+        TetrabeastsControls.ProfileChanged += HandleControlsChanged;
+        TetrabeastsControls.BindingsChanged += HandleControlsChanged;
+        TetrabeastsControls.PlatformDefaultProfileChanged += HandleControlsChanged;
+        TetrabeastsLocalization.LanguageChanged += RefreshContent;
+    }
+
+    void OnDisable()
+    {
+        TetrabeastsControls.ProfileChanged -= HandleControlsChanged;
+        TetrabeastsControls.BindingsChanged -= HandleControlsChanged;
+        TetrabeastsControls.PlatformDefaultProfileChanged -= HandleControlsChanged;
+        TetrabeastsLocalization.LanguageChanged -= RefreshContent;
     }
 
     public void Show(bool instant = false)
@@ -96,8 +114,22 @@ public class TutorialPopupView : MonoBehaviour
 
     public void SetContent(string body)
     {
-        if (bodyText)
-            bodyText.text = TetrabeastsLocalization.LocalizeText(body ?? string.Empty);
+        rawBody = body ?? string.Empty;
+        RefreshContent();
+    }
+
+    void HandleControlsChanged(TetrabeastsControlProfile profile)
+    {
+        RefreshContent();
+    }
+
+    void RefreshContent()
+    {
+        if (!bodyText)
+            return;
+
+        string localized = TetrabeastsLocalization.LocalizeText(rawBody ?? string.Empty);
+        bodyText.text = TetrabeastsControls.ResolveControlPromptTokens(localized);
     }
 
     public void SetContinueVisible(bool visible)

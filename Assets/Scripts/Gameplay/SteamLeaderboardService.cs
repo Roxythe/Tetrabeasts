@@ -645,6 +645,8 @@ public class SteamPlatformService : MonoBehaviour
     static SteamPlatformService _instance;
     public static SteamPlatformService Instance => _instance;
 
+    public static event Action<bool> OverlayActiveChanged;
+
     public string LastStatus { get; private set; } = "Steamworks.NET is not enabled for this build.";
 
     public bool IsAvailable
@@ -664,6 +666,7 @@ public class SteamPlatformService : MonoBehaviour
 
     bool _steamInitialized;
     bool _shutdown;
+    Callback<GameOverlayActivated_t> _gameOverlayActivatedCallback;
 #endif
 
     public static SteamPlatformService Ensure()
@@ -720,6 +723,7 @@ public class SteamPlatformService : MonoBehaviour
             SteamAPI.Shutdown();
             _steamInitialized = false;
             _shutdown = true;
+            _gameOverlayActivatedCallback = null;
         }
 #endif
     }
@@ -739,6 +743,9 @@ public class SteamPlatformService : MonoBehaviour
                 ? $"Steam initialized for app {SteamUtils.GetAppID().m_AppId}."
                 : "Steam API did not initialize. Steam achievements and leaderboards will stay local/unavailable.";
 
+            if (_steamInitialized && _gameOverlayActivatedCallback == null)
+                _gameOverlayActivatedCallback = Callback<GameOverlayActivated_t>.Create(OnGameOverlayActivated);
+
             if (!_steamInitialized && logSteamStatus)
                 Debug.LogWarning(LastStatus);
         }
@@ -757,6 +764,11 @@ public class SteamPlatformService : MonoBehaviour
     }
 
 #if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
+    void OnGameOverlayActivated(GameOverlayActivated_t callback)
+    {
+        OverlayActiveChanged?.Invoke(callback.m_bActive != 0);
+    }
+
     public bool IsForCurrentApp(ulong gameId)
     {
         if (!_steamInitialized)

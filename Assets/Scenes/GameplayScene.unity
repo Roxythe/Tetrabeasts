@@ -25140,8 +25140,8 @@ MonoBehaviour:
     allowSoftDropDuringStep: 0
     allowHardDropDuringStep: 0
     lockOtherButtonsDuringStep: 0
-    popupAnchorPreset: 1
-    popupAnchoredPosition: {x: 0, y: 0}
+    popupAnchorPreset: 3
+    popupAnchoredPosition: {x: 0, y: 400}
     popupAlpha: 1
     highlightTarget: {fileID: 0}
     highlightPadding: {x: 0, y: 0}
@@ -25157,7 +25157,7 @@ MonoBehaviour:
   - stepId: Landing_Indicator_2
     body: This is the landing indicator and will help you see exactly where your
       current piece will lock in place. A piece will lock in place automatically
-      when it come in contact with an obstacle, another locked unit piece, or when
+      when it comes in contact with an obstacle, another locked unit piece, or when
       it reaches the bottom of the board.  (Press [F] to Continue)
     pauseGameplay: 0
     allowSkip: 0
@@ -25183,15 +25183,15 @@ MonoBehaviour:
     body: 'Next, I want you to hard drop your current piece by pressing the [Space
       Bar].
 
-      This will immediatley drop your piece so that you can quickly
-      place your current piece locking it in place and spawning a new one.'
+      This will immediatley drop and lock your piece so that you can
+      quickly spawn a new one.'
     pauseGameplay: 0
     allowSkip: 0
     autoAdvanceOnComplete: 1
     allowSoftDropDuringStep: 0
     allowHardDropDuringStep: 1
     lockOtherButtonsDuringStep: 0
-    popupAnchorPreset: 0
+    popupAnchorPreset: 1
     popupAnchoredPosition: {x: 0, y: 0}
     popupAlpha: 1
     highlightTarget: {fileID: 0}
@@ -25206,9 +25206,9 @@ MonoBehaviour:
     enforceWatchedPanelState: 0
     watchedPanelShouldBeVisible: 1
   - stepId: Level_Info_1
-    body: Here you can keep track of level information such as any active level modifiers,
-      the curent level number, how long you have been in the level, and the current
-      gravity pulling your pieces down. (Press [F] to Continue)
+    body: Here you can keep track of level information such as your active level
+      modifiers, the curent level number, how long you have been in the level, and
+      the current gravity pulling your pieces down. (Press [F] to Continue)
     pauseGameplay: 0
     allowSkip: 0
     autoAdvanceOnComplete: 1
@@ -25255,7 +25255,7 @@ MonoBehaviour:
   - stepId: Loss_Condition_1
     body: 'Reserve Units - Loss Condition
 
-      When any of your units die your
+      When any of your units die, your
       current reserve will be reduced. You only have so many soldiers and when your
       reserve hits 0 you will lose. (Press [F] to Continue)'
     pauseGameplay: 0
@@ -25283,7 +25283,7 @@ MonoBehaviour:
 
       If a piece is locked in place above the top row
       of the board you will instantly lose, regardless of the number of reserve units
-      left. Be caureful not to build to high. (Press [F] to Continue)'
+      left. Be careful not to build to high. (Press [F] to Continue)'
     pauseGameplay: 0
     allowSkip: 0
     autoAdvanceOnComplete: 1
@@ -25399,6 +25399,7 @@ MonoBehaviour:
     watchedPanel: {fileID: 0}
     enforceWatchedPanelState: 0
     watchedPanelShouldBeVisible: 1
+  activePieceHighlightSizeAdjustment: {x: -6, y: 6}
 --- !u!114 &2092384771
 MonoBehaviour:
   m_ObjectHideFlags: 0

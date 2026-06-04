@@ -666,8 +666,11 @@ public class GameController : MonoBehaviour
     {
         ApplyDemoBuildGuardRailsSetting();
         SteamInputService.Ensure();
+        SteamPlatformService.Ensure();
         SteamInputService.ControllerDisconnected -= HandleControllerDisconnected;
         SteamInputService.ControllerDisconnected += HandleControllerDisconnected;
+        SteamPlatformService.OverlayActiveChanged -= HandleSteamOverlayActiveChanged;
+        SteamPlatformService.OverlayActiveChanged += HandleSteamOverlayActiveChanged;
         TetrabeastsControls.ProfileChanged -= HandleControlsDisplayChanged;
         TetrabeastsControls.ProfileChanged += HandleControlsDisplayChanged;
         TetrabeastsControls.BindingsChanged -= HandleControlsDisplayChanged;
@@ -1382,6 +1385,7 @@ public class GameController : MonoBehaviour
         ClearPrewarmedSpecialAbilityPopup();
 
         SteamInputService.ControllerDisconnected -= HandleControllerDisconnected;
+        SteamPlatformService.OverlayActiveChanged -= HandleSteamOverlayActiveChanged;
         TetrabeastsControls.ProfileChanged -= HandleControlsDisplayChanged;
         TetrabeastsControls.BindingsChanged -= HandleControlsDisplayChanged;
         TetrabeastsControls.PlatformDefaultProfileChanged -= HandleControlsDisplayChanged;
@@ -1396,6 +1400,15 @@ public class GameController : MonoBehaviour
     void HandleControllerDisconnected()
     {
         PauseForControllerDisconnect();
+    }
+
+    void HandleSteamOverlayActiveChanged(bool active)
+    {
+        if (!active || !IsRoundActive)
+            return;
+
+        PauseGame();
+        EnterUICursorMode();
     }
 
 #if ENABLE_INPUT_SYSTEM

@@ -451,6 +451,9 @@ public class TriggeredTutorialPopupController : MonoBehaviour
 
     bool WasDismissKeyPressedThisFrame()
     {
+        if (TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuSubmit))
+            return true;
+
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
     var keyboard = UnityEngine.InputSystem.Keyboard.current;
     if (keyboard == null)

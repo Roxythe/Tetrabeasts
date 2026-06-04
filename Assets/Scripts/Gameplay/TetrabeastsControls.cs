@@ -132,6 +132,15 @@ public static class TetrabeastsControls
 
     public static TetrabeastsControlProfile EffectiveProfile => ResolveProfile(SavedProfile);
 
+    public static TetrabeastsControlProfile ActiveInputProfile
+    {
+        get
+        {
+            RefreshActiveInputProfile();
+            return hasLastInputProfile ? lastInputProfile : EffectiveProfile;
+        }
+    }
+
     public static void SaveProfile(TetrabeastsControlProfile profile)
     {
         if (!IsValidProfileValue((int)profile))
@@ -280,6 +289,11 @@ public static class TetrabeastsControls
             return;
         }
 
+        SaveBindingProfileState(editableProfile, state);
+    }
+
+    static void SaveBindingProfileState(TetrabeastsControlProfile profile, BindingProfileState state)
+    {
         var data = new BindingProfileSaveData();
         foreach (var action in DisplayActions)
         {
@@ -296,7 +310,7 @@ public static class TetrabeastsControls
             data.actions.Add(actionData);
         }
 
-        PlayerPrefs.SetString(GetBindingsPrefsKey(editableProfile), JsonUtility.ToJson(data));
+        PlayerPrefs.SetString(GetBindingsPrefsKey(profile), JsonUtility.ToJson(data));
         PlayerPrefs.Save();
         SteamCloudSaveService.QueueUpload();
         state.Dirty = false;
@@ -632,7 +646,7 @@ public static class TetrabeastsControls
             rows[i] = new TetrabeastsControlBindingRow(
                 DisplayActions[i],
                 $" {GetActionLabel(DisplayActions[i])}",
-                GetBindingLabel(DisplayActions[i], effectiveProfile));
+                GetPresetBindingLabel(DisplayActions[i], effectiveProfile));
 
         return rows;
     }
@@ -654,9 +668,399 @@ public static class TetrabeastsControls
         return GetControllerBindingLabel(action, effectiveProfile);
     }
 
+    public static string GetPresetBindingLabel(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
+    {
+        TetrabeastsControlProfile effectiveProfile = ResolveProfile(profile);
+
+        if (TryGetCustomBindingLabel(action, effectiveProfile, out string customLabel))
+            return customLabel;
+
+        return effectiveProfile == TetrabeastsControlProfile.KeyboardMouse
+            ? GetKeyboardMouseBindingLabel(action)
+            : GetControllerBindingLabel(action, effectiveProfile);
+    }
+
+    public static string GetTutorialContinueBindingLabel()
+    {
+        TetrabeastsControlProfile profile = ActiveInputProfile;
+        if (profile == TetrabeastsControlProfile.KeyboardMouse)
+            return "F";
+
+        string label = GetTutorialActionBindingLabel(TetrabeastsControlAction.MenuSubmit, profile);
+        return string.IsNullOrWhiteSpace(label) ? ControllerSouthLabel(profile) : label;
+    }
+
+    public static string ResolveControlPromptTokens(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return text;
+
+        string resolved = text;
+
+        TetrabeastsControlProfile profile = ActiveInputProfile;
+        if (profile != TetrabeastsControlProfile.KeyboardMouse)
+        {
+            resolved = ProtectControllerTutorialPhrases(resolved);
+            resolved = ReplaceGameplayControlBracketTokens(resolved, profile);
+            resolved = RestoreControllerTutorialPhrases(resolved, profile);
+        }
+
+        resolved = ReplaceTutorialContinuePromptSuffix(resolved, GetTutorialContinueBindingLabel());
+
+        return resolved;
+    }
+
+    static string ProtectControllerTutorialPhrases(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return text;
+
+        text = text.Replace("by pressing [A]", "__TB_TUTORIAL_MOVE_LEFT__");
+        text = text.Replace("by pressing [D]", "__TB_TUTORIAL_MOVE_RIGHT__");
+        text = text.Replace("by pressing [S]", "__TB_TUTORIAL_SOFT_DROP__");
+        text = text.Replace("by pressing [Q]", "__TB_TUTORIAL_ROTATE_CCW__");
+        text = text.Replace("by pressing [Z]", "__TB_TUTORIAL_ROTATE_CCW__");
+        text = text.Replace("by pressing [E]", "__TB_TUTORIAL_ROTATE_CW__");
+        text = text.Replace("by pressing [R]", "__TB_TUTORIAL_SPECIAL__");
+        text = text.Replace("by pressing [Space]", "__TB_TUTORIAL_HARD_DROP__");
+
+        return text;
+    }
+
+    static string RestoreControllerTutorialPhrases(string text, TetrabeastsControlProfile profile)
+    {
+        if (string.IsNullOrEmpty(text))
+            return text;
+
+        text = text.Replace("__TB_TUTORIAL_MOVE_LEFT__", GetTutorialPressingPhrase(TetrabeastsControlAction.MoveLeft, profile));
+        text = text.Replace("__TB_TUTORIAL_MOVE_RIGHT__", GetTutorialPressingPhrase(TetrabeastsControlAction.MoveRight, profile));
+        text = text.Replace("__TB_TUTORIAL_SOFT_DROP__", GetTutorialPressingPhrase(TetrabeastsControlAction.SoftDrop, profile));
+        text = text.Replace("__TB_TUTORIAL_ROTATE_CCW__", GetTutorialPressingPhrase(TetrabeastsControlAction.RotateCounterClockwise, profile));
+        text = text.Replace("__TB_TUTORIAL_ROTATE_CW__", GetTutorialPressingPhrase(TetrabeastsControlAction.RotateClockwise, profile));
+        text = text.Replace("__TB_TUTORIAL_SPECIAL__", GetTutorialPressingPhrase(TetrabeastsControlAction.Special, profile));
+        text = text.Replace("__TB_TUTORIAL_HARD_DROP__", GetTutorialPressingPhrase(TetrabeastsControlAction.HardDrop, profile));
+
+        return text;
+    }
+
+    static string ReplaceGameplayControlBracketTokens(string text, TetrabeastsControlProfile profile)
+    {
+        if (string.IsNullOrEmpty(text))
+            return text;
+
+        text = ReplaceBracketedControlToken(text, "A", GetTutorialTokenReplacement(TetrabeastsControlAction.MoveLeft, profile));
+        text = ReplaceBracketedControlToken(text, "D", GetTutorialTokenReplacement(TetrabeastsControlAction.MoveRight, profile));
+        text = ReplaceBracketedControlToken(text, "S", GetTutorialTokenReplacement(TetrabeastsControlAction.SoftDrop, profile));
+        text = ReplaceBracketedControlToken(text, "Q", GetTutorialTokenReplacement(TetrabeastsControlAction.RotateCounterClockwise, profile));
+        text = ReplaceBracketedControlToken(text, "Z", GetTutorialTokenReplacement(TetrabeastsControlAction.RotateCounterClockwise, profile));
+        text = ReplaceBracketedControlToken(text, "E", GetTutorialTokenReplacement(TetrabeastsControlAction.RotateClockwise, profile));
+        text = ReplaceBracketedControlToken(text, "R", GetTutorialTokenReplacement(TetrabeastsControlAction.Special, profile));
+        text = ReplaceBracketedControlToken(text, "Space", GetTutorialTokenReplacement(TetrabeastsControlAction.HardDrop, profile));
+        text = ReplaceBracketedControlToken(text, "Space Bar", GetTutorialTokenReplacement(TetrabeastsControlAction.HardDrop, profile));
+        text = ReplaceBracketedControlToken(text, "Barra de Espa\u00e7o", GetTutorialTokenReplacement(TetrabeastsControlAction.HardDrop, profile));
+        text = ReplaceBracketedControlToken(text, "barra espaciadora", GetTutorialTokenReplacement(TetrabeastsControlAction.HardDrop, profile));
+        text = ReplaceBracketedControlToken(text, "Barre d'espace", GetTutorialTokenReplacement(TetrabeastsControlAction.HardDrop, profile));
+        text = ReplaceBracketedControlToken(text, "Leertaste", GetTutorialTokenReplacement(TetrabeastsControlAction.HardDrop, profile));
+        text = ReplaceBracketedControlToken(text, "\u041f\u0440\u043e\u0431\u0435\u043b", GetTutorialTokenReplacement(TetrabeastsControlAction.HardDrop, profile));
+        text = ReplaceBracketedControlToken(text, "\u7a7a\u683c\u952e", GetTutorialTokenReplacement(TetrabeastsControlAction.HardDrop, profile));
+        text = ReplaceBracketedControlToken(text, "Esc", GetTutorialTokenReplacement(TetrabeastsControlAction.Pause, profile));
+        text = ReplaceBracketedControlToken(text, "Escape", GetTutorialTokenReplacement(TetrabeastsControlAction.Pause, profile));
+        text = ReplaceBracketedControlToken(text, "\u00c9chap", GetTutorialTokenReplacement(TetrabeastsControlAction.Pause, profile));
+
+        return text;
+    }
+
+    static string ReplaceBracketedControlToken(string text, string token, string replacement)
+    {
+        if (string.IsNullOrEmpty(text) || string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(replacement))
+            return text;
+
+        return text.Replace($"[{token}]", replacement);
+    }
+
+    static string ReplaceTutorialContinuePromptSuffix(string text, string continueLabel)
+    {
+        if (string.IsNullOrEmpty(text) || string.IsNullOrWhiteSpace(continueLabel))
+            return text;
+
+        if (TryReplaceFinalParentheticalToken(text, '(', ')', continueLabel, out string replaced) ||
+            TryReplaceFinalParentheticalToken(text, '\uff08', '\uff09', continueLabel, out replaced))
+            return replaced;
+
+        return text;
+    }
+
+    static bool TryReplaceFinalParentheticalToken(string text, char open, char close, string continueLabel, out string replaced)
+    {
+        replaced = text;
+        int end = text.Length - 1;
+        while (end >= 0 && char.IsWhiteSpace(text[end]))
+            end--;
+
+        if (end < 0 || text[end] != close)
+            return false;
+
+        int start = text.LastIndexOf(open, end);
+        if (start < 0)
+            return false;
+
+        string suffix = text.Substring(start, end - start + 1);
+        if (!suffix.Contains("[F]"))
+            return false;
+
+        suffix = suffix.Replace("[F]", FormatBracketedTutorialLabel(continueLabel));
+        replaced = text.Substring(0, start) + suffix + text.Substring(end + 1);
+        return true;
+    }
+
+    static string GetTutorialPressingPhrase(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
+    {
+        if (TryGetMovementTutorialPhrase(action, profile, out string phrase))
+            return phrase;
+
+        return $"by pressing {FormatBracketedTutorialLabel(GetTutorialActionBindingLabel(action, profile))}";
+    }
+
+    static bool TryGetMovementTutorialPhrase(TetrabeastsControlAction action, TetrabeastsControlProfile profile, out string phrase)
+    {
+        phrase = string.Empty;
+
+        if (!TryGetMovementTutorialParts(action, out string dpadLabel, out string stickDirection, out _))
+            return false;
+
+        bool hasDpad = HasTutorialBindingPath(action, profile, GetDpadPathForMovementAction(action));
+        bool hasStick = HasTutorialBindingPath(action, profile, GetStickPathForMovementAction(action));
+
+        if (hasDpad && hasStick)
+        {
+            string stickPhrase = stickDirection == "down"
+                ? $"tilting the [Left Joystick] {stickDirection}"
+                : $"tilting the [Left Joystick] to the {stickDirection}";
+            phrase = $"by pressing the [{dpadLabel}] button or {stickPhrase}";
+            return true;
+        }
+
+        if (hasDpad)
+        {
+            phrase = $"by pressing the [{dpadLabel}] button";
+            return true;
+        }
+
+        if (hasStick)
+        {
+            phrase = stickDirection == "down"
+                ? "by tilting the [Left Joystick] down"
+                : $"by tilting the [Left Joystick] to the {stickDirection}";
+            return true;
+        }
+
+        return false;
+    }
+
+    static string GetTutorialTokenReplacement(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
+    {
+        if (TryGetMovementTutorialTokenReplacement(action, profile, out string replacement))
+            return replacement;
+
+        return FormatBracketedTutorialLabel(GetTutorialActionBindingLabel(action, profile));
+    }
+
+    static bool TryGetMovementTutorialTokenReplacement(TetrabeastsControlAction action, TetrabeastsControlProfile profile, out string replacement)
+    {
+        replacement = string.Empty;
+
+        if (!TryGetMovementTutorialParts(action, out string dpadLabel, out _, out string stickLabel))
+            return false;
+
+        bool hasDpad = HasTutorialBindingPath(action, profile, GetDpadPathForMovementAction(action));
+        bool hasStick = HasTutorialBindingPath(action, profile, GetStickPathForMovementAction(action));
+
+        if (hasDpad && hasStick)
+        {
+            replacement = $"[{dpadLabel}] or [{stickLabel}]";
+            return true;
+        }
+
+        if (hasDpad)
+        {
+            replacement = $"[{dpadLabel}]";
+            return true;
+        }
+
+        if (hasStick)
+        {
+            replacement = $"[{stickLabel}]";
+            return true;
+        }
+
+        return false;
+    }
+
+    static bool TryGetMovementTutorialParts(
+        TetrabeastsControlAction action,
+        out string dpadLabel,
+        out string stickDirection,
+        out string stickLabel)
+    {
+        switch (action)
+        {
+            case TetrabeastsControlAction.MoveLeft:
+                dpadLabel = "Left Directional Pad";
+                stickDirection = "left";
+                stickLabel = "Left Joystick Left";
+                return true;
+
+            case TetrabeastsControlAction.MoveRight:
+                dpadLabel = "Right Directional Pad";
+                stickDirection = "right";
+                stickLabel = "Left Joystick Right";
+                return true;
+
+            case TetrabeastsControlAction.SoftDrop:
+                dpadLabel = "Down Directional Pad";
+                stickDirection = "down";
+                stickLabel = "Left Joystick Down";
+                return true;
+
+            default:
+                dpadLabel = string.Empty;
+                stickDirection = string.Empty;
+                stickLabel = string.Empty;
+                return false;
+        }
+    }
+
+    static bool HasTutorialBindingPath(TetrabeastsControlAction action, TetrabeastsControlProfile profile, string path)
+    {
+        if (string.IsNullOrWhiteSpace(path) || !TryGetActionBindings(action, profile, out var bindings))
+            return false;
+
+        for (int i = 0; i < bindings.Count; i++)
+        {
+            if (string.Equals(bindings[i].Path, path, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
+    }
+
+    static string GetDpadPathForMovementAction(TetrabeastsControlAction action)
+    {
+        return action switch
+        {
+            TetrabeastsControlAction.MoveLeft => "<Gamepad>/dpad/left",
+            TetrabeastsControlAction.MoveRight => "<Gamepad>/dpad/right",
+            TetrabeastsControlAction.SoftDrop => "<Gamepad>/dpad/down",
+            _ => string.Empty
+        };
+    }
+
+    static string GetStickPathForMovementAction(TetrabeastsControlAction action)
+    {
+        return action switch
+        {
+            TetrabeastsControlAction.MoveLeft => "<Gamepad>/leftStick/left",
+            TetrabeastsControlAction.MoveRight => "<Gamepad>/leftStick/right",
+            TetrabeastsControlAction.SoftDrop => "<Gamepad>/leftStick/down",
+            _ => string.Empty
+        };
+    }
+
+    static string GetTutorialActionBindingLabel(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
+    {
+        TetrabeastsControlProfile effectiveProfile = ResolveProfile(profile);
+        if (effectiveProfile == TetrabeastsControlProfile.KeyboardMouse)
+            return GetKeyboardMouseBindingLabel(action);
+
+        if (TryGetActionBindings(action, effectiveProfile, out var bindings))
+        {
+            for (int i = 0; i < bindings.Count; i++)
+            {
+                var binding = bindings[i];
+                if (!binding.IsValid)
+                    continue;
+
+                if (TryGetTutorialBindingLabel(binding.Path, effectiveProfile, out string label))
+                    return label;
+
+                if (!string.IsNullOrWhiteSpace(binding.Label))
+                    return binding.Label;
+
+                return binding.Path;
+            }
+        }
+
+        return GetControllerBindingLabel(action, effectiveProfile);
+    }
+
+    static bool TryGetActionBindings(
+        TetrabeastsControlAction action,
+        TetrabeastsControlProfile profile,
+        out List<TetrabeastsControlBinding> bindings)
+    {
+        TetrabeastsControlProfile effectiveProfile = ResolveProfile(profile);
+        var state = GetBindingProfileState(effectiveProfile);
+        if (state.Bindings != null &&
+            state.Bindings.TryGetValue(action, out bindings) &&
+            bindings != null &&
+            bindings.Count > 0)
+            return true;
+
+        bindings = null;
+        return false;
+    }
+
+    static bool TryGetTutorialBindingLabel(string path, TetrabeastsControlProfile profile, out string label)
+    {
+        if (TryGetControllerButtonLabel(path, profile, out label))
+            return true;
+
+        switch (path)
+        {
+            case "<Gamepad>/dpad/left":
+                label = "Left Directional Pad";
+                return true;
+            case "<Gamepad>/dpad/right":
+                label = "Right Directional Pad";
+                return true;
+            case "<Gamepad>/dpad/down":
+                label = "Down Directional Pad";
+                return true;
+            case "<Gamepad>/dpad/up":
+                label = "Up Directional Pad";
+                return true;
+            case "<Gamepad>/leftStick/left":
+                label = "Left Joystick Left";
+                return true;
+            case "<Gamepad>/leftStick/right":
+                label = "Left Joystick Right";
+                return true;
+            case "<Gamepad>/leftStick/down":
+                label = "Left Joystick Down";
+                return true;
+            case "<Gamepad>/leftStick/up":
+                label = "Left Joystick Up";
+                return true;
+            case "<Gamepad>/leftStick":
+                label = "Left Joystick";
+                return true;
+            case "<Gamepad>/dpad":
+                label = "Directional Pad";
+                return true;
+            default:
+                label = string.Empty;
+                return false;
+        }
+    }
+
+    static string FormatBracketedTutorialLabel(string label)
+    {
+        return $"[{(string.IsNullOrWhiteSpace(label) ? "Unbound" : label)}]";
+    }
+
     public static bool WasPressed(TetrabeastsControlAction action)
     {
-        return WasPressed(action, EffectiveProfile);
+        return WasPressed(action, ActiveInputProfile);
     }
 
     public static bool WasPressed(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
@@ -688,9 +1092,36 @@ public static class TetrabeastsControls
         return pressed;
     }
 
+    public static bool PeekWasPressed(TetrabeastsControlAction action)
+    {
+        return PeekWasPressed(action, ActiveInputProfile);
+    }
+
+    public static bool PeekWasPressed(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
+    {
+        TetrabeastsControlProfile effectiveProfile = ResolveProfile(profile);
+
+        if (TryWasPressedCustom(action, effectiveProfile, out bool customPressed))
+            return customPressed;
+
+        bool pressed = false;
+
+        pressed |= SteamInputService.WasPressed(action);
+
+#if ENABLE_INPUT_SYSTEM
+        pressed |= WasPressedInputSystem(action, effectiveProfile);
+#endif
+
+#if ENABLE_LEGACY_INPUT_MANAGER
+        pressed |= WasPressedLegacy(action, effectiveProfile);
+#endif
+
+        return pressed;
+    }
+
     public static bool WasPressedOrRepeated(TetrabeastsControlAction action, float initialDelaySeconds, float repeatIntervalSeconds)
     {
-        return WasPressedOrRepeated(action, EffectiveProfile, initialDelaySeconds, repeatIntervalSeconds);
+        return WasPressedOrRepeated(action, ActiveInputProfile, initialDelaySeconds, repeatIntervalSeconds);
     }
 
     public static bool WasPressedOrRepeated(
@@ -748,9 +1179,26 @@ public static class TetrabeastsControls
         return true;
     }
 
+    public static bool TryGetPreferredRotationAction(out TetrabeastsControlAction action)
+    {
+        action = default;
+
+#if ENABLE_INPUT_SYSTEM
+        if (TryGetPreferredRotationActionInputSystem(out action))
+            return true;
+#endif
+
+#if ENABLE_LEGACY_INPUT_MANAGER
+        if (TryGetPreferredRotationActionLegacy(out action))
+            return true;
+#endif
+
+        return false;
+    }
+
     public static bool IsHeld(TetrabeastsControlAction action)
     {
-        return IsHeld(action, EffectiveProfile);
+        return IsHeld(action, ActiveInputProfile);
     }
 
     public static bool IsHeld(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
@@ -874,6 +1322,9 @@ public static class TetrabeastsControls
                 state.Bindings[action] = bindings;
             }
 
+            if (NormalizeLoadedBindingState(profile, state))
+                SaveBindingProfileState(profile, state);
+
             return state;
         }
         catch (Exception ex)
@@ -953,6 +1404,102 @@ public static class TetrabeastsControls
     static List<TetrabeastsControlBinding> Bindings(params TetrabeastsControlBinding[] bindings)
     {
         return new List<TetrabeastsControlBinding>(bindings);
+    }
+
+    static bool NormalizeLoadedBindingState(TetrabeastsControlProfile profile, BindingProfileState state)
+    {
+        if (state == null || !state.HasCustom || profile == TetrabeastsControlProfile.KeyboardMouse)
+            return false;
+
+        bool changed = false;
+
+        if (profile == TetrabeastsControlProfile.PlayStationController)
+        {
+            bool legacyHardDropUsesWest =
+                HasSingleBindingPath(state, TetrabeastsControlAction.HardDrop, "<Gamepad>/buttonWest");
+
+            if (legacyHardDropUsesWest)
+            {
+                state.Bindings[TetrabeastsControlAction.HardDrop] =
+                    Bindings(Binding("<Gamepad>/buttonSouth", ControllerSouthLabel(profile)));
+                changed = true;
+            }
+
+            bool legacyMenuSubmitUsesWest =
+                HasSingleBindingPath(state, TetrabeastsControlAction.MenuSubmit, "<Gamepad>/buttonWest");
+
+            if (legacyMenuSubmitUsesWest)
+            {
+                state.Bindings[TetrabeastsControlAction.MenuSubmit] =
+                    Bindings(Binding("<Gamepad>/buttonSouth", ControllerSouthLabel(profile)));
+                changed = true;
+            }
+        }
+
+        foreach (var pair in state.Bindings)
+        {
+            var bindings = pair.Value;
+            if (bindings == null)
+                continue;
+
+            for (int i = 0; i < bindings.Count; i++)
+            {
+                var binding = bindings[i];
+                if (!TryGetControllerButtonLabel(binding.Path, profile, out string label) ||
+                    string.Equals(binding.Label, label, StringComparison.Ordinal))
+                    continue;
+
+                bindings[i] = new TetrabeastsControlBinding(binding.Path, label);
+                changed = true;
+            }
+        }
+
+        return changed;
+    }
+
+    static bool HasSingleBindingPath(BindingProfileState state, TetrabeastsControlAction action, string path)
+    {
+        return state.Bindings.TryGetValue(action, out var bindings) &&
+               bindings != null &&
+               bindings.Count == 1 &&
+               string.Equals(bindings[0].Path, path, StringComparison.OrdinalIgnoreCase);
+    }
+
+    static bool TryGetControllerButtonLabel(string path, TetrabeastsControlProfile profile, out string label)
+    {
+        label = string.Empty;
+        if (string.IsNullOrWhiteSpace(path))
+            return false;
+
+        switch (path)
+        {
+            case "<Gamepad>/buttonSouth":
+                label = ControllerSouthLabel(profile);
+                return true;
+            case "<Gamepad>/buttonEast":
+                label = ControllerEastLabel(profile);
+                return true;
+            case "<Gamepad>/buttonWest":
+                label = ControllerWestLabel(profile);
+                return true;
+            case "<Gamepad>/buttonNorth":
+                label = ControllerNorthLabel(profile);
+                return true;
+            case "<Gamepad>/leftShoulder":
+                label = ControllerLeftShoulderLabel(profile);
+                return true;
+            case "<Gamepad>/rightShoulder":
+                label = ControllerRightShoulderLabel(profile);
+                return true;
+            case "<Gamepad>/start":
+                label = ControllerMenuLabel(profile);
+                return true;
+            case "<Gamepad>/select":
+                label = ControllerBackLabel(profile);
+                return true;
+            default:
+                return false;
+        }
     }
 
     static void EnsureCustomBindingState(TetrabeastsControlProfile profile, BindingProfileState state)
@@ -1245,22 +1792,22 @@ public static class TetrabeastsControls
 
     static string ControllerSouthLabel(TetrabeastsControlProfile profile)
     {
-        return profile == TetrabeastsControlProfile.PlayStationController ? "\u2715" : "A";
+        return profile == TetrabeastsControlProfile.PlayStationController ? "X" : "A";
     }
 
     static string ControllerEastLabel(TetrabeastsControlProfile profile)
     {
-        return profile == TetrabeastsControlProfile.PlayStationController ? "\u25CB" : "B";
+        return profile == TetrabeastsControlProfile.PlayStationController ? "Circle" : "B";
     }
 
     static string ControllerWestLabel(TetrabeastsControlProfile profile)
     {
-        return profile == TetrabeastsControlProfile.PlayStationController ? "\u25A1" : "X";
+        return profile == TetrabeastsControlProfile.PlayStationController ? "Square" : "X";
     }
 
     static string ControllerNorthLabel(TetrabeastsControlProfile profile)
     {
-        return profile == TetrabeastsControlProfile.PlayStationController ? "\u25B3" : "Y";
+        return profile == TetrabeastsControlProfile.PlayStationController ? "Triangle" : "Y";
     }
 
     static string ControllerLeftShoulderLabel(TetrabeastsControlProfile profile)
@@ -1275,12 +1822,12 @@ public static class TetrabeastsControls
 
     static string ControllerMenuLabel(TetrabeastsControlProfile profile)
     {
-        return profile == TetrabeastsControlProfile.PlayStationController ? "Options" : "Menu";
+        return profile == TetrabeastsControlProfile.PlayStationController ? "Options" : "Start";
     }
 
     static string ControllerBackLabel(TetrabeastsControlProfile profile)
     {
-        return profile == TetrabeastsControlProfile.PlayStationController ? "Share" : "View";
+        return profile == TetrabeastsControlProfile.PlayStationController ? "Share" : "Back";
     }
 
     static string GetKeyboardMouseBindingLabel(TetrabeastsControlAction action)
@@ -1304,13 +1851,11 @@ public static class TetrabeastsControls
 
     static string GetControllerBindingLabel(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
     {
-        bool playStation = profile == TetrabeastsControlProfile.PlayStationController;
-
-        string south = playStation ? "\u2715" : "A";
-        string east = playStation ? "\u25CB" : "B";
-        string west = playStation ? "\u25A1" : "X";
-        string north = playStation ? "\u25B3" : "Y";
-        string menu = playStation ? "Options" : "Menu";
+        string south = ControllerSouthLabel(profile);
+        string east = ControllerEastLabel(profile);
+        string west = ControllerWestLabel(profile);
+        string north = ControllerNorthLabel(profile);
+        string menu = ControllerMenuLabel(profile);
 
         return action switch
         {
@@ -1330,6 +1875,48 @@ public static class TetrabeastsControls
     }
 
 #if ENABLE_INPUT_SYSTEM
+    static bool TryGetPreferredRotationActionInputSystem(out TetrabeastsControlAction action)
+    {
+        action = default;
+
+        bool clockwise = false;
+        bool counterClockwise = false;
+
+        var keyboard = Keyboard.current;
+        if (keyboard != null)
+        {
+            clockwise |= keyboard.eKey.wasPressedThisFrame ||
+                keyboard.upArrowKey.wasPressedThisFrame ||
+                keyboard.eKey.isPressed ||
+                keyboard.upArrowKey.isPressed;
+            counterClockwise |= keyboard.qKey.wasPressedThisFrame ||
+                keyboard.zKey.wasPressedThisFrame ||
+                keyboard.qKey.isPressed ||
+                keyboard.zKey.isPressed;
+        }
+
+        var gamepad = Gamepad.current;
+        if (gamepad != null)
+        {
+            clockwise |= gamepad.buttonEast.wasPressedThisFrame ||
+                gamepad.rightShoulder.wasPressedThisFrame ||
+                gamepad.buttonEast.isPressed ||
+                gamepad.rightShoulder.isPressed;
+            counterClockwise |= gamepad.buttonWest.wasPressedThisFrame ||
+                gamepad.leftShoulder.wasPressedThisFrame ||
+                gamepad.buttonWest.isPressed ||
+                gamepad.leftShoulder.isPressed;
+        }
+
+        if (clockwise == counterClockwise)
+            return false;
+
+        action = clockwise
+            ? TetrabeastsControlAction.RotateClockwise
+            : TetrabeastsControlAction.RotateCounterClockwise;
+        return true;
+    }
+
     static bool WasPressedInputSystem(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
     {
         if (IsMenuCancel(action) && WasKeyboardEscapePressed())
@@ -1530,7 +2117,7 @@ public static class TetrabeastsControls
 
         var gamepad = Gamepad.current;
         if (gamepad != null)
-            direction += gamepad.dpad.ReadValue();
+            direction += gamepad.dpad.ReadValue() + gamepad.leftStick.ReadValue();
 
         return ClampMenuNavigationDirection(direction);
     }
@@ -1606,6 +2193,39 @@ public static class TetrabeastsControls
 #endif
 
 #if ENABLE_LEGACY_INPUT_MANAGER
+    static bool TryGetPreferredRotationActionLegacy(out TetrabeastsControlAction action)
+    {
+        action = default;
+
+        bool clockwise =
+            Input.GetKeyDown(KeyCode.E) ||
+            Input.GetKeyDown(KeyCode.UpArrow) ||
+            Input.GetKeyDown(KeyCode.JoystickButton1) ||
+            Input.GetKeyDown(KeyCode.JoystickButton5) ||
+            Input.GetKey(KeyCode.E) ||
+            Input.GetKey(KeyCode.UpArrow) ||
+            Input.GetKey(KeyCode.JoystickButton1) ||
+            Input.GetKey(KeyCode.JoystickButton5);
+
+        bool counterClockwise =
+            Input.GetKeyDown(KeyCode.Q) ||
+            Input.GetKeyDown(KeyCode.Z) ||
+            Input.GetKeyDown(KeyCode.JoystickButton2) ||
+            Input.GetKeyDown(KeyCode.JoystickButton4) ||
+            Input.GetKey(KeyCode.Q) ||
+            Input.GetKey(KeyCode.Z) ||
+            Input.GetKey(KeyCode.JoystickButton2) ||
+            Input.GetKey(KeyCode.JoystickButton4);
+
+        if (clockwise == counterClockwise)
+            return false;
+
+        action = clockwise
+            ? TetrabeastsControlAction.RotateClockwise
+            : TetrabeastsControlAction.RotateCounterClockwise;
+        return true;
+    }
+
     static bool WasPressedLegacy(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
     {
         if (IsMenuCancel(action) && Input.GetKeyDown(KeyCode.Escape))

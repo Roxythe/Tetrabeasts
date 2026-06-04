@@ -146,10 +146,22 @@ public class Piece : MonoBehaviour
         if (softDropPressed)
             SoftDrop(true);
 
+        if (rotateCwPressed && rotateCcwPressed)
+        {
+            if (TetrabeastsControls.TryGetPreferredRotationAction(out var rotationAction))
+            {
+                rotateCwPressed = rotationAction == TetrabeastsControlAction.RotateClockwise;
+                rotateCcwPressed = rotationAction == TetrabeastsControlAction.RotateCounterClockwise;
+            }
+            else
+            {
+                rotateCcwPressed = false;
+            }
+        }
+
         if (rotateCwPressed)
             RotateCW(true);
-
-        if (rotateCcwPressed)
+        else if (rotateCcwPressed)
             RotateCCW(true);
 
         if (hardDropPressed)
