@@ -92,6 +92,7 @@ public class TutorialSequenceController : MonoBehaviour
     bool _stepRequirementMet;
     bool _panelGuardReleasedForCurrentStep;
     TutorialStepCompletionMode _resolvedCompletionMode = TutorialStepCompletionMode.NextButton;
+    int _lastWatchedButtonNavigationFrame = -1000;
 
     readonly List<Button> _temporarilyDisabledButtons = new();
     public bool IsSequenceRunning => _sequenceRunning;
@@ -188,6 +189,8 @@ public class TutorialSequenceController : MonoBehaviour
 
         if (ShouldAcceptDirectContinueInput() && WasContinueInputPressedThisFrame())
             OnContinueClicked();
+
+        GuideWatchedButtonNavigation(step);
     }
 
     void LateUpdate()
@@ -307,6 +310,7 @@ public class TutorialSequenceController : MonoBehaviour
         _panelGuardReleasedForCurrentStep = false;
         _pressedKeys.Clear();
         _receivedGameplayEvents.Clear();
+        _lastWatchedButtonNavigationFrame = -1000;
 
         var step = steps[_currentStepIndex];
         _resolvedCompletionMode = ResolveCompletionMode(step);
@@ -422,6 +426,7 @@ public class TutorialSequenceController : MonoBehaviour
 
         _panelGuardReleasedForCurrentStep = false;
         RestoreButtonInteractionLock();
+        _lastWatchedButtonNavigationFrame = -1000;
     }
 
     void HandleGameplayEvent(TutorialGameplayEvent gameplayEvent)
@@ -697,6 +702,42 @@ public class TutorialSequenceController : MonoBehaviour
 
         return _resolvedCompletionMode == TutorialStepCompletionMode.ButtonClick ||
             _resolvedCompletionMode == TutorialStepCompletionMode.PanelOpened;
+    }
+
+    void GuideWatchedButtonNavigation(TutorialStep step)
+    {
+        if (!ShouldGuideWatchedButtonNavigation(step))
+            return;
+
+        bool navigationPressed = TetrabeastsControls.WasButtonNavigationPressedThisFrame();
+        bool navigationHeld = TetrabeastsControls.IsButtonNavigationHeld();
+        if (!navigationPressed && !navigationHeld)
+            return;
+
+        if (!EventSystem.current || Time.frameCount == _lastWatchedButtonNavigationFrame)
+            return;
+
+        UICursorController.ActivateButtonNavigationTargetSource();
+
+        var current = EventSystem.current.currentSelectedGameObject;
+        if (current == step.watchedButton.gameObject)
+            return;
+
+        EventSystem.current.SetSelectedGameObject(step.watchedButton.gameObject);
+        _lastWatchedButtonNavigationFrame = Time.frameCount;
+    }
+
+    bool ShouldGuideWatchedButtonNavigation(TutorialStep step)
+    {
+        if (step == null || !step.watchedButton)
+            return false;
+
+        if (!IsWatchedButtonAllowedThisStep(step))
+            return false;
+
+        return step.watchedButton.isActiveAndEnabled &&
+            step.watchedButton.gameObject.activeInHierarchy &&
+            step.watchedButton.interactable;
     }
 
     void RestoreButtonInteractionLock()

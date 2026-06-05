@@ -5947,7 +5947,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialSequenceController
   autoStart: 1
-  ignoreSavedCompletion: 1
+  ignoreSavedCompletion: 0
   markSequenceCompleteOnSkip: 1
   completionKey: Title_intro
   gameController: {fileID: 0}

@@ -48,6 +48,8 @@ public class VolumePanelUI : MonoBehaviour
     [SerializeField] float sliderSelectionArrowYOffset = 6f;
     [SerializeField] float selectionArrowSideOffset = 12f;
     [SerializeField, Range(0.1f, 1f)] float sliderHandleHeldBrightness = 0.72f;
+    [SerializeField] AudioClip sliderHandleHoverSFX;
+    [SerializeField, Range(0f, 1f)] float sliderHandleHoverSFXVolume = 1f;
 
     [Header("SFX Preview")]
     public bool previewOnChange = true;
@@ -71,6 +73,7 @@ public class VolumePanelUI : MonoBehaviour
     TetrabeastsControlAction? rebindingAction;
     Image sliderSelectionArrow;
     Graphic activeDraggedSliderHandle;
+    Slider lastHoverSfxSlider;
     Sprite sliderSelectionArrowSprite;
     GameObject automaticNavigationRoot;
     GameObject dropdownNavigationRoot;
@@ -1224,6 +1227,7 @@ public class VolumePanelUI : MonoBehaviour
 
         HandlePanelNavigation();
         UpdateSelectionArrow();
+        PlaySliderHandleHoverSfxIfNeeded();
         UpdateSliderHandleInteractionVisual();
 
         if (TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuSubmit))
@@ -1437,6 +1441,50 @@ public class VolumePanelUI : MonoBehaviour
 
         var slider = current.GetComponent<Slider>();
         return IsVolumeSlider(slider) ? slider : null;
+    }
+
+    void PlaySliderHandleHoverSfxIfNeeded()
+    {
+        Slider selectedSlider = navigationSelectionActive && UICursorController.IsButtonNavigationMode
+            ? GetSelectedVolumeSlider()
+            : null;
+
+        if (selectedSlider == lastHoverSfxSlider)
+            return;
+
+        lastHoverSfxSlider = selectedSlider;
+        if (!selectedSlider)
+            return;
+
+        AudioClip clip = ResolveSliderHandleHoverSfx();
+        if (clip && AudioManager.I)
+            AudioManager.I.PlayUISFX(clip, sliderHandleHoverSFXVolume);
+    }
+
+    AudioClip ResolveSliderHandleHoverSfx()
+    {
+        if (sliderHandleHoverSFX)
+            return sliderHandleHoverSFX;
+
+        var buttonSfx = closeButton ? closeButton.GetComponent<UIButtonSFX>() : null;
+        if (!buttonSfx)
+            buttonSfx = GetComponentInChildren<UIButtonSFX>(true);
+
+        if (buttonSfx && buttonSfx.hoverClip)
+            return buttonSfx.hoverClip;
+
+        var sfxHook = GetComponentInParent<GameplayUI_SFXHook>(true);
+        if (!sfxHook)
+            sfxHook = FindFirstObjectByType<GameplayUI_SFXHook>(FindObjectsInactive.Include);
+
+        if (sfxHook && sfxHook.uiHoverSFX)
+            return sfxHook.uiHoverSFX;
+
+        var titleMenu = GetComponentInParent<TitleMenuUI>(true);
+        if (!titleMenu)
+            titleMenu = FindFirstObjectByType<TitleMenuUI>(FindObjectsInactive.Include);
+
+        return titleMenu ? titleMenu.uiHoverSFX : null;
     }
 
     Graphic GetSliderHandleGraphic(Slider slider)

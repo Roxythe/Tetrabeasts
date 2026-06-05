@@ -269,7 +269,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.88235295}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1125,7 +1125,7 @@ MonoBehaviour:
   popupView: {fileID: 1676467945205340754}
   continueButtonLabel: {fileID: 2156656668046293139}
   cancelButtonLabel: {fileID: 8417218435461539065}
-  warningVisual: {fileID: 1961746445634879530}
+  warningVisual: {fileID: 0}
   anchorPreset: 0
   anchoredPosition: {x: 0, y: 0}
   popupAlpha: 1
