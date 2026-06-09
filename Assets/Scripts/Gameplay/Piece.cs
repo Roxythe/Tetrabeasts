@@ -86,6 +86,9 @@ public class Piece : MonoBehaviour
         bool tutorialPromptActive = gc != null && gc.IsTutorialPromptActive;
         bool gameplaySuspended = gc != null && gc.IsGameplaySuspended;
 
+        if (ConfirmationPopupUI.IsAnyShowing)
+            return;
+
         // Allow limited inputs during tutorial prompts, but still block on other suspension states.
         if (gameplaySuspended && !tutorialPromptActive)
             return;

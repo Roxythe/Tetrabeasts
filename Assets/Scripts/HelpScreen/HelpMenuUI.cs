@@ -36,6 +36,9 @@ public class HelpMenuUI : MonoBehaviour
     void OnEnable()
     {
         TetrabeastsLocalization.LanguageChanged += OnLanguageChanged;
+        TetrabeastsControls.ProfileChanged += OnControlsChanged;
+        TetrabeastsControls.BindingsChanged += OnControlsChanged;
+        TetrabeastsControls.PlatformDefaultProfileChanged += OnControlsChanged;
         HookVideoEvents();
         ResolveDescriptionBackgroundBox();
         RebuildSidebar();
@@ -45,6 +48,9 @@ public class HelpMenuUI : MonoBehaviour
     void OnDisable()
     {
         TetrabeastsLocalization.LanguageChanged -= OnLanguageChanged;
+        TetrabeastsControls.ProfileChanged -= OnControlsChanged;
+        TetrabeastsControls.BindingsChanged -= OnControlsChanged;
+        TetrabeastsControls.PlatformDefaultProfileChanged -= OnControlsChanged;
         UnhookVideoEvents();
         SetDescriptionBackgroundVisible(false);
     }
@@ -141,7 +147,11 @@ public class HelpMenuUI : MonoBehaviour
         if (titleText) titleText.text = TetrabeastsLocalization.LocalizeText(topic.title);
 
         string localizedDescription = TetrabeastsLocalization.LocalizeText(topic.description ?? "");
-        if (descriptionText) descriptionText.text = localizedDescription;
+        if (descriptionText)
+        {
+            descriptionText.richText = true;
+            descriptionText.text = TetrabeastsControls.ResolveControlPromptTokens(localizedDescription);
+        }
         SetDescriptionBackgroundVisible(!string.IsNullOrWhiteSpace(localizedDescription));
 
         if (infoImage)
@@ -168,7 +178,11 @@ public class HelpMenuUI : MonoBehaviour
         _currentTopic = null;
 
         if (titleText) titleText.text = TetrabeastsLocalization.LocalizeText("Help Menu");
-        if (descriptionText) descriptionText.text = "";
+        if (descriptionText)
+        {
+            descriptionText.richText = true;
+            descriptionText.text = "";
+        }
         SetDescriptionBackgroundVisible(false);
 
         if (infoImage)
@@ -189,6 +203,12 @@ public class HelpMenuUI : MonoBehaviour
             ShowTopic(currentTopic);
         else
             ShowDefault();
+    }
+
+    void OnControlsChanged(TetrabeastsControlProfile _)
+    {
+        if (_currentTopic)
+            ShowTopic(_currentTopic);
     }
 
     void ResolveDescriptionBackgroundBox()

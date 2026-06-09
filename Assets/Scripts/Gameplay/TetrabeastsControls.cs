@@ -78,6 +78,9 @@ public static class TetrabeastsControls
 {
     const string KeyControlProfile = "Settings_ControlProfile";
     const string KeyControlBindingsPrefix = "Settings_ControlBindings_";
+    const string ControllerGlyphSpriteAssetName = "ControllerGlyphs";
+    const int ControllerGlyphSizePercent = 170;
+    const int CompactControllerGlyphSizePercent = 125;
     const float StickPressedThreshold = 0.5f;
 
     static readonly TetrabeastsControlAction[] DisplayActions =
@@ -111,10 +114,28 @@ public static class TetrabeastsControls
 #endif
     static bool hasLastInputProfile;
     static TetrabeastsControlProfile lastInputProfile = TetrabeastsControlProfile.KeyboardMouse;
+#if ENABLE_INPUT_SYSTEM
+    static bool inputSystemDeviceHooked;
+    static Gamepad lastInputGamepad;
+    static int lastInputGamepadDeviceId = -1;
+#endif
 
     public static event Action<TetrabeastsControlProfile> ProfileChanged;
     public static event Action<TetrabeastsControlProfile> BindingsChanged;
     public static event Action<TetrabeastsControlProfile> PlatformDefaultProfileChanged;
+
+#if ENABLE_INPUT_SYSTEM
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    static void BootstrapInputSystemDeviceTracking()
+    {
+        if (inputSystemDeviceHooked)
+            return;
+
+        InputSystem.onDeviceChange -= HandleInputSystemDeviceChange;
+        InputSystem.onDeviceChange += HandleInputSystemDeviceChange;
+        inputSystemDeviceHooked = true;
+    }
+#endif
 
     public static IReadOnlyList<TetrabeastsControlProfile> SelectableProfiles => ProfileOptions;
     public static IReadOnlyList<TetrabeastsControlAction> RebindableActions => DisplayActions;
@@ -165,6 +186,54 @@ public static class TetrabeastsControls
         if (TryDetectActiveInputProfile(out var profile))
             SetLastInputProfile(profile);
     }
+
+#if ENABLE_INPUT_SYSTEM
+    public static bool TrySetActiveInputProfileFromDevice(InputDevice device)
+    {
+        if (!(device is Gamepad gamepad))
+            return false;
+
+        SetLastInputGamepadAndProfile(gamepad);
+        return true;
+    }
+
+    public static bool TryGetActiveGamepad(out Gamepad gamepad)
+    {
+        if (TryGetUsedGamepadThisFrame(out var usedGamepad))
+        {
+            SetLastInputGamepadAndProfile(usedGamepad);
+            gamepad = usedGamepad;
+            return true;
+        }
+
+        if (IsUsableGamepad(lastInputGamepad))
+        {
+            gamepad = lastInputGamepad;
+            return true;
+        }
+
+        if (lastInputGamepadDeviceId >= 0 &&
+            TryGetGamepadByDeviceId(lastInputGamepadDeviceId, out var matchingGamepad))
+        {
+            SetLastInputGamepad(matchingGamepad);
+            gamepad = matchingGamepad;
+            return true;
+        }
+
+        if (TryGetFallbackGamepad(out var fallbackGamepad))
+        {
+            SetLastInputGamepad(fallbackGamepad);
+            if (!hasLastInputProfile)
+                SetLastInputProfile(GetBestProfileForGamepad(fallbackGamepad));
+
+            gamepad = fallbackGamepad;
+            return true;
+        }
+
+        gamepad = null;
+        return false;
+    }
+#endif
 
     public static bool WasMenuNavigationPressedThisFrame()
     {
@@ -453,16 +522,18 @@ public static class TetrabeastsControls
     {
         RefreshActiveInputProfile();
 
+        if (SteamInputService.TryGetDetectedControlProfile(out var steamProfile) &&
+            IsControllerProfile(steamProfile) &&
+            (!hasLastInputProfile || ShouldConnectedGamepadOverrideLastProfile(steamProfile)))
+        {
+            SetLastInputProfile(steamProfile);
+        }
+
         if (hasLastInputProfile)
             return lastInputProfile;
 
-        if (SteamInputService.TryGetDetectedControlProfile(out var steamProfile))
+        if (SteamInputService.TryGetDetectedControlProfile(out steamProfile))
             return steamProfile;
-
-#if ENABLE_INPUT_SYSTEM
-        if (Gamepad.current != null)
-            return GetProfileForGamepad(Gamepad.current);
-#endif
 
         return GetHardwarePlatformDefaultProfile();
     }
@@ -498,17 +569,17 @@ public static class TetrabeastsControls
             return true;
         }
 
-        var gamepad = Gamepad.current;
-        if (WasGamepadUsedThisFrame(gamepad))
+        if (TryGetUsedGamepadThisFrame(out var gamepad))
         {
-            profile = GetProfileForGamepad(gamepad);
+            SetLastInputGamepad(gamepad);
+            profile = GetBestProfileForGamepad(gamepad);
             return true;
         }
 #endif
 
-        if (!hasLastInputProfile && SteamInputService.TryGetDetectedControlProfile(out var steamProfile))
+        if (!hasLastInputProfile && SteamInputService.TryGetDetectedControlProfile(out var detectedSteamProfile))
         {
-            profile = steamProfile;
+            profile = detectedSteamProfile;
             return true;
         }
 
@@ -532,6 +603,140 @@ public static class TetrabeastsControls
     }
 
 #if ENABLE_INPUT_SYSTEM
+    static void SetLastInputGamepad(Gamepad gamepad)
+    {
+        lastInputGamepad = gamepad;
+        lastInputGamepadDeviceId = gamepad != null ? gamepad.deviceId : -1;
+    }
+
+    static void SetLastInputGamepadAndProfile(Gamepad gamepad)
+    {
+        if (gamepad == null)
+            return;
+
+        SetLastInputGamepad(gamepad);
+        SetLastInputProfile(GetBestProfileForGamepad(gamepad));
+    }
+
+    static void HandleInputSystemDeviceChange(InputDevice device, InputDeviceChange change)
+    {
+        if (!(device is Gamepad gamepad))
+            return;
+
+        switch (change)
+        {
+            case InputDeviceChange.Added:
+            case InputDeviceChange.Reconnected:
+            case InputDeviceChange.Enabled:
+            case InputDeviceChange.ConfigurationChanged:
+            case InputDeviceChange.UsageChanged:
+                SetLastInputGamepadAndProfile(gamepad);
+                break;
+
+            case InputDeviceChange.Disconnected:
+            case InputDeviceChange.Removed:
+                if (lastInputGamepad == gamepad || lastInputGamepadDeviceId == gamepad.deviceId)
+                    SetLastInputGamepad(null);
+
+                if (TryGetFallbackGamepad(out var fallbackGamepad))
+                    SetLastInputGamepadAndProfile(fallbackGamepad);
+                break;
+        }
+    }
+
+    static bool TryGetUsedGamepadThisFrame(out Gamepad usedGamepad)
+    {
+        usedGamepad = null;
+        Gamepad fallback = null;
+
+        foreach (var gamepad in Gamepad.all)
+        {
+            if (gamepad == null || !WasGamepadUsedThisFrame(gamepad))
+                continue;
+
+            var profile = GetBestProfileForGamepad(gamepad);
+            if (profile == TetrabeastsControlProfile.PlayStationController ||
+                profile == TetrabeastsControlProfile.HandheldController)
+            {
+                usedGamepad = gamepad;
+                return true;
+            }
+
+            if (fallback == null)
+                fallback = gamepad;
+        }
+
+        if (fallback != null)
+        {
+            usedGamepad = fallback;
+            return true;
+        }
+
+        return false;
+    }
+
+    static bool TryGetGamepadByDeviceId(int deviceId, out Gamepad gamepad)
+    {
+        foreach (var connected in Gamepad.all)
+        {
+            if (IsUsableGamepad(connected) && connected.deviceId == deviceId)
+            {
+                gamepad = connected;
+                return true;
+            }
+        }
+
+        gamepad = null;
+        return false;
+    }
+
+    static bool TryGetFallbackGamepad(out Gamepad gamepad)
+    {
+        if (IsUsableGamepad(Gamepad.current))
+        {
+            gamepad = Gamepad.current;
+            return true;
+        }
+
+        foreach (var connected in Gamepad.all)
+        {
+            if (IsUsableGamepad(connected))
+            {
+                gamepad = connected;
+                return true;
+            }
+        }
+
+        gamepad = null;
+        return false;
+    }
+
+    static bool IsUsableGamepad(Gamepad gamepad)
+    {
+        return gamepad != null && gamepad.added;
+    }
+
+    static bool ShouldConnectedGamepadOverrideLastProfile(TetrabeastsControlProfile connectedProfile)
+    {
+        if (!hasLastInputProfile || connectedProfile == lastInputProfile)
+            return false;
+
+        return connectedProfile == TetrabeastsControlProfile.PlayStationController ||
+            connectedProfile == TetrabeastsControlProfile.HandheldController;
+    }
+
+    static bool ShouldPreferDetectedControllerProfile(
+        TetrabeastsControlProfile inputSystemProfile,
+        TetrabeastsControlProfile detectedProfile)
+    {
+        if (!IsControllerProfile(detectedProfile) || detectedProfile == inputSystemProfile)
+            return false;
+
+        return inputSystemProfile == TetrabeastsControlProfile.XboxController ||
+            detectedProfile == TetrabeastsControlProfile.PlayStationController ||
+            detectedProfile == TetrabeastsControlProfile.HandheldController;
+    }
+
     static bool WasKeyboardMouseUsedThisFrame()
     {
         var keyboard = Keyboard.current;
@@ -581,15 +786,9 @@ public static class TetrabeastsControls
         if (gamepad == null)
             return TetrabeastsControlProfile.XboxController;
 
-        string description = $"{gamepad.GetType().Name} {gamepad.name} {gamepad.displayName} " +
-            $"{gamepad.description.product} {gamepad.description.manufacturer} {gamepad.description.interfaceName}";
+        string description = GetGamepadDescription(gamepad);
 
-        if (ContainsIgnoreCase(description, "dualshock") ||
-            ContainsIgnoreCase(description, "dualsense") ||
-            ContainsIgnoreCase(description, "playstation") ||
-            ContainsIgnoreCase(description, "ps4") ||
-            ContainsIgnoreCase(description, "ps5") ||
-            ContainsIgnoreCase(description, "wireless controller"))
+        if (LooksLikePlayStationGamepad(description))
             return TetrabeastsControlProfile.PlayStationController;
 
         if (ContainsIgnoreCase(description, "steam deck") ||
@@ -603,7 +802,103 @@ public static class TetrabeastsControls
 
         return TetrabeastsControlProfile.XboxController;
     }
+
+    static TetrabeastsControlProfile GetBestProfileForGamepad(Gamepad gamepad)
+    {
+        var profile = GetProfileForGamepad(gamepad);
+        string description = GetGamepadDescription(gamepad);
+        if (SteamInputService.TryGetDetectedControlProfile(out var steamProfile) &&
+            IsControllerProfile(steamProfile) &&
+            !ShouldTrustInputSystemProfile(description, profile) &&
+            ShouldPreferDetectedControllerProfile(profile, steamProfile))
+            profile = steamProfile;
+
+        return profile;
+    }
+
+    static string GetGamepadDescription(Gamepad gamepad)
+    {
+        if (gamepad == null)
+            return string.Empty;
+
+        return $"{gamepad.GetType().FullName} {gamepad.name} {gamepad.displayName} {gamepad.layout} {gamepad.variants} " +
+            $"{gamepad.description.product} {gamepad.description.manufacturer} " +
+            $"{gamepad.description.interfaceName} {gamepad.description.capabilities} {gamepad.description}";
+    }
+
+    static bool ShouldTrustInputSystemProfile(string description, TetrabeastsControlProfile profile)
+    {
+        return profile switch
+        {
+            TetrabeastsControlProfile.PlayStationController => LooksLikePlayStationGamepad(description),
+            TetrabeastsControlProfile.XboxController => LooksLikeXboxGamepad(description),
+            TetrabeastsControlProfile.HandheldController => LooksLikeHandheldGamepad(description),
+            _ => false
+        };
+    }
+
+    static bool LooksLikePlayStationGamepad(string description)
+    {
+        if (ContainsIgnoreCase(description, "dualshock") ||
+            ContainsIgnoreCase(description, "dualshock4") ||
+            ContainsIgnoreCase(description, "dual shock") ||
+            ContainsIgnoreCase(description, "dualsense") ||
+            ContainsIgnoreCase(description, "dualsensegamepad") ||
+            ContainsIgnoreCase(description, "dual sense") ||
+            ContainsIgnoreCase(description, "playstation") ||
+            ContainsIgnoreCase(description, "playstation controller") ||
+            ContainsIgnoreCase(description, "sony") ||
+            ContainsIgnoreCase(description, "sony interactive") ||
+            ContainsIgnoreCase(description, "scei") ||
+            ContainsIgnoreCase(description, "ps4") ||
+            ContainsIgnoreCase(description, "ps5") ||
+            ContainsIgnoreCase(description, "vid_054c") ||
+            ContainsIgnoreCase(description, "wireless controller"))
+            return true;
+
+        if (ContainsIgnoreCase(description, "054c") ||
+            ContainsIgnoreCase(description, "0x054c"))
+            return true;
+
+        return (ContainsIgnoreCase(description, "vendorid") ||
+                ContainsIgnoreCase(description, "vendor id") ||
+                ContainsIgnoreCase(description, "vendor")) &&
+            ContainsIgnoreCase(description, "1356");
+    }
+
+    static bool LooksLikeXboxGamepad(string description)
+    {
+        if (ContainsIgnoreCase(description, "xbox") ||
+            ContainsIgnoreCase(description, "xinput") ||
+            ContainsIgnoreCase(description, "x-input") ||
+            ContainsIgnoreCase(description, "microsoft") ||
+            ContainsIgnoreCase(description, "vid_045e"))
+            return true;
+
+        return (ContainsIgnoreCase(description, "vendorid") ||
+                ContainsIgnoreCase(description, "vendor id") ||
+                ContainsIgnoreCase(description, "vendor")) &&
+            ContainsIgnoreCase(description, "1118");
+    }
+
+    static bool LooksLikeHandheldGamepad(string description)
+    {
+        return ContainsIgnoreCase(description, "steam deck") ||
+               ContainsIgnoreCase(description, "steamcontroller") ||
+               ContainsIgnoreCase(description, "steam controller") ||
+               ContainsIgnoreCase(description, "switch") ||
+               ContainsIgnoreCase(description, "joy-con") ||
+               ContainsIgnoreCase(description, "joycon") ||
+               LooksLikeHandheldPc();
+    }
 #endif
+
+    static bool IsControllerProfile(TetrabeastsControlProfile profile)
+    {
+        return profile == TetrabeastsControlProfile.XboxController ||
+               profile == TetrabeastsControlProfile.PlayStationController ||
+               profile == TetrabeastsControlProfile.HandheldController;
+    }
 
     public static string GetProfileLabel(TetrabeastsControlProfile profile)
     {
@@ -653,9 +948,19 @@ public static class TetrabeastsControls
 
     public static string GetBindingLabel(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
     {
+        return GetBindingLabel(action, profile, ControllerGlyphSizePercent);
+    }
+
+    public static string GetCompactBindingLabel(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
+    {
+        return GetBindingLabel(action, profile, CompactControllerGlyphSizePercent);
+    }
+
+    static string GetBindingLabel(TetrabeastsControlAction action, TetrabeastsControlProfile profile, int controllerGlyphSizePercent)
+    {
         TetrabeastsControlProfile effectiveProfile = ResolveProfile(profile);
 
-        if (TryGetCustomBindingLabel(action, effectiveProfile, out string customLabel))
+        if (TryGetCustomBindingLabel(action, effectiveProfile, controllerGlyphSizePercent, out string customLabel))
             return customLabel;
 
         if (effectiveProfile == TetrabeastsControlProfile.KeyboardMouse)
@@ -663,16 +968,21 @@ public static class TetrabeastsControls
 
         string steamBindingLabel = SteamInputService.GetBindingLabel(action);
         if (!string.IsNullOrWhiteSpace(steamBindingLabel))
-            return FirstBindingLabel(steamBindingLabel);
+        {
+            string firstLabel = FirstBindingLabel(steamBindingLabel);
+            return TryGetControllerGlyphFromLabel(firstLabel, effectiveProfile, controllerGlyphSizePercent, out string glyphLabel)
+                ? glyphLabel
+                : firstLabel;
+        }
 
-        return GetControllerBindingLabel(action, effectiveProfile);
+        return GetControllerBindingLabel(action, effectiveProfile, controllerGlyphSizePercent);
     }
 
     public static string GetPresetBindingLabel(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
     {
         TetrabeastsControlProfile effectiveProfile = ResolveProfile(profile);
 
-        if (TryGetCustomBindingLabel(action, effectiveProfile, out string customLabel))
+        if (TryGetCustomBindingLabel(action, effectiveProfile, ControllerGlyphSizePercent, out string customLabel))
             return customLabel;
 
         return effectiveProfile == TetrabeastsControlProfile.KeyboardMouse
@@ -703,6 +1013,7 @@ public static class TetrabeastsControls
             resolved = ProtectControllerTutorialPhrases(resolved);
             resolved = ReplaceGameplayControlBracketTokens(resolved, profile);
             resolved = RestoreControllerTutorialPhrases(resolved, profile);
+            resolved = ReplaceControllerHelpControlTextTokens(resolved, profile);
         }
 
         resolved = ReplaceTutorialContinuePromptSuffix(resolved, GetTutorialContinueBindingLabel());
@@ -778,6 +1089,79 @@ public static class TetrabeastsControls
         return text.Replace($"[{token}]", replacement);
     }
 
+    static string ReplaceControllerHelpControlTextTokens(string text, TetrabeastsControlProfile profile)
+    {
+        if (string.IsNullOrEmpty(text))
+            return text;
+
+        text = ReplaceControlLinePrefix(text, "A", TetrabeastsControlAction.MoveLeft, profile);
+        text = ReplaceControlLinePrefix(text, "D", TetrabeastsControlAction.MoveRight, profile);
+        text = ReplaceControlLinePrefix(text, "S", TetrabeastsControlAction.SoftDrop, profile);
+        text = ReplaceControlLinePrefix(text, "Q", TetrabeastsControlAction.RotateCounterClockwise, profile);
+        text = ReplaceControlLinePrefix(text, "Z", TetrabeastsControlAction.RotateCounterClockwise, profile);
+        text = ReplaceControlLinePrefix(text, "E", TetrabeastsControlAction.RotateClockwise, profile);
+        text = ReplaceControlLinePrefix(text, "R", TetrabeastsControlAction.Special, profile);
+        text = ReplaceControlLinePrefix(text, "Escape", TetrabeastsControlAction.Pause, profile);
+
+        string hardDropLabel = FormatBracketedTutorialLabel(GetTutorialActionBindingLabel(TetrabeastsControlAction.HardDrop, profile));
+        string pauseLabel = FormatBracketedTutorialLabel(GetTutorialActionBindingLabel(TetrabeastsControlAction.Pause, profile));
+
+        text = ReplaceOrdinalIgnoreCase(text, "Pressing spacebar", $"Pressing {hardDropLabel}");
+        text = ReplaceOrdinalIgnoreCase(text, "Pressing space bar", $"Pressing {hardDropLabel}");
+        text = ReplaceOrdinalIgnoreCase(text, "Presseing escape", $"Pressing {pauseLabel}");
+        text = ReplaceOrdinalIgnoreCase(text, "Pressing escape", $"Pressing {pauseLabel}");
+        text = ReplaceOrdinalIgnoreCase(text, "pressing escape", $"pressing {pauseLabel}");
+
+        return text;
+    }
+
+    static string ReplaceControlLinePrefix(string text, string token, TetrabeastsControlAction action, TetrabeastsControlProfile profile)
+    {
+        if (string.IsNullOrEmpty(text) || string.IsNullOrWhiteSpace(token))
+            return text;
+
+        string replacement = FormatBracketedTutorialLabel(GetTutorialActionBindingLabel(action, profile));
+        string[] lines = text.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
+        bool changed = false;
+
+        for (int i = 0; i < lines.Length; i++)
+        {
+            string line = lines[i];
+            int leadingLength = 0;
+            while (leadingLength < line.Length && char.IsWhiteSpace(line[leadingLength]))
+                leadingLength++;
+
+            string trimmed = line.Substring(leadingLength);
+            string prefix = $"{token} -";
+            if (!trimmed.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            lines[i] = line.Substring(0, leadingLength) + replacement + trimmed.Substring(token.Length);
+            changed = true;
+        }
+
+        return changed ? string.Join("\n", lines) : text;
+    }
+
+    static string ReplaceOrdinalIgnoreCase(string text, string oldValue, string newValue)
+    {
+        if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(oldValue))
+            return text;
+
+        int startIndex = 0;
+        while (startIndex < text.Length)
+        {
+            int index = text.IndexOf(oldValue, startIndex, StringComparison.OrdinalIgnoreCase);
+            if (index < 0)
+                break;
+
+            text = text.Substring(0, index) + newValue + text.Substring(index + oldValue.Length);
+            startIndex = index + newValue.Length;
+        }
+
+        return text;
+    }
+
     static string ReplaceTutorialContinuePromptSuffix(string text, string continueLabel)
     {
         if (string.IsNullOrEmpty(text) || string.IsNullOrWhiteSpace(continueLabel))
@@ -833,24 +1217,28 @@ public static class TetrabeastsControls
 
         if (hasDpad && hasStick)
         {
+            string dpadDisplay = GetTutorialPathLabel(GetDpadPathForMovementAction(action), profile, dpadLabel);
+            string stickDisplay = GetTutorialPathLabel("<Gamepad>/leftStick", profile, "Left Joystick");
             string stickPhrase = stickDirection == "down"
-                ? $"tilting the [Left Joystick] {stickDirection}"
-                : $"tilting the [Left Joystick] to the {stickDirection}";
-            phrase = $"by pressing the [{dpadLabel}] button or {stickPhrase}";
+                ? $"tilting the {FormatBracketedTutorialLabel(stickDisplay)} {stickDirection}"
+                : $"tilting the {FormatBracketedTutorialLabel(stickDisplay)} to the {stickDirection}";
+            phrase = $"by pressing the {FormatBracketedTutorialLabel(dpadDisplay)} button or {stickPhrase}";
             return true;
         }
 
         if (hasDpad)
         {
-            phrase = $"by pressing the [{dpadLabel}] button";
+            string dpadDisplay = GetTutorialPathLabel(GetDpadPathForMovementAction(action), profile, dpadLabel);
+            phrase = $"by pressing the {FormatBracketedTutorialLabel(dpadDisplay)} button";
             return true;
         }
 
         if (hasStick)
         {
+            string stickDisplay = GetTutorialPathLabel("<Gamepad>/leftStick", profile, "Left Joystick");
             phrase = stickDirection == "down"
-                ? "by tilting the [Left Joystick] down"
-                : $"by tilting the [Left Joystick] to the {stickDirection}";
+                ? $"by tilting the {FormatBracketedTutorialLabel(stickDisplay)} down"
+                : $"by tilting the {FormatBracketedTutorialLabel(stickDisplay)} to the {stickDirection}";
             return true;
         }
 
@@ -877,19 +1265,23 @@ public static class TetrabeastsControls
 
         if (hasDpad && hasStick)
         {
-            replacement = $"[{dpadLabel}] or [{stickLabel}]";
+            string dpadDisplay = GetTutorialPathLabel(GetDpadPathForMovementAction(action), profile, dpadLabel);
+            string stickDisplay = GetTutorialPathLabel(GetStickPathForMovementAction(action), profile, stickLabel);
+            replacement = $"{FormatBracketedTutorialLabel(dpadDisplay)} or {FormatBracketedTutorialLabel(stickDisplay)}";
             return true;
         }
 
         if (hasDpad)
         {
-            replacement = $"[{dpadLabel}]";
+            string dpadDisplay = GetTutorialPathLabel(GetDpadPathForMovementAction(action), profile, dpadLabel);
+            replacement = FormatBracketedTutorialLabel(dpadDisplay);
             return true;
         }
 
         if (hasStick)
         {
-            replacement = $"[{stickLabel}]";
+            string stickDisplay = GetTutorialPathLabel(GetStickPathForMovementAction(action), profile, stickLabel);
+            replacement = FormatBracketedTutorialLabel(stickDisplay);
             return true;
         }
 
@@ -1012,6 +1404,9 @@ public static class TetrabeastsControls
 
     static bool TryGetTutorialBindingLabel(string path, TetrabeastsControlProfile profile, out string label)
     {
+        if (TryGetControllerBindingDisplayLabel(path, profile, out label))
+            return true;
+
         if (TryGetControllerButtonLabel(path, profile, out label))
             return true;
 
@@ -1051,6 +1446,13 @@ public static class TetrabeastsControls
                 label = string.Empty;
                 return false;
         }
+    }
+
+    static string GetTutorialPathLabel(string path, TetrabeastsControlProfile profile, string fallback)
+    {
+        return TryGetTutorialBindingLabel(path, profile, out string label) && !string.IsNullOrWhiteSpace(label)
+            ? label
+            : fallback;
     }
 
     static string FormatBracketedTutorialLabel(string label)
@@ -1189,7 +1591,7 @@ public static class TetrabeastsControls
 #endif
 
 #if ENABLE_LEGACY_INPUT_MANAGER
-        if (TryGetPreferredRotationActionLegacy(out action))
+        if (TryGetPreferredRotationActionLegacy(ActiveInputProfile, out action))
             return true;
 #endif
 
@@ -1502,6 +1904,244 @@ public static class TetrabeastsControls
         }
     }
 
+    static bool TryGetControllerBindingDisplayLabel(string path, TetrabeastsControlProfile profile, out string label)
+    {
+        return TryGetControllerBindingDisplayLabel(path, profile, ControllerGlyphSizePercent, out label);
+    }
+
+    static bool TryGetControllerBindingDisplayLabel(string path, TetrabeastsControlProfile profile, int controllerGlyphSizePercent, out string label)
+    {
+        if (TryGetControllerGlyphForPath(path, profile, out string glyphName))
+        {
+            label = FormatControllerGlyphTag(glyphName, controllerGlyphSizePercent);
+            return true;
+        }
+
+        if (TryGetControllerButtonLabel(path, profile, out label))
+            return true;
+
+        switch (path)
+        {
+            case "<Gamepad>/dpad/left":
+                label = "D-Pad Left";
+                return true;
+            case "<Gamepad>/dpad/right":
+                label = "D-Pad Right";
+                return true;
+            case "<Gamepad>/dpad/down":
+                label = "D-Pad Down";
+                return true;
+            case "<Gamepad>/dpad/up":
+                label = "D-Pad Up";
+                return true;
+            case "<Gamepad>/dpad":
+                label = "D-Pad";
+                return true;
+            case "<Gamepad>/leftStick/left":
+                label = "Left Stick Left";
+                return true;
+            case "<Gamepad>/leftStick/right":
+                label = "Left Stick Right";
+                return true;
+            case "<Gamepad>/leftStick/down":
+                label = "Left Stick Down";
+                return true;
+            case "<Gamepad>/leftStick/up":
+                label = "Left Stick Up";
+                return true;
+            case "<Gamepad>/leftStick":
+                label = "Left Stick";
+                return true;
+            default:
+                label = string.Empty;
+                return false;
+        }
+    }
+
+    static bool TryGetControllerGlyphForPath(string path, TetrabeastsControlProfile profile, out string glyphName)
+    {
+        glyphName = string.Empty;
+        if (string.IsNullOrWhiteSpace(path))
+            return false;
+
+        string prefix = GetControllerGlyphPrefix(profile);
+        switch (path)
+        {
+            case "<Gamepad>/buttonSouth":
+                glyphName = profile == TetrabeastsControlProfile.PlayStationController ? "PS_Cross" : $"{prefix}_A";
+                return true;
+            case "<Gamepad>/buttonEast":
+                glyphName = profile == TetrabeastsControlProfile.PlayStationController ? "PS_Circle" : $"{prefix}_B";
+                return true;
+            case "<Gamepad>/buttonWest":
+                glyphName = profile == TetrabeastsControlProfile.PlayStationController ? "PS_Square" : $"{prefix}_X";
+                return true;
+            case "<Gamepad>/buttonNorth":
+                glyphName = profile == TetrabeastsControlProfile.PlayStationController ? "PS_Triangle" : $"{prefix}_Y";
+                return true;
+            case "<Gamepad>/leftShoulder":
+                glyphName = profile == TetrabeastsControlProfile.PlayStationController ? "PS_L1" : $"{prefix}_L1";
+                return true;
+            case "<Gamepad>/rightShoulder":
+                glyphName = profile == TetrabeastsControlProfile.PlayStationController ? "PS_R1" : $"{prefix}_R1";
+                return true;
+            case "<Gamepad>/start":
+                glyphName = profile == TetrabeastsControlProfile.PlayStationController
+                    ? "PS_Options"
+                    : profile == TetrabeastsControlProfile.HandheldController ? "Deck_Menu" : "Xbox_Start";
+                return true;
+            case "<Gamepad>/select":
+                glyphName = profile == TetrabeastsControlProfile.PlayStationController
+                    ? "PS_Share"
+                    : profile == TetrabeastsControlProfile.HandheldController ? "Deck_View" : "Xbox_Back";
+                return true;
+            case "<Gamepad>/leftTrigger":
+                glyphName = "LT";
+                return true;
+            case "<Gamepad>/rightTrigger":
+                glyphName = "RT";
+                return true;
+            case "<Gamepad>/leftStickPress":
+                glyphName = "L3";
+                return true;
+            case "<Gamepad>/rightStickPress":
+                glyphName = "R3";
+                return true;
+            case "<Gamepad>/dpad":
+                glyphName = "DPad";
+                return true;
+            case "<Gamepad>/dpad/left":
+                glyphName = "DPad_Left";
+                return true;
+            case "<Gamepad>/dpad/right":
+                glyphName = "DPad_Right";
+                return true;
+            case "<Gamepad>/dpad/down":
+                glyphName = "DPad_Down";
+                return true;
+            case "<Gamepad>/dpad/up":
+                glyphName = "DPad_Up";
+                return true;
+            case "<Gamepad>/leftStick":
+                glyphName = "LeftStick";
+                return true;
+            case "<Gamepad>/leftStick/left":
+                glyphName = "LeftStick_Left";
+                return true;
+            case "<Gamepad>/leftStick/right":
+                glyphName = "LeftStick_Right";
+                return true;
+            case "<Gamepad>/leftStick/down":
+                glyphName = "LeftStick_Down";
+                return true;
+            case "<Gamepad>/leftStick/up":
+                glyphName = "LeftStick_Up";
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    static bool TryGetControllerGlyphFromLabel(string label, TetrabeastsControlProfile profile, out string glyphLabel)
+    {
+        return TryGetControllerGlyphFromLabel(label, profile, ControllerGlyphSizePercent, out glyphLabel);
+    }
+
+    static bool TryGetControllerGlyphFromLabel(string label, TetrabeastsControlProfile profile, int controllerGlyphSizePercent, out string glyphLabel)
+    {
+        glyphLabel = string.Empty;
+        if (string.IsNullOrWhiteSpace(label))
+            return false;
+
+        string normalized = NormalizeControllerLabel(label);
+        string prefix = GetControllerGlyphPrefix(profile);
+
+        string glyphName = normalized switch
+        {
+            "A" => profile == TetrabeastsControlProfile.PlayStationController ? "PS_Cross" : $"{prefix}_A",
+            "B" => profile == TetrabeastsControlProfile.PlayStationController ? "PS_Circle" : $"{prefix}_B",
+            "X" => profile == TetrabeastsControlProfile.PlayStationController ? "PS_Cross" : $"{prefix}_X",
+            "Y" => profile == TetrabeastsControlProfile.PlayStationController ? "PS_Triangle" : $"{prefix}_Y",
+            "CROSS" => "PS_Cross",
+            "CIRCLE" => "PS_Circle",
+            "SQUARE" => "PS_Square",
+            "TRIANGLE" => "PS_Triangle",
+            "LT" => "LT",
+            "RT" => "RT",
+            "L3" => "L3",
+            "R3" => "R3",
+            _ => string.Empty
+        };
+
+        if (string.IsNullOrEmpty(glyphName))
+        {
+            if (normalized == "LB" || normalized == "L1")
+                glyphName = profile == TetrabeastsControlProfile.PlayStationController ? "PS_L1" : $"{prefix}_L1";
+            else if (normalized == "RB" || normalized == "R1")
+                glyphName = profile == TetrabeastsControlProfile.PlayStationController ? "PS_R1" : $"{prefix}_R1";
+            else if (normalized == "START" || normalized == "MENU" || normalized == "OPTIONS")
+                glyphName = profile == TetrabeastsControlProfile.PlayStationController
+                    ? "PS_Options"
+                    : profile == TetrabeastsControlProfile.HandheldController ? "Deck_Menu" : "Xbox_Start";
+            else if (normalized == "BACK" || normalized == "VIEW" || normalized == "SHARE")
+                glyphName = profile == TetrabeastsControlProfile.PlayStationController
+                    ? "PS_Share"
+                    : profile == TetrabeastsControlProfile.HandheldController ? "Deck_View" : "Xbox_Back";
+            else if (normalized == "DPAD" || normalized == "DIRECTIONALPAD")
+                glyphName = "DPad";
+            else if (normalized == "DPADLEFT" || normalized == "LEFTDIRECTIONALPAD")
+                glyphName = "DPad_Left";
+            else if (normalized == "DPADRIGHT" || normalized == "RIGHTDIRECTIONALPAD")
+                glyphName = "DPad_Right";
+            else if (normalized == "DPADDOWN" || normalized == "DOWNDIRECTIONALPAD")
+                glyphName = "DPad_Down";
+            else if (normalized == "DPADUP" || normalized == "UPDIRECTIONALPAD")
+                glyphName = "DPad_Up";
+            else if (normalized == "LEFTSTICK" || normalized == "LEFTJOYSTICK")
+                glyphName = "LeftStick";
+            else if (normalized == "LEFTSTICKLEFT" || normalized == "LEFTJOYSTICKLEFT")
+                glyphName = "LeftStick_Left";
+            else if (normalized == "LEFTSTICKRIGHT" || normalized == "LEFTJOYSTICKRIGHT")
+                glyphName = "LeftStick_Right";
+            else if (normalized == "LEFTSTICKDOWN" || normalized == "LEFTJOYSTICKDOWN")
+                glyphName = "LeftStick_Down";
+            else if (normalized == "LEFTSTICKUP" || normalized == "LEFTJOYSTICKUP")
+                glyphName = "LeftStick_Up";
+        }
+
+        if (string.IsNullOrEmpty(glyphName))
+            return false;
+
+        glyphLabel = FormatControllerGlyphTag(glyphName, controllerGlyphSizePercent);
+        return true;
+    }
+
+    static string NormalizeControllerLabel(string label)
+    {
+        var normalized = label.Trim().ToUpperInvariant();
+        normalized = normalized.Replace("-", string.Empty);
+        normalized = normalized.Replace("_", string.Empty);
+        normalized = normalized.Replace(" ", string.Empty);
+        normalized = normalized.Replace("/", string.Empty);
+        return normalized;
+    }
+
+    static string GetControllerGlyphPrefix(TetrabeastsControlProfile profile)
+    {
+        return profile == TetrabeastsControlProfile.HandheldController ? "Deck" : "Xbox";
+    }
+
+    static string FormatControllerGlyphTag(string glyphName)
+    {
+        return FormatControllerGlyphTag(glyphName, ControllerGlyphSizePercent);
+    }
+
+    static string FormatControllerGlyphTag(string glyphName, int controllerGlyphSizePercent)
+    {
+        controllerGlyphSizePercent = Mathf.Clamp(controllerGlyphSizePercent, 50, 250);
+        return $"<size={controllerGlyphSizePercent}%><sprite=\"{ControllerGlyphSpriteAssetName}\" name=\"{glyphName}\"></size>";
+    }
+
     static void EnsureCustomBindingState(TetrabeastsControlProfile profile, BindingProfileState state)
     {
         if (!state.HasCustom)
@@ -1517,7 +2157,11 @@ public static class TetrabeastsControls
         }
     }
 
-    static bool TryGetCustomBindingLabel(TetrabeastsControlAction action, TetrabeastsControlProfile profile, out string label)
+    static bool TryGetCustomBindingLabel(
+        TetrabeastsControlAction action,
+        TetrabeastsControlProfile profile,
+        int controllerGlyphSizePercent,
+        out string label)
     {
         label = string.Empty;
         var state = GetBindingProfileState(profile);
@@ -1530,17 +2174,25 @@ public static class TetrabeastsControls
             return true;
         }
 
-        label = FormatBindingLabels(bindings);
+        label = FormatBindingLabels(bindings, profile, controllerGlyphSizePercent);
         return true;
     }
 
-    static string FormatBindingLabels(List<TetrabeastsControlBinding> bindings)
+    static string FormatBindingLabels(
+        List<TetrabeastsControlBinding> bindings,
+        TetrabeastsControlProfile profile,
+        int controllerGlyphSizePercent)
     {
         for (int i = 0; i < bindings.Count; i++)
         {
             var binding = bindings[i];
             if (!binding.IsValid)
                 continue;
+
+            if (profile != TetrabeastsControlProfile.KeyboardMouse &&
+                (TryGetControllerBindingDisplayLabel(binding.Path, profile, controllerGlyphSizePercent, out string pathLabel) ||
+                 TryGetControllerGlyphFromLabel(binding.Label, profile, controllerGlyphSizePercent, out pathLabel)))
+                return pathLabel;
 
             return string.IsNullOrWhiteSpace(binding.Label) ? binding.Path : binding.Label;
         }
@@ -1609,7 +2261,7 @@ public static class TetrabeastsControls
 #if ENABLE_INPUT_SYSTEM
     static bool WasBindingPressedThisFrame(TetrabeastsControlBinding binding)
     {
-        var control = InputSystem.FindControl(binding.Path);
+        var control = FindBindingControl(binding);
         if (control is ButtonControl button)
             return button.wasPressedThisFrame;
 
@@ -1624,7 +2276,7 @@ public static class TetrabeastsControls
 
     static bool IsBindingHeld(TetrabeastsControlBinding binding)
     {
-        var control = InputSystem.FindControl(binding.Path);
+        var control = FindBindingControl(binding);
         if (control is ButtonControl button)
             return button.isPressed;
 
@@ -1635,6 +2287,29 @@ public static class TetrabeastsControls
             return dpad.ReadValue().magnitude >= StickPressedThreshold;
 
         return false;
+    }
+
+    static InputControl FindBindingControl(TetrabeastsControlBinding binding)
+    {
+        string path = binding.Path;
+        if (TryGetGamepadRelativePath(path, out string relativePath) &&
+            TryGetActiveGamepad(out var gamepad))
+            return InputSystem.FindControl($"{gamepad.path}/{relativePath}");
+
+        return InputSystem.FindControl(path);
+    }
+
+    static bool TryGetGamepadRelativePath(string path, out string relativePath)
+    {
+        const string Prefix = "<Gamepad>/";
+        relativePath = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(path) ||
+            !path.StartsWith(Prefix, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        relativePath = path.Substring(Prefix.Length);
+        return !string.IsNullOrWhiteSpace(relativePath);
     }
 
     static bool WasRebindCancelPressed(TetrabeastsControlProfile profile, TetrabeastsControlAction action)
@@ -1692,7 +2367,25 @@ public static class TetrabeastsControls
     static bool TryReadGamepadRebind(TetrabeastsControlProfile profile, out TetrabeastsControlBinding binding)
     {
         binding = default;
-        var gamepad = Gamepad.current;
+
+        foreach (var gamepad in Gamepad.all)
+        {
+            if (!IsUsableGamepad(gamepad))
+                continue;
+
+            if (TryReadGamepadRebind(gamepad, profile, out binding))
+            {
+                SetLastInputGamepadAndProfile(gamepad);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    static bool TryReadGamepadRebind(Gamepad gamepad, TetrabeastsControlProfile profile, out TetrabeastsControlBinding binding)
+    {
+        binding = default;
         if (gamepad == null)
             return false;
 
@@ -1759,9 +2452,12 @@ public static class TetrabeastsControls
 
     static bool AnyGamepadRebindInputHeld()
     {
-        var gamepad = Gamepad.current;
-        return gamepad != null &&
-               (gamepad.buttonSouth.isPressed ||
+        foreach (var gamepad in Gamepad.all)
+        {
+            if (!IsUsableGamepad(gamepad))
+                continue;
+
+            if (gamepad.buttonSouth.isPressed ||
                 gamepad.buttonEast.isPressed ||
                 gamepad.buttonWest.isPressed ||
                 gamepad.buttonNorth.isPressed ||
@@ -1777,7 +2473,11 @@ public static class TetrabeastsControls
                 gamepad.dpad.right.isPressed ||
                 gamepad.dpad.down.isPressed ||
                 gamepad.dpad.up.isPressed ||
-                gamepad.leftStick.ReadValue().magnitude >= StickPressedThreshold);
+                gamepad.leftStick.ReadValue().magnitude >= StickPressedThreshold)
+                return true;
+        }
+
+        return false;
     }
 
     static string FormatKeyLabel(KeyControl key)
@@ -1851,6 +2551,18 @@ public static class TetrabeastsControls
 
     static string GetControllerBindingLabel(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
     {
+        return GetControllerBindingLabel(action, profile, ControllerGlyphSizePercent);
+    }
+
+    static string GetControllerBindingLabel(
+        TetrabeastsControlAction action,
+        TetrabeastsControlProfile profile,
+        int controllerGlyphSizePercent)
+    {
+        if (TryGetDefaultControllerBindingPath(action, out string path) &&
+            TryGetControllerBindingDisplayLabel(path, profile, controllerGlyphSizePercent, out string glyphLabel))
+            return glyphLabel;
+
         string south = ControllerSouthLabel(profile);
         string east = ControllerEastLabel(profile);
         string west = ControllerWestLabel(profile);
@@ -1874,6 +2586,27 @@ public static class TetrabeastsControls
         };
     }
 
+    static bool TryGetDefaultControllerBindingPath(TetrabeastsControlAction action, out string path)
+    {
+        path = action switch
+        {
+            TetrabeastsControlAction.MoveLeft => "<Gamepad>/leftStick/left",
+            TetrabeastsControlAction.MoveRight => "<Gamepad>/leftStick/right",
+            TetrabeastsControlAction.SoftDrop => "<Gamepad>/leftStick/down",
+            TetrabeastsControlAction.RotateClockwise => "<Gamepad>/buttonEast",
+            TetrabeastsControlAction.RotateCounterClockwise => "<Gamepad>/buttonWest",
+            TetrabeastsControlAction.HardDrop => "<Gamepad>/buttonSouth",
+            TetrabeastsControlAction.Special => "<Gamepad>/buttonNorth",
+            TetrabeastsControlAction.Pause => "<Gamepad>/start",
+            TetrabeastsControlAction.MenuNavigate => "<Gamepad>/leftStick",
+            TetrabeastsControlAction.MenuSubmit => "<Gamepad>/buttonSouth",
+            TetrabeastsControlAction.MenuCancel => "<Gamepad>/buttonEast",
+            _ => string.Empty
+        };
+
+        return !string.IsNullOrWhiteSpace(path);
+    }
+
 #if ENABLE_INPUT_SYSTEM
     static bool TryGetPreferredRotationActionInputSystem(out TetrabeastsControlAction action)
     {
@@ -1895,8 +2628,7 @@ public static class TetrabeastsControls
                 keyboard.zKey.isPressed;
         }
 
-        var gamepad = Gamepad.current;
-        if (gamepad != null)
+        if (TryGetActiveGamepad(out var gamepad))
         {
             clockwise |= gamepad.buttonEast.wasPressedThisFrame ||
                 gamepad.rightShoulder.wasPressedThisFrame ||
@@ -1968,8 +2700,7 @@ public static class TetrabeastsControls
 
     static bool WasGamepadActionPressed(TetrabeastsControlAction action)
     {
-        var gamepad = Gamepad.current;
-        if (gamepad == null)
+        if (!TryGetActiveGamepad(out var gamepad))
             return false;
 
         return action switch
@@ -2028,8 +2759,7 @@ public static class TetrabeastsControls
                 direction.y += 1f;
         }
 
-        var gamepad = Gamepad.current;
-        if (gamepad != null)
+        if (TryGetActiveGamepad(out var gamepad))
         {
             direction += gamepad.leftStick.ReadValue();
             direction += gamepad.dpad.ReadValue();
@@ -2040,8 +2770,7 @@ public static class TetrabeastsControls
 
     static Vector2 GetMenuScrollDirectionInputSystem()
     {
-        var gamepad = Gamepad.current;
-        if (gamepad == null)
+        if (!TryGetActiveGamepad(out var gamepad))
             return Vector2.zero;
 
         return gamepad.rightStick.ReadValue();
@@ -2061,8 +2790,7 @@ public static class TetrabeastsControls
              keyboard.rightArrowKey.wasPressedThisFrame ||
              keyboard.tabKey.wasPressedThisFrame);
 
-        var gamepad = Gamepad.current;
-        bool gamepadPressed = gamepad != null &&
+        bool gamepadPressed = TryGetActiveGamepad(out var gamepad) &&
             (gamepad.dpad.left.wasPressedThisFrame ||
              gamepad.dpad.right.wasPressedThisFrame ||
              gamepad.dpad.down.wasPressedThisFrame ||
@@ -2085,8 +2813,7 @@ public static class TetrabeastsControls
              keyboard.rightArrowKey.isPressed ||
              keyboard.tabKey.isPressed);
 
-        var gamepad = Gamepad.current;
-        bool gamepadHeld = gamepad != null &&
+        bool gamepadHeld = TryGetActiveGamepad(out var gamepad) &&
             (gamepad.dpad.left.isPressed ||
              gamepad.dpad.right.isPressed ||
              gamepad.dpad.down.isPressed ||
@@ -2115,8 +2842,7 @@ public static class TetrabeastsControls
                 direction.y += 1f;
         }
 
-        var gamepad = Gamepad.current;
-        if (gamepad != null)
+        if (TryGetActiveGamepad(out var gamepad))
             direction += gamepad.dpad.ReadValue() + gamepad.leftStick.ReadValue();
 
         return ClampMenuNavigationDirection(direction);
@@ -2156,8 +2882,7 @@ public static class TetrabeastsControls
 
     static bool IsGamepadActionHeld(TetrabeastsControlAction action)
     {
-        var gamepad = Gamepad.current;
-        if (gamepad == null)
+        if (!TryGetActiveGamepad(out var gamepad))
             return false;
 
         Vector2 leftStick = gamepad.leftStick.ReadValue();
@@ -2193,28 +2918,31 @@ public static class TetrabeastsControls
 #endif
 
 #if ENABLE_LEGACY_INPUT_MANAGER
-    static bool TryGetPreferredRotationActionLegacy(out TetrabeastsControlAction action)
+    static bool TryGetPreferredRotationActionLegacy(TetrabeastsControlProfile profile, out TetrabeastsControlAction action)
     {
         action = default;
+
+        KeyCode rotateClockwiseButton = GetLegacyControllerButtonKey(profile, TetrabeastsControlAction.RotateClockwise);
+        KeyCode rotateCounterClockwiseButton = GetLegacyControllerButtonKey(profile, TetrabeastsControlAction.RotateCounterClockwise);
 
         bool clockwise =
             Input.GetKeyDown(KeyCode.E) ||
             Input.GetKeyDown(KeyCode.UpArrow) ||
-            Input.GetKeyDown(KeyCode.JoystickButton1) ||
+            Input.GetKeyDown(rotateClockwiseButton) ||
             Input.GetKeyDown(KeyCode.JoystickButton5) ||
             Input.GetKey(KeyCode.E) ||
             Input.GetKey(KeyCode.UpArrow) ||
-            Input.GetKey(KeyCode.JoystickButton1) ||
+            Input.GetKey(rotateClockwiseButton) ||
             Input.GetKey(KeyCode.JoystickButton5);
 
         bool counterClockwise =
             Input.GetKeyDown(KeyCode.Q) ||
             Input.GetKeyDown(KeyCode.Z) ||
-            Input.GetKeyDown(KeyCode.JoystickButton2) ||
+            Input.GetKeyDown(rotateCounterClockwiseButton) ||
             Input.GetKeyDown(KeyCode.JoystickButton4) ||
             Input.GetKey(KeyCode.Q) ||
             Input.GetKey(KeyCode.Z) ||
-            Input.GetKey(KeyCode.JoystickButton2) ||
+            Input.GetKey(rotateCounterClockwiseButton) ||
             Input.GetKey(KeyCode.JoystickButton4);
 
         if (clockwise == counterClockwise)
@@ -2235,12 +2963,12 @@ public static class TetrabeastsControls
             return true;
 
         if (IsMenuAction(action))
-            return WasKeyboardActionPressedLegacy(action) || WasGamepadActionPressedLegacy(action);
+            return WasKeyboardActionPressedLegacy(action) || WasGamepadActionPressedLegacy(action, profile);
 
         if (profile == TetrabeastsControlProfile.KeyboardMouse)
             return WasKeyboardActionPressedLegacy(action);
 
-        return WasGamepadActionPressedLegacy(action);
+        return WasGamepadActionPressedLegacy(action, profile);
     }
 
     static bool WasKeyboardActionPressedLegacy(TetrabeastsControlAction action)
@@ -2271,18 +2999,16 @@ public static class TetrabeastsControls
         };
     }
 
-    static bool WasGamepadActionPressedLegacy(TetrabeastsControlAction action)
+    static bool WasGamepadActionPressedLegacy(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
     {
+        if (IsLegacySingleButtonAction(action))
+            return Input.GetKeyDown(GetLegacyControllerButtonKey(profile, action));
+
         return action switch
         {
-            TetrabeastsControlAction.RotateClockwise => Input.GetKeyDown(KeyCode.JoystickButton1) || Input.GetKeyDown(KeyCode.JoystickButton5),
-            TetrabeastsControlAction.RotateCounterClockwise => Input.GetKeyDown(KeyCode.JoystickButton2) || Input.GetKeyDown(KeyCode.JoystickButton4),
-            TetrabeastsControlAction.HardDrop => Input.GetKeyDown(KeyCode.JoystickButton0),
-            TetrabeastsControlAction.Special => Input.GetKeyDown(KeyCode.JoystickButton3),
-            TetrabeastsControlAction.Pause => Input.GetKeyDown(KeyCode.JoystickButton7),
+            TetrabeastsControlAction.RotateClockwise => Input.GetKeyDown(GetLegacyControllerButtonKey(profile, action)) || Input.GetKeyDown(KeyCode.JoystickButton5),
+            TetrabeastsControlAction.RotateCounterClockwise => Input.GetKeyDown(GetLegacyControllerButtonKey(profile, action)) || Input.GetKeyDown(KeyCode.JoystickButton4),
             TetrabeastsControlAction.MenuNavigate => Mathf.Abs(Input.GetAxisRaw("Horizontal")) >= StickPressedThreshold || Mathf.Abs(Input.GetAxisRaw("Vertical")) >= StickPressedThreshold,
-            TetrabeastsControlAction.MenuSubmit => Input.GetKeyDown(KeyCode.JoystickButton0),
-            TetrabeastsControlAction.MenuCancel => Input.GetKeyDown(KeyCode.JoystickButton1),
             _ => false
         };
     }
@@ -2290,12 +3016,12 @@ public static class TetrabeastsControls
     static bool IsHeldLegacy(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
     {
         if (IsMenuAction(action))
-            return IsKeyboardActionHeldLegacy(action) || IsGamepadActionHeldLegacy(action);
+            return IsKeyboardActionHeldLegacy(action) || IsGamepadActionHeldLegacy(action, profile);
 
         if (profile == TetrabeastsControlProfile.KeyboardMouse)
             return IsKeyboardActionHeldLegacy(action);
 
-        return IsGamepadActionHeldLegacy(action);
+        return IsGamepadActionHeldLegacy(action, profile);
     }
 
     static Vector2 GetMenuNavigationDirectionLegacy()
@@ -2436,25 +3162,49 @@ public static class TetrabeastsControls
         };
     }
 
-    static bool IsGamepadActionHeldLegacy(TetrabeastsControlAction action)
+    static bool IsGamepadActionHeldLegacy(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
+
+        if (IsLegacySingleButtonAction(action))
+            return Input.GetKey(GetLegacyControllerButtonKey(profile, action));
 
         return action switch
         {
             TetrabeastsControlAction.MoveLeft => horizontal <= -StickPressedThreshold,
             TetrabeastsControlAction.MoveRight => horizontal >= StickPressedThreshold,
             TetrabeastsControlAction.SoftDrop => vertical <= -StickPressedThreshold,
-            TetrabeastsControlAction.RotateClockwise => Input.GetKey(KeyCode.JoystickButton1) || Input.GetKey(KeyCode.JoystickButton5),
-            TetrabeastsControlAction.RotateCounterClockwise => Input.GetKey(KeyCode.JoystickButton2) || Input.GetKey(KeyCode.JoystickButton4),
-            TetrabeastsControlAction.HardDrop => Input.GetKey(KeyCode.JoystickButton0),
-            TetrabeastsControlAction.Special => Input.GetKey(KeyCode.JoystickButton3),
-            TetrabeastsControlAction.Pause => Input.GetKey(KeyCode.JoystickButton7),
+            TetrabeastsControlAction.RotateClockwise => Input.GetKey(GetLegacyControllerButtonKey(profile, action)) || Input.GetKey(KeyCode.JoystickButton5),
+            TetrabeastsControlAction.RotateCounterClockwise => Input.GetKey(GetLegacyControllerButtonKey(profile, action)) || Input.GetKey(KeyCode.JoystickButton4),
             TetrabeastsControlAction.MenuNavigate => Mathf.Abs(horizontal) >= StickPressedThreshold || Mathf.Abs(vertical) >= StickPressedThreshold,
-            TetrabeastsControlAction.MenuSubmit => Input.GetKey(KeyCode.JoystickButton0),
-            TetrabeastsControlAction.MenuCancel => Input.GetKey(KeyCode.JoystickButton1),
             _ => false
+        };
+    }
+
+    static bool IsLegacySingleButtonAction(TetrabeastsControlAction action)
+    {
+        return action == TetrabeastsControlAction.HardDrop ||
+            action == TetrabeastsControlAction.Special ||
+            action == TetrabeastsControlAction.Pause ||
+            action == TetrabeastsControlAction.MenuSubmit ||
+            action == TetrabeastsControlAction.MenuCancel;
+    }
+
+    static KeyCode GetLegacyControllerButtonKey(TetrabeastsControlProfile profile, TetrabeastsControlAction action)
+    {
+        bool playStation = profile == TetrabeastsControlProfile.PlayStationController;
+
+        return action switch
+        {
+            TetrabeastsControlAction.RotateClockwise => playStation ? KeyCode.JoystickButton2 : KeyCode.JoystickButton1,
+            TetrabeastsControlAction.RotateCounterClockwise => playStation ? KeyCode.JoystickButton0 : KeyCode.JoystickButton2,
+            TetrabeastsControlAction.HardDrop => playStation ? KeyCode.JoystickButton1 : KeyCode.JoystickButton0,
+            TetrabeastsControlAction.Special => KeyCode.JoystickButton3,
+            TetrabeastsControlAction.Pause => playStation ? KeyCode.JoystickButton9 : KeyCode.JoystickButton7,
+            TetrabeastsControlAction.MenuSubmit => playStation ? KeyCode.JoystickButton1 : KeyCode.JoystickButton0,
+            TetrabeastsControlAction.MenuCancel => playStation ? KeyCode.JoystickButton2 : KeyCode.JoystickButton1,
+            _ => KeyCode.None
         };
     }
 #endif

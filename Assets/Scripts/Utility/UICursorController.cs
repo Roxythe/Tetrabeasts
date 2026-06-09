@@ -378,8 +378,7 @@ public class UICursorController : MonoBehaviour
         Vector2 stick = Vector2.zero;
 
 #if ENABLE_INPUT_SYSTEM
-        var gamepad = Gamepad.current;
-        if (gamepad != null)
+        if (TetrabeastsControls.TryGetActiveGamepad(out var gamepad))
             stick += gamepad.leftStick.ReadValue();
 #endif
 
@@ -426,8 +425,8 @@ public class UICursorController : MonoBehaviour
         pressed |= TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuSubmit);
 
 #if ENABLE_INPUT_SYSTEM
-        var gamepad = Gamepad.current;
-        pressed |= gamepad != null && gamepad.buttonSouth.wasPressedThisFrame;
+        pressed |= TetrabeastsControls.TryGetActiveGamepad(out var gamepad) &&
+            gamepad.buttonSouth.wasPressedThisFrame;
 #endif
 
 #if ENABLE_LEGACY_INPUT_MANAGER

@@ -6,6 +6,9 @@ using UnityEngine.UI;
 [DisallowMultipleComponent]
 public class ConfirmationPopupUI : MonoBehaviour
 {
+    const string RuntimeWarningDimmerName = "Warning_Dimmer_Panel";
+    static ConfirmationPopupUI s_showingPopup;
+
     [SerializeField] TutorialPopupView popupView;
     [SerializeField] TMP_Text continueButtonLabel;
     [SerializeField] TMP_Text cancelButtonLabel;
@@ -13,6 +16,7 @@ public class ConfirmationPopupUI : MonoBehaviour
     [SerializeField] TutorialPopupView.PopupAnchorPreset anchorPreset = TutorialPopupView.PopupAnchorPreset.Default;
     [SerializeField] Vector2 anchoredPosition;
     [SerializeField, Range(0.1f, 1f)] float popupAlpha = 1f;
+    [SerializeField, Range(0f, 1f)] float warningDimmerAlpha = 0.65f;
 
     Action _onConfirm;
     Action _onCancel;
@@ -25,15 +29,28 @@ public class ConfirmationPopupUI : MonoBehaviour
     public bool IsShowing => popupView && popupView.IsShowing;
     public GameObject NavigationRoot => popupView ? popupView.gameObject : gameObject;
 
+    public static bool IsAnyShowing
+    {
+        get
+        {
+            return s_showingPopup && s_showingPopup.IsShowing;
+        }
+    }
+
     void Awake()
     {
         EnsureReferences();
 
-        if (warningVisual)
-            warningVisual.SetActive(false);
+        SetWarningVisualVisible(false);
 
         if (!_explicitShowInProgress)
             popupView?.Hide(true);
+    }
+
+    void OnDisable()
+    {
+        if (s_showingPopup == this)
+            s_showingPopup = null;
     }
 
     public static ConfirmationPopupUI FindOrCreate()
@@ -124,6 +141,7 @@ public class ConfirmationPopupUI : MonoBehaviour
         _onConfirm = onConfirm;
         _onCancel = onCancel;
         _ownsCurrentPopup = true;
+        s_showingPopup = this;
 
         popupView.ApplyPresetPosition(anchorPreset, anchoredPosition);
         popupView.SetVisibleAlpha(popupAlpha);
@@ -142,8 +160,7 @@ public class ConfirmationPopupUI : MonoBehaviour
         if (popupView.SkipButton)
             popupView.SkipButton.onClick.AddListener(OnCancelPressed);
 
-        if (warningVisual)
-            warningVisual.SetActive(false);
+        SetWarningVisualVisible(false);
 
         _explicitShowInProgress = true;
         try
@@ -155,8 +172,7 @@ public class ConfirmationPopupUI : MonoBehaviour
             _explicitShowInProgress = false;
         }
 
-        if (warningVisual)
-            warningVisual.SetActive(showWarningVisual);
+        SetWarningVisualVisible(showWarningVisual);
     }
 
     void OnConfirmPressed()
@@ -177,12 +193,14 @@ public class ConfirmationPopupUI : MonoBehaviour
     {
         CleanupListeners();
 
-        if (warningVisual)
-            warningVisual.SetActive(false);
+        SetWarningVisualVisible(false);
 
         RestoreButtonLayouts();
         popupView?.Hide();
         _ownsCurrentPopup = false;
+
+        if (s_showingPopup == this)
+            s_showingPopup = null;
     }
 
     void CleanupListeners()
@@ -249,6 +267,95 @@ public class ConfirmationPopupUI : MonoBehaviour
 
         if (!cancelButtonLabel && popupView && popupView.SkipButton)
             cancelButtonLabel = popupView.SkipButton.GetComponentInChildren<TMP_Text>(true);
+
+        EnsureWarningVisual();
+    }
+
+    void EnsureWarningVisual()
+    {
+        if (warningVisual)
+            return;
+
+        Transform root = popupView ? popupView.transform : transform;
+        warningVisual =
+            FindDeepChild(root, RuntimeWarningDimmerName)?.gameObject ??
+            FindDeepChild(root, "Dimmer_Panel")?.gameObject ??
+            FindDeepChild(root, "TextPromptBackground_Image")?.gameObject;
+
+        if (!warningVisual)
+            warningVisual = CreateRuntimeWarningDimmer(root);
+
+        ConfigureWarningVisual(false);
+    }
+
+    GameObject CreateRuntimeWarningDimmer(Transform root)
+    {
+        if (!root)
+            return null;
+
+        var go = new GameObject(RuntimeWarningDimmerName, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        go.layer = root.gameObject.layer;
+        go.transform.SetParent(root, false);
+        go.transform.SetAsFirstSibling();
+
+        var rect = go.transform as RectTransform;
+        if (rect)
+        {
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            rect.pivot = new Vector2(0.5f, 0.5f);
+        }
+
+        return go;
+    }
+
+    void SetWarningVisualVisible(bool visible)
+    {
+        EnsureWarningVisual();
+        if (!warningVisual)
+            return;
+
+        ConfigureWarningVisual(visible);
+        warningVisual.SetActive(visible);
+
+        if (visible)
+            warningVisual.transform.SetAsFirstSibling();
+    }
+
+    void ConfigureWarningVisual(bool visible)
+    {
+        if (!warningVisual)
+            return;
+
+        var image = warningVisual.GetComponent<Image>();
+        if (!image)
+            image = warningVisual.AddComponent<Image>();
+
+        image.sprite = null;
+        image.type = Image.Type.Simple;
+        image.color = new Color(0f, 0f, 0f, visible ? warningDimmerAlpha : 0f);
+        image.raycastTarget = false;
+    }
+
+    static Transform FindDeepChild(Transform root, string childName)
+    {
+        if (!root || string.IsNullOrEmpty(childName))
+            return null;
+
+        for (int i = 0; i < root.childCount; i++)
+        {
+            Transform child = root.GetChild(i);
+            if (child && string.Equals(child.name, childName, StringComparison.Ordinal))
+                return child;
+
+            Transform nested = FindDeepChild(child, childName);
+            if (nested)
+                return nested;
+        }
+
+        return null;
     }
 
     static void SetLabel(TMP_Text label, string text)

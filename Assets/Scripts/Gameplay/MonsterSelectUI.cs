@@ -725,10 +725,6 @@ public class MonsterSelectUI : MonoBehaviour
         if (frame) frame.enabled = on;
 
         ApplySelectionAlpha(btn, on);
-
-        var es = UnityEngine.EventSystems.EventSystem.current;
-        if (!on && es && es.currentSelectedGameObject == btn.gameObject)
-            es.SetSelectedGameObject(null);
     }
 
     public void ConfirmAndClose()

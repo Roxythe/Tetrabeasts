@@ -5,6 +5,13 @@ using UnityEngine.UI;
 [DisallowMultipleComponent]
 public class TutorialPopupView : MonoBehaviour
 {
+    static readonly string[] TutorialDimmerObjectNames =
+    {
+        "Warning_Dimmer_Panel",
+        "Dimmer_Panel",
+        "TextPromptBackground_Image"
+    };
+
     public enum PopupAnchorPreset
     {
         Default,
@@ -78,11 +85,13 @@ public class TutorialPopupView : MonoBehaviour
 
     public void Show(bool instant = false)
     {
+        SuppressDimmerVisuals();
         transform.SetAsLastSibling();
 
         EnsureCanvasGroup();
         UIPanelTransition.Show(gameObject, visibleAlpha, instant || !useAnimatedTransition);
         EnsureCanvasGroup();
+        SuppressDimmerVisuals();
 
         if (canvasGroup)
         {
@@ -104,12 +113,35 @@ public class TutorialPopupView : MonoBehaviour
 
     public void Hide(bool instant = false)
     {
+        SuppressDimmerVisuals();
         EnsureCanvasGroup();
         if (!canvasGroup) return;
 
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = false;
         UIPanelTransition.Hide(gameObject, instant || !useAnimatedTransition);
+    }
+
+    public void SuppressDimmerVisuals()
+    {
+        for (int i = 0; i < TutorialDimmerObjectNames.Length; i++)
+        {
+            Transform dimmer = FindDeepChild(transform, TutorialDimmerObjectNames[i]);
+            if (!dimmer)
+                continue;
+
+            var graphic = dimmer.GetComponent<Graphic>();
+            if (graphic)
+            {
+                var color = graphic.color;
+                color.a = 0f;
+                graphic.color = color;
+                graphic.raycastTarget = false;
+            }
+
+            if (dimmer.gameObject.activeSelf)
+                dimmer.gameObject.SetActive(false);
+        }
     }
 
     public void SetContent(string body)
@@ -129,6 +161,7 @@ public class TutorialPopupView : MonoBehaviour
             return;
 
         string localized = TetrabeastsLocalization.LocalizeText(rawBody ?? string.Empty);
+        bodyText.richText = true;
         bodyText.text = TetrabeastsControls.ResolveControlPromptTokens(localized);
     }
 
@@ -199,5 +232,24 @@ public class TutorialPopupView : MonoBehaviour
 
         if (!canvasGroup)
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
+    }
+
+    static Transform FindDeepChild(Transform root, string childName)
+    {
+        if (!root || string.IsNullOrEmpty(childName))
+            return null;
+
+        for (int i = 0; i < root.childCount; i++)
+        {
+            Transform child = root.GetChild(i);
+            if (child && child.name == childName)
+                return child;
+
+            Transform nested = FindDeepChild(child, childName);
+            if (nested)
+                return nested;
+        }
+
+        return null;
     }
 }

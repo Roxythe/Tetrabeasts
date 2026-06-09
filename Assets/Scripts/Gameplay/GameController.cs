@@ -184,6 +184,7 @@ public class GameController : MonoBehaviour
     Coroutine _specialChargedCR;
     TetrabeastsControlProfile _lastControlsTextSavedProfile;
     TetrabeastsControlProfile _lastControlsTextEffectiveProfile;
+    TetrabeastsControlProfile _lastControlsTextActiveProfile;
     string _lastControlsTextSpecialBinding;
     bool _hasControlsTextSnapshot;
 
@@ -479,7 +480,7 @@ public class GameController : MonoBehaviour
     public int MaxReserveUnits => EffectiveMaxUnitLives;
     public int CurrentStarDifficulty => _starDifficulty;
     public float CurrentMisfortune => misfortune + _starDifficultyModifiers.misfortuneAdd;
-    public bool IsGameplaySuspended => gameOver || levelWon || isPaused || tutorialSuspended || _roundTransitionActive || _specialAbilityCinematicActive || _levelStartBlocked || _environmentRowClearResolving || (levelModifierController && levelModifierController.IsSelectionRunning);
+    public bool IsGameplaySuspended => gameOver || levelWon || isPaused || ConfirmationPopupUI.IsAnyShowing || tutorialSuspended || _roundTransitionActive || _specialAbilityCinematicActive || _levelStartBlocked || _environmentRowClearResolving || (levelModifierController && levelModifierController.IsSelectionRunning);
     public bool IsRoundActive => !IsGameplaySuspended && !gameOver && !levelWon;
     public int EffectiveMaxUnitLivesForStats => EffectiveMaxUnitLives;
     public int BaseMaxUnitLivesForStats => _baseGameplayStatsCached ? _baseMaxUnitLives : maxUnitLives;
@@ -625,10 +626,6 @@ public class GameController : MonoBehaviour
     {
         get
         {
-            EnsureTutorialPopupView();
-            if (tutorialPopupView != null && tutorialPopupView.IsShowing)
-                return true;
-
             if (triggeredTutorialPopups && triggeredTutorialPopups.IsPopupShowing)
                 return true;
 
@@ -1278,6 +1275,9 @@ public class GameController : MonoBehaviour
             return;
         }
 
+        if (ConfirmationPopupUI.IsAnyShowing)
+            return;
+
         DisablePauseMenuNavigation();
 
         if (TetrabeastsControls.WasPressed(TetrabeastsControlAction.Special))
@@ -1416,6 +1416,10 @@ public class GameController : MonoBehaviour
     {
         if (!(device is Gamepad))
             return;
+
+        if (change != InputDeviceChange.Disconnected && change != InputDeviceChange.Removed &&
+            TetrabeastsControls.TrySetActiveInputProfileFromDevice(device))
+            RefreshGameplayControlTexts();
 
         if (change == InputDeviceChange.Disconnected || change == InputDeviceChange.Removed)
             PauseForControllerDisconnect();
@@ -7029,11 +7033,13 @@ public class GameController : MonoBehaviour
     {
         TetrabeastsControlProfile savedProfile = TetrabeastsControls.SavedProfile;
         TetrabeastsControlProfile effectiveProfile = TetrabeastsControls.EffectiveProfile;
+        TetrabeastsControlProfile activeProfile = TetrabeastsControls.ActiveInputProfile;
         string specialBinding = GetGameplayBindingLabel(TetrabeastsControlAction.Special);
 
         if (_hasControlsTextSnapshot &&
             _lastControlsTextSavedProfile == savedProfile &&
             _lastControlsTextEffectiveProfile == effectiveProfile &&
+            _lastControlsTextActiveProfile == activeProfile &&
             string.Equals(_lastControlsTextSpecialBinding, specialBinding, System.StringComparison.Ordinal))
             return;
 
@@ -7046,14 +7052,19 @@ public class GameController : MonoBehaviour
 
         TetrabeastsControlProfile savedProfile = TetrabeastsControls.SavedProfile;
         TetrabeastsControlProfile effectiveProfile = TetrabeastsControls.EffectiveProfile;
+        TetrabeastsControlProfile activeProfile = TetrabeastsControls.ActiveInputProfile;
         string specialBinding = GetGameplayBindingLabel(TetrabeastsControlAction.Special);
 
         if (activateSpecialGaugeText)
+        {
+            activateSpecialGaugeText.richText = true;
             activateSpecialGaugeText.text = specialBinding;
+        }
 
         if (gameplayControlsText)
         {
-            string profileLabel = GetGameplayControlsProfileHeader(savedProfile, effectiveProfile);
+            gameplayControlsText.richText = true;
+            string profileLabel = GetGameplayControlsProfileHeader(GetGameplayControlsDisplayProfile());
             gameplayControlsText.text = string.Join("\n", new[]
             {
                 profileLabel,
@@ -7070,6 +7081,7 @@ public class GameController : MonoBehaviour
 
         _lastControlsTextSavedProfile = savedProfile;
         _lastControlsTextEffectiveProfile = effectiveProfile;
+        _lastControlsTextActiveProfile = activeProfile;
         _lastControlsTextSpecialBinding = specialBinding;
         _hasControlsTextSnapshot = true;
     }
@@ -7096,12 +7108,8 @@ public class GameController : MonoBehaviour
         return $"{GetGameplayBindingLabel(action)} = {TetrabeastsLocalization.LocalizeText(GetGameplayActionText(action))}";
     }
 
-    string GetGameplayControlsProfileHeader(TetrabeastsControlProfile savedProfile, TetrabeastsControlProfile effectiveProfile)
+    string GetGameplayControlsProfileHeader(TetrabeastsControlProfile profile)
     {
-        TetrabeastsControlProfile profile = savedProfile == TetrabeastsControlProfile.PlatformDefault
-            ? effectiveProfile
-            : savedProfile;
-
         string label = TetrabeastsControls.GetProfileLabel(profile);
         return string.Equals(label, "Keyboard / Mouse", System.StringComparison.Ordinal)
             ? "Mouse/Keyboard"
@@ -7110,8 +7118,16 @@ public class GameController : MonoBehaviour
 
     string GetGameplayBindingLabel(TetrabeastsControlAction action)
     {
-        string label = TetrabeastsControls.GetBindingLabel(action, TetrabeastsControls.SavedProfile);
+        string label = TetrabeastsControls.GetCompactBindingLabel(action, GetGameplayControlsDisplayProfile());
         return string.IsNullOrWhiteSpace(label) ? TetrabeastsControls.GetActionLabel(action) : label;
+    }
+
+    TetrabeastsControlProfile GetGameplayControlsDisplayProfile()
+    {
+        TetrabeastsControlProfile activeProfile = TetrabeastsControls.ActiveInputProfile;
+        return activeProfile == TetrabeastsControlProfile.PlatformDefault
+            ? TetrabeastsControls.EffectiveProfile
+            : activeProfile;
     }
 
     static string GetGameplayActionText(TetrabeastsControlAction action)

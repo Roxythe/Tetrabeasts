@@ -633,7 +633,10 @@ public class VolumePanelUI : MonoBehaviour
 
         var bindingText = bindingButton ? FindChildComponent<TMP_Text>(bindingButton.transform, "Binding_Text") : FindChildComponent<TMP_Text>(rowRoot, "Binding_Text");
         if (bindingText)
+        {
+            bindingText.richText = true;
             bindingText.text = isCapturingThisRow ? "Press input..." : row.BindingLabel;
+        }
     }
 
     Button CreateBindingButton(Transform parent, TetrabeastsControlAction action)
@@ -774,6 +777,7 @@ public class VolumePanelUI : MonoBehaviour
         tmp.fontSizeMin = 12f;
         tmp.fontSizeMax = fontSize;
         tmp.color = color;
+        tmp.richText = true;
         tmp.raycastTarget = false;
 
         return tmp;

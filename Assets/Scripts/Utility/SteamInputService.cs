@@ -651,7 +651,7 @@ public sealed class SteamInputService : MonoBehaviour
             return TetrabeastsControlProfile.KeyboardMouse;
 
         var inputType = SteamInput.GetInputTypeForHandle(activeController);
-        return inputType switch
+        var profile = inputType switch
         {
             ESteamInputType.k_ESteamInputType_PS3Controller => TetrabeastsControlProfile.PlayStationController,
             ESteamInputType.k_ESteamInputType_PS4Controller => TetrabeastsControlProfile.PlayStationController,
@@ -666,6 +666,82 @@ public sealed class SteamInputService : MonoBehaviour
             ESteamInputType.k_ESteamInputType_SteamController => TetrabeastsControlProfile.HandheldController,
             _ => TetrabeastsControlProfile.XboxController
         };
+
+        if (TryInferProfileFromCurrentOrigins(out var originProfile) &&
+            (profile == TetrabeastsControlProfile.XboxController ||
+             originProfile == TetrabeastsControlProfile.PlayStationController ||
+             originProfile == TetrabeastsControlProfile.HandheldController))
+            return originProfile;
+
+        return profile;
+    }
+
+    bool TryInferProfileFromCurrentOrigins(out TetrabeastsControlProfile profile)
+    {
+        profile = TetrabeastsControlProfile.XboxController;
+
+        if (connectedControllerCount <= 0 || IsZero(activeController) || IsZero(gameplayActionSet))
+            return false;
+
+        foreach (var handle in digitalHandles.Values)
+        {
+            int count = SteamInput.GetDigitalActionOrigins(activeController, gameplayActionSet, handle, originBuffer);
+            if (TryInferProfileFromOrigins(count, out profile))
+                return true;
+        }
+
+        if (!IsZero(moveAnalogAction))
+        {
+            int count = SteamInput.GetAnalogActionOrigins(activeController, gameplayActionSet, moveAnalogAction, originBuffer);
+            if (TryInferProfileFromOrigins(count, out profile))
+                return true;
+        }
+
+        if (!IsZero(menuNavigateAnalogAction))
+        {
+            int count = SteamInput.GetAnalogActionOrigins(activeController, gameplayActionSet, menuNavigateAnalogAction, originBuffer);
+            if (TryInferProfileFromOrigins(count, out profile))
+                return true;
+        }
+
+        return false;
+    }
+
+    bool TryInferProfileFromOrigins(int count, out TetrabeastsControlProfile profile)
+    {
+        profile = TetrabeastsControlProfile.XboxController;
+        int safeCount = Mathf.Clamp(count, 0, originBuffer.Length);
+        bool foundXboxOrigin = false;
+
+        for (int i = 0; i < safeCount; i++)
+        {
+            var origin = originBuffer[i];
+            if (origin == EInputActionOrigin.k_EInputActionOrigin_None)
+                continue;
+
+            string name = origin.ToString();
+            if (name.Contains("_PS3_") || name.Contains("_PS4_") || name.Contains("_PS5_"))
+            {
+                profile = TetrabeastsControlProfile.PlayStationController;
+                return true;
+            }
+
+            if (name.Contains("_SteamDeck_") ||
+                name.Contains("_SteamController_") ||
+                name.Contains("_Switch_"))
+            {
+                profile = TetrabeastsControlProfile.HandheldController;
+                return true;
+            }
+
+            if (name.IndexOf("_XBox", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                foundXboxOrigin = true;
+                continue;
+            }
+        }
+
+        return foundXboxOrigin;
     }
 
     void OnSteamInputDeviceConnected(SteamInputDeviceConnected_t callback)

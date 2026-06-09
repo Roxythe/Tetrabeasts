@@ -237,6 +237,7 @@ public static class ControlsPanelPrefabBuilder
 
         bindingText.transform.SetParent(bindingButton.transform, false);
         bindingText.raycastTarget = false;
+        bindingText.richText = true;
         bindingText.text = TetrabeastsControls.GetBindingLabel(action, TetrabeastsControlProfile.PlatformDefault);
         StretchToFill(bindingText.rectTransform, new Vector2(8f, 0f), new Vector2(-8f, 0f));
         EnsureBindingButtonGraphic(bindingButton);
@@ -376,6 +377,7 @@ public static class ControlsPanelPrefabBuilder
         tmp.fontSizeMin = 12f;
         tmp.fontSizeMax = fontSize;
         tmp.color = color;
+        tmp.richText = true;
         tmp.raycastTarget = false;
 
         if (sourceText)

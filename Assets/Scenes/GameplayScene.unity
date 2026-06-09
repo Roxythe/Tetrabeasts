@@ -2730,10 +2730,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 54
+  m_fontSize: 40.6
   m_fontSizeBase: 54
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
@@ -2798,8 +2798,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 88.526215, y: 302.1604}
-  m_SizeDelta: {x: 54.4062, y: 36.5412}
+  m_AnchoredPosition: {x: 85.35931, y: 301.57306}
+  m_SizeDelta: {x: 38.4062, y: 43.5412}
   m_Pivot: {x: 0.5, y: 0.4999999}
 --- !u!1 &226331930
 GameObject:
@@ -28670,22 +28670,6 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2092384764}
-    - target: {fileID: 2096683221553991646, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2096683221553991646, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2203224148307711633, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2203224148307711633, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2295373856644971480, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -28698,22 +28682,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2092384764}
-    - target: {fileID: 3569929820920441550, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4879984797605465010, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
       propertyPath: gameController
       value: 
       objectReference: {fileID: 2092384764}
-    - target: {fileID: 7762613342116428255, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
-      propertyPath: m_fontSize
-      value: 25.9
-      objectReference: {fileID: 0}
-    - target: {fileID: 7762613342116428255, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
-      propertyPath: m_enableAutoSizing
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7882744238120319797, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
       propertyPath: uiCursor
       value: 
