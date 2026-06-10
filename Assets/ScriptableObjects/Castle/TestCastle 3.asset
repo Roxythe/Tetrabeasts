@@ -22,7 +22,7 @@ MonoBehaviour:
   maxHP: 900
   infiniteHealth: 0
   projectileSprite: {fileID: 21300000, guid: ca7186951d5077d419fe7998de074c6d, type: 3}
-  projectileInterval: 1
+  projectileInterval: 2.5
   projectileSpeed: 800
   projectileDamage: 16
   sfxProjectileHitTile: {fileID: 8300000, guid: 6bf402a552edcc24291e706965866709, type: 3}
