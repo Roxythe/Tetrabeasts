@@ -66,12 +66,17 @@ public class AudioManager : MonoBehaviour
     [Range(0f, 1f)] public float sfxVolume = 1.0f;
     [Range(0f, 0.25f)] public float sfxPitchJitter = 0.05f;
 
+    [Header("Special Ability SFX Tuning")]
+    [SerializeField, Min(0f)] float specialAbilityLoopVolumeBoost = 4f;
+    [SerializeField, Min(0f)] float specialAbilityLoopMaxVolumeScale = 4f;
+
     private AudioSource musicSrc;
     private AudioSource sfxSrc;
     AudioSource[] sfxOneShotSources;
     int sfxOneShotSourceIndex;
     AudioSource uiSfxSrc;
     AudioSource uiLoopSfxSrc;
+    AudioSource specialAbilityOneShotSrc;
     AudioSource[] specialAbilityLoopSfxSources;
     AudioSource ambienceLoopSrc;
     AudioSource pauseMusicSrc;
@@ -114,6 +119,7 @@ public class AudioManager : MonoBehaviour
         BuildSfxOneShotSources();
         uiSfxSrc = gameObject.AddComponent<AudioSource>();
         uiLoopSfxSrc = gameObject.AddComponent<AudioSource>();
+        specialAbilityOneShotSrc = gameObject.AddComponent<AudioSource>();
         specialAbilityLoopSfxSources = new AudioSource[SpecialAbilityLoopSfxLayerCount];
         ambienceLoopSrc = gameObject.AddComponent<AudioSource>();
         pauseMusicSrc = gameObject.AddComponent<AudioSource>();
@@ -137,6 +143,8 @@ public class AudioManager : MonoBehaviour
         uiLoopSfxSrc.playOnAwake = false;
         uiLoopSfxSrc.loop = true;
         uiLoopSfxSrc.spatialBlend = 0f;
+
+        ConfigureSpecialAbilityOneShotSource();
 
         for (int i = 0; i < specialAbilityLoopSfxSources.Length; i++)
         {
@@ -192,6 +200,20 @@ public class AudioManager : MonoBehaviour
 
         if (sfxGroup)
             source.outputAudioMixerGroup = sfxGroup;
+    }
+
+    void ConfigureSpecialAbilityOneShotSource()
+    {
+        if (!specialAbilityOneShotSrc) return;
+
+        specialAbilityOneShotSrc.ignoreListenerPause = true;
+        specialAbilityOneShotSrc.playOnAwake = false;
+        specialAbilityOneShotSrc.loop = false;
+        specialAbilityOneShotSrc.spatialBlend = 0f;
+        specialAbilityOneShotSrc.volume = masterVolume * sfxVolume;
+
+        if (sfxGroup)
+            specialAbilityOneShotSrc.outputAudioMixerGroup = sfxGroup;
     }
 
     void BuildSfxOneShotSources()
@@ -356,6 +378,7 @@ public class AudioManager : MonoBehaviour
         ApplySfxOneShotSourceVolume();
         uiSfxSrc.volume = masterVolume * sfxVolume;
         uiLoopSfxSrc.volume = masterVolume * sfxVolume;
+        if (specialAbilityOneShotSrc) specialAbilityOneShotSrc.volume = masterVolume * sfxVolume;
         ApplySpecialAbilityLoopSfxVolume();
         ambienceLoopSrc.volume = masterVolume * sfxVolume;
         pauseMusicSrc.volume = masterVolume * musicVolume;
@@ -386,6 +409,7 @@ public class AudioManager : MonoBehaviour
         ApplySfxOneShotSourceVolume();
         uiSfxSrc.volume = masterVolume * sfxVolume;
         uiLoopSfxSrc.volume = masterVolume * sfxVolume;
+        if (specialAbilityOneShotSrc) specialAbilityOneShotSrc.volume = masterVolume * sfxVolume;
         ApplySpecialAbilityLoopSfxVolume();
         ambienceLoopSrc.volume = masterVolume * sfxVolume;
 
@@ -546,7 +570,17 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySpecialAbilityAnimationSFX(AudioClip clip, float vol = 1f)
     {
-        PlaySFX(clip, vol, pitch: 1f, jitter: false);
+        if (!clip) return;
+
+        float normalizedVolume = NormalizeSpecialAbilityVolume(vol);
+        if (!specialAbilityOneShotSrc)
+        {
+            PlaySFX(clip, normalizedVolume, pitch: 1f, jitter: false);
+            return;
+        }
+
+        specialAbilityOneShotSrc.pitch = 1f;
+        specialAbilityOneShotSrc.PlayOneShot(clip, normalizedVolume);
     }
 
     public void PlaySpecialAbilityPopupLoopSFX(AudioClip clip, float vol = 1f, float pitch = 1f)
@@ -559,7 +593,9 @@ public class AudioManager : MonoBehaviour
             specialAbilityLoopFadeCo = null;
         }
 
-        specialAbilityLoopSfxVolumeScale = Mathf.Max(0f, vol);
+        specialAbilityLoopSfxVolumeScale = Mathf.Min(
+            NormalizeSpecialAbilityVolume(vol) * Mathf.Max(0f, specialAbilityLoopVolumeBoost),
+            Mathf.Max(0f, specialAbilityLoopMaxVolumeScale));
         float clampedPitch = Mathf.Clamp(pitch, 0.5f, 2f);
 
         for (int i = 0; i < specialAbilityLoopSfxSources.Length; i++)
@@ -654,6 +690,14 @@ public class AudioManager : MonoBehaviour
             source.volume = layerVolume;
             remainingVolume -= layerVolume;
         }
+    }
+
+    static float NormalizeSpecialAbilityVolume(float volume)
+    {
+        if (float.IsNaN(volume) || float.IsInfinity(volume))
+            return 1f;
+
+        return Mathf.Clamp01(volume);
     }
 
     public void PlaySlotLever(float vol = 4f)

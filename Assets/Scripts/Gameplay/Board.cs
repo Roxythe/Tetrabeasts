@@ -1419,15 +1419,14 @@ public class Board : MonoBehaviour
         DrawGridOverlay();
     }
 
-    int CalcMonsterDamageContribution(in MonsterInstance inst, GameController gc)
+    float CalcMonsterDamageContribution(in MonsterInstance inst, GameController gc)
     {
-        if (!inst.data) return 0;
-        if (inst.hp <= 0f) return 0;
+        if (!inst.data) return 0f;
+        if (inst.hp <= 0f) return 0f;
 
         float baseDmg = inst.attackPower + inst.attackBonus;
-        int dmg = Mathf.RoundToInt(baseDmg);
 
-        return Mathf.Max(1, dmg);
+        return Mathf.Max(0f, baseDmg);
     }
 
     float CalcMonsterSpecialChargeContribution(in MonsterInstance inst, GameController gc)
@@ -1504,7 +1503,7 @@ public class Board : MonoBehaviour
                 int rowKey = (clearIndex * 1000) + y;
 
                 // ===== Tally row damage/special from monsters only =====
-                int dmgRow = 0;
+                float dmgRow = 0f;
                 var counts = new Dictionary<MonsterData, int>();
 
                 for (int x = 0; x < width; x++)
@@ -1519,8 +1518,8 @@ public class Board : MonoBehaviour
                     {
                         if (inst.hp > 0f)
                         {
-                            int dmg = CalcMonsterDamageContribution(in inst, gc);
-                            if (dmg > 0)
+                            float dmg = CalcMonsterDamageContribution(in inst, gc);
+                            if (dmg > 0f)
                                 dmgRow += dmg;
 
                             float gauge = CalcMonsterSpecialChargeContribution(in inst, gc);
@@ -1554,11 +1553,12 @@ public class Board : MonoBehaviour
                 foreach (var kv in counts)
                     monstersInRow += kv.Value;
 
-                if (gc)
-                    gc.ApplyComboForRowClear(monstersInRow, ref dmgRow);
+                int finalRowDamage = gc
+                    ? gc.ApplyComboForRowClear(monstersInRow, dmgRow)
+                    : (dmgRow > 0f ? Mathf.Max(GameController.MinimumFinalMonsterDamage, Mathf.RoundToInt(dmgRow)) : 0);
 
-                damageFromMonsters += dmgRow;
-                rowDamage[rowKey] = dmgRow;
+                damageFromMonsters += finalRowDamage;
+                rowDamage[rowKey] = finalRowDamage;
 
                 if (counts.Count > 0)
                 {
@@ -1657,7 +1657,7 @@ public class Board : MonoBehaviour
                 int rowKey = (clearIndex * 1000) + y;
 
                 // ===== Tally row damage/special from Monsters only =====
-                int dmgRow = 0;
+                float dmgRow = 0f;
                 var counts = new Dictionary<MonsterData, int>();
 
                 for (int x = 0; x < width; x++)
@@ -1672,8 +1672,8 @@ public class Board : MonoBehaviour
                     {
                         if (inst.hp > 0f)
                         {
-                            int dmg = CalcMonsterDamageContribution(in inst, gc);
-                            if (dmg > 0)
+                            float dmg = CalcMonsterDamageContribution(in inst, gc);
+                            if (dmg > 0f)
                                 dmgRow += dmg;
 
                             float gauge = CalcMonsterSpecialChargeContribution(in inst, gc);
@@ -1707,11 +1707,12 @@ public class Board : MonoBehaviour
                 foreach (var kv in counts)
                     monstersInRow += kv.Value;
 
-                if (gc)
-                    gc.ApplyComboForRowClear(monstersInRow, ref dmgRow);
+                int finalRowDamage = gc
+                    ? gc.ApplyComboForRowClear(monstersInRow, dmgRow)
+                    : (dmgRow > 0f ? Mathf.Max(GameController.MinimumFinalMonsterDamage, Mathf.RoundToInt(dmgRow)) : 0);
 
-                damageFromMonsters += dmgRow;
-                rowDamage[rowKey] = dmgRow;
+                damageFromMonsters += finalRowDamage;
+                rowDamage[rowKey] = finalRowDamage;
 
                 if (counts.Count > 0)
                 {
@@ -1790,7 +1791,7 @@ public class Board : MonoBehaviour
         // ===== Tally combat stats from bottom rows before deletion =====
         for (int y = 0; y < rows; y++)
         {
-            int dmgRow = 0;
+            float dmgRow = 0f;
 
             // Count prevalence for dominant selection
             var countsRow = new Dictionary<MonsterData, int>();
@@ -1815,8 +1816,8 @@ public class Board : MonoBehaviour
                     // Living monsters contribute damage/gauge
                     if (inst.hp > 0f)
                     {
-                        int dmg = CalcMonsterDamageContribution(in inst, gc);
-                        if (dmg > 0)
+                        float dmg = CalcMonsterDamageContribution(in inst, gc);
+                        if (dmg > 0f)
                             dmgRow += dmg;
 
                         float gauge = CalcMonsterSpecialChargeContribution(in inst, gc);
@@ -1841,13 +1842,14 @@ public class Board : MonoBehaviour
             foreach (var kv in countsRow)
                 monstersInRow += kv.Value;
 
-            if (gc)
-                gc.ApplyComboForRowClear(monstersInRow, ref dmgRow);
+            int finalRowDamage = gc
+                ? gc.ApplyComboForRowClear(monstersInRow, dmgRow)
+                : (dmgRow > 0f ? Mathf.Max(GameController.MinimumFinalMonsterDamage, Mathf.RoundToInt(dmgRow)) : 0);
 
-            if (dmgRow > 0)
+            if (finalRowDamage > 0)
             {
-                rowDamage[rowKey] = dmgRow;
-                totalMonsterDamage += dmgRow;
+                rowDamage[rowKey] = finalRowDamage;
+                totalMonsterDamage += finalRowDamage;
             }
 
             // Pick dominant monster for this cleared row
@@ -2059,6 +2061,7 @@ public class Board : MonoBehaviour
         specialChargeFromMonsters = 0f;
         var gc = _gc ? _gc : (_gc = FindFirstObjectByType<GameController>());
         var stonesDamaged = new HashSet<Vector2Int>();
+        float monsterDamageTotal = 0f;
 
         // Remove & tally
         var removeSet = new HashSet<Vector2Int>(toRemove);
@@ -2070,9 +2073,9 @@ public class Board : MonoBehaviour
                 {
                     if (inst.hp > 0f)
                     {
-                        int dmg = CalcMonsterDamageContribution(in inst, gc);
-                        if (dmg > 0)
-                            damageFromMonsters += dmg;
+                        float dmg = CalcMonsterDamageContribution(in inst, gc);
+                        if (dmg > 0f)
+                            monsterDamageTotal += dmg;
 
                         float gauge = CalcMonsterSpecialChargeContribution(in inst, gc);
                         if (gauge > 0f)
@@ -2095,6 +2098,8 @@ public class Board : MonoBehaviour
                 removedCells.Add(key);
             }
         }
+
+        damageFromMonsters = Mathf.RoundToInt(monsterDamageTotal);
 
         var cols = new HashSet<int>();
         foreach (var c in removeSet)

@@ -82,6 +82,7 @@ public static class TetrabeastsControls
     const int ControllerGlyphSizePercent = 170;
     const int CompactControllerGlyphSizePercent = 125;
     const float StickPressedThreshold = 0.5f;
+    const float DefaultMenuSubmitSuppressSeconds = 0.22f;
 
     static readonly TetrabeastsControlAction[] DisplayActions =
     {
@@ -109,6 +110,8 @@ public static class TetrabeastsControls
     static readonly Dictionary<TetrabeastsControlAction, HoldRepeatState> RepeatStates = new();
     static readonly Dictionary<TetrabeastsControlAction, int> PressConsumedFrames = new();
     static readonly Dictionary<TetrabeastsControlProfile, BindingProfileState> BindingProfiles = new();
+    static float suppressMenuSubmitUntilTime = -1f;
+    static int suppressMenuSubmitUntilFrame = -1000;
 #if ENABLE_LEGACY_INPUT_MANAGER
     static readonly HashSet<string> MissingLegacyAxes = new();
 #endif
@@ -190,7 +193,7 @@ public static class TetrabeastsControls
 #if ENABLE_INPUT_SYSTEM
     public static bool TrySetActiveInputProfileFromDevice(InputDevice device)
     {
-        if (!(device is Gamepad gamepad))
+        if (!(device is Gamepad gamepad) || !IsUsableGamepad(gamepad))
             return false;
 
         SetLastInputGamepadAndProfile(gamepad);
@@ -238,6 +241,20 @@ public static class TetrabeastsControls
     public static bool WasMenuNavigationPressedThisFrame()
     {
         return WasPressed(TetrabeastsControlAction.MenuNavigate);
+    }
+
+    public static void SuppressMenuSubmit(float seconds = DefaultMenuSubmitSuppressSeconds)
+    {
+        suppressMenuSubmitUntilTime = Mathf.Max(
+            suppressMenuSubmitUntilTime,
+            Time.unscaledTime + Mathf.Max(0f, seconds));
+        suppressMenuSubmitUntilFrame = Mathf.Max(suppressMenuSubmitUntilFrame, Time.frameCount + 1);
+    }
+
+    static bool IsMenuSubmitSuppressed()
+    {
+        return Time.frameCount <= suppressMenuSubmitUntilFrame ||
+               Time.unscaledTime < suppressMenuSubmitUntilTime;
     }
 
     public static bool IsMenuNavigationHeld()
@@ -651,7 +668,7 @@ public static class TetrabeastsControls
 
         foreach (var gamepad in Gamepad.all)
         {
-            if (gamepad == null || !WasGamepadUsedThisFrame(gamepad))
+            if (!IsUsableGamepad(gamepad) || !WasGamepadUsedThisFrame(gamepad))
                 continue;
 
             var profile = GetBestProfileForGamepad(gamepad);
@@ -713,7 +730,7 @@ public static class TetrabeastsControls
 
     static bool IsUsableGamepad(Gamepad gamepad)
     {
-        return gamepad != null && gamepad.added;
+        return gamepad != null && gamepad.added && gamepad.enabled;
     }
 
     static bool ShouldConnectedGamepadOverrideLastProfile(TetrabeastsControlProfile connectedProfile)
@@ -758,27 +775,34 @@ public static class TetrabeastsControls
 
     static bool WasGamepadUsedThisFrame(Gamepad gamepad)
     {
-        if (gamepad == null)
+        if (!IsUsableGamepad(gamepad))
             return false;
 
-        return gamepad.buttonSouth.wasPressedThisFrame ||
-               gamepad.buttonEast.wasPressedThisFrame ||
-               gamepad.buttonWest.wasPressedThisFrame ||
-               gamepad.buttonNorth.wasPressedThisFrame ||
-               gamepad.leftShoulder.wasPressedThisFrame ||
-               gamepad.rightShoulder.wasPressedThisFrame ||
-               gamepad.leftTrigger.wasPressedThisFrame ||
-               gamepad.rightTrigger.wasPressedThisFrame ||
-               gamepad.startButton.wasPressedThisFrame ||
-               gamepad.selectButton.wasPressedThisFrame ||
-               gamepad.leftStickButton.wasPressedThisFrame ||
-               gamepad.rightStickButton.wasPressedThisFrame ||
-               gamepad.dpad.left.wasPressedThisFrame ||
-               gamepad.dpad.right.wasPressedThisFrame ||
-               gamepad.dpad.down.wasPressedThisFrame ||
-               gamepad.dpad.up.wasPressedThisFrame ||
-               gamepad.leftStick.ReadValue().magnitude >= StickPressedThreshold ||
-               gamepad.rightStick.ReadValue().magnitude >= StickPressedThreshold;
+        try
+        {
+            return gamepad.buttonSouth.wasPressedThisFrame ||
+                   gamepad.buttonEast.wasPressedThisFrame ||
+                   gamepad.buttonWest.wasPressedThisFrame ||
+                   gamepad.buttonNorth.wasPressedThisFrame ||
+                   gamepad.leftShoulder.wasPressedThisFrame ||
+                   gamepad.rightShoulder.wasPressedThisFrame ||
+                   gamepad.leftTrigger.wasPressedThisFrame ||
+                   gamepad.rightTrigger.wasPressedThisFrame ||
+                   gamepad.startButton.wasPressedThisFrame ||
+                   gamepad.selectButton.wasPressedThisFrame ||
+                   gamepad.leftStickButton.wasPressedThisFrame ||
+                   gamepad.rightStickButton.wasPressedThisFrame ||
+                   gamepad.dpad.left.wasPressedThisFrame ||
+                   gamepad.dpad.right.wasPressedThisFrame ||
+                   gamepad.dpad.down.wasPressedThisFrame ||
+                   gamepad.dpad.up.wasPressedThisFrame ||
+                   gamepad.leftStick.ReadValue().magnitude >= StickPressedThreshold ||
+                   gamepad.rightStick.ReadValue().magnitude >= StickPressedThreshold;
+        }
+        catch (InvalidOperationException)
+        {
+            return false;
+        }
     }
 
     static TetrabeastsControlProfile GetProfileForGamepad(Gamepad gamepad)
@@ -1467,6 +1491,9 @@ public static class TetrabeastsControls
 
     public static bool WasPressed(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
     {
+        if (action == TetrabeastsControlAction.MenuSubmit && IsMenuSubmitSuppressed())
+            return false;
+
         if (IsPressedConsumedThisFrame(action))
             return false;
 
@@ -1501,6 +1528,9 @@ public static class TetrabeastsControls
 
     public static bool PeekWasPressed(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
     {
+        if (action == TetrabeastsControlAction.MenuSubmit && IsMenuSubmitSuppressed())
+            return false;
+
         TetrabeastsControlProfile effectiveProfile = ResolveProfile(profile);
 
         if (TryWasPressedCustom(action, effectiveProfile, out bool customPressed))
@@ -2261,32 +2291,46 @@ public static class TetrabeastsControls
 #if ENABLE_INPUT_SYSTEM
     static bool WasBindingPressedThisFrame(TetrabeastsControlBinding binding)
     {
-        var control = FindBindingControl(binding);
-        if (control is ButtonControl button)
-            return button.wasPressedThisFrame;
+        try
+        {
+            var control = FindBindingControl(binding);
+            if (control is ButtonControl button)
+                return button.wasPressedThisFrame;
 
-        if (control is StickControl stick)
-            return stick.ReadValue().magnitude >= StickPressedThreshold;
+            if (control is StickControl stick)
+                return stick.ReadValue().magnitude >= StickPressedThreshold;
 
-        if (control is DpadControl dpad)
-            return dpad.ReadValue().magnitude >= StickPressedThreshold;
+            if (control is DpadControl dpad)
+                return dpad.ReadValue().magnitude >= StickPressedThreshold;
 
-        return false;
+            return false;
+        }
+        catch (InvalidOperationException)
+        {
+            return false;
+        }
     }
 
     static bool IsBindingHeld(TetrabeastsControlBinding binding)
     {
-        var control = FindBindingControl(binding);
-        if (control is ButtonControl button)
-            return button.isPressed;
+        try
+        {
+            var control = FindBindingControl(binding);
+            if (control is ButtonControl button)
+                return button.isPressed;
 
-        if (control is StickControl stick)
-            return stick.ReadValue().magnitude >= StickPressedThreshold;
+            if (control is StickControl stick)
+                return stick.ReadValue().magnitude >= StickPressedThreshold;
 
-        if (control is DpadControl dpad)
-            return dpad.ReadValue().magnitude >= StickPressedThreshold;
+            if (control is DpadControl dpad)
+                return dpad.ReadValue().magnitude >= StickPressedThreshold;
 
-        return false;
+            return false;
+        }
+        catch (InvalidOperationException)
+        {
+            return false;
+        }
     }
 
     static InputControl FindBindingControl(TetrabeastsControlBinding binding)
@@ -2386,29 +2430,36 @@ public static class TetrabeastsControls
     static bool TryReadGamepadRebind(Gamepad gamepad, TetrabeastsControlProfile profile, out TetrabeastsControlBinding binding)
     {
         binding = default;
-        if (gamepad == null)
+        if (!IsUsableGamepad(gamepad))
             return false;
 
-        if (TryCaptureGamepadButton(gamepad.buttonSouth, "<Gamepad>/buttonSouth", ControllerSouthLabel(profile), out binding)) return true;
-        if (TryCaptureGamepadButton(gamepad.buttonEast, "<Gamepad>/buttonEast", ControllerEastLabel(profile), out binding)) return true;
-        if (TryCaptureGamepadButton(gamepad.buttonWest, "<Gamepad>/buttonWest", ControllerWestLabel(profile), out binding)) return true;
-        if (TryCaptureGamepadButton(gamepad.buttonNorth, "<Gamepad>/buttonNorth", ControllerNorthLabel(profile), out binding)) return true;
-        if (TryCaptureGamepadButton(gamepad.leftShoulder, "<Gamepad>/leftShoulder", ControllerLeftShoulderLabel(profile), out binding)) return true;
-        if (TryCaptureGamepadButton(gamepad.rightShoulder, "<Gamepad>/rightShoulder", ControllerRightShoulderLabel(profile), out binding)) return true;
-        if (TryCaptureGamepadButton(gamepad.leftTrigger, "<Gamepad>/leftTrigger", "LT", out binding)) return true;
-        if (TryCaptureGamepadButton(gamepad.rightTrigger, "<Gamepad>/rightTrigger", "RT", out binding)) return true;
-        if (TryCaptureGamepadButton(gamepad.startButton, "<Gamepad>/start", ControllerMenuLabel(profile), out binding)) return true;
-        if (TryCaptureGamepadButton(gamepad.selectButton, "<Gamepad>/select", ControllerBackLabel(profile), out binding)) return true;
-        if (TryCaptureGamepadButton(gamepad.leftStickButton, "<Gamepad>/leftStickPress", "Left Stick Press", out binding)) return true;
-        if (TryCaptureGamepadButton(gamepad.rightStickButton, "<Gamepad>/rightStickPress", "Right Stick Press", out binding)) return true;
-        if (TryCaptureGamepadButton(gamepad.dpad.left, "<Gamepad>/dpad/left", "D-Pad Left", out binding)) return true;
-        if (TryCaptureGamepadButton(gamepad.dpad.right, "<Gamepad>/dpad/right", "D-Pad Right", out binding)) return true;
-        if (TryCaptureGamepadButton(gamepad.dpad.down, "<Gamepad>/dpad/down", "D-Pad Down", out binding)) return true;
-        if (TryCaptureGamepadButton(gamepad.dpad.up, "<Gamepad>/dpad/up", "D-Pad Up", out binding)) return true;
-        if (TryCaptureGamepadButton(gamepad.leftStick.left, "<Gamepad>/leftStick/left", "Left Stick Left", out binding)) return true;
-        if (TryCaptureGamepadButton(gamepad.leftStick.right, "<Gamepad>/leftStick/right", "Left Stick Right", out binding)) return true;
-        if (TryCaptureGamepadButton(gamepad.leftStick.down, "<Gamepad>/leftStick/down", "Left Stick Down", out binding)) return true;
-        if (TryCaptureGamepadButton(gamepad.leftStick.up, "<Gamepad>/leftStick/up", "Left Stick Up", out binding)) return true;
+        try
+        {
+            if (TryCaptureGamepadButton(gamepad.buttonSouth, "<Gamepad>/buttonSouth", ControllerSouthLabel(profile), out binding)) return true;
+            if (TryCaptureGamepadButton(gamepad.buttonEast, "<Gamepad>/buttonEast", ControllerEastLabel(profile), out binding)) return true;
+            if (TryCaptureGamepadButton(gamepad.buttonWest, "<Gamepad>/buttonWest", ControllerWestLabel(profile), out binding)) return true;
+            if (TryCaptureGamepadButton(gamepad.buttonNorth, "<Gamepad>/buttonNorth", ControllerNorthLabel(profile), out binding)) return true;
+            if (TryCaptureGamepadButton(gamepad.leftShoulder, "<Gamepad>/leftShoulder", ControllerLeftShoulderLabel(profile), out binding)) return true;
+            if (TryCaptureGamepadButton(gamepad.rightShoulder, "<Gamepad>/rightShoulder", ControllerRightShoulderLabel(profile), out binding)) return true;
+            if (TryCaptureGamepadButton(gamepad.leftTrigger, "<Gamepad>/leftTrigger", "LT", out binding)) return true;
+            if (TryCaptureGamepadButton(gamepad.rightTrigger, "<Gamepad>/rightTrigger", "RT", out binding)) return true;
+            if (TryCaptureGamepadButton(gamepad.startButton, "<Gamepad>/start", ControllerMenuLabel(profile), out binding)) return true;
+            if (TryCaptureGamepadButton(gamepad.selectButton, "<Gamepad>/select", ControllerBackLabel(profile), out binding)) return true;
+            if (TryCaptureGamepadButton(gamepad.leftStickButton, "<Gamepad>/leftStickPress", "Left Stick Press", out binding)) return true;
+            if (TryCaptureGamepadButton(gamepad.rightStickButton, "<Gamepad>/rightStickPress", "Right Stick Press", out binding)) return true;
+            if (TryCaptureGamepadButton(gamepad.dpad.left, "<Gamepad>/dpad/left", "D-Pad Left", out binding)) return true;
+            if (TryCaptureGamepadButton(gamepad.dpad.right, "<Gamepad>/dpad/right", "D-Pad Right", out binding)) return true;
+            if (TryCaptureGamepadButton(gamepad.dpad.down, "<Gamepad>/dpad/down", "D-Pad Down", out binding)) return true;
+            if (TryCaptureGamepadButton(gamepad.dpad.up, "<Gamepad>/dpad/up", "D-Pad Up", out binding)) return true;
+            if (TryCaptureGamepadButton(gamepad.leftStick.left, "<Gamepad>/leftStick/left", "Left Stick Left", out binding)) return true;
+            if (TryCaptureGamepadButton(gamepad.leftStick.right, "<Gamepad>/leftStick/right", "Left Stick Right", out binding)) return true;
+            if (TryCaptureGamepadButton(gamepad.leftStick.down, "<Gamepad>/leftStick/down", "Left Stick Down", out binding)) return true;
+            if (TryCaptureGamepadButton(gamepad.leftStick.up, "<Gamepad>/leftStick/up", "Left Stick Up", out binding)) return true;
+        }
+        catch (InvalidOperationException)
+        {
+            return false;
+        }
 
         return false;
     }
@@ -2457,24 +2508,30 @@ public static class TetrabeastsControls
             if (!IsUsableGamepad(gamepad))
                 continue;
 
-            if (gamepad.buttonSouth.isPressed ||
-                gamepad.buttonEast.isPressed ||
-                gamepad.buttonWest.isPressed ||
-                gamepad.buttonNorth.isPressed ||
-                gamepad.leftShoulder.isPressed ||
-                gamepad.rightShoulder.isPressed ||
-                gamepad.leftTrigger.isPressed ||
-                gamepad.rightTrigger.isPressed ||
-                gamepad.startButton.isPressed ||
-                gamepad.selectButton.isPressed ||
-                gamepad.leftStickButton.isPressed ||
-                gamepad.rightStickButton.isPressed ||
-                gamepad.dpad.left.isPressed ||
-                gamepad.dpad.right.isPressed ||
-                gamepad.dpad.down.isPressed ||
-                gamepad.dpad.up.isPressed ||
-                gamepad.leftStick.ReadValue().magnitude >= StickPressedThreshold)
-                return true;
+            try
+            {
+                if (gamepad.buttonSouth.isPressed ||
+                    gamepad.buttonEast.isPressed ||
+                    gamepad.buttonWest.isPressed ||
+                    gamepad.buttonNorth.isPressed ||
+                    gamepad.leftShoulder.isPressed ||
+                    gamepad.rightShoulder.isPressed ||
+                    gamepad.leftTrigger.isPressed ||
+                    gamepad.rightTrigger.isPressed ||
+                    gamepad.startButton.isPressed ||
+                    gamepad.selectButton.isPressed ||
+                    gamepad.leftStickButton.isPressed ||
+                    gamepad.rightStickButton.isPressed ||
+                    gamepad.dpad.left.isPressed ||
+                    gamepad.dpad.right.isPressed ||
+                    gamepad.dpad.down.isPressed ||
+                    gamepad.dpad.up.isPressed ||
+                    gamepad.leftStick.ReadValue().magnitude >= StickPressedThreshold)
+                    return true;
+            }
+            catch (InvalidOperationException)
+            {
+            }
         }
 
         return false;
@@ -2630,14 +2687,20 @@ public static class TetrabeastsControls
 
         if (TryGetActiveGamepad(out var gamepad))
         {
-            clockwise |= gamepad.buttonEast.wasPressedThisFrame ||
-                gamepad.rightShoulder.wasPressedThisFrame ||
-                gamepad.buttonEast.isPressed ||
-                gamepad.rightShoulder.isPressed;
-            counterClockwise |= gamepad.buttonWest.wasPressedThisFrame ||
-                gamepad.leftShoulder.wasPressedThisFrame ||
-                gamepad.buttonWest.isPressed ||
-                gamepad.leftShoulder.isPressed;
+            try
+            {
+                clockwise |= gamepad.buttonEast.wasPressedThisFrame ||
+                    gamepad.rightShoulder.wasPressedThisFrame ||
+                    gamepad.buttonEast.isPressed ||
+                    gamepad.rightShoulder.isPressed;
+                counterClockwise |= gamepad.buttonWest.wasPressedThisFrame ||
+                    gamepad.leftShoulder.wasPressedThisFrame ||
+                    gamepad.buttonWest.isPressed ||
+                    gamepad.leftShoulder.isPressed;
+            }
+            catch (InvalidOperationException)
+            {
+            }
         }
 
         if (clockwise == counterClockwise)
@@ -2703,29 +2766,36 @@ public static class TetrabeastsControls
         if (!TryGetActiveGamepad(out var gamepad))
             return false;
 
-        return action switch
+        try
         {
-            TetrabeastsControlAction.MoveLeft => gamepad.dpad.left.wasPressedThisFrame || gamepad.leftStick.left.wasPressedThisFrame,
-            TetrabeastsControlAction.MoveRight => gamepad.dpad.right.wasPressedThisFrame || gamepad.leftStick.right.wasPressedThisFrame,
-            TetrabeastsControlAction.SoftDrop => gamepad.dpad.down.wasPressedThisFrame || gamepad.leftStick.down.wasPressedThisFrame,
-            TetrabeastsControlAction.RotateClockwise => gamepad.buttonEast.wasPressedThisFrame || gamepad.rightShoulder.wasPressedThisFrame,
-            TetrabeastsControlAction.RotateCounterClockwise => gamepad.buttonWest.wasPressedThisFrame || gamepad.leftShoulder.wasPressedThisFrame,
-            TetrabeastsControlAction.HardDrop => gamepad.buttonSouth.wasPressedThisFrame,
-            TetrabeastsControlAction.Special => gamepad.buttonNorth.wasPressedThisFrame,
-            TetrabeastsControlAction.Pause => gamepad.startButton.wasPressedThisFrame,
-            TetrabeastsControlAction.MenuNavigate =>
-                gamepad.dpad.left.wasPressedThisFrame ||
-                gamepad.dpad.right.wasPressedThisFrame ||
-                gamepad.dpad.down.wasPressedThisFrame ||
-                gamepad.dpad.up.wasPressedThisFrame ||
-                gamepad.leftStick.left.wasPressedThisFrame ||
-                gamepad.leftStick.right.wasPressedThisFrame ||
-                gamepad.leftStick.down.wasPressedThisFrame ||
-                gamepad.leftStick.up.wasPressedThisFrame,
-            TetrabeastsControlAction.MenuSubmit => gamepad.buttonSouth.wasPressedThisFrame,
-            TetrabeastsControlAction.MenuCancel => gamepad.buttonEast.wasPressedThisFrame,
-            _ => false
-        };
+            return action switch
+            {
+                TetrabeastsControlAction.MoveLeft => gamepad.dpad.left.wasPressedThisFrame || gamepad.leftStick.left.wasPressedThisFrame,
+                TetrabeastsControlAction.MoveRight => gamepad.dpad.right.wasPressedThisFrame || gamepad.leftStick.right.wasPressedThisFrame,
+                TetrabeastsControlAction.SoftDrop => gamepad.dpad.down.wasPressedThisFrame || gamepad.leftStick.down.wasPressedThisFrame,
+                TetrabeastsControlAction.RotateClockwise => gamepad.buttonEast.wasPressedThisFrame || gamepad.rightShoulder.wasPressedThisFrame,
+                TetrabeastsControlAction.RotateCounterClockwise => gamepad.buttonWest.wasPressedThisFrame || gamepad.leftShoulder.wasPressedThisFrame,
+                TetrabeastsControlAction.HardDrop => gamepad.buttonSouth.wasPressedThisFrame,
+                TetrabeastsControlAction.Special => gamepad.buttonNorth.wasPressedThisFrame,
+                TetrabeastsControlAction.Pause => gamepad.startButton.wasPressedThisFrame,
+                TetrabeastsControlAction.MenuNavigate =>
+                    gamepad.dpad.left.wasPressedThisFrame ||
+                    gamepad.dpad.right.wasPressedThisFrame ||
+                    gamepad.dpad.down.wasPressedThisFrame ||
+                    gamepad.dpad.up.wasPressedThisFrame ||
+                    gamepad.leftStick.left.wasPressedThisFrame ||
+                    gamepad.leftStick.right.wasPressedThisFrame ||
+                    gamepad.leftStick.down.wasPressedThisFrame ||
+                    gamepad.leftStick.up.wasPressedThisFrame,
+                TetrabeastsControlAction.MenuSubmit => gamepad.buttonSouth.wasPressedThisFrame,
+                TetrabeastsControlAction.MenuCancel => gamepad.buttonEast.wasPressedThisFrame,
+                _ => false
+            };
+        }
+        catch (InvalidOperationException)
+        {
+            return false;
+        }
     }
 
     static bool IsHeldInputSystem(TetrabeastsControlAction action, TetrabeastsControlProfile profile)
@@ -2761,8 +2831,14 @@ public static class TetrabeastsControls
 
         if (TryGetActiveGamepad(out var gamepad))
         {
-            direction += gamepad.leftStick.ReadValue();
-            direction += gamepad.dpad.ReadValue();
+            try
+            {
+                direction += gamepad.leftStick.ReadValue();
+                direction += gamepad.dpad.ReadValue();
+            }
+            catch (InvalidOperationException)
+            {
+            }
         }
 
         return ClampMenuNavigationDirection(direction);
@@ -2773,7 +2849,14 @@ public static class TetrabeastsControls
         if (!TryGetActiveGamepad(out var gamepad))
             return Vector2.zero;
 
-        return gamepad.rightStick.ReadValue();
+        try
+        {
+            return gamepad.rightStick.ReadValue();
+        }
+        catch (InvalidOperationException)
+        {
+            return Vector2.zero;
+        }
     }
 
     static bool WasButtonNavigationPressedInputSystem()
@@ -2790,11 +2873,22 @@ public static class TetrabeastsControls
              keyboard.rightArrowKey.wasPressedThisFrame ||
              keyboard.tabKey.wasPressedThisFrame);
 
-        bool gamepadPressed = TryGetActiveGamepad(out var gamepad) &&
-            (gamepad.dpad.left.wasPressedThisFrame ||
-             gamepad.dpad.right.wasPressedThisFrame ||
-             gamepad.dpad.down.wasPressedThisFrame ||
-             gamepad.dpad.up.wasPressedThisFrame);
+        bool gamepadPressed = false;
+        if (TryGetActiveGamepad(out var gamepad))
+        {
+            try
+            {
+                gamepadPressed =
+                    gamepad.dpad.left.wasPressedThisFrame ||
+                    gamepad.dpad.right.wasPressedThisFrame ||
+                    gamepad.dpad.down.wasPressedThisFrame ||
+                    gamepad.dpad.up.wasPressedThisFrame;
+            }
+            catch (InvalidOperationException)
+            {
+                gamepadPressed = false;
+            }
+        }
 
         return keyboardPressed || gamepadPressed;
     }
@@ -2813,11 +2907,22 @@ public static class TetrabeastsControls
              keyboard.rightArrowKey.isPressed ||
              keyboard.tabKey.isPressed);
 
-        bool gamepadHeld = TryGetActiveGamepad(out var gamepad) &&
-            (gamepad.dpad.left.isPressed ||
-             gamepad.dpad.right.isPressed ||
-             gamepad.dpad.down.isPressed ||
-             gamepad.dpad.up.isPressed);
+        bool gamepadHeld = false;
+        if (TryGetActiveGamepad(out var gamepad))
+        {
+            try
+            {
+                gamepadHeld =
+                    gamepad.dpad.left.isPressed ||
+                    gamepad.dpad.right.isPressed ||
+                    gamepad.dpad.down.isPressed ||
+                    gamepad.dpad.up.isPressed;
+            }
+            catch (InvalidOperationException)
+            {
+                gamepadHeld = false;
+            }
+        }
 
         return keyboardHeld || gamepadHeld;
     }
@@ -2843,7 +2948,15 @@ public static class TetrabeastsControls
         }
 
         if (TryGetActiveGamepad(out var gamepad))
-            direction += gamepad.dpad.ReadValue() + gamepad.leftStick.ReadValue();
+        {
+            try
+            {
+                direction += gamepad.dpad.ReadValue() + gamepad.leftStick.ReadValue();
+            }
+            catch (InvalidOperationException)
+            {
+            }
+        }
 
         return ClampMenuNavigationDirection(direction);
     }
@@ -2885,29 +2998,36 @@ public static class TetrabeastsControls
         if (!TryGetActiveGamepad(out var gamepad))
             return false;
 
-        Vector2 leftStick = gamepad.leftStick.ReadValue();
-
-        return action switch
+        try
         {
-            TetrabeastsControlAction.MoveLeft => gamepad.dpad.left.isPressed || leftStick.x <= -StickPressedThreshold,
-            TetrabeastsControlAction.MoveRight => gamepad.dpad.right.isPressed || leftStick.x >= StickPressedThreshold,
-            TetrabeastsControlAction.SoftDrop => gamepad.dpad.down.isPressed || leftStick.y <= -StickPressedThreshold,
-            TetrabeastsControlAction.RotateClockwise => gamepad.buttonEast.isPressed || gamepad.rightShoulder.isPressed,
-            TetrabeastsControlAction.RotateCounterClockwise => gamepad.buttonWest.isPressed || gamepad.leftShoulder.isPressed,
-            TetrabeastsControlAction.HardDrop => gamepad.buttonSouth.isPressed,
-            TetrabeastsControlAction.Special => gamepad.buttonNorth.isPressed,
-            TetrabeastsControlAction.Pause => gamepad.startButton.isPressed,
-            TetrabeastsControlAction.MenuNavigate =>
-                gamepad.dpad.left.isPressed ||
-                gamepad.dpad.right.isPressed ||
-                gamepad.dpad.down.isPressed ||
-                gamepad.dpad.up.isPressed ||
-                Mathf.Abs(leftStick.x) >= StickPressedThreshold ||
-                Mathf.Abs(leftStick.y) >= StickPressedThreshold,
-            TetrabeastsControlAction.MenuSubmit => gamepad.buttonSouth.isPressed,
-            TetrabeastsControlAction.MenuCancel => gamepad.buttonEast.isPressed,
-            _ => false
-        };
+            Vector2 leftStick = gamepad.leftStick.ReadValue();
+
+            return action switch
+            {
+                TetrabeastsControlAction.MoveLeft => gamepad.dpad.left.isPressed || leftStick.x <= -StickPressedThreshold,
+                TetrabeastsControlAction.MoveRight => gamepad.dpad.right.isPressed || leftStick.x >= StickPressedThreshold,
+                TetrabeastsControlAction.SoftDrop => gamepad.dpad.down.isPressed || leftStick.y <= -StickPressedThreshold,
+                TetrabeastsControlAction.RotateClockwise => gamepad.buttonEast.isPressed || gamepad.rightShoulder.isPressed,
+                TetrabeastsControlAction.RotateCounterClockwise => gamepad.buttonWest.isPressed || gamepad.leftShoulder.isPressed,
+                TetrabeastsControlAction.HardDrop => gamepad.buttonSouth.isPressed,
+                TetrabeastsControlAction.Special => gamepad.buttonNorth.isPressed,
+                TetrabeastsControlAction.Pause => gamepad.startButton.isPressed,
+                TetrabeastsControlAction.MenuNavigate =>
+                    gamepad.dpad.left.isPressed ||
+                    gamepad.dpad.right.isPressed ||
+                    gamepad.dpad.down.isPressed ||
+                    gamepad.dpad.up.isPressed ||
+                    Mathf.Abs(leftStick.x) >= StickPressedThreshold ||
+                    Mathf.Abs(leftStick.y) >= StickPressedThreshold,
+                TetrabeastsControlAction.MenuSubmit => gamepad.buttonSouth.isPressed,
+                TetrabeastsControlAction.MenuCancel => gamepad.buttonEast.isPressed,
+                _ => false
+            };
+        }
+        catch (InvalidOperationException)
+        {
+            return false;
+        }
     }
 
     static bool WasKeyboardEscapePressed()

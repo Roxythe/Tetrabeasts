@@ -2798,9 +2798,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 85.35931, y: 301.57306}
+  m_AnchoredPosition: {x: -114.74108, y: -8.842255}
   m_SizeDelta: {x: 38.4062, y: 43.5412}
-  m_Pivot: {x: 0.5, y: 0.4999999}
+  m_Pivot: {x: 0.5, y: 0.49999994}
 --- !u!1 &226331930
 GameObject:
   m_ObjectHideFlags: 0
@@ -5852,7 +5852,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -20035,8 +20035,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -5.0099792, y: 0}
-  m_SizeDelta: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -1.5099792, y: 0}
+  m_SizeDelta: {x: 8, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1763698299
 MonoBehaviour:
@@ -24291,12 +24291,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -24660,9 +24660,9 @@ MonoBehaviour:
   specialAbilityPopupPrefab: {fileID: 4518732633352361137, guid: 99d993e0115d2cc449eade83d4e9fd29, type: 3}
   specialAbilityPopupRoot: {fileID: 0}
   specialAbilityPopupLoopSFX: {fileID: 8300000, guid: 2c6a5fea2ee3ffb42b59c9ec7678a00f, type: 3}
-  specialAbilityPopupLoopSFXVolume: 30
+  specialAbilityPopupLoopSFXVolume: 0.55
   specialAbilityPopupLockInSFX: {fileID: 8300000, guid: 602dc51bcc765e04eb098fcb90b69e0c, type: 3}
-  specialAbilityPopupLockInSFXVolume: 2
+  specialAbilityPopupLockInSFXVolume: 0.65
   specialGauge: 0
   specialGaugeMax: 100
   activateSpecialGaugeText: {fileID: 226153486}
@@ -24699,6 +24699,34 @@ MonoBehaviour:
   forceOneSpecialPerRefill: 0
   castleAttackInterval: 3
   castleProjectileSprite: {fileID: 21300000, guid: ca7186951d5077d419fe7998de074c6d, type: 3}
+  enableEnemyAttackIntervalRamp: 1
+  enemyAttackIntervalRampDelaySeconds: 12
+  enemyAttackIntervalRampDurationSeconds: 120
+  enemyAttackIntervalRampEndMultiplier: 0.7
+  enemyAttackIntervalRampCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   immunityActive: 0
   immunityOutline: {r: 1, g: 0.85, b: 0, a: 1}
   normalOutline: {r: 0, g: 0, b: 0, a: 1}

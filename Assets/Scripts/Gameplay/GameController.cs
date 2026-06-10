@@ -167,9 +167,9 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject specialAbilityPopupPrefab;
     [SerializeField] RectTransform specialAbilityPopupRoot;
     [SerializeField] AudioClip specialAbilityPopupLoopSFX;
-    [SerializeField, Min(0f)] float specialAbilityPopupLoopSFXVolume = 4f;
+    [SerializeField, Range(0f, 1f)] float specialAbilityPopupLoopSFXVolume = 0.55f;
     [SerializeField] AudioClip specialAbilityPopupLockInSFX;
-    [SerializeField, Min(0f)] float specialAbilityPopupLockInSFXVolume = 1f;
+    [SerializeField, Range(0f, 1f)] float specialAbilityPopupLockInSFXVolume = 0.65f;
 
     [Header("Special Gauge")]
     public float specialGauge = 0f;
@@ -236,6 +236,13 @@ public class GameController : MonoBehaviour
     public Sprite castleProjectileSprite;
     float _castleAttackTimer = 0f;
     int castleProjectileDamage = 1;
+
+    [Header("Enemy Attack Interval Ramp")]
+    [SerializeField] bool enableEnemyAttackIntervalRamp = true;
+    [SerializeField, Min(0f)] float enemyAttackIntervalRampDelaySeconds = 12f;
+    [SerializeField, Min(1f)] float enemyAttackIntervalRampDurationSeconds = 120f;
+    [SerializeField, Range(0.25f, 1f)] float enemyAttackIntervalRampEndMultiplier = 0.70f;
+    [SerializeField] AnimationCurve enemyAttackIntervalRampCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
     [Header("Global Immunity Visuals")]
     public bool immunityActive = false;
@@ -544,6 +551,8 @@ public class GameController : MonoBehaviour
 
     // Used by reward UI and other systems that need to know what type of level just ended
     public bool LastLevelWasBoss => currentCastleData != null && IsCastleBossForCurrentMode(currentCastleData);
+    public int CompletedBossLevelsThisRun => CountCompletedStandardBossLevelsBeforeCurrentLevel();
+    public bool BossLegendaryDebuffRewardsUnlocked => CompletedBossLevelsThisRun >= 3;
 
     public void AddMaxReserveUnitsModifier(int amount)
     {
@@ -1210,6 +1219,9 @@ public class GameController : MonoBehaviour
 
         if (TetrabeastsControls.WasPressed(TetrabeastsControlAction.Pause))
         {
+            if (IsPauseMenuInputLocked())
+                return;
+
             if (ConfirmationPopupUI.TryCancelShowingPopup())
                 return;
 
@@ -1267,6 +1279,12 @@ public class GameController : MonoBehaviour
 
         if (isPaused)
         {
+            if (IsPauseMenuInputLocked())
+            {
+                DisablePauseMenuNavigation();
+                return;
+            }
+
             RefreshPauseMenuNavigation();
 
             if (HandlePauseMenuCancelInput())
@@ -1297,9 +1315,7 @@ public class GameController : MonoBehaviour
             {
                 _castleAttackTimer += Time.deltaTime;
 
-                float attackInterval = castleAttackInterval;
-                if (currentCastleData)
-                    attackInterval = Mathf.Max(0.1f, currentCastleData.projectileInterval);
+                float attackInterval = GetCurrentCastleAttackInterval();
 
                 if (_castleAttackTimer >= Mathf.Max(0.1f, attackInterval))
                 {
@@ -1522,6 +1538,25 @@ public class GameController : MonoBehaviour
     public float GetScaledEnemyDamage(float amount)
     {
         return Mathf.Max(0f, amount) * _starDifficultyModifiers.enemyDamageMultiplier;
+    }
+
+    float GetCurrentCastleAttackInterval()
+    {
+        float baseInterval = Mathf.Max(0.1f, castleAttackInterval);
+
+        if (!enableEnemyAttackIntervalRamp)
+            return baseInterval;
+
+        float elapsed = Mathf.Max(0f, _levelTimer - enemyAttackIntervalRampDelaySeconds);
+        if (elapsed <= 0f)
+            return baseInterval;
+
+        float t = Mathf.Clamp01(elapsed / Mathf.Max(1f, enemyAttackIntervalRampDurationSeconds));
+        float curveT = enemyAttackIntervalRampCurve != null
+            ? Mathf.Clamp01(enemyAttackIntervalRampCurve.Evaluate(t))
+            : t * t * (3f - 2f * t);
+        float multiplier = Mathf.Lerp(1f, Mathf.Clamp(enemyAttackIntervalRampEndMultiplier, 0.25f, 1f), curveT);
+        return Mathf.Max(0.1f, baseInterval * multiplier);
     }
 
     bool HandleStarDifficultyFinalWin()
@@ -2443,9 +2478,11 @@ public class GameController : MonoBehaviour
 
     // ================= Combo scoring and damage bonus =================
 
-    public void ApplyComboForRowClear(int monstersClearedInRow, ref int rowDamage)
+    public const int MinimumFinalMonsterDamage = 5;
+
+    public int ApplyComboForRowClear(int monstersClearedInRow, float rowDamage)
     {
-        int baseRow = rowDamage; // Sum of per-monster attacks (+bonus)
+        float baseRow = Mathf.Max(0f, rowDamage); // Sum of per-monster attacks (+bonus)
 
         int combo = IncrementCombo();
 
@@ -2460,14 +2497,17 @@ public class GameController : MonoBehaviour
         if (levelModifierController)
             finalDamage = levelModifierController.ModifyOutgoingDamage(finalDamage, combo);
 
+        if (baseRow > 0f)
+            finalDamage = Mathf.Max(MinimumFinalMonsterDamage, finalDamage);
+
         if (logRowDamageBreakdown)
         {
-            int buffBonus = afterBuffs - baseRow;
+            float buffBonus = afterBuffs - baseRow;
             int comboBonus = finalDamage - afterBuffs;
 
             Debug.Log(
                 $"[RowClearDamage] Combo={combo} Monsters={monstersClearedInRow} " +
-                $"Base={baseRow} BuffMult={buffMult:0.###} (+{buffBonus}) " +
+                $"Base={baseRow:0.###} BuffMult={buffMult:0.###} (+{buffBonus:0.###}) " +
                 $"ComboMult={comboMult:0.###} (+{comboBonus}) Final={finalDamage}"
             );
         }
@@ -2477,7 +2517,7 @@ public class GameController : MonoBehaviour
         if (gained > 0)
             AddScoreInternal(gained);
 
-        rowDamage = finalDamage;
+        return finalDamage;
     }
 
     int IncrementCombo()
@@ -2543,6 +2583,24 @@ public class GameController : MonoBehaviour
         return data.isBossLevel || (_postFinalSurvivalActive && forcePostFinalSurvivalBossLevel);
     }
 
+    int CountCompletedStandardBossLevelsBeforeCurrentLevel()
+    {
+        if (castlesByLevel == null || castlesByLevel.Length == 0)
+            return 0;
+
+        int completedLevels = Mathf.Clamp(currentLevel, 0, castlesByLevel.Length);
+        int completedBosses = 0;
+
+        for (int i = 0; i < completedLevels; i++)
+        {
+            CastleData data = castlesByLevel[i];
+            if (data && data.isBossLevel)
+                completedBosses++;
+        }
+
+        return completedBosses;
+    }
+
     bool CanStartPostFinalSurvival()
     {
         return postFinalSurvivalCastle != null;
@@ -2601,6 +2659,7 @@ public class GameController : MonoBehaviour
             castleProjectileSprite = data.projectileSprite;
 
             castleAttackInterval = data.projectileInterval * enemyAttackIntervalMult;
+            _castleAttackTimer = 0f;
             projectileSpeed = data.projectileSpeed * enemyProjectileSpeedMult;
             castleProjectileDamage = Mathf.Max(1, Mathf.RoundToInt(GetScaledEnemyDamage(data.projectileDamage * enemyProjectileDamageMult)));
 
@@ -2817,6 +2876,7 @@ public class GameController : MonoBehaviour
     void ContinueAfterRoundWinRewards(bool closeXpAfterRewardOpen = false)
     {
         currentLevel++;
+        levelModifierController?.GrantRerollForCompletedLevel(currentLevel);
 
         // Track level wins for achievements
         if (PlayerProgress.I)
@@ -3254,6 +3314,7 @@ public class GameController : MonoBehaviour
     void ApplyFinalLevelRoundWinBookkeeping()
     {
         currentLevel++;
+        levelModifierController?.GrantRerollForCompletedLevel(currentLevel);
 
         if (PlayerProgress.I)
         {
@@ -4529,6 +4590,12 @@ public class GameController : MonoBehaviour
 
     void RefreshPauseMenuNavigation()
     {
+        if (IsPauseMenuInputLocked())
+        {
+            DisablePauseMenuNavigation();
+            return;
+        }
+
         GameObject root = GetCurrentPauseNavigationRoot();
         if (!root)
         {
@@ -4557,6 +4624,9 @@ public class GameController : MonoBehaviour
         if (!isPaused || !pausePanel || !UIPanelTransition.IsVisible(pausePanel))
             return null;
 
+        if (IsPauseMenuInputLocked())
+            return null;
+
         if (ConfirmationPopupUI.TryGetShowingRoot(out var popupRoot))
             return popupRoot;
 
@@ -4575,8 +4645,36 @@ public class GameController : MonoBehaviour
         return pausePanel;
     }
 
+    bool IsPauseMenuInputLocked()
+    {
+        if (IsPanelTransitioning(pausePanel))
+            return true;
+
+        if (IsPanelTransitioning(helpPanelRoot))
+            return true;
+
+        if (IsPanelTransitioning(runModsPanelRoot))
+            return true;
+
+        if (volumePanelInPause && IsPanelTransitioning(volumePanelInPause.gameObject))
+            return true;
+
+        if (gameplayStatsPanelUI && IsPanelTransitioning(gameplayStatsPanelUI.gameObject))
+            return true;
+
+        return false;
+    }
+
+    static bool IsPanelTransitioning(GameObject panel)
+    {
+        return panel && UIPanelTransition.IsPanelTransitioning(panel);
+    }
+
     bool HandlePauseMenuCancelInput()
     {
+        if (IsPauseMenuInputLocked())
+            return false;
+
         if (!TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuCancel))
             return false;
 
@@ -4615,6 +4713,8 @@ public class GameController : MonoBehaviour
     public void PauseGame()
     {
         if (gameOver || levelWon || _levelStartBlocked) return;
+        if (isPaused || IsPauseMenuInputLocked()) return;
+
         isPaused = true;
         Time.timeScale = 0f;
         AudioListener.pause = true;  // Pause SFX/music globally
@@ -4631,6 +4731,8 @@ public class GameController : MonoBehaviour
 
     public void RestartGame()
     {
+        if (IsPauseMenuInputLocked()) return;
+
         if (ShouldWarnBeforeDiscardingCurrentRun())
         {
             ShowConfirmationPopup(
@@ -4747,6 +4849,9 @@ public class GameController : MonoBehaviour
 
     public void ResumeGame()
     {
+        if (IsPauseMenuInputLocked())
+            return;
+
         ClosePauseSubPanels(true);
 
         if (AudioManager.I) AudioManager.I.StopPauseMusic();
@@ -4766,6 +4871,8 @@ public class GameController : MonoBehaviour
 
     public void ReturnToMainMenu()
     {
+        if (IsPauseMenuInputLocked()) return;
+
         if (ShouldWarnBeforeDiscardingCurrentRun())
         {
             ShowConfirmationPopup(
@@ -4834,13 +4941,18 @@ public class GameController : MonoBehaviour
         levelModifierController?.ResetRunState();
 
         if (!string.IsNullOrEmpty(titleSceneName))
+        {
+            TetrabeastsControls.SuppressMenuSubmit(0.35f);
             UnityEngine.SceneManagement.SceneManager.LoadScene(titleSceneName);
+        }
         else
             Debug.LogError("GameController.titleSceneName is empty or not set.");
     }
 
     public void RequestSaveAndQuit()
     {
+        if (IsPauseMenuInputLocked()) return;
+
         ShowConfirmationPopup(
             "Save this run and quit the game? Continuing later will resume from the start of the current level checkpoint. While a run is saved, you will not be able to change your commander, squad, or shop buffs from the title menu.",
             ConfirmSaveAndQuit);
@@ -4859,6 +4971,8 @@ public class GameController : MonoBehaviour
 
     public void QuitGame()
     {
+        if (IsPauseMenuInputLocked()) return;
+
         ShowConfirmationPopup(
             QuitWithoutSavingWarningMessage,
             ConfirmQuitWithoutSaving);
@@ -4908,6 +5022,7 @@ public class GameController : MonoBehaviour
     public void OpenRunModsPanel()
     {
         if (!runModsPanelRoot) return;
+        if (IsPauseMenuInputLocked()) return;
 
         if (runModsPanelUI) runModsPanelUI.Refresh(); // Make sure the list is up to date before showing
 
@@ -4920,12 +5035,16 @@ public class GameController : MonoBehaviour
 
     public void CloseRunModsPanel()
     {
+        if (IsPauseMenuInputLocked()) return;
+
         if (runModsPanelRoot) UIPanelTransition.Hide(runModsPanelRoot);
         RefreshPauseMenuNavigation();
     }
 
     public void OpenGameplayStatsPanel()
     {
+        if (IsPauseMenuInputLocked()) return;
+
         SetupGameplayStatsPanel();
         if (!gameplayStatsPanelUI)
             return;
@@ -4945,6 +5064,8 @@ public class GameController : MonoBehaviour
 
     public void CloseGameplayStatsPanel(bool instant = false)
     {
+        if (!instant && IsPauseMenuInputLocked()) return;
+
         if (gameplayStatsPanelUI)
             gameplayStatsPanelUI.Close(instant);
 
@@ -5606,6 +5727,40 @@ public class GameController : MonoBehaviour
             pauseCursor.SetVisible(true);
             pauseCursor.SetScale(SettingsStore.LoadCursorScale());
         }
+    }
+
+    bool ShouldUseUICursorModeForCurrentState()
+    {
+        if (isPaused || gameOver || levelWon || ConfirmationPopupUI.IsAnyShowing)
+            return true;
+
+        if (levelModifierController && levelModifierController.IsSelectionRunning)
+            return true;
+
+        if (runModsPanelRoot && UIPanelTransition.IsVisible(runModsPanelRoot))
+            return true;
+
+        if (gameplayStatsPanelUI && gameplayStatsPanelUI.IsVisible)
+            return true;
+
+        if (helpPanelRoot && UIPanelTransition.IsVisible(helpPanelRoot))
+            return true;
+
+        if (roundRewardUI && roundRewardUI.rootPanel && UIPanelTransition.IsVisible(roundRewardUI.rootPanel))
+            return true;
+
+        if (highScoreUI && highScoreUI.PanelRoot && UIPanelTransition.IsVisible(highScoreUI.PanelRoot))
+            return true;
+
+        return victoryPanelUI && victoryPanelUI.RootPanel && UIPanelTransition.IsVisible(victoryPanelUI.RootPanel);
+    }
+
+    void ApplyCursorModeForCurrentState()
+    {
+        if (ShouldUseUICursorModeForCurrentState())
+            EnterUICursorMode();
+        else
+            EnterGameplayCursorMode();
     }
 
     // ================ Obstacle Destruction Buff Drop System ===================
@@ -7697,21 +7852,23 @@ public class GameController : MonoBehaviour
 
     void OnApplicationFocus(bool hasFocus)
     {
-        if (!hasFocus) return;
-
-        bool levelModifierKeyboardMouseSelection = false;
-        if (levelModifierController && levelModifierController.IsSelectionRunning)
+        if (!hasFocus)
         {
-            TetrabeastsControls.RefreshActiveInputProfile();
-            levelModifierKeyboardMouseSelection = TetrabeastsControls.EffectiveProfile == TetrabeastsControlProfile.KeyboardMouse;
+            if (ShouldUseUICursorModeForCurrentState())
+                EnterUICursorMode();
+
+            return;
         }
 
-        if (isPaused ||
-            (runModsPanelRoot && UIPanelTransition.IsVisible(runModsPanelRoot)) ||
-            levelModifierKeyboardMouseSelection)
-            EnterUICursorMode();
-        else
-            EnterGameplayCursorMode();
+        TetrabeastsControls.RefreshActiveInputProfile();
+        ApplyCursorModeForCurrentState();
+        StartCoroutine(ReapplyCursorForFocusNextFrame());
+    }
+
+    IEnumerator ReapplyCursorForFocusNextFrame()
+    {
+        yield return null;
+        ApplyCursorModeForCurrentState();
     }
 
     IEnumerator ReapplyUICursorNextFrame()

@@ -191,10 +191,13 @@ public class LevelModifierSelectionUI : MonoBehaviour
 
         root.SetAsLastSibling();
         UIPanelTransition.Show(root.gameObject);
+        RefreshRerollUI(GetAvailableRerolls(getAvailableRerolls), showButton: false, rerollHandler);
+        Canvas.ForceUpdateCanvases();
 
         if (onPanelFullyShown != null)
         {
             yield return WaitForSelectionPanelFullyShown();
+            RefreshRerollUI(GetAvailableRerolls(getAvailableRerolls), showButton: false, rerollHandler);
             onPanelFullyShown.Invoke();
         }
 

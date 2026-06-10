@@ -70,6 +70,7 @@ public class RoundRewardUI : MonoBehaviour
         float misfortune = gc ? gc.CurrentMisfortune : RunModsStore.Misfortune;
 
         bool wasBossLevel = gc && gc.LastLevelWasBoss;
+        bool useLegendaryBossDebuffs = wasBossLevel && (!gc || gc.BossLegendaryDebuffRewardsUnlocked);
 
         _onComplete = onComplete;
 
@@ -108,7 +109,7 @@ public class RoundRewardUI : MonoBehaviour
         confirmBuffButton.onClick.AddListener(() =>
         {
             var excludedLegendaryDebuffs = BuildChosenLegendaryDebuffExclusions();
-            var debuffPicks = wasBossLevel
+            var debuffPicks = useLegendaryBossDebuffs
                 ? Pick3UniqueLegendary(debuffPool, excludedLegendaryDebuffs)
                 : Pick3UniqueWeighted(debuffPool, misfortune, wasBossLevel, excludedLegendaryDebuffs);
 

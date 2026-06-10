@@ -293,6 +293,7 @@ public class UICursorController : MonoBehaviour
         ExecuteEvents.Execute(virtualClickTarget, pointerData, ExecuteEvents.pointerDownHandler);
         ExecuteEvents.Execute(virtualClickTarget, pointerData, ExecuteEvents.pointerUpHandler);
         ExecuteEvents.Execute(virtualClickTarget, pointerData, ExecuteEvents.pointerClickHandler);
+        TetrabeastsControls.SuppressMenuSubmit();
 
         if (eventSystem)
             eventSystem.SetSelectedGameObject(null);
@@ -379,7 +380,15 @@ public class UICursorController : MonoBehaviour
 
 #if ENABLE_INPUT_SYSTEM
         if (TetrabeastsControls.TryGetActiveGamepad(out var gamepad))
-            stick += gamepad.leftStick.ReadValue();
+        {
+            try
+            {
+                stick += gamepad.leftStick.ReadValue();
+            }
+            catch (System.InvalidOperationException)
+            {
+            }
+        }
 #endif
 
         return stick.sqrMagnitude > 1f ? stick.normalized : stick;
@@ -425,8 +434,16 @@ public class UICursorController : MonoBehaviour
         pressed |= TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuSubmit);
 
 #if ENABLE_INPUT_SYSTEM
-        pressed |= TetrabeastsControls.TryGetActiveGamepad(out var gamepad) &&
-            gamepad.buttonSouth.wasPressedThisFrame;
+        if (TetrabeastsControls.TryGetActiveGamepad(out var gamepad))
+        {
+            try
+            {
+                pressed |= gamepad.buttonSouth.wasPressedThisFrame;
+            }
+            catch (System.InvalidOperationException)
+            {
+            }
+        }
 #endif
 
 #if ENABLE_LEGACY_INPUT_MANAGER
@@ -908,6 +925,7 @@ public static class UINavigationUtility
         if (ExecuteEvents.Execute(selected, eventData, ExecuteEvents.submitHandler))
         {
             MarkSubmit(selected);
+            TetrabeastsControls.SuppressMenuSubmit();
             return true;
         }
 
@@ -916,6 +934,7 @@ public static class UINavigationUtility
             return false;
 
         MarkSubmit(selected);
+        TetrabeastsControls.SuppressMenuSubmit();
         return true;
     }
 
@@ -929,10 +948,14 @@ public static class UINavigationUtility
         {
             var eventData = new BaseEventData(eventSystem);
             if (ExecuteEvents.Execute(button.gameObject, eventData, ExecuteEvents.submitHandler))
+            {
+                TetrabeastsControls.SuppressMenuSubmit();
                 return true;
+            }
         }
 
         button.onClick.Invoke();
+        TetrabeastsControls.SuppressMenuSubmit();
         return true;
     }
 

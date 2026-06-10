@@ -1134,12 +1134,18 @@ public class VolumePanelUI : MonoBehaviour
 
     public void Open()
     {
+        if (IsPanelTransitioning())
+            return;
+
         UIPanelTransition.Show(gameObject);
         RefreshModalSelectableScope();
     }
     public void Close() { Close(false); }
     public void Close(bool instant)
     {
+        if (!instant && IsPanelTransitioning())
+            return;
+
         if (!instant && controlsPanelRoot && UIPanelTransition.IsVisible(controlsPanelRoot))
         {
             RequestCloseControlsPanel(false, () => CloseVolumePanelNow(false));
@@ -1162,8 +1168,17 @@ public class VolumePanelUI : MonoBehaviour
 
     public void Toggle()
     {
+        if (IsPanelTransitioning())
+            return;
+
         if (UIPanelTransition.IsVisible(gameObject)) Close();
         else Open();
+    }
+
+    bool IsPanelTransitioning()
+    {
+        return UIPanelTransition.IsPanelTransitioning(gameObject) ||
+            (controlsPanelRoot && UIPanelTransition.IsPanelTransitioning(controlsPanelRoot));
     }
 
     void SetCombatLogVisible(bool isOn)

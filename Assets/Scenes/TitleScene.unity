@@ -4364,7 +4364,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -5770,12 +5770,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -5956,7 +5956,7 @@ MonoBehaviour:
   steps:
   - stepId: Welcome_1
     body: Welcome Overlord, my name is Lilith. I have done my best to rally the few
-      monster I could find to assist in your conquest of the human domain. (Press
+      monsters I could find to assist in your conquest of the human domain. (Press
       [F] to Continue)
     pauseGameplay: 0
     allowSkip: 0
@@ -6003,9 +6003,9 @@ MonoBehaviour:
     watchedPanelShouldBeVisible: 1
   - stepId: Commander_Select_2
     body: We only have one Commander that we can use at the moment, but with enough
-      gold we can get a few more. Each commander has their own special ability. The
-      details of each ability can be seen in the Commander preview on the right.
-      (Press [F] to Continue)
+      gold we can hire more. Each commander has their own special ability. The details
+      of each ability can be seen in the Commander's preview on the right. (Press
+      [F] to Continue)
     pauseGameplay: 0
     allowSkip: 0
     autoAdvanceOnComplete: 1
@@ -6073,7 +6073,7 @@ MonoBehaviour:
     enforceWatchedPanelState: 0
     watchedPanelShouldBeVisible: 1
   - stepId: Monster_Select_2
-    body: As you can see we only have so many monsters to work with to creat our
+    body: As you can see we only have so many monsters to work with to create our
       squadron. A Squadron must have at least two monsters and can have a maximum
       of 4. (Press [F] to Continue)
     pauseGameplay: 0

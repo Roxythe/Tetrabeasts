@@ -1,9 +1,12 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
 public class UIPanelTransition : MonoBehaviour
 {
+    static readonly HashSet<UIPanelTransition> RunningTransitions = new();
+
     [SerializeField, Min(0f)] float moveToSavedPositionSeconds = 0.45f;
     [SerializeField, Min(0f)] float growToFullSizeSeconds = 0.18f;
     [SerializeField] bool animateFromBottomRight = true;
@@ -21,6 +24,8 @@ public class UIPanelTransition : MonoBehaviour
     Vector3 _targetLocalScale;
 
     public bool IsHiding => _isHiding;
+    public bool IsTransitioning => _fadeRoutine != null;
+    public static bool IsAnyTransitioning => RunningTransitions.Count > 0;
 
     public static void Show(GameObject panel, bool instant = false)
     {
@@ -69,6 +74,15 @@ public class UIPanelTransition : MonoBehaviour
         return !transition || (!transition._isHiding && transition._fadeRoutine == null);
     }
 
+    public static bool IsPanelTransitioning(GameObject panel)
+    {
+        if (!panel || !panel.activeInHierarchy)
+            return false;
+
+        var transition = panel.GetComponent<UIPanelTransition>();
+        return transition && transition.IsTransitioning;
+    }
+
     static UIPanelTransition Ensure(GameObject panel)
     {
         var transition = panel.GetComponent<UIPanelTransition>();
@@ -93,13 +107,22 @@ public class UIPanelTransition : MonoBehaviour
         {
             StopCoroutine(_fadeRoutine);
             _fadeRoutine = null;
+            UnregisterRunningTransition();
         }
+    }
+
+    void OnDestroy()
+    {
+        UnregisterRunningTransition();
     }
 
     void ShowPanel(float targetAlpha, bool instant)
     {
         EnsureCanvasGroup();
         EnsureRectTransform();
+
+        if (!instant && _fadeRoutine != null)
+            return;
 
         targetAlpha = Mathf.Clamp01(targetAlpha);
         bool wasHiding = _isHiding;
@@ -113,6 +136,7 @@ public class UIPanelTransition : MonoBehaviour
         {
             StopCoroutine(_fadeRoutine);
             _fadeRoutine = null;
+            UnregisterRunningTransition();
         }
 
         bool wasActive = gameObject.activeSelf;
@@ -159,12 +183,16 @@ public class UIPanelTransition : MonoBehaviour
             startPosition,
             startScale,
             travelScale));
+        RegisterRunningTransition();
     }
 
     void HidePanel(bool instant)
     {
         EnsureCanvasGroup();
         EnsureRectTransform();
+
+        if (!instant && _fadeRoutine != null)
+            return;
 
         bool animationRunning = _fadeRoutine != null;
         if (!_hasTargetPose || (!animationRunning && !_isHiding))
@@ -174,6 +202,7 @@ public class UIPanelTransition : MonoBehaviour
         {
             StopCoroutine(_fadeRoutine);
             _fadeRoutine = null;
+            UnregisterRunningTransition();
         }
 
         if (!_canvasGroup || instant || !Application.isPlaying || !isActiveAndEnabled)
@@ -204,6 +233,7 @@ public class UIPanelTransition : MonoBehaviour
             cornerPosition,
             cornerScale,
             travelScale));
+        RegisterRunningTransition();
     }
 
     IEnumerator AnimateOpen(float targetAlpha, Vector3 startPosition, Vector3 startScale, Vector3 travelScale)
@@ -232,6 +262,7 @@ public class UIPanelTransition : MonoBehaviour
 
         ApplyAnimatedPose(_targetLocalPosition, _targetLocalScale);
         _fadeRoutine = null;
+        UnregisterRunningTransition();
     }
 
     IEnumerator AnimateClose(Vector3 startScale, Vector3 cornerPosition, Vector3 cornerScale, Vector3 travelScale)
@@ -250,6 +281,7 @@ public class UIPanelTransition : MonoBehaviour
             forward: false);
 
         _fadeRoutine = null;
+        UnregisterRunningTransition();
         _isHiding = false;
         RestoreTargetPose();
         gameObject.SetActive(false);
@@ -407,5 +439,15 @@ public class UIPanelTransition : MonoBehaviour
         Vector3 control = new Vector3(end.x, start.y - uCurveDepth, start.z);
         float inverse = 1f - t;
         return (inverse * inverse * start) + (2f * inverse * t * control) + (t * t * end);
+    }
+
+    void RegisterRunningTransition()
+    {
+        RunningTransitions.Add(this);
+    }
+
+    void UnregisterRunningTransition()
+    {
+        RunningTransitions.Remove(this);
     }
 }

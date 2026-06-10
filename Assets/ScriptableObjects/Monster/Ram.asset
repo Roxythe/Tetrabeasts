@@ -41,7 +41,7 @@ MonoBehaviour:
   healAmount: 0
   healRange: 1
   healSpeed: 10
-  specialGaugeGain: 1
+  specialGaugeGain: 0.4
   attackAnim: 1
   attackSprite: {fileID: 21300000, guid: bca2edcaa8b724646ba24b72d73c0b27, type: 3}
   attackSpriteAlt: {fileID: 21300000, guid: 95584465e08b0674396624d0f5b1d603, type: 3}

@@ -53,6 +53,7 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerDownHand
 
     public void OnSubmit(BaseEventData eventData)
     {
+        TetrabeastsControls.SuppressMenuSubmit();
         PlayClickSFX();
     }
 
@@ -65,6 +66,7 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerDownHand
         // Left click / primary tap only
         if (eventData.button != PointerEventData.InputButton.Left) return;
 
+        TetrabeastsControls.SuppressMenuSubmit();
         PlayClickSFX();
 
         ClearSelectionAfterKeyboardMouseClick();

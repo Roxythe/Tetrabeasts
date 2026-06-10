@@ -257,6 +257,7 @@ public class TitleMenuUI : MonoBehaviour
 
         SelectedMonstersStore.Active = SanitizeMonsterSelection(SelectedMonstersStore.Active, rosterRef);
         SelectedMonstersStore.SaveNames(SelectedMonstersStore.Active);
+        TetrabeastsControls.SuppressMenuSubmit(0.35f);
 
         if (AudioManager.I) AudioManager.I.PlaySFX(AudioManager.I.sfxRestart);
 
@@ -920,6 +921,7 @@ public class TitleMenuUI : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(gameplaySceneName))
         {
+            TetrabeastsControls.SuppressMenuSubmit(0.35f);
             SceneManager.LoadScene(gameplaySceneName);
             return true;
         }

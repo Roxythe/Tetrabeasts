@@ -121,11 +121,6 @@ public class LevelModifierController : MonoBehaviour
         if (castleData == null)
             yield break;
 
-        int levelNumber = (_gc ? _gc.CurrentLevel : 0) + 1;
-        
-        if ((levelNumber % 2) == 1)
-            _availableRerolls++;
-
         if (castleData.isBossLevel || !castleData.enableLevelModifierSelection)
             yield break;
 
@@ -180,6 +175,15 @@ public class LevelModifierController : MonoBehaviour
     {
         _availableRerolls = 0;
         ResetLevelState();
+    }
+
+    public void GrantRerollForCompletedLevel(int completedLevelNumber)
+    {
+        if (completedLevelNumber <= 0)
+            return;
+
+        if ((completedLevelNumber % 2) == 0)
+            _availableRerolls++;
     }
 
     public void RestoreCheckpointState(LevelModifierSO modifier, int availableRerolls)
