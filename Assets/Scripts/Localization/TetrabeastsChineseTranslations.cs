@@ -216,6 +216,7 @@ public static class TetrabeastsChineseTranslations
         Add(text, "Rerolls", "重抽次数");
         Add(text, "Rerolls: {0}", "重抽次数: {0}");
         Add(text, "Rerolls: 0", "重抽次数: 0");
+        Add(text, "Rerolls ({0})", "重抽次数（{0}）");
         Add(text, "Modifier", "修改器");
         Add(text, "x{0}", "×{0}");
 
@@ -402,6 +403,12 @@ public static class TetrabeastsChineseTranslations
         Add(text, "HighScore", "最高分");
         Add(text, "Select Monsters", "选择怪物");
         Add(text, "Select Commander", "选择指挥官");
+        Add(text, "Tip: Special blocks activate as soon as they are placed.", "提示：特殊方块放置后会立即激活。");
+        Add(text, "Tip: Rerolls can be saved and used on future reward screens during the same run.", "提示：重抽次数可以保存，并在同一次征战后续奖励界面中使用。");
+        Add(text, "Tip: Temporary monster copies earn EXP during a run, and some of it becomes permanent after the run ends.", "提示：临时怪物复制体会在征战中获得经验，征战结束后其中一部分会变为永久经验。");
+        Add(text, "Tip: Full rows launch attacks at the enemy castle.", "提示：填满整行会向敌方城堡发动攻击。");
+        Add(text, "Tip: Keep an eye on your unit reserve. If it reaches 0, the run is over.", "提示：留意你的单位储备。如果降到 0，本次征战就会结束。");
+        Add(text, "Tip: Level modifiers stack with your run buffs and debuffs.", "提示：关卡修改器会与你本次征战的增益和减益叠加。");
         Add(text, "Combat Log", "战斗日志");
         Add(text, "{0} takes {1} damage.", "{0}受到{1}点伤害。");
         Add(text, "{0} heals {1}.", "{0}恢复{1}点生命。");
@@ -686,6 +693,20 @@ public static class TetrabeastsChineseTranslations
 
     static void AddWarningAndTutorialText(Dictionary<string, string> text)
     {
+        Add(text, "Increase luck, improving favorable random outcomes during runs.", "提高幸运值，使征战中的有利随机结果更容易出现。");
+        Add(text, "Reduce the starting gravity speed of falling pieces.", "降低下落方块的初始重力速度。");
+        Add(text, "Reduce how quickly gravity ramps up during a level.", "降低关卡中重力提升的速度。");
+        Add(text, "Increase the chance to earn gold from cleared rows.", "提高通过清除行获得金币的概率。");
+        Add(text, "Increase monster attack power.", "提高怪物攻击力。");
+        Add(text, "Increase monster maximum HP.", "提高怪物最大生命值。");
+        Add(text, "Increase monster healing power.", "提高怪物治疗能力。");
+        Add(text, "Increase starting unit reserves.", "提高初始预备单位数量。");
+        Add(text, "Now you are ready to start your first campaign. Press [F] to Continue", "现在你已准备好开始第一场战役。按 [F] 继续");
+        Add(text, "You found a Death special block. Drop it in a column to destroy all units matching the first monster below it. (Press [F] to Continue)", "你找到了死亡特殊方块。将它落入一列，即可摧毁所有与其下方第一个怪物相同的单位。（按 [F] 继续）");
+        Add(text, "You found a Bomb special block. Drop it to blast a 3x3 area and damage nearby obstacles. (Press [F] to Continue)", "你找到了炸弹特殊方块。落下后会爆破 3x3 区域，并伤害附近障碍物。（按 [F] 继续）");
+        Add(text, "You found a Bolt special block. Drop it to strike an entire column. (Press [F] to Continue)", "你找到了闪电特殊方块。落下后会打击整列。（按 [F] 继续）");
+        Add(text, "You found an Earthquake special block. Drop it to shake loose unsupported units across the board. (Press [F] to Continue)", "你找到了地震特殊方块。落下后会震落棋盘上没有支撑的单位。（按 [F] 继续）");
+        Add(text, "You found a Slow Gravity special block. Drop it to slow falling pieces for a short time. (Press [F] to Continue)", "你找到了缓慢重力特殊方块。落下后会短时间减缓方块下落。（按 [F] 继续）");
         Add(text, "Purchases are disabled in the demo. Your earned progress will still carry into the full game.", "试玩版已禁用购买。你已获得的进度仍会继承到完整版。");
         Add(text, "A saved run is waiting. Continue that run or delete the temp save before changing your commander, squad, or shop buffs.", "有一个已保存的征战正在等待。请先继续该征战或删除临时存档，然后才能更改指挥官、小队或商店增益。");
         Add(text, "Deleting the current temp run will permanently erase that saved run. After deleting it, you will be able to change your commander, monsters, and access the shop again. Continue?", "删除当前临时征战会永久清除该存档。删除后，你将可以再次更改指挥官、怪物并进入商店。继续？");
@@ -698,6 +719,13 @@ public static class TetrabeastsChineseTranslations
         Add(text, "Returning to the main menu will treat this run as a loss. The current temp save will be erased and this run will not be saved. Continue?", "返回主菜单会将本次征战视为失败。当前临时存档将被删除，本次征战不会保存。继续？");
         Add(text, "Save this run and quit the game? Continuing later will resume from the start of the current level checkpoint. While a run is saved, you will not be able to change your commander, squad, or shop buffs from the title menu.", "保存本次征战并退出游戏？之后继续时会从当前关卡检查点开始。保存征战期间，你无法在标题菜单更改指挥官、小队或商店增益。");
         Add(text, "The run could not be temp-saved, so the game will stay open.", "无法临时保存征战，因此游戏会保持开启。");
+        Add(text, "After completing a level you will be allowed to choose one of three buffs that will empower your units. Press [F] to Continue", "完成一个关卡后，你可以从三个增益中选择一个来强化你的单位。按 [F] 继续");
+        Add(text, "Most buffs come in multiple rarities that will determine their strength. From weakest to strongest (White -> Green -> Blue -> Purple -> Orange). Press [F] to Continue", "大多数增益都有多个稀有度，稀有度决定它们的强度。从弱到强依次为（白色 -> 绿色 -> 蓝色 -> 紫色 -> 橙色）。按 [F] 继续");
+        Add(text, "You will receive a single reroll per level that can be used on your buffs or debuffs. Rerolls can be saved throughout your run, but will be reset at the start of a new run. Press [F] to Continue", "每完成一个关卡你会获得一次重抽，可用于增益或减益。重抽次数可以在本次征战中保留，但会在开始新征战时重置。按 [F] 继续");
+        Add(text, "As you grow stronger your enemies will too. Choose one of three debuffs that will empower your enemies during this run. All buffs and debuffs will stay active and stack throughout the run, but will be reset upon starting a new game. Press [F] to Continue", "随着你变强，敌人也会变强。从三个减益中选择一个来强化本次征战中的敌人。所有增益和减益都会在征战期间保持生效并叠加，但会在开始新游戏时重置。按 [F] 继续");
+        Add(text, "Not all levels are created equal, here you will let lady luck decide what the next battlefield will be like. Pull the lever to reveal it, use rerolls if you have them, then continue into the fight. (Press [F] to Continue)", "并非所有关卡都一样。在这里，幸运女神将决定下一个战场的样子。拉下拉杆来揭示它，如果你有重抽次数就使用它们，然后继续战斗。按 [F] 继续");
+        Add(text, "During a run, your monsters are temporary copies. This screen drains the EXP those copies earned so a portion can be preserved for their permanent versions. (Press [F] to Continue)", "在一次征战中，你的怪物是临时复制体。此界面会抽取这些复制体获得的经验，使其中一部分能够保留给它们的永久本体。按 [F] 继续");
+        Add(text, "Preserved EXP is added to your permanent monsters. Permanent levels make your units stronger at the start of future runs. (Press [F] to Continue)", "保留下来的经验会加入你的永久怪物。永久等级会让你的单位在未来征战开始时更强。按 [F] 继续");
         Add(text, "Welcome Overlord, my name is Lilith. I have done my best to rally the few monster I could find to assist in your conquest of the human domain. (Press [F] to Continue)", "欢迎，霸主。我叫莉莉丝。我已尽力召集能找到的少数怪物，协助你征服人类领地。（按 [F] 继续）");
         Add(text, "Before going into battle, we will first have to select our commander. Press the commander button in the bottom right to see who is available. (Press [F] to Continue)", "进入战斗前，我们必须先选择指挥官。点击右下角的指挥官按钮查看可用人选。（按 [F] 继续）");
         Add(text, "We only have one Commander that we can use at the moment, but with enough gold we can get a few more. Each commander has their own special ability. The details of each ability can be seen in the Commander preview on the right. (Press [F] to Continue)", "目前只有一名可用指挥官，但金币足够后还能获得更多。每位指挥官都有自己的特殊能力，能力详情可在右侧指挥官预览中查看。（按 [F] 继续）");

@@ -31,9 +31,32 @@ public static class ShopBuffStore
     public static int GetNextCost(ShopBuffType type)
     {
         int nextLevel = GetLevel(type) + 1;
-        int baseCost = GetBaseCost(type);
 
-        return baseCost * nextLevel * nextLevel; // Quadratic scaling
+        return GetCostForLevel(type, nextLevel);
+    }
+
+    public static int GetCostForLevel(ShopBuffType type, int level)
+    {
+        if (level <= 0)
+            return 0;
+
+        int cost = GetBaseCost(type);
+        for (int i = 2; i <= level; i++)
+            cost = ScaleCost(cost);
+
+        return cost;
+    }
+
+    private static int ScaleCost(int currentCost)
+    {
+        double scaled = System.Math.Round(
+            Mathf.Max(1, currentCost) * 1.5d,
+            System.MidpointRounding.AwayFromZero);
+
+        if (scaled >= int.MaxValue)
+            return int.MaxValue;
+
+        return Mathf.Max(1, (int)scaled);
     }
 
     private static int GetBaseCost(ShopBuffType type)
@@ -64,11 +87,18 @@ public static class ShopBuffStore
     public static int GetTotalSpentForLevel(ShopBuffType type, int level)
     {
         level = Mathf.Max(0, level);
-        long baseCost = GetBaseCost(type);
-        long l = level;
-        long sumSquares = (l * (l + 1L) * (2L * l + 1L)) / 6L;
-        long total = baseCost * sumSquares;
-        if (total > int.MaxValue) return int.MaxValue;
+
+        long total = 0;
+        int cost = GetBaseCost(type);
+        for (int i = 1; i <= level; i++)
+        {
+            if (i > 1)
+                cost = ScaleCost(cost);
+
+            total += cost;
+            if (total > int.MaxValue) return int.MaxValue;
+        }
+
         return (int)total;
     }
 

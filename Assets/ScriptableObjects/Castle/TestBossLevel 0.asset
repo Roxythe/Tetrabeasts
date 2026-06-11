@@ -24,7 +24,9 @@ MonoBehaviour:
   projectileSprite: {fileID: 21300000, guid: ca7186951d5077d419fe7998de074c6d, type: 3}
   projectileInterval: 3
   projectileSpeed: 800
+  projectileVisualScale: 1.5
   projectileDamage: 10
+  baseEnemyProjectilesPerAttack: 1
   sfxProjectileHitTile: {fileID: 8300000, guid: 23223cee22f6a6c4caceff40d1bcd1e6, type: 3}
   sfxProjectileHitTileClips:
   - {fileID: 8300000, guid: fccb4318ede48ff4db14c0d040030810, type: 3}

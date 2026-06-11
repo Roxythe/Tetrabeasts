@@ -48,6 +48,7 @@ public class TitleMenuUI : MonoBehaviour
     [Header("Temp Run Buttons")]
     public Button continueRunButton;
     public Button deleteTempRunButton;
+    [SerializeField] GameObject saveDataWarning;
 
     [Header("Locked While Temp Run Exists")]
     public Button characterSelectButton;
@@ -894,6 +895,10 @@ public class TitleMenuUI : MonoBehaviour
         if (hasTempRun)
             ApplyTempRunSelectionsToStores(saveData);
 
+        EnsureSaveDataWarningReference();
+        if (saveDataWarning)
+            saveDataWarning.SetActive(hasTempRun);
+
         if (continueRunButton)
             continueRunButton.interactable = hasTempRun;
 
@@ -1237,12 +1242,42 @@ public class TitleMenuUI : MonoBehaviour
     {
         if (!hasFocus) return;
 
+        RefreshTempRunUI();
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = false;
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto); // Clear any leftover hardware cursor
 
         if (uiCursorController)
             uiCursorController.SetVisible(true);
+    }
+
+    void EnsureSaveDataWarningReference()
+    {
+        if (saveDataWarning)
+            return;
+
+        saveDataWarning = FindSceneGameObjectByName("Save Data Warning");
+    }
+
+    GameObject FindSceneGameObjectByName(string objectName)
+    {
+        if (string.IsNullOrWhiteSpace(objectName))
+            return null;
+
+        var transforms = Resources.FindObjectsOfTypeAll<Transform>();
+        for (int i = 0; i < transforms.Length; i++)
+        {
+            var candidate = transforms[i];
+            if (!candidate ||
+                candidate.gameObject.scene != gameObject.scene ||
+                candidate.name != objectName)
+                continue;
+
+            return candidate.gameObject;
+        }
+
+        return null;
     }
 
     void EnsureTriggeredTutorialPopups()

@@ -663,7 +663,7 @@ public class MonsterSelectUI : MonoBehaviour
 
         var baseStats = MonsterLeveling.GetLeveledStats(md, lvl);
 
-        int atkLvl = ShopBuffStore.GetLevel(ShopBuffType.AttackUp);
+        float attackBonus = ShopBuffEffects.MonsterAttackBonus;
         int hpLvl = ShopBuffStore.GetLevel(ShopBuffType.HpUp);
         int healLvl = ShopBuffStore.GetLevel(ShopBuffType.HealPower);
 
@@ -674,7 +674,7 @@ public class MonsterSelectUI : MonoBehaviour
         float baseSpeed = baseStats.healSpeed;
         float baseSpecial = baseStats.specialGaugeGain;
 
-        float totalAttack = baseAttack + atkLvl;
+        float totalAttack = baseAttack + attackBonus;
         float totalMaxHp = baseMaxHp + (hpLvl * 5f);
         float totalHeal = (baseHeal > 0f) ? (baseHeal + (healLvl * 2f)) : 0f;
 
@@ -682,7 +682,7 @@ public class MonsterSelectUI : MonoBehaviour
         string levelLine = TetrabeastsLocalization.LocalizeFormat("Level: {0}  ({1:0.#}/{2})", lvl, xpInto, MonsterLeveling.XpPerLevel);
 
         string hpLine = TetrabeastsLocalization.LocalizeFormat("Max HP: {0:0.#}  (+{1}) = {2:0.#}", baseMaxHp, hpLvl * 5, totalMaxHp);
-        string atkLine = TetrabeastsLocalization.LocalizeFormat("Attack: {0:0.#}  (+{1}) = {2:0.#}", baseAttack, atkLvl, totalAttack);
+        string atkLine = TetrabeastsLocalization.LocalizeFormat("Attack: {0:0.#}  (+{1:0.#}) = {2:0.#}", baseAttack, attackBonus, totalAttack);
         string specialLine = TetrabeastsLocalization.LocalizeFormat("Special Gain: {0:0.#}", baseSpecial);
 
         string healBlock;

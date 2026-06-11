@@ -72,6 +72,7 @@ MonoBehaviour:
   autoShiftEdgePauseSeconds: 0.6
   comboThreshold: 3
   comboBelowThresholdDamageMultiplier: 0.5
+  comboAtOrAboveThresholdDamageMultiplier: 1.5
   comboShieldThreshold: 4
   comboShieldCount: 3
   comboShieldBlockedDamageMultiplier: 0.5

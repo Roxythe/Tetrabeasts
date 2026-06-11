@@ -281,7 +281,7 @@ public class LevelModifierController : MonoBehaviour
             case LevelModifierKind.ComboGated:
                 if (comboCount < Mathf.Max(1, ActiveModifier.comboThreshold))
                     return Mathf.RoundToInt(damage * Mathf.Clamp01(ActiveModifier.comboBelowThresholdDamageMultiplier));
-                return damage;
+                return Mathf.RoundToInt(damage * Mathf.Max(0f, ActiveModifier.comboAtOrAboveThresholdDamageMultiplier));
 
             case LevelModifierKind.ComboShield:
                 if (_comboShieldRemaining <= 0)
@@ -642,7 +642,7 @@ public class LevelModifierController : MonoBehaviour
             board.SetFloorEffect(
                 cell,
                 Board.FloorEffectType.Lightning,
-                Mathf.Max(0f, ActiveModifier.stormFloorTickDamage),
+                GetScaledFloorEffectDamage(ActiveModifier.stormFloorTickDamage),
                 Mathf.Max(0.05f, ActiveModifier.stormFloorTickInterval),
                 ticks);
         }
@@ -815,11 +815,16 @@ public class LevelModifierController : MonoBehaviour
                 board.SetFloorEffect(
                     cell,
                     Board.FloorEffectType.Poison,
-                    Mathf.Max(0f, ActiveModifier.swampPoisonDamage),
+                    GetScaledFloorEffectDamage(ActiveModifier.swampPoisonDamage),
                     Mathf.Max(0.05f, ActiveModifier.swampPoisonInterval),
                     ticks);
             }
         }
+    }
+
+    float GetScaledFloorEffectDamage(float amount)
+    {
+        return _gc ? _gc.GetScaledFloorEffectDamage(amount) : Mathf.Max(0f, amount);
     }
 
     void ApplySoulLink(IReadOnlyList<Vector2Int> cells)
@@ -1388,7 +1393,7 @@ public class LevelModifierController : MonoBehaviour
     void MaintainSelectionCursorState()
     {
         TetrabeastsControls.RefreshActiveInputProfile();
-        bool keyboardMouse = TetrabeastsControls.EffectiveProfile == TetrabeastsControlProfile.KeyboardMouse;
+        bool keyboardMouse = TetrabeastsControls.ActiveInputProfile == TetrabeastsControlProfile.KeyboardMouse;
         bool hasCustomCursor = _gc && _gc.pauseCursor;
 
         Cursor.lockState = keyboardMouse ? CursorLockMode.None : CursorLockMode.Locked;

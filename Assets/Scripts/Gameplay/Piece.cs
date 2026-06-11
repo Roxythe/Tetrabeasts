@@ -96,6 +96,13 @@ public class Piece : MonoBehaviour
         if (hardDropVisualLockPending)
             return;
 
+        if (gc != null && gc.IsTutorialPieceInputBlocked)
+        {
+            fallTimer = 0f;
+            lockTimer = 0f;
+            return;
+        }
+
         bool blockHorizontal = gc != null &&
                                gc.levelModifierController &&
                                gc.levelModifierController.BlocksManualHorizontalShift;
@@ -138,6 +145,7 @@ public class Piece : MonoBehaviour
                                     rotateRepeatInterval);
 
         bool hardDropPressed = allowHardDrop &&
+                               (gc == null || !gc.IsTutorialHardDropInputGraceActive) &&
                                TetrabeastsControls.WasPressed(TetrabeastsControlAction.HardDrop);
 
         if (moveLeftPressed && TryMove(Vector2Int.left))

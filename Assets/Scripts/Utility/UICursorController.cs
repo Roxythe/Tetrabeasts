@@ -571,6 +571,14 @@ public class ScopedMenuNavigator : MonoBehaviour
         if (!navigationRoot || !navigationRoot.activeInHierarchy)
             return;
 
+        if (TriggeredTutorialPopupController.IsAnyPopupBlockingUi ||
+            TutorialSequenceController.IsAnySequenceBlockingUi)
+        {
+            ClearSelectionIfInside();
+            ResetNavigationRepeat();
+            return;
+        }
+
         TetrabeastsControls.RefreshActiveInputProfile();
         RefreshAutomaticNavigationScope(navigationRoot);
 

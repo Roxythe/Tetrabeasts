@@ -161,6 +161,12 @@ public static class TetrabeastsRussianTranslations
         Add(text, "HighScore", "Рекорд");
         Add(text, "Select Monsters", "Выбрать монстров");
         Add(text, "Select Commander", "Выбрать командира");
+        Add(text, "Tip: Special blocks activate as soon as they are placed.", "Совет: специальные блоки активируются сразу после размещения.");
+        Add(text, "Tip: Rerolls can be saved and used on future reward screens during the same run.", "Совет: перебросы можно сохранять и использовать на будущих экранах наград в том же забеге.");
+        Add(text, "Tip: Temporary monster copies earn EXP during a run, and some of it becomes permanent after the run ends.", "Совет: временные копии монстров получают опыт во время забега, и часть его становится постоянной после завершения забега.");
+        Add(text, "Tip: Full rows launch attacks at the enemy castle.", "Совет: заполненные ряды запускают атаки по вражескому замку.");
+        Add(text, "Tip: Keep an eye on your unit reserve. If it reaches 0, the run is over.", "Совет: следите за резервом отрядов. Если он достигнет 0, забег закончится.");
+        Add(text, "Tip: Level modifiers stack with your run buffs and debuffs.", "Совет: модификаторы уровня складываются с усилениями и ослаблениями вашего забега.");
         Add(text, "Combat Log", "Журнал боя");
         Add(text, "{0} takes {1} damage.", "{0} получает {1} урона.");
         Add(text, "{0} heals {1}.", "{0} восстанавливает {1}.");
@@ -340,6 +346,7 @@ public static class TetrabeastsRussianTranslations
         Add(text, "Rerolls", "Перебросы");
         Add(text, "Rerolls: {0}", "Перебросы: {0}");
         Add(text, "Rerolls: 0", "Перебросы: 0");
+        Add(text, "Rerolls ({0})", "Перебросы ({0})");
         Add(text, "Modifier", "Модификатор");
         Add(text, "x{0}", "x{0}");
 
@@ -689,6 +696,34 @@ public static class TetrabeastsRussianTranslations
         Add(text, "Endless Survival This final battle cannot be won. The enemy has endless health, and the run continues until a loss condition is met. Survive as long as you can.",
             "Бесконечное выживание\n\nЭту финальную битву нельзя выиграть. У врага бесконечное здоровье, а забег продолжается до выполнения условия поражения.\n\nВыживайте как можно дольше.");
         Add(text, "Do not show this message again", "Больше не показывать это сообщение");
+        Add(text, "Increase luck, improving favorable random outcomes during runs.",
+            "Повышает удачу и улучшает благоприятные случайные исходы во время забега.");
+        Add(text, "Reduce the starting gravity speed of falling pieces.",
+            "Снижает начальную скорость гравитации падающих фигур.");
+        Add(text, "Reduce how quickly gravity ramps up during a level.",
+            "Снижает скорость роста гравитации в течение уровня.");
+        Add(text, "Increase the chance to earn gold from cleared rows.",
+            "Повышает шанс получить золото за очищенные ряды.");
+        Add(text, "Increase monster attack power.",
+            "Повышает силу атаки монстров.");
+        Add(text, "Increase monster maximum HP.",
+            "Повышает максимальное здоровье монстров.");
+        Add(text, "Increase monster healing power.",
+            "Повышает силу лечения монстров.");
+        Add(text, "Increase starting unit reserves.",
+            "Увеличивает начальный резерв отрядов.");
+        Add(text, "Now you are ready to start your first campaign. Press [F] to Continue",
+            "Теперь вы готовы начать первую кампанию. Нажмите [F], чтобы продолжить");
+        Add(text, "You found a Death special block. Drop it in a column to destroy all units matching the first monster below it. (Press [F] to Continue)",
+            "Вы нашли особый блок Смерти. Сбросьте его в столбец, чтобы уничтожить все отряды, совпадающие с первым монстром под ним. (Нажмите [F], чтобы продолжить)");
+        Add(text, "You found a Bomb special block. Drop it to blast a 3x3 area and damage nearby obstacles. (Press [F] to Continue)",
+            "Вы нашли особый блок Бомбы. Сбросьте его, чтобы взорвать область 3x3 и повредить ближайшие препятствия. (Нажмите [F], чтобы продолжить)");
+        Add(text, "You found a Bolt special block. Drop it to strike an entire column. (Press [F] to Continue)",
+            "Вы нашли особый блок Молнии. Сбросьте его, чтобы ударить по целому столбцу. (Нажмите [F], чтобы продолжить)");
+        Add(text, "You found an Earthquake special block. Drop it to shake loose unsupported units across the board. (Press [F] to Continue)",
+            "Вы нашли особый блок Землетрясения. Сбросьте его, чтобы стряхнуть неподдерживаемые отряды по всему полю. (Нажмите [F], чтобы продолжить)");
+        Add(text, "You found a Slow Gravity special block. Drop it to slow falling pieces for a short time. (Press [F] to Continue)",
+            "Вы нашли особый блок Замедления гравитации. Сбросьте его, чтобы ненадолго замедлить падающие фигуры. (Нажмите [F], чтобы продолжить)");
         Add(text, "Quit without saving? Your current run will be lost and will not be available to continue later.",
             "Выйти без сохранения? Текущий забег будет потерян, и его нельзя будет продолжить позже.");
         Add(text, "Restarting will treat this run as a loss. The current temp save will be erased and this run will not be saved. Continue?",
@@ -699,6 +734,20 @@ public static class TetrabeastsRussianTranslations
             "Сохранить этот забег и выйти из игры? При продолжении позже вы начнете с контрольной точки текущего уровня. Пока забег сохранен, вы не сможете менять командира, отряд или усиления магазина из главного меню.");
         Add(text, "The run could not be temp-saved, so the game will stay open.",
             "Не удалось временно сохранить забег, поэтому игра останется открытой.");
+        Add(text, "After completing a level you will be allowed to choose one of three buffs that will empower your units. Press [F] to Continue",
+            "После завершения уровня вы сможете выбрать одно из трех усилений, которое укрепит ваши отряды. Нажмите [F], чтобы продолжить");
+        Add(text, "Most buffs come in multiple rarities that will determine their strength. From weakest to strongest (White -> Green -> Blue -> Purple -> Orange). Press [F] to Continue",
+            "У большинства усилений есть несколько редкостей, определяющих их силу. От слабых к сильным (Белый -> Зеленый -> Синий -> Фиолетовый -> Оранжевый). Нажмите [F], чтобы продолжить");
+        Add(text, "You will receive a single reroll per level that can be used on your buffs or debuffs. Rerolls can be saved throughout your run, but will be reset at the start of a new run. Press [F] to Continue",
+            "Вы будете получать один переброс за уровень, который можно использовать для усилений или ослаблений. Перебросы можно сохранять в течение забега, но они сбрасываются в начале нового забега. Нажмите [F], чтобы продолжить");
+        Add(text, "As you grow stronger your enemies will too. Choose one of three debuffs that will empower your enemies during this run. All buffs and debuffs will stay active and stack throughout the run, but will be reset upon starting a new game. Press [F] to Continue",
+            "По мере того как вы становитесь сильнее, враги тоже усиливаются. Выберите одно из трех ослаблений, которое усилит врагов в этом забеге. Все усиления и ослабления остаются активными и суммируются на протяжении забега, но сбрасываются при начале новой игры. Нажмите [F], чтобы продолжить");
+        Add(text, "Not all levels are created equal, here you will let lady luck decide what the next battlefield will be like. Pull the lever to reveal it, use rerolls if you have them, then continue into the fight. (Press [F] to Continue)",
+            "Не все уровни одинаковы. Здесь удача решит, каким будет следующее поле боя. Потяните рычаг, чтобы открыть модификатор, используйте перебросы, если они есть, а затем продолжайте бой. (Нажмите [F], чтобы продолжить)");
+        Add(text, "During a run, your monsters are temporary copies. This screen drains the EXP those copies earned so a portion can be preserved for their permanent versions. (Press [F] to Continue)",
+            "Во время забега ваши монстры являются временными копиями. На этом экране опыт, полученный копиями, извлекается, чтобы часть его можно было сохранить для их постоянных версий. (Нажмите [F], чтобы продолжить)");
+        Add(text, "Preserved EXP is added to your permanent monsters. Permanent levels make your units stronger at the start of future runs. (Press [F] to Continue)",
+            "Сохраненный опыт добавляется вашим постоянным монстрам. Постоянные уровни делают ваши отряды сильнее в начале будущих забегов. (Нажмите [F], чтобы продолжить)");
 
         Add(text, "Welcome Overlord, my name is Lilith. I have done my best to rally the few monster I could find to assist in your conquest of the human domain. (Press [F] to Continue)",
             "Добро пожаловать, Владыка. Меня зовут Лилит. Я собрала тех немногих монстров, которых смогла найти, чтобы помочь вам покорить владения людей. (Нажмите [F], чтобы продолжить)");

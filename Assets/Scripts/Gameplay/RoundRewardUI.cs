@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 #if UNITY_ANDROID && UNITY_EDITOR
@@ -28,10 +29,14 @@ public class RoundRewardUI : MonoBehaviour
     [Header("Buff UI")]
     public Transform buffContainer;
     public Button confirmBuffButton;
+    public Button buffRerollButton;
+    public TMP_Text buffRerollButtonText;
 
     [Header("Debuff UI")]
     public Transform debuffContainer;
     public Button confirmDebuffButton;
+    public Button debuffRerollButton;
+    public TMP_Text debuffRerollButtonText;
 
     [Header("Prefabs")]
     public RunModOptionButton buffOptionButtonPrefab;
@@ -47,12 +52,26 @@ public class RoundRewardUI : MonoBehaviour
     public GameObject blinkImage2;          // Starts off
     public float blinkIntervalSeconds = 0.25f;
 
+    [Header("Tutorial")]
+    [SerializeField] TutorialSequenceController _buffPanelTutorial;
+    [SerializeField] TutorialSequenceController _debuffPanelTutorial;
+
     Coroutine _blinkRoutine;
 
     RunModifierSO _selectedBuff;
     RunModifierSO _selectedDebuff;
     ScopedMenuNavigator _navigator;
-
+    RunModifierSO[] _buffPool;
+    RunModifierSO[] _debuffPool;
+    float _currentLuck;
+    float _currentMisfortune;
+    bool _currentWasBossLevel;
+    bool _currentUseLegendaryBossDebuffs;
+    Func<int> _getAvailableRerolls;
+    Func<bool> _trySpendReroll;
+    CanvasGroup _rootCanvasGroup;
+    bool _tutorialInteractionLocked;
+    bool _completionLocked;
     Action<RunModifierSO, RunModifierSO> _onComplete;
 
 
@@ -63,7 +82,8 @@ public class RoundRewardUI : MonoBehaviour
     }
 
     public void Show(RunModifierSO[] buffPool, RunModifierSO[] debuffPool, Action<RunModifierSO, RunModifierSO> onComplete,
-                 int currencyGained, int reinforcementsReceived)
+                 int currencyGained, int reinforcementsReceived, Func<int> getAvailableRerolls = null,
+                 Func<bool> trySpendReroll = null)
     {
         var gc = FindFirstObjectByType<GameController>();
         float luck = gc ? gc.luck : RunModsStore.Luck;
@@ -73,6 +93,19 @@ public class RoundRewardUI : MonoBehaviour
         bool useLegendaryBossDebuffs = wasBossLevel && (!gc || gc.BossLegendaryDebuffRewardsUnlocked);
 
         _onComplete = onComplete;
+        _buffPool = buffPool;
+        _debuffPool = debuffPool;
+        _currentLuck = luck;
+        _currentMisfortune = misfortune;
+        _currentWasBossLevel = wasBossLevel;
+        _currentUseLegendaryBossDebuffs = useLegendaryBossDebuffs;
+        _getAvailableRerolls = getAvailableRerolls;
+        _trySpendReroll = trySpendReroll;
+        _completionLocked = false;
+        _tutorialInteractionLocked = false;
+        EnsureRerollReferences();
+        ResolvePanelTutorials();
+        SetRootPanelInteractable(true);
 
         if (rootPanel)
             rootPanel.transform.SetAsLastSibling();
@@ -91,6 +124,8 @@ public class RoundRewardUI : MonoBehaviour
         // Ensure panel buttons also get UIButtonSFX
         _sfxHook?.HookButton(confirmBuffButton);
         _sfxHook?.HookButton(confirmDebuffButton);
+        _sfxHook?.HookButton(buffRerollButton);
+        _sfxHook?.HookButton(debuffRerollButton);
 
         if (currnecyGained)
             currnecyGained.text = $"+{currencyGained}";
@@ -102,22 +137,23 @@ public class RoundRewardUI : MonoBehaviour
                 : $"+0 {TetrabeastsLocalization.LocalizeText("Reinforcements")}";
         }
 
-        Populate(buffContainer, Pick3UniqueWeighted(buffPool, luck, wasBossLevel), isBuff: true);
-        SetNavigationRoot(buffPanel);
+        WireRerollButtons();
+        RefreshRerollButtons();
+
+        Populate(buffContainer, PickBuffRewards(), isBuff: true);
+        SetNavigationRoot(buffPanel, selectFirst: true);
+        StartPanelTutorial(_buffPanelTutorial);
 
         confirmBuffButton.onClick.RemoveAllListeners();
         confirmBuffButton.onClick.AddListener(() =>
         {
-            var excludedLegendaryDebuffs = BuildChosenLegendaryDebuffExclusions();
-            var debuffPicks = useLegendaryBossDebuffs
-                ? Pick3UniqueLegendary(debuffPool, excludedLegendaryDebuffs)
-                : Pick3UniqueWeighted(debuffPool, misfortune, wasBossLevel, excludedLegendaryDebuffs);
-
-            Populate(debuffContainer, debuffPicks, isBuff: false);
+            Populate(debuffContainer, PickDebuffRewards(), isBuff: false);
 
             UIPanelTransition.Hide(buffPanel, true);
             UIPanelTransition.Show(debuffPanel, true);
-            SetNavigationRoot(debuffPanel);
+            SetNavigationRoot(debuffPanel, selectFirst: true);
+            RefreshRerollButtons();
+            StartPanelTutorial(_debuffPanelTutorial);
         });
 
         confirmDebuffButton.onClick.RemoveAllListeners();
@@ -128,13 +164,150 @@ public class RoundRewardUI : MonoBehaviour
             confirmBuffButton.interactable = false;
 
             // Lock the whole panel while next level loads
-            var cg = rootPanel.GetComponent<CanvasGroup>();
-            if (!cg) cg = rootPanel.AddComponent<CanvasGroup>();
-            cg.interactable = false;
-            cg.blocksRaycasts = true;
+            _completionLocked = true;
+            SetRootPanelInteractable(false);
 
             _onComplete?.Invoke(_selectedBuff, _selectedDebuff);
         });
+    }
+
+    void Update()
+    {
+        RefreshTutorialInteractionLock();
+    }
+
+    List<RunModifierSO> PickBuffRewards()
+    {
+        return Pick3UniqueWeighted(_buffPool, _currentLuck, _currentWasBossLevel);
+    }
+
+    List<RunModifierSO> PickDebuffRewards()
+    {
+        var excludedLegendaryDebuffs = BuildChosenLegendaryDebuffExclusions();
+        return _currentUseLegendaryBossDebuffs
+            ? Pick3UniqueLegendary(_debuffPool, excludedLegendaryDebuffs)
+            : Pick3UniqueWeighted(_debuffPool, _currentMisfortune, _currentWasBossLevel, excludedLegendaryDebuffs);
+    }
+
+    void WireRerollButtons()
+    {
+        if (buffRerollButton)
+        {
+            buffRerollButton.onClick.RemoveListener(OnBuffRerollClicked);
+            buffRerollButton.onClick.AddListener(OnBuffRerollClicked);
+        }
+
+        if (debuffRerollButton)
+        {
+            debuffRerollButton.onClick.RemoveListener(OnDebuffRerollClicked);
+            debuffRerollButton.onClick.AddListener(OnDebuffRerollClicked);
+        }
+    }
+
+    void OnBuffRerollClicked()
+    {
+        if (!TrySpendReroll())
+            return;
+
+        _selectedBuff = null;
+        if (confirmBuffButton)
+            confirmBuffButton.interactable = false;
+
+        Populate(buffContainer, PickBuffRewards(), isBuff: true);
+        RefreshRerollButtons();
+        SetNavigationRoot(buffPanel, selectFirst: true);
+    }
+
+    void OnDebuffRerollClicked()
+    {
+        if (!TrySpendReroll())
+            return;
+
+        _selectedDebuff = null;
+        if (confirmDebuffButton)
+            confirmDebuffButton.interactable = false;
+
+        Populate(debuffContainer, PickDebuffRewards(), isBuff: false);
+        RefreshRerollButtons();
+        SetNavigationRoot(debuffPanel, selectFirst: true);
+    }
+
+    bool TrySpendReroll()
+    {
+        if (_trySpendReroll == null || GetAvailableRerolls() <= 0)
+            return false;
+
+        return _trySpendReroll();
+    }
+
+    int GetAvailableRerolls()
+    {
+        return Mathf.Max(0, _getAvailableRerolls?.Invoke() ?? 0);
+    }
+
+    void RefreshRerollButtons()
+    {
+        int available = GetAvailableRerolls();
+        string label = TetrabeastsLocalization.LocalizeFormat("Rerolls ({0})", available);
+
+        if (buffRerollButtonText)
+            buffRerollButtonText.text = label;
+
+        if (debuffRerollButtonText)
+            debuffRerollButtonText.text = label;
+
+        bool canReroll = available > 0;
+        if (buffRerollButton)
+            buffRerollButton.interactable = canReroll;
+
+        if (debuffRerollButton)
+            debuffRerollButton.interactable = canReroll;
+    }
+
+    void EnsureRerollReferences()
+    {
+        if (!buffRerollButton && buffPanel)
+            buffRerollButton = FindButton(buffPanel.transform, "Reroll_Button");
+
+        if (!debuffRerollButton && debuffPanel)
+            debuffRerollButton = FindButton(debuffPanel.transform, "Reroll_Button");
+
+        if (!buffRerollButtonText && buffRerollButton)
+            buffRerollButtonText = buffRerollButton.GetComponentInChildren<TMP_Text>(true);
+
+        if (!debuffRerollButtonText && debuffRerollButton)
+            debuffRerollButtonText = debuffRerollButton.GetComponentInChildren<TMP_Text>(true);
+    }
+
+    Button FindButton(Transform root, string exactName)
+    {
+        if (!root)
+            return null;
+
+        var buttons = root.GetComponentsInChildren<Button>(true);
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            var button = buttons[i];
+            if (button && string.Equals(button.name, exactName, StringComparison.Ordinal))
+                return button;
+        }
+
+        return null;
+    }
+
+    void ResolvePanelTutorials()
+    {
+        if (!_buffPanelTutorial && buffPanel)
+            _buffPanelTutorial = buffPanel.GetComponent<TutorialSequenceController>();
+
+        if (!_debuffPanelTutorial && debuffPanel)
+            _debuffPanelTutorial = debuffPanel.GetComponent<TutorialSequenceController>();
+    }
+
+    static void StartPanelTutorial(TutorialSequenceController sequence)
+    {
+        if (sequence && sequence.gameObject.activeInHierarchy)
+            sequence.StartSequenceIfNeeded();
     }
 
     void Populate(Transform container, List<RunModifierSO> picks, bool isBuff)
@@ -176,7 +349,7 @@ public class RoundRewardUI : MonoBehaviour
         }
     }
 
-    void SetNavigationRoot(GameObject panel)
+    void SetNavigationRoot(GameObject panel, bool selectFirst = false)
     {
         if (!rootPanel || !panel)
             return;
@@ -187,7 +360,7 @@ public class RoundRewardUI : MonoBehaviour
         if (_navigator)
         {
             _navigator.enabled = true;
-            _navigator.SetNavigationRoot(panel);
+            _navigator.SetNavigationRoot(panel, selectFirst);
         }
     }
 
@@ -195,6 +368,94 @@ public class RoundRewardUI : MonoBehaviour
     {
         if (_navigator)
             _navigator.enabled = false;
+    }
+
+    void RefreshTutorialInteractionLock()
+    {
+        if (!rootPanel || !rootPanel.activeInHierarchy)
+            return;
+
+        bool shouldLock = TriggeredTutorialPopupController.IsAnyPopupBlockingUi ||
+            TutorialSequenceController.IsAnySequenceBlockingUi;
+        if (shouldLock == _tutorialInteractionLocked)
+            return;
+
+        _tutorialInteractionLocked = shouldLock;
+        SetRootPanelInteractable(!_tutorialInteractionLocked && !_completionLocked);
+
+        if (_tutorialInteractionLocked)
+        {
+            ClearRewardOptionTransientHighlights();
+            ClearRewardPanelSelection();
+            DisableNavigation();
+            return;
+        }
+
+        var activePanel = GetActivePanel();
+        if (!_completionLocked && activePanel)
+            SetNavigationRoot(activePanel, selectFirst: true);
+    }
+
+    void SetRootPanelInteractable(bool interactable)
+    {
+        if (!rootPanel)
+            return;
+
+        if (!_rootCanvasGroup)
+            _rootCanvasGroup = rootPanel.GetComponent<CanvasGroup>();
+
+        if (!_rootCanvasGroup)
+            _rootCanvasGroup = rootPanel.AddComponent<CanvasGroup>();
+
+        _rootCanvasGroup.interactable = interactable;
+        _rootCanvasGroup.blocksRaycasts = true;
+    }
+
+    void ClearRewardOptionTransientHighlights()
+    {
+        ClearRewardOptionTransientHighlights(buffContainer);
+        ClearRewardOptionTransientHighlights(debuffContainer);
+    }
+
+    static void ClearRewardOptionTransientHighlights(Transform container)
+    {
+        if (!container)
+            return;
+
+        var buttons = container.GetComponentsInChildren<RunModOptionButton>(true);
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            if (buttons[i])
+                buttons[i].ClearTransientHighlight();
+        }
+
+        var targetVisuals = container.GetComponentsInChildren<UIButtonTargetVisual>(true);
+        for (int i = 0; i < targetVisuals.Length; i++)
+        {
+            if (targetVisuals[i])
+                targetVisuals[i].ClearTransientTargeting();
+        }
+    }
+
+    void ClearRewardPanelSelection()
+    {
+        if (!rootPanel || !EventSystem.current)
+            return;
+
+        GameObject selected = EventSystem.current.currentSelectedGameObject;
+        if (selected && selected.transform.IsChildOf(rootPanel.transform))
+            EventSystem.current.SetSelectedGameObject(null);
+    }
+
+    GameObject GetActivePanel()
+    {
+        if (debuffPanel && UIPanelTransition.IsVisible(debuffPanel))
+            return debuffPanel;
+
+        if (buffPanel && UIPanelTransition.IsVisible(buffPanel))
+            return buffPanel;
+
+        return null;
     }
 
     float[] GetRarityProbsFromLuck(float luck, bool wasBossLevel)
@@ -473,6 +734,8 @@ public class RoundRewardUI : MonoBehaviour
             cg.blocksRaycasts = true;
         }
 
+        _completionLocked = false;
+        _tutorialInteractionLocked = false;
         StopBlink();
         DisableNavigation();
         UIPanelTransition.Hide(rootPanel);

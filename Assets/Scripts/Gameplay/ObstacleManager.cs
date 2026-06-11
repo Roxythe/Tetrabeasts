@@ -43,6 +43,7 @@ public class ObstacleManager : MonoBehaviour
 
     GameController _gc;
     Board _board;
+    int _stoneSpawnRowGrowthBonus;
 
     public void Initialize(GameController gc, Board board)
     {
@@ -106,6 +107,11 @@ public class ObstacleManager : MonoBehaviour
         return _board.TrySpawnStoneObstacle(cell, stoneHitsToBreak);
     }
 
+    public void SetStoneSpawnRowGrowthBonus(int additionalRows)
+    {
+        _stoneSpawnRowGrowthBonus = Mathf.Max(0, additionalRows);
+    }
+
     public bool SpawnFloorEffectAt(Vector2Int cell, Board.FloorEffectType type)
     {
         if (_board == null) return false;
@@ -115,24 +121,24 @@ public class ObstacleManager : MonoBehaviour
         switch (type)
         {
             case Board.FloorEffectType.Poison:
-                _board.SetFloorEffect(cell, type, GetScaledEnemyDamage(poisonTickDamage), poisonTickInterval, poisonTicks);
+                _board.SetFloorEffect(cell, type, GetScaledFloorEffectDamage(poisonTickDamage), poisonTickInterval, poisonTicks);
                 return true;
 
             case Board.FloorEffectType.Burn:
-                _board.SetFloorEffect(cell, type, GetScaledEnemyDamage(fireTickDamage), fireTickInterval, fireTicks);
+                _board.SetFloorEffect(cell, type, GetScaledFloorEffectDamage(fireTickDamage), fireTickInterval, fireTicks);
                 return true;
 
             case Board.FloorEffectType.Spike:
-                _board.SetFloorEffect(cell, type, GetScaledEnemyDamage(spikeOneShotDamage), 1f, 1);
+                _board.SetFloorEffect(cell, type, GetScaledFloorEffectDamage(spikeOneShotDamage), 1f, 1);
                 return true;
         }
 
         return false;
     }
 
-    float GetScaledEnemyDamage(float amount)
+    float GetScaledFloorEffectDamage(float amount)
     {
-        return _gc ? _gc.GetScaledEnemyDamage(amount) : Mathf.Max(0f, amount);
+        return _gc ? _gc.GetScaledFloorEffectDamage(amount) : Mathf.Max(0f, amount);
     }
 
     void SpawnRandomStones(int count)
@@ -161,7 +167,7 @@ public class ObstacleManager : MonoBehaviour
         for (int a = 0; a < maxAttemptsPerSpawn; a++)
         {
             int x = Random.Range(0, _board.width);
-            int y = PickSpawnRow();
+            int y = PickSpawnRow(includeStoneGrowth: true);
             var c = new Vector2Int(x, y);
             if (_board.IsFree(c))
             {
@@ -180,7 +186,7 @@ public class ObstacleManager : MonoBehaviour
         for (int a = 0; a < maxAttemptsPerSpawn; a++)
         {
             int x = Random.Range(0, _board.width);
-            int y = PickSpawnRow(); // Bottom-biased like stones
+            int y = PickSpawnRow(includeStoneGrowth: false); // Bottom-biased like stones
             var c = new Vector2Int(x, y);
 
             if (!_board.InBounds(c)) continue; // Skip out of bounds
@@ -197,11 +203,12 @@ public class ObstacleManager : MonoBehaviour
         return false;
     }
 
-    int PickSpawnRow()
+    int PickSpawnRow(bool includeStoneGrowth)
     {
         if (_board == null) return 0;
 
-        int maxRow = Mathf.Clamp(maxSpawnRowInclusive, 0, _board.height - 1);
+        int maxRowLimit = maxSpawnRowInclusive + (includeStoneGrowth ? _stoneSpawnRowGrowthBonus : 0);
+        int maxRow = Mathf.Clamp(maxRowLimit, 0, _board.height - 1);
 
         if (maxRow <= 0) return 0;  // If only one row allowed
 
@@ -217,19 +224,29 @@ public class ObstacleManager : MonoBehaviour
             return (r < a) ? 0 : 1;
         }
 
-        // maxRow >= 2 
-        float w0 = Mathf.Max(0f, row0Weight);
-        float w1 = Mathf.Max(0f, row1Weight);
-        float w2 = Mathf.Max(0f, row2Weight);
-        float total = w0 + w1 + w2;
+        float total = 0f;
+        for (int row = 0; row <= maxRow; row++)
+            total += GetRowWeight(row);
 
-        if (total <= 0f) return Random.Range(0, 3);
+        if (total <= 0f)
+            return Random.Range(0, maxRow + 1);
 
         float roll = Random.value * total;
-        if (roll < w0) return 0;
-        roll -= w0;
-        if (roll < w1) return 1;
-        return 2;
+        for (int row = 0; row <= maxRow; row++)
+        {
+            roll -= GetRowWeight(row);
+            if (roll <= 0f)
+                return row;
+        }
+
+        return maxRow;
+    }
+
+    float GetRowWeight(int row)
+    {
+        if (row <= 0) return Mathf.Max(0f, row0Weight);
+        if (row == 1) return Mathf.Max(0f, row1Weight);
+        return Mathf.Max(0f, row2Weight);
     }
 
     bool TryGetRandomAnyCell(out Vector2Int cell)

@@ -144,6 +144,12 @@ public static class TetrabeastsSpanishTranslations
         Add(text, "HighScore", "Puntuaci\u00f3n m\u00e1xima");
         Add(text, "Select Monsters", "Elegir monstruos");
         Add(text, "Select Commander", "Seleccionar comandante");
+        Add(text, "Tip: Special blocks activate as soon as they are placed.", "Consejo: Los bloques especiales se activan en cuanto se colocan.");
+        Add(text, "Tip: Rerolls can be saved and used on future reward screens during the same run.", "Consejo: Las repeticiones se pueden guardar y usar en futuras pantallas de recompensa durante la misma partida.");
+        Add(text, "Tip: Temporary monster copies earn EXP during a run, and some of it becomes permanent after the run ends.", "Consejo: Las copias temporales de monstruos ganan EXP durante una partida, y parte de ella se vuelve permanente cuando termina.");
+        Add(text, "Tip: Full rows launch attacks at the enemy castle.", "Consejo: Las filas completas lanzan ataques contra el castillo enemigo.");
+        Add(text, "Tip: Keep an eye on your unit reserve. If it reaches 0, the run is over.", "Consejo: Vigila tu reserva de unidades. Si llega a 0, la partida termina.");
+        Add(text, "Tip: Level modifiers stack with your run buffs and debuffs.", "Consejo: Los modificadores de nivel se acumulan con tus mejoras y desventajas de la partida.");
         Add(text, "Combat Log", "Registro de combate");
         Add(text, "{0} takes {1} damage.", "{0} recibe {1} de da\u00f1o.");
         Add(text, "{0} heals {1}.", "{0} se cura {1}.");
@@ -313,6 +319,7 @@ public static class TetrabeastsSpanishTranslations
         Add(text, "Rerolls", "Repeticiones");
         Add(text, "Rerolls: {0}", "Repeticiones: {0}");
         Add(text, "Rerolls: 0", "Repeticiones: 0");
+        Add(text, "Rerolls ({0})", "Repeticiones ({0})");
         Add(text, "Modifier", "Modificador");
         Add(text, "x{0}", "x{0}");
 
@@ -673,6 +680,47 @@ public static class TetrabeastsSpanishTranslations
             "¿Guardar esta partida y salir del juego? Al continuar más tarde, volverás al inicio del punto de control del nivel actual. Mientras haya una partida guardada, no podrás cambiar tu comandante, escuadrón ni mejoras de tienda desde el menú principal.");
         Add(text, "The run could not be temp-saved, so the game will stay open.",
             "No se pudo guardar temporalmente la partida, así que el juego permanecerá abierto.");
+        Add(text, "After completing a level you will be allowed to choose one of three buffs that will empower your units. Press [F] to Continue",
+            "Al completar un nivel, podrás elegir una de tres mejoras que potenciarán tus unidades. Pulsa [F] para continuar");
+        Add(text, "Most buffs come in multiple rarities that will determine their strength. From weakest to strongest (White -> Green -> Blue -> Purple -> Orange). Press [F] to Continue",
+            "La mayoría de las mejoras tienen varias rarezas que determinan su fuerza. De más débil a más fuerte (Blanco -> Verde -> Azul -> Morado -> Naranja). Pulsa [F] para continuar");
+        Add(text, "You will receive a single reroll per level that can be used on your buffs or debuffs. Rerolls can be saved throughout your run, but will be reset at the start of a new run. Press [F] to Continue",
+            "Recibirás una repetición por nivel que puedes usar en tus mejoras o desventajas. Las repeticiones se pueden guardar durante la partida, pero se reiniciarán al empezar una nueva partida. Pulsa [F] para continuar");
+        Add(text, "As you grow stronger your enemies will too. Choose one of three debuffs that will empower your enemies during this run. All buffs and debuffs will stay active and stack throughout the run, but will be reset upon starting a new game. Press [F] to Continue",
+            "A medida que te vuelves más fuerte, tus enemigos también. Elige una de tres desventajas que potenciarán a tus enemigos durante esta partida. Todas las mejoras y desventajas permanecerán activas y se acumularán durante la partida, pero se reiniciarán al empezar una nueva partida. Pulsa [F] para continuar");
+        Add(text, "Not all levels are created equal, here you will let lady luck decide what the next battlefield will be like. Pull the lever to reveal it, use rerolls if you have them, then continue into the fight. (Press [F] to Continue)",
+            "No todos los niveles son iguales. Aquí dejarás que la suerte decida cómo será el próximo campo de batalla. Tira de la palanca para revelarlo, usa repeticiones si tienes, y luego continúa hacia la batalla. (Pulsa [F] para continuar)");
+        Add(text, "During a run, your monsters are temporary copies. This screen drains the EXP those copies earned so a portion can be preserved for their permanent versions. (Press [F] to Continue)",
+            "Durante una partida, tus monstruos son copias temporales. Esta pantalla drena la EXP que esas copias ganaron para que una parte pueda conservarse en sus versiones permanentes. (Pulsa [F] para continuar)");
+        Add(text, "Preserved EXP is added to your permanent monsters. Permanent levels make your units stronger at the start of future runs. (Press [F] to Continue)",
+            "La EXP conservada se añade a tus monstruos permanentes. Los niveles permanentes hacen que tus unidades sean más fuertes al inicio de futuras partidas. (Pulsa [F] para continuar)");
+
+        Add(text, "Increase luck, improving favorable random outcomes during runs.",
+            "Aumenta la suerte y mejora los resultados aleatorios favorables durante las partidas.");
+        Add(text, "Reduce the starting gravity speed of falling pieces.",
+            "Reduce la velocidad inicial de gravedad de las piezas que caen.");
+        Add(text, "Reduce how quickly gravity ramps up during a level.",
+            "Reduce la rapidez con la que la gravedad aumenta durante un nivel.");
+        Add(text, "Increase the chance to earn gold from cleared rows.",
+            "Aumenta la probabilidad de ganar oro al limpiar filas.");
+        Add(text, "Increase monster attack power.",
+            "Aumenta el poder de ataque de los monstruos.");
+        Add(text, "Increase monster maximum HP.",
+            "Aumenta los PV maximos de los monstruos.");
+        Add(text, "Increase monster healing power.",
+            "Aumenta el poder de curacion de los monstruos.");
+        Add(text, "Increase starting unit reserves.",
+            "Aumenta las reservas iniciales de unidades.");
+        Add(text, "You found a Death special block. Drop it in a column to destroy all units matching the first monster below it. (Press [F] to Continue)",
+            "Has encontrado un bloque especial de Muerte. Sueltalo en una columna para destruir todas las unidades que coincidan con el primer monstruo debajo. (Pulsa [F] para continuar)");
+        Add(text, "You found a Bomb special block. Drop it to blast a 3x3 area and damage nearby obstacles. (Press [F] to Continue)",
+            "Has encontrado un bloque especial de Bomba. Sueltalo para explotar un area de 3x3 y danar obstaculos cercanos. (Pulsa [F] para continuar)");
+        Add(text, "You found a Bolt special block. Drop it to strike an entire column. (Press [F] to Continue)",
+            "Has encontrado un bloque especial de Rayo. Sueltalo para golpear una columna completa. (Pulsa [F] para continuar)");
+        Add(text, "You found an Earthquake special block. Drop it to shake loose unsupported units across the board. (Press [F] to Continue)",
+            "Has encontrado un bloque especial de Terremoto. Sueltalo para hacer caer unidades sin soporte por todo el tablero. (Pulsa [F] para continuar)");
+        Add(text, "You found a Slow Gravity special block. Drop it to slow falling pieces for a short time. (Press [F] to Continue)",
+            "Has encontrado un bloque especial de Gravedad lenta. Sueltalo para ralentizar las piezas que caen durante un breve tiempo. (Pulsa [F] para continuar)");
 
         Add(text, "Welcome Overlord, my name is Lilith. I have done my best to rally the few monster I could find to assist in your conquest of the human domain. (Press [F] to Continue)",
             "Bienvenido, Overlord. Mi nombre es Lilith. He hecho lo posible por reunir los pocos monstruos que pude encontrar para ayudarte en tu conquista del dominio humano. (Pulsa [F] para continuar)");
@@ -698,6 +746,8 @@ public static class TetrabeastsSpanishTranslations
             "Puedes desbloquear más monstruos con oro y comprar aspectos cosméticos cuando tengas fondos extra. Ahora pulsa el botón de confirmar en la parte inferior para fijar tu equipo.");
         Add(text, "Now you are ready to start your first campaign. Press the Start button to begin a new run.",
             "Ya estás listo para iniciar tu primera campaña. Pulsa el botón de comenzar para iniciar una nueva partida.");
+        Add(text, "Now you are ready to start your first campaign. Press [F] to Continue",
+            "Ya estas listo para iniciar tu primera campana. Pulsa [F] para continuar");
         Add(text, "Welcome to the battlefield. We will begin by going over a few of the basic controls and battle mechanics. (Press [F] to Continue)",
             "Bienvenido al campo de batalla. Empezaremos repasando algunos controles básicos y mecánicas de combate. (Pulsa [F] para continuar)");
         Add(text, "First, try moving your piece to the left by pressing [A].",

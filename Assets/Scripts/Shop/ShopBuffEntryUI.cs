@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class ShopBuffEntryUI : MonoBehaviour
@@ -11,6 +12,10 @@ public class ShopBuffEntryUI : MonoBehaviour
     public Button levelUpButton;
     public ShopPanelUI shopPanel;
 
+    [Header("Hover Tooltip")]
+    [TextArea(2, 5)]
+    public string hoverDescription;
+
     [Header("SFX")]
     public AudioClip successSFX;
     public AudioClip errorSFX;
@@ -18,8 +23,15 @@ public class ShopBuffEntryUI : MonoBehaviour
     const string K_RunPurchasedAnyShopUpgrade = AchievementSystem.Stat.RunPurchasedAnyShopUpgrade;
     const string K_LifetimeShopLevelPrefix = "lt_shop_level_"; // + buffType
 
+    RectTransform _levelUpButtonRect;
+    RectTransform _shownTooltipTarget;
+    bool _levelUpPointerInside;
+    bool _levelUpSelected;
+
     private void OnEnable()
     {
+        ConfigureLevelUpTooltipTarget();
+
         if (levelUpButton)
         {
             levelUpButton.onClick.RemoveAllListeners();
@@ -27,6 +39,24 @@ public class ShopBuffEntryUI : MonoBehaviour
         }
 
         Refresh();
+    }
+
+    void OnDisable()
+    {
+        ClearTooltipState();
+    }
+
+    void LateUpdate()
+    {
+        SyncLevelUpSelectionState();
+    }
+
+    public string GetHoverDescription()
+    {
+        if (!string.IsNullOrWhiteSpace(hoverDescription))
+            return hoverDescription;
+
+        return GetDefaultHoverDescription(buffType);
     }
 
     public void Refresh()
@@ -90,5 +120,163 @@ public class ShopBuffEntryUI : MonoBehaviour
 
         shopPanel?.RefreshAll();
         Refresh();
+    }
+
+    internal void NotifyLevelUpPointerEnter()
+    {
+        _levelUpPointerInside = true;
+        RefreshTooltipVisibility();
+    }
+
+    internal void NotifyLevelUpPointerMove()
+    {
+        _levelUpPointerInside = true;
+        RefreshTooltipVisibility();
+    }
+
+    internal void NotifyLevelUpPointerExit()
+    {
+        _levelUpPointerInside = false;
+        RefreshTooltipVisibility();
+    }
+
+    internal void NotifyLevelUpSelected()
+    {
+        _levelUpSelected = true;
+        RefreshTooltipVisibility();
+    }
+
+    internal void NotifyLevelUpDeselected()
+    {
+        _levelUpSelected = false;
+        RefreshTooltipVisibility();
+    }
+
+    void ConfigureLevelUpTooltipTarget()
+    {
+        if (!levelUpButton)
+        {
+            _levelUpButtonRect = null;
+            return;
+        }
+
+        _levelUpButtonRect = levelUpButton.transform as RectTransform;
+
+        var target = levelUpButton.GetComponent<ShopBuffEntryTooltipTarget>();
+        if (!target)
+            target = levelUpButton.gameObject.AddComponent<ShopBuffEntryTooltipTarget>();
+
+        target.Initialize(this);
+        SyncLevelUpSelectionState();
+    }
+
+    void SyncLevelUpSelectionState()
+    {
+        bool selected = levelUpButton &&
+            EventSystem.current &&
+            EventSystem.current.currentSelectedGameObject == levelUpButton.gameObject;
+
+        if (_levelUpSelected == selected)
+            return;
+
+        _levelUpSelected = selected;
+        RefreshTooltipVisibility();
+    }
+
+    void RefreshTooltipVisibility()
+    {
+        if (!shopPanel)
+            shopPanel = GetComponentInParent<ShopPanelUI>(true);
+
+        bool shouldShow = _levelUpPointerInside ||
+            _levelUpSelected;
+
+        if (!shouldShow)
+        {
+            HideShownTooltip();
+            return;
+        }
+
+        if (!_levelUpButtonRect)
+            return;
+
+        _shownTooltipTarget = _levelUpButtonRect;
+        shopPanel?.ShowTooltip(this, _levelUpButtonRect);
+    }
+
+    void ClearTooltipState()
+    {
+        _levelUpPointerInside = false;
+        _levelUpSelected = false;
+        HideShownTooltip();
+    }
+
+    void HideShownTooltip()
+    {
+        if (shopPanel && _shownTooltipTarget)
+            shopPanel.HideTooltipFor(_shownTooltipTarget);
+
+        _shownTooltipTarget = null;
+    }
+
+    static string GetDefaultHoverDescription(ShopBuffType type)
+    {
+        switch (type)
+        {
+            case ShopBuffType.LuckUp:
+                return "Increase luck, improving favorable random outcomes during runs.";
+            case ShopBuffType.GravityDown:
+                return "Reduce the starting gravity speed of falling pieces.";
+            case ShopBuffType.VelocityDown:
+                return "Reduce how quickly gravity ramps up during a level.";
+            case ShopBuffType.GoldUp:
+                return "Increase the chance to earn gold from cleared rows.";
+            case ShopBuffType.AttackUp:
+                return "Increase monster attack power.";
+            case ShopBuffType.HpUp:
+                return "Increase monster maximum HP.";
+            case ShopBuffType.HealPower:
+                return "Increase monster healing power.";
+            case ShopBuffType.UnitLivesUp:
+                return "Increase starting unit reserves.";
+            default:
+                return string.Empty;
+        }
+    }
+}
+
+[DisallowMultipleComponent]
+class ShopBuffEntryTooltipTarget : MonoBehaviour, IPointerEnterHandler, IPointerMoveHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
+{
+    ShopBuffEntryUI owner;
+
+    public void Initialize(ShopBuffEntryUI entry)
+    {
+        owner = entry;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        owner?.NotifyLevelUpPointerEnter();
+    }
+
+    public void OnPointerMove(PointerEventData eventData)
+    {
+        owner?.NotifyLevelUpPointerMove();
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        owner?.NotifyLevelUpPointerExit();
+    }
+
+    public void OnSelect(BaseEventData eventData)
+    {
+        owner?.NotifyLevelUpSelected();
+    }
+
+    public void OnDeselect(BaseEventData eventData)
+    {
+        owner?.NotifyLevelUpDeselected();
     }
 }

@@ -23,6 +23,9 @@ public class LevelModifierSelectionUI : MonoBehaviour
     [SerializeField] TMP_Text modDisplayNameText;
     [SerializeField] TMP_Text modDisplayNameShadowText;
 
+    [Header("Tutorial")]
+    [SerializeField] TutorialSequenceController _panelTutorial;
+
     [Header("Lever Prompt")]
     [SerializeField] RectTransform leverArrowVisual;
     [SerializeField] float leverArrowPulseScale = 1.12f;
@@ -105,6 +108,8 @@ public class LevelModifierSelectionUI : MonoBehaviour
     Coroutine _modNameAnimCR;
     Coroutine _deferredInfoRefreshCR;
     ScopedMenuNavigator _navigator;
+    CanvasGroup _rootCanvasGroup;
+    bool _tutorialInteractionLocked;
 
     public LevelModifierSO CurrentChosenModifier => _currentChosenModifier;
     public RectTransform TutorialTarget => root ? root : transform as RectTransform;
@@ -138,13 +143,15 @@ public class LevelModifierSelectionUI : MonoBehaviour
         _continueClicked = false;
         _rerollClicked = false;
         _isSpinning = false;
+        _tutorialInteractionLocked = false;
         _currentChosenModifier = chosen;
         RefreshSelectedModifierPanel(chosen);
+        SetRootInteractable(true);
 
         CacheSlotMachineLights();
         ResetSlotMachineLights();
 
-        var gameController = FindFirstObjectByType<GameController>(FindObjectsInactive.Include);
+        ResolvePanelTutorial();
 
         if (leverVisual)
             _leverDefaultRotation = leverVisual.localRotation;
@@ -201,7 +208,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
             onPanelFullyShown.Invoke();
         }
 
-        gameController?.QueueFirstLevelModifierTutorialIfNeeded(TutorialTarget);
+        StartPanelTutorial();
 
         RefreshMenuNavigation(selectFirst: true);
 
@@ -279,6 +286,8 @@ public class LevelModifierSelectionUI : MonoBehaviour
         DisableMenuNavigation();
         UIPanelTransition.Hide(root.gameObject);
         SetLeverButtonEnabled(true);
+        _tutorialInteractionLocked = false;
+        SetRootInteractable(true);
     }
 
     void OnEnable()
@@ -308,10 +317,16 @@ public class LevelModifierSelectionUI : MonoBehaviour
         DisableMenuNavigation();
         ResetSlotMachineLights();
         SetLeverButtonEnabled(true);
+        _tutorialInteractionLocked = false;
+        SetRootInteractable(true);
     }
 
     void Update()
     {
+        RefreshTutorialInteractionLock();
+        if (_tutorialInteractionLocked)
+            return;
+
         if (modifierInfoPanel && UIPanelTransition.IsVisible(modifierInfoPanel) &&
             TetrabeastsControls.WasPressed(TetrabeastsControlAction.MenuCancel))
         {
@@ -982,6 +997,55 @@ public class LevelModifierSelectionUI : MonoBehaviour
     {
         if (_navigator)
             _navigator.enabled = false;
+    }
+
+    void ResolvePanelTutorial()
+    {
+        if (!_panelTutorial)
+            _panelTutorial = root.GetComponent<TutorialSequenceController>();
+    }
+
+    void StartPanelTutorial()
+    {
+        if (_panelTutorial && root && root.gameObject.activeInHierarchy)
+            _panelTutorial.StartSequenceIfNeeded();
+    }
+
+    void RefreshTutorialInteractionLock()
+    {
+        if (!root || !root.gameObject.activeInHierarchy)
+            return;
+
+        bool shouldLock = TriggeredTutorialPopupController.IsAnyPopupBlockingUi ||
+            TutorialSequenceController.IsAnySequenceBlockingUi;
+        if (shouldLock == _tutorialInteractionLocked)
+            return;
+
+        _tutorialInteractionLocked = shouldLock;
+        SetRootInteractable(!_tutorialInteractionLocked);
+
+        if (_tutorialInteractionLocked)
+        {
+            DisableMenuNavigation();
+            return;
+        }
+
+        RefreshMenuNavigation(selectFirst: true);
+    }
+
+    void SetRootInteractable(bool interactable)
+    {
+        if (!root)
+            return;
+
+        if (!_rootCanvasGroup)
+            _rootCanvasGroup = root.GetComponent<CanvasGroup>();
+
+        if (!_rootCanvasGroup)
+            _rootCanvasGroup = root.gameObject.AddComponent<CanvasGroup>();
+
+        _rootCanvasGroup.interactable = interactable;
+        _rootCanvasGroup.blocksRaycasts = true;
     }
 
     static int GetAvailableRerolls(Func<int> getAvailableRerolls)

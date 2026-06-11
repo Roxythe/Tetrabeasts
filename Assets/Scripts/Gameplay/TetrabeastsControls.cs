@@ -165,6 +165,14 @@ public static class TetrabeastsControls
         }
     }
 
+    public static TetrabeastsControlProfile ControlPromptProfile
+    {
+        get
+        {
+            return ActiveInputProfile;
+        }
+    }
+
     public static void SaveProfile(TetrabeastsControlProfile profile)
     {
         if (!IsValidProfileValue((int)profile))
@@ -738,6 +746,9 @@ public static class TetrabeastsControls
         if (!hasLastInputProfile || connectedProfile == lastInputProfile)
             return false;
 
+        if (lastInputProfile == TetrabeastsControlProfile.KeyboardMouse)
+            return false;
+
         return connectedProfile == TetrabeastsControlProfile.PlayStationController ||
             connectedProfile == TetrabeastsControlProfile.HandheldController;
     }
@@ -1016,7 +1027,11 @@ public static class TetrabeastsControls
 
     public static string GetTutorialContinueBindingLabel()
     {
-        TetrabeastsControlProfile profile = ActiveInputProfile;
+        return GetTutorialContinueBindingLabel(ControlPromptProfile);
+    }
+
+    static string GetTutorialContinueBindingLabel(TetrabeastsControlProfile profile)
+    {
         if (profile == TetrabeastsControlProfile.KeyboardMouse)
             return "F";
 
@@ -1031,7 +1046,7 @@ public static class TetrabeastsControls
 
         string resolved = text;
 
-        TetrabeastsControlProfile profile = ActiveInputProfile;
+        TetrabeastsControlProfile profile = ControlPromptProfile;
         if (profile != TetrabeastsControlProfile.KeyboardMouse)
         {
             resolved = ProtectControllerTutorialPhrases(resolved);
@@ -1040,7 +1055,7 @@ public static class TetrabeastsControls
             resolved = ReplaceControllerHelpControlTextTokens(resolved, profile);
         }
 
-        resolved = ReplaceTutorialContinuePromptSuffix(resolved, GetTutorialContinueBindingLabel());
+        resolved = ReplaceTutorialContinuePromptSuffix(resolved, GetTutorialContinueBindingLabel(profile));
 
         return resolved;
     }
@@ -1092,6 +1107,7 @@ public static class TetrabeastsControls
         text = ReplaceBracketedControlToken(text, "R", GetTutorialTokenReplacement(TetrabeastsControlAction.Special, profile));
         text = ReplaceBracketedControlToken(text, "Space", GetTutorialTokenReplacement(TetrabeastsControlAction.HardDrop, profile));
         text = ReplaceBracketedControlToken(text, "Space Bar", GetTutorialTokenReplacement(TetrabeastsControlAction.HardDrop, profile));
+        text = ReplaceBracketedControlToken(text, "F", GetTutorialTokenReplacement(TetrabeastsControlAction.MenuSubmit, profile));
         text = ReplaceBracketedControlToken(text, "Barra de Espa\u00e7o", GetTutorialTokenReplacement(TetrabeastsControlAction.HardDrop, profile));
         text = ReplaceBracketedControlToken(text, "barra espaciadora", GetTutorialTokenReplacement(TetrabeastsControlAction.HardDrop, profile));
         text = ReplaceBracketedControlToken(text, "Barre d'espace", GetTutorialTokenReplacement(TetrabeastsControlAction.HardDrop, profile));

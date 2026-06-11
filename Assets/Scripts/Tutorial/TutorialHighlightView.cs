@@ -19,6 +19,7 @@ public class TutorialHighlightView : MonoBehaviour
 
     [Header("Layering")]
     [SerializeField] bool renderDirectlyUnderTarget = true;
+    [SerializeField] bool renderAboveTutorialDimmer = true;
 
     readonly Vector3[] _worldCorners = new Vector3[4];
     readonly System.Collections.Generic.List<RectTransform> _targets = new();
@@ -291,6 +292,9 @@ public class TutorialHighlightView : MonoBehaviour
 
     RectTransform GetRenderParent(RectTransform target)
     {
+        if (renderAboveTutorialDimmer && canvasRoot)
+            return canvasRoot;
+
         if (renderDirectlyUnderTarget && target && target.parent is RectTransform targetParent)
             return targetParent;
 
@@ -314,6 +318,12 @@ public class TutorialHighlightView : MonoBehaviour
         if (instance.parent != renderParent)
             instance.SetParent(renderParent, false);
 
+        if (renderAboveTutorialDimmer && renderParent == canvasRoot)
+        {
+            PlaceInstanceBelowActivePopup(instance, renderParent);
+            return;
+        }
+
         int targetIndex = target.GetSiblingIndex();
         int instanceIndex = instance.GetSiblingIndex();
 
@@ -321,5 +331,53 @@ public class TutorialHighlightView : MonoBehaviour
             targetIndex--;
 
         instance.SetSiblingIndex(Mathf.Max(0, targetIndex));
+    }
+
+    void PlaceInstanceBelowActivePopup(RectTransform instance, RectTransform renderParent)
+    {
+        if (!instance || !renderParent)
+            return;
+
+        RectTransform popupRect = FindActivePopupRect(renderParent);
+        Transform popupLayerSibling = GetLayerSiblingTransform(popupRect, renderParent);
+        if (popupLayerSibling)
+        {
+            int popupIndex = popupLayerSibling.GetSiblingIndex();
+            instance.SetSiblingIndex(Mathf.Max(0, popupIndex));
+            return;
+        }
+
+        instance.SetAsLastSibling();
+    }
+
+    static RectTransform FindActivePopupRect(RectTransform renderParent)
+    {
+        var popups = FindObjectsByType<TutorialPopupView>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
+
+        for (int i = 0; i < popups.Length; i++)
+        {
+            var popup = popups[i];
+            if (!popup || !popup.IsShowing || !popup.PopupRectTransform)
+                continue;
+
+            if (GetLayerSiblingTransform(popup.PopupRectTransform, renderParent))
+                return popup.PopupRectTransform;
+        }
+
+        return null;
+    }
+
+    static Transform GetLayerSiblingTransform(Transform child, Transform layerParent)
+    {
+        if (!child || !layerParent)
+            return null;
+
+        Transform current = child;
+        while (current && current.parent && current.parent != layerParent)
+            current = current.parent;
+
+        return current && current.parent == layerParent ? current : null;
     }
 }

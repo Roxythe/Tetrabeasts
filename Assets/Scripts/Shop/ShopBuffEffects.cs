@@ -11,8 +11,8 @@ public static class ShopBuffEffects
     public static int UnitLivesBonus =>
         ShopBuffStore.GetLevel(ShopBuffType.UnitLivesUp) * 2;
 
-    public static int MonsterAttackBonus =>
-        ShopBuffStore.GetLevel(ShopBuffType.AttackUp);
+    public static float MonsterAttackBonus =>
+        ShopBuffStore.GetLevel(ShopBuffType.AttackUp) * 0.5f;
 
     public static int MonsterHpBonus =>
         ShopBuffStore.GetLevel(ShopBuffType.HpUp) * 5;

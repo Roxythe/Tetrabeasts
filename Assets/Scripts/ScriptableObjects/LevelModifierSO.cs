@@ -115,6 +115,7 @@ public class LevelModifierSO : ScriptableObject
     [Header("Combo Gated")]
     [Min(1)] public int comboThreshold = 3;
     [Range(0f, 1f)] public float comboBelowThresholdDamageMultiplier = 0.20f;
+    [Min(0f)] public float comboAtOrAboveThresholdDamageMultiplier = 1.50f;
 
     [Header("Combo Shield")]
     [Min(1)] public int comboShieldThreshold = 4;

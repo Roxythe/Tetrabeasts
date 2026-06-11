@@ -549,6 +549,8 @@ public class GameplayStatsPanelUI : MonoBehaviour
                     FormatSignedWhole, false, forceNegative: true, sources: levelModSource);
                 AddComparedFloat(_statsContent, "Below Threshold Damage", modifier.comboBelowThresholdDamageMultiplier, 1f, FormatMultiplier,
                     FormatSignedPercentDelta, true, sources: levelModSource);
+                AddComparedFloat(_statsContent, "At Threshold Damage", modifier.comboAtOrAboveThresholdDamageMultiplier, 1f, FormatMultiplier,
+                    FormatSignedPercentDelta, true, sources: levelModSource);
                 break;
 
             case LevelModifierKind.ComboShield:

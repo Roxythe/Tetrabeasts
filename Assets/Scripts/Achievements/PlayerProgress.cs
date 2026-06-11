@@ -60,10 +60,19 @@ public class PlayerProgress : MonoBehaviour
         // Only create during actual play mode
         if (!Application.isPlaying) return;
 
-        if (I != null) return;
+        Ensure();
+    }
+
+    public static PlayerProgress Ensure()
+    {
+        if (I != null)
+            return I;
+
+        if (!Application.isPlaying)
+            return null;
 
         var go = new GameObject("PlayerProgress");
-        go.AddComponent<PlayerProgress>();
+        return go.AddComponent<PlayerProgress>();
     }
 
     void Awake()
@@ -96,6 +105,7 @@ public class PlayerProgress : MonoBehaviour
 
     public void BeginRun()
     {
+        TutorialTestingScope.Reset();
         _data.runInt.Clear();
         _data.runFloat.Clear();
         Save();
@@ -305,7 +315,10 @@ public class PlayerProgress : MonoBehaviour
     {
         if (string.IsNullOrWhiteSpace(tutorialId)) return;
         if (_data.completedTutorials.Add(tutorialId))
+        {
             Save();
+            SteamCloudSaveService.TryUploadNow();
+        }
     }
 
     public void ClearTutorialCompleted(string tutorialId)

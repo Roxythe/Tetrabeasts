@@ -11,6 +11,13 @@ using UnityEngine.InputSystem;
 
 public class GameController : MonoBehaviour
 {
+    enum TimedSlowGravitySource
+    {
+        None,
+        SpecialBlock,
+        PlayerAbility
+    }
+
     public Board gameBoard;
     public Piece piece;
     public Button restartButton;
@@ -25,11 +32,14 @@ public class GameController : MonoBehaviour
         "Thank you for playing the Tetrabeasts demo!\n\nYou have cleared the final demo level. If you enjoyed your time with the game, please consider buying the full version.";
 
     [Header("XP Tuning")]
-    [SerializeField] int baseXpPerLevel = 3;
+    [SerializeField] int baseXpPerLevel = 30;
     [SerializeField, Range(0f, 1f)] float overleveledXpMultiplierAtOneLevelGap = 0.90f;
     [SerializeField, Min(1f)] float overleveledXpGapExponent = 1.35f;
     [SerializeField, Range(0f, 1f)] float overleveledXpMinimumMultiplier = 0.05f;
     [SerializeField, Min(0)] int overleveledXpGraceLevelsPerStar = 5;
+
+    [Header("Round Reward Rerolls")]
+    [SerializeField, Min(0)] int rewardRerollsGrantedPerCompletedLevel = 1;
 
     [Header("Line Clear Visual Timing")]
     public float cascadeSettlePauseSeconds = 0.18f;
@@ -72,6 +82,7 @@ public class GameController : MonoBehaviour
     [SerializeField] CastleData postFinalSurvivalCastle;
     [SerializeField] bool forcePostFinalSurvivalInfiniteHealth = true;
     [SerializeField] bool forcePostFinalSurvivalBossLevel = true;
+    [SerializeField, Min(0f)] float postFinalSurvivalDamageTakenIncreasePer60Seconds = 0.10f;
 
     [Header("Gravity UI")]
     [SerializeField] TMP_Text levelTimerText;
@@ -79,14 +90,19 @@ public class GameController : MonoBehaviour
     [SerializeField] string gravityTextFormat = "{0:0.00}";
 
     [SerializeField] float startFallInterval = 1.0f;
-    [SerializeField] float minFallInterval = 0.10f;
+    [SerializeField] float minFallInterval = 0.08f;
+    [SerializeField] float finalSurvivalMinFallInterval = 0.07f;
 
     [Header("Gravity Progression")]
     [SerializeField] float gravityIncreasePerSecond = 0.01f;
     [SerializeField] float levelBaseGravityIncrease = 0.20f;
 
     [Header("Slow Gravity Special Block")]
+    [SerializeField, Min(0.1f)] float slowGravitySpecialDurationSeconds = 20f;
     [SerializeField, Range(0.01f, 1f)] float minSlowGravitySpecialMultiplier = 0.10f;
+    [SerializeField] Image slowGravityImage;
+    [SerializeField] TMP_Text gravityTimerText;
+    [SerializeField] Color gravityTextSlowColor = new Color(0.55f, 0.85f, 1f, 1f);
 
     // Runtime cache
     float _level1FallInterval;
@@ -102,6 +118,7 @@ public class GameController : MonoBehaviour
     [SerializeField] float bossGravityBlinkIntervalSeconds = 0.25f;
 
     Coroutine _bossGravityBlinkCR;
+    bool _bossGravityVisualActive;
 
     [Header("Run Mods")]
     public RunModifierSO[] buffPool;
@@ -236,6 +253,7 @@ public class GameController : MonoBehaviour
     public Sprite castleProjectileSprite;
     float _castleAttackTimer = 0f;
     int castleProjectileDamage = 1;
+    float castleProjectileVisualScale = 1f;
 
     [Header("Enemy Attack Interval Ramp")]
     [SerializeField] bool enableEnemyAttackIntervalRamp = true;
@@ -346,6 +364,9 @@ public class GameController : MonoBehaviour
     public float enemyProjectileSpeedMult = 1f;    // < 1 = Faster enemy projectiles (Currently unused)
     public float enemyCastleHpMult = 1f;
 
+    [Header("Enemy Damage Scaling")]
+    [SerializeField, Min(0f)] float floorEffectDamageIncreasePerLevel = 0.05f;
+
     public float specialGainMult = 1f;             // Gauge gain multiplier
     public float specialDrainMult = 1f;
 
@@ -380,8 +401,14 @@ public class GameController : MonoBehaviour
     // =========== Player Special Timers ===========
     float _playerGravityMultActive = 1f;     // 1 = normal
     Coroutine _playerGravityCR;
+    bool _playerGravityBaseOverrideActive;
     float _slowGravitySpecialMultActive = 1f;
     float _slowGravitySpecialRampRateMultActive = 1f;
+    bool _slowGravitySpecialVisualActive;
+    Coroutine _slowGravitySpecialCR;
+    TimedSlowGravitySource _activeTimedSlowGravitySource = TimedSlowGravitySource.None;
+    float _activeTimedSlowGravityRemainingSeconds;
+    int _lastShownTimedSlowGravitySeconds = -1;
 
     float _playerDoubleStatsAttackMult = 1f; // Multiplied into monster damage output
     Coroutine _playerDoubleStatsCR;
@@ -393,7 +420,9 @@ public class GameController : MonoBehaviour
     float CurrentStoneBuffDropChance => Mathf.Clamp01(stoneBuffDropChance + _partyPassiveBonuses.stoneBuffDropChance + stoneBuffDropChanceAdd);
     int CurrentReinforcementsPerWin => disableRoundWinReserveRestore ? 0 : Mathf.Max(0, reinforcementsPerWin + _partyPassiveBonuses.reserveUnitsRestoredOnWin + reserveUnitsRestoredOnWinAdd);
     float AllyMonsterOutgoingDamageMultiplier => Mathf.Max(0f, 1f - _partyPassiveBonuses.allyMonsterDamageDoneReduction);
-    public float AllyMonsterDamageTakenMultiplier => Mathf.Max(0f, 1f - _partyPassiveBonuses.allyMonsterDamageTakenReduction);
+    public float AllyMonsterDamageTakenMultiplier =>
+        Mathf.Max(0f, 1f - _partyPassiveBonuses.allyMonsterDamageTakenReduction) *
+        PostFinalSurvivalDamageTakenMultiplier;
     float CurrentCurrencyGainMultiplier => Mathf.Max(0f, 1f + _partyPassiveBonuses.currencyGainMultiplierAdd);
     float CurrentPartyExperienceGainMultiplier => Mathf.Max(0f, 1f + _partyPassiveBonuses.partyExperienceGainMultiplierAdd);
 
@@ -409,6 +438,29 @@ public class GameController : MonoBehaviour
     float EffectiveCurrencyChancePerClearedRow => // Gold Up: +2% chance per level
         Mathf.Clamp01(currencyChancePerClearedRow + lineClearCurrencyChanceAdd + ShopBuffEffects.GoldChanceBonus);
     float EffectiveLuck => luck + ShopBuffEffects.LuckBonus; // Luck Up: +10 per level 
+    float CurrentGravityMinFallInterval
+    {
+        get
+        {
+            float normalCap = Mathf.Max(0.01f, minFallInterval);
+            if (!_postFinalSurvivalActive)
+                return normalCap;
+
+            return Mathf.Min(normalCap, Mathf.Max(0.01f, finalSurvivalMinFallInterval));
+        }
+    }
+
+    float PostFinalSurvivalDamageTakenMultiplier
+    {
+        get
+        {
+            if (!_postFinalSurvivalActive)
+                return 1f;
+
+            int stacks = Mathf.Max(0, Mathf.FloorToInt(_levelTimer / 60f));
+            return 1f + (stacks * Mathf.Max(0f, postFinalSurvivalDamageTakenIncreasePer60Seconds));
+        }
+    }
 
     int _baseCurrencyPerRoundWin;
     float _baseCurrencyChancePerClearedRow;
@@ -444,7 +496,7 @@ public class GameController : MonoBehaviour
     MonsterPassiveBonuses _partyPassiveBonuses;
 
     [Header("Run-End XP Conversion")]
-    [SerializeField, Range(0f, 1f)] float baseRunEndXpConversion = 0.10f;
+    [SerializeField, Range(0f, 1f)] float baseRunEndXpConversion = 0.20f;
     [SerializeField, Range(0f, 1f)] float starDifficultyRunEndXpBonusPerStar = 0.05f;
     [SerializeField, Range(0f, 1f)] float finalLevelWinXpConversionBonus = 0.10f;
 
@@ -489,6 +541,8 @@ public class GameController : MonoBehaviour
     public float CurrentMisfortune => misfortune + _starDifficultyModifiers.misfortuneAdd;
     public bool IsGameplaySuspended => gameOver || levelWon || isPaused || ConfirmationPopupUI.IsAnyShowing || tutorialSuspended || _roundTransitionActive || _specialAbilityCinematicActive || _levelStartBlocked || _environmentRowClearResolving || (levelModifierController && levelModifierController.IsSelectionRunning);
     public bool IsRoundActive => !IsGameplaySuspended && !gameOver && !levelWon;
+    public bool IsTutorialPieceInputBlocked => tutorialPieceInputBlocked;
+    public bool IsTutorialHardDropInputGraceActive => Time.unscaledTime < _tutorialHardDropInputBlockedUntilRealtime;
     public int EffectiveMaxUnitLivesForStats => EffectiveMaxUnitLives;
     public int BaseMaxUnitLivesForStats => _baseGameplayStatsCached ? _baseMaxUnitLives : maxUnitLives;
     public int CurrentReinforcementsPerWinForStats => CurrentReinforcementsPerWin;
@@ -610,6 +664,7 @@ public class GameController : MonoBehaviour
 
     [Header("Tutorial Events")]
     [SerializeField] TriggeredTutorialPopupController triggeredTutorialPopups;
+    [SerializeField] SpecialBlockTutorialController specialBlockTutorials;
     [SerializeField] TutorialPopupView tutorialPopupView;
 
     bool _wasSpecialGaugeFullLastFrame;
@@ -621,12 +676,13 @@ public class GameController : MonoBehaviour
 
     const string TutorialIdFirstFullRow = "tutorial_first_full_row";
     const string TutorialIdFirstSpecialGaugeFull = "tutorial_first_special_gauge_full";
-    const string TutorialIdFirstLossXp = "tutorial_first_loss_xp";
-    const string TutorialIdFirstLevelModifierPanel = "tutorial_first_level_modifier_panel";
     bool _firstFullRowTutorialShownThisRun;
     bool tutorialAllowSoftDrop = false;
     bool tutorialAllowHardDrop = false;
+    bool tutorialPieceInputBlocked = false;
+    float _tutorialHardDropInputBlockedUntilRealtime;
     TempRunSaveStore.SaveData _cachedTempRunCheckpoint;
+    int _roundRewardRerollsAvailable;
 
     public bool IsTutorialSoftDropAllowed => tutorialAllowSoftDrop;
     public bool IsTutorialHardDropAllowed => tutorialAllowHardDrop;
@@ -671,6 +727,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         ApplyDemoBuildGuardRailsSetting();
+        SetGravityTimerVisible(false);
         SteamInputService.Ensure();
         SteamPlatformService.Ensure();
         SteamInputService.ControllerDisconnected -= HandleControllerDisconnected;
@@ -729,6 +786,7 @@ public class GameController : MonoBehaviour
         if (!levelModifierController) levelModifierController = gameObject.AddComponent<LevelModifierController>();
         EnsureFloatingDamageText();
         EnsureTriggeredTutorialPopups();
+        EnsureSpecialBlockTutorials();
 
         if (!obstacleManager)
             obstacleManager = FindFirstObjectByType<ObstacleManager>(FindObjectsInactive.Include);
@@ -973,11 +1031,17 @@ public class GameController : MonoBehaviour
 
     void StartFreshRun()
     {
+        TutorialTestingScope.Reset();
+        EnsureSpecialBlockTutorials();
+        specialBlockTutorials?.ResetRunState();
+        tutorialPieceInputBlocked = false;
+        _tutorialHardDropInputBlockedUntilRealtime = 0f;
         HideRoundTransitionImmediate();
 
         currentLevel = 0;
         score = 0;
         _cachedTempRunCheckpoint = null;
+        _roundRewardRerollsAvailable = 0;
 
         unitLives = EffectiveMaxUnitLives;
         SetupUnitLivesUI();
@@ -1030,6 +1094,7 @@ public class GameController : MonoBehaviour
         score = Mathf.Max(0, saveData.score);
         luck = (saveData.runMods != null) ? saveData.runMods.luck : 0f;
         misfortune = (saveData.runMods != null) ? saveData.runMods.misfortune : 0f;
+        _roundRewardRerollsAvailable = Mathf.Max(0, saveData.roundRewardRerollsAvailable);
 
         if (piece) piece.ResetPiece();
         if (gameBoard) gameBoard.ClearAll();
@@ -1207,6 +1272,7 @@ public class GameController : MonoBehaviour
     {
         TetrabeastsControls.RefreshActiveInputProfile();
         RefreshGameplayControlTextsIfNeeded();
+        UpdateTimedSlowGravityTimerUI();
 
         if (tutorialSuspended)
             return;
@@ -1357,7 +1423,7 @@ public class GameController : MonoBehaviour
 
             // Gravity cap accumulator only while active and not blocked by tutorial prompt
             float intervalNow = GetCurrentFallInterval();
-            if (!blockGravityTimer && intervalNow <= (minFallInterval + 0.0001f))
+            if (!blockGravityTimer && intervalNow <= (CurrentGravityMinFallInterval + 0.0001f))
                 _gravityCapAccumSeconds += Time.deltaTime;
 
             if (PlayerProgress.I != null)
@@ -1457,13 +1523,14 @@ public class GameController : MonoBehaviour
     {
         get
         {
-            float baseInterval = Mathf.Max(minFallInterval, _thisLevelBaseFallInterval);
+            float minInterval = CurrentGravityMinFallInterval;
+            float baseInterval = Mathf.Max(minInterval, _thisLevelBaseFallInterval);
             float current = GetCurrentFallInterval();
 
-            if (baseInterval <= minFallInterval + 0.0001f)
+            if (baseInterval <= minInterval + 0.0001f)
                 return 1f;
 
-            return Mathf.Clamp01(1f - Mathf.InverseLerp(baseInterval, minFallInterval, current));
+            return Mathf.Clamp01(1f - Mathf.InverseLerp(baseInterval, minInterval, current));
         }
     }
 
@@ -1475,6 +1542,11 @@ public class GameController : MonoBehaviour
             fraction += finalLevelWinXpConversionBonus;
 
         return Mathf.Clamp01(fraction);
+    }
+
+    bool HasReachedSuccessfulRunEnd()
+    {
+        return _finalWinStateApplied || _postFinalSurvivalActive;
     }
 
     void ResetRunMods()
@@ -1538,6 +1610,12 @@ public class GameController : MonoBehaviour
     public float GetScaledEnemyDamage(float amount)
     {
         return Mathf.Max(0f, amount) * _starDifficultyModifiers.enemyDamageMultiplier;
+    }
+
+    public float GetScaledFloorEffectDamage(float amount)
+    {
+        float levelMultiplier = 1f + (Mathf.Max(0, currentLevel) * Mathf.Max(0f, floorEffectDamageIncreasePerLevel));
+        return GetScaledEnemyDamage(amount) * levelMultiplier;
     }
 
     float GetCurrentCastleAttackInterval()
@@ -1674,6 +1752,7 @@ public class GameController : MonoBehaviour
         piece.enabled = true;
         piece.SpawnAtTop();
         piece.SetFallInterval(GetCurrentFallInterval(), resetAccumulator: true);
+        QueueSpecialBlockTutorialIfNeeded(data);
 
         // Keep bags topped and refresh preview after consuming one
         EnsureMinBag(3);
@@ -1777,6 +1856,7 @@ public class GameController : MonoBehaviour
             starDifficulty = _starDifficulty,
             selectedCharacterName = selectedCharacter ? selectedCharacter.displayName : string.Empty,
             currencyTotal = Mathf.Max(0, CurrencyStore.Total),
+            roundRewardRerollsAvailable = Mathf.Max(0, _roundRewardRerollsAvailable),
             runMods = new TempRunSaveStore.RunModsSnapshot
             {
                 enemyAttackIntervalMult = enemyAttackIntervalMult,
@@ -2052,6 +2132,7 @@ public class GameController : MonoBehaviour
     void ShowRunEndCommitAfterLoss()
     {
         bool skipVisibleRunXp = currentLevel <= 0 || !RunMonsterProgress.RunActive;
+        bool successfulRunReached = HasReachedSuccessfulRunEnd();
 
         if (!skipVisibleRunXp && xpAwardUI)
         {
@@ -2062,7 +2143,7 @@ public class GameController : MonoBehaviour
 
             xpAwardUI.ShowRunEndCommit(
                 GetActiveMonsterRoster(),
-                GetRunEndXpConversionFraction(finalLevelWin: false),
+                GetRunEndXpConversionFraction(successfulRunReached),
                 () =>
                 {
                     ShowFinalStatsBeforeHighScore(ShowGameOverLocalHighScore, CloseAndHideXpUiMode);
@@ -2074,7 +2155,7 @@ public class GameController : MonoBehaviour
 
         try
         {
-            CommitRunEndXpSilently(finalLevelWin: false);
+            CommitRunEndXpSilently(successfulRunReached);
         }
         catch (System.Exception ex)
         {
@@ -2629,6 +2710,7 @@ public class GameController : MonoBehaviour
         ResetLevelTimerAndDrop(levelIndex);
 
         CastleData data = ResolveCastleDataForLevel(levelIndex);
+        castleProjectileVisualScale = 1f;
 
         if (!enemyCastleUI)
             enemyCastleUI = FindFirstObjectByType<EnemyCastleUI>(FindObjectsInactive.Include);
@@ -2661,6 +2743,7 @@ public class GameController : MonoBehaviour
             castleAttackInterval = data.projectileInterval * enemyAttackIntervalMult;
             _castleAttackTimer = 0f;
             projectileSpeed = data.projectileSpeed * enemyProjectileSpeedMult;
+            castleProjectileVisualScale = Mathf.Max(0.1f, data.projectileVisualScale);
             castleProjectileDamage = Mathf.Max(1, Mathf.RoundToInt(GetScaledEnemyDamage(data.projectileDamage * enemyProjectileDamageMult)));
 
             if (levelText) levelText.text = TetrabeastsLocalization.LocalizeFormat("Level: {0}", levelNumber);
@@ -2831,7 +2914,8 @@ public class GameController : MonoBehaviour
                 {
                     ShowFinalStatsBeforeHighScore(ShowDemoLimitLocalHighScore, CloseAndHideXpUiMode);
                 },
-                hideOnFinalContinue: false);
+                hideOnFinalContinue: false,
+                showRunEndXpTutorials: false);
 
             return;
         }
@@ -2877,6 +2961,7 @@ public class GameController : MonoBehaviour
     {
         currentLevel++;
         levelModifierController?.GrantRerollForCompletedLevel(currentLevel);
+        _roundRewardRerollsAvailable += Mathf.Max(0, rewardRerollsGrantedPerCompletedLevel);
 
         // Track level wins for achievements
         if (PlayerProgress.I)
@@ -2921,7 +3006,14 @@ public class GameController : MonoBehaviour
 
         if (roundRewardUI)
         {
-            roundRewardUI.Show(buffPool, debuffPool, OnRoundModsChosen, gained, actualReinforcements);
+            roundRewardUI.Show(
+                buffPool,
+                debuffPool,
+                OnRoundModsChosen,
+                gained,
+                actualReinforcements,
+                () => _roundRewardRerollsAvailable,
+                TrySpendRoundRewardReroll);
 
             if (closeXpAfterRewardOpen)
                 StartCoroutine(CoCloseXpAfterPanelFullyShown(roundRewardUI.rootPanel));
@@ -3238,7 +3330,7 @@ public class GameController : MonoBehaviour
             xpAwardUI.ShowRunEndCommit(roster, keepFraction, () =>
             {
                 ShowHighScore(CloseAndHideXpUiMode);
-            }, hideOnFinalContinue: false);
+            }, hideOnFinalContinue: false, showRunEndXpTutorials: false);
 
             return;
         }
@@ -3275,6 +3367,15 @@ public class GameController : MonoBehaviour
             StartCoroutine(CoInvokeAfterPanelFullyShown(victoryPanelUI.RootPanel, onFinalStatsFullyShown));
 
         EnterUICursorMode();
+    }
+
+    bool TrySpendRoundRewardReroll()
+    {
+        if (_roundRewardRerollsAvailable <= 0)
+            return false;
+
+        _roundRewardRerollsAvailable--;
+        return true;
     }
 
     IEnumerator CoOpenHighScoreBeforeClosingFinalStats(System.Action showHighScore)
@@ -3787,19 +3888,31 @@ public class GameController : MonoBehaviour
 
             case SpecialAbility.ReducedGravity:
                 {
-                    RunSummaryStats.AddSpecialUsed();
-
                     float dur = Mathf.Max(0.25f, character.reducedGravityDuration);
-                    float mult = Mathf.Clamp(character.reducedGravityMultiplier, 0.1f, 2f);
+                    float projectedInterval = CalculateFallInterval(
+                        playerGravityMult: 1f,
+                        playerBaseOverrideActive: true,
+                        slowGravitySpecialMult: 1f,
+                        slowGravitySpecialRampRateMult: 1f);
+
+                    if (!ShouldReplaceTimedSlowGravityEffect(
+                            TimedSlowGravitySource.PlayerAbility,
+                            projectedInterval,
+                            dur))
+                    {
+                        break;
+                    }
+
+                    RunSummaryStats.AddSpecialUsed();
 
                     if (_playerGravityCR != null)
                     {
-                        StopCoroutine(_playerGravityCR);
-                        _playerGravityCR = null;
-                        _playerGravityMultActive = 1f;
+                        ResetPlayerGravitySpecialEffect();
                     }
 
-                    _playerGravityCR = StartCoroutine(PlayerReducedGravityCo(mult, dur));
+                    ResetSlowGravitySpecialEffect();
+
+                    _playerGravityCR = StartCoroutine(PlayerReducedGravityCo(dur));
 
                     specialGauge = 0f; // Reset gauge
                     UpdateSpecialUI();
@@ -4317,6 +4430,9 @@ public class GameController : MonoBehaviour
 
     void TrySpawnCastleDownshot()
     {
+        if (!CanLaunchCastleProjectile())
+            return;
+
         // Find columns with targets: alive and dead-only
         var aliveCols = new List<int>();
         var deadOnlyCols = new List<int>();
@@ -4342,14 +4458,47 @@ public class GameController : MonoBehaviour
         if (aliveCols.Count == 0 && deadOnlyCols.Count == 0)
             return; // No targets on board
 
-        // Choose a column: prefer aliveCols, else deadOnlyCols
-        var pool = (aliveCols.Count > 0) ? aliveCols : deadOnlyCols;
-        int col = pool[UnityEngine.Random.Range(0, pool.Count)];
+        int projectileCount = GetCurrentCastleProjectilesPerAttack();
+        var columns = PickCastleProjectileColumns(aliveCols, deadOnlyCols, projectileCount);
+        for (int i = 0; i < columns.Count; i++)
+            SpawnCastleDownshotInColumn(columns[i]);
+    }
 
+    int GetCurrentCastleProjectilesPerAttack()
+    {
+        if (!gameBoard || gameBoard.width <= 0)
+            return 0;
 
-        if (!CanLaunchCastleProjectile())
-            return;
+        int baseCount = currentCastleData
+            ? Mathf.Max(1, currentCastleData.baseEnemyProjectilesPerAttack)
+            : 1;
+        int timedBonus = Mathf.Max(0, Mathf.FloorToInt(_levelTimer / 60f));
+        return Mathf.Clamp(baseCount + timedBonus, 1, gameBoard.width);
+    }
 
+    List<int> PickCastleProjectileColumns(List<int> aliveCols, List<int> deadOnlyCols, int maxCount)
+    {
+        var columns = new List<int>();
+        int limit = Mathf.Max(0, maxCount);
+
+        AddRandomCastleProjectileColumns(aliveCols, columns, limit);
+        AddRandomCastleProjectileColumns(deadOnlyCols, columns, limit);
+
+        return columns;
+    }
+
+    void AddRandomCastleProjectileColumns(List<int> source, List<int> columns, int limit)
+    {
+        while (source != null && source.Count > 0 && columns.Count < limit)
+        {
+            int pick = UnityEngine.Random.Range(0, source.Count);
+            columns.Add(source[pick]);
+            source.RemoveAt(pick);
+        }
+    }
+
+    void SpawnCastleDownshotInColumn(int col)
+    {
         // Compute start/end positions in board/grid space
         Vector2 start = gameBoard.CellToAnchoredPos(new Vector2Int(col, gameBoard.height - 1))
                       + new Vector2(0f, gameBoard.GetCellSize().y * 0.75f);
@@ -4390,7 +4539,7 @@ public class GameController : MonoBehaviour
         var rt = img.rectTransform;
         rt.SetParent(root, false);
         rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
-        rt.sizeDelta = gameBoard.GetCellSize();
+        rt.sizeDelta = gameBoard.GetCellSize() * Mathf.Max(0.1f, castleProjectileVisualScale);
         rt.anchoredPosition = start;
 
         StartCoroutine(CastleDownshotCo(rt, end, column));
@@ -4765,7 +4914,7 @@ public class GameController : MonoBehaviour
 
             xpAwardUI.ShowRunEndCommit(
                 GetActiveMonsterRoster(),
-                0.10f,
+                GetRunEndXpConversionFraction(HasReachedSuccessfulRunEnd()),
                 () =>
                 {
                     CloseXpUiMode();
@@ -4784,6 +4933,11 @@ public class GameController : MonoBehaviour
 
     void DoRestartGameNow()
     {
+        TutorialTestingScope.Reset();
+        EnsureSpecialBlockTutorials();
+        specialBlockTutorials?.ResetRunState();
+        tutorialPieceInputBlocked = false;
+        _tutorialHardDropInputBlockedUntilRealtime = 0f;
         ClearTempRunCheckpoint();
         HideRoundTransitionImmediate();
 
@@ -4812,6 +4966,7 @@ public class GameController : MonoBehaviour
         ResetRunMods();
         RefreshStarDifficultyState();
         RefreshActiveMonsterPassives(applyStartingReserveDelta: false);
+        _roundRewardRerollsAvailable = 0;
         _postFinalSurvivalActive = false;
         _pendingPostFinalSurvivalIntro = false;
 
@@ -4904,7 +5059,7 @@ public class GameController : MonoBehaviour
 
             xpAwardUI.ShowRunEndCommit(
                 GetActiveMonsterRoster(),
-                0.10f,
+                GetRunEndXpConversionFraction(HasReachedSuccessfulRunEnd()),
                 () =>
                 {
                     _pendingMainMenuAfterXp = false;
@@ -5221,6 +5376,7 @@ public class GameController : MonoBehaviour
     {
         _levelTimer = 0f;
         _gravityCapAccumSeconds = 0f;
+        ResetPlayerGravitySpecialEffect();
         ResetSlowGravitySpecialEffect();
 
         int displayedLevel = Mathf.Max(1, levelIndex + 1);
@@ -5229,7 +5385,7 @@ public class GameController : MonoBehaviour
         float levelStartGravity = Mathf.Max(0.0001f, baseGravity + levelBonus);
 
         _thisLevelBaseFallInterval = Mathf.Max(
-            minFallInterval,
+            CurrentGravityMinFallInterval,
             1f / levelStartGravity
         );
 
@@ -5244,22 +5400,53 @@ public class GameController : MonoBehaviour
 
     void ResetSlowGravitySpecialEffect()
     {
+        if (_slowGravitySpecialCR != null)
+        {
+            StopCoroutine(_slowGravitySpecialCR);
+            _slowGravitySpecialCR = null;
+        }
+
         _slowGravitySpecialMultActive = 1f;
         _slowGravitySpecialRampRateMultActive = 1f;
+        _slowGravitySpecialVisualActive = false;
+        ClearTimedSlowGravityEffect(TimedSlowGravitySource.SpecialBlock);
+        EnsureSlowGravityImage();
+        if (slowGravityImage)
+            slowGravityImage.gameObject.SetActive(false);
+
+        RefreshGravityTextColor();
     }
 
     public void ActivateSlowGravitySpecial(float gravityMultiplier, float rampRateMultiplier)
     {
         float minMultiplier = Mathf.Clamp(minSlowGravitySpecialMultiplier, 0.01f, 1f);
         float gravityMult = Mathf.Clamp(gravityMultiplier, minMultiplier, 1f);
-        float rampMult = Mathf.Clamp01(rampRateMultiplier);
+        float durationSeconds = Mathf.Max(0.1f, slowGravitySpecialDurationSeconds);
+        float projectedInterval = CalculateFallInterval(
+            playerGravityMult: 1f,
+            playerBaseOverrideActive: false,
+            slowGravitySpecialMult: gravityMult,
+            slowGravitySpecialRampRateMult: 1f);
 
-        _slowGravitySpecialMultActive = Mathf.Clamp(
-            _slowGravitySpecialMultActive * gravityMult,
-            minMultiplier,
-            1f);
+        if (!ShouldReplaceTimedSlowGravityEffect(
+                TimedSlowGravitySource.SpecialBlock,
+                projectedInterval,
+                durationSeconds))
+        {
+            return;
+        }
 
-        _slowGravitySpecialRampRateMultActive = Mathf.Clamp01(_slowGravitySpecialRampRateMultActive * rampMult);
+        ResetPlayerGravitySpecialEffect();
+
+        if (_slowGravitySpecialCR != null)
+            StopCoroutine(_slowGravitySpecialCR);
+
+        _slowGravitySpecialMultActive = gravityMult;
+        _slowGravitySpecialRampRateMultActive = 1f;
+        _slowGravitySpecialVisualActive = true;
+        EnsureSlowGravityImage();
+        if (slowGravityImage)
+            slowGravityImage.gameObject.SetActive(true);
 
         float interval = GetCurrentFallInterval();
         if (piece && piece.enabled)
@@ -5267,19 +5454,177 @@ public class GameController : MonoBehaviour
 
         _lastShownFallInterval = -1f;
         UpdateGravityText(interval);
+        RefreshGravityTextColor();
+        SetTimedSlowGravityEffect(TimedSlowGravitySource.SpecialBlock, durationSeconds);
+        _slowGravitySpecialCR = StartCoroutine(SlowGravitySpecialCo(durationSeconds));
+    }
+
+    IEnumerator SlowGravitySpecialCo(float seconds)
+    {
+        yield return TickTimedSlowGravityEffect(TimedSlowGravitySource.SpecialBlock, seconds);
+
+        _slowGravitySpecialCR = null;
+        ResetSlowGravitySpecialEffect();
+        RefreshCurrentFallInterval(resetAccumulator: false);
     }
 
     float GetCurrentFallInterval()
     {
+        return CalculateFallInterval(
+            _playerGravityMultActive,
+            _playerGravityBaseOverrideActive,
+            _slowGravitySpecialMultActive,
+            _slowGravitySpecialRampRateMultActive);
+    }
+
+    float CalculateFallInterval(
+        float playerGravityMult,
+        bool playerBaseOverrideActive,
+        float slowGravitySpecialMult,
+        float slowGravitySpecialRampRateMult)
+    {
         float baseGravity = 1f / Mathf.Max(0.0001f, _thisLevelBaseFallInterval);
-        float gravityRamp = Mathf.Max(0f, gravityIncreasePerSecond) *
-                            Mathf.Max(0f, EffectiveFallRampRateMult) *
-                            _levelTimer;
+        float gravityRamp = playerBaseOverrideActive
+            ? 0f
+            : Mathf.Max(0f, gravityIncreasePerSecond) *
+              Mathf.Max(0f, CalculateFallRampRateMultiplier(slowGravitySpecialRampRateMult)) *
+              _levelTimer;
         float interval = 1f / Mathf.Max(0.0001f, baseGravity + gravityRamp);
 
-        interval /= Mathf.Max(0.01f, EffectivePieceGravityMult * ActiveLevelModifierGravityMult);
+        interval /= Mathf.Max(
+            0.01f,
+            CalculatePieceGravityMultiplier(playerGravityMult, slowGravitySpecialMult) *
+            ActiveLevelModifierGravityMult);
 
-        return Mathf.Max(minFallInterval, interval);
+        return Mathf.Max(CurrentGravityMinFallInterval, interval);
+    }
+
+    float CalculatePieceGravityMultiplier(float playerGravityMult, float slowGravitySpecialMult)
+    {
+        return Mathf.Max(0.01f, pieceGravityMult) *
+            ShopBuffEffects.GravityMultiplier *
+            Mathf.Max(0.01f, playerGravityMult) *
+            Mathf.Max(0.01f, slowGravitySpecialMult) *
+            (1f + _bossGravityBonusActive);
+    }
+
+    float CalculateFallRampRateMultiplier(float slowGravitySpecialRampRateMult)
+    {
+        return Mathf.Max(0f, fallRampRateMult) *
+            ShopBuffEffects.VelocityMultiplier *
+            Mathf.Max(0f, slowGravitySpecialRampRateMult);
+    }
+
+    bool ShouldReplaceTimedSlowGravityEffect(
+        TimedSlowGravitySource source,
+        float projectedInterval,
+        float durationSeconds)
+    {
+        if (_activeTimedSlowGravitySource == TimedSlowGravitySource.None)
+            return true;
+
+        if (_activeTimedSlowGravitySource == source)
+            return true;
+
+        if (_activeTimedSlowGravityRemainingSeconds <= 0f)
+            return true;
+
+        float currentInterval = GetCurrentFallInterval();
+        if (projectedInterval > currentInterval + 0.001f)
+            return true;
+
+        return durationSeconds > _activeTimedSlowGravityRemainingSeconds + 0.1f;
+    }
+
+    void SetTimedSlowGravityEffect(TimedSlowGravitySource source, float durationSeconds)
+    {
+        _activeTimedSlowGravitySource = source;
+        _activeTimedSlowGravityRemainingSeconds = Mathf.Max(0.1f, durationSeconds);
+        _lastShownTimedSlowGravitySeconds = -1;
+        UpdateTimedSlowGravityTimerUI();
+    }
+
+    void ClearTimedSlowGravityEffect(TimedSlowGravitySource source)
+    {
+        if (source != TimedSlowGravitySource.None && _activeTimedSlowGravitySource != source)
+            return;
+
+        _activeTimedSlowGravitySource = TimedSlowGravitySource.None;
+        _activeTimedSlowGravityRemainingSeconds = 0f;
+        _lastShownTimedSlowGravitySeconds = -1;
+        SetGravityTimerVisible(false);
+    }
+
+    IEnumerator TickTimedSlowGravityEffect(TimedSlowGravitySource source, float seconds)
+    {
+        if (_activeTimedSlowGravitySource != source)
+            SetTimedSlowGravityEffect(source, seconds);
+
+        while (_activeTimedSlowGravitySource == source && _activeTimedSlowGravityRemainingSeconds > 0f)
+        {
+            if (ShouldTickTimedSlowGravityEffect())
+                _activeTimedSlowGravityRemainingSeconds -= Time.deltaTime;
+
+            UpdateTimedSlowGravityTimerUI();
+            yield return null;
+        }
+    }
+
+    bool ShouldTickTimedSlowGravityEffect()
+    {
+        return IsRoundActive &&
+               !tutorialSuspended &&
+               !isPaused &&
+               !_roundTransitionActive &&
+               !_specialAbilityCinematicActive &&
+               !ConfirmationPopupUI.IsAnyShowing &&
+               !IsTutorialPromptActive;
+    }
+
+    void UpdateTimedSlowGravityTimerUI()
+    {
+        EnsureGravityTimerText();
+        if (!gravityTimerText)
+            return;
+
+        if (_activeTimedSlowGravitySource == TimedSlowGravitySource.None ||
+            _activeTimedSlowGravityRemainingSeconds <= 0f)
+        {
+            SetGravityTimerVisible(false);
+            return;
+        }
+
+        int seconds = Mathf.Max(1, Mathf.CeilToInt(_activeTimedSlowGravityRemainingSeconds));
+        SetGravityTimerVisible(true);
+
+        if (seconds == _lastShownTimedSlowGravitySeconds)
+            return;
+
+        _lastShownTimedSlowGravitySeconds = seconds;
+        gravityTimerText.text = seconds.ToString();
+    }
+
+    void SetGravityTimerVisible(bool visible)
+    {
+        EnsureGravityTimerText();
+        if (gravityTimerText && gravityTimerText.gameObject.activeSelf != visible)
+            gravityTimerText.gameObject.SetActive(visible);
+    }
+
+    void EnsureGravityTimerText()
+    {
+        if (gravityTimerText)
+            return;
+
+        Transform timer = null;
+        if (gravityText)
+            timer = gravityText.transform.Find("GravityTimer_Text");
+
+        if (!timer && gravityText && gravityText.transform.parent)
+            timer = gravityText.transform.parent.Find("GravityTimer_Text");
+
+        if (timer)
+            gravityTimerText = timer.GetComponent<TMP_Text>();
     }
 
     void UpdateLevelTimerUI()
@@ -5303,6 +5648,56 @@ public class GameController : MonoBehaviour
 
         float cellsPerSecond = (currentInterval > 0.0001f) ? (1f / currentInterval) : 0f;
         gravityText.text = TetrabeastsLocalization.LocalizeFormat("Gravity: {0:0.0}", cellsPerSecond);
+    }
+
+    void ResetPlayerGravitySpecialEffect()
+    {
+        if (_playerGravityCR != null)
+        {
+            StopCoroutine(_playerGravityCR);
+            _playerGravityCR = null;
+        }
+
+        _playerGravityMultActive = 1f;
+        _playerGravityBaseOverrideActive = false;
+        ClearTimedSlowGravityEffect(TimedSlowGravitySource.PlayerAbility);
+        RefreshGravityTextColor();
+    }
+
+    void RefreshCurrentFallInterval(bool resetAccumulator)
+    {
+        float interval = GetCurrentFallInterval();
+        if (piece && piece.enabled)
+            piece.SetFallInterval(interval, resetAccumulator);
+
+        _lastShownFallInterval = -1f;
+        UpdateGravityText(interval);
+    }
+
+    void EnsureSlowGravityImage()
+    {
+        if (slowGravityImage || !gravityText)
+            return;
+
+        Transform child = gravityText.transform.Find("SlowGravity_Image");
+        if (!child)
+            child = gravityText.transform.Find("SlowGravitu_Image");
+
+        if (child)
+            slowGravityImage = child.GetComponent<Image>();
+    }
+
+    void RefreshGravityTextColor()
+    {
+        if (!gravityText)
+            return;
+
+        if (_bossGravityVisualActive)
+            gravityText.color = gravityTextBossColor;
+        else if (_playerGravityBaseOverrideActive || _slowGravitySpecialVisualActive)
+            gravityText.color = gravityTextSlowColor;
+        else
+            gravityText.color = gravityTextDefaultColor;
     }
 
     // ================ Unit Lives System ===================
@@ -6683,7 +7078,7 @@ public class GameController : MonoBehaviour
         if (initial > 0f) gameBoard.DamageTile(cell, initial, Board.DamageSource.FloorLightning);
 
         // Spawn temporary hazard (ticks) without destroying monsters
-        float tickDmg = GetScaledEnemyDamage(Mathf.Max(0f, _castleData.bossLightningTickDamage));
+        float tickDmg = GetScaledFloorEffectDamage(Mathf.Max(0f, _castleData.bossLightningTickDamage));
         float interval = Mathf.Max(0.05f, _castleData.bossLightningTickInterval);
         float duration = Mathf.Max(0.05f, _castleData.bossLightningHazardDuration);
 
@@ -6950,17 +7345,17 @@ public class GameController : MonoBehaviour
 
                 case CastleData.BossTrapKind.Spike:
                     gameBoard.SetFloorEffect(c, Board.FloorEffectType.Spike,
-                        GetScaledEnemyDamage(obstacleManager.spikeOneShotDamage), 1f, 1);
+                        GetScaledFloorEffectDamage(obstacleManager.spikeOneShotDamage), 1f, 1);
                     break;
 
                 case CastleData.BossTrapKind.Poison:
                     gameBoard.SetFloorEffect(c, Board.FloorEffectType.Poison,
-                        GetScaledEnemyDamage(obstacleManager.poisonTickDamage), obstacleManager.poisonTickInterval, obstacleManager.poisonTicks);
+                        GetScaledFloorEffectDamage(obstacleManager.poisonTickDamage), obstacleManager.poisonTickInterval, obstacleManager.poisonTicks);
                     break;
 
                 case CastleData.BossTrapKind.Fire:
                     gameBoard.SetFloorEffect(c, Board.FloorEffectType.Burn,
-                        GetScaledEnemyDamage(obstacleManager.fireTickDamage), obstacleManager.fireTickInterval, obstacleManager.fireTicks);
+                        GetScaledFloorEffectDamage(obstacleManager.fireTickDamage), obstacleManager.fireTickInterval, obstacleManager.fireTicks);
                     break;
             }
         }
@@ -7049,6 +7444,8 @@ public class GameController : MonoBehaviour
 
     void ResetBossGravityVisuals()
     {
+        _bossGravityVisualActive = false;
+
         if (_bossGravityBlinkCR != null)
         {
             StopCoroutine(_bossGravityBlinkCR);
@@ -7056,26 +7453,33 @@ public class GameController : MonoBehaviour
         }
 
         if (bossGravityIncreasedImage)
+        {
+            bossGravityIncreasedImage.enabled = true;
             bossGravityIncreasedImage.gameObject.SetActive(false);
+        }
 
-        if (gravityText)
-            gravityText.color = gravityTextDefaultColor;
+        RefreshGravityTextColor();
     }
 
     void SetBossGravityVisualsActive(bool active)
     {
         if (active)
         {
-            if (bossGravityIncreasedImage)
-                bossGravityIncreasedImage.gameObject.SetActive(true);
+            _bossGravityVisualActive = true;
 
-            if (gravityText)
-                gravityText.color = gravityTextBossColor;
+            if (bossGravityIncreasedImage)
+            {
+                bossGravityIncreasedImage.enabled = true;
+                bossGravityIncreasedImage.gameObject.SetActive(true);
+            }
         }
         else
         {
             ResetBossGravityVisuals();
+            return;
         }
+
+        RefreshGravityTextColor();
     }
 
     IEnumerator BossGravityBlinkCo(float totalSeconds)
@@ -7100,19 +7504,29 @@ public class GameController : MonoBehaviour
 
         // Ensure it's on right up until the routine ends
         if (bossGravityIncreasedImage)
+        {
+            bossGravityIncreasedImage.enabled = true;
             bossGravityIncreasedImage.gameObject.SetActive(true);
+        }
     }
 
     // ================== Player Special Co-Routines ==================
 
-    System.Collections.IEnumerator PlayerReducedGravityCo(float mult, float seconds)
+    System.Collections.IEnumerator PlayerReducedGravityCo(float seconds)
     {
-        _playerGravityMultActive = mult;
-
-        yield return new WaitForSeconds(seconds);
-
         _playerGravityMultActive = 1f;
+        _playerGravityBaseOverrideActive = true;
+        SetTimedSlowGravityEffect(TimedSlowGravitySource.PlayerAbility, seconds);
+        RefreshCurrentFallInterval(resetAccumulator: true);
+        RefreshGravityTextColor();
+
+        yield return TickTimedSlowGravityEffect(TimedSlowGravitySource.PlayerAbility, seconds);
+
+        _playerGravityBaseOverrideActive = false;
         _playerGravityCR = null;
+        ClearTimedSlowGravityEffect(TimedSlowGravitySource.PlayerAbility);
+        RefreshCurrentFallInterval(resetAccumulator: false);
+        RefreshGravityTextColor();
     }
 
     System.Collections.IEnumerator PlayerDoubleStatsCo(float seconds)
@@ -7165,6 +7579,8 @@ public class GameController : MonoBehaviour
         int newH = _baseBoardHeight + addH;
 
         gameBoard.SetGridSize(newW, newH);
+        if (obstacleManager)
+            obstacleManager.SetStoneSpawnRowGrowthBonus(addH);
     }
 
     void ResetRunGridToBase()
@@ -7175,6 +7591,8 @@ public class GameController : MonoBehaviour
         if (_baseBoardWidth <= 0 || _baseBoardHeight <= 0) return;
 
         gameBoard.SetGridSize(_baseBoardWidth, _baseBoardHeight);
+        if (obstacleManager)
+            obstacleManager.SetStoneSpawnRowGrowthBonus(0);
     }
 
     // ================== Special Gauge & Text Visuals ==================
@@ -7487,28 +7905,22 @@ public class GameController : MonoBehaviour
 
     ComputedRoundXp ComputeRoundWinXp(int gameLevelNumber)
     {
-        int baseXp = Mathf.Max(0, baseXpPerLevel) * Mathf.Max(1, gameLevelNumber);
+        int xpLevelMultiplier = Mathf.Max(1, gameLevelNumber) * 2;
+        int baseXp = Mathf.Max(0, baseXpPerLevel) * xpLevelMultiplier;
 
-        // Clamp each bonus to a minimum of -5 
         int clearTimeBonusRaw = Mathf.RoundToInt(40f - _levelTimer);
-        int clearTimeBonus = Mathf.Max(-5, clearTimeBonusRaw);
+        int clearTimeBonus = Mathf.Max(-5, clearTimeBonusRaw) * xpLevelMultiplier;
 
-        // Unit reserve bonus parameters
         int startReserve = _levelStartReserveUnits;
         int endReserve = unitLives;
         int reserveBonusRaw = 5 + (endReserve - startReserve);
-        int unitsLostBonus = Mathf.Max(-5, reserveBonusRaw);
+        int unitsLostBonus = Mathf.Max(-5, reserveBonusRaw) * xpLevelMultiplier;
         int maxReserve = _levelStartMaxLives > 0 ? _levelStartMaxLives : EffectiveMaxUnitLives;
 
-        int comboBonus = Mathf.Max(0, _maxComboThisLevel);
-        int obstacleBonus = Mathf.Max(0, _obstaclesDestroyedThisLevel);
+        int comboBonus = Mathf.Max(0, _maxComboThisLevel) * xpLevelMultiplier;
+        int obstacleBonus = Mathf.Max(0, _obstaclesDestroyedThisLevel) * xpLevelMultiplier;
 
-        // Base XP is never reduced by negative bonuses
-        // Bonuses can net out below 0, but the bonus-bucket has a floor of 0
-        int bonusSum = clearTimeBonus + unitsLostBonus + comboBonus + obstacleBonus;
-        int bonusBucket = Mathf.Max(0, bonusSum);
-
-        int totalBeforeDifficulty = baseXp + bonusBucket;
+        int totalBeforeDifficulty = Mathf.Max(0, baseXp + clearTimeBonus + unitsLostBonus + comboBonus + obstacleBonus);
         int difficultyBonus = Mathf.RoundToInt(totalBeforeDifficulty * (_starDifficultyModifiers.expGainMultiplier - 1f));
         int totalBeforeReduction = Mathf.Max(0, totalBeforeDifficulty + difficultyBonus);
         int partyPassiveBonus = Mathf.RoundToInt(totalBeforeReduction * (CurrentPartyExperienceGainMultiplier - 1f));
@@ -7656,12 +8068,33 @@ public class GameController : MonoBehaviour
             triggeredTutorialPopups = gameObject.AddComponent<TriggeredTutorialPopupController>();
     }
 
+    void EnsureSpecialBlockTutorials()
+    {
+        if (!specialBlockTutorials)
+            specialBlockTutorials = GetComponent<SpecialBlockTutorialController>();
+
+        if (!specialBlockTutorials)
+            specialBlockTutorials = FindFirstObjectByType<SpecialBlockTutorialController>(FindObjectsInactive.Include);
+    }
+
     RectTransform GetSpecialGaugeTutorialTarget()
     {
         if (specialGaugeSlider)
             return specialGaugeSlider.transform as RectTransform;
 
         return specialGaugeFillImage ? specialGaugeFillImage.rectTransform : null;
+    }
+
+    void QueueSpecialBlockTutorialIfNeeded(TetrominoData data)
+    {
+        if (!data || data.special == SpecialType.None || !piece || !piece.enabled)
+            return;
+
+        EnsureSpecialBlockTutorials();
+        if (!specialBlockTutorials)
+            return;
+
+        specialBlockTutorials.TryShowForSpecialBlock(data.special, piece.GetTutorialHighlightTargets());
     }
 
     public IEnumerator ShowFirstFullRowTutorialIfNeeded(IReadOnlyList<RectTransform> highlightTargets)
@@ -7720,45 +8153,6 @@ public class GameController : MonoBehaviour
             highlightPadding: new Vector2(12f, 12f));
     }
 
-    void QueueFirstLossXpTutorialIfNeeded()
-    {
-        EnsureTriggeredTutorialPopups();
-        if (!triggeredTutorialPopups)
-            return;
-
-        triggeredTutorialPopups.QueueShowOnce(
-            TutorialIdFirstLossXp,
-            "A lost run still gives permanent progress. Here part of the XP your monsters earned during the run " +
-            "is converted into permanent XP. (Press [F] to Continue)",
-            TutorialPopupView.PopupAnchorPreset.Top,
-            popupAlpha: 1f,
-            pauseGameplay: true,
-            freezePieceGravity: false,
-            allowSkip: true,
-            highlightTarget: null,
-            highlightPadding: new Vector2(12f, 12f));
-    }
-
-    public void QueueFirstLevelModifierTutorialIfNeeded(RectTransform highlightTarget)
-    {
-        EnsureTriggeredTutorialPopups();
-        if (!triggeredTutorialPopups)
-            return;
-
-        triggeredTutorialPopups.QueueShowOnce(
-            TutorialIdFirstLevelModifierPanel,
-            "Not all levels are created equal, here you will let lady luck decide what the next battlefield will " +
-            "be like. Pull the lever to reveal it, use rerolls if you have them, then continue into the fight. " +
-            "(Press [F] to Continue)",
-            TutorialPopupView.PopupAnchorPreset.Top,
-            popupAlpha: 1f,
-            pauseGameplay: true,
-            freezePieceGravity: false,
-            allowSkip: true,
-            highlightTarget: null,
-            highlightPadding: new Vector2(12f, 12f));
-    }
-
     public void SetTutorialSuspended(bool suspended)
     {
         tutorialSuspended = suspended;
@@ -7783,6 +8177,21 @@ public class GameController : MonoBehaviour
     {
         tutorialAllowSoftDrop = allowSoftDrop;
         tutorialAllowHardDrop = allowHardDrop;
+    }
+
+    public void SetTutorialPieceInputBlocked(bool blocked)
+    {
+        tutorialPieceInputBlocked = blocked;
+    }
+
+    public void BlockHardDropInputFor(float seconds)
+    {
+        if (seconds <= 0f)
+            return;
+
+        _tutorialHardDropInputBlockedUntilRealtime = Mathf.Max(
+            _tutorialHardDropInputBlockedUntilRealtime,
+            Time.unscaledTime + seconds);
     }
 
     bool IsAnyTutorialSequenceRunning()

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
 using UnityEngine.InputSystem;
@@ -67,7 +68,9 @@ public class TutorialSequenceController : MonoBehaviour
 
     [Header("Sequence")]
     [SerializeField] bool autoStart = true;
-    [SerializeField] bool ignoreSavedCompletion = false;
+    [FormerlySerializedAs("ignoreSavedCompletion")]
+    [Tooltip("Testing only. Ignores saved tutorial completion, but this sequence still appears only once per run/test pass.")]
+    [SerializeField] bool ignoreSavedCompletionForTesting = false;
     [SerializeField] bool markSequenceCompleteOnSkip = true;
     [SerializeField] string completionKey = "gameplay_intro";
 
@@ -86,6 +89,12 @@ public class TutorialSequenceController : MonoBehaviour
     Button _currentWatchedButton;
     UnityAction _watchedButtonAction;
     Coroutine _watchedButtonCompletionRoutine;
+    Canvas _watchedButtonOverlayCanvas;
+    GraphicRaycaster _watchedButtonOverlayRaycaster;
+    bool _watchedButtonOverlayCanvasWasExisting;
+    bool _watchedButtonOverlayRaycasterWasExisting;
+    bool _watchedButtonOverlayOriginalOverrideSorting;
+    int _watchedButtonOverlayOriginalSortingOrder;
     Vector2 _defaultPopupPosition;
     int _currentStepIndex = -1;
     bool _sequenceRunning;
@@ -95,8 +104,13 @@ public class TutorialSequenceController : MonoBehaviour
     int _lastWatchedButtonNavigationFrame = -1000;
 
     readonly List<Button> _temporarilyDisabledButtons = new();
+    static int s_runningSequenceCount;
+    static int s_lastSequenceClosedFrame = -1000;
+    bool _countedAsRunning;
     public bool IsSequenceRunning => _sequenceRunning;
     public bool AllowsGameplayPauseInput => IsCurrentStepWaitingForKey(KeyCode.Escape);
+    public static bool IsAnySequenceBlockingUi =>
+        s_runningSequenceCount > 0 || Time.frameCount <= s_lastSequenceClosedFrame;
 
     void Awake()
     {
@@ -142,6 +156,7 @@ public class TutorialSequenceController : MonoBehaviour
 
         _sequenceRunning = false;
         _currentStepIndex = -1;
+        UnregisterSequenceRunning();
     }
 
     IEnumerator Start()
@@ -199,22 +214,32 @@ public class TutorialSequenceController : MonoBehaviour
         EnforceCurrentStepGuards();
     }
 
-    public void StartSequenceIfNeeded()
+    public bool StartSequenceIfNeeded()
     {
         if (_sequenceRunning)
-            return;
+            return true;
 
         if (steps == null || steps.Count == 0 || popupView == null)
-            return;
+            return false;
 
-        if (!ignoreSavedCompletion && IsSequenceCompleted())
-            return;
+        if (IsSequenceCompletedForCurrentMode())
+            return false;
 
         EnsureGameController();
         BindGameplayEvents();
 
         _sequenceRunning = true;
+        RegisterSequenceRunning();
         ShowStep(0);
+        return true;
+    }
+
+    public IEnumerator StartSequenceAndWaitIfNeeded()
+    {
+        if (!StartSequenceIfNeeded())
+            yield break;
+
+        yield return new WaitWhile(() => _sequenceRunning);
     }
 
     public void RestartSequence()
@@ -237,13 +262,90 @@ public class TutorialSequenceController : MonoBehaviour
         highlightView?.Hide();
 
         if (markComplete && !string.IsNullOrWhiteSpace(completionKey))
-            PlayerProgress.I?.SetTutorialCompleted(completionKey);
+        {
+            if (ignoreSavedCompletionForTesting)
+                TutorialTestingScope.MarkCompletedThisTestPass(completionKey);
+            else
+                PlayerProgress.Ensure()?.SetTutorialCompleted(completionKey);
+        }
 
         _sequenceRunning = false;
         _currentStepIndex = -1;
         _stepRequirementMet = false;
         _pressedKeys.Clear();
         _receivedGameplayEvents.Clear();
+        UnregisterSequenceRunning();
+    }
+
+    public void ConfigureManualSequence(
+        string sequenceCompletionKey,
+        IReadOnlyList<string> bodyPages,
+        TutorialPopupView sharedPopupView,
+        TutorialHighlightView sharedHighlightView,
+        GameController ownerGameController,
+        RectTransform highlightTarget,
+        TutorialPopupView.PopupAnchorPreset popupAnchorPreset = TutorialPopupView.PopupAnchorPreset.Top,
+        bool pauseGameplay = true,
+        bool freezePieceGravity = false,
+        bool lockOtherButtonsDuringStep = true,
+        float popupAlpha = 1f,
+        Vector2 highlightPadding = default)
+    {
+        autoStart = false;
+        completionKey = sequenceCompletionKey ?? string.Empty;
+        popupView = sharedPopupView;
+        highlightView = sharedHighlightView;
+        gameController = ownerGameController;
+
+        steps.Clear();
+        if (bodyPages != null)
+        {
+            for (int i = 0; i < bodyPages.Count; i++)
+            {
+                if (string.IsNullOrWhiteSpace(bodyPages[i]))
+                    continue;
+
+                steps.Add(CreateManualStep(
+                    bodyPages[i],
+                    highlightTarget,
+                    popupAnchorPreset,
+                    pauseGameplay,
+                    freezePieceGravity,
+                    lockOtherButtonsDuringStep,
+                    popupAlpha,
+                    highlightPadding));
+            }
+        }
+
+        BindPopupButtons();
+        BindGameplayEvents();
+    }
+
+    static TutorialStep CreateManualStep(
+        string body,
+        RectTransform highlightTarget,
+        TutorialPopupView.PopupAnchorPreset popupAnchorPreset,
+        bool pauseGameplay,
+        bool freezePieceGravity,
+        bool lockOtherButtonsDuringStep,
+        float popupAlpha,
+        Vector2 highlightPadding)
+    {
+        return new TutorialStep
+        {
+            stepId = string.Empty,
+            body = body,
+            pauseGameplay = pauseGameplay,
+            allowSkip = false,
+            autoAdvanceOnComplete = true,
+            lockOtherButtonsDuringStep = lockOtherButtonsDuringStep,
+            popupAnchorPreset = popupAnchorPreset,
+            popupAlpha = popupAlpha,
+            highlightTarget = highlightTarget,
+            highlightPadding = highlightPadding == default ? new Vector2(12f, 12f) : highlightPadding,
+            freezePieceGravity = freezePieceGravity,
+            completionMode = TutorialStepCompletionMode.NextButton
+        };
     }
 
     void BindPopupButtons()
@@ -316,13 +418,16 @@ public class TutorialSequenceController : MonoBehaviour
         _resolvedCompletionMode = ResolveCompletionMode(step);
 
         popupView.SetContent(step.body);
-        popupView.SetSkipVisible(step.allowSkip);
+        popupView.SetContinueVisible(false);
+        popupView.SetContinueInteractable(false);
+        popupView.SetSkipVisible(false);
 
         ApplyPopupPosition(step);
         popupView.Show();
         ApplyHighlight(step);
         HookCurrentStepBindings(step);
         ApplyButtonInteractionLock(step);
+        ApplyWatchedButtonOverlay(step);
         ApplyPanelStateGuard(step, instant: true);
         SetGameplaySuspended(step.pauseGameplay);
         RefreshPopupState(step);
@@ -350,7 +455,9 @@ public class TutorialSequenceController : MonoBehaviour
         var step = steps[_currentStepIndex];
 
         popupView.SetContent(step.body);
-        popupView.SetSkipVisible(step.allowSkip);
+        popupView.SetContinueVisible(false);
+        popupView.SetContinueInteractable(false);
+        popupView.SetSkipVisible(false);
         ApplyPopupPosition(step);
         popupView.Show(true);
         ApplyHighlight(step);
@@ -426,6 +533,7 @@ public class TutorialSequenceController : MonoBehaviour
 
         _panelGuardReleasedForCurrentStep = false;
         RestoreButtonInteractionLock();
+        RestoreWatchedButtonOverlay();
         _lastWatchedButtonNavigationFrame = -1000;
     }
 
@@ -470,14 +578,15 @@ public class TutorialSequenceController : MonoBehaviour
 
     bool ShouldAcceptDirectContinueInput()
     {
-        if (!popupView || !popupView.ContinueButton)
+        if (!popupView)
             return false;
 
-        if (!popupView.ContinueButton.gameObject.activeInHierarchy || !popupView.ContinueButton.interactable)
+        var step = GetCurrentStep();
+        if (step == null)
             return false;
 
-        var selected = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
-        return !selected || !selected.transform.IsChildOf(popupView.ContinueButton.transform);
+        return _resolvedCompletionMode == TutorialStepCompletionMode.NextButton ||
+            (!step.autoAdvanceOnComplete && _stepRequirementMet);
     }
 
     bool WasContinueInputPressedThisFrame()
@@ -543,12 +652,11 @@ public class TutorialSequenceController : MonoBehaviour
         if (!popupView)
             return;
 
-        bool showContinueButton = _resolvedCompletionMode == TutorialStepCompletionMode.NextButton || !step.autoAdvanceOnComplete;
-        bool continueInteractable = _resolvedCompletionMode == TutorialStepCompletionMode.NextButton || _stepRequirementMet;
         bool waitingForInteraction = !_stepRequirementMet && _resolvedCompletionMode != TutorialStepCompletionMode.NextButton;
 
-        popupView.SetContinueVisible(showContinueButton);
-        popupView.SetContinueInteractable(continueInteractable);
+        popupView.SetContinueVisible(false);
+        popupView.SetContinueInteractable(false);
+        popupView.SetSkipVisible(false);
         popupView.SetStepState(waitingForInteraction, _stepRequirementMet);
     }
 
@@ -573,12 +681,16 @@ public class TutorialSequenceController : MonoBehaviour
         gameController.SetTutorialSuspended(suspended);
     }
 
-    bool IsSequenceCompleted()
+    bool IsSequenceCompletedForCurrentMode()
     {
         if (string.IsNullOrWhiteSpace(completionKey))
             return false;
 
-        return PlayerProgress.I != null && PlayerProgress.I.IsTutorialCompleted(completionKey);
+        if (ignoreSavedCompletionForTesting)
+            return TutorialTestingScope.WasCompletedThisTestPass(completionKey);
+
+        var progress = PlayerProgress.Ensure();
+        return progress != null && progress.IsTutorialCompleted(completionKey);
     }
 
     TutorialStepCompletionMode ResolveCompletionMode(TutorialStep step)
@@ -752,6 +864,55 @@ public class TutorialSequenceController : MonoBehaviour
         _temporarilyDisabledButtons.Clear();
     }
 
+    void ApplyWatchedButtonOverlay(TutorialStep step)
+    {
+        RestoreWatchedButtonOverlay();
+
+        if (step == null || !step.watchedButton || !IsWatchedButtonAllowedThisStep(step))
+            return;
+
+        _watchedButtonOverlayCanvas = step.watchedButton.GetComponent<Canvas>();
+        _watchedButtonOverlayCanvasWasExisting = _watchedButtonOverlayCanvas;
+        if (!_watchedButtonOverlayCanvas)
+            _watchedButtonOverlayCanvas = step.watchedButton.gameObject.AddComponent<Canvas>();
+
+        _watchedButtonOverlayOriginalOverrideSorting = _watchedButtonOverlayCanvas.overrideSorting;
+        _watchedButtonOverlayOriginalSortingOrder = _watchedButtonOverlayCanvas.sortingOrder;
+        _watchedButtonOverlayCanvas.overrideSorting = true;
+        _watchedButtonOverlayCanvas.sortingOrder = 5000;
+
+        _watchedButtonOverlayRaycaster = step.watchedButton.GetComponent<GraphicRaycaster>();
+        _watchedButtonOverlayRaycasterWasExisting = _watchedButtonOverlayRaycaster;
+        if (!_watchedButtonOverlayRaycaster)
+            _watchedButtonOverlayRaycaster = step.watchedButton.gameObject.AddComponent<GraphicRaycaster>();
+    }
+
+    void RestoreWatchedButtonOverlay()
+    {
+        if (_watchedButtonOverlayRaycaster && !_watchedButtonOverlayRaycasterWasExisting)
+            Destroy(_watchedButtonOverlayRaycaster);
+
+        if (_watchedButtonOverlayCanvas)
+        {
+            if (_watchedButtonOverlayCanvasWasExisting)
+            {
+                _watchedButtonOverlayCanvas.overrideSorting = _watchedButtonOverlayOriginalOverrideSorting;
+                _watchedButtonOverlayCanvas.sortingOrder = _watchedButtonOverlayOriginalSortingOrder;
+            }
+            else
+            {
+                Destroy(_watchedButtonOverlayCanvas);
+            }
+        }
+
+        _watchedButtonOverlayCanvas = null;
+        _watchedButtonOverlayRaycaster = null;
+        _watchedButtonOverlayCanvasWasExisting = false;
+        _watchedButtonOverlayRaycasterWasExisting = false;
+        _watchedButtonOverlayOriginalOverrideSorting = false;
+        _watchedButtonOverlayOriginalSortingOrder = 0;
+    }
+
     void ApplyPanelStateGuard(TutorialStep step, bool instant)
     {
         if (step == null || _panelGuardReleasedForCurrentStep || !step.enforceWatchedPanelState || !step.watchedPanel)
@@ -864,5 +1025,24 @@ public class TutorialSequenceController : MonoBehaviour
                 action = default;
                 return false;
         }
+    }
+
+    void RegisterSequenceRunning()
+    {
+        if (_countedAsRunning)
+            return;
+
+        _countedAsRunning = true;
+        s_runningSequenceCount++;
+    }
+
+    void UnregisterSequenceRunning()
+    {
+        if (!_countedAsRunning)
+            return;
+
+        _countedAsRunning = false;
+        s_runningSequenceCount = Mathf.Max(0, s_runningSequenceCount - 1);
+        s_lastSequenceClosedFrame = Time.frameCount;
     }
 }

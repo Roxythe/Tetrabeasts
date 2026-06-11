@@ -22,6 +22,7 @@ public static class TempRunSaveStore
         public string selectedCharacterName;
         public List<string> selectedMonsterNames = new();
         public int currencyTotal;
+        public int roundRewardRerollsAvailable;
         public List<ShopBuffLevelEntry> shopBuffLevels = new();
         public RunModsSnapshot runMods = new();
         public List<string> buffModifierNames = new();

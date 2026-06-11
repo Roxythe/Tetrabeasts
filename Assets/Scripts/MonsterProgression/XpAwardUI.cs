@@ -72,6 +72,10 @@ public class XpAwardUI : MonoBehaviour
     public Transform runCommitContainer;
     public Button runCommitContinueButton;
 
+    [Header("Run End - Tutorials")]
+    [SerializeField] TutorialSequenceController _runDrainTutorial;
+    [SerializeField] TutorialSequenceController _runCommitTutorial;
+
     [Header("XP VFX / SFX")]
     public RectTransform vfxRoot;
     public Image xpOrbPrefab;
@@ -253,7 +257,8 @@ public class XpAwardUI : MonoBehaviour
         }
     }
 
-    public void ShowRunEndCommit(List<MonsterData> roster, float keepFraction, Action onContinueToHighScore, bool hideOnFinalContinue = true)
+    public void ShowRunEndCommit(List<MonsterData> roster, float keepFraction, Action onContinueToHighScore,
+                                 bool hideOnFinalContinue = true, bool showRunEndXpTutorials = true)
     {
         if (!gameObject.activeSelf)
             gameObject.SetActive(true);
@@ -274,12 +279,13 @@ public class XpAwardUI : MonoBehaviour
 
         root.SetActive(true);
         _hideOnRunEndFinalContinue = hideOnFinalContinue;
+        ResolveRunEndTutorials();
 
         var runSnap = RunMonsterProgress.GetSnapshot();
         _permanentXpConversion = Mathf.Clamp01(keepFraction);
         var keptXp = RunMonsterProgress.EndRunAndComputeKeptXp(keepFraction);
 
-        StartCoroutine(CoRunDrainThenCommit(roster, runSnap, keptXp, onContinueToHighScore));
+        StartCoroutine(CoRunDrainThenCommit(roster, runSnap, keptXp, onContinueToHighScore, showRunEndXpTutorials));
     }
 
     void ShowBreakdown(RoundXpBreakdown b)
@@ -533,7 +539,8 @@ public class XpAwardUI : MonoBehaviour
     }
 
     IEnumerator CoRunDrainThenCommit(List<MonsterData> roster, Dictionary<string, RunMonsterProgress.RunState> runSnap,
-                                     Dictionary<string, float> keptXp, Action onContinueToHighScore)
+                                     Dictionary<string, float> keptXp, Action onContinueToHighScore,
+                                     bool showRunEndXpTutorials)
     {
         if (roundBreakdownPanel) roundBreakdownPanel.SetActive(false);
         if (roundDistributePanel) roundDistributePanel.SetActive(false);
@@ -570,6 +577,9 @@ public class XpAwardUI : MonoBehaviour
                 _rows[i].ShowXpDrainTransferInfo(preservedXp, drainableXp, _permanentXpConversion);
             }
         }
+
+        if (showRunEndXpTutorials)
+            yield return StartPanelTutorialAndWait(_runDrainTutorial);
 
         if (orbDrainStartDelaySeconds > 0f)
             yield return new WaitForSecondsRealtime(orbDrainStartDelaySeconds);
@@ -631,6 +641,9 @@ public class XpAwardUI : MonoBehaviour
                 _rows[i].ShowXpCommitTransferInfo(kept, drainableXp, _permanentXpConversion);
             }
         }
+
+        if (showRunEndXpTutorials)
+            yield return StartPanelTutorialAndWait(_runCommitTutorial);
 
         if (orbGainStartDelaySeconds > 0f)
             yield return new WaitForSecondsRealtime(orbGainStartDelaySeconds);
@@ -698,6 +711,21 @@ public class XpAwardUI : MonoBehaviour
     {
         if (_navigator)
             _navigator.enabled = false;
+    }
+
+    void ResolveRunEndTutorials()
+    {
+        if (!_runDrainTutorial && runDrainPanel)
+            _runDrainTutorial = runDrainPanel.GetComponent<TutorialSequenceController>();
+
+        if (!_runCommitTutorial && runCommitPanel)
+            _runCommitTutorial = runCommitPanel.GetComponent<TutorialSequenceController>();
+    }
+
+    static IEnumerator StartPanelTutorialAndWait(TutorialSequenceController sequence)
+    {
+        if (sequence && sequence.gameObject.activeInHierarchy)
+            yield return sequence.StartSequenceAndWaitIfNeeded();
     }
 
     void BuildRosterRows(Transform container, List<MonsterData> roster, bool useRunState, bool usePermanentState = false,

@@ -245,8 +245,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -40.5}
-  m_SizeDelta: {x: 1920, y: 1880}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5364878384092416899
 CanvasRenderer:
@@ -1096,6 +1096,9 @@ MonoBehaviour:
   bottomAnchoredPosition: {x: 0, y: -400}
   visibleAlpha: 1
   useAnimatedTransition: 0
+  showDimmer: 1
+  dimmerGraphic: {fileID: 0}
+  dimmerColor: {r: 0, g: 0, b: 0, a: 0.55}
   waitingVisual: {fileID: 0}
   readyVisual: {fileID: 0}
 --- !u!225 &7513057465172598997
@@ -1129,6 +1132,7 @@ MonoBehaviour:
   anchorPreset: 0
   anchoredPosition: {x: 0, y: 0}
   popupAlpha: 1
+  warningDimmerAlpha: 0.65
 --- !u!1 &8418360884954650553
 GameObject:
   m_ObjectHideFlags: 0

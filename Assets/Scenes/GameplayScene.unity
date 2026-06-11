@@ -658,7 +658,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Reroll (X)
+  m_text: Rerolls (0)
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6d6f44b97b706424ab3794740d9d7ffd, type: 2}
   m_sharedMaterial: {fileID: 5560615476019635856, guid: 6d6f44b97b706424ab3794740d9d7ffd, type: 2}
@@ -1462,15 +1462,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1769,15 +1769,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2386,15 +2386,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3673,6 +3673,7 @@ GameObject:
   - component: {fileID: 274253984}
   - component: {fileID: 274253986}
   - component: {fileID: 274253985}
+  - component: {fileID: 901234564}
   m_Layer: 5
   m_Name: RunEnd_PermanentDistribution_Panel
   m_TagString: Untagged
@@ -5312,8 +5313,12 @@ MonoBehaviour:
   bossLevelRarityMultiplier: 1.33
   buffContainer: {fileID: 686597565}
   confirmBuffButton: {fileID: 277598729}
+  buffRerollButton: {fileID: 578664764}
+  buffRerollButtonText: {fileID: 50456540}
   debuffContainer: {fileID: 400737954}
   confirmDebuffButton: {fileID: 173915944}
+  debuffRerollButton: {fileID: 2113705594}
+  debuffRerollButtonText: {fileID: 830363826}
   buffOptionButtonPrefab: {fileID: 7447676673276691927, guid: f8b4903d42580ba439d699222ba763d2, type: 3}
   debuffOptionButtonPrefab: {fileID: 7447676673276691927, guid: d77db7f32fc9fd9408cb4485898ff821, type: 3}
   currnecyGained: {fileID: 1246385171}
@@ -5322,6 +5327,8 @@ MonoBehaviour:
   blinkImage1: {fileID: 613972271}
   blinkImage2: {fileID: 683225101}
   blinkIntervalSeconds: 0.5
+  _buffPanelTutorial: {fileID: 901234560}
+  _debuffPanelTutorial: {fileID: 901234561}
 --- !u!1 &452769862
 GameObject:
   m_ObjectHideFlags: 0
@@ -6822,15 +6829,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7537,15 +7544,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8227,15 +8234,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9220,15 +9227,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9373,15 +9380,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9903,15 +9910,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -10665,7 +10672,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Reroll (X)
+  m_text: Rerolls (0)
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6d6f44b97b706424ab3794740d9d7ffd, type: 2}
   m_sharedMaterial: {fileID: 5560615476019635856, guid: 6d6f44b97b706424ab3794740d9d7ffd, type: 2}
@@ -10786,15 +10793,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -11199,15 +11206,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -11528,6 +11535,278 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &901234560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1131187529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d632bc0e482ea7a40be723c52f28d843, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialSequenceController
+  autoStart: 0
+  ignoreSavedCompletionForTesting: 0
+  markSequenceCompleteOnSkip: 1
+  completionKey: tutorial_first_round_reward_buff_panel3
+  gameController: {fileID: 2092384764}
+  popupView: {fileID: 1007656541}
+  highlightView: {fileID: 2092384771}
+  steps:
+  - stepId: RoundRewardBuff_1
+    body: After completing a level you will be allowed to choose one of three buffs
+      that will empower your units. Press [F] to Continue
+    pauseGameplay: 1
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    lockOtherButtonsDuringStep: 1
+    popupAnchorPreset: 1
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 0}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 1
+    completionMode: 0
+    requiredKeys: 
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
+    enforceWatchedPanelState: 0
+    watchedPanelShouldBeVisible: 1
+  - stepId: RoundRewardBuff_2
+    body: Most buffs come in multiple rarities that will determine their strength.
+      From weakest to strongest (White -> Green -> Blue -> Purple -> Orange). Press
+      [F] to Continue
+    pauseGameplay: 1
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    lockOtherButtonsDuringStep: 1
+    popupAnchorPreset: 1
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 0}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 1
+    completionMode: 0
+    requiredKeys: 
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
+    enforceWatchedPanelState: 0
+    watchedPanelShouldBeVisible: 1
+  - stepId: RoundRewardBuff_3
+    body: You will receive a single reroll per level that can be used on either your
+      buffs or debuffs. Rerolls can be saved throughout your run, but will be reset
+      at the start of a new run. Press [F] to Continue
+    pauseGameplay: 1
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    lockOtherButtonsDuringStep: 1
+    popupAnchorPreset: 1
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 0}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 1
+    completionMode: 0
+    requiredKeys: 
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
+    enforceWatchedPanelState: 0
+    watchedPanelShouldBeVisible: 1
+  activePieceHighlightSizeAdjustment: {x: -6, y: 6}
+--- !u!114 &901234561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1121565957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d632bc0e482ea7a40be723c52f28d843, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialSequenceController
+  autoStart: 0
+  ignoreSavedCompletionForTesting: 0
+  markSequenceCompleteOnSkip: 1
+  completionKey: tutorial_first_round_reward_debuff_panel3
+  gameController: {fileID: 2092384764}
+  popupView: {fileID: 1007656541}
+  highlightView: {fileID: 2092384771}
+  steps:
+  - stepId: RoundRewardDebuff_1
+    body: As you grow stronger your enemies will too. Choose one of three debuffs
+      that will empower your enemies during this run. All buffs and debuffs will
+      stay active and stack throughout the run, but will be reset upon starting a
+      new game. Press [F] to Continue
+    pauseGameplay: 1
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    lockOtherButtonsDuringStep: 1
+    popupAnchorPreset: 1
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 0}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 1
+    completionMode: 0
+    requiredKeys: 
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
+    enforceWatchedPanelState: 0
+    watchedPanelShouldBeVisible: 1
+  activePieceHighlightSizeAdjustment: {x: -6, y: 6}
+--- !u!114 &901234562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1902031262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d632bc0e482ea7a40be723c52f28d843, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialSequenceController
+  autoStart: 0
+  ignoreSavedCompletionForTesting: 0
+  markSequenceCompleteOnSkip: 1
+  completionKey: tutorial_first_level_modifier_panel3
+  gameController: {fileID: 2092384764}
+  popupView: {fileID: 1007656541}
+  highlightView: {fileID: 2092384771}
+  steps:
+  - stepId: LevelModifier_1
+    body: Not all levels are created equal, here you will let lady luck decide what
+      the next battlefield will be like. Tap the lever to reveal your level modifier,
+      use rerolls if you have them, then continue into the fight. (Press [F] to Continue)
+    pauseGameplay: 1
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    lockOtherButtonsDuringStep: 1
+    popupAnchorPreset: 1
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 0}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 0
+    completionMode: 0
+    requiredKeys: 
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
+    enforceWatchedPanelState: 0
+    watchedPanelShouldBeVisible: 1
+  activePieceHighlightSizeAdjustment: {x: -6, y: 6}
+--- !u!114 &901234563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1084986787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d632bc0e482ea7a40be723c52f28d843, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialSequenceController
+  autoStart: 0
+  ignoreSavedCompletionForTesting: 0
+  markSequenceCompleteOnSkip: 1
+  completionKey: tutorial_first_run_xp_drain_panel3
+  gameController: {fileID: 2092384764}
+  popupView: {fileID: 1007656541}
+  highlightView: {fileID: 2092384771}
+  steps:
+  - stepId: RunXpDrain_1
+    body: During a run, your monsters are temporary copies. After a loss, all EXP
+      is drained from those copies and a portion will be preserved for their permanent
+      versions. (Press [F] to Continue)
+    pauseGameplay: 1
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    lockOtherButtonsDuringStep: 1
+    popupAnchorPreset: 1
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 0}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 0
+    completionMode: 0
+    requiredKeys: 
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
+    enforceWatchedPanelState: 0
+    watchedPanelShouldBeVisible: 1
+  activePieceHighlightSizeAdjustment: {x: -6, y: 6}
+--- !u!114 &901234564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 274253983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d632bc0e482ea7a40be723c52f28d843, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialSequenceController
+  autoStart: 0
+  ignoreSavedCompletionForTesting: 0
+  markSequenceCompleteOnSkip: 1
+  completionKey: tutorial_first_run_xp_commit_panel3
+  gameController: {fileID: 2092384764}
+  popupView: {fileID: 1007656541}
+  highlightView: {fileID: 2092384771}
+  steps:
+  - stepId: RunXpCommit_1
+    body: Preserved EXP is added to your permanent monsters. Permanent levels make
+      your units stronger at the start of future runs. (Press [F] to Continue)
+    pauseGameplay: 1
+    allowSkip: 0
+    autoAdvanceOnComplete: 1
+    allowSoftDropDuringStep: 0
+    allowHardDropDuringStep: 0
+    lockOtherButtonsDuringStep: 1
+    popupAnchorPreset: 1
+    popupAnchoredPosition: {x: 0, y: 0}
+    popupAlpha: 1
+    highlightTarget: {fileID: 0}
+    highlightPadding: {x: 12, y: 12}
+    highlightActivePiece: 0
+    freezePieceGravity: 0
+    completionMode: 0
+    requiredKeys: 
+    requiredGameplayEvents: 
+    watchedButton: {fileID: 0}
+    watchedPanel: {fileID: 0}
+    enforceWatchedPanelState: 0
+    watchedPanelShouldBeVisible: 1
+  activePieceHighlightSizeAdjustment: {x: -6, y: 6}
 --- !u!1 &907442724
 GameObject:
   m_ObjectHideFlags: 0
@@ -12626,6 +12905,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1879110005}
+  - {fileID: 1616399376}
   m_Father: {fileID: 1543460685}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -13625,6 +13905,7 @@ GameObject:
   - component: {fileID: 1084986788}
   - component: {fileID: 1084986790}
   - component: {fileID: 1084986789}
+  - component: {fileID: 901234563}
   m_Layer: 5
   m_Name: RunEnd_DrainRun_Panel
   m_TagString: Untagged
@@ -13778,6 +14059,7 @@ GameObject:
   - component: {fileID: 1121565958}
   - component: {fileID: 1121565960}
   - component: {fileID: 1121565959}
+  - component: {fileID: 901234561}
   m_Layer: 5
   m_Name: Debuff_Panel
   m_TagString: Untagged
@@ -13860,6 +14142,7 @@ GameObject:
   - component: {fileID: 1131187530}
   - component: {fileID: 1131187532}
   - component: {fileID: 1131187531}
+  - component: {fileID: 901234560}
   m_Layer: 5
   m_Name: Buff_Panel
   m_TagString: Untagged
@@ -15740,15 +16023,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -17381,7 +17664,7 @@ MonoBehaviour:
   magicExplosiveSprite: {fileID: 21300000, guid: 769a4051cad8b3841828f0aa68867ab0, type: 3}
   bossObstacleBackgroundSprite: {fileID: 3066412145347965409, guid: 31244b13aa6488140b0cbbe8cd4f3454, type: 3}
   explosiveFillColor: {r: 0.3077478, g: 1, b: 0.25098038, a: 1}
-  explosiveBackColor: {r: 0, g: 0, b: 0, a: 1}
+  explosiveBackColor: {r: 1, g: 1, b: 1, a: 1}
   explosiveFlashColor: {r: 1, g: 0.1, b: 0.1, a: 1}
   explosiveFuseOverlayAlpha: 0.65
   poisonBorderSprite: {fileID: -2150452836756340232, guid: dc0f4bc7092c40a40aecd2a1406b4a25, type: 3}
@@ -17655,15 +17938,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18420,15 +18703,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18591,8 +18874,8 @@ MonoBehaviour:
   m_text: Enemy ambush will cut off any retreat. Rows will slowly fill with enemy
     units progressivley limiting space to maneuver.
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a1470b117e5ec7a4c9c2c4151211f423, type: 2}
-  m_sharedMaterial: {fileID: 3855398030641842644, guid: a1470b117e5ec7a4c9c2c4151211f423, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 79b9ae36edbd3c24d8ae7cc588f1b676, type: 2}
+  m_sharedMaterial: {fileID: 3855398030641842644, guid: 79b9ae36edbd3c24d8ae7cc588f1b676, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -19114,15 +19397,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -19433,6 +19716,142 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1608073837}
   m_CullTransparentMesh: 1
+--- !u!1 &1616399375
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1616399376}
+  - component: {fileID: 1616399378}
+  - component: {fileID: 1616399377}
+  m_Layer: 5
+  m_Name: GravityTimer_Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1616399376
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1616399375}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1021869455}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 169.56787, y: -3.5557861}
+  m_SizeDelta: {x: 84, y: 65}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1616399377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1616399375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: 20
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: ec795d11b5f50cb4499368c7ebf2f081, type: 2}
+  m_sharedMaterial: {fileID: 3855398030641842644, guid: ec795d11b5f50cb4499368c7ebf2f081, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294964480
+  m_fontColor: {r: 0, g: 0.9596045, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 60.65
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1616399378
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1616399375}
+  m_CullTransparentMesh: 1
 --- !u!1001 &1619105942
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19475,15 +19894,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.0487779
+      value: 1.0610884
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -21489,7 +21908,7 @@ GameObject:
   - component: {fileID: 1879110007}
   - component: {fileID: 1879110006}
   m_Layer: 5
-  m_Name: SlowGravitu_Image
+  m_Name: SlowGravity_Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21511,8 +21930,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 185.94058, y: 0}
-  m_SizeDelta: {x: 50, y: 50}
+  m_AnchoredPosition: {x: 155.06784, y: 9.125549}
+  m_SizeDelta: {x: 163, y: 128}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1879110006
 MonoBehaviour:
@@ -21911,6 +22330,7 @@ GameObject:
   - component: {fileID: 1902031265}
   - component: {fileID: 1902031264}
   - component: {fileID: 1902031266}
+  - component: {fileID: 901234562}
   m_Layer: 5
   m_Name: LevelModifier_Panel
   m_TagString: Untagged
@@ -22002,6 +22422,7 @@ MonoBehaviour:
   root: {fileID: 1902031263}
   modDisplayNameText: {fileID: 299857083}
   modDisplayNameShadowText: {fileID: 693183981}
+  _panelTutorial: {fileID: 901234562}
   leverArrowVisual: {fileID: 1371771963}
   leverArrowPulseScale: 1.18
   leverArrowPulseSpeed: 2.5
@@ -22487,15 +22908,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.0923434
+      value: 1.0911893
       objectReference: {fileID: 0}
     - target: {fileID: 274785725865408363, guid: 422cc4b704b228b499992c68b6c55fb8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -24726,6 +25147,7 @@ GameObject:
   - component: {fileID: 2092384770}
   - component: {fileID: 2092384771}
   - component: {fileID: 2092384772}
+  - component: {fileID: 2092384773}
   m_Layer: 5
   m_Name: UI_Canvas
   m_TagString: Untagged
@@ -24872,11 +25294,12 @@ MonoBehaviour:
     You have
     cleared the final demo level. If you enjoyed your time with the game, please
     consider buying the full version.'
-  baseXpPerLevel: 50
+  baseXpPerLevel: 30
   overleveledXpMultiplierAtOneLevelGap: 0.9
   overleveledXpGapExponent: 1.35
   overleveledXpMinimumMultiplier: 0.05
   overleveledXpGraceLevelsPerStar: 5
+  rewardRerollsGrantedPerCompletedLevel: 1
   cascadeSettlePauseSeconds: 0.18
   smoothPieceActionVisuals: 1
   pieceRotationVisualDuration: 0.08
@@ -24908,14 +25331,20 @@ MonoBehaviour:
   postFinalSurvivalCastle: {fileID: 11400000, guid: 1c8175aca3c9cb24895435db667c2245, type: 2}
   forcePostFinalSurvivalInfiniteHealth: 1
   forcePostFinalSurvivalBossLevel: 1
+  postFinalSurvivalDamageTakenIncreasePer60Seconds: 0.1
   levelTimerText: {fileID: 754422045}
   gravityText: {fileID: 1021869456}
   gravityTextFormat: 'Gravity: {0:0.00}'
   startFallInterval: 1.2
-  minFallInterval: 0.1
+  minFallInterval: 0.08
+  finalSurvivalMinFallInterval: 0.07
   gravityIncreasePerSecond: 0.01
   levelBaseGravityIncrease: 0.2
+  slowGravitySpecialDurationSeconds: 20
   minSlowGravitySpecialMultiplier: 0.1
+  slowGravityImage: {fileID: 1879110006}
+  gravityTimerText: {fileID: 1616399377}
+  gravityTextSlowColor: {r: 0.55, g: 0.85, b: 1, a: 1}
   bossGravityIncreasedImage: {fileID: 1219635494}
   gravityTextDefaultColor: {r: 1, g: 1, b: 1, a: 1}
   gravityTextBossColor: {r: 0.8, g: 0.25, b: 1, a: 1}
@@ -25238,6 +25667,7 @@ MonoBehaviour:
   enemyProjectileDamageMult: 1
   enemyProjectileSpeedMult: 1
   enemyCastleHpMult: 1
+  floorEffectDamageIncreasePerLevel: 0.05
   specialGainMult: 1
   specialDrainMult: 1
   specialBlockChanceAdd: 0
@@ -25266,7 +25696,7 @@ MonoBehaviour:
   - Grock
   - Liktor
   comboWindowSeconds: 5
-  baseRunEndXpConversion: 0.1
+  baseRunEndXpConversion: 0.2
   starDifficultyRunEndXpBonusPerStar: 0.05
   finalLevelWinXpConversionBonus: 0.1
   logRowDamageBreakdown: 1
@@ -25372,6 +25802,7 @@ MonoBehaviour:
   stoneWeights_L10P: {x: 0.4, y: 0.3, z: 0.2, w: 0.1}
   stoneLegendaryChance_L10P: 0.02
   triggeredTutorialPopups: {fileID: 2092384772}
+  specialBlockTutorials: {fileID: 2092384773}
   tutorialPopupView: {fileID: 1007656541}
 --- !u!114 &2092384765
 MonoBehaviour:
@@ -25489,7 +25920,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialSequenceController
   autoStart: 1
-  ignoreSavedCompletion: 0
+  ignoreSavedCompletionForTesting: 0
   markSequenceCompleteOnSkip: 1
   completionKey: gameplay_intro
   gameController: {fileID: 2092384764}
@@ -25919,6 +26350,7 @@ MonoBehaviour:
   minimumSize: {x: 1, y: 1}
   highlightAlpha: 255
   renderDirectlyUnderTarget: 1
+  renderAboveTutorialDimmer: 1
 --- !u!114 &2092384772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25936,6 +26368,50 @@ MonoBehaviour:
   highlightView: {fileID: 2092384771}
   dismissTutorialKey: 102
   ignoreSavedCompletionForTesting: 0
+  testingTutorialIdFilter: 
+--- !u!114 &2092384773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2092384756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f6b4d1d3c4d4f0ab19d8e5c7a2b6f31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpecialBlockTutorialController
+  gameController: {fileID: 2092384764}
+  triggeredTutorialPopups: {fileID: 2092384772}
+  popupAnchorPreset: 2
+  popupAnchoredPosition: {x: 0, y: 0}
+  popupAlpha: 1
+  highlightPadding: {x: 12, y: 12}
+  hardDropGraceSeconds: 0.25
+  tutorials:
+  - specialType: 1
+    tutorialId: tutorial_special_block_death
+    body: You found a Death special block. Drop it in a column to destroy all units
+      matching the first monster below its landing point. (Press [F] to Continue)
+  - specialType: 2
+    tutorialId: tutorial_special_block_bomb
+    body: You found a Bomb special block. Drop it to blast a 3x3 area and damage
+      nearby obstacles. Stone obstacles will be destroyed completley regardless of
+      their current condition. (Press [F] to Continue)
+  - specialType: 3
+    tutorialId: tutorial_special_block_bolt
+    body: You found a Bolt special block. Drop it to strike an entire column forcing
+      all units in that row to retreat from the board and destroying any spike traps
+      in that column. (Press [F] to Continue)
+  - specialType: 4
+    tutorialId: tutorial_special_block_earthquake
+    body: You found an Earthquake special block. Drop it to shake loose unsupported
+      units across the board as well as obstacles. Drop it anywhere, it makes no
+      difference. (Press [F] to Continue)
+  - specialType: 5
+    tutorialId: tutorial_special_block_slow_gravity
+    body: You found a Slow Gravity special block. Drop it to slow falling pieces
+      for a short time. Where it drops makes no difference. (Press [F] to Continue)
 --- !u!1 &2109608209
 GameObject:
   m_ObjectHideFlags: 0
@@ -26313,6 +26789,8 @@ MonoBehaviour:
   runCommitPanel: {fileID: 274253983}
   runCommitContainer: {fileID: 256930689}
   runCommitContinueButton: {fileID: 1733681212}
+  _runDrainTutorial: {fileID: 901234563}
+  _runCommitTutorial: {fileID: 901234564}
   vfxRoot: {fileID: 1317371843}
   xpOrbPrefab: {fileID: 8186944661992942408, guid: 489f076190df87d458134552966a92e7, type: 3}
   orbArcHeight: 60
@@ -28156,6 +28634,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: GameController, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 6940436077335935224, guid: 3b14f087e3986b04abf41ccbff2fe2e1, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 7125116707965839023, guid: 3b14f087e3986b04abf41ccbff2fe2e1, type: 3}
       propertyPath: restartButton
       value: 
@@ -29290,10 +29772,34 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2092384764}
+    - target: {fileID: 2153319891800099314, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2202264009015554382, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2202264009015554382, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -25.585571
+      objectReference: {fileID: 0}
     - target: {fileID: 2295373856644971480, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2092384764}
+    - target: {fileID: 2371852173887151028, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.00024414062
+      objectReference: {fileID: 0}
+    - target: {fileID: 2371852173887151028, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 11.359375
+      objectReference: {fileID: 0}
+    - target: {fileID: 2791988919033743019, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 2.0703125
+      objectReference: {fileID: 0}
     - target: {fileID: 2882313478382131373, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -29306,6 +29812,10 @@ PrefabInstance:
       propertyPath: gameController
       value: 
       objectReference: {fileID: 2092384764}
+    - target: {fileID: 6408245489479968728, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.46313477
+      objectReference: {fileID: 0}
     - target: {fileID: 7882744238120319797, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
       propertyPath: uiCursor
       value: 
@@ -29376,7 +29886,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8597452339301913430, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.49993896
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8597452339301913430, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
       propertyPath: m_AnchoredPosition.y

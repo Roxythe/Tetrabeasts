@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [DisallowMultipleComponent]
@@ -24,7 +25,9 @@ public class ConfirmationPopupUI : MonoBehaviour
     bool _ownsCurrentPopup;
     ButtonLayoutState _continueButtonDefaultLayout;
     ButtonLayoutState _cancelButtonDefaultLayout;
+    RectTransformLayoutState _popupDefaultLayout;
     bool _buttonLayoutsCaptured;
+    bool _popupLayoutCaptured;
 
     public bool IsShowing => popupView && popupView.IsShowing;
     public GameObject NavigationRoot => popupView ? popupView.gameObject : gameObject;
@@ -135,6 +138,7 @@ public class ConfirmationPopupUI : MonoBehaviour
         }
 
         CleanupListeners();
+        CapturePopupLayoutIfNeeded();
         CaptureButtonLayoutsIfNeeded();
         ApplyButtonLayout(onCancel != null);
 
@@ -144,6 +148,7 @@ public class ConfirmationPopupUI : MonoBehaviour
         s_showingPopup = this;
 
         popupView.ApplyPresetPosition(anchorPreset, anchoredPosition);
+        ApplyConfirmationPopupLayout();
         popupView.SetVisibleAlpha(popupAlpha);
         popupView.SetContent(body ?? string.Empty);
         popupView.SetContinueVisible(true);
@@ -172,7 +177,12 @@ public class ConfirmationPopupUI : MonoBehaviour
             _explicitShowInProgress = false;
         }
 
+        if (showWarningVisual)
+            popupView.SuppressDimmerVisuals();
+
+        ApplyConfirmationPopupLayout();
         SetWarningVisualVisible(showWarningVisual);
+        UpdatePopupNavigationSelection();
     }
 
     void OnConfirmPressed()
@@ -197,6 +207,7 @@ public class ConfirmationPopupUI : MonoBehaviour
 
         RestoreButtonLayouts();
         popupView?.Hide();
+        RestorePopupLayout();
         _ownsCurrentPopup = false;
 
         if (s_showingPopup == this)
@@ -223,6 +234,29 @@ public class ConfirmationPopupUI : MonoBehaviour
         _continueButtonDefaultLayout = ButtonLayoutState.Capture(popupView.ContinueButton);
         _cancelButtonDefaultLayout = ButtonLayoutState.Capture(popupView.SkipButton);
         _buttonLayoutsCaptured = true;
+    }
+
+    void CapturePopupLayoutIfNeeded()
+    {
+        if (_popupLayoutCaptured || !popupView)
+            return;
+
+        _popupDefaultLayout = RectTransformLayoutState.Capture(popupView.PopupRectTransform);
+        _popupLayoutCaptured = true;
+    }
+
+    void ApplyConfirmationPopupLayout()
+    {
+        if (!popupView || !popupView.PopupRectTransform)
+            return;
+
+        RectTransform popupRect = popupView.PopupRectTransform;
+        popupRect.anchorMin = new Vector2(0.5f, 0.5f);
+        popupRect.anchorMax = new Vector2(0.5f, 0.5f);
+        popupRect.pivot = new Vector2(0.5f, 0.5f);
+        popupRect.anchoredPosition = anchorPreset == TutorialPopupView.PopupAnchorPreset.Custom
+            ? anchoredPosition
+            : Vector2.zero;
     }
 
     void ApplyButtonLayout(bool hasCancel)
@@ -254,6 +288,14 @@ public class ConfirmationPopupUI : MonoBehaviour
         _cancelButtonDefaultLayout.Apply(popupView.SkipButton);
     }
 
+    void RestorePopupLayout()
+    {
+        if (!_popupLayoutCaptured || !popupView)
+            return;
+
+        _popupDefaultLayout.Apply(popupView.PopupRectTransform);
+    }
+
     void EnsureReferences()
     {
         if (!popupView)
@@ -273,40 +315,40 @@ public class ConfirmationPopupUI : MonoBehaviour
 
     void EnsureWarningVisual()
     {
+        Transform layerParent = GetWarningLayerParent();
+        if (!layerParent)
+            return;
+
+        if (warningVisual && IsTransformInsidePopup(warningVisual.transform))
+        {
+            SuppressGraphic(warningVisual.GetComponent<Graphic>());
+            warningVisual.SetActive(false);
+            warningVisual = null;
+        }
+
         if (warningVisual)
             return;
 
-        Transform root = popupView ? popupView.transform : transform;
-        warningVisual =
-            FindDeepChild(root, RuntimeWarningDimmerName)?.gameObject ??
-            FindDeepChild(root, "Dimmer_Panel")?.gameObject ??
-            FindDeepChild(root, "TextPromptBackground_Image")?.gameObject;
+        warningVisual = FindDirectChild(layerParent, RuntimeWarningDimmerName)?.gameObject;
 
         if (!warningVisual)
-            warningVisual = CreateRuntimeWarningDimmer(root);
+            warningVisual = CreateRuntimeWarningDimmer(layerParent);
 
         ConfigureWarningVisual(false);
     }
 
-    GameObject CreateRuntimeWarningDimmer(Transform root)
+    GameObject CreateRuntimeWarningDimmer(Transform layerParent)
     {
-        if (!root)
+        if (!layerParent)
             return null;
 
         var go = new GameObject(RuntimeWarningDimmerName, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-        go.layer = root.gameObject.layer;
-        go.transform.SetParent(root, false);
+        go.layer = gameObject.layer;
+        go.transform.SetParent(layerParent, false);
         go.transform.SetAsFirstSibling();
 
         var rect = go.transform as RectTransform;
-        if (rect)
-        {
-            rect.anchorMin = Vector2.zero;
-            rect.anchorMax = Vector2.one;
-            rect.offsetMin = Vector2.zero;
-            rect.offsetMax = Vector2.zero;
-            rect.pivot = new Vector2(0.5f, 0.5f);
-        }
+        StretchToParent(rect);
 
         return go;
     }
@@ -321,7 +363,7 @@ public class ConfirmationPopupUI : MonoBehaviour
         warningVisual.SetActive(visible);
 
         if (visible)
-            warningVisual.transform.SetAsFirstSibling();
+            PlaceWarningVisualUnderPopup();
     }
 
     void ConfigureWarningVisual(bool visible)
@@ -336,10 +378,94 @@ public class ConfirmationPopupUI : MonoBehaviour
         image.sprite = null;
         image.type = Image.Type.Simple;
         image.color = new Color(0f, 0f, 0f, visible ? warningDimmerAlpha : 0f);
-        image.raycastTarget = false;
+        image.raycastTarget = visible;
+
+        StretchToParent(warningVisual.transform as RectTransform);
     }
 
-    static Transform FindDeepChild(Transform root, string childName)
+    void UpdatePopupNavigationSelection()
+    {
+        if (!EventSystem.current || !popupView)
+            return;
+
+        if (!UICursorController.ShouldKeepNavigationSelection)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+            return;
+        }
+
+        Button button = popupView.ContinueButton && popupView.ContinueButton.gameObject.activeInHierarchy
+            ? popupView.ContinueButton
+            : popupView.SkipButton;
+
+        if (!button || !button.gameObject.activeInHierarchy || !button.interactable)
+            return;
+
+        EventSystem.current.SetSelectedGameObject(button.gameObject);
+    }
+
+    Transform GetWarningLayerParent()
+    {
+        var canvas = popupView
+            ? popupView.GetComponentInParent<Canvas>(true)
+            : GetComponentInParent<Canvas>(true);
+
+        if (canvas)
+            return canvas.transform;
+
+        return popupView && popupView.transform.parent
+            ? popupView.transform.parent
+            : transform.parent;
+    }
+
+    void PlaceWarningVisualUnderPopup()
+    {
+        if (!warningVisual)
+            return;
+
+        Transform layerParent = GetWarningLayerParent();
+        RectTransform warningRect = warningVisual.transform as RectTransform;
+        if (layerParent && warningVisual.transform.parent != layerParent)
+            warningVisual.transform.SetParent(layerParent, false);
+
+        StretchToParent(warningRect);
+
+        Transform popupLayerSibling = GetLayerSiblingTransform(
+            popupView ? popupView.transform : transform,
+            warningVisual.transform.parent);
+
+        if (popupLayerSibling)
+        {
+            warningVisual.transform.SetSiblingIndex(Mathf.Max(0, popupLayerSibling.GetSiblingIndex()));
+            popupLayerSibling.SetAsLastSibling();
+        }
+        else
+        {
+            warningVisual.transform.SetAsFirstSibling();
+        }
+    }
+
+    bool IsTransformInsidePopup(Transform candidate)
+    {
+        return candidate && popupView && candidate.IsChildOf(popupView.transform);
+    }
+
+    static void StretchToParent(RectTransform rect)
+    {
+        if (!rect)
+            return;
+
+        rect.anchorMin = Vector2.zero;
+        rect.anchorMax = Vector2.one;
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+        rect.anchoredPosition = Vector2.zero;
+        rect.pivot = new Vector2(0.5f, 0.5f);
+        rect.localRotation = Quaternion.identity;
+        rect.localScale = Vector3.one;
+    }
+
+    static Transform FindDirectChild(Transform root, string childName)
     {
         if (!root || string.IsNullOrEmpty(childName))
             return null;
@@ -349,13 +475,32 @@ public class ConfirmationPopupUI : MonoBehaviour
             Transform child = root.GetChild(i);
             if (child && string.Equals(child.name, childName, StringComparison.Ordinal))
                 return child;
-
-            Transform nested = FindDeepChild(child, childName);
-            if (nested)
-                return nested;
         }
 
         return null;
+    }
+
+    static Transform GetLayerSiblingTransform(Transform child, Transform layerParent)
+    {
+        if (!child || !layerParent)
+            return null;
+
+        Transform current = child;
+        while (current && current.parent && current.parent != layerParent)
+            current = current.parent;
+
+        return current && current.parent == layerParent ? current : null;
+    }
+
+    static void SuppressGraphic(Graphic graphic)
+    {
+        if (!graphic)
+            return;
+
+        var color = graphic.color;
+        color.a = 0f;
+        graphic.color = color;
+        graphic.raycastTarget = false;
     }
 
     static void SetLabel(TMP_Text label, string text)
@@ -397,6 +542,44 @@ public class ConfirmationPopupUI : MonoBehaviour
 
             var rect = button ? button.transform as RectTransform : null;
             if (!rect)
+                return;
+
+            rect.anchorMin = AnchorMin;
+            rect.anchorMax = AnchorMax;
+            rect.anchoredPosition = AnchoredPosition;
+            rect.sizeDelta = SizeDelta;
+            rect.pivot = Pivot;
+        }
+    }
+
+    struct RectTransformLayoutState
+    {
+        public bool IsValid;
+        public Vector2 AnchorMin;
+        public Vector2 AnchorMax;
+        public Vector2 AnchoredPosition;
+        public Vector2 SizeDelta;
+        public Vector2 Pivot;
+
+        public static RectTransformLayoutState Capture(RectTransform rect)
+        {
+            if (!rect)
+                return default;
+
+            return new RectTransformLayoutState
+            {
+                IsValid = true,
+                AnchorMin = rect.anchorMin,
+                AnchorMax = rect.anchorMax,
+                AnchoredPosition = rect.anchoredPosition,
+                SizeDelta = rect.sizeDelta,
+                Pivot = rect.pivot
+            };
+        }
+
+        public void Apply(RectTransform rect)
+        {
+            if (!IsValid || !rect)
                 return;
 
             rect.anchorMin = AnchorMin;

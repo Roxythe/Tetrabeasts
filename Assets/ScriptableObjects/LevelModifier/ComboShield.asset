@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Break Out The Big Guns
   description: The enemy has fortified their position. A combo attack at 4 or higher
     will be required to remove each enemy shield. Damage dealt to the enemy while
-    shielded is significantly reduced.
+    shielded is reduced by 50%.
   icon: {fileID: 21300000, guid: ac3430f92ab02a54bbcfd7fdfd2c94af, type: 3}
   backgroundOverrideSprite: {fileID: 0}
   enableRainOverlay: 0
@@ -72,6 +72,7 @@ MonoBehaviour:
   autoShiftEdgePauseSeconds: 0.6
   comboThreshold: 3
   comboBelowThresholdDamageMultiplier: 0.5
+  comboAtOrAboveThresholdDamageMultiplier: 1.5
   comboShieldThreshold: 4
   comboShieldCount: 3
   comboShieldBlockedDamageMultiplier: 0.5

@@ -65,6 +65,12 @@ public class RunModOptionButton : MonoBehaviour, IPointerEnterHandler, IPointerM
 
     void Update()
     {
+        if (IsTutorialUiBlocking())
+        {
+            ClearTransientHighlight();
+            return;
+        }
+
         if (_isPointerHover && !_isNavigationFocus && !UICursorController.IsPointerTargetMode)
         {
             _isPointerHover = false;
@@ -114,12 +120,24 @@ public class RunModOptionButton : MonoBehaviour, IPointerEnterHandler, IPointerM
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (IsTutorialUiBlocking())
+        {
+            ClearTransientHighlight();
+            return;
+        }
+
         _isPointerHover = true;
         ApplyBgVisual();
     }
 
     public void OnPointerMove(PointerEventData eventData)
     {
+        if (IsTutorialUiBlocking())
+        {
+            ClearTransientHighlight();
+            return;
+        }
+
         if (!UICursorController.IsPointerTargetMode && !_isNavigationFocus)
             return;
 
@@ -135,6 +153,12 @@ public class RunModOptionButton : MonoBehaviour, IPointerEnterHandler, IPointerM
 
     public void OnSelect(BaseEventData eventData)
     {
+        if (IsTutorialUiBlocking())
+        {
+            ClearTransientHighlight();
+            return;
+        }
+
         _isNavigationFocus = true;
         ApplyBgVisual();
     }
@@ -143,6 +167,16 @@ public class RunModOptionButton : MonoBehaviour, IPointerEnterHandler, IPointerM
     {
         _isNavigationFocus = false;
         ApplyBgVisual();
+    }
+
+    public void ClearTransientHighlight()
+    {
+        bool changed = _isPointerHover || _isNavigationFocus;
+        _isPointerHover = false;
+        _isNavigationFocus = false;
+
+        if (changed)
+            ApplyBgVisual();
     }
 
     void ApplyBgVisual()
@@ -155,9 +189,16 @@ public class RunModOptionButton : MonoBehaviour, IPointerEnterHandler, IPointerM
             return;
         }
 
-        bool pointerHover = _isPointerHover && UICursorController.IsPointerTargetMode;
-        bool navigationFocus = _isNavigationFocus && UICursorController.IsButtonNavigationMode;
+        bool canShowTransientHighlight = !IsTutorialUiBlocking();
+        bool pointerHover = canShowTransientHighlight && _isPointerHover && UICursorController.IsPointerTargetMode;
+        bool navigationFocus = canShowTransientHighlight && _isNavigationFocus && UICursorController.IsButtonNavigationMode;
         _bg.color = pointerHover || navigationFocus ? MultiplyRgb(_bgDefaultColor, hoverTintMult) : _bgDefaultColor;
+    }
+
+    static bool IsTutorialUiBlocking()
+    {
+        return TriggeredTutorialPopupController.IsAnyPopupBlockingUi ||
+            TutorialSequenceController.IsAnySequenceBlockingUi;
     }
 
     static Color MultiplyRgb(Color c, float mult)

@@ -108,7 +108,7 @@ public class Board : MonoBehaviour
 
     [Header("Magic Explosive Visuals")]
     public Color explosiveFillColor = new Color(0.25f, 0.65f, 1f, 1f); // starting fill
-    public Color explosiveBackColor = new Color(0.55f, 0.55f, 0.55f, 1f); // revealed background
+    public Color explosiveBackColor = Color.white; // revealed background
     public Color explosiveFlashColor = new Color(1f, 0.1f, 0.1f, 1f);
     [Range(0f, 1f)] public float explosiveFuseOverlayAlpha = 0.65f;
 
@@ -282,7 +282,7 @@ public class Board : MonoBehaviour
         // Buffed runtime stats computed once from leveled data + shop + run mods
         public float maxHp;
         public float attackPower;       // leveled base attackPower used for damage
-        public int attackBonus;         // shop additive
+        public float attackBonus;       // shop additive
         public float healAmount;        // leveled base heal
         public float healRange;         // leveled base healRange
         public float healSpeed;
@@ -346,7 +346,7 @@ public class Board : MonoBehaviour
             var leveled = MonsterLeveling.GetLeveledStats(data, level);
 
             int hpBonus = ShopBuffStore.GetLevel(ShopBuffType.HpUp) * 5;
-            int atkBonus = ShopBuffStore.GetLevel(ShopBuffType.AttackUp) * 1;
+            float atkBonus = ShopBuffEffects.MonsterAttackBonus;
             int healBonus = ShopBuffStore.GetLevel(ShopBuffType.HealPower) * 2;
 
             float runMaxHpMult = RunModsStore.MonsterMaxHpMult;
@@ -1863,6 +1863,7 @@ public class Board : MonoBehaviour
 
         // ===== Perform the actual clear and shift =====
         int squaresCleared = 0;
+        var stonesDamaged = new HashSet<Vector2Int>();
 
         var toDelete = new List<Vector2Int>();
         foreach (var kv in placed)
@@ -1870,14 +1871,16 @@ public class Board : MonoBehaviour
 
         foreach (var key in toDelete)
         {
-            if (obstacles.TryGetValue(key, out var obstacle))
+            if (obstacles.ContainsKey(key))
             {
-                if (obstacle.type == ObstacleType.SoldierWall || obstacle.type == ObstacleType.Overgrowth)
-                    continue;
+                bool occupiedBefore = placed.ContainsKey(key);
+                if (TryHandleObstacleAt(key, stonesDamaged, null, detonateExplosive: false))
+                {
+                    if (occupiedBefore && !placed.ContainsKey(key))
+                        squaresCleared++;
 
-                DestroyObstacleImmediate(key);
-                squaresCleared++;
-                continue;
+                    continue;
+                }
             }
 
             if (placed.TryGetValue(key, out var rt))
@@ -1901,6 +1904,7 @@ public class Board : MonoBehaviour
         rows = Mathf.Min(rows, height);
 
         int squaresCleared = 0;
+        var stonesDamaged = new HashSet<Vector2Int>();
 
         var toDelete = new List<Vector2Int>();
         foreach (var kv in placed)
@@ -1909,14 +1913,16 @@ public class Board : MonoBehaviour
         foreach (var key in toDelete)
         {
             // If this cell is a stone obstacle, destroy it via the proper path to keep dictionaries synced
-            if (obstacles.TryGetValue(key, out var obstacle))
+            if (obstacles.ContainsKey(key))
             {
-                if (obstacle.type == ObstacleType.SoldierWall || obstacle.type == ObstacleType.Overgrowth)
-                    continue;
+                bool occupiedBefore = placed.ContainsKey(key);
+                if (TryHandleObstacleAt(key, stonesDamaged, null, detonateExplosive: false))
+                {
+                    if (occupiedBefore && !placed.ContainsKey(key))
+                        squaresCleared++;
 
-                DestroyObstacleImmediate(key);
-                squaresCleared++;
-                continue;
+                    continue;
+                }
             }
 
             if (placed.TryGetValue(key, out var rt))
