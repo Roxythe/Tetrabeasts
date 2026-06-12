@@ -6268,7 +6268,7 @@ MonoBehaviour:
   autoStart: 1
   ignoreSavedCompletionForTesting: 0
   markSequenceCompleteOnSkip: 1
-  completionKey: Title_intro5
+  completionKey: Title_intro6
   gameController: {fileID: 0}
   popupView: {fileID: 1781026914}
   highlightView: {fileID: 665172195}
@@ -8461,9 +8461,9 @@ MonoBehaviour:
     Still don''t like it? Turn the Music volume in settings down to 0!'
   - 'Tip: The lighting special block will destroy all monster units in a column as
     well as any spike traps.'
-  - 'Tip: The death special block will destroy every monster unit of the same type
-    it lands on. It can be a quick way to clear your booard or safely remove weakened
-    troops before they are killed by the enemy.'
+  - 'Tip: The bomb special block will force unsupported units in the effected columns
+    to fall.'
+  - 'Tip: Unlock harder difficulties by beating all 15 levels in a single run.'
 --- !u!114 &924591459 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4869501019680546569, guid: 9af6d303a620a4b43b3e72a5f4e5151d, type: 3}

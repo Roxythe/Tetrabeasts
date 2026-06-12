@@ -8,6 +8,14 @@ using UnityEngine.UI;
 public class ConfirmationPopupUI : MonoBehaviour
 {
     const string RuntimeWarningDimmerName = "Warning_Dimmer_Panel";
+    const string RuntimeWarningPopupName = "Warning_Popup";
+    const string BodyTextObjectName = "TutorialPrompt_Text";
+    const string TextFrameRootObjectName = "TextFrameBorder";
+    const string GuidePortraitRootName = "GuidePortraitBG_Image";
+    const string GuidePortraitImageName = "GuidePortrait_Image";
+    const string GuideNameTextName = "Name_Text";
+    const string GuideShadowNameTextName = "ShadowName_Text";
+    const float WarningButtonGap = 24f;
     static ConfirmationPopupUI s_showingPopup;
 
     [SerializeField] TutorialPopupView popupView;
@@ -18,6 +26,7 @@ public class ConfirmationPopupUI : MonoBehaviour
     [SerializeField] Vector2 anchoredPosition;
     [SerializeField, Range(0.1f, 1f)] float popupAlpha = 1f;
     [SerializeField, Range(0f, 1f)] float warningDimmerAlpha = 0.65f;
+    [SerializeField, HideInInspector] bool dedicatedWarningInstance;
 
     Action _onConfirm;
     Action _onCancel;
@@ -26,10 +35,11 @@ public class ConfirmationPopupUI : MonoBehaviour
     ButtonLayoutState _continueButtonDefaultLayout;
     ButtonLayoutState _cancelButtonDefaultLayout;
     RectTransformLayoutState _popupDefaultLayout;
+    TMP_Text _warningBodyText;
     bool _buttonLayoutsCaptured;
     bool _popupLayoutCaptured;
 
-    public bool IsShowing => popupView && popupView.IsShowing;
+    public bool IsShowing => _ownsCurrentPopup && popupView && popupView.IsShowingForOwner(this);
     public GameObject NavigationRoot => popupView ? popupView.gameObject : gameObject;
 
     public static bool IsAnyShowing
@@ -44,34 +54,61 @@ public class ConfirmationPopupUI : MonoBehaviour
     {
         EnsureReferences();
 
+        if (dedicatedWarningInstance && popupView)
+            popupView.SetReservedForWarnings(true);
+
         SetWarningVisualVisible(false);
 
         if (!_explicitShowInProgress)
-            popupView?.Hide(true);
+            popupView?.Hide(true, this);
     }
 
     void OnDisable()
     {
         if (s_showingPopup == this)
             s_showingPopup = null;
+
+        popupView?.ReleaseOwner(this);
     }
 
     public static ConfirmationPopupUI FindOrCreate()
     {
-        var existing = UnityEngine.Object.FindFirstObjectByType<ConfirmationPopupUI>(FindObjectsInactive.Include);
-        if (existing)
-            return existing;
+        if (s_showingPopup)
+            return s_showingPopup;
 
-        var popup = UnityEngine.Object.FindFirstObjectByType<TutorialPopupView>(FindObjectsInactive.Include);
-        if (!popup)
+        var popups = UnityEngine.Object.FindObjectsByType<ConfirmationPopupUI>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
+
+        for (int i = 0; i < popups.Length; i++)
+        {
+            var popup = popups[i];
+            if (popup && popup.IsDedicatedWarningCandidate())
+                return popup;
+        }
+
+        ConfirmationPopupUI template = null;
+        for (int i = 0; i < popups.Length; i++)
+        {
+            if (!popups[i])
+                continue;
+
+            template = popups[i];
+            break;
+        }
+
+        if (template)
+            return CreateDedicatedWarningInstance(template);
+
+        var templatePopupView = FindTemplateTutorialPopupView();
+        if (!templatePopupView)
             return null;
 
-        var created = popup.GetComponent<ConfirmationPopupUI>();
+        var created = templatePopupView.GetComponent<ConfirmationPopupUI>();
         if (!created)
-            created = popup.gameObject.AddComponent<ConfirmationPopupUI>();
+            created = templatePopupView.gameObject.AddComponent<ConfirmationPopupUI>();
 
-        created.EnsureReferences();
-        return created;
+        return CreateDedicatedWarningInstance(created);
     }
 
     public void ShowAlert(string body, Action onClosed = null, string continueText = "OK", bool showWarningVisual = false)
@@ -87,18 +124,29 @@ public class ConfirmationPopupUI : MonoBehaviour
 
     public static bool TryCancelShowingPopup()
     {
-        var existing = UnityEngine.Object.FindFirstObjectByType<ConfirmationPopupUI>(FindObjectsInactive.Include);
-        return existing && existing.CancelFromInput();
+        if (s_showingPopup && s_showingPopup.CancelFromInput())
+            return true;
+
+        var popups = UnityEngine.Object.FindObjectsByType<ConfirmationPopupUI>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
+
+        for (int i = 0; i < popups.Length; i++)
+        {
+            if (popups[i] && popups[i].CancelFromInput())
+                return true;
+        }
+
+        return false;
     }
 
     public static bool TryGetShowingRoot(out GameObject root)
     {
         root = null;
-        var existing = UnityEngine.Object.FindFirstObjectByType<ConfirmationPopupUI>(FindObjectsInactive.Include);
-        if (!existing || !existing.IsShowing)
+        if (!s_showingPopup || !s_showingPopup.IsShowing)
             return false;
 
-        root = existing.NavigationRoot;
+        root = s_showingPopup.NavigationRoot;
         return root != null;
     }
 
@@ -131,10 +179,13 @@ public class ConfirmationPopupUI : MonoBehaviour
             return;
         }
 
+        popupView.TryClaimOwner(this, replaceExisting: true);
+
         if (popupView.IsShowing)
         {
             Debug.LogWarning("ConfirmationPopupUI: Replacing an already visible confirmation popup.");
             Hide();
+            popupView.TryClaimOwner(this, replaceExisting: true);
         }
 
         CleanupListeners();
@@ -150,7 +201,7 @@ public class ConfirmationPopupUI : MonoBehaviour
         popupView.ApplyPresetPosition(anchorPreset, anchoredPosition);
         ApplyConfirmationPopupLayout();
         popupView.SetVisibleAlpha(popupAlpha);
-        popupView.SetContent(body ?? string.Empty);
+        SetBodyTextStrict(body ?? string.Empty);
         popupView.SetContinueVisible(true);
         popupView.SetContinueInteractable(true);
         popupView.SetSkipVisible(onCancel != null);
@@ -170,7 +221,7 @@ public class ConfirmationPopupUI : MonoBehaviour
         _explicitShowInProgress = true;
         try
         {
-            popupView.Show();
+            popupView.Show(owner: this);
         }
         finally
         {
@@ -180,6 +231,7 @@ public class ConfirmationPopupUI : MonoBehaviour
         if (showWarningVisual)
             popupView.SuppressDimmerVisuals();
 
+        SetBodyTextStrict(body ?? string.Empty);
         ApplyConfirmationPopupLayout();
         SetWarningVisualVisible(showWarningVisual);
         UpdatePopupNavigationSelection();
@@ -206,9 +258,10 @@ public class ConfirmationPopupUI : MonoBehaviour
         SetWarningVisualVisible(false);
 
         RestoreButtonLayouts();
-        popupView?.Hide();
+        popupView?.Hide(owner: this);
         RestorePopupLayout();
         _ownsCurrentPopup = false;
+        popupView?.ReleaseOwner(this);
 
         if (s_showingPopup == this)
             s_showingPopup = null;
@@ -257,10 +310,18 @@ public class ConfirmationPopupUI : MonoBehaviour
         popupRect.anchoredPosition = anchorPreset == TutorialPopupView.PopupAnchorPreset.Custom
             ? anchoredPosition
             : Vector2.zero;
+
+        CenterDedicatedWarningMessageFrame();
     }
 
     void ApplyButtonLayout(bool hasCancel)
     {
+        if (dedicatedWarningInstance)
+        {
+            ApplyCenteredWarningButtonLayout(hasCancel);
+            return;
+        }
+
         if (hasCancel)
         {
             RestoreButtonLayouts();
@@ -277,6 +338,36 @@ public class ConfirmationPopupUI : MonoBehaviour
         var position = continueRect.anchoredPosition;
         position.x = 0f;
         continueRect.anchoredPosition = position;
+    }
+
+    void ApplyCenteredWarningButtonLayout(bool hasCancel)
+    {
+        var continueRect = popupView && popupView.ContinueButton
+            ? popupView.ContinueButton.transform as RectTransform
+            : null;
+
+        var cancelRect = popupView && popupView.SkipButton
+            ? popupView.SkipButton.transform as RectTransform
+            : null;
+
+        if (!continueRect)
+            return;
+
+        float y = continueRect.anchoredPosition.y;
+        CenterPopupChildRect(continueRect);
+
+        if (!hasCancel || !cancelRect)
+        {
+            continueRect.anchoredPosition = new Vector2(0f, y);
+            return;
+        }
+
+        CenterPopupChildRect(cancelRect);
+
+        float continueWidth = GetRectWidth(continueRect);
+        float cancelWidth = GetRectWidth(cancelRect);
+        continueRect.anchoredPosition = new Vector2(-(cancelWidth + WarningButtonGap) * 0.5f, y);
+        cancelRect.anchoredPosition = new Vector2((continueWidth + WarningButtonGap) * 0.5f, y);
     }
 
     void RestoreButtonLayouts()
@@ -302,7 +393,9 @@ public class ConfirmationPopupUI : MonoBehaviour
             popupView = GetComponent<TutorialPopupView>();
 
         if (!popupView)
-            popupView = UnityEngine.Object.FindFirstObjectByType<TutorialPopupView>(FindObjectsInactive.Include);
+            popupView = dedicatedWarningInstance
+                ? UnityEngine.Object.FindFirstObjectByType<TutorialPopupView>(FindObjectsInactive.Include)
+                : FindTemplateTutorialPopupView();
 
         if (!continueButtonLabel && popupView && popupView.ContinueButton)
             continueButtonLabel = popupView.ContinueButton.GetComponentInChildren<TMP_Text>(true);
@@ -311,6 +404,198 @@ public class ConfirmationPopupUI : MonoBehaviour
             cancelButtonLabel = popupView.SkipButton.GetComponentInChildren<TMP_Text>(true);
 
         EnsureWarningVisual();
+    }
+
+    bool IsDedicatedWarningCandidate()
+    {
+        EnsureReferences();
+        return dedicatedWarningInstance && popupView && popupView.IsReservedForWarnings;
+    }
+
+    static ConfirmationPopupUI CreateDedicatedWarningInstance(ConfirmationPopupUI template)
+    {
+        if (!template)
+            return null;
+
+        template.EnsureReferences();
+        var sourcePopup = template.popupView;
+        var sourceObject = sourcePopup ? sourcePopup.gameObject : template.gameObject;
+        if (!sourceObject)
+            return null;
+
+        Transform parent = sourceObject.transform.parent;
+        var clone = UnityEngine.Object.Instantiate(sourceObject, parent);
+        clone.name = RuntimeWarningPopupName;
+
+        var created = clone.GetComponent<ConfirmationPopupUI>();
+        if (!created)
+            created = clone.AddComponent<ConfirmationPopupUI>();
+
+        created.dedicatedWarningInstance = true;
+        created.popupView = clone.GetComponent<TutorialPopupView>();
+        created.EnsureReferences();
+        created.ConfigureDedicatedWarningVisuals();
+
+        if (created.popupView)
+        {
+            created.popupView.SetReservedForWarnings(true);
+            created.popupView.TryClaimOwner(created, replaceExisting: true);
+            created.popupView.ClearContent(created);
+            created.ClearBodyTextStrict();
+            created.popupView.Hide(true, created);
+            created.popupView.ReleaseOwner(created);
+        }
+
+        clone.SetActive(false);
+        return created;
+    }
+
+    static TutorialPopupView FindTemplateTutorialPopupView()
+    {
+        var views = UnityEngine.Object.FindObjectsByType<TutorialPopupView>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
+
+        for (int i = 0; i < views.Length; i++)
+        {
+            var view = views[i];
+            if (view && !view.IsReservedForWarnings)
+                return view;
+        }
+
+        return null;
+    }
+
+    void ConfigureDedicatedWarningVisuals()
+    {
+        if (!popupView)
+            return;
+
+        HideDeepChild(popupView.transform, GuidePortraitRootName);
+        HideDeepChild(popupView.transform, GuidePortraitImageName);
+        HideDeepChild(popupView.transform, GuideNameTextName);
+        HideDeepChild(popupView.transform, GuideShadowNameTextName);
+        ResolveWarningBodyText();
+        CenterDedicatedWarningMessageFrame();
+    }
+
+    void CenterDedicatedWarningMessageFrame()
+    {
+        if (!dedicatedWarningInstance || !popupView)
+            return;
+
+        RectTransform frameRect = FindDeepChild(popupView.transform, TextFrameRootObjectName) as RectTransform;
+        if (!frameRect)
+        {
+            var bodyLabel = ResolveWarningBodyText();
+            frameRect = bodyLabel && bodyLabel.transform.parent
+                ? bodyLabel.transform.parent as RectTransform
+                : null;
+        }
+
+        CenterPopupChildRect(frameRect);
+    }
+
+    void SetBodyTextStrict(string body)
+    {
+        if (body == null)
+            body = string.Empty;
+
+        popupView.SetContent(body, this);
+
+        var bodyLabel = ResolveWarningBodyText();
+        if (!bodyLabel)
+            return;
+
+        string localized = TetrabeastsLocalization.LocalizeText(body);
+        bodyLabel.gameObject.SetActive(true);
+        bodyLabel.enabled = true;
+        bodyLabel.richText = true;
+        bodyLabel.text = TetrabeastsControls.ResolveControlPromptTokens(localized);
+
+        var color = bodyLabel.color;
+        if (color.a <= 0.001f)
+        {
+            color.a = 1f;
+            bodyLabel.color = color;
+        }
+
+        bodyLabel.ForceMeshUpdate(true, true);
+    }
+
+    void ClearBodyTextStrict()
+    {
+        var bodyLabel = ResolveWarningBodyText();
+        if (!bodyLabel)
+            return;
+
+        bodyLabel.text = string.Empty;
+        bodyLabel.ForceMeshUpdate(true, true);
+    }
+
+    TMP_Text ResolveWarningBodyText()
+    {
+        if (_warningBodyText && popupView && _warningBodyText.transform.IsChildOf(popupView.transform))
+            return _warningBodyText;
+
+        _warningBodyText = null;
+
+        if (!popupView)
+            return null;
+
+        Transform prompt = FindDeepChild(popupView.transform, BodyTextObjectName);
+        if (prompt)
+            _warningBodyText = prompt.GetComponent<TMP_Text>();
+
+        if (_warningBodyText)
+            return _warningBodyText;
+
+        var labels = popupView.GetComponentsInChildren<TMP_Text>(true);
+        TMP_Text fallback = null;
+        float fallbackWidth = -1f;
+
+        for (int i = 0; i < labels.Length; i++)
+        {
+            var label = labels[i];
+            if (!label || label == continueButtonLabel || label == cancelButtonLabel)
+                continue;
+
+            if (IsButtonLabel(label, popupView.ContinueButton) || IsButtonLabel(label, popupView.SkipButton))
+                continue;
+
+            if (string.Equals(label.name, GuideNameTextName, StringComparison.Ordinal) ||
+                string.Equals(label.name, GuideShadowNameTextName, StringComparison.Ordinal))
+                continue;
+
+            if (label.name.IndexOf("Prompt", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                _warningBodyText = label;
+                return _warningBodyText;
+            }
+
+            var rect = label.transform as RectTransform;
+            float width = rect ? rect.rect.width : 0f;
+            if (width > fallbackWidth)
+            {
+                fallback = label;
+                fallbackWidth = width;
+            }
+        }
+
+        _warningBodyText = fallback;
+        return _warningBodyText;
+    }
+
+    static bool IsButtonLabel(TMP_Text label, Button button)
+    {
+        return label && button && label.transform.IsChildOf(button.transform);
+    }
+
+    static void HideDeepChild(Transform root, string childName)
+    {
+        Transform child = FindDeepChild(root, childName);
+        if (child)
+            child.gameObject.SetActive(false);
     }
 
     void EnsureWarningVisual()
@@ -465,6 +750,30 @@ public class ConfirmationPopupUI : MonoBehaviour
         rect.localScale = Vector3.one;
     }
 
+    static void CenterPopupChildRect(RectTransform rect)
+    {
+        if (!rect)
+            return;
+
+        var position = rect.anchoredPosition;
+        rect.anchorMin = new Vector2(0.5f, 0.5f);
+        rect.anchorMax = new Vector2(0.5f, 0.5f);
+        rect.pivot = new Vector2(0.5f, 0.5f);
+        rect.anchoredPosition = new Vector2(0f, position.y);
+    }
+
+    static float GetRectWidth(RectTransform rect)
+    {
+        if (!rect)
+            return 180f;
+
+        float width = Mathf.Abs(rect.sizeDelta.x);
+        if (width <= 0.001f)
+            width = Mathf.Abs(rect.rect.width);
+
+        return width > 0.001f ? width : 180f;
+    }
+
     static Transform FindDirectChild(Transform root, string childName)
     {
         if (!root || string.IsNullOrEmpty(childName))
@@ -475,6 +784,25 @@ public class ConfirmationPopupUI : MonoBehaviour
             Transform child = root.GetChild(i);
             if (child && string.Equals(child.name, childName, StringComparison.Ordinal))
                 return child;
+        }
+
+        return null;
+    }
+
+    static Transform FindDeepChild(Transform root, string childName)
+    {
+        if (!root || string.IsNullOrEmpty(childName))
+            return null;
+
+        for (int i = 0; i < root.childCount; i++)
+        {
+            Transform child = root.GetChild(i);
+            if (child && string.Equals(child.name, childName, StringComparison.Ordinal))
+                return child;
+
+            Transform nested = FindDeepChild(child, childName);
+            if (nested)
+                return nested;
         }
 
         return null;

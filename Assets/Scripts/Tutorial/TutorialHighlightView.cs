@@ -359,7 +359,7 @@ public class TutorialHighlightView : MonoBehaviour
         for (int i = 0; i < popups.Length; i++)
         {
             var popup = popups[i];
-            if (!popup || !popup.IsShowing || !popup.PopupRectTransform)
+            if (!popup || popup.IsReservedForWarnings || !popup.IsShowing || !popup.PopupRectTransform)
                 continue;
 
             if (GetLayerSiblingTransform(popup.PopupRectTransform, renderParent))

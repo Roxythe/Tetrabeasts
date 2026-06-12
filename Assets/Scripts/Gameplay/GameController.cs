@@ -8256,7 +8256,20 @@ public class GameController : MonoBehaviour
     void EnsureTutorialPopupView()
     {
         if (!tutorialPopupView)
-            tutorialPopupView = FindFirstObjectByType<TutorialPopupView>(FindObjectsInactive.Include);
+            tutorialPopupView = FindTutorialPopupView();
+    }
+
+    static TutorialPopupView FindTutorialPopupView()
+    {
+        var views = FindObjectsByType<TutorialPopupView>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        for (int i = 0; i < views.Length; i++)
+        {
+            var view = views[i];
+            if (view && !view.IsReservedForWarnings)
+                return view;
+        }
+
+        return null;
     }
 
     void OnApplicationFocus(bool hasFocus)

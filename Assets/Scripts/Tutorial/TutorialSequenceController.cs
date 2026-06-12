@@ -115,7 +115,7 @@ public class TutorialSequenceController : MonoBehaviour
     void Awake()
     {
         if (!popupView)
-            popupView = GetComponentInChildren<TutorialPopupView>(true);
+            popupView = FindTutorialPopupViewInChildren();
 
         if (!highlightView)
             highlightView = GetComponentInChildren<TutorialHighlightView>(true);
@@ -126,7 +126,7 @@ public class TutorialSequenceController : MonoBehaviour
         if (popupView && popupView.PopupRectTransform)
             _defaultPopupPosition = popupView.PopupRectTransform.anchoredPosition;
 
-        popupView?.Hide(true);
+        popupView?.Hide(true, this);
         highlightView?.Hide();
     }
 
@@ -150,7 +150,9 @@ public class TutorialSequenceController : MonoBehaviour
         }         
 
         if (popupView && popupView.gameObject.activeInHierarchy)
-            popupView.Hide(true);
+            popupView.Hide(true, this);
+
+        popupView?.ReleaseOwner(this);
 
         highlightView?.Hide();
 
@@ -222,8 +224,14 @@ public class TutorialSequenceController : MonoBehaviour
         if (steps == null || steps.Count == 0 || popupView == null)
             return false;
 
-        if (IsSequenceCompletedForCurrentMode())
+        if (popupView.IsReservedForWarnings || !popupView.TryClaimOwner(this))
             return false;
+
+        if (IsSequenceCompletedForCurrentMode())
+        {
+            popupView.ReleaseOwner(this);
+            return false;
+        }
 
         EnsureGameController();
         BindGameplayEvents();
@@ -258,7 +266,8 @@ public class TutorialSequenceController : MonoBehaviour
             gameController.SetTutorialSuspended(false);
         }
 
-        popupView?.Hide();
+        popupView?.Hide(owner: this);
+        popupView?.ReleaseOwner(this);
         highlightView?.Hide();
 
         if (markComplete && !string.IsNullOrWhiteSpace(completionKey))
@@ -417,13 +426,13 @@ public class TutorialSequenceController : MonoBehaviour
         var step = steps[_currentStepIndex];
         _resolvedCompletionMode = ResolveCompletionMode(step);
 
-        popupView.SetContent(step.body);
+        popupView.SetContent(step.body, this);
         popupView.SetContinueVisible(false);
         popupView.SetContinueInteractable(false);
         popupView.SetSkipVisible(false);
 
         ApplyPopupPosition(step);
-        popupView.Show();
+        popupView.Show(owner: this);
         ApplyHighlight(step);
         HookCurrentStepBindings(step);
         ApplyButtonInteractionLock(step);
@@ -454,14 +463,26 @@ public class TutorialSequenceController : MonoBehaviour
 
         var step = steps[_currentStepIndex];
 
-        popupView.SetContent(step.body);
+        popupView.SetContent(step.body, this);
         popupView.SetContinueVisible(false);
         popupView.SetContinueInteractable(false);
         popupView.SetSkipVisible(false);
         ApplyPopupPosition(step);
-        popupView.Show(true);
+        popupView.Show(true, this);
         ApplyHighlight(step);
         RefreshPopupState(step);
+    }
+
+    TutorialPopupView FindTutorialPopupViewInChildren()
+    {
+        var views = GetComponentsInChildren<TutorialPopupView>(true);
+        for (int i = 0; i < views.Length; i++)
+        {
+            if (views[i] && !views[i].IsReservedForWarnings)
+                return views[i];
+        }
+
+        return null;
     }
 
     void EnforceCurrentStepGuards()

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -7,6 +8,8 @@ using UnityEngine.UI;
 [DisallowMultipleComponent]
 public class TriggeredTutorialPopupController : MonoBehaviour
 {
+    const string BodyTextObjectName = "TutorialPrompt_Text";
+
     struct PendingRequest
     {
         public string tutorialId;
@@ -43,6 +46,7 @@ public class TriggeredTutorialPopupController : MonoBehaviour
     string _activeTutorialId;
     GameObject _inputBlocker;
     RectTransform _inputBlockerRect;
+    TMP_Text _popupBodyText;
     static int s_lastPopupClosedFrame = -1000;
     public bool IsPopupShowing => _popupShowing;
     public static bool IsAnyPopupShowing { get; private set; }
@@ -61,6 +65,7 @@ public class TriggeredTutorialPopupController : MonoBehaviour
 
         s_lastPopupClosedFrame = Time.frameCount;
         HideInputBlocker();
+        popupView?.ReleaseOwner(this);
     }
 
     void Update()
@@ -356,6 +361,8 @@ public class TriggeredTutorialPopupController : MonoBehaviour
                 continue;
             }
 
+            yield return new WaitUntil(() => popupView && popupView.TryClaimOwner(this));
+
             _activeTutorialId = request.tutorialId;
             _popupShowing = true;
             IsAnyPopupShowing = true;
@@ -393,7 +400,7 @@ public class TriggeredTutorialPopupController : MonoBehaviour
             {
                 pageIndex++;
                 if (popupView)
-                    popupView.SetContent(pages[pageIndex]);
+                    SetPopupBodyTextStrict(pages[pageIndex]);
                 return;
             }
 
@@ -402,13 +409,14 @@ public class TriggeredTutorialPopupController : MonoBehaviour
 
         popupView.ApplyPresetPosition(request.popupAnchorPreset, request.popupAnchoredPosition);
         popupView.SetVisibleAlpha(request.popupAlpha);
-        popupView.SetContent(pages[pageIndex]);
+        SetPopupBodyTextStrict(pages[pageIndex]);
         popupView.SetContinueVisible(false);
         popupView.SetContinueInteractable(false);
         popupView.SetSkipVisible(false);
         popupView.SetStepState(waitingForInteraction: false, readyToContinue: true);
         ShowInputBlocker();
-        popupView.Show();
+        popupView.Show(owner: this);
+        SetPopupBodyTextStrict(pages[pageIndex]);
         ClearSelectedUiOutsidePopup();
 
         if (highlightView)
@@ -429,13 +437,14 @@ public class TriggeredTutorialPopupController : MonoBehaviour
             {
                 popupView.ApplyPresetPosition(request.popupAnchorPreset, request.popupAnchoredPosition);
                 popupView.SetVisibleAlpha(request.popupAlpha);
-                popupView.SetContent(pages[Mathf.Clamp(pageIndex, 0, pages.Count - 1)]);
+                SetPopupBodyTextStrict(pages[Mathf.Clamp(pageIndex, 0, pages.Count - 1)]);
                 popupView.SetContinueVisible(false);
                 popupView.SetContinueInteractable(false);
                 popupView.SetSkipVisible(false);
                 popupView.SetStepState(waitingForInteraction: false, readyToContinue: true);
                 ShowInputBlocker();
-                popupView.Show(true);
+                popupView.Show(true, this);
+                SetPopupBodyTextStrict(pages[Mathf.Clamp(pageIndex, 0, pages.Count - 1)]);
             }
 
             ClearSelectedUiOutsidePopup();
@@ -452,7 +461,8 @@ public class TriggeredTutorialPopupController : MonoBehaviour
             return false;
         });
 
-        popupView.Hide();
+        popupView.Hide(owner: this);
+        popupView.ReleaseOwner(this);
         HideInputBlocker();
         highlightView?.Hide();
         SetGameplaySuspended(false, false);
@@ -466,6 +476,85 @@ public class TriggeredTutorialPopupController : MonoBehaviour
         }
 
         request.onClosed?.Invoke();
+    }
+
+    void SetPopupBodyTextStrict(string body)
+    {
+        if (!popupView)
+            return;
+
+        body ??= string.Empty;
+        popupView.SetContent(body, this);
+
+        var bodyLabel = ResolvePopupBodyText();
+        if (!bodyLabel)
+            return;
+
+        bodyLabel.gameObject.SetActive(true);
+        bodyLabel.enabled = true;
+        bodyLabel.richText = true;
+        bodyLabel.text = popupView.FormatBodyForDisplay(body, updateContinueCue: true);
+
+        var color = bodyLabel.color;
+        if (color.a <= 0.001f)
+        {
+            color.a = 1f;
+            bodyLabel.color = color;
+        }
+
+        bodyLabel.ForceMeshUpdate(true, true);
+    }
+
+    TMP_Text ResolvePopupBodyText()
+    {
+        if (_popupBodyText && popupView && _popupBodyText.transform.IsChildOf(popupView.transform))
+            return _popupBodyText;
+
+        _popupBodyText = null;
+
+        if (!popupView)
+            return null;
+
+        Transform prompt = FindDeepChild(popupView.transform, BodyTextObjectName);
+        if (prompt)
+            _popupBodyText = prompt.GetComponent<TMP_Text>();
+
+        if (_popupBodyText)
+            return _popupBodyText;
+
+        var labels = popupView.GetComponentsInChildren<TMP_Text>(true);
+        TMP_Text fallback = null;
+        float fallbackWidth = -1f;
+
+        for (int i = 0; i < labels.Length; i++)
+        {
+            var label = labels[i];
+            if (!label)
+                continue;
+
+            if (popupView.ContinueButton && label.transform.IsChildOf(popupView.ContinueButton.transform))
+                continue;
+
+            if (popupView.SkipButton && label.transform.IsChildOf(popupView.SkipButton.transform))
+                continue;
+
+            if (label.name.IndexOf("Prompt", System.StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                _popupBodyText = label;
+                return _popupBodyText;
+            }
+
+            var rect = label.transform as RectTransform;
+            float width = rect ? rect.rect.width : 0f;
+            if (width > fallbackWidth)
+            {
+                fallback = label;
+                fallbackWidth = width;
+            }
+        }
+
+        _popupBodyText = fallback;
+        return _popupBodyText;
     }
 
     public bool IsTutorialCompletedForCurrentMode(string tutorialId)
@@ -558,10 +647,42 @@ public class TriggeredTutorialPopupController : MonoBehaviour
             gameController = FindFirstObjectByType<GameController>(FindObjectsInactive.Include);
 
         if (!popupView)
-            popupView = FindFirstObjectByType<TutorialPopupView>(FindObjectsInactive.Include);
+            popupView = FindTutorialPopupView();
 
         if (!highlightView)
             highlightView = FindFirstObjectByType<TutorialHighlightView>(FindObjectsInactive.Include);
+    }
+
+    static TutorialPopupView FindTutorialPopupView()
+    {
+        var views = FindObjectsByType<TutorialPopupView>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        for (int i = 0; i < views.Length; i++)
+        {
+            var view = views[i];
+            if (view && !view.IsReservedForWarnings)
+                return view;
+        }
+
+        return null;
+    }
+
+    static Transform FindDeepChild(Transform root, string childName)
+    {
+        if (!root || string.IsNullOrEmpty(childName))
+            return null;
+
+        for (int i = 0; i < root.childCount; i++)
+        {
+            Transform child = root.GetChild(i);
+            if (child && string.Equals(child.name, childName, System.StringComparison.Ordinal))
+                return child;
+
+            Transform nested = FindDeepChild(child, childName);
+            if (nested)
+                return nested;
+        }
+
+        return null;
     }
 
     bool HasBlockingTutorialSequence()

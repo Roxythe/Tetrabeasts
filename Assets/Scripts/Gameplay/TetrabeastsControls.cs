@@ -81,6 +81,7 @@ public static class TetrabeastsControls
     const string ControllerGlyphSpriteAssetName = "ControllerGlyphs";
     const int ControllerGlyphSizePercent = 170;
     const int CompactControllerGlyphSizePercent = 125;
+    const int TutorialContinueIndicatorGlyphSizePercent = 175;
     const float StickPressedThreshold = 0.5f;
     const float DefaultMenuSubmitSuppressSeconds = 0.22f;
 
@@ -1028,6 +1029,17 @@ public static class TetrabeastsControls
     public static string GetTutorialContinueBindingLabel()
     {
         return GetTutorialContinueBindingLabel(ControlPromptProfile);
+    }
+
+    public static string GetTutorialContinueIndicatorLabel()
+    {
+        TetrabeastsControlProfile profile = ControlPromptProfile;
+        TetrabeastsControlProfile effectiveProfile = ResolveProfile(profile);
+        if (effectiveProfile == TetrabeastsControlProfile.KeyboardMouse)
+            return "[F]";
+
+        string label = GetBindingLabel(TetrabeastsControlAction.MenuSubmit, effectiveProfile, TutorialContinueIndicatorGlyphSizePercent);
+        return string.IsNullOrWhiteSpace(label) ? FormatBracketedTutorialLabel(ControllerSouthLabel(effectiveProfile)) : label;
     }
 
     static string GetTutorialContinueBindingLabel(TetrabeastsControlProfile profile)

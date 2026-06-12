@@ -105,6 +105,7 @@ public class RoundRewardUI : MonoBehaviour
         _tutorialInteractionLocked = false;
         EnsureRerollReferences();
         ResolvePanelTutorials();
+        StopPanelTutorials(markComplete: false);
         SetRootPanelInteractable(true);
 
         if (rootPanel)
@@ -147,6 +148,7 @@ public class RoundRewardUI : MonoBehaviour
         confirmBuffButton.onClick.RemoveAllListeners();
         confirmBuffButton.onClick.AddListener(() =>
         {
+            StopPanelTutorial(_buffPanelTutorial, markComplete: false);
             Populate(debuffContainer, PickDebuffRewards(), isBuff: false);
 
             UIPanelTransition.Hide(buffPanel, true);
@@ -166,6 +168,7 @@ public class RoundRewardUI : MonoBehaviour
             // Lock the whole panel while next level loads
             _completionLocked = true;
             SetRootPanelInteractable(false);
+            StopPanelTutorials(markComplete: false);
 
             _onComplete?.Invoke(_selectedBuff, _selectedDebuff);
         });
@@ -308,6 +311,20 @@ public class RoundRewardUI : MonoBehaviour
     {
         if (sequence && sequence.gameObject.activeInHierarchy)
             sequence.StartSequenceIfNeeded();
+    }
+
+    void StopPanelTutorials(bool markComplete)
+    {
+        ResolvePanelTutorials();
+
+        StopPanelTutorial(_buffPanelTutorial, markComplete);
+        StopPanelTutorial(_debuffPanelTutorial, markComplete);
+    }
+
+    static void StopPanelTutorial(TutorialSequenceController sequence, bool markComplete)
+    {
+        if (sequence && sequence.IsSequenceRunning)
+            sequence.StopSequence(markComplete);
     }
 
     void Populate(Transform container, List<RunModifierSO> picks, bool isBuff)
@@ -725,6 +742,8 @@ public class RoundRewardUI : MonoBehaviour
     public void Hide()
     {
         if (!rootPanel) return;
+
+        StopPanelTutorials(markComplete: false);
 
         // Re-enable for next time
         var cg = rootPanel.GetComponent<CanvasGroup>();

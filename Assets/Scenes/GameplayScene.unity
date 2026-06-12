@@ -11550,7 +11550,7 @@ MonoBehaviour:
   autoStart: 0
   ignoreSavedCompletionForTesting: 0
   markSequenceCompleteOnSkip: 1
-  completionKey: tutorial_first_round_reward_buff_panel3
+  completionKey: tutorial_first_round_reward_buff_panel6
   gameController: {fileID: 2092384764}
   popupView: {fileID: 1007656541}
   highlightView: {fileID: 2092384771}
@@ -11642,7 +11642,7 @@ MonoBehaviour:
   autoStart: 0
   ignoreSavedCompletionForTesting: 0
   markSequenceCompleteOnSkip: 1
-  completionKey: tutorial_first_round_reward_debuff_panel3
+  completionKey: tutorial_first_round_reward_debuff_panel6
   gameController: {fileID: 2092384764}
   popupView: {fileID: 1007656541}
   highlightView: {fileID: 2092384771}
@@ -26390,26 +26390,26 @@ MonoBehaviour:
   hardDropGraceSeconds: 0.25
   tutorials:
   - specialType: 1
-    tutorialId: tutorial_special_block_death
+    tutorialId: tutorial_special_block_death5
     body: You found a Death special block. Drop it in a column to destroy all units
       matching the first monster below its landing point. (Press [F] to Continue)
   - specialType: 2
-    tutorialId: tutorial_special_block_bomb
+    tutorialId: tutorial_special_block_bomb5
     body: You found a Bomb special block. Drop it to blast a 3x3 area and damage
       nearby obstacles. Stone obstacles will be destroyed completley regardless of
       their current condition. (Press [F] to Continue)
   - specialType: 3
-    tutorialId: tutorial_special_block_bolt
+    tutorialId: tutorial_special_block_bolt5
     body: You found a Bolt special block. Drop it to strike an entire column forcing
       all units in that row to retreat from the board and destroying any spike traps
       in that column. (Press [F] to Continue)
   - specialType: 4
-    tutorialId: tutorial_special_block_earthquake
+    tutorialId: tutorial_special_block_earthquake5
     body: You found an Earthquake special block. Drop it to shake loose unsupported
       units across the board as well as obstacles. Drop it anywhere, it makes no
       difference. (Press [F] to Continue)
   - specialType: 5
-    tutorialId: tutorial_special_block_slow_gravity
+    tutorialId: tutorial_special_block_slow_gravity5
     body: You found a Slow Gravity special block. Drop it to slow falling pieces
       for a short time. Where it drops makes no difference. (Press [F] to Continue)
 --- !u!1 &2109608209
