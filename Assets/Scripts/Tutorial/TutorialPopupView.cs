@@ -626,11 +626,37 @@ public class TutorialPopupView : MonoBehaviour
         }
         else
         {
+            ResolveExistingContinueCue();
             RestoreBodyTextMargin();
         }
 
         if (_continueCueRoot)
             _continueCueRoot.gameObject.SetActive(visible);
+    }
+
+    void ResolveExistingContinueCue()
+    {
+        if (_continueCueRoot && _continueCueLabel && _continueCueArrow)
+            return;
+
+        RectTransform parent = bodyText && bodyText.transform.parent
+            ? bodyText.transform.parent as RectTransform
+            : PopupRectTransform;
+
+        if (!parent)
+            parent = transform as RectTransform;
+
+        Transform existing = parent ? FindDirectChild(parent, RuntimeContinueCueName) : null;
+        if (!existing && PopupRectTransform && PopupRectTransform != parent)
+            existing = FindDirectChild(PopupRectTransform, RuntimeContinueCueName);
+
+        if (!existing)
+            return;
+
+        _continueCueRoot = existing as RectTransform;
+        _continueCueLabel = existing.GetComponentInChildren<TMP_Text>(true);
+        _continueCueLabelRect = _continueCueLabel ? _continueCueLabel.transform as RectTransform : null;
+        _continueCueArrow = existing.GetComponentInChildren<Image>(true);
     }
 
     void EnsureContinueCue()

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 1d0aea0dda76df244abbae5444993e08
+guid: 79a3476ccc34d3f45b49d342ae74feaa
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5154209663831374151
-    second: HealPowerUp_ShopBuff_0
+      213: -6631447515482592753
+    second: BorderFrame_ShopBuff_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -152,13 +152,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: HealPowerUp_ShopBuff_0
+      name: BorderFrame_ShopBuff_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1018
-        height: 964
+        width: 677
+        height: 980
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -167,8 +167,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9b602717e919878b0800000000000000
-      internalID: -5154209663831374151
+      spriteID: f0a630d9e9d58f3a0800000000000000
+      internalID: -6631447515482592753
       vertices: []
       indices: 
       edges: []
@@ -187,7 +187,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      HealPowerUp_ShopBuff_0: -5154209663831374151
+      BorderFrame_ShopBuff_0: -6631447515482592753
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

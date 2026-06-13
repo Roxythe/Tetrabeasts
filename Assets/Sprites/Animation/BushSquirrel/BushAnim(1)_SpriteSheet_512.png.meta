@@ -485,6 +485,18 @@ TextureImporter:
   - first:
       213: 4758239368716979708
     second: BushAnim(1)_SpriteSheet_512_160
+  - first:
+      213: -3808020724868004776
+    second: BushAnim(1)_SpriteSheet_512_161
+  - first:
+      213: -2474507750613387381
+    second: BushAnim(1)_SpriteSheet_512_162
+  - first:
+      213: 4703497025437381074
+    second: BushAnim(1)_SpriteSheet_512_163
+  - first:
+      213: -5335469936705654992
+    second: BushAnim(1)_SpriteSheet_512_164
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -4173,11 +4185,99 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: BushAnim(1)_SpriteSheet_512_161
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 0
+        width: 512
+        height: 288
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 854cae49351372bc0800000000000000
+      internalID: -3808020724868004776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BushAnim(1)_SpriteSheet_512_162
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 0
+        width: 512
+        height: 288
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b87fcb2bf48c8add0800000000000000
+      internalID: -2474507750613387381
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BushAnim(1)_SpriteSheet_512_163
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 0
+        width: 512
+        height: 288
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d13d4bdf9d264140800000000000000
+      internalID: 4703497025437381074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BushAnim(1)_SpriteSheet_512_164
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 0
+        width: 512
+        height: 288
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03f22e07c5a94f5b0800000000000000
+      internalID: -5335469936705654992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 327dd31e4a98c7e499c98b49fc6b6781
+    spriteID: d93e2950b464b5c46b31b944b41c9d4f
     internalID: 0
     vertices: []
     indices: 
@@ -4259,6 +4359,10 @@ TextureImporter:
       BushAnim(1)_SpriteSheet_512_159: 5287369597858460264
       BushAnim(1)_SpriteSheet_512_16: 2330589303203793290
       BushAnim(1)_SpriteSheet_512_160: 4758239368716979708
+      BushAnim(1)_SpriteSheet_512_161: -3808020724868004776
+      BushAnim(1)_SpriteSheet_512_162: -2474507750613387381
+      BushAnim(1)_SpriteSheet_512_163: 4703497025437381074
+      BushAnim(1)_SpriteSheet_512_164: -5335469936705654992
       BushAnim(1)_SpriteSheet_512_17: 3922850352001963245
       BushAnim(1)_SpriteSheet_512_18: 5673116795809305069
       BushAnim(1)_SpriteSheet_512_19: -8135276977817978414

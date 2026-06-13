@@ -2564,6 +2564,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bush_Anim(1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7173710391196845298, guid: e11668979731d1141a7a244df9b0ff79, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -5335469936705654992, guid: 9bbfb925f0f1c2b42a7ed96c74b7d281, type: 3}
     - target: {fileID: 7669688579394038727, guid: e11668979731d1141a7a244df9b0ff79, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

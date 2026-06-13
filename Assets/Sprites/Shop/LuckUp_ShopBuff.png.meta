@@ -5,9 +5,6 @@ TextureImporter:
   - first:
       213: -2129540947538323834
     second: LuckUp_ShopBuff_0
-  - first:
-      213: -4449387787358954445
-    second: LuckUp_ShopBuff_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -40,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -87,7 +84,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: Standalone
+    buildTarget: iOS
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -113,6 +110,19 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -126,7 +136,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: iOS
+    buildTarget: WindowsStoreApps
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -145,10 +155,10 @@ TextureImporter:
       name: LuckUp_ShopBuff_0
       rect:
         serializedVersion: 2
-        x: 16
-        y: 2
-        width: 889
-        height: 919
+        x: 0
+        y: 0
+        width: 879
+        height: 904
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -159,28 +169,6 @@ TextureImporter:
       bones: []
       spriteID: 686545f7ac95272e0800000000000000
       internalID: -2129540947538323834
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: LuckUp_ShopBuff_1
-      rect:
-        serializedVersion: 2
-        x: 840
-        y: 521
-        width: 74
-        height: 100
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 33c128a91699042c0800000000000000
-      internalID: -4449387787358954445
       vertices: []
       indices: 
       edges: []
@@ -200,7 +188,6 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       LuckUp_ShopBuff_0: -2129540947538323834
-      LuckUp_ShopBuff_1: -4449387787358954445
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

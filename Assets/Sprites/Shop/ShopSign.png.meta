@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 1d0aea0dda76df244abbae5444993e08
+guid: 2d23ac0159cee3249903196c49cd6955
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5154209663831374151
-    second: HealPowerUp_ShopBuff_0
+      213: 5520847670183567339
+    second: ShopSign_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -152,13 +152,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: HealPowerUp_ShopBuff_0
+      name: ShopSign_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1018
-        height: 964
+        x: 70
+        y: 100
+        width: 884
+        height: 829
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -167,8 +167,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9b602717e919878b0800000000000000
-      internalID: -5154209663831374151
+      spriteID: bef955094bdfd9c40800000000000000
+      internalID: 5520847670183567339
       vertices: []
       indices: 
       edges: []
@@ -187,7 +187,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      HealPowerUp_ShopBuff_0: -5154209663831374151
+      ShopSign_0: 5520847670183567339
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

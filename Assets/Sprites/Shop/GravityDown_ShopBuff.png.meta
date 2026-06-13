@@ -5,57 +5,6 @@ TextureImporter:
   - first:
       213: 5449045797900722753
     second: GravityDown_ShopBuff_0
-  - first:
-      213: -9114033913480555011
-    second: GravityDown_ShopBuff_1
-  - first:
-      213: -8978469243377091136
-    second: GravityDown_ShopBuff_2
-  - first:
-      213: 7230931538724080443
-    second: GravityDown_ShopBuff_3
-  - first:
-      213: -6242330568047392464
-    second: GravityDown_ShopBuff_4
-  - first:
-      213: -7717168520141470218
-    second: GravityDown_ShopBuff_5
-  - first:
-      213: 2199964154821381126
-    second: GravityDown_ShopBuff_6
-  - first:
-      213: 7139791960604671393
-    second: GravityDown_ShopBuff_7
-  - first:
-      213: 1509624943239662889
-    second: GravityDown_ShopBuff_8
-  - first:
-      213: -9046843466371141852
-    second: GravityDown_ShopBuff_9
-  - first:
-      213: 7346900466908898264
-    second: GravityDown_ShopBuff_10
-  - first:
-      213: -4566901704771378253
-    second: GravityDown_ShopBuff_11
-  - first:
-      213: -1930061387984230529
-    second: GravityDown_ShopBuff_12
-  - first:
-      213: -6839492456700760514
-    second: GravityDown_ShopBuff_13
-  - first:
-      213: 746078661551339471
-    second: GravityDown_ShopBuff_14
-  - first:
-      213: 3245909483456742532
-    second: GravityDown_ShopBuff_15
-  - first:
-      213: -1708858978923982833
-    second: GravityDown_ShopBuff_16
-  - first:
-      213: 5399442740892541165
-    second: GravityDown_ShopBuff_17
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -88,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -135,7 +84,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: Standalone
+    buildTarget: iOS
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -161,6 +110,19 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -174,7 +136,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: iOS
+    buildTarget: WindowsStoreApps
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -193,10 +155,10 @@ TextureImporter:
       name: GravityDown_ShopBuff_0
       rect:
         serializedVersion: 2
-        x: 1
+        x: 0
         y: 0
-        width: 683
-        height: 999
+        width: 797
+        height: 995
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -207,380 +169,6 @@ TextureImporter:
       bones: []
       spriteID: 14225bc6846ee9b40800000000000000
       internalID: 5449045797900722753
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GravityDown_ShopBuff_1
-      rect:
-        serializedVersion: 2
-        x: 95
-        y: 76
-        width: 14
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: df5d024a172748180800000000000000
-      internalID: -9114033913480555011
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GravityDown_ShopBuff_2
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 110
-        width: 36
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0cdfcb90bc1166380800000000000000
-      internalID: -8978469243377091136
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GravityDown_ShopBuff_3
-      rect:
-        serializedVersion: 2
-        x: 108
-        y: 78
-        width: 24
-        height: 15
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b3b41d06ced695460800000000000000
-      internalID: 7230931538724080443
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GravityDown_ShopBuff_4
-      rect:
-        serializedVersion: 2
-        x: 136
-        y: 60
-        width: 78
-        height: 69
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 03909f0fb69ce59a0800000000000000
-      internalID: -6242330568047392464
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GravityDown_ShopBuff_5
-      rect:
-        serializedVersion: 2
-        x: 173
-        y: 38
-        width: 31
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6f504254e1c17e490800000000000000
-      internalID: -7717168520141470218
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GravityDown_ShopBuff_6
-      rect:
-        serializedVersion: 2
-        x: 206
-        y: 10
-        width: 98
-        height: 82
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 60c88be2eb7d78e10800000000000000
-      internalID: 2199964154821381126
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GravityDown_ShopBuff_7
-      rect:
-        serializedVersion: 2
-        x: 224
-        y: 100
-        width: 21
-        height: 20
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 1adf70eb5f2a51360800000000000000
-      internalID: 7139791960604671393
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GravityDown_ShopBuff_8
-      rect:
-        serializedVersion: 2
-        x: 247
-        y: 88
-        width: 8
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 92d8ed533e343f410800000000000000
-      internalID: 1509624943239662889
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GravityDown_ShopBuff_9
-      rect:
-        serializedVersion: 2
-        x: 266
-        y: 109
-        width: 11
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 42f6260bcc7237280800000000000000
-      internalID: -9046843466371141852
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GravityDown_ShopBuff_10
-      rect:
-        serializedVersion: 2
-        x: 297
-        y: 91
-        width: 11
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8d3a1429c0f65f560800000000000000
-      internalID: 7346900466908898264
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GravityDown_ShopBuff_11
-      rect:
-        serializedVersion: 2
-        x: 298
-        y: 86
-        width: 10
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3b3e9f2981b1f90c0800000000000000
-      internalID: -4566901704771378253
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GravityDown_ShopBuff_12
-      rect:
-        serializedVersion: 2
-        x: 300
-        y: 30
-        width: 7
-        height: 10
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f77a08eb46b0735e0800000000000000
-      internalID: -1930061387984230529
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GravityDown_ShopBuff_13
-      rect:
-        serializedVersion: 2
-        x: 304
-        y: 62
-        width: 69
-        height: 58
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e3e236a09dd3511a0800000000000000
-      internalID: -6839492456700760514
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GravityDown_ShopBuff_14
-      rect:
-        serializedVersion: 2
-        x: 305
-        y: 30
-        width: 11
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: fc7344cf69a9a5a00800000000000000
-      internalID: 746078661551339471
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GravityDown_ShopBuff_15
-      rect:
-        serializedVersion: 2
-        x: 320
-        y: 42
-        width: 15
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 484c2864a79cb0d20800000000000000
-      internalID: 3245909483456742532
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GravityDown_ShopBuff_16
-      rect:
-        serializedVersion: 2
-        x: 367
-        y: 102
-        width: 15
-        height: 26
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f00dff500d9e848e0800000000000000
-      internalID: -1708858978923982833
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GravityDown_ShopBuff_17
-      rect:
-        serializedVersion: 2
-        x: 437
-        y: 119
-        width: 23
-        height: 22
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: de026fbb09caeea40800000000000000
-      internalID: 5399442740892541165
       vertices: []
       indices: 
       edges: []
@@ -600,23 +188,6 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       GravityDown_ShopBuff_0: 5449045797900722753
-      GravityDown_ShopBuff_1: -9114033913480555011
-      GravityDown_ShopBuff_10: 7346900466908898264
-      GravityDown_ShopBuff_11: -4566901704771378253
-      GravityDown_ShopBuff_12: -1930061387984230529
-      GravityDown_ShopBuff_13: -6839492456700760514
-      GravityDown_ShopBuff_14: 746078661551339471
-      GravityDown_ShopBuff_15: 3245909483456742532
-      GravityDown_ShopBuff_16: -1708858978923982833
-      GravityDown_ShopBuff_17: 5399442740892541165
-      GravityDown_ShopBuff_2: -8978469243377091136
-      GravityDown_ShopBuff_3: 7230931538724080443
-      GravityDown_ShopBuff_4: -6242330568047392464
-      GravityDown_ShopBuff_5: -7717168520141470218
-      GravityDown_ShopBuff_6: 2199964154821381126
-      GravityDown_ShopBuff_7: 7139791960604671393
-      GravityDown_ShopBuff_8: 1509624943239662889
-      GravityDown_ShopBuff_9: -9046843466371141852
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

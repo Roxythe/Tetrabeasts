@@ -205,7 +205,7 @@ public class ConfirmationPopupUI : MonoBehaviour
         popupView.SetContinueVisible(true);
         popupView.SetContinueInteractable(true);
         popupView.SetSkipVisible(onCancel != null);
-        popupView.SetStepState(waitingForInteraction: false, readyToContinue: true);
+        popupView.SetStepState(waitingForInteraction: false, readyToContinue: false);
 
         SetLabel(continueButtonLabel, continueText);
         SetLabel(cancelButtonLabel, cancelText);

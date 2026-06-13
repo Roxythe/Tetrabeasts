@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 1d0aea0dda76df244abbae5444993e08
+guid: dcfcc1777cfacb941922b4e9082c810d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5154209663831374151
-    second: HealPowerUp_ShopBuff_0
+      213: -3813947006499087646
+    second: CastleHPBar_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -152,13 +152,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: HealPowerUp_ShopBuff_0
+      name: CastleHPBar_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1018
-        height: 964
+        x: 13
+        y: 178
+        width: 1230
+        height: 470
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -167,8 +167,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9b602717e919878b0800000000000000
-      internalID: -5154209663831374151
+      spriteID: 2ea157d9763221bc0800000000000000
+      internalID: -3813947006499087646
       vertices: []
       indices: 
       edges: []
@@ -187,7 +187,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      HealPowerUp_ShopBuff_0: -5154209663831374151
+      CastleHPBar_0: -3813947006499087646
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
