@@ -159,7 +159,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 715736882825295085}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.75715697
+  m_Size: 0.7375
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -324,15 +324,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GridLayoutGroup
   m_Padding:
-    m_Left: 30
-    m_Right: 30
+    m_Left: 0
+    m_Right: 0
     m_Top: 30
     m_Bottom: 30
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 840, y: 300}
-  m_Spacing: {x: 0, y: 40}
+  m_CellSize: {x: 780, y: 300}
+  m_Spacing: {x: 2, y: 40}
   m_Constraint: 1
   m_ConstraintCount: 2
 --- !u!1 &4654327642954421286
@@ -447,8 +447,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -3.5, y: -15.5}
-  m_SizeDelta: {x: 1743, y: 767}
+  m_AnchoredPosition: {x: -2, y: -15.5}
+  m_SizeDelta: {x: 1632, y: 767}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2508299511970577577
 CanvasRenderer:
@@ -1109,6 +1109,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8400609062916974223, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
+      propertyPath: m_fontSize
+      value: 64.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8400609062916974223, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
       propertyPath: m_HorizontalAlignment
       value: 1
       objectReference: {fileID: 0}
@@ -1229,6 +1233,10 @@ PrefabInstance:
     - target: {fileID: 7142836741007041694, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8400609062916974223, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
+      propertyPath: m_fontSize
+      value: 64.5
       objectReference: {fileID: 0}
     - target: {fileID: 8400609062916974223, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
       propertyPath: m_HorizontalAlignment
@@ -1353,6 +1361,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8400609062916974223, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
+      propertyPath: m_fontSize
+      value: 64.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8400609062916974223, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
       propertyPath: m_HorizontalAlignment
       value: 1
       objectReference: {fileID: 0}
@@ -1374,25 +1386,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7277168694408655322}
     m_Modifications:
-    - target: {fileID: 4683668177089113660, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 92
-      objectReference: {fileID: 0}
-    - target: {fileID: 4683668177089113660, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 87.920044
-      objectReference: {fileID: 0}
     - target: {fileID: 5497985616318155159, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
       propertyPath: m_Name
       value: AchievementRow_Prefab
-      objectReference: {fileID: 0}
-    - target: {fileID: 6481585776849818051, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 163.92
-      objectReference: {fileID: 0}
-    - target: {fileID: 6481585776849818051, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -40.039978
       objectReference: {fileID: 0}
     - target: {fileID: 7142836741007041694, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
       propertyPath: m_Pivot.x
@@ -1473,10 +1469,6 @@ PrefabInstance:
     - target: {fileID: 7142836741007041694, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8400609062916974223, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
-      propertyPath: m_HorizontalAlignment
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1595,6 +1587,10 @@ PrefabInstance:
     - target: {fileID: 7142836741007041694, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8400609062916974223, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
+      propertyPath: m_fontSize
+      value: 64.5
       objectReference: {fileID: 0}
     - target: {fileID: 8400609062916974223, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
       propertyPath: m_HorizontalAlignment
@@ -1717,6 +1713,10 @@ PrefabInstance:
     - target: {fileID: 7142836741007041694, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8400609062916974223, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
+      propertyPath: m_fontSize
+      value: 64.5
       objectReference: {fileID: 0}
     - target: {fileID: 8400609062916974223, guid: 7c59afdef37320944a714d1de72d3f2d, type: 3}
       propertyPath: m_HorizontalAlignment

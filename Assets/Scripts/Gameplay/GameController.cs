@@ -221,6 +221,7 @@ public class GameController : MonoBehaviour
     [SerializeField] Image specialGaugeFillImage;        // Fill image component
 
     [SerializeField] bool specialGaugeUseFieryFill = true;
+    [SerializeField] Color specialGaugeFillingColor = new Color(0.80f, 0.10f, 0.10f, 1f);
     [SerializeField] float specialGaugeFillMinSpeed = 0.25f;  // at ~0%
     [SerializeField] float specialGaugeFillMaxSpeed = 1.25f;  // at 100%
     [SerializeField] float specialGaugeFillColorBoost = 1.0f; // 1 = normal, >1 brighter
@@ -7631,7 +7632,7 @@ public class GameController : MonoBehaviour
         if (activateSpecialGaugeText)
         {
             activateSpecialGaugeText.richText = true;
-            activateSpecialGaugeText.text = specialBinding;
+            activateSpecialGaugeText.text = FormatSpecialReadyPrompt(specialBinding);
         }
 
         if (gameplayControlsText)
@@ -7693,6 +7694,19 @@ public class GameController : MonoBehaviour
     {
         string label = TetrabeastsControls.GetCompactBindingLabel(action, GetGameplayControlsDisplayProfile());
         return string.IsNullOrWhiteSpace(label) ? TetrabeastsControls.GetActionLabel(action) : label;
+    }
+
+    string FormatSpecialReadyPrompt(string specialBinding)
+    {
+        TetrabeastsControlProfile profile = GetGameplayControlsDisplayProfile();
+        string binding = string.IsNullOrWhiteSpace(specialBinding)
+            ? TetrabeastsControls.GetActionLabel(TetrabeastsControlAction.Special)
+            : specialBinding;
+
+        if (profile == TetrabeastsControlProfile.KeyboardMouse)
+            binding = $"[{binding}]";
+
+        return $"{TetrabeastsLocalization.LocalizeText("Special Ready Press")} {binding}";
     }
 
     TetrabeastsControlProfile GetGameplayControlsDisplayProfile()
@@ -7871,8 +7885,17 @@ public class GameController : MonoBehaviour
         if (specialGaugeMax <= 0f) return;
 
         float pct = Mathf.Clamp01(specialGauge / specialGaugeMax);
+        bool full = specialGauge >= (specialGaugeMax - 0.001f);
 
-        // Speed scales with fullness, slow at 10%, normal at 100%
+        if (!full)
+        {
+            Color fillingColor = specialGaugeFillingColor;
+            fillingColor.a = 1f;
+            specialGaugeFillImage.color = fillingColor;
+            return;
+        }
+
+        // Once full, keep the existing fiery red/orange/yellow cycle.
         float speed = Mathf.Lerp(specialGaugeFillMinSpeed, specialGaugeFillMaxSpeed, pct);
 
         _specialFillPhase += Time.unscaledDeltaTime * speed;

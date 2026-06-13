@@ -901,7 +901,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1692212058581304955, guid: 6657dfd21e9693e4d97518119134df2c, type: 3}
+  m_Sprite: {fileID: -1121640773204645567, guid: 6f0c5756f869bdd47830f0d979031ec8, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1171,6 +1171,8 @@ MonoBehaviour:
   statsCategoryText: {fileID: 5292977551467611726}
   statsEarnedText: {fileID: 3664942762669212302}
   unlockedDifficultyText: {fileID: 536971525491187789}
+  buffsScrollRect: {fileID: 9159187038503923191}
+  debuffsScrollRect: {fileID: 6453650651330294133}
   buffsContent: {fileID: 2070532677680372934}
   debuffsContent: {fileID: 5806453129359959249}
   modifierRowPrefab: {fileID: 2687559026713328491, guid: 6a0606a36296c764ea3bc0194761f3a2, type: 3}
