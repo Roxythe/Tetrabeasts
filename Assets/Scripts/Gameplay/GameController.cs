@@ -192,6 +192,8 @@ public class GameController : MonoBehaviour
     public float specialGauge = 0f;
     public float specialGaugeMax = 100f;
     public TMP_Text activateSpecialGaugeText;
+    [SerializeField] AudioClip specialGaugeFullSFX;
+    [SerializeField, Range(0f, 1f)] float specialGaugeFullSFXVolume = 1f;
 
     [SerializeField] bool specialUseFieryGradient = true;
     [SerializeField] float specialPulseScale = 1.15f;
@@ -240,7 +242,7 @@ public class GameController : MonoBehaviour
 
     [Header("Projectiles")]
     public RectTransform projectileRoot;
-    public float projectileSpeed = 800f;
+    public float projectileSpeed = 700f;
     public GameObject[] attackExplosionPrefabs;
     public float attackExplosionSizeMultiplier = 2f;
     public Vector2 attackExplosionOffsetCells = new Vector2(0f, 0.5f);
@@ -362,7 +364,7 @@ public class GameController : MonoBehaviour
     [Header("Run Modifiers (runtime)")]
     public float enemyAttackIntervalMult = 1f;     // < 1 = attacks faster, > 1 = slower
     public float enemyProjectileDamageMult = 1f;   // > 1 = more damage
-    public float enemyProjectileSpeedMult = 1f;    // < 1 = Faster enemy projectiles (Currently unused)
+    public float enemyProjectileSpeedMult = 1f;    // Scales enemy projectile speed
     public float enemyCastleHpMult = 1f;
 
     [Header("Enemy Damage Scaling")]
@@ -2743,7 +2745,7 @@ public class GameController : MonoBehaviour
 
             castleAttackInterval = data.projectileInterval * enemyAttackIntervalMult;
             _castleAttackTimer = 0f;
-            projectileSpeed = data.projectileSpeed * enemyProjectileSpeedMult;
+            projectileSpeed = Mathf.Max(1f, data.projectileSpeed) * Mathf.Max(0.01f, enemyProjectileSpeedMult);
             castleProjectileVisualScale = Mathf.Max(0.1f, data.projectileVisualScale);
             castleProjectileDamage = Mathf.Max(1, Mathf.RoundToInt(GetScaledEnemyDamage(data.projectileDamage * enemyProjectileDamageMult)));
 
@@ -4019,7 +4021,7 @@ public class GameController : MonoBehaviour
         return roster[roster.Count - 1];
     }
 
-    void UpdateSpecialUI()
+    void UpdateSpecialUI(bool playGaugeFullSFX = true)
     {
         if (specialSlider)
             specialSlider.value = Mathf.Clamp01(specialGauge / Mathf.Max(1f, specialGaugeMax));
@@ -4032,7 +4034,12 @@ public class GameController : MonoBehaviour
         bool full = specialGauge >= (specialGaugeMax - 0.001f);
 
         if (full && !_wasSpecialGaugeFullLastFrame)
+        {
+            if (playGaugeFullSFX)
+                PlaySpecialGaugeFullSFX();
+
             QueueFirstSpecialGaugeTutorialIfNeeded();
+        }
 
         _wasSpecialGaugeFullLastFrame = full;
 
@@ -4045,10 +4052,16 @@ public class GameController : MonoBehaviour
         if (activateSpecialGaugeText) activateSpecialGaugeText.gameObject.SetActive(full);
     }
 
-    public void SetSpecialGaugeImmediate(float value)
+    public void SetSpecialGaugeImmediate(float value, bool playGaugeFullSFX = false)
     {
         specialGauge = Mathf.Clamp(value, 0f, specialGaugeMax);
-        UpdateSpecialUI();
+        UpdateSpecialUI(playGaugeFullSFX);
+    }
+
+    void PlaySpecialGaugeFullSFX()
+    {
+        if (AudioManager.I && specialGaugeFullSFX)
+            AudioManager.I.PlaySFX(specialGaugeFullSFX, specialGaugeFullSFXVolume);
     }
 
     void SpawnAttackProjectile(Sprite sprite, Sprite altSprite, AttackAnimType animType,
@@ -4548,7 +4561,7 @@ public class GameController : MonoBehaviour
 
     System.Collections.IEnumerator CastleDownshotCo(RectTransform rt, Vector2 end, int column)
     {
-        float speed = Mathf.Max(10f, projectileSpeed);
+        float speed = GetCurrentCastleProjectileSpeed();
         while (rt && (rt.anchoredPosition - end).sqrMagnitude > 4f)
         {
             Vector2 previous = rt.anchoredPosition;
@@ -5411,6 +5424,7 @@ public class GameController : MonoBehaviour
         _slowGravitySpecialRampRateMultActive = 1f;
         _slowGravitySpecialVisualActive = false;
         ClearTimedSlowGravityEffect(TimedSlowGravitySource.SpecialBlock);
+        gameBoard?.StopSlowGravityBoardVFX();
         EnsureSlowGravityImage();
         if (slowGravityImage)
             slowGravityImage.gameObject.SetActive(false);
@@ -5457,6 +5471,11 @@ public class GameController : MonoBehaviour
         UpdateGravityText(interval);
         RefreshGravityTextColor();
         SetTimedSlowGravityEffect(TimedSlowGravitySource.SpecialBlock, durationSeconds);
+        gameBoard?.PlaySlowGravityBoardVFX(
+            durationSeconds,
+            () => _activeTimedSlowGravitySource == TimedSlowGravitySource.SpecialBlock
+                ? _activeTimedSlowGravityRemainingSeconds
+                : 0f);
         _slowGravitySpecialCR = StartCoroutine(SlowGravitySpecialCo(durationSeconds));
     }
 
@@ -5476,6 +5495,33 @@ public class GameController : MonoBehaviour
             _playerGravityBaseOverrideActive,
             _slowGravitySpecialMultActive,
             _slowGravitySpecialRampRateMultActive);
+    }
+
+    float GetCurrentGravityCellsPerSecond()
+    {
+        float interval = GetCurrentFallInterval();
+        return interval > 0.0001f ? 1f / interval : 0f;
+    }
+
+    float GetLevelOneBaseGravityCellsPerSecond()
+    {
+        float levelOneInterval = _level1FallInterval > 0f ? _level1FallInterval : startFallInterval;
+        return 1f / Mathf.Max(0.0001f, levelOneInterval);
+    }
+
+    float GetCurrentCastleProjectileSpeed()
+    {
+        float baseSpeed = currentCastleData
+            ? Mathf.Max(1f, currentCastleData.projectileSpeed) * Mathf.Max(0.01f, enemyProjectileSpeedMult)
+            : Mathf.Max(1f, projectileSpeed);
+        float baseGravity = GetLevelOneBaseGravityCellsPerSecond();
+        float currentGravity = GetCurrentGravityCellsPerSecond();
+        float gravityRatio = baseGravity > 0.0001f
+            ? Mathf.Max(1f, currentGravity / baseGravity)
+            : 1f;
+        float exponent = currentCastleData ? Mathf.Max(0f, currentCastleData.projectileGravitySpeedExponent) : 0.5f;
+
+        return Mathf.Max(10f, baseSpeed * Mathf.Pow(gravityRatio, exponent));
     }
 
     float CalculateFallInterval(

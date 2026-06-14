@@ -23,7 +23,7 @@ MonoBehaviour:
   infiniteHealth: 0
   projectileSprite: {fileID: 21300000, guid: ca7186951d5077d419fe7998de074c6d, type: 3}
   projectileInterval: 2
-  projectileSpeed: 800
+  projectileSpeed: 700
   projectileVisualScale: 1.5
   projectileDamage: 18
   baseEnemyProjectilesPerAttack: 2

@@ -66,7 +66,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.14, g: 0.16, b: 0.18, a: 0.88}
+  m_Color: {r: 0.654902, g: 0.42745098, b: 0.91764706, a: 0.88}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -147,9 +147,9 @@ MonoBehaviour:
   scoreText: {fileID: 9064437497507220893}
   commanderImage: {fileID: 5681866769080488125}
   rowBackground: {fileID: 1140001}
-  normalBackground: {r: 0.14, g: 0.16, b: 0.18, a: 0.88}
-  alternateBackground: {r: 0.22, g: 0.24, b: 0.28, a: 0.88}
-  localPlayerBackground: {r: 0.25, g: 0.32, b: 0.42, a: 0.96}
+  normalBackground: {r: 0.654902, g: 0.42745098, b: 0.91764706, a: 0.88}
+  alternateBackground: {r: 0.46658608, g: 0.2171591, b: 0.754717, a: 0.88}
+  localPlayerBackground: {r: 0.38597268, g: 0.15659486, b: 0.6509434, a: 0.96}
   normalText: {r: 1, g: 1, b: 1, a: 1}
   scoreTextColor: {r: 1, g: 0.95, b: 0, a: 1}
   placeholderText: {r: 0.7, g: 0.7, b: 0.7, a: 1}

@@ -76,6 +76,11 @@ public class ShopBuffEntryUI : MonoBehaviour
 
     void TryPurchase()
     {
+        if (!shopPanel)
+            shopPanel = GetComponentInParent<ShopPanelUI>(true);
+
+        shopPanel?.NotifyShopActivity();
+
         if (DemoBuildGuardRails.TryBlockPurchase(errorSFX))
         {
             shopPanel?.RefreshAll();
@@ -117,6 +122,9 @@ public class ShopBuffEntryUI : MonoBehaviour
             string levelKey = K_LifetimeShopLevelPrefix + buffType;
             PlayerProgress.I.SetLifetimeBestInt(levelKey, afterLevel);
         }
+
+        if (afterLevel > beforeLevel)
+            shopPanel?.NotifyPurchaseMade();
 
         shopPanel?.RefreshAll();
         Refresh();

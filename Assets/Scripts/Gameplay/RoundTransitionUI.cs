@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,6 +19,7 @@ public class RoundTransitionUI : MonoBehaviour
     [SerializeField] GameObject rootPanel;
     [SerializeField] Image backgroundImage;
     [SerializeField] TMP_Text messageText;
+    [SerializeField] TMP_Text winOneLinerText;
     [SerializeField] Button continueButton;
     [SerializeField] CanvasGroup continueButtonGroup;
     [SerializeField] Toggle optOutToggle;
@@ -29,6 +31,17 @@ public class RoundTransitionUI : MonoBehaviour
     [Header("Optional Assets")]
     [SerializeField] TMP_FontAsset transitionFont;
     [SerializeField] Button continueButtonPrefab;
+
+    [Header("Win One-Liners")]
+    [TextArea(1, 2)]
+    [SerializeField] string[] winOneLiners =
+    {
+        "Castle cleared. Momentum gained.",
+        "Victory looks good on the roster.",
+        "One less wall between you and legend.",
+        "The board remembers that one.",
+        "Onward before the dust settles."
+    };
 
     [Header("Animation")]
     [SerializeField] Animator transitionAnimator;
@@ -76,6 +89,7 @@ public class RoundTransitionUI : MonoBehaviour
     ScopedMenuNavigator _navigator;
     AudioClip _currentActiveLoopSfxClip;
     RoundTransitionVariant _currentVariant = RoundTransitionVariant.Default;
+    int _lastWinOneLinerIndex = -1;
     bool _builtRuntimeUi;
     bool _continueButtonUsesPrefab;
     const float RuntimeActionGap = 22f;
@@ -163,9 +177,10 @@ public class RoundTransitionUI : MonoBehaviour
         if (messageText)
         {
             messageText.text = TetrabeastsLocalization.LocalizeText(message);
-            SetTextAlpha(0f);
         }
 
+        SetWinOneLinerVisible(false);
+        SetTextAlpha(0f);
         PrepareCircularReveal();
         SetActionControlsVisible(false);
         ConfigureOptOutToggle(string.Empty, false);
@@ -218,8 +233,10 @@ public class RoundTransitionUI : MonoBehaviour
         if (messageText)
         {
             messageText.text = TetrabeastsLocalization.LocalizeText(message);
-            SetTextAlpha(0f);
         }
+
+        ConfigureWinOneLiner(variant);
+        SetTextAlpha(0f);
 
         if (continueButtonGroup)
         {
@@ -432,6 +449,7 @@ public class RoundTransitionUI : MonoBehaviour
 
         ResolveAnimator();
         EnsureRevealMask();
+        EnsureWinOneLinerText();
         ApplyFont();
         WireContinueButton();
         HookContinueButtonSfx();
@@ -508,6 +526,93 @@ public class RoundTransitionUI : MonoBehaviour
 
         BuildContinueButton(actionGo.transform);
         BuildOptOutToggle(actionGo.transform);
+    }
+
+    void EnsureWinOneLinerText()
+    {
+        if (winOneLinerText || !contentRoot)
+            return;
+
+        var oneLinerGo = new GameObject("RoundTransition_WinOneLiner_Text", typeof(RectTransform), typeof(TextMeshProUGUI));
+        oneLinerGo.transform.SetParent(contentRoot, false);
+
+        var oneLinerRect = oneLinerGo.GetComponent<RectTransform>();
+        oneLinerRect.sizeDelta = new Vector2(920f, 54f);
+
+        winOneLinerText = oneLinerGo.GetComponent<TextMeshProUGUI>();
+        winOneLinerText.alignment = TextAlignmentOptions.Center;
+        winOneLinerText.enableAutoSizing = true;
+        winOneLinerText.fontSizeMin = 18f;
+        winOneLinerText.fontSizeMax = 32f;
+        winOneLinerText.fontStyle = FontStyles.Italic;
+        winOneLinerText.raycastTarget = false;
+        winOneLinerText.color = new Color(1f, 1f, 1f, 0f);
+
+        if (transitionFont)
+            winOneLinerText.font = transitionFont;
+
+        if (actionRoot)
+            oneLinerGo.transform.SetSiblingIndex(actionRoot.GetSiblingIndex());
+
+        oneLinerGo.SetActive(false);
+    }
+
+    void ConfigureWinOneLiner(RoundTransitionVariant variant)
+    {
+        if (variant != RoundTransitionVariant.Win)
+        {
+            SetWinOneLinerVisible(false);
+            return;
+        }
+
+        string oneLiner = PickWinOneLiner();
+        if (string.IsNullOrWhiteSpace(oneLiner))
+        {
+            SetWinOneLinerVisible(false);
+            return;
+        }
+
+        EnsureWinOneLinerText();
+        if (!winOneLinerText)
+            return;
+
+        winOneLinerText.text = TetrabeastsLocalization.LocalizeText(oneLiner);
+        SetWinOneLinerVisible(true);
+    }
+
+    string PickWinOneLiner()
+    {
+        if (winOneLiners == null || winOneLiners.Length == 0)
+            return string.Empty;
+
+        var candidates = new List<int>();
+        var fallbackCandidates = new List<int>();
+
+        for (int i = 0; i < winOneLiners.Length; i++)
+        {
+            if (string.IsNullOrWhiteSpace(winOneLiners[i]))
+                continue;
+
+            fallbackCandidates.Add(i);
+            if (i != _lastWinOneLinerIndex)
+                candidates.Add(i);
+        }
+
+        if (candidates.Count == 0)
+            candidates = fallbackCandidates;
+
+        if (candidates.Count == 0)
+            return string.Empty;
+
+        int pickedIndex = candidates[UnityEngine.Random.Range(0, candidates.Count)];
+        _lastWinOneLinerIndex = pickedIndex;
+        return winOneLiners[pickedIndex].Trim();
+    }
+
+    void SetWinOneLinerVisible(bool visible)
+    {
+        if (winOneLinerText)
+            winOneLinerText.gameObject.SetActive(visible);
     }
 
     void EnsureRevealMask()
@@ -887,12 +992,18 @@ public class RoundTransitionUI : MonoBehaviour
 
     void SetTextAlpha(float alpha)
     {
-        if (!messageText)
+        SetGraphicAlpha(messageText, alpha);
+        SetGraphicAlpha(winOneLinerText, alpha);
+    }
+
+    void SetGraphicAlpha(Graphic graphic, float alpha)
+    {
+        if (!graphic)
             return;
 
-        var color = messageText.color;
+        var color = graphic.color;
         color.a = alpha;
-        messageText.color = color;
+        graphic.color = color;
     }
 
     void SetBackgroundAlpha(float alpha)
@@ -980,6 +1091,9 @@ public class RoundTransitionUI : MonoBehaviour
 
         if (messageText)
             messageText.font = transitionFont;
+
+        if (winOneLinerText)
+            winOneLinerText.font = transitionFont;
 
         if (continueButton)
         {

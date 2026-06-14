@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -6,6 +7,14 @@ public class ShopPanelUI : MonoBehaviour
 {
     const string RuntimeTooltipRootName = "ShopTooltip_Panel";
     const string RuntimeTooltipTextName = "ShopTooltip_Text";
+
+    enum ShopKeeperPromptType
+    {
+        Welcome,
+        Purchase,
+        Refund,
+        Idle
+    }
 
     [Header("Optional")]
     public CurrencyUI currencyUI;
@@ -26,11 +35,47 @@ public class ShopPanelUI : MonoBehaviour
     [SerializeField] Vector2 tooltipTextInsetMax = new Vector2(14f, 12f);
     [SerializeField, Min(0f)] float tooltipScreenEdgePadding = 16f;
 
+    [Header("Shop Keeper Popup")]
+    [SerializeField] GameObject shopTextPopUp;
+    [SerializeField] TMP_Text shopText;
+    [SerializeField] Image shopKeeperImage;
+    [SerializeField, Min(0f)] float popupSeconds = 3f;
+    [SerializeField, Min(0f)] float idlePromptSeconds = 15f;
+    [SerializeField, TextArea(2, 4)] string[] welcomeText =
+    {
+        "If you got the gaba, I got the goods."
+    };
+    [SerializeField, TextArea(2, 4)] string[] purchaseMadeText;
+    [SerializeField, TextArea(2, 4)] string[] refundText;
+    [SerializeField, TextArea(2, 4)] string[] idleText;
+    [SerializeField] Sprite[] welcomeImages;
+    [SerializeField] Sprite[] purchaseImages;
+    [SerializeField] Sprite[] refundImages;
+    [SerializeField] Sprite[] idleImages;
+
     RectTransform _currentTooltipTarget;
+    Coroutine _shopKeeperPopupRoutine;
+    bool _shopPanelOpen;
+    float _lastShopActivityTime;
+    int _lastWelcomeTextIndex = -1;
+    int _lastPurchaseTextIndex = -1;
+    int _lastRefundTextIndex = -1;
+    int _lastIdleTextIndex = -1;
+    int _lastWelcomeImageIndex = -1;
+    int _lastPurchaseImageIndex = -1;
+    int _lastRefundImageIndex = -1;
+    int _lastIdleImageIndex = -1;
+
+    void Awake()
+    {
+        ResolveShopKeeperReferences();
+        HideShopKeeperPrompt();
+    }
 
     private void OnEnable()
     {
         ResolveTooltipReferences();
+        ResolveShopKeeperReferences();
         HideTooltip();
 
         if (refundAllButton)
@@ -44,7 +89,54 @@ public class ShopPanelUI : MonoBehaviour
 
     void OnDisable()
     {
+        NotifyShopClosed();
         HideTooltip();
+    }
+
+    void Update()
+    {
+        if (!_shopPanelOpen)
+            return;
+
+        if (!UIPanelTransition.IsVisible(gameObject))
+        {
+            NotifyShopClosed();
+            return;
+        }
+
+        if (idlePromptSeconds <= 0f)
+            return;
+
+        if (Time.unscaledTime - _lastShopActivityTime < idlePromptSeconds)
+            return;
+
+        _lastShopActivityTime = Time.unscaledTime;
+        ShowShopKeeperPrompt(ShopKeeperPromptType.Idle);
+    }
+
+    public void NotifyShopOpened()
+    {
+        ResolveShopKeeperReferences();
+        _shopPanelOpen = true;
+        RegisterShopActivity();
+        ShowShopKeeperPrompt(ShopKeeperPromptType.Welcome);
+    }
+
+    public void NotifyShopClosed()
+    {
+        _shopPanelOpen = false;
+        HideShopKeeperPrompt();
+    }
+
+    public void NotifyShopActivity()
+    {
+        RegisterShopActivity();
+    }
+
+    public void NotifyPurchaseMade()
+    {
+        RegisterShopActivity();
+        ShowShopKeeperPrompt(ShopKeeperPromptType.Purchase);
     }
 
     public void RefreshAll()
@@ -61,6 +153,8 @@ public class ShopPanelUI : MonoBehaviour
 
     public void RefundAllUpgrades()
     {
+        RegisterShopActivity();
+
         int refund = ShopBuffStore.GetTotalRefundAll(); // Calculate refund before resetting levels
         ShopBuffStore.ResetAllToZero(); // Reset levels so buffs no longer apply
 
@@ -79,6 +173,122 @@ public class ShopPanelUI : MonoBehaviour
         }
 
         RefreshAll();
+        ShowShopKeeperPrompt(ShopKeeperPromptType.Refund);
+    }
+
+    void RegisterShopActivity()
+    {
+        _lastShopActivityTime = Time.unscaledTime;
+    }
+
+    void ShowShopKeeperPrompt(ShopKeeperPromptType promptType)
+    {
+        ResolveShopKeeperReferences();
+
+        switch (promptType)
+        {
+            case ShopKeeperPromptType.Welcome:
+                ShowShopKeeperPrompt(welcomeText, welcomeImages, ref _lastWelcomeTextIndex, ref _lastWelcomeImageIndex);
+                break;
+            case ShopKeeperPromptType.Purchase:
+                ShowShopKeeperPrompt(purchaseMadeText, purchaseImages, ref _lastPurchaseTextIndex, ref _lastPurchaseImageIndex);
+                break;
+            case ShopKeeperPromptType.Refund:
+                ShowShopKeeperPrompt(refundText, refundImages, ref _lastRefundTextIndex, ref _lastRefundImageIndex);
+                break;
+            case ShopKeeperPromptType.Idle:
+                ShowShopKeeperPrompt(idleText, idleImages, ref _lastIdleTextIndex, ref _lastIdleImageIndex);
+                break;
+        }
+    }
+
+    void ShowShopKeeperPrompt(string[] textOptions, Sprite[] imageOptions, ref int lastTextIndex, ref int lastImageIndex)
+    {
+        if (!shopTextPopUp)
+            return;
+
+        string selectedText = PickRandomText(textOptions, ref lastTextIndex);
+        Sprite selectedSprite = PickRandomSprite(imageOptions, ref lastImageIndex);
+
+        if (string.IsNullOrWhiteSpace(selectedText) && !selectedSprite)
+            return;
+
+        if (shopText)
+        {
+            shopText.text = string.IsNullOrWhiteSpace(selectedText)
+                ? string.Empty
+                : TetrabeastsLocalization.LocalizeText(selectedText);
+        }
+
+        if (shopKeeperImage)
+        {
+            if (selectedSprite)
+                shopKeeperImage.sprite = selectedSprite;
+        }
+
+        shopTextPopUp.SetActive(true);
+
+        if (_shopKeeperPopupRoutine != null)
+            StopCoroutine(_shopKeeperPopupRoutine);
+
+        _shopKeeperPopupRoutine = StartCoroutine(HideShopKeeperPromptAfterDelay());
+    }
+
+    IEnumerator HideShopKeeperPromptAfterDelay()
+    {
+        float delay = Mathf.Max(0f, popupSeconds);
+        if (delay > 0f)
+            yield return new WaitForSecondsRealtime(delay);
+
+        _shopKeeperPopupRoutine = null;
+        HideShopKeeperPrompt();
+    }
+
+    void HideShopKeeperPrompt()
+    {
+        if (_shopKeeperPopupRoutine != null)
+        {
+            StopCoroutine(_shopKeeperPopupRoutine);
+            _shopKeeperPopupRoutine = null;
+        }
+
+        if (shopTextPopUp)
+            shopTextPopUp.SetActive(false);
+    }
+
+    static string PickRandomText(string[] options, ref int lastIndex)
+    {
+        int index = PickRandomIndex(options, lastIndex);
+        if (index < 0)
+            return string.Empty;
+
+        lastIndex = index;
+        return options[index];
+    }
+
+    static Sprite PickRandomSprite(Sprite[] options, ref int lastIndex)
+    {
+        int index = PickRandomIndex(options, lastIndex);
+        if (index < 0)
+            return null;
+
+        lastIndex = index;
+        return options[index];
+    }
+
+    static int PickRandomIndex<T>(T[] options, int lastIndex)
+    {
+        if (options == null || options.Length == 0)
+            return -1;
+
+        if (options.Length == 1)
+            return 0;
+
+        int index = Random.Range(0, options.Length);
+        if (index == lastIndex)
+            index = (index + Random.Range(1, options.Length)) % options.Length;
+
+        return index;
     }
 
     public void ShowTooltip(ShopBuffEntryUI entry, RectTransform targetRect)
@@ -219,6 +429,31 @@ public class ShopPanelUI : MonoBehaviour
 
         if (!tooltipRoot || !tooltipText)
             CreateRuntimeTooltip();
+    }
+
+    void ResolveShopKeeperReferences()
+    {
+        if (!shopTextPopUp)
+        {
+            Transform foundPopUp = FindChildByName(transform, "ShopTextPopUp");
+            if (foundPopUp)
+                shopTextPopUp = foundPopUp.gameObject;
+        }
+
+        if (!shopText)
+        {
+            Transform textRoot = shopTextPopUp ? shopTextPopUp.transform : transform;
+            Transform foundText = FindChildByName(textRoot, "Shop_Text (TMP)");
+            shopText = foundText
+                ? foundText.GetComponent<TMP_Text>()
+                : textRoot.GetComponentInChildren<TMP_Text>(true);
+        }
+
+        if (!shopKeeperImage)
+        {
+            Transform foundImage = FindChildByName(transform, "ShopKeeper_Image");
+            shopKeeperImage = foundImage ? foundImage.GetComponent<Image>() : null;
+        }
     }
 
     void CreateRuntimeTooltip()

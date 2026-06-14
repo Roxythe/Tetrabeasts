@@ -141,6 +141,19 @@ public class Board : MonoBehaviour
     public RectTransform underlayRoot; // Traps under blocks (spikes)
     public RectTransform overlayRoot;  // Borders above blocks (fire/poison)
 
+    [Header("Special Board VFX")]
+    [SerializeField] RectTransform boardVfxRoot;
+    [SerializeField] Sprite deathBoardVFXSprite;
+    [SerializeField] Sprite bombBoardVFXSprite;
+    [SerializeField] Sprite boltBoardVFXSprite;
+    [SerializeField] Sprite earthquakeBoardVFXSprite;
+    [SerializeField] Sprite slowGravityBoardVFXSprite;
+    [SerializeField, Range(0f, 1f)] float boardVfxMaxAlpha = 0.55f;
+    [SerializeField, Min(0f)] float boardVfxFadeInSeconds = 0.35f;
+    [SerializeField, Min(0f)] float boardVfxHoldSeconds = 3f;
+    [SerializeField, Min(0f)] float boardVfxFadeOutSeconds = 0.45f;
+    [SerializeField, Min(0f)] float slowGravityBoardVfxFadeInSeconds = 0.18f;
+
     [Header("Monster Tick Damage Flash")]
     public float monsterTickFlashDuration = 0.08f;
     public Color burnTickFlashTint = new Color(1f, 0.25f, 0.25f, 1f);       // red
@@ -253,6 +266,10 @@ public class Board : MonoBehaviour
     readonly Dictionary<Vector2Int, Image> lightningBorders = new();
     readonly Dictionary<Vector2Int, Image> floorTintUnderlays = new(); // poison/burn/lightning tints
     readonly Dictionary<Vector2Int, Image> floorSecondaryTintUnderlays = new();
+    readonly Dictionary<SpecialType, Coroutine> boardVfxRoutines = new();
+    readonly Dictionary<SpecialType, Image> boardVfxImages = new();
+    Coroutine slowGravityBoardVfxRoutine;
+    Image slowGravityBoardVfxImage;
 
     class SpikeVisual
     {
@@ -575,16 +592,20 @@ public class Board : MonoBehaviour
         underlayRoot.SetSiblingIndex(0);
         gridRoot.SetSiblingIndex(1);
         overlayRoot.SetAsLastSibling();
+        EnsureBoardVfxRoot();
     }
 
     void Start()
     {
         RecomputeCellMetrics();
+        ConfigureBoardVfxRoot();
         DrawGridOverlay();
     }
 
     void Update()
     {
+        MaintainBoardVfxLayering();
+
         if (_gc && !_gc.IsRoundActive) return; // Nothing should tick outside active rounds
 
         TickFloorEffects();
@@ -1376,6 +1397,7 @@ public class Board : MonoBehaviour
 
     public void ClearAll()
     {
+        StopAllBoardVFX();
         StopAllPortraitAltSwaps(restoreNormal: false);
 
         placed.Clear();
@@ -1416,6 +1438,7 @@ public class Board : MonoBehaviour
         floorSecondaryTintUnderlays.Clear();
 
         RecomputeCellMetrics();
+        ConfigureBoardVfxRoot();
         DrawGridOverlay();
     }
 
@@ -2033,6 +2056,8 @@ public class Board : MonoBehaviour
             rt.anchoredPosition = new Vector2(0f, Mathf.Round(-contentSize.y * 0.5f + y * cellSize.y));
             img.name = "GridLine_" + img.name;
         }
+
+        MaintainBoardVfxLayering();
     }
 
     public void MultiplyAllMonsterHpAndMax(float mult)
@@ -2327,6 +2352,380 @@ public class Board : MonoBehaviour
         StartCoroutine(FlashCellsCo(cells, sprite, onlyOccupied));
     }
 
+    public void PlaySpecialBoardVFX(SpecialType special)
+    {
+        Sprite sprite = GetBoardVfxSprite(special);
+        if (!sprite)
+            return;
+
+        if (boardVfxRoutines.TryGetValue(special, out var running) && running != null)
+            StopCoroutine(running);
+
+        DestroyBoardVfxImage(special);
+
+        Coroutine routine = special == SpecialType.Bomb
+            ? StartCoroutine(CoCenterRevealBoardVFX(special, sprite))
+            : StartCoroutine(CoVerticalRevealBoardVFX(special, sprite));
+
+        boardVfxRoutines[special] = routine;
+    }
+
+    public void PlaySlowGravityBoardVFX(float durationSeconds, Func<float> remainingSecondsProvider)
+    {
+        if (!slowGravityBoardVFXSprite)
+            return;
+
+        StopSlowGravityBoardVFX();
+        slowGravityBoardVfxRoutine = StartCoroutine(CoSlowGravityBoardVFX(
+            Mathf.Max(0.1f, durationSeconds),
+            remainingSecondsProvider));
+    }
+
+    public void StopSlowGravityBoardVFX()
+    {
+        if (slowGravityBoardVfxRoutine != null)
+        {
+            StopCoroutine(slowGravityBoardVfxRoutine);
+            slowGravityBoardVfxRoutine = null;
+        }
+
+        if (slowGravityBoardVfxImage)
+        {
+            Destroy(slowGravityBoardVfxImage.gameObject);
+            slowGravityBoardVfxImage = null;
+        }
+    }
+
+    void StopAllBoardVFX()
+    {
+        foreach (var routine in boardVfxRoutines.Values)
+        {
+            if (routine != null)
+                StopCoroutine(routine);
+        }
+
+        boardVfxRoutines.Clear();
+        boardVfxImages.Clear();
+        StopSlowGravityBoardVFX();
+
+        if (!boardVfxRoot)
+            return;
+
+        for (int i = boardVfxRoot.childCount - 1; i >= 0; i--)
+            Destroy(boardVfxRoot.GetChild(i).gameObject);
+    }
+
+    Sprite GetBoardVfxSprite(SpecialType special)
+    {
+        switch (special)
+        {
+            case SpecialType.Death:
+                return deathBoardVFXSprite;
+            case SpecialType.Bomb:
+                return bombBoardVFXSprite;
+            case SpecialType.Bolt:
+                return boltBoardVFXSprite;
+            case SpecialType.Earthquake:
+                return earthquakeBoardVFXSprite;
+            default:
+                return null;
+        }
+    }
+
+    IEnumerator CoVerticalRevealBoardVFX(SpecialType special, Sprite sprite)
+    {
+        Image img = CreateBoardVfxImage($"{special}Board_VFX", sprite);
+        if (!img)
+        {
+            boardVfxRoutines.Remove(special);
+            yield break;
+        }
+
+        boardVfxImages[special] = img;
+        img.type = Image.Type.Filled;
+        img.fillMethod = Image.FillMethod.Vertical;
+        img.fillOrigin = (int)Image.OriginVertical.Bottom;
+        img.fillAmount = 0f;
+
+        float maxAlpha = Mathf.Clamp01(boardVfxMaxAlpha);
+        yield return AnimateBoardVfxFillAndAlpha(img, 0f, 1f, 0f, maxAlpha, boardVfxFadeInSeconds);
+
+        if (img && boardVfxHoldSeconds > 0f)
+            yield return new WaitForSeconds(boardVfxHoldSeconds);
+
+        if (img)
+            yield return AnimateBoardVfxAlpha(img, maxAlpha, 0f, boardVfxFadeOutSeconds);
+
+        if (img)
+            Destroy(img.gameObject);
+
+        boardVfxImages.Remove(special);
+        boardVfxRoutines.Remove(special);
+    }
+
+    IEnumerator CoCenterRevealBoardVFX(SpecialType special, Sprite sprite)
+    {
+        Image img = CreateBoardVfxImage($"{special}Board_VFX", sprite);
+        if (!img)
+        {
+            boardVfxRoutines.Remove(special);
+            yield break;
+        }
+
+        boardVfxImages[special] = img;
+        img.type = Image.Type.Simple;
+        img.rectTransform.localScale = Vector3.zero;
+
+        float maxAlpha = Mathf.Clamp01(boardVfxMaxAlpha);
+        yield return AnimateBoardVfxScaleAndAlpha(img, Vector3.zero, Vector3.one, 0f, maxAlpha, boardVfxFadeInSeconds);
+
+        if (img && boardVfxHoldSeconds > 0f)
+            yield return new WaitForSeconds(boardVfxHoldSeconds);
+
+        if (img)
+            yield return AnimateBoardVfxAlpha(img, maxAlpha, 0f, boardVfxFadeOutSeconds);
+
+        if (img)
+            Destroy(img.gameObject);
+
+        boardVfxImages.Remove(special);
+        boardVfxRoutines.Remove(special);
+    }
+
+    IEnumerator CoSlowGravityBoardVFX(float durationSeconds, Func<float> remainingSecondsProvider)
+    {
+        Image img = CreateBoardVfxImage("SlowGravityBoard_VFX", slowGravityBoardVFXSprite);
+        slowGravityBoardVfxImage = img;
+        if (!img)
+        {
+            slowGravityBoardVfxRoutine = null;
+            yield break;
+        }
+
+        img.type = Image.Type.Filled;
+        img.fillMethod = Image.FillMethod.Radial360;
+        img.fillOrigin = (int)Image.Origin360.Top;
+        img.fillClockwise = false;
+        img.fillAmount = 1f;
+
+        float maxAlpha = Mathf.Clamp01(boardVfxMaxAlpha);
+        yield return AnimateBoardVfxAlpha(img, 0f, maxAlpha, slowGravityBoardVfxFadeInSeconds);
+
+        float fallbackRemaining = durationSeconds;
+        while (img)
+        {
+            float remaining = remainingSecondsProvider != null
+                ? remainingSecondsProvider()
+                : fallbackRemaining;
+
+            remaining = Mathf.Clamp(remaining, 0f, durationSeconds);
+            img.fillAmount = durationSeconds > 0f ? remaining / durationSeconds : 0f;
+            SetImageAlpha(img, maxAlpha);
+
+            if (remaining <= 0f)
+                break;
+
+            fallbackRemaining -= Time.deltaTime;
+            yield return null;
+        }
+
+        if (img)
+            Destroy(img.gameObject);
+
+        if (slowGravityBoardVfxImage == img)
+            slowGravityBoardVfxImage = null;
+
+        slowGravityBoardVfxRoutine = null;
+    }
+
+    Image CreateBoardVfxImage(string objectName, Sprite sprite)
+    {
+        if (!sprite)
+            return null;
+
+        EnsureBoardVfxRoot();
+        ConfigureBoardVfxRoot();
+        if (!boardVfxRoot)
+            return null;
+
+        var img = new GameObject(objectName, typeof(Image)).GetComponent<Image>();
+        img.transform.SetParent(boardVfxRoot, false);
+        img.sprite = sprite;
+        img.preserveAspect = true;
+        img.raycastTarget = false;
+        img.color = new Color(1f, 1f, 1f, 0f);
+
+        var rt = img.rectTransform;
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.sizeDelta = contentSize;
+        rt.anchoredPosition = Vector2.zero;
+        rt.localScale = Vector3.one;
+
+        MaintainBoardVfxLayering();
+        return img;
+    }
+
+    IEnumerator AnimateBoardVfxFillAndAlpha(Image img, float fromFill, float toFill, float fromAlpha, float toAlpha, float seconds)
+    {
+        float duration = Mathf.Max(0f, seconds);
+        if (duration <= 0f)
+        {
+            if (img)
+            {
+                img.fillAmount = toFill;
+                SetImageAlpha(img, toAlpha);
+            }
+            yield break;
+        }
+
+        float t = 0f;
+        while (img && t < duration)
+        {
+            t += Time.deltaTime;
+            float p = Mathf.Clamp01(t / duration);
+            float eased = Mathf.SmoothStep(0f, 1f, p);
+            img.fillAmount = Mathf.Lerp(fromFill, toFill, eased);
+            SetImageAlpha(img, Mathf.Lerp(fromAlpha, toAlpha, eased));
+            yield return null;
+        }
+
+        if (img)
+        {
+            img.fillAmount = toFill;
+            SetImageAlpha(img, toAlpha);
+        }
+    }
+
+    IEnumerator AnimateBoardVfxScaleAndAlpha(Image img, Vector3 fromScale, Vector3 toScale, float fromAlpha, float toAlpha, float seconds)
+    {
+        float duration = Mathf.Max(0f, seconds);
+        if (duration <= 0f)
+        {
+            if (img)
+            {
+                img.rectTransform.localScale = toScale;
+                SetImageAlpha(img, toAlpha);
+            }
+            yield break;
+        }
+
+        float t = 0f;
+        while (img && t < duration)
+        {
+            t += Time.deltaTime;
+            float p = Mathf.Clamp01(t / duration);
+            float eased = Mathf.SmoothStep(0f, 1f, p);
+            img.rectTransform.localScale = Vector3.LerpUnclamped(fromScale, toScale, eased);
+            SetImageAlpha(img, Mathf.Lerp(fromAlpha, toAlpha, eased));
+            yield return null;
+        }
+
+        if (img)
+        {
+            img.rectTransform.localScale = toScale;
+            SetImageAlpha(img, toAlpha);
+        }
+    }
+
+    IEnumerator AnimateBoardVfxAlpha(Image img, float fromAlpha, float toAlpha, float seconds)
+    {
+        float duration = Mathf.Max(0f, seconds);
+        if (duration <= 0f)
+        {
+            if (img)
+                SetImageAlpha(img, toAlpha);
+            yield break;
+        }
+
+        float t = 0f;
+        while (img && t < duration)
+        {
+            t += Time.deltaTime;
+            float p = Mathf.Clamp01(t / duration);
+            SetImageAlpha(img, Mathf.Lerp(fromAlpha, toAlpha, Mathf.SmoothStep(0f, 1f, p)));
+            yield return null;
+        }
+
+        if (img)
+            SetImageAlpha(img, toAlpha);
+    }
+
+    static void SetImageAlpha(Image img, float alpha)
+    {
+        if (!img)
+            return;
+
+        Color color = img.color;
+        color.a = Mathf.Clamp01(alpha);
+        img.color = color;
+    }
+
+    void DestroyBoardVfxImage(SpecialType special)
+    {
+        if (!boardVfxImages.TryGetValue(special, out var img))
+            return;
+
+        if (img)
+            Destroy(img.gameObject);
+
+        boardVfxImages.Remove(special);
+    }
+
+    void EnsureBoardVfxRoot()
+    {
+        if (!gridRoot)
+            return;
+
+        if (boardVfxRoot && boardVfxRoot.transform.parent == gridRoot)
+            return;
+
+        Transform existing = gridRoot.Find("BoardVFXRoot");
+        if (existing)
+        {
+            boardVfxRoot = existing as RectTransform;
+            if (boardVfxRoot)
+                return;
+        }
+
+        var go = new GameObject("BoardVFXRoot", typeof(RectTransform));
+        boardVfxRoot = go.GetComponent<RectTransform>();
+        boardVfxRoot.SetParent(gridRoot, false);
+    }
+
+    void ConfigureBoardVfxRoot()
+    {
+        if (!boardVfxRoot)
+            return;
+
+        boardVfxRoot.anchorMin = boardVfxRoot.anchorMax = new Vector2(0.5f, 0.5f);
+        boardVfxRoot.pivot = new Vector2(0.5f, 0.5f);
+        boardVfxRoot.sizeDelta = contentSize;
+        boardVfxRoot.anchoredPosition = Vector2.zero;
+        boardVfxRoot.localScale = Vector3.one;
+        MaintainBoardVfxLayering();
+    }
+
+    void MaintainBoardVfxLayering()
+    {
+        if (!boardVfxRoot || !gridRoot || boardVfxRoot.childCount == 0)
+            return;
+
+        boardVfxRoot.SetAsLastSibling();
+
+        var gridLines = new List<Transform>();
+        for (int i = 0; i < gridRoot.childCount; i++)
+        {
+            Transform child = gridRoot.GetChild(i);
+            if (child && child.name.StartsWith("GridLine_", StringComparison.Ordinal))
+                gridLines.Add(child);
+        }
+
+        for (int i = 0; i < gridLines.Count; i++)
+            if (gridLines[i])
+                gridLines[i].SetAsLastSibling();
+    }
+
     System.Collections.IEnumerator FlashCellsCo(IEnumerable<Vector2Int> cells, Sprite sprite, bool onlyOccupied)
     {
         var made = new List<UnityEngine.UI.Image>();
@@ -2357,6 +2756,7 @@ public class Board : MonoBehaviour
     {
         if (boardRect == null) boardRect = GetComponent<RectTransform>();
         RecomputeCellMetrics();
+        ConfigureBoardVfxRoot();
 
         // Reposition any placed tiles
         var toFix = new List<KeyValuePair<Vector2Int, RectTransform>>(placed);
@@ -2391,6 +2791,7 @@ public class Board : MonoBehaviour
             if (kv.Value) kv.Value.anchoredPosition = CellToAnchoredPos(kv.Key);
 
         RepositionEffectVisuals();
+        ConfigureBoardVfxRoot();
         DrawGridOverlay();
     }
 

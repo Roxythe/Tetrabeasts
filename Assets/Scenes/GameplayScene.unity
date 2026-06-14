@@ -3561,8 +3561,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Special Ready Press [R]'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a1470b117e5ec7a4c9c2c4151211f423, type: 2}
-  m_sharedMaterial: {fileID: 3855398030641842644, guid: a1470b117e5ec7a4c9c2c4151211f423, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 078b5e9fe8808b84fab545f53441634d, type: 2}
+  m_sharedMaterial: {fileID: 3855398030641842644, guid: 078b5e9fe8808b84fab545f53441634d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3654,7 +3654,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -545.7527, y: -534.0812}
+  m_AnchoredPosition: {x: -545.7527, y: -526.0812}
   m_SizeDelta: {x: 583.29, y: 34}
   m_Pivot: {x: 0.5, y: 0.49999994}
 --- !u!1 &226331930
@@ -8782,6 +8782,9 @@ MonoBehaviour:
   - {fileID: 2455616193158111297, guid: 35f091e634d96dd48bff1d89c176b8ce, type: 3}
   - {fileID: -109993619255282222, guid: 35f091e634d96dd48bff1d89c176b8ce, type: 3}
   framesPerSecond: 55
+  playbackMode: 0
+  firstFrame: 0
+  lastFrame: 0
   playOnEnable: 1
 --- !u!1 &635656918
 GameObject:
@@ -20593,6 +20596,17 @@ MonoBehaviour:
   spikeAnimInterval: 0.35
   underlayRoot: {fileID: 0}
   overlayRoot: {fileID: 0}
+  boardVfxRoot: {fileID: 0}
+  deathBoardVFXSprite: {fileID: 21300000, guid: 410e2bcf6e5fe504098f2fd25c1e322a, type: 3}
+  bombBoardVFXSprite: {fileID: 21300000, guid: ad0aabb3ad2df20478e30d4087056a1b, type: 3}
+  boltBoardVFXSprite: {fileID: 21300000, guid: d492726fa49ba2245b1cce8a5ecf6f73, type: 3}
+  earthquakeBoardVFXSprite: {fileID: 21300000, guid: 50c0e001d8225204b8243e8abc9215d5, type: 3}
+  slowGravityBoardVFXSprite: {fileID: 21300000, guid: 93c956777feb63f419543b67cc966584, type: 3}
+  boardVfxMaxAlpha: 0.8
+  boardVfxFadeInSeconds: 0.35
+  boardVfxHoldSeconds: 3
+  boardVfxFadeOutSeconds: 0.45
+  slowGravityBoardVfxFadeInSeconds: 0.18
   monsterTickFlashDuration: 0.08
   burnTickFlashTint: {r: 1, g: 0.25, b: 0.25, a: 1}
   poisonTickFlashTint: {r: 0.75, g: 0.25, b: 1, a: 1}
@@ -20621,7 +20635,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -125}
+  m_AnchoredPosition: {x: 0, y: -115}
   m_SizeDelta: {x: 800, y: 800}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1488354587
@@ -22227,8 +22241,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 10.1721}
-  m_SizeDelta: {x: 10, y: 0.3299}
+  m_AnchoredPosition: {x: 5.1621704, y: 10.1721}
+  m_SizeDelta: {x: -6.8229, y: 0.3299}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1562077746
 MonoBehaviour:
@@ -24819,8 +24833,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.25, y: 0}
   m_AnchorMax: {x: 0.75, y: 1}
-  m_AnchoredPosition: {x: 2.305069, y: -0.000049591064}
-  m_SizeDelta: {x: 406.9104, y: -0.00015259}
+  m_AnchoredPosition: {x: 6.59079, y: -0.000049591064}
+  m_SizeDelta: {x: 398.339, y: -0.0002}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1794668270
 MonoBehaviour:
@@ -28307,8 +28321,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0025228, y: 93}
-  m_SizeDelta: {x: 1445.2216, y: 750.5493}
+  m_AnchoredPosition: {x: 7.1453795, y: 79.666664}
+  m_SizeDelta: {x: 1422.3644, y: 360.5494}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2006175316
 MonoBehaviour:
@@ -28330,7 +28344,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 3655979022543666219, guid: ddab266041464a14fa3bff2de9bac4a9, type: 3}
+  m_Sprite: {fileID: 2737641175209712257, guid: 26cdef7a0ea998f4292ecb4e37bbfba2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -29812,6 +29826,8 @@ MonoBehaviour:
   specialGauge: 0
   specialGaugeMax: 100
   activateSpecialGaugeText: {fileID: 226153486}
+  specialGaugeFullSFX: {fileID: 8300000, guid: 486a368031111fa438596c90fb332d33, type: 3}
+  specialGaugeFullSFXVolume: 1
   specialUseFieryGradient: 1
   specialPulseScale: 1.15
   specialPulseSpeed: 2.25
@@ -29831,9 +29847,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a3d8e2f5c1b64a86a2de5bd75e1f4fd6, type: 2}
   specialChancePerEnqueue: 0.05
   minSpecialChance: 0.01
-  maxSpecialChance: 0.25
+  maxSpecialChance: 0.2
   projectileRoot: {fileID: 304730603}
-  projectileSpeed: 1000
+  projectileSpeed: 700
   attackExplosionPrefabs:
   - {fileID: 2001345383954297732, guid: 63ec64521110a054994b1bb07ac48ff5, type: 3}
   - {fileID: 1805042867102291738, guid: 7eac42c72e9e920439e300c22e64fca7, type: 3}
@@ -30637,26 +30653,26 @@ MonoBehaviour:
   hardDropGraceSeconds: 0.25
   tutorials:
   - specialType: 1
-    tutorialId: tutorial_special_block_death5
+    tutorialId: tutorial_special_block_death6
     body: You found a Death special block. Drop it in a column to destroy all units
       matching the first monster below its landing point. (Press [F] to Continue)
   - specialType: 2
-    tutorialId: tutorial_special_block_bomb5
+    tutorialId: tutorial_special_block_bomb6
     body: You found a Bomb special block. Drop it to blast a 3x3 area and damage
       nearby obstacles. Stone obstacles will be destroyed completley regardless of
       their current condition. (Press [F] to Continue)
   - specialType: 3
-    tutorialId: tutorial_special_block_bolt5
+    tutorialId: tutorial_special_block_bolt6
     body: You found a Bolt special block. Drop it to strike an entire column forcing
       all units in that row to retreat from the board and destroying any spike traps
       in that column. (Press [F] to Continue)
   - specialType: 4
-    tutorialId: tutorial_special_block_earthquake5
-    body: You found an Earthquake special block. Drop it to shake loose unsupported
-      units across the board as well as obstacles. Drop it anywhere, it makes no
-      difference. (Press [F] to Continue)
+    tutorialId: tutorial_special_block_earthquake6
+    body: You found an Earthquake special block. Shake loose units and obstacles
+      dropping them down until they hit the bottom of the board or an occupied cell.
+      Drop it anywhere, it makes no difference. (Press [F] to Continue)
   - specialType: 5
-    tutorialId: tutorial_special_block_slow_gravity5
+    tutorialId: tutorial_special_block_slow_gravity6
     body: You found a Slow Gravity special block. Drop it to slow falling pieces
       for a short time. Where it drops makes no difference. (Press [F] to Continue)
 --- !u!1 &2109608209
@@ -31997,6 +32013,7 @@ MonoBehaviour:
   rootPanel: {fileID: 910130000000010}
   backgroundImage: {fileID: 910130000000014}
   messageText: {fileID: 910130000000033}
+  winOneLinerText: {fileID: 0}
   continueButton: {fileID: 1586225055}
   continueButtonGroup: {fileID: 1586225056}
   optOutToggle: {fileID: 910130000000075}
@@ -32006,6 +32023,50 @@ MonoBehaviour:
   actionRoot: {fileID: 910130000000041}
   transitionFont: {fileID: 11400000, guid: a1470b117e5ec7a4c9c2c4151211f423, type: 2}
   continueButtonPrefab: {fileID: 6826685574233894395, guid: 5e7f2b5277a37d041a57b07dbb619341, type: 3}
+  winOneLiners:
+  - Castle cleared. Momentum gained.
+  - Victory looks good on the roster.
+  - One less wall between you and legend.
+  - Hide in your shell little turtles, the horde will crack you open.
+  - Onward before the dust settles.
+  - GG EZ.
+  - If that's the best they've got, this will be a breeze.
+  - Watch them flee like scared little turtles.
+  - Has anyone gotten paid yet?
+  - I can't help but think this was only possible because of my greatness.
+  - I'm feeling stronger already!
+  - I'm going to see blocks falling when I close my eyes.
+  - "Humans call it architecture\u2026 We call it target practice."
+  - Nice castle. Now it's rubble.
+  - Womp Womp.
+  - I am THEE Tetrabeast.
+  - Bigger walls, same fate.
+  - How to unalive a castle 101.
+  - Is anyone else hungry. I could really go for some BBQ.
+  - Another tower bites the dust.
+  - Smash. Stack. Destroy. Repeat.
+  - I hope they got the warranty for that castle.
+  - The hounds will feast tonight.
+  - Time to turn more big rocks into little rocks.
+  - Tuck your tails little turtles, I'm coming for you!
+  - "Humanity\u2019s greatest walls\u2026 now a parking lot."
+  - How many times do we gotta teach you this lesson old man?
+  - If you didn't want us to break it, then you should have made it more durable.
+  - Is it really economical to build this many castles?
+  - Where are all these squirrels coming from?
+  - Can we take five? I have rubble in places it really shouldn't be.
+  - Can someone explain why the shopkeeper keeps trying to give me plates of spaghetti?
+  - If I never see another block again it will be too soon.
+  - My fingers hurt, but champions perservere.
+  - Do you think Lillith is single?
+  - Do you think commander Bosco would let me rub his belly?
+  - Can't stop, won't stop.
+  - At what point does this become bullying?
+  - Silly little turtles, your stone shells will all crumble before our might.
+  - Tonight we will feast on turtle soup!
+  - We fight for peace and it's going to be very peaceful once you're all dead.
+  - How many turtles does it take to defend a castle? More than this clearly.
+  - The bigger they are, the more we get to destroy.
   transitionAnimator: {fileID: 978409729}
   fireworkAnimationRoot: {fileID: 978409730}
   useUnscaledAnimationTime: 1

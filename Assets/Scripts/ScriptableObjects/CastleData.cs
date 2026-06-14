@@ -21,7 +21,10 @@ public class CastleData : ScriptableObject
     [Header("Projectile Attack")]
     public Sprite projectileSprite;
     [Min(0.1f)] public float projectileInterval = 3f;
-    [Min(1f)] public float projectileSpeed = 800f;
+    [Tooltip("Base speed at the first level's base gravity. Runtime speed scales upward as gravity rises.")]
+    [Min(1f)] public float projectileSpeed = 700f;
+    [Tooltip("How strongly projectile speed tracks gravity. 0 = no scaling, 0.5 = square-root scaling, 1 = one-to-one scaling.")]
+    [Range(0f, 1f)] public float projectileGravitySpeedExponent = 0.5f;
     [Tooltip("Scales the visual size of enemy projectiles fired by this castle.")]
     [Range(0.25f, 3f)] public float projectileVisualScale = 1f;
     [Min(1)] public int projectileDamage = 1;

@@ -748,6 +748,9 @@ public class Piece : MonoBehaviour
             var toRemove = new List<Vector2Int>(); // This list is used by Death/Bomb/Bolt only
             var envAffected = new List<Vector2Int>(); // This list is used to clear obstacles/traps even on empty cells
 
+            if (data.special != SpecialType.SlowGravity)
+                board.PlaySpecialBoardVFX(data.special);
+
             switch (data.special)
             {
                 case SpecialType.Death:

@@ -401,6 +401,7 @@ public class TitleMenuUI : MonoBehaviour
         if (show)
         {
             shopPanelUI?.RefreshAll();
+            shopPanelUI?.NotifyShopOpened();
 
             EnsureTriggeredTutorialPopups();
             if (triggeredTutorialPopups)
@@ -417,6 +418,10 @@ public class TitleMenuUI : MonoBehaviour
                     highlightTarget: null,
                     highlightPadding: default);
             }
+        }
+        else
+        {
+            shopPanelUI?.NotifyShopClosed();
         }
 
         if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
@@ -714,7 +719,10 @@ public class TitleMenuUI : MonoBehaviour
             return true;
 
         if (root && root != gameObject && TryPressPanelBackOrCloseButton(root))
+        {
+            NotifyShopPanelClosedIfNeeded(root);
             return true;
+        }
 
         if (settingsPanel && UIPanelTransition.IsVisible(settingsPanel))
         {
@@ -767,7 +775,14 @@ public class TitleMenuUI : MonoBehaviour
             return;
 
         UIPanelTransition.Hide(panel);
+        NotifyShopPanelClosedIfNeeded(panel);
         SetPanelPause(false);
+    }
+
+    void NotifyShopPanelClosedIfNeeded(GameObject panel)
+    {
+        if (panel == shopPanel)
+            shopPanelUI?.NotifyShopClosed();
     }
 
     void SetPanelPause(bool paused)
@@ -916,7 +931,12 @@ public class TitleMenuUI : MonoBehaviour
 
         if (hasTempRun)
         {
-            if (shopPanel) UIPanelTransition.Hide(shopPanel, true);
+            if (shopPanel)
+            {
+                UIPanelTransition.Hide(shopPanel, true);
+                NotifyShopPanelClosedIfNeeded(shopPanel);
+            }
+
             if (monsterSelectPanel) UIPanelTransition.Hide(monsterSelectPanel.gameObject, true);
             if (characterSelectPanel) UIPanelTransition.Hide(characterSelectPanel.gameObject, true);
         }
