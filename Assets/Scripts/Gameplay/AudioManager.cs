@@ -85,7 +85,7 @@ public class AudioManager : MonoBehaviour
     AudioSource ambienceLoopSrc;
     AudioSource pauseMusicSrc;
 
-    public MusicMode musicMode { get; private set; } = MusicMode.Both;
+    public MusicMode musicMode { get; private set; } = MusicMode.EDM;
 
     Coroutine musicChainCo;
     Coroutine rainFadeCo;
@@ -142,7 +142,7 @@ public class AudioManager : MonoBehaviour
         pauseMusicSrc.ignoreListenerPause = true; // Plays while AudioListener.pause = true
         if (musicGroup) pauseMusicSrc.outputAudioMixerGroup = musicGroup;
 
-        musicMode = (MusicMode)PlayerPrefs.GetInt(K_MusicMode, (int)MusicMode.Both); // Load saved mode
+        musicMode = (MusicMode)PlayerPrefs.GetInt(K_MusicMode, (int)MusicMode.EDM); // Load saved mode
         applicationHasFocus = Application.isFocused;
         applicationPaused = false;
 
