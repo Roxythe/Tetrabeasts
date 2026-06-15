@@ -33,6 +33,20 @@ public class GameController : MonoBehaviour
 
     [Header("XP Tuning")]
     [SerializeField] int baseXpPerLevel = 30;
+    [Tooltip("Level 1 clear time that gives neither bonus nor penalty.")]
+    [SerializeField, Min(0.01f)] float clearTimeXpParSeconds = 60f;
+    [Tooltip("Level 1 clears at or below this time receive the full fast-clear XP bonus.")]
+    [SerializeField, Min(0f)] float clearTimeXpFullBonusSeconds = 25f;
+    [Tooltip("Level 1 clears at or above this time receive the full slow-clear XP penalty.")]
+    [SerializeField, Min(0.01f)] float clearTimeXpFullPenaltySeconds = 180f;
+    [Tooltip("Seconds added to each clear-time XP threshold for every level after level 1.")]
+    [SerializeField, Min(0f)] float clearTimeXpSecondsAddedPerLevel = 15f;
+    [Tooltip("Maximum fast-clear bonus as a fraction of base level XP.")]
+    [SerializeField, Range(0f, 1f)] float clearTimeXpMaxBonusBaseFraction = 0.25f;
+    [Tooltip("Maximum slow-clear penalty as a fraction of base level XP.")]
+    [SerializeField, Range(0f, 1f)] float clearTimeXpMaxPenaltyBaseFraction = 0.15f;
+    [Tooltip("Higher values make timing rewards stay flatter near par and ramp harder near the caps.")]
+    [SerializeField, Min(0.1f)] float clearTimeXpCurveExponent = 1.2f;
     [SerializeField, Range(0f, 1f)] float overleveledXpMultiplierAtOneLevelGap = 0.90f;
     [SerializeField, Min(1f)] float overleveledXpGapExponent = 1.35f;
     [SerializeField, Range(0f, 1f)] float overleveledXpMinimumMultiplier = 0.05f;
@@ -7975,8 +7989,7 @@ public class GameController : MonoBehaviour
         int xpLevelMultiplier = Mathf.Max(1, gameLevelNumber) * 2;
         int baseXp = Mathf.Max(0, baseXpPerLevel) * xpLevelMultiplier;
 
-        int clearTimeBonusRaw = Mathf.RoundToInt(40f - _levelTimer);
-        int clearTimeBonus = Mathf.Max(-5, clearTimeBonusRaw) * xpLevelMultiplier;
+        int clearTimeBonus = CalculateClearTimeXpBonus(_levelTimer, baseXp, gameLevelNumber);
 
         int startReserve = _levelStartReserveUnits;
         int endReserve = unitLives;
@@ -8031,6 +8044,34 @@ public class GameController : MonoBehaviour
             },
             perMonsterAwardXp = perMonster
         };
+    }
+
+    int CalculateClearTimeXpBonus(float clearSeconds, int baseXp, int gameLevelNumber)
+    {
+        if (baseXp <= 0)
+            return 0;
+
+        float levelTimeOffset = Mathf.Max(0, gameLevelNumber - 1) * Mathf.Max(0f, clearTimeXpSecondsAddedPerLevel);
+        float parSeconds = Mathf.Max(0.01f, clearTimeXpParSeconds + levelTimeOffset);
+        float exponent = Mathf.Max(0.1f, clearTimeXpCurveExponent);
+        clearSeconds = Mathf.Max(0f, clearSeconds);
+
+        if (clearSeconds <= parSeconds)
+        {
+            float fullBonusSeconds = Mathf.Clamp(clearTimeXpFullBonusSeconds + levelTimeOffset, 0f, parSeconds);
+            float bonusWindow = Mathf.Max(0.01f, parSeconds - fullBonusSeconds);
+            float t = Mathf.Clamp01((parSeconds - clearSeconds) / bonusWindow);
+            int maxBonus = Mathf.RoundToInt(baseXp * Mathf.Clamp01(clearTimeXpMaxBonusBaseFraction));
+
+            return Mathf.RoundToInt(maxBonus * Mathf.Pow(t, exponent));
+        }
+
+        float fullPenaltySeconds = Mathf.Max(parSeconds + 0.01f, clearTimeXpFullPenaltySeconds + levelTimeOffset);
+        float penaltyWindow = Mathf.Max(0.01f, fullPenaltySeconds - parSeconds);
+        float penaltyT = Mathf.Clamp01((clearSeconds - parSeconds) / penaltyWindow);
+        int maxPenalty = Mathf.RoundToInt(baseXp * Mathf.Clamp01(clearTimeXpMaxPenaltyBaseFraction));
+
+        return -Mathf.RoundToInt(maxPenalty * Mathf.Pow(penaltyT, exponent));
     }
 
     float GetOverleveledRoundXpMultiplier(int monsterLevel, int gameLevelNumber)

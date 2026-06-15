@@ -14,16 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CastleData
   castleName: Emperor Reginald P. Exford IV, Emperor's Palace
   damageStages:
-  - {fileID: 21300000, guid: 352670bca69129146ac4da268444867f, type: 3}
-  - {fileID: 21300000, guid: 544d9220dac17ef4b8551b743f5fee5a, type: 3}
-  - {fileID: 21300000, guid: 32d612214e24111428d2ba7d3ad6f9f4, type: 3}
-  - {fileID: 21300000, guid: 3e6aef28c9af93f4b9661547cd0ee7b0, type: 3}
+  - {fileID: 21300000, guid: 2c446d24c70debf4983fbc82cead0d43, type: 3}
+  - {fileID: 21300000, guid: 6ae7ec4946d72d74897ccfcfa8ce3653, type: 3}
+  - {fileID: 21300000, guid: a79996ea3ae22d54d8836f557d4dfd44, type: 3}
+  - {fileID: 21300000, guid: 300087dc5cbcdcc4090ce6bc65009a45, type: 3}
   levelBackgroundSprite: {fileID: 5473022932768410216, guid: 1227cd0af1d77014cae8273dbb934e74, type: 3}
   maxHP: 3000
   infiniteHealth: 0
   projectileSprite: {fileID: 21300000, guid: ca7186951d5077d419fe7998de074c6d, type: 3}
   projectileInterval: 1.5
   projectileSpeed: 700
+  projectileGravitySpeedExponent: 0.5
   projectileVisualScale: 1.5
   projectileDamage: 40
   baseEnemyProjectilesPerAttack: 3

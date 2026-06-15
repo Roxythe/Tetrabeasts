@@ -1,0 +1,1183 @@
+fileFormatVersion: 2
+guid: 8c69ad521f0f5094bba6ee2ac795704c
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5196482223597399707
+    second: MedCastle2_0
+  - first:
+      213: -860962971166291753
+    second: MedCastle2_1
+  - first:
+      213: -6146230974634690294
+    second: MedCastle2_2
+  - first:
+      213: 8957883598525672706
+    second: MedCastle2_3
+  - first:
+      213: -1171362428845328185
+    second: MedCastle2_4
+  - first:
+      213: 611329161268128124
+    second: MedCastle2_5
+  - first:
+      213: 4125038807073767732
+    second: MedCastle2_6
+  - first:
+      213: 7639530758588050123
+    second: MedCastle2_7
+  - first:
+      213: -6576471400514281118
+    second: MedCastle2_8
+  - first:
+      213: 8863315625473163168
+    second: MedCastle2_9
+  - first:
+      213: 7920517840562948234
+    second: MedCastle2_10
+  - first:
+      213: 2869657741195272112
+    second: MedCastle2_11
+  - first:
+      213: -5903666680875722475
+    second: MedCastle2_12
+  - first:
+      213: -7875186981347419904
+    second: MedCastle2_13
+  - first:
+      213: -9051913578786214629
+    second: MedCastle2_14
+  - first:
+      213: 8638134662390152688
+    second: MedCastle2_15
+  - first:
+      213: -5269786522847443525
+    second: MedCastle2_16
+  - first:
+      213: -6828810342421475085
+    second: MedCastle2_17
+  - first:
+      213: -7816795405261473241
+    second: MedCastle2_18
+  - first:
+      213: 5724575104329360505
+    second: MedCastle2_19
+  - first:
+      213: 4093214669662264604
+    second: MedCastle2_20
+  - first:
+      213: 8683975617455065713
+    second: MedCastle2_21
+  - first:
+      213: -7300551317469770398
+    second: MedCastle2_22
+  - first:
+      213: -4484056154900653704
+    second: MedCastle2_23
+  - first:
+      213: 8813204320190011485
+    second: MedCastle2_24
+  - first:
+      213: 3489374365857573777
+    second: MedCastle2_25
+  - first:
+      213: 5648842406683279817
+    second: MedCastle2_26
+  - first:
+      213: -5635458779342562165
+    second: MedCastle2_27
+  - first:
+      213: -3606123796448667691
+    second: MedCastle2_28
+  - first:
+      213: 4715141893517854469
+    second: MedCastle2_29
+  - first:
+      213: -3250556894428814173
+    second: MedCastle2_30
+  - first:
+      213: 6899629560271515685
+    second: MedCastle2_31
+  - first:
+      213: 2036813242935254754
+    second: MedCastle2_32
+  - first:
+      213: 3083653396765771026
+    second: MedCastle2_33
+  - first:
+      213: -7420078392079234614
+    second: MedCastle2_34
+  - first:
+      213: 5756753359889702221
+    second: MedCastle2_35
+  - first:
+      213: -6913490233416739832
+    second: MedCastle2_36
+  - first:
+      213: 1973732586239149943
+    second: MedCastle2_37
+  - first:
+      213: 3493472666299929272
+    second: MedCastle2_38
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: MedCastle2_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1530
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9ea72bdc0d9d1840800000000000000
+      internalID: 5196482223597399707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_1
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 1011
+        width: 70
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d84ed24dbe3d04f0800000000000000
+      internalID: -860962971166291753
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_2
+      rect:
+        serializedVersion: 2
+        x: 747
+        y: 939
+        width: 249
+        height: 85
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0975612e7334baa0800000000000000
+      internalID: -6146230974634690294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_3
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 988
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20dab650cabc05c70800000000000000
+      internalID: 8957883598525672706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_4
+      rect:
+        serializedVersion: 2
+        x: 1083
+        y: 981
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c87f6db31c7ebfe0800000000000000
+      internalID: -1171362428845328185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_5
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 969
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c79693a12a0eb7800800000000000000
+      internalID: 611329161268128124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_6
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 960
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 431455c80f41f3930800000000000000
+      internalID: 4125038807073767732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_7
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 929
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bcaaf4cbfb0150a60800000000000000
+      internalID: 7639530758588050123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_8
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 936
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 261a4d8da1eabb4a0800000000000000
+      internalID: -6576471400514281118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_9
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 920
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0af3f7cf992d00b70800000000000000
+      internalID: 8863315625473163168
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_10
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 912
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8806e3e2055bed60800000000000000
+      internalID: 7920517840562948234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_11
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 907
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bfd4e2f28213d720800000000000000
+      internalID: 2869657741195272112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_12
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 894
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 519d716ce66f11ea0800000000000000
+      internalID: -5903666680875722475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_13
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 886
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 009910d3a27b5b290800000000000000
+      internalID: -7875186981347419904
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_14
+      rect:
+        serializedVersion: 2
+        x: 990
+        y: 890
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1da9e62f84216280800000000000000
+      internalID: -9051913578786214629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_15
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 875
+        width: 9
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0fdf0c965b1d0e770800000000000000
+      internalID: 8638134662390152688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_16
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 155
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb58987f315fdd6b0800000000000000
+      internalID: -5269786522847443525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_17
+      rect:
+        serializedVersion: 2
+        x: 942
+        y: 153
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f054759c213b31a0800000000000000
+      internalID: -6828810342421475085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_18
+      rect:
+        serializedVersion: 2
+        x: 987
+        y: 158
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72afb7b7ef9258390800000000000000
+      internalID: -7816795405261473241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_19
+      rect:
+        serializedVersion: 2
+        x: 990
+        y: 151
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 974a89f2ab6c17f40800000000000000
+      internalID: 5724575104329360505
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_20
+      rect:
+        serializedVersion: 2
+        x: 1082
+        y: 158
+        width: 9
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1d13a62e050ec830800000000000000
+      internalID: 4093214669662264604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_21
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 137
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17a009c70dda38870800000000000000
+      internalID: 8683975617455065713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_22
+      rect:
+        serializedVersion: 2
+        x: 989
+        y: 134
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26d44b9b14b3faa90800000000000000
+      internalID: -7300551317469770398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_23
+      rect:
+        serializedVersion: 2
+        x: 990
+        y: 143
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8791e364fae65c1c0800000000000000
+      internalID: -4484056154900653704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_24
+      rect:
+        serializedVersion: 2
+        x: 1082
+        y: 143
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d581dd582aace4a70800000000000000
+      internalID: 8813204320190011485
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_25
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 130
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19b6b4d8f7fbc6030800000000000000
+      internalID: 3489374365857573777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_26
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 123
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c105827d38b46e40800000000000000
+      internalID: 5648842406683279817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_27
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 97
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8c1eee1914dac1b0800000000000000
+      internalID: -5635458779342562165
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_28
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 104
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d71890638974fdc0800000000000000
+      internalID: -3606123796448667691
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_29
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 101
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 507c1bcf19c8f6140800000000000000
+      internalID: 4715141893517854469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_30
+      rect:
+        serializedVersion: 2
+        x: 488
+        y: 103
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a4af590ab3b3e2d0800000000000000
+      internalID: -3250556894428814173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_31
+      rect:
+        serializedVersion: 2
+        x: 990
+        y: 102
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 520b4cd778860cf50800000000000000
+      internalID: 6899629560271515685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_32
+      rect:
+        serializedVersion: 2
+        x: 1082
+        y: 94
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ee97fa5ad6344c10800000000000000
+      internalID: 2036813242935254754
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_33
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 86
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21586ac2d665bca20800000000000000
+      internalID: 3083653396765771026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_34
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 73
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac9c0920406960990800000000000000
+      internalID: -7420078392079234614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_35
+      rect:
+        serializedVersion: 2
+        x: 990
+        y: 70
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4d13c32ea814ef40800000000000000
+      internalID: 5756753359889702221
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_36
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 32
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 804101f03495e00a0800000000000000
+      internalID: -6913490233416739832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_37
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 35
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 777c564745b146b10800000000000000
+      internalID: 1973732586239149943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedCastle2_38
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 6
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b2185b71ee4b7030800000000000000
+      internalID: 3493472666299929272
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      MedCastle2_0: 5196482223597399707
+      MedCastle2_1: -860962971166291753
+      MedCastle2_10: 7920517840562948234
+      MedCastle2_11: 2869657741195272112
+      MedCastle2_12: -5903666680875722475
+      MedCastle2_13: -7875186981347419904
+      MedCastle2_14: -9051913578786214629
+      MedCastle2_15: 8638134662390152688
+      MedCastle2_16: -5269786522847443525
+      MedCastle2_17: -6828810342421475085
+      MedCastle2_18: -7816795405261473241
+      MedCastle2_19: 5724575104329360505
+      MedCastle2_2: -6146230974634690294
+      MedCastle2_20: 4093214669662264604
+      MedCastle2_21: 8683975617455065713
+      MedCastle2_22: -7300551317469770398
+      MedCastle2_23: -4484056154900653704
+      MedCastle2_24: 8813204320190011485
+      MedCastle2_25: 3489374365857573777
+      MedCastle2_26: 5648842406683279817
+      MedCastle2_27: -5635458779342562165
+      MedCastle2_28: -3606123796448667691
+      MedCastle2_29: 4715141893517854469
+      MedCastle2_3: 8957883598525672706
+      MedCastle2_30: -3250556894428814173
+      MedCastle2_31: 6899629560271515685
+      MedCastle2_32: 2036813242935254754
+      MedCastle2_33: 3083653396765771026
+      MedCastle2_34: -7420078392079234614
+      MedCastle2_35: 5756753359889702221
+      MedCastle2_36: -6913490233416739832
+      MedCastle2_37: 1973732586239149943
+      MedCastle2_38: 3493472666299929272
+      MedCastle2_4: -1171362428845328185
+      MedCastle2_5: 611329161268128124
+      MedCastle2_6: 4125038807073767732
+      MedCastle2_7: 7639530758588050123
+      MedCastle2_8: -6576471400514281118
+      MedCastle2_9: 8863315625473163168
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

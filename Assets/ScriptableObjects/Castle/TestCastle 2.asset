@@ -14,16 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CastleData
   castleName: Fortified Hamlet
   damageStages:
-  - {fileID: 21300000, guid: 1f0ff268de0e76d4c91ac180ab7e6e6e, type: 3}
-  - {fileID: 21300000, guid: 9082ffe4cf1f7e146b700d31ac4725da, type: 3}
-  - {fileID: 21300000, guid: 72665c402bca98948ac42bedf1620070, type: 3}
-  - {fileID: 21300000, guid: 8ef84dac0848a8b4f81252dbc3fac646, type: 3}
+  - {fileID: 21300000, guid: d9e9fc7d075d9854fa618554dfc8c7ca, type: 3}
+  - {fileID: 21300000, guid: f2539f44d022d6a4b80e57517997a4dc, type: 3}
+  - {fileID: 21300000, guid: c7bc49cc2e87af1458ada7c9d7fd4522, type: 3}
+  - {fileID: 21300000, guid: 8609720124e9c6d46839d8fba51b0af8, type: 3}
   levelBackgroundSprite: {fileID: 5699411282913011513, guid: 02fa0bca44983294e892b7fad8b6673f, type: 3}
   maxHP: 600
   infiniteHealth: 0
   projectileSprite: {fileID: 21300000, guid: ca7186951d5077d419fe7998de074c6d, type: 3}
   projectileInterval: 2.5
   projectileSpeed: 700
+  projectileGravitySpeedExponent: 0.5
   projectileVisualScale: 1.5
   projectileDamage: 14
   baseEnemyProjectilesPerAttack: 2

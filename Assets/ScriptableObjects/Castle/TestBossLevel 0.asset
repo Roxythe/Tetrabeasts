@@ -14,16 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CastleData
   castleName: Ruk, Tribal Chieftain
   damageStages:
-  - {fileID: 21300000, guid: 886449611e56bd946b622575db4f9130, type: 3}
-  - {fileID: 21300000, guid: c66bd8c4ea80a7f40ac90ef8dee6cc8a, type: 3}
-  - {fileID: 21300000, guid: f349abe0bbc11344da32c3e920ef94dc, type: 3}
-  - {fileID: 21300000, guid: 8c4fd46f987c8be45891cbbd4e3dcb38, type: 3}
+  - {fileID: 21300000, guid: fc6e0b3b0316e284d95b796fa6418af6, type: 3}
+  - {fileID: 21300000, guid: 937750f5cc1c58142b6b9d834baa4d64, type: 3}
+  - {fileID: 21300000, guid: 6d8d1d85685aba5468a423fcd77d7108, type: 3}
+  - {fileID: 21300000, guid: 7a16889b28523e447a10bd7361cd380a, type: 3}
   levelBackgroundSprite: {fileID: 3131462820028859008, guid: 17ec95ff0f36e1b43bb3655ea629c63e, type: 3}
   maxHP: 300
   infiniteHealth: 0
   projectileSprite: {fileID: 21300000, guid: ca7186951d5077d419fe7998de074c6d, type: 3}
   projectileInterval: 3
   projectileSpeed: 700
+  projectileGravitySpeedExponent: 0.5
   projectileVisualScale: 1.5
   projectileDamage: 10
   baseEnemyProjectilesPerAttack: 1

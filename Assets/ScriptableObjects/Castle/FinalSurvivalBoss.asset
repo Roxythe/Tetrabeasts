@@ -14,16 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CastleData
   castleName: Esora, Guardian to the Gates of Heaven?
   damageStages:
-  - {fileID: -7616692476637277105, guid: f3e860782e7976d4d9f26654e4e408ee, type: 3}
-  - {fileID: -7616692476637277105, guid: f3e860782e7976d4d9f26654e4e408ee, type: 3}
-  - {fileID: -7616692476637277105, guid: f3e860782e7976d4d9f26654e4e408ee, type: 3}
-  - {fileID: -7616692476637277105, guid: f3e860782e7976d4d9f26654e4e408ee, type: 3}
+  - {fileID: 21300000, guid: 7fd351226c924d14592f73c78f621f53, type: 3}
+  - {fileID: 21300000, guid: 7fd351226c924d14592f73c78f621f53, type: 3}
+  - {fileID: 21300000, guid: 7fd351226c924d14592f73c78f621f53, type: 3}
+  - {fileID: 21300000, guid: 7fd351226c924d14592f73c78f621f53, type: 3}
   levelBackgroundSprite: {fileID: 7177447691466052707, guid: 7fe717733100399409473e8864f22b1f, type: 3}
   maxHP: 3000
   infiniteHealth: 0
   projectileSprite: {fileID: 21300000, guid: ca7186951d5077d419fe7998de074c6d, type: 3}
   projectileInterval: 2
   projectileSpeed: 700
+  projectileGravitySpeedExponent: 0.5
   projectileVisualScale: 1.5
   projectileDamage: 40
   baseEnemyProjectilesPerAttack: 1

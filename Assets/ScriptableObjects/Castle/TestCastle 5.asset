@@ -14,16 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CastleData
   castleName: Grand Dukedom
   damageStages:
-  - {fileID: 21300000, guid: 1aef9244a17baf948acb4b0df7fe4c6f, type: 3}
-  - {fileID: 21300000, guid: 3fa301a4507c56e4588dcf604b19a97d, type: 3}
-  - {fileID: 21300000, guid: 2316eb13871882f42a2b687d52e08cb8, type: 3}
-  - {fileID: 21300000, guid: fbf26200c3687094686ff3e50077bdb3, type: 3}
+  - {fileID: 21300000, guid: 27706a273c3bc4b46a953b7421c90de9, type: 3}
+  - {fileID: 21300000, guid: 02905cd8a6edf5a4cb22cc7aea357325, type: 3}
+  - {fileID: 21300000, guid: 11f79823efd297f41ba4dfd9eb1196ce, type: 3}
+  - {fileID: 21300000, guid: d4294ec32aa2aaa4c8effc268c3cf6e3, type: 3}
   levelBackgroundSprite: {fileID: -834533576616965607, guid: 2a582d6dd9bc670409dfb51a5d57c91a, type: 3}
   maxHP: 1700
   infiniteHealth: 0
   projectileSprite: {fileID: 21300000, guid: ca7186951d5077d419fe7998de074c6d, type: 3}
   projectileInterval: 2
   projectileSpeed: 700
+  projectileGravitySpeedExponent: 0.5
   projectileVisualScale: 1.5
   projectileDamage: 20
   baseEnemyProjectilesPerAttack: 3

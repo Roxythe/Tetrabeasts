@@ -416,6 +416,9 @@ public static class TetrabeastsLocalization
         EnsureInitialized();
 
         string languageCode = CurrentLanguageCode;
+        if (TetrabeastsSceneFlavorTranslations.TryGetText(languageCode, englishText, out string sceneFlavorText))
+            return sceneFlavorText;
+
         if (languageCode == SpanishCode && TetrabeastsSpanishTranslations.TryGetText(englishText, out string spanishText))
             return spanishText;
 
@@ -442,7 +445,8 @@ public static class TetrabeastsLocalization
         if (string.IsNullOrWhiteSpace(englishText))
             return false;
 
-        return TetrabeastsSpanishTranslations.TryGetText(englishText, out _)
+        return TetrabeastsSceneFlavorTranslations.HasText(englishText)
+            || TetrabeastsSpanishTranslations.TryGetText(englishText, out _)
             || TetrabeastsPortugueseBrazilTranslations.TryGetText(englishText, out _)
             || TetrabeastsGermanTranslations.TryGetText(englishText, out _)
             || TetrabeastsFrenchTranslations.TryGetText(englishText, out _)
