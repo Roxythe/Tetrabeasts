@@ -78,6 +78,7 @@ MonoBehaviour:
   sfxSlotStop: {fileID: 8300000, guid: f7aa88aed26bb524a8f3443e2c32f2d9, type: 3}
   sfxSlotReveal: {fileID: 8300000, guid: 58df67d980004eb4383fd06921eb9b60, type: 3}
   sfxRainLoop: {fileID: 8300000, guid: 3e2108a975a188a4c8b6e6074f7e124f, type: 3}
+  rainFadeOutSeconds: 0.3
   EDMGameplayMusic:
   - {fileID: 8300000, guid: a02a4788845cc444b8b1e0baa846cdb5, type: 3}
   - {fileID: 8300000, guid: c7e4825b4755dd04ebe292fac9e8ba5c, type: 3}
@@ -86,12 +87,36 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 20fa08b2b632c134b95e407a11a34e6d, type: 3}
   - {fileID: 8300000, guid: 1e2114f4400293244bc274fe85996545, type: 3}
   - {fileID: 8300000, guid: df8f47281b69ac34ab6e10f825999666, type: 3}
+  - {fileID: 8300000, guid: b0ce1f209336ead458f2818c4388ecb9, type: 3}
+  - {fileID: 8300000, guid: 69a300c7595d47642a3fce9a37501d21, type: 3}
+  - {fileID: 8300000, guid: 9912926b6d362ef43a8ef9980ac9c96c, type: 3}
+  - {fileID: 8300000, guid: 7cd1eee0497558b478e8ce6334c8096a, type: 3}
+  - {fileID: 8300000, guid: 98549796d47a410489d8ca831de44504, type: 3}
+  - {fileID: 8300000, guid: 5d64bfb88f70ccd44bd0175334f5dde6, type: 3}
+  - {fileID: 8300000, guid: 823de5443f3938e4c854995d71c6f38a, type: 3}
+  - {fileID: 8300000, guid: 4cb4d1ca934a49b43a0f73e7d0c7580e, type: 3}
+  - {fileID: 8300000, guid: 29ed6f562a48d1345b9fe72ba48415a1, type: 3}
+  - {fileID: 8300000, guid: 88079c9ea23fe13439b3d6f4f22ae8c0, type: 3}
+  - {fileID: 8300000, guid: 617786bae09dd71448627881a3f85cb3, type: 3}
+  - {fileID: 8300000, guid: 6b775df69bc561945a09d74fa318e87c, type: 3}
+  - {fileID: 8300000, guid: c645ff15d1be37a4f93cb25e286b6360, type: 3}
+  - {fileID: 8300000, guid: 2363cf882099fca45a29d85d6c17363b, type: 3}
   EDMBossMusic:
   - {fileID: 8300000, guid: 1e2a69542a82a5b4fb089d4013832815, type: 3}
   - {fileID: 8300000, guid: 72e40eb0b23b77d4e88505c7b40b0bce, type: 3}
   - {fileID: 8300000, guid: 9e72a76e29b61464a9df7315951315f3, type: 3}
   - {fileID: 8300000, guid: b4ee99e510244ad42bf630882577303c, type: 3}
   - {fileID: 8300000, guid: 1f9aa3dec02218044a55ecf0e6550006, type: 3}
+  - {fileID: 8300000, guid: 795425294141b1148a2a1e75b3726f44, type: 3}
+  - {fileID: 8300000, guid: 51c8b8f0d41a9ea4dac165be58137fd9, type: 3}
+  - {fileID: 8300000, guid: 46e646dd8de136c4798477c3ade16913, type: 3}
+  - {fileID: 8300000, guid: 4b0251db49e85c842aab5c40e46b0cc0, type: 3}
+  - {fileID: 8300000, guid: d1381436eb9833443bbaff7df2fb7d40, type: 3}
+  - {fileID: 8300000, guid: 4047127c53e3b234694f67f785573667, type: 3}
+  - {fileID: 8300000, guid: 2af40dba5a44a8a4d9c8338a8eb1e307, type: 3}
+  - {fileID: 8300000, guid: 16c56d24aecdcce49885d6a3036e3cf7, type: 3}
+  - {fileID: 8300000, guid: 729ced92d11270048a561b8de706397f, type: 3}
+  - {fileID: 8300000, guid: b8f30dfc6e0f6ba419bb1cd5322e2a34, type: 3}
   MetalGameplayMusic:
   - {fileID: 8300000, guid: 951dff102d03c5947bf6f9a4b9b77cc7, type: 3}
   - {fileID: 8300000, guid: ba77a72ce39268f4bb187135aca787ef, type: 3}
@@ -100,11 +125,18 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d92c02d4c0fd75845b39c14e64de1c18, type: 3}
   - {fileID: 8300000, guid: 5c0b274ffd7b32147967c72a73b47001, type: 3}
   - {fileID: 8300000, guid: 55b37d69f91fe8647accffbfe845699d, type: 3}
+  - {fileID: 8300000, guid: f67620a723711b349ba0b4229bef020d, type: 3}
+  - {fileID: 8300000, guid: ca55c9ae8be148c4baad61964683cf39, type: 3}
+  - {fileID: 8300000, guid: 47a593ee4ecdb4f42a8b45ce8ad46438, type: 3}
   MetalBossMusic:
   - {fileID: 8300000, guid: 5c14238e921d6304f8141213dcf2d153, type: 3}
   - {fileID: 8300000, guid: cc3a84b963c69154984464b95c4af9fd, type: 3}
   - {fileID: 8300000, guid: 23f8ad18ab3f33245ba379c07cdffd1a, type: 3}
   - {fileID: 8300000, guid: 6824fd3217be2fb4b9ff175138689e20, type: 3}
+  - {fileID: 8300000, guid: b94c3f73cdc414248bede9c0a27d9a65, type: 3}
+  - {fileID: 8300000, guid: 91898cd098be5084f8415151f42e77a2, type: 3}
+  - {fileID: 8300000, guid: 2a0e9924c27b63d4985b32d6332274e8, type: 3}
+  - {fileID: 8300000, guid: 3b94b0fa4fda51548b280ae7ff8ae94c, type: 3}
   EDMTitleMusic: {fileID: 8300000, guid: 72caf85e79d3b5245bcaeda17cfb4498, type: 3}
   MetalTitleMusic: {fileID: 8300000, guid: d472bc17a6196c54bbb1d45824723c12, type: 3}
   EDMPauseMusic: {fileID: 8300000, guid: 19133b00f7885494c80c038dc894da9d, type: 3}
@@ -117,3 +149,5 @@ MonoBehaviour:
   musicVolume: 1
   sfxVolume: 1
   sfxPitchJitter: 0.2
+  specialAbilityLoopVolumeBoost: 4
+  specialAbilityLoopMaxVolumeScale: 4

@@ -2708,10 +2708,10 @@ public class Board : MonoBehaviour
 
     void MaintainBoardVfxLayering()
     {
-        if (!boardVfxRoot || !gridRoot || boardVfxRoot.childCount == 0)
+        if (!boardVfxRoot || !gridRoot)
             return;
 
-        boardVfxRoot.SetAsLastSibling();
+        boardVfxRoot.SetAsFirstSibling();
 
         var gridLines = new List<Transform>();
         for (int i = 0; i < gridRoot.childCount; i++)

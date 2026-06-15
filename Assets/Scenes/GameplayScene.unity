@@ -2863,7 +2863,7 @@ MonoBehaviour:
     - 2.3166666
     - 2.3333333
     clipLength: 2.35
-  intervalRangeSeconds: {x: 12, y: 60}
+  intervalRangeSeconds: {x: 30, y: 120}
   playbackSpeed: 0.66
   useUnscaledTime: 1
   finalFrameSampleOffsetSeconds: 0.001
@@ -8515,8 +8515,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 706.1057, y: -346.0918}
-  m_SizeDelta: {x: 256, y: 256}
+  m_AnchoredPosition: {x: 629.5469, y: -314.42032}
+  m_SizeDelta: {x: 350, y: 350}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &633525729
 Animator:
@@ -8562,7 +8562,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: -8447134745407361672, guid: 35f091e634d96dd48bff1d89c176b8ce, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -10240,7 +10240,7 @@ MonoBehaviour:
     - 2.3166666
     - 2.3333333
     clipLength: 2.35
-  intervalRangeSeconds: {x: 12, y: 60}
+  intervalRangeSeconds: {x: 60, y: 150}
   playbackSpeed: 0.66
   useUnscaledTime: 1
   finalFrameSampleOffsetSeconds: 0.001
@@ -16807,7 +16807,7 @@ MonoBehaviour:
     - 2.3166666
     - 2.3333333
     clipLength: 2.35
-  intervalRangeSeconds: {x: 12, y: 60}
+  intervalRangeSeconds: {x: 20, y: 80}
   playbackSpeed: 0.66
   useUnscaledTime: 1
   finalFrameSampleOffsetSeconds: 0.001
@@ -18783,7 +18783,7 @@ MonoBehaviour:
     - 2.3166666
     - 2.3333333
     clipLength: 2.35
-  intervalRangeSeconds: {x: 12, y: 60}
+  intervalRangeSeconds: {x: 40, y: 120}
   playbackSpeed: 0.66
   useUnscaledTime: 1
   finalFrameSampleOffsetSeconds: 0.001
@@ -25550,7 +25550,7 @@ MonoBehaviour:
     - 2.3166666
     - 2.3333333
     clipLength: 2.35
-  intervalRangeSeconds: {x: 12, y: 60}
+  intervalRangeSeconds: {x: 20, y: 250}
   playbackSpeed: 0.66
   useUnscaledTime: 1
   finalFrameSampleOffsetSeconds: 0.001
@@ -29807,13 +29807,11 @@ MonoBehaviour:
   currencyPopupDuration: 0.6
   sfxCurrencyLineGain: {fileID: 8300000, guid: 8cc2cb58f546add4cad7ed3e5909933a, type: 3}
   pieceLockSfxClips:
-  - {fileID: 8300000, guid: 3847d89fb005c924f983232e0d65a158, type: 3}
-  - {fileID: 8300000, guid: e37ff176c0d6ad249a21582ecf99b56f, type: 3}
-  - {fileID: 8300000, guid: f1d806b0ad2435f4995b7cded1479a26, type: 3}
-  - {fileID: 8300000, guid: fd44f083df14aa74ebe63f2fe71a69e9, type: 3}
-  - {fileID: 8300000, guid: 4c75a64808be9ff4299d529e27086d01, type: 3}
-  - {fileID: 8300000, guid: cdff2a91674d25b4583d6ebef9248b12, type: 3}
-  pieceLockSfxVolume: 1.5
+  - {fileID: 8300000, guid: 6a1df361a64539e4e96a277488995ac3, type: 3}
+  - {fileID: 8300000, guid: 7f0e7d8d140260049826a13349936640, type: 3}
+  pieceLockSfxVolume: 0.16
+  pieceLockSfxPitchJitter: 0.06
+  pieceLockSfxVolumeJitter: 0.04
   specialSlider: {fileID: 901058035}
   specialText: {fileID: 360363618}
   gameplayControlsText: {fileID: 1402636635}

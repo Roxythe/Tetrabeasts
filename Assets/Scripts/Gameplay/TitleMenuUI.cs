@@ -178,6 +178,11 @@ public class TitleMenuUI : MonoBehaviour
         TetrabeastsFirstLaunchLanguagePrompt.ShowIfNeeded(transform);
     }
 
+    void OnEnable()
+    {
+        HookAllButtonsForSFX();
+    }
+
     void OnDisable()
     {
         RestoreAutomaticNavigationScope();
@@ -259,8 +264,6 @@ public class TitleMenuUI : MonoBehaviour
         SelectedMonstersStore.Active = SanitizeMonsterSelection(SelectedMonstersStore.Active, rosterRef);
         SelectedMonstersStore.SaveNames(SelectedMonstersStore.Active);
         TetrabeastsControls.SuppressMenuSubmit(0.35f);
-
-        if (AudioManager.I) AudioManager.I.PlaySFX(AudioManager.I.sfxRestart);
 
         RunModsStore.ResetAll();
 

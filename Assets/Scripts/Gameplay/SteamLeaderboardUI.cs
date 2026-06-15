@@ -48,6 +48,7 @@ public class SteamLeaderboardUI : MonoBehaviour
 
     SteamLeaderboardSnapshot _snapshot;
     LeaderboardTab _activeTab = LeaderboardTab.Global;
+    readonly Dictionary<Button, ColorBlock> _tabButtonBaseColors = new();
     bool _isRefreshing;
     float _nextRefreshTimerUpdateTime;
     int _lastResetPeriodIndex = int.MinValue;
@@ -294,6 +295,35 @@ public class SteamLeaderboardUI : MonoBehaviour
         if (globalPanel) globalPanel.SetActive(tab == LeaderboardTab.Global);
         if (friendsPanel) friendsPanel.SetActive(tab == LeaderboardTab.Friends);
         if (currentRankPanel) currentRankPanel.SetActive(tab == LeaderboardTab.CurrentRank);
+
+        SetTabButtonActive(globalTabButton, tab == LeaderboardTab.Global);
+        SetTabButtonActive(friendsTabButton, tab == LeaderboardTab.Friends);
+        SetTabButtonActive(currentRankTabButton, tab == LeaderboardTab.CurrentRank);
+    }
+
+    void SetTabButtonActive(Button button, bool active)
+    {
+        if (!button)
+            return;
+
+        if (!_tabButtonBaseColors.TryGetValue(button, out var baseColors))
+        {
+            baseColors = button.colors;
+            _tabButtonBaseColors[button] = baseColors;
+        }
+
+        float inactiveAlpha = Mathf.Clamp01(baseColors.normalColor.a);
+        float tabAlpha = active ? 1f : inactiveAlpha;
+        var colors = baseColors;
+        colors.normalColor = WithAlpha(colors.normalColor, tabAlpha);
+        colors.selectedColor = WithAlpha(colors.selectedColor, tabAlpha);
+        button.colors = colors;
+    }
+
+    static Color WithAlpha(Color color, float alpha)
+    {
+        color.a = alpha;
+        return color;
     }
 
     void Hide()

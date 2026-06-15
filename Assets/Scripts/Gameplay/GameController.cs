@@ -174,6 +174,8 @@ public class GameController : MonoBehaviour
     [Header("Piece Lock SFX")]
     [SerializeField] AudioClip[] pieceLockSfxClips;
     [SerializeField, Range(0f, 2f)] float pieceLockSfxVolume = 1f;
+    [SerializeField, Range(0f, 0.25f)] float pieceLockSfxPitchJitter = 0.06f;
+    [SerializeField, Range(0f, 0.25f)] float pieceLockSfxVolumeJitter = 0.04f;
 
     [Header("Special Gauge UI")]
     public UnityEngine.UI.Slider specialSlider;
@@ -862,8 +864,7 @@ public class GameController : MonoBehaviour
         if (selectedCharacter && selectedCharacter.specialGaugeMax > 0f)
             specialGaugeMax = selectedCharacter.specialGaugeMax;
 
-        specialGauge = 0f; // Initialize Special gauge
-        UpdateSpecialUI();
+        ResetSpecialGauge();
         RefreshGameplayControlTexts();
         ResetSpecialChargedVisuals();
         PrewarmSpecialAbilityPopup();
@@ -2236,7 +2237,11 @@ public class GameController : MonoBehaviour
         }
 
         if (clip)
-            AudioManager.I.PlaySFX(clip, pieceLockSfxVolume);
+        {
+            float pitch = 1f + UnityEngine.Random.Range(-pieceLockSfxPitchJitter, pieceLockSfxPitchJitter);
+            float volumeScale = 1f + UnityEngine.Random.Range(-pieceLockSfxVolumeJitter, pieceLockSfxVolumeJitter);
+            AudioManager.I.PlaySFX(clip, pieceLockSfxVolume * volumeScale, pitch, jitter: false);
+        }
     }
 
     void RefillBag(bool forceFirstEntryNormal = false)
@@ -3756,12 +3761,7 @@ public class GameController : MonoBehaviour
                                          out Dictionary<int, MonsterData> rowDominantMonster,
                                          out Dictionary<int, List<int>> colsByRow);
 
-                    // Reset gauge on use
-                    specialGauge = 0f;
-                    if (activateSpecialGaugeText)
-                        activateSpecialGaugeText.gameObject.SetActive(false);
-
-                    UpdateSpecialUI();
+                    ResetSpecialGauge();
 
                     if (squaresCleared > 0 && AudioManager.I)
                         AudioManager.I.PlayRandomLineClear();
@@ -3871,9 +3871,7 @@ public class GameController : MonoBehaviour
                         UpdateUnitLivesUI();
                     }
 
-                    // Reset gauge
-                    specialGauge = 0f;
-                    UpdateSpecialUI();
+                    ResetSpecialGauge();
                     break;
                 }
 
@@ -3884,8 +3882,7 @@ public class GameController : MonoBehaviour
                     // Start the timer/pulse co-routine
                     StartCoroutine(GlobalImmunityCo(Mathf.Max(0.25f, character.immunityDuration)));
 
-                    specialGauge = 0f; // Reset gauge
-                    UpdateSpecialUI();
+                    ResetSpecialGauge();
                     break;
                 }
 
@@ -3917,8 +3914,7 @@ public class GameController : MonoBehaviour
 
                     _playerGravityCR = StartCoroutine(PlayerReducedGravityCo(dur));
 
-                    specialGauge = 0f; // Reset gauge
-                    UpdateSpecialUI();
+                    ResetSpecialGauge();
                     break;
                 }
 
@@ -3940,9 +3936,7 @@ public class GameController : MonoBehaviour
 
                     _playerDoubleStatsCR = StartCoroutine(PlayerDoubleStatsCo(dur));
 
-                    // Reset gauge
-                    specialGauge = 0f;
-                    UpdateSpecialUI();
+                    ResetSpecialGauge();
                     break;
                 }
         }
@@ -4056,6 +4050,11 @@ public class GameController : MonoBehaviour
     {
         specialGauge = Mathf.Clamp(value, 0f, specialGaugeMax);
         UpdateSpecialUI(playGaugeFullSFX);
+    }
+
+    void ResetSpecialGauge()
+    {
+        SetSpecialGaugeImmediate(0f);
     }
 
     void PlaySpecialGaugeFullSFX()
@@ -4997,8 +4996,7 @@ public class GameController : MonoBehaviour
         specialGaugeMax = (selectedCharacter && selectedCharacter.specialGaugeMax > 0f)
         ? selectedCharacter.specialGaugeMax
         : 100f;
-        specialGauge = 0f;
-        UpdateSpecialUI();
+        ResetSpecialGauge();
 
         score = 0;
         if (scoreUI) scoreUI.Set(score);

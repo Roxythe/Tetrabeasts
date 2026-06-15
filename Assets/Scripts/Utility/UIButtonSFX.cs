@@ -26,6 +26,7 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerDownHand
     static GameObject s_lastClickSfxObject;
 
     Button _btn;
+    bool _clickPlayedForCurrentPointerPress;
 
     void Awake()
     {
@@ -41,6 +42,15 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerDownHand
     public void OnPointerDown(PointerEventData eventData)
     {
         s_lastPointerUiFrame = Time.frameCount;
+
+        _clickPlayedForCurrentPointerPress = false;
+
+        if (eventData.button != PointerEventData.InputButton.Left) return;
+        if (requireInteractable && _btn && !_btn.interactable) return;
+
+        TetrabeastsControls.SuppressMenuSubmit();
+        PlayClickSFX();
+        _clickPlayedForCurrentPointerPress = true;
     }
 
     public void OnSelect(BaseEventData eventData)
@@ -65,6 +75,13 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerDownHand
 
         // Left click / primary tap only
         if (eventData.button != PointerEventData.InputButton.Left) return;
+
+        if (_clickPlayedForCurrentPointerPress)
+        {
+            _clickPlayedForCurrentPointerPress = false;
+            ClearSelectionAfterKeyboardMouseClick();
+            return;
+        }
 
         TetrabeastsControls.SuppressMenuSubmit();
         PlayClickSFX();
