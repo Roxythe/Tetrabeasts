@@ -7723,8 +7723,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: +0 Unit Lives at Max Capacity
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6d6f44b97b706424ab3794740d9d7ffd, type: 2}
-  m_sharedMaterial: {fileID: 5560615476019635856, guid: 6d6f44b97b706424ab3794740d9d7ffd, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f0321d9283404424cbe3d66d68c5f8ba, type: 2}
+  m_sharedMaterial: {fileID: 5560615476019635856, guid: f0321d9283404424cbe3d66d68c5f8ba, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -11763,8 +11763,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Reinforcements: '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a1470b117e5ec7a4c9c2c4151211f423, type: 2}
-  m_sharedMaterial: {fileID: 3855398030641842644, guid: a1470b117e5ec7a4c9c2c4151211f423, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 79b9ae36edbd3c24d8ae7cc588f1b676, type: 2}
+  m_sharedMaterial: {fileID: 3855398030641842644, guid: 79b9ae36edbd3c24d8ae7cc588f1b676, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -13916,8 +13916,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Gold Won This Round:'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a1470b117e5ec7a4c9c2c4151211f423, type: 2}
-  m_sharedMaterial: {fileID: 3855398030641842644, guid: a1470b117e5ec7a4c9c2c4151211f423, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 79b9ae36edbd3c24d8ae7cc588f1b676, type: 2}
+  m_sharedMaterial: {fileID: 3855398030641842644, guid: 79b9ae36edbd3c24d8ae7cc588f1b676, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -17642,6 +17642,18 @@ PrefabInstance:
     - target: {fileID: 329539716738683249, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
       propertyPath: m_Name
       value: CurrencyGained_Prefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 5840455815505917861, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: f0321d9283404424cbe3d66d68c5f8ba, type: 2}
+    - target: {fileID: 5840455815505917861, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 5560615476019635856, guid: f0321d9283404424cbe3d66d68c5f8ba, type: 2}
+    - target: {fileID: 5840455815505917861, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7050181030511975951, guid: c1804b7b70e7cd14a8af4eec09fd29cf, type: 3}
       propertyPath: m_IsActive
@@ -32019,6 +32031,7 @@ MonoBehaviour:
   backgroundImage: {fileID: 910130000000014}
   messageText: {fileID: 910130000000033}
   winOneLinerText: {fileID: 0}
+  lossOneLinerText: {fileID: 0}
   continueButton: {fileID: 1586225055}
   continueButtonGroup: {fileID: 1586225056}
   optOutToggle: {fileID: 910130000000075}
@@ -32072,6 +32085,33 @@ MonoBehaviour:
   - We fight for peace and it's going to be very peaceful once you're all dead.
   - How many turtles does it take to defend a castle? More than this clearly.
   - The bigger they are, the more we get to destroy.
+  lossOneLiners:
+  - Regroup. Rebuild. Return stronger.
+  - The conquest pauses here.
+  - One failed push is not the end.
+  - Fine, keep your secrets little turtles.
+  - Dust off the roster and try again.
+  - Just wait until my big bro is home.
+  - Games broken.
+  - These turles have tougher shells than expected.
+  - Next time we use the big bombs.
+  - I zigged when I should have zagged.
+  - '"Sign up for the front line" they said... "It will be exciting" they said...'
+  - Your shells will not protect you forever little turtles.
+  - Just wait until I get back from Gabba Ghoul's Goods.
+  - That escalated quickly...
+  - If at first you don't succeed, blow everything up.
+  - The battle is over, but not the war.
+  - Without your shells, you soft belly turtles will be crushed easily.
+  - Maybe next time we strategize.
+  - Notes on the battle, maybe die less?
+  - That was an excellent demonstration of what not to do.
+  - We will grab you turtles by your tails and rip you from your shells.
+  - No more mister nice monster.
+  - Thanks Obama.
+  - 'Grandpa I don''t wanna break castles no more.
+
+    Well that''s too damn bad!'
   transitionAnimator: {fileID: 978409729}
   fireworkAnimationRoot: {fileID: 978409730}
   useUnscaledAnimationTime: 1
@@ -33083,10 +33123,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2092384763}
     m_Modifications:
-    - target: {fileID: 83577221823161235, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 100
-      objectReference: {fileID: 0}
     - target: {fileID: 830925785929687270, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -33167,10 +33203,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 973813333073685675, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 100
-      objectReference: {fileID: 0}
     - target: {fileID: 1010559400873174399, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
       propertyPath: m_AnchorMax.x
       value: 1
@@ -33178,30 +33210,6 @@ PrefabInstance:
     - target: {fileID: 1010559400873174399, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1922341328203890700, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 2055885018685757184, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: -1692212058581304955, guid: 6657dfd21e9693e4d97518119134df2c, type: 3}
-    - target: {fileID: 2097108745737886327, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
-      propertyPath: m_fontSize
-      value: 93.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2097108745737886327, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
-      propertyPath: m_fontSizeMax
-      value: 106
-      objectReference: {fileID: 0}
-    - target: {fileID: 2125342562981399051, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
-      propertyPath: m_fontSize
-      value: 93.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2125342562981399051, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
-      propertyPath: m_fontSizeMax
-      value: 106
       objectReference: {fileID: 0}
     - target: {fileID: 2410080442902230993, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
       propertyPath: m_AnchorMax.y
@@ -33218,14 +33226,6 @@ PrefabInstance:
     - target: {fileID: 2410080442902230993, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -214
-      objectReference: {fileID: 0}
-    - target: {fileID: 2960505185196405027, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
-      propertyPath: m_fontSize
-      value: 93.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2960505185196405027, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
-      propertyPath: m_fontSizeMax
-      value: 106
       objectReference: {fileID: 0}
     - target: {fileID: 3134331139491545633, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
       propertyPath: m_Name
@@ -33267,22 +33267,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -74
       objectReference: {fileID: 0}
-    - target: {fileID: 4022141192231205319, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 4062464894667518677, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 5042419753791019204, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
-      propertyPath: m_fontSize
-      value: 93.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5042419753791019204, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
-      propertyPath: m_fontSizeMax
-      value: 106
-      objectReference: {fileID: 0}
     - target: {fileID: 6504902209461196204, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -33339,18 +33323,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: -17
       objectReference: {fileID: 0}
-    - target: {fileID: 6962436029115798417, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
-      propertyPath: m_fontSize
-      value: 93.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6962436029115798417, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
-      propertyPath: m_fontSizeMax
-      value: 106
-      objectReference: {fileID: 0}
-    - target: {fileID: 8368768329091344423, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 100
-      objectReference: {fileID: 0}
     - target: {fileID: 8574906465571377831, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
       propertyPath: m_AnchorMax.x
       value: 1
@@ -33358,14 +33330,6 @@ PrefabInstance:
     - target: {fileID: 8574906465571377831, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8738354447320365749, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
-      propertyPath: m_fontSize
-      value: 93.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8738354447320365749, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
-      propertyPath: m_fontSizeMax
-      value: 106
       objectReference: {fileID: 0}
     - target: {fileID: 9155398751897983890, guid: 31ed2a47400db9d42bfafa8166659b62, type: 3}
       propertyPath: m_AnchorMax.y

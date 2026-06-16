@@ -31,9 +31,20 @@ public static class TetrabeastsLocalizationProjectSetup
         ["language_prompt_body"] = "Pick the language Tetrabeasts should use. You can change this later in Settings.",
         ["language_prompt_confirm"] = "Confirm",
         ["intro_press_any_key"] = "Press Any Key",
+        ["title_credits"] = "Credits",
         ["title_select_commander"] = "Select Commander",
         ["title_monster_units"] = "Monster Units",
         ["title_active_squad"] = "Active Squad",
+        ["credits_body"] =
+            "Solo Development Project By:\n" +
+            "Roxythe (Rocky) Harding\n\n" +
+            "Big Thank You To:\n" +
+            "Andrue Harless\n" +
+            "Joyce Shen\n" +
+            "Nick Blackwell\n" +
+            "Trent Mcconnaughhay\n" +
+            "Zach Warren\n\n" +
+            "For Beta Testing And Providing Feedback To Improve The Game!",
         ["generic_confirm"] = "Confirm",
         ["generic_continue"] = "Continue",
         ["generic_close"] = "Close",
@@ -84,9 +95,20 @@ public static class TetrabeastsLocalizationProjectSetup
         ["language_prompt_body"] = "Elige el idioma que debe usar Tetrabeasts. Puedes cambiarlo luego en Ajustes.",
         ["language_prompt_confirm"] = "Confirmar",
         ["intro_press_any_key"] = "Pulsa cualquier tecla",
+        ["title_credits"] = "Cr\u00e9ditos",
         ["title_select_commander"] = "Seleccionar comandante",
         ["title_monster_units"] = "Unidades monstruo",
         ["title_active_squad"] = "Escuadron activo",
+        ["credits_body"] =
+            "Proyecto desarrollado en solitario por:\n" +
+            "Roxythe (Rocky) Harding\n\n" +
+            "Muchas gracias a:\n" +
+            "Andrue Harless\n" +
+            "Joyce Shen\n" +
+            "Nick Blackwell\n" +
+            "Trent Mcconnaughhay\n" +
+            "Zach Warren\n\n" +
+            "Por probar la beta y aportar comentarios para mejorar el juego!",
         ["generic_confirm"] = "Confirmar",
         ["generic_continue"] = "Continuar",
         ["generic_close"] = "Cerrar",

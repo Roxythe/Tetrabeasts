@@ -58,10 +58,21 @@ public static class TetrabeastsLocalization
                 ["title_codex"] = "Codex",
                 ["title_help"] = "Help",
                 ["title_highscore"] = "HighScore",
+                ["title_credits"] = "Credits",
                 ["title_select_commander"] = "Select Commander",
                 ["title_select_monsters"] = "Select Monsters",
                 ["title_monster_units"] = "Monster Units",
                 ["title_active_squad"] = "Active Squad",
+                ["credits_body"] =
+                    "Solo Development Project By:\n" +
+                    "Roxythe (Rocky) Harding\n\n" +
+                    "Big Thank You To:\n" +
+                    "Andrue Harless\n" +
+                    "Joyce Shen\n" +
+                    "Nick Blackwell\n" +
+                    "Trent Mcconnaughhay\n" +
+                    "Zach Warren\n\n" +
+                    "For Beta Testing And Providing Feedback To Improve The Game!",
                 ["generic_confirm"] = "Confirm",
                 ["generic_continue"] = "Continue",
                 ["generic_close"] = "Close",
@@ -137,10 +148,21 @@ public static class TetrabeastsLocalization
                 ["title_codex"] = "C\u00f3dice",
                 ["title_help"] = "Ayuda",
                 ["title_highscore"] = "Puntuaci\u00f3n m\u00e1xima",
+                ["title_credits"] = "Cr\u00e9ditos",
                 ["title_select_commander"] = "Seleccionar comandante",
                 ["title_select_monsters"] = "Elegir monstruos",
                 ["title_monster_units"] = "Unidades monstruo",
                 ["title_active_squad"] = "Escuadron activo",
+                ["credits_body"] =
+                    "Proyecto desarrollado en solitario por:\n" +
+                    "Roxythe (Rocky) Harding\n\n" +
+                    "Muchas gracias a:\n" +
+                    "Andrue Harless\n" +
+                    "Joyce Shen\n" +
+                    "Nick Blackwell\n" +
+                    "Trent Mcconnaughhay\n" +
+                    "Zach Warren\n\n" +
+                    "Por probar la beta y aportar comentarios para mejorar el juego!",
                 ["generic_confirm"] = "Confirmar",
                 ["generic_continue"] = "Continuar",
                 ["generic_close"] = "Cerrar",

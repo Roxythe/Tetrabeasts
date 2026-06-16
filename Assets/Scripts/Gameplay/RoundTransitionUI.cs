@@ -20,6 +20,7 @@ public class RoundTransitionUI : MonoBehaviour
     [SerializeField] Image backgroundImage;
     [SerializeField] TMP_Text messageText;
     [SerializeField] TMP_Text winOneLinerText;
+    [SerializeField] TMP_Text lossOneLinerText;
     [SerializeField] Button continueButton;
     [SerializeField] CanvasGroup continueButtonGroup;
     [SerializeField] Toggle optOutToggle;
@@ -41,6 +42,17 @@ public class RoundTransitionUI : MonoBehaviour
         "One less wall between you and legend.",
         "The board remembers that one.",
         "Onward before the dust settles."
+    };
+
+    [Header("Loss One-Liners")]
+    [TextArea(1, 2)]
+    [SerializeField] string[] lossOneLiners =
+    {
+        "Regroup. Rebuild. Return stronger.",
+        "The conquest pauses here.",
+        "One failed push is not the end.",
+        "The next board starts with a lesson.",
+        "Dust off the roster and try again."
     };
 
     [Header("Animation")]
@@ -90,9 +102,13 @@ public class RoundTransitionUI : MonoBehaviour
     AudioClip _currentActiveLoopSfxClip;
     RoundTransitionVariant _currentVariant = RoundTransitionVariant.Default;
     int _lastWinOneLinerIndex = -1;
+    int _lastLossOneLinerIndex = -1;
     bool _builtRuntimeUi;
     bool _continueButtonUsesPrefab;
     const float RuntimeActionGap = 22f;
+    const float RuntimeContentHeightWithOneLiner = 430f;
+    const float RuntimeContentLayoutSpacing = 16f;
+    const int RuntimeContentVerticalPadding = 8;
     static Sprite s_revealCircleSprite;
 
     public bool IsShowing => rootPanel && rootPanel.activeSelf;
@@ -179,7 +195,7 @@ public class RoundTransitionUI : MonoBehaviour
             messageText.text = TetrabeastsLocalization.LocalizeText(message);
         }
 
-        SetWinOneLinerVisible(false);
+        SetOneLinersVisible(false);
         SetTextAlpha(0f);
         PrepareCircularReveal();
         SetActionControlsVisible(false);
@@ -235,7 +251,7 @@ public class RoundTransitionUI : MonoBehaviour
             messageText.text = TetrabeastsLocalization.LocalizeText(message);
         }
 
-        ConfigureWinOneLiner(variant);
+        ConfigureOneLiners(variant);
         SetTextAlpha(0f);
 
         if (continueButtonGroup)
@@ -449,7 +465,9 @@ public class RoundTransitionUI : MonoBehaviour
 
         ResolveAnimator();
         EnsureRevealMask();
+        EnsureContentLayout();
         EnsureWinOneLinerText();
+        EnsureLossOneLinerText();
         ApplyFont();
         WireContinueButton();
         HookContinueButtonSfx();
@@ -491,11 +509,12 @@ public class RoundTransitionUI : MonoBehaviour
         contentRoot.anchorMax = new Vector2(0.5f, 0.5f);
         contentRoot.pivot = new Vector2(0.5f, 0.5f);
         contentRoot.anchoredPosition = Vector2.zero;
-        contentRoot.sizeDelta = new Vector2(1120f, 360f);
+        contentRoot.sizeDelta = new Vector2(1120f, RuntimeContentHeightWithOneLiner);
 
         var layout = contentGo.GetComponent<VerticalLayoutGroup>();
         layout.childAlignment = TextAnchor.MiddleCenter;
-        layout.spacing = 24f;
+        layout.spacing = RuntimeContentLayoutSpacing;
+        layout.padding = new RectOffset(0, 0, RuntimeContentVerticalPadding, RuntimeContentVerticalPadding);
         layout.childControlWidth = false;
         layout.childControlHeight = false;
         layout.childForceExpandWidth = false;
@@ -528,33 +547,71 @@ public class RoundTransitionUI : MonoBehaviour
         BuildOptOutToggle(actionGo.transform);
     }
 
+    void EnsureContentLayout()
+    {
+        if (!contentRoot)
+            return;
+
+        var size = contentRoot.sizeDelta;
+        size.x = Mathf.Max(size.x, 1120f);
+        size.y = Mathf.Max(size.y, RuntimeContentHeightWithOneLiner);
+        contentRoot.sizeDelta = size;
+
+        var layout = contentRoot.GetComponent<VerticalLayoutGroup>();
+        if (!layout)
+            return;
+
+        layout.spacing = RuntimeContentLayoutSpacing;
+        layout.padding = new RectOffset(0, 0, RuntimeContentVerticalPadding, RuntimeContentVerticalPadding);
+    }
+
     void EnsureWinOneLinerText()
     {
         if (winOneLinerText || !contentRoot)
             return;
 
-        var oneLinerGo = new GameObject("RoundTransition_WinOneLiner_Text", typeof(RectTransform), typeof(TextMeshProUGUI));
+        winOneLinerText = CreateOneLinerText("RoundTransition_WinOneLiner_Text", FontStyles.Italic);
+    }
+
+    void EnsureLossOneLinerText()
+    {
+        if (lossOneLinerText || !contentRoot)
+            return;
+
+        lossOneLinerText = CreateOneLinerText("RoundTransition_LossOneLiner_Text", FontStyles.Italic);
+    }
+
+    TMP_Text CreateOneLinerText(string objectName, FontStyles fontStyle)
+    {
+        var oneLinerGo = new GameObject(objectName, typeof(RectTransform), typeof(TextMeshProUGUI));
         oneLinerGo.transform.SetParent(contentRoot, false);
 
         var oneLinerRect = oneLinerGo.GetComponent<RectTransform>();
         oneLinerRect.sizeDelta = new Vector2(920f, 54f);
 
-        winOneLinerText = oneLinerGo.GetComponent<TextMeshProUGUI>();
-        winOneLinerText.alignment = TextAlignmentOptions.Center;
-        winOneLinerText.enableAutoSizing = true;
-        winOneLinerText.fontSizeMin = 18f;
-        winOneLinerText.fontSizeMax = 32f;
-        winOneLinerText.fontStyle = FontStyles.Italic;
-        winOneLinerText.raycastTarget = false;
-        winOneLinerText.color = new Color(1f, 1f, 1f, 0f);
+        var oneLinerText = oneLinerGo.GetComponent<TextMeshProUGUI>();
+        oneLinerText.alignment = TextAlignmentOptions.Center;
+        oneLinerText.enableAutoSizing = true;
+        oneLinerText.fontSizeMin = 18f;
+        oneLinerText.fontSizeMax = 32f;
+        oneLinerText.fontStyle = fontStyle;
+        oneLinerText.raycastTarget = false;
+        oneLinerText.color = new Color(1f, 1f, 1f, 0f);
 
         if (transitionFont)
-            winOneLinerText.font = transitionFont;
+            oneLinerText.font = transitionFont;
 
         if (actionRoot)
             oneLinerGo.transform.SetSiblingIndex(actionRoot.GetSiblingIndex());
 
         oneLinerGo.SetActive(false);
+        return oneLinerText;
+    }
+
+    void ConfigureOneLiners(RoundTransitionVariant variant)
+    {
+        ConfigureWinOneLiner(variant);
+        ConfigureLossOneLiner(variant);
     }
 
     void ConfigureWinOneLiner(RoundTransitionVariant variant)
@@ -565,7 +622,7 @@ public class RoundTransitionUI : MonoBehaviour
             return;
         }
 
-        string oneLiner = PickWinOneLiner();
+        string oneLiner = PickOneLiner(winOneLiners, ref _lastWinOneLinerIndex);
         if (string.IsNullOrWhiteSpace(oneLiner))
         {
             SetWinOneLinerVisible(false);
@@ -580,21 +637,44 @@ public class RoundTransitionUI : MonoBehaviour
         SetWinOneLinerVisible(true);
     }
 
-    string PickWinOneLiner()
+    void ConfigureLossOneLiner(RoundTransitionVariant variant)
     {
-        if (winOneLiners == null || winOneLiners.Length == 0)
+        if (variant != RoundTransitionVariant.Loss)
+        {
+            SetLossOneLinerVisible(false);
+            return;
+        }
+
+        string oneLiner = PickOneLiner(lossOneLiners, ref _lastLossOneLinerIndex);
+        if (string.IsNullOrWhiteSpace(oneLiner))
+        {
+            SetLossOneLinerVisible(false);
+            return;
+        }
+
+        EnsureLossOneLinerText();
+        if (!lossOneLinerText)
+            return;
+
+        lossOneLinerText.text = TetrabeastsLocalization.LocalizeText(oneLiner);
+        SetLossOneLinerVisible(true);
+    }
+
+    string PickOneLiner(string[] oneLiners, ref int lastOneLinerIndex)
+    {
+        if (oneLiners == null || oneLiners.Length == 0)
             return string.Empty;
 
         var candidates = new List<int>();
         var fallbackCandidates = new List<int>();
 
-        for (int i = 0; i < winOneLiners.Length; i++)
+        for (int i = 0; i < oneLiners.Length; i++)
         {
-            if (string.IsNullOrWhiteSpace(winOneLiners[i]))
+            if (string.IsNullOrWhiteSpace(oneLiners[i]))
                 continue;
 
             fallbackCandidates.Add(i);
-            if (i != _lastWinOneLinerIndex)
+            if (i != lastOneLinerIndex)
                 candidates.Add(i);
         }
 
@@ -605,14 +685,26 @@ public class RoundTransitionUI : MonoBehaviour
             return string.Empty;
 
         int pickedIndex = candidates[UnityEngine.Random.Range(0, candidates.Count)];
-        _lastWinOneLinerIndex = pickedIndex;
-        return winOneLiners[pickedIndex].Trim();
+        lastOneLinerIndex = pickedIndex;
+        return oneLiners[pickedIndex].Trim();
     }
 
     void SetWinOneLinerVisible(bool visible)
     {
         if (winOneLinerText)
             winOneLinerText.gameObject.SetActive(visible);
+    }
+
+    void SetLossOneLinerVisible(bool visible)
+    {
+        if (lossOneLinerText)
+            lossOneLinerText.gameObject.SetActive(visible);
+    }
+
+    void SetOneLinersVisible(bool visible)
+    {
+        SetWinOneLinerVisible(visible);
+        SetLossOneLinerVisible(visible);
     }
 
     void EnsureRevealMask()
@@ -994,6 +1086,7 @@ public class RoundTransitionUI : MonoBehaviour
     {
         SetGraphicAlpha(messageText, alpha);
         SetGraphicAlpha(winOneLinerText, alpha);
+        SetGraphicAlpha(lossOneLinerText, alpha);
     }
 
     void SetGraphicAlpha(Graphic graphic, float alpha)
@@ -1094,6 +1187,9 @@ public class RoundTransitionUI : MonoBehaviour
 
         if (winOneLinerText)
             winOneLinerText.font = transitionFont;
+
+        if (lossOneLinerText)
+            lossOneLinerText.font = transitionFont;
 
         if (continueButton)
         {

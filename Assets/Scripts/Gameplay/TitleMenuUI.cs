@@ -40,6 +40,11 @@ public class TitleMenuUI : MonoBehaviour
     [SerializeField] CharacterSelectUI characterSelectUI;
     [SerializeField] MonsterSelectUI monsterSelectUI;
 
+    [Header("Credits")]
+    public GameObject creditsPanel;
+    [SerializeField] Button creditsButton;
+    [SerializeField] CreditsPanelUI creditsPanelUI;
+
     [Header("Steam Leaderboard")]
     [SerializeField] GameObject steamLeaderboardPanel;
     [SerializeField] GameObject steamLeaderboardPrefab;
@@ -171,6 +176,8 @@ public class TitleMenuUI : MonoBehaviour
         Cursor.visible = false;
 
         EnsureStarDifficultyUI();
+        ResolveCreditsReferences();
+        HideCreditsPanel(instant: true);
         RefreshTempRunUI();
         HideSteamLeaderboardIfUnavailable();
         RefreshSteamLeaderboardIfVisible();
@@ -463,6 +470,36 @@ public class TitleMenuUI : MonoBehaviour
         if (pauseOnPanels) Time.timeScale = show ? 0f : 1f;
     }
 
+    public void OnToggleCredits()
+    {
+        ResolveCreditsReferences();
+
+        if (!creditsPanel)
+            return;
+
+        bool show = !UIPanelTransition.IsVisible(creditsPanel);
+        if (show)
+        {
+            creditsPanel.transform.SetAsLastSibling();
+            creditsPanelUI?.Refresh();
+        }
+
+        UIPanelTransition.SetVisible(creditsPanel, show);
+        SetPanelPause(show);
+
+        if (show)
+        {
+            navigationRootPrimed = false;
+            ClearCurrentSelection();
+        }
+    }
+
+    public void OnCloseCredits()
+    {
+        ResolveCreditsReferences();
+        HideCreditsPanel();
+    }
+
     public void OnQuitGame()
     {
         PlayerProgress.I?.EndRun();
@@ -624,9 +661,13 @@ public class TitleMenuUI : MonoBehaviour
         if (!root)
             return false;
 
-        return root == gameObject
-            ? UINavigationUtility.SelectFirstUsable(root, "New", "Game")
-            : UINavigationUtility.SelectFirstUsable(root);
+        if (root == gameObject)
+            return UINavigationUtility.SelectFirstUsable(root, "New", "Game");
+
+        if (root == creditsPanel)
+            return UINavigationUtility.SelectFirstUsable(root, "Close", "Back", "Cancel");
+
+        return UINavigationUtility.SelectFirstUsable(root);
     }
 
     void RestoreNavigationRootSelectionIfNeeded(GameObject root)
@@ -656,6 +697,7 @@ public class TitleMenuUI : MonoBehaviour
         if (IsVisiblePanel(helpPanel)) return helpPanel;
         if (IsVisiblePanel(achievementPanel)) return achievementPanel;
         if (IsVisiblePanel(codexPanel)) return codexPanel;
+        if (IsVisiblePanel(creditsPanel)) return creditsPanel;
         if (IsVisiblePanel(highScorePanel)) return highScorePanel;
 
         return gameObject;
@@ -721,6 +763,12 @@ public class TitleMenuUI : MonoBehaviour
         if (ConfirmationPopupUI.TryCancelShowingPopup())
             return true;
 
+        if (creditsPanel && root == creditsPanel && UIPanelTransition.IsVisible(creditsPanel))
+        {
+            HideTitlePanel(creditsPanel);
+            return true;
+        }
+
         if (root && root != gameObject && TryPressPanelBackOrCloseButton(root))
         {
             NotifyShopPanelClosedIfNeeded(root);
@@ -741,6 +789,7 @@ public class TitleMenuUI : MonoBehaviour
         if (helpPanel && UIPanelTransition.IsVisible(helpPanel)) { HideTitlePanel(helpPanel); return true; }
         if (achievementPanel && UIPanelTransition.IsVisible(achievementPanel)) { HideTitlePanel(achievementPanel); return true; }
         if (shopPanel && UIPanelTransition.IsVisible(shopPanel)) { HideTitlePanel(shopPanel); return true; }
+        if (creditsPanel && UIPanelTransition.IsVisible(creditsPanel)) { HideTitlePanel(creditsPanel); return true; }
 
         if (monsterSelectPanel && UIPanelTransition.IsVisible(monsterSelectPanel.gameObject))
         {
@@ -792,6 +841,61 @@ public class TitleMenuUI : MonoBehaviour
     {
         if (pauseOnPanels)
             Time.timeScale = paused ? 0f : 1f;
+    }
+
+    void ResolveCreditsReferences()
+    {
+        if (!creditsPanel)
+            creditsPanel = FindSceneGameObjectByName("Credits_Panel");
+
+        if (!creditsButton)
+        {
+            var buttonObject = FindSceneGameObjectByName("Credits_Button");
+            if (buttonObject)
+                creditsButton = buttonObject.GetComponent<Button>();
+        }
+
+        if (!creditsPanelUI && creditsPanel)
+            creditsPanelUI = creditsPanel.GetComponent<CreditsPanelUI>();
+
+        if (!creditsPanelUI && creditsPanel)
+            creditsPanelUI = creditsPanel.AddComponent<CreditsPanelUI>();
+
+        if (creditsPanelUI)
+            creditsPanelUI.ResolveReferences();
+
+        if (creditsButton)
+        {
+            creditsButton.onClick.RemoveListener(OnToggleCredits);
+
+            if (!HasPersistentCreditsToggle(creditsButton))
+                creditsButton.onClick.AddListener(OnToggleCredits);
+        }
+    }
+
+    bool HasPersistentCreditsToggle(Button button)
+    {
+        if (!button)
+            return false;
+
+        int count = button.onClick.GetPersistentEventCount();
+        for (int i = 0; i < count; i++)
+        {
+            if (button.onClick.GetPersistentTarget(i) == this &&
+                button.onClick.GetPersistentMethodName(i) == nameof(OnToggleCredits))
+                return true;
+        }
+
+        return false;
+    }
+
+    void HideCreditsPanel(bool instant = false)
+    {
+        if (!creditsPanel)
+            return;
+
+        UIPanelTransition.Hide(creditsPanel, instant);
+        SetPanelPause(false);
     }
 
     static bool WasCancelPressedThisFrame()
