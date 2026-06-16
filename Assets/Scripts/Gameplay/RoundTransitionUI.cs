@@ -28,6 +28,7 @@ public class RoundTransitionUI : MonoBehaviour
     [SerializeField] CanvasGroup optOutToggleGroup;
     [SerializeField] RectTransform contentRoot;
     [SerializeField] RectTransform actionRoot;
+    [SerializeField] RectTransform lossOneLinerSpacer;
 
     [Header("Optional Assets")]
     [SerializeField] TMP_FontAsset transitionFont;
@@ -101,14 +102,15 @@ public class RoundTransitionUI : MonoBehaviour
     ScopedMenuNavigator _navigator;
     AudioClip _currentActiveLoopSfxClip;
     RoundTransitionVariant _currentVariant = RoundTransitionVariant.Default;
-    int _lastWinOneLinerIndex = -1;
-    int _lastLossOneLinerIndex = -1;
     bool _builtRuntimeUi;
     bool _continueButtonUsesPrefab;
     const float RuntimeActionGap = 22f;
-    const float RuntimeContentHeightWithOneLiner = 430f;
+    const float RuntimeContentHeightWithOneLiner = 660f;
+    const float RuntimeLossOneLinerSpacerHeight = 170f;
     const float RuntimeContentLayoutSpacing = 16f;
     const int RuntimeContentVerticalPadding = 8;
+    const string WinOneLinerPrefsKey = "Tetrabeasts.RoundTransition.WinOneLiners.Used";
+    const string LossOneLinerPrefsKey = "Tetrabeasts.RoundTransition.LossOneLiners.Used";
     static Sprite s_revealCircleSprite;
 
     public bool IsShowing => rootPanel && rootPanel.activeSelf;
@@ -468,6 +470,7 @@ public class RoundTransitionUI : MonoBehaviour
         EnsureContentLayout();
         EnsureWinOneLinerText();
         EnsureLossOneLinerText();
+        EnsureLossOneLinerSpacer();
         ApplyFont();
         WireContinueButton();
         HookContinueButtonSfx();
@@ -581,6 +584,34 @@ public class RoundTransitionUI : MonoBehaviour
         lossOneLinerText = CreateOneLinerText("RoundTransition_LossOneLiner_Text", FontStyles.Italic);
     }
 
+    void EnsureLossOneLinerSpacer()
+    {
+        if (lossOneLinerSpacer || !contentRoot)
+            return;
+
+        var spacerGo = new GameObject(
+            "RoundTransition_LossOneLiner_Spacer",
+            typeof(RectTransform),
+            typeof(LayoutElement));
+
+        spacerGo.transform.SetParent(contentRoot, false);
+
+        lossOneLinerSpacer = spacerGo.GetComponent<RectTransform>();
+        lossOneLinerSpacer.sizeDelta = new Vector2(1f, RuntimeLossOneLinerSpacerHeight);
+
+        var layoutElement = spacerGo.GetComponent<LayoutElement>();
+        layoutElement.minHeight = RuntimeLossOneLinerSpacerHeight;
+        layoutElement.preferredHeight = RuntimeLossOneLinerSpacerHeight;
+        layoutElement.flexibleHeight = 0f;
+
+        if (lossOneLinerText)
+            spacerGo.transform.SetSiblingIndex(lossOneLinerText.transform.GetSiblingIndex());
+        else if (actionRoot)
+            spacerGo.transform.SetSiblingIndex(actionRoot.GetSiblingIndex());
+
+        spacerGo.SetActive(false);
+    }
+
     TMP_Text CreateOneLinerText(string objectName, FontStyles fontStyle)
     {
         var oneLinerGo = new GameObject(objectName, typeof(RectTransform), typeof(TextMeshProUGUI));
@@ -622,7 +653,7 @@ public class RoundTransitionUI : MonoBehaviour
             return;
         }
 
-        string oneLiner = PickOneLiner(winOneLiners, ref _lastWinOneLinerIndex);
+        string oneLiner = PickOneLiner(winOneLiners, WinOneLinerPrefsKey);
         if (string.IsNullOrWhiteSpace(oneLiner))
         {
             SetWinOneLinerVisible(false);
@@ -645,7 +676,7 @@ public class RoundTransitionUI : MonoBehaviour
             return;
         }
 
-        string oneLiner = PickOneLiner(lossOneLiners, ref _lastLossOneLinerIndex);
+        string oneLiner = PickOneLiner(lossOneLiners, LossOneLinerPrefsKey);
         if (string.IsNullOrWhiteSpace(oneLiner))
         {
             SetLossOneLinerVisible(false);
@@ -660,33 +691,112 @@ public class RoundTransitionUI : MonoBehaviour
         SetLossOneLinerVisible(true);
     }
 
-    string PickOneLiner(string[] oneLiners, ref int lastOneLinerIndex)
+    string PickOneLiner(string[] oneLiners, string prefsKey)
     {
         if (oneLiners == null || oneLiners.Length == 0)
             return string.Empty;
 
-        var candidates = new List<int>();
-        var fallbackCandidates = new List<int>();
+        var validIndices = new List<int>();
+        var validLookup = new HashSet<int>();
 
         for (int i = 0; i < oneLiners.Length; i++)
         {
             if (string.IsNullOrWhiteSpace(oneLiners[i]))
                 continue;
 
-            fallbackCandidates.Add(i);
-            if (i != lastOneLinerIndex)
-                candidates.Add(i);
+            validIndices.Add(i);
+            validLookup.Add(i);
         }
 
-        if (candidates.Count == 0)
-            candidates = fallbackCandidates;
-
-        if (candidates.Count == 0)
+        if (validIndices.Count == 0)
             return string.Empty;
 
+        var usedIndices = LoadUsedOneLinerIndices(prefsKey);
+        RemoveInvalidUsedOneLinerIndices(usedIndices, validLookup);
+
+        int lastPickedIndex = PlayerPrefs.GetInt(GetLastOneLinerPrefsKey(prefsKey), -1);
+        if (!validLookup.Contains(lastPickedIndex))
+            lastPickedIndex = -1;
+
+        if (usedIndices.Count >= validIndices.Count)
+            usedIndices.Clear();
+
+        var candidates = new List<int>();
+        for (int i = 0; i < validIndices.Count; i++)
+        {
+            int index = validIndices[i];
+            if (!usedIndices.Contains(index))
+                candidates.Add(index);
+        }
+
+        if (candidates.Count > 1 && lastPickedIndex >= 0)
+            candidates.Remove(lastPickedIndex);
+
+        if (candidates.Count == 0)
+            candidates.AddRange(validIndices);
+
         int pickedIndex = candidates[UnityEngine.Random.Range(0, candidates.Count)];
-        lastOneLinerIndex = pickedIndex;
+        usedIndices.Add(pickedIndex);
+        SaveUsedOneLinerIndices(prefsKey, usedIndices, pickedIndex);
+
         return oneLiners[pickedIndex].Trim();
+    }
+
+    static HashSet<int> LoadUsedOneLinerIndices(string prefsKey)
+    {
+        var usedIndices = new HashSet<int>();
+        string rawValue = PlayerPrefs.GetString(prefsKey, string.Empty);
+        if (string.IsNullOrWhiteSpace(rawValue))
+            return usedIndices;
+
+        string[] parts = rawValue.Split(',');
+        for (int i = 0; i < parts.Length; i++)
+        {
+            if (int.TryParse(parts[i], out int index))
+                usedIndices.Add(index);
+        }
+
+        return usedIndices;
+    }
+
+    static void RemoveInvalidUsedOneLinerIndices(HashSet<int> usedIndices, HashSet<int> validLookup)
+    {
+        if (usedIndices == null || usedIndices.Count == 0)
+            return;
+
+        var staleIndices = new List<int>();
+        foreach (int index in usedIndices)
+        {
+            if (!validLookup.Contains(index))
+                staleIndices.Add(index);
+        }
+
+        for (int i = 0; i < staleIndices.Count; i++)
+            usedIndices.Remove(staleIndices[i]);
+    }
+
+    static void SaveUsedOneLinerIndices(string prefsKey, HashSet<int> usedIndices, int lastPickedIndex)
+    {
+        if (usedIndices == null || usedIndices.Count == 0)
+        {
+            PlayerPrefs.DeleteKey(prefsKey);
+        }
+        else
+        {
+            var values = new List<string>(usedIndices.Count);
+            foreach (int index in usedIndices)
+                values.Add(index.ToString());
+
+            PlayerPrefs.SetString(prefsKey, string.Join(",", values));
+        }
+
+        PlayerPrefs.SetInt(GetLastOneLinerPrefsKey(prefsKey), lastPickedIndex);
+        PlayerPrefs.Save();
+    }
+
+    static string GetLastOneLinerPrefsKey(string prefsKey)
+    {
+        return prefsKey + ".Last";
     }
 
     void SetWinOneLinerVisible(bool visible)
@@ -697,6 +807,12 @@ public class RoundTransitionUI : MonoBehaviour
 
     void SetLossOneLinerVisible(bool visible)
     {
+        if (visible)
+            EnsureLossOneLinerSpacer();
+
+        if (lossOneLinerSpacer)
+            lossOneLinerSpacer.gameObject.SetActive(visible);
+
         if (lossOneLinerText)
             lossOneLinerText.gameObject.SetActive(visible);
     }
