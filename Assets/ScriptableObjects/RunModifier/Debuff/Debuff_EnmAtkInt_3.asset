@@ -15,7 +15,7 @@ MonoBehaviour:
   displayName: Enemy ATK SPD Up
   description: Significantly decreases the amount of time between enemy attacks (Boss
     Ability Cooldowns Excluded).
-  icon: {fileID: -7399302970413481957, guid: 80b366e53d1e03745bf6496fa5ecfb01, type: 3}
+  icon: {fileID: 21300000, guid: 80b366e53d1e03745bf6496fa5ecfb01, type: 3}
   isBuff: 0
   rarity: 3
   stat: 1

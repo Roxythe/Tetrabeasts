@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: All Special Gain Down
   description: Moderatley decrease the amount of special gained from all sources.
-  icon: {fileID: 8049609212935770668, guid: fa2870466c816de4dbecf650db64d5f7, type: 3}
+  icon: {fileID: 21300000, guid: fa2870466c816de4dbecf650db64d5f7, type: 3}
   isBuff: 0
   rarity: 2
   stat: 5

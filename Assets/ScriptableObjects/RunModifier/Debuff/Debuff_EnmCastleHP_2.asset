@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: Enemy HP Up
   description: Moderatley increase the Hit Points of all future Enemy Fortifications.
-  icon: {fileID: -6725218688472879248, guid: 80a52c010ae9a7e4198e9dc41e1e4e94, type: 3}
+  icon: {fileID: 21300000, guid: 80a52c010ae9a7e4198e9dc41e1e4e94, type: 3}
   isBuff: 0
   rarity: 2
   stat: 4

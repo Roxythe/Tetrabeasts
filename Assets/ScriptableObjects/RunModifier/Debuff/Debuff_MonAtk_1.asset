@@ -15,7 +15,7 @@ MonoBehaviour:
   displayName: ATK Down
   description: Modestly decreases the attack value for all monsters in your current
     roster.
-  icon: {fileID: -3157723759101800247, guid: ee4af914b66acc1418e50185b0600fa4, type: 3}
+  icon: {fileID: 21300000, guid: ee4af914b66acc1418e50185b0600fa4, type: 3}
   isBuff: 0
   rarity: 1
   stat: 10

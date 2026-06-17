@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: Enemy ATK Up
   description: Modestly increase the damage of enemy projectiles.
-  icon: {fileID: -6283755927373232298, guid: 303170548954a444588745045673da73, type: 3}
+  icon: {fileID: 21300000, guid: 303170548954a444588745045673da73, type: 3}
   isBuff: 0
   rarity: 1
   stat: 2

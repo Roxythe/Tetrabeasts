@@ -15,7 +15,7 @@ MonoBehaviour:
   displayName: Win Currency Up
   description: Modestly increases the amount of currency the player gains after winning
     the round.
-  icon: {fileID: 6272107739601984605, guid: 7d56a7447f9f3854587e9e98cc090a96, type: 3}
+  icon: {fileID: 21300000, guid: 7d56a7447f9f3854587e9e98cc090a96, type: 3}
   isBuff: 1
   rarity: 1
   stat: 0

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: Currency Drop Up
   description: Double the amount of currency gained occasionally when clearing lines.
-  icon: {fileID: 1090728018836599419, guid: 04efb91007be62b4ea86b6ed6049dd6f, type: 3}
+  icon: {fileID: 21300000, guid: 04efb91007be62b4ea86b6ed6049dd6f, type: 3}
   isBuff: 1
   rarity: 2
   stat: 20

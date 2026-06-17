@@ -15,7 +15,7 @@ MonoBehaviour:
   displayName: Enemy ATK SPD Down
   description: Modestly increases the amount of time between enemy attacks (Boss
     Ability Cooldowns Excluded).
-  icon: {fileID: -1001501741529972743, guid: 37b7a28419e4ad24197e175e7ac73717, type: 3}
+  icon: {fileID: 21300000, guid: 37b7a28419e4ad24197e175e7ac73717, type: 3}
   isBuff: 1
   rarity: 1
   stat: 1

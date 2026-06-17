@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: All Special Gain Up
   description: Modestly increase the amount of special gained from all sources.
-  icon: {fileID: 5658726092475101043, guid: 0738f7787076a40469df3ed467eac09d, type: 3}
+  icon: {fileID: 21300000, guid: 0738f7787076a40469df3ed467eac09d, type: 3}
   isBuff: 1
   rarity: 1
   stat: 5

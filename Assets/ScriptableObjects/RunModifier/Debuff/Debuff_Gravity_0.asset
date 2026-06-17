@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: Gravity SPD Up
   description: Slightly increases the initial falling speed of blocks.
-  icon: {fileID: 5050173363409499257, guid: 90a5271ed2b6c9f41b73bb0ebef9c720, type: 3}
+  icon: {fileID: 21300000, guid: 90a5271ed2b6c9f41b73bb0ebef9c720, type: 3}
   isBuff: 0
   rarity: 0
   stat: 8
