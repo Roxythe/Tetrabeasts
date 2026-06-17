@@ -104,6 +104,10 @@ public class RoundTransitionUI : MonoBehaviour
     RoundTransitionVariant _currentVariant = RoundTransitionVariant.Default;
     bool _builtRuntimeUi;
     bool _continueButtonUsesPrefab;
+    string _lastDisplayedWinOneLiner = string.Empty;
+    string _lastDisplayedLossOneLiner = string.Empty;
+    string _activeWinOneLinerText = string.Empty;
+    string _activeLossOneLinerText = string.Empty;
     const float RuntimeActionGap = 22f;
     const float RuntimeContentHeightWithOneLiner = 660f;
     const float RuntimeLossOneLinerSpacerHeight = 170f;
@@ -111,6 +115,8 @@ public class RoundTransitionUI : MonoBehaviour
     const int RuntimeContentVerticalPadding = 8;
     const string WinOneLinerPrefsKey = "Tetrabeasts.RoundTransition.WinOneLiners.Used";
     const string LossOneLinerPrefsKey = "Tetrabeasts.RoundTransition.LossOneLiners.Used";
+    static readonly Dictionary<string, HashSet<int>> s_sessionUsedOneLinerIndices = new Dictionary<string, HashSet<int>>();
+    static readonly Dictionary<string, int> s_sessionLastOneLinerIndex = new Dictionary<string, int>();
     static Sprite s_revealCircleSprite;
 
     public bool IsShowing => rootPanel && rootPanel.activeSelf;
@@ -213,7 +219,8 @@ public class RoundTransitionUI : MonoBehaviour
     }
 
     public void Show(string message, Action onContinue, string optOutLabel, bool optOutInitialValue,
-                     Action<bool> onOptOutContinue, RoundTransitionVariant variant = RoundTransitionVariant.Default)
+                     Action<bool> onOptOutContinue, RoundTransitionVariant variant = RoundTransitionVariant.Default,
+                     string claimedOneLiner = "")
     {
         EnsureBuilt();
 
@@ -253,7 +260,7 @@ public class RoundTransitionUI : MonoBehaviour
             messageText.text = TetrabeastsLocalization.LocalizeText(message);
         }
 
-        ConfigureOneLiners(variant);
+        ConfigureOneLiners(variant, claimedOneLiner);
         SetTextAlpha(0f);
 
         if (continueButtonGroup)
@@ -281,6 +288,35 @@ public class RoundTransitionUI : MonoBehaviour
             StopCoroutine(_fadeRoutine);
 
         _fadeRoutine = StartCoroutine(CoFadeIn());
+    }
+
+    public string ClaimOneLiner(RoundTransitionVariant variant)
+    {
+        EnsureBuilt();
+
+        switch (variant)
+        {
+            case RoundTransitionVariant.Win:
+            {
+                string oneLiner = PickOneLiner(winOneLiners, WinOneLinerPrefsKey, _lastDisplayedWinOneLiner);
+                if (!string.IsNullOrWhiteSpace(oneLiner))
+                    _lastDisplayedWinOneLiner = oneLiner;
+
+                return oneLiner;
+            }
+
+            case RoundTransitionVariant.Loss:
+            {
+                string oneLiner = PickOneLiner(lossOneLiners, LossOneLinerPrefsKey, _lastDisplayedLossOneLiner);
+                if (!string.IsNullOrWhiteSpace(oneLiner))
+                    _lastDisplayedLossOneLiner = oneLiner;
+
+                return oneLiner;
+            }
+
+            default:
+                return string.Empty;
+        }
     }
 
     public void HideImmediate()
@@ -639,24 +675,27 @@ public class RoundTransitionUI : MonoBehaviour
         return oneLinerText;
     }
 
-    void ConfigureOneLiners(RoundTransitionVariant variant)
+    void ConfigureOneLiners(RoundTransitionVariant variant, string claimedOneLiner)
     {
-        ConfigureWinOneLiner(variant);
-        ConfigureLossOneLiner(variant);
+        ConfigureWinOneLiner(variant, claimedOneLiner);
+        ConfigureLossOneLiner(variant, claimedOneLiner);
     }
 
-    void ConfigureWinOneLiner(RoundTransitionVariant variant)
+    void ConfigureWinOneLiner(RoundTransitionVariant variant, string claimedOneLiner)
     {
+        SetWinOneLinerVisible(false);
+
         if (variant != RoundTransitionVariant.Win)
         {
-            SetWinOneLinerVisible(false);
+            _activeWinOneLinerText = string.Empty;
             return;
         }
 
-        string oneLiner = PickOneLiner(winOneLiners, WinOneLinerPrefsKey);
+        string oneLiner = string.IsNullOrWhiteSpace(claimedOneLiner)
+            ? PickOneLiner(winOneLiners, WinOneLinerPrefsKey, _lastDisplayedWinOneLiner)
+            : claimedOneLiner.Trim();
         if (string.IsNullOrWhiteSpace(oneLiner))
         {
-            SetWinOneLinerVisible(false);
             return;
         }
 
@@ -664,22 +703,27 @@ public class RoundTransitionUI : MonoBehaviour
         if (!winOneLinerText)
             return;
 
-        winOneLinerText.text = TetrabeastsLocalization.LocalizeText(oneLiner);
+        _activeWinOneLinerText = TetrabeastsLocalization.LocalizeText(oneLiner);
+        SetOneLinerText(winOneLinerText, _activeWinOneLinerText);
+        _lastDisplayedWinOneLiner = oneLiner;
         SetWinOneLinerVisible(true);
     }
 
-    void ConfigureLossOneLiner(RoundTransitionVariant variant)
+    void ConfigureLossOneLiner(RoundTransitionVariant variant, string claimedOneLiner)
     {
+        SetLossOneLinerVisible(false);
+
         if (variant != RoundTransitionVariant.Loss)
         {
-            SetLossOneLinerVisible(false);
+            _activeLossOneLinerText = string.Empty;
             return;
         }
 
-        string oneLiner = PickOneLiner(lossOneLiners, LossOneLinerPrefsKey);
+        string oneLiner = string.IsNullOrWhiteSpace(claimedOneLiner)
+            ? PickOneLiner(lossOneLiners, LossOneLinerPrefsKey, _lastDisplayedLossOneLiner)
+            : claimedOneLiner.Trim();
         if (string.IsNullOrWhiteSpace(oneLiner))
         {
-            SetLossOneLinerVisible(false);
             return;
         }
 
@@ -687,11 +731,13 @@ public class RoundTransitionUI : MonoBehaviour
         if (!lossOneLinerText)
             return;
 
-        lossOneLinerText.text = TetrabeastsLocalization.LocalizeText(oneLiner);
+        _activeLossOneLinerText = TetrabeastsLocalization.LocalizeText(oneLiner);
+        SetOneLinerText(lossOneLinerText, _activeLossOneLinerText);
+        _lastDisplayedLossOneLiner = oneLiner;
         SetLossOneLinerVisible(true);
     }
 
-    string PickOneLiner(string[] oneLiners, string prefsKey)
+    string PickOneLiner(string[] oneLiners, string prefsKey, string avoidRawText)
     {
         if (oneLiners == null || oneLiners.Length == 0)
             return string.Empty;
@@ -714,49 +760,130 @@ public class RoundTransitionUI : MonoBehaviour
         var usedIndices = LoadUsedOneLinerIndices(prefsKey);
         RemoveInvalidUsedOneLinerIndices(usedIndices, validLookup);
 
-        int lastPickedIndex = PlayerPrefs.GetInt(GetLastOneLinerPrefsKey(prefsKey), -1);
+        int lastPickedIndex = LoadLastOneLinerIndex(prefsKey);
         if (!validLookup.Contains(lastPickedIndex))
             lastPickedIndex = -1;
+
+        int pickedIndex = PickNextOneLinerIndex(validIndices, oneLiners, lastPickedIndex, avoidRawText);
+        if (pickedIndex < 0)
+            return string.Empty;
 
         if (usedIndices.Count >= validIndices.Count)
             usedIndices.Clear();
 
-        var candidates = new List<int>();
-        for (int i = 0; i < validIndices.Count; i++)
-        {
-            int index = validIndices[i];
-            if (!usedIndices.Contains(index))
-                candidates.Add(index);
-        }
-
-        if (candidates.Count > 1 && lastPickedIndex >= 0)
-            candidates.Remove(lastPickedIndex);
-
-        if (candidates.Count == 0)
-            candidates.AddRange(validIndices);
-
-        int pickedIndex = candidates[UnityEngine.Random.Range(0, candidates.Count)];
         usedIndices.Add(pickedIndex);
         SaveUsedOneLinerIndices(prefsKey, usedIndices, pickedIndex);
 
         return oneLiners[pickedIndex].Trim();
     }
 
+    static void SetOneLinerText(TMP_Text target, string text)
+    {
+        if (!target)
+            return;
+
+        target.text = string.Empty;
+        target.ForceMeshUpdate();
+        target.text = text ?? string.Empty;
+        target.SetVerticesDirty();
+        target.SetLayoutDirty();
+        target.ForceMeshUpdate();
+    }
+
+    static int PickNextOneLinerIndex(List<int> validIndices, string[] oneLiners, int lastPickedIndex, string avoidRawText)
+    {
+        if (validIndices == null || validIndices.Count == 0)
+            return -1;
+
+        if (validIndices.Count == 1)
+            return validIndices[0];
+
+        int lastPosition = validIndices.IndexOf(lastPickedIndex);
+        int startPosition = lastPosition >= 0 ? lastPosition + 1 : 0;
+
+        for (int offset = 0; offset < validIndices.Count; offset++)
+        {
+            int index = validIndices[(startPosition + offset) % validIndices.Count];
+            if (index == lastPickedIndex)
+                continue;
+
+            if (IsAvoidedOneLinerIndex(index, oneLiners, avoidRawText))
+                continue;
+
+            return index;
+        }
+
+        for (int offset = 0; offset < validIndices.Count; offset++)
+        {
+            int index = validIndices[(startPosition + offset) % validIndices.Count];
+            if (index != lastPickedIndex)
+                return index;
+        }
+
+        return validIndices[0];
+    }
+
+    static void RemoveAvoidedOneLinerCandidates(List<int> candidates, string[] oneLiners, string avoidRawText)
+    {
+        if (candidates == null || candidates.Count <= 1 || oneLiners == null || string.IsNullOrWhiteSpace(avoidRawText))
+            return;
+
+        string normalizedAvoidText = NormalizeOneLinerText(avoidRawText);
+        if (string.IsNullOrEmpty(normalizedAvoidText))
+            return;
+
+        for (int i = candidates.Count - 1; i >= 0; i--)
+        {
+            int index = candidates[i];
+            if (index < 0 || index >= oneLiners.Length)
+                continue;
+
+            if (NormalizeOneLinerText(oneLiners[index]) == normalizedAvoidText)
+                candidates.RemoveAt(i);
+        }
+    }
+
+    static bool IsAvoidedOneLinerIndex(int index, string[] oneLiners, string avoidRawText)
+    {
+        if (oneLiners == null || index < 0 || index >= oneLiners.Length || string.IsNullOrWhiteSpace(avoidRawText))
+            return false;
+
+        return NormalizeOneLinerText(oneLiners[index]) == NormalizeOneLinerText(avoidRawText);
+    }
+
+    static string NormalizeOneLinerText(string value)
+    {
+        return string.IsNullOrWhiteSpace(value)
+            ? string.Empty
+            : value.Trim();
+    }
+
     static HashSet<int> LoadUsedOneLinerIndices(string prefsKey)
     {
         var usedIndices = new HashSet<int>();
         string rawValue = PlayerPrefs.GetString(prefsKey, string.Empty);
-        if (string.IsNullOrWhiteSpace(rawValue))
-            return usedIndices;
-
-        string[] parts = rawValue.Split(',');
-        for (int i = 0; i < parts.Length; i++)
+        if (!string.IsNullOrWhiteSpace(rawValue))
         {
-            if (int.TryParse(parts[i], out int index))
-                usedIndices.Add(index);
+            string[] parts = rawValue.Split(',');
+            for (int i = 0; i < parts.Length; i++)
+            {
+                if (int.TryParse(parts[i], out int index))
+                    usedIndices.Add(index);
+            }
         }
 
+        if (s_sessionUsedOneLinerIndices.TryGetValue(prefsKey, out var sessionUsedIndices))
+            usedIndices.UnionWith(sessionUsedIndices);
+
         return usedIndices;
+    }
+
+    static int LoadLastOneLinerIndex(string prefsKey)
+    {
+        if (s_sessionLastOneLinerIndex.TryGetValue(prefsKey, out int sessionLastIndex))
+            return sessionLastIndex;
+
+        return PlayerPrefs.GetInt(GetLastOneLinerPrefsKey(prefsKey), -1);
     }
 
     static void RemoveInvalidUsedOneLinerIndices(HashSet<int> usedIndices, HashSet<int> validLookup)
@@ -777,6 +904,14 @@ public class RoundTransitionUI : MonoBehaviour
 
     static void SaveUsedOneLinerIndices(string prefsKey, HashSet<int> usedIndices, int lastPickedIndex)
     {
+        if (!s_sessionUsedOneLinerIndices.TryGetValue(prefsKey, out var sessionUsedIndices))
+        {
+            sessionUsedIndices = new HashSet<int>();
+            s_sessionUsedOneLinerIndices[prefsKey] = sessionUsedIndices;
+        }
+
+        sessionUsedIndices.Clear();
+
         if (usedIndices == null || usedIndices.Count == 0)
         {
             PlayerPrefs.DeleteKey(prefsKey);
@@ -785,11 +920,15 @@ public class RoundTransitionUI : MonoBehaviour
         {
             var values = new List<string>(usedIndices.Count);
             foreach (int index in usedIndices)
+            {
+                sessionUsedIndices.Add(index);
                 values.Add(index.ToString());
+            }
 
             PlayerPrefs.SetString(prefsKey, string.Join(",", values));
         }
 
+        s_sessionLastOneLinerIndex[prefsKey] = lastPickedIndex;
         PlayerPrefs.SetInt(GetLastOneLinerPrefsKey(prefsKey), lastPickedIndex);
         PlayerPrefs.Save();
     }
@@ -1200,9 +1339,27 @@ public class RoundTransitionUI : MonoBehaviour
 
     void SetTextAlpha(float alpha)
     {
+        ReapplyActiveOneLinerText();
         SetGraphicAlpha(messageText, alpha);
         SetGraphicAlpha(winOneLinerText, alpha);
         SetGraphicAlpha(lossOneLinerText, alpha);
+    }
+
+    void ReapplyActiveOneLinerText()
+    {
+        if (winOneLinerText && winOneLinerText.gameObject.activeSelf &&
+            !string.IsNullOrEmpty(_activeWinOneLinerText) &&
+            winOneLinerText.text != _activeWinOneLinerText)
+        {
+            SetOneLinerText(winOneLinerText, _activeWinOneLinerText);
+        }
+
+        if (lossOneLinerText && lossOneLinerText.gameObject.activeSelf &&
+            !string.IsNullOrEmpty(_activeLossOneLinerText) &&
+            lossOneLinerText.text != _activeLossOneLinerText)
+        {
+            SetOneLinerText(lossOneLinerText, _activeLossOneLinerText);
+        }
     }
 
     void SetGraphicAlpha(Graphic graphic, float alpha)

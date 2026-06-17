@@ -283,7 +283,7 @@ public class XpAwardUI : MonoBehaviour
 
         var runSnap = RunMonsterProgress.GetSnapshot();
         _permanentXpConversion = Mathf.Clamp01(keepFraction);
-        var keptXp = RunMonsterProgress.EndRunAndComputeKeptXp(keepFraction);
+        var keptXp = RunMonsterProgress.EndRunAndComputeKeptXp(_permanentXpConversion);
 
         StartCoroutine(CoRunDrainThenCommit(roster, runSnap, keptXp, onContinueToHighScore, showRunEndXpTutorials));
     }
@@ -574,7 +574,10 @@ public class XpAwardUI : MonoBehaviour
                 float drainableXp = Mathf.Max(0f, runTotalXp - permanentTotalXp);
                 float preservedXp = drainableXp * _permanentXpConversion;
 
-                _rows[i].ShowXpDrainTransferInfo(preservedXp, drainableXp, _permanentXpConversion);
+                _rows[i].ShowXpDrainTransferInfo(
+                    preservedXp,
+                    drainableXp,
+                    _permanentXpConversion);
             }
         }
 
@@ -638,7 +641,10 @@ public class XpAwardUI : MonoBehaviour
                 float permanentTotalXp = MonsterProgressStore.GetPermanentTotalXp(md.monsterName);
                 float drainableXp = Mathf.Max(0f, runTotalXp - permanentTotalXp);
 
-                _rows[i].ShowXpCommitTransferInfo(kept, drainableXp, _permanentXpConversion);
+                _rows[i].ShowXpCommitTransferInfo(
+                    kept,
+                    drainableXp,
+                    _permanentXpConversion);
             }
         }
 
@@ -860,7 +866,7 @@ public class XpAwardUI : MonoBehaviour
 
         var remaining = new int[_rows.Count];
         var preservedShown = new float[_rows.Count];
-        var drainXpPerRow = new float[_rows.Count];
+        var preservedXpPerRow = new float[_rows.Count];
 
         int total = 0;
 
@@ -875,7 +881,7 @@ public class XpAwardUI : MonoBehaviour
                 float permanentTotalXp = MonsterProgressStore.GetPermanentTotalXp(md.monsterName);
                 float drainXp = Mathf.Max(0f, runTotalXp - permanentTotalXp);
 
-                drainXpPerRow[i] = drainXp;
+                preservedXpPerRow[i] = drainXp * _permanentXpConversion;
                 int count = Mathf.Max(0, Mathf.CeilToInt(drainXp));
                 remaining[i] = count;
                 total += count;
@@ -902,10 +908,9 @@ public class XpAwardUI : MonoBehaviour
 
                     int permLevel = MonsterProgressStore.GetPermanentLevel(md.monsterName);
                     float permXpInto = MonsterProgressStore.GetPermanentXpIntoLevel(md.monsterName);
-                    float preserved = drainXpPerRow[r] * _permanentXpConversion;
 
                     _rows[r].InitXpState(permLevel, permXpInto, XpPerLevel);
-                    _rows[r].ShowXpDrainPreserved(preserved);
+                    _rows[r].ShowXpDrainPreserved(preservedXpPerRow[r]);
                 }
 
                 break;
@@ -961,7 +966,9 @@ public class XpAwardUI : MonoBehaviour
                                              {
                                                  rowRef.SubtractXpFromOrb(orbXp, XpPerLevel);
 
-                                                 preservedShown[rowIndex] += orbXp * _permanentXpConversion;
+                                                 preservedShown[rowIndex] = Mathf.Min(
+                                                     preservedXpPerRow[rowIndex],
+                                                     preservedShown[rowIndex] + (orbXp * _permanentXpConversion));
                                                  rowRef.ShowXpDrainPreserved(preservedShown[rowIndex]);
                                              }));
                 StartCoroutine(CoSpawnOrbWave(start, end, gain: false, startsUp: !startsUp, travelSeconds: travelSeconds, accel01: sfxAccel,
@@ -974,6 +981,9 @@ public class XpAwardUI : MonoBehaviour
         }
 
         yield return CoWaitForActiveOrbsToArrive();
+
+        for (int i = 0; i < roster.Count && i < _rows.Count; i++)
+            _rows[i].ShowXpDrainPreserved(preservedXpPerRow[i]);
     }
 
     float GetLongDrainSpeedMultiplier(float elapsedSeconds)

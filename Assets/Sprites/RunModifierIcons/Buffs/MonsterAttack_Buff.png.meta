@@ -5,6 +5,15 @@ TextureImporter:
   - first:
       213: 422595395969729942
     second: MonsterAttack_Buff_0
+  - first:
+      213: -7557474179422175017
+    second: MonsterAttack_Buff_1
+  - first:
+      213: -1256295489681309882
+    second: MonsterAttack_Buff_2
+  - first:
+      213: -6215163353183466006
+    second: MonsterAttack_Buff_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -84,7 +93,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: Standalone
+    buildTarget: iOS
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -110,6 +119,19 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -123,7 +145,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: iOS
+    buildTarget: WindowsStoreApps
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -142,10 +164,10 @@ TextureImporter:
       name: MonsterAttack_Buff_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 8
-        width: 1024
-        height: 1480
+        x: 397
+        y: 998
+        width: 24
+        height: 25
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,6 +178,72 @@ TextureImporter:
       bones: []
       spriteID: 695cd7c064c5dd500800000000000000
       internalID: 422595395969729942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MonsterAttack_Buff_1
+      rect:
+        serializedVersion: 2
+        x: 519
+        y: 1003
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d0ca5866457e1790800000000000000
+      internalID: -7557474179422175017
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MonsterAttack_Buff_2
+      rect:
+        serializedVersion: 2
+        x: 529
+        y: 1018
+        width: 10
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64fbe9488edb09ee0800000000000000
+      internalID: -1256295489681309882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MonsterAttack_Buff_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 901
+        height: 1013
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aed49701cdd4fb9a0800000000000000
+      internalID: -6215163353183466006
       vertices: []
       indices: 
       edges: []
@@ -175,6 +263,9 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       MonsterAttack_Buff_0: 422595395969729942
+      MonsterAttack_Buff_1: -7557474179422175017
+      MonsterAttack_Buff_2: -1256295489681309882
+      MonsterAttack_Buff_3: -6215163353183466006
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

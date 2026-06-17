@@ -515,7 +515,7 @@ public class GameController : MonoBehaviour
     MonsterPassiveBonuses _partyPassiveBonuses;
 
     [Header("Run-End XP Conversion")]
-    [SerializeField, Range(0f, 1f)] float baseRunEndXpConversion = 0.20f;
+    [SerializeField, Range(0f, 1f)] float baseRunEndXpConversion = 0.15f;
     [SerializeField, Range(0f, 1f)] float starDifficultyRunEndXpBonusPerStar = 0.05f;
     [SerializeField, Range(0f, 1f)] float finalLevelWinXpConversionBonus = 0.10f;
 
@@ -543,6 +543,8 @@ public class GameController : MonoBehaviour
     StarDifficultyModifiers _starDifficultyModifiers = new StarDifficultyModifiers(0);
     bool _newDifficultyUnlockedThisRun;
     bool _roundTransitionActive;
+    string _claimedRoundWinOneLiner = string.Empty;
+    string _claimedRoundLossOneLiner = string.Empty;
 
     const string RoundWinTransitionText = "The Castle Has Fallen";
     const string RoundLossTransitionText = "Conquest Failed";
@@ -1554,10 +1556,11 @@ public class GameController : MonoBehaviour
 
     float GetRunEndXpConversionFraction(bool finalLevelWin)
     {
-        float fraction = baseRunEndXpConversion + (_starDifficulty * starDifficultyRunEndXpBonusPerStar);
+        float fraction = Mathf.Clamp01(baseRunEndXpConversion)
+            + (Mathf.Max(0, _starDifficulty) * Mathf.Clamp01(starDifficultyRunEndXpBonusPerStar));
 
         if (finalLevelWin)
-            fraction += finalLevelWinXpConversionBonus;
+            fraction += Mathf.Clamp01(finalLevelWinXpConversionBonus);
 
         return Mathf.Clamp01(fraction);
     }
@@ -2064,6 +2067,11 @@ public class GameController : MonoBehaviour
         yield return CoShowRoundTransition(message, variant, string.Empty, false, null);
     }
 
+    IEnumerator CoShowRoundTransition(string message, RoundTransitionVariant variant, string claimedOneLiner)
+    {
+        yield return CoShowRoundTransition(message, variant, string.Empty, false, null, claimedOneLiner);
+    }
+
     IEnumerator CoShowRoundTransition(string message, string optOutLabel, bool optOutInitialValue,
                                       System.Action<bool> onOptOutContinue)
     {
@@ -2071,7 +2079,7 @@ public class GameController : MonoBehaviour
     }
 
     IEnumerator CoShowRoundTransition(string message, RoundTransitionVariant variant, string optOutLabel, bool optOutInitialValue,
-                                      System.Action<bool> onOptOutContinue)
+                                      System.Action<bool> onOptOutContinue, string claimedOneLiner = "")
     {
         ResolveRoundTransitionUI();
 
@@ -2083,11 +2091,18 @@ public class GameController : MonoBehaviour
                 TetrabeastsLocalization.LocalizeText(optOutLabel),
                 optOutInitialValue,
                 onOptOutContinue,
-                variant);
+                variant,
+                claimedOneLiner);
         else
             continued = true;
 
         yield return new WaitUntil(() => continued);
+    }
+
+    string ClaimRoundTransitionOneLiner(RoundTransitionVariant variant)
+    {
+        ResolveRoundTransitionUI();
+        return roundTransitionUI ? roundTransitionUI.ClaimOneLiner(variant) : string.Empty;
     }
 
     IEnumerator CoShowTimedRoundTransition(string message)
@@ -2117,6 +2132,7 @@ public class GameController : MonoBehaviour
             return;
 
         gameOver = true;
+        _claimedRoundLossOneLiner = ClaimRoundTransitionOneLiner(RoundTransitionVariant.Loss);
         ClearTempRunCheckpoint();
         Debug.Log("Game Over");
 
@@ -2141,7 +2157,11 @@ public class GameController : MonoBehaviour
     IEnumerator CoShowGameOverTransitionThenHighScore()
     {
         PauseGameplayForRoundTransition();
-        yield return CoShowRoundTransition(RoundLossTransitionText, RoundTransitionVariant.Loss);
+
+        string claimedOneLiner = _claimedRoundLossOneLiner;
+        _claimedRoundLossOneLiner = string.Empty;
+
+        yield return CoShowRoundTransition(RoundLossTransitionText, RoundTransitionVariant.Loss, claimedOneLiner);
         ResumeGameplayAfterRoundTransition();
 
         ShowRunEndCommitAfterLoss();
@@ -2791,6 +2811,7 @@ public class GameController : MonoBehaviour
     {
         if (gameOver || levelWon) return;
         levelWon = true;
+        _claimedRoundWinOneLiner = ClaimRoundTransitionOneLiner(RoundTransitionVariant.Win);
 
         StartCoroutine(CoHandleCastleDestroyedVictory());
     }
@@ -2814,7 +2835,10 @@ public class GameController : MonoBehaviour
         if (delay > 0f)
             yield return new WaitForSecondsRealtime(delay);
 
-        yield return CoShowRoundTransition(RoundWinTransitionText, RoundTransitionVariant.Win);
+        string claimedOneLiner = _claimedRoundWinOneLiner;
+        _claimedRoundWinOneLiner = string.Empty;
+
+        yield return CoShowRoundTransition(RoundWinTransitionText, RoundTransitionVariant.Win, claimedOneLiner);
         ResumeGameplayAfterRoundTransition();
 
         int completedLevelNumber = currentLevel + 1;
@@ -3347,12 +3371,15 @@ public class GameController : MonoBehaviour
             if (playIntermissionMusic && AudioManager.I)
                 AudioManager.I.PlayIntermissionWinMusic();
 
-            float keepFraction = GetRunEndXpConversionFraction(finalLevelWin: true);
-
-            xpAwardUI.ShowRunEndCommit(roster, keepFraction, () =>
-            {
-                ShowHighScore(CloseAndHideXpUiMode);
-            }, hideOnFinalContinue: false, showRunEndXpTutorials: false);
+            xpAwardUI.ShowRunEndCommit(
+                roster,
+                GetRunEndXpConversionFraction(finalLevelWin: true),
+                () =>
+                {
+                    ShowHighScore(CloseAndHideXpUiMode);
+                },
+                hideOnFinalContinue: false,
+                showRunEndXpTutorials: false);
 
             return;
         }

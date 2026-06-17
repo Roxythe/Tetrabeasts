@@ -108,9 +108,9 @@ public class Board : MonoBehaviour
 
     [Header("Magic Explosive Visuals")]
     public Color explosiveFillColor = new Color(0.25f, 0.65f, 1f, 1f); // starting fill
-    public Color explosiveBackColor = Color.white; // revealed background
+    public Color explosiveBackColor = new Color(0.86f, 0.86f, 0.86f, 1f); // revealed fuse background
     public Color explosiveFlashColor = new Color(1f, 0.1f, 0.1f, 1f);
-    [Range(0f, 1f)] public float explosiveFuseOverlayAlpha = 0.65f;
+    [Range(0f, 1f)] public float explosiveFuseOverlayAlpha = 1f;
 
     struct MagicExplosiveState
     {
@@ -2994,7 +2994,7 @@ public class Board : MonoBehaviour
         if (!InBounds(cell)) return false;
         if (!IsFree(cell)) return false;
 
-        var rt = InstantiateTileUI(Color.white, sprite);
+        var rt = InstantiateTileUI(Color.white, sprite, GetBossObstacleBackgroundSprite());
         rt.anchoredPosition = CellToAnchoredPos(cell);
         Place(cell, rt);
 
@@ -3105,9 +3105,12 @@ public class Board : MonoBehaviour
 
         var backFill = rt.Find("BackFill")?.GetComponent<Image>();
         var fill = rt.Find("HealthFill")?.GetComponent<Image>();
+        Sprite textureSprite = fill ? fill.sprite : GetBossObstacleBackgroundSprite();
+        bool hasTextureSprite = textureSprite != null && textureSprite != OnePx();
 
         if (backFill)
         {
+            backFill.sprite = hasTextureSprite ? textureSprite : OnePx();
             backFill.color = explosiveBackColor;
             backFill.type = Image.Type.Simple;
             backFill.fillAmount = 1f;
@@ -3115,9 +3118,11 @@ public class Board : MonoBehaviour
 
         if (fill)
         {
-            fill.color = explosiveFillColor;
+            fill.sprite = hasTextureSprite ? textureSprite : OnePx();
+            fill.color = explosiveBackColor;
             fill.type = Image.Type.Simple;
-            fill.fillAmount = 1f; // starts full, wipes to 0
+            fill.fillAmount = 1f;
+            ConfigureTetrominoBackgroundPulse(fill, explosiveBackColor, hasTextureSprite ? textureSprite : null);
         }
 
         var fuse = rt.Find("ExplosiveFuseFill")?.GetComponent<Image>();
@@ -3132,7 +3137,7 @@ public class Board : MonoBehaviour
             fuseRt.anchoredPosition = Vector2.zero;
         }
 
-        fuse.sprite = OnePx();
+        fuse.sprite = hasTextureSprite ? textureSprite : OnePx();
         fuse.type = Image.Type.Filled;
         fuse.fillMethod = Image.FillMethod.Radial360;
         fuse.fillOrigin = (int)Image.Origin360.Top;

@@ -26,7 +26,7 @@ MonoBehaviour:
   projectileSpeed: 700
   projectileGravitySpeedExponent: 0.5
   projectileVisualScale: 1.5
-  projectileDamage: 18
+  projectileDamage: 20
   baseEnemyProjectilesPerAttack: 2
   sfxProjectileHitTile: {fileID: 8300000, guid: 23223cee22f6a6c4caceff40d1bcd1e6, type: 3}
   sfxProjectileHitTileClips:

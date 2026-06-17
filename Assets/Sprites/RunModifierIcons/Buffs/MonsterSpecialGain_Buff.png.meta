@@ -5,6 +5,27 @@ TextureImporter:
   - first:
       213: 3364336758508748703
     second: MonsterSpecialGain_Buff_0
+  - first:
+      213: 5353616131824470143
+    second: MonsterSpecialGain_Buff_1
+  - first:
+      213: 1023250229464571539
+    second: MonsterSpecialGain_Buff_2
+  - first:
+      213: -8557448776828698746
+    second: MonsterSpecialGain_Buff_3
+  - first:
+      213: 49276466778354089
+    second: MonsterSpecialGain_Buff_4
+  - first:
+      213: -2483913451866243009
+    second: MonsterSpecialGain_Buff_5
+  - first:
+      213: -4920869915566011221
+    second: MonsterSpecialGain_Buff_6
+  - first:
+      213: 8400205300539923673
+    second: MonsterSpecialGain_Buff_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +58,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -84,7 +105,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: Standalone
+    buildTarget: iOS
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -110,6 +131,19 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -123,7 +157,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: iOS
+    buildTarget: WindowsStoreApps
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -142,10 +176,10 @@ TextureImporter:
       name: MonsterSpecialGain_Buff_0
       rect:
         serializedVersion: 2
-        x: 14
-        y: 0
-        width: 1491
-        height: 1024
+        x: 333
+        y: 592
+        width: 9
+        height: 9
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,6 +190,160 @@ TextureImporter:
       bones: []
       spriteID: f9ff3b3f47680be20800000000000000
       internalID: 3364336758508748703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MonsterSpecialGain_Buff_1
+      rect:
+        serializedVersion: 2
+        x: 359
+        y: 596
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f78c239d18ddb4a40800000000000000
+      internalID: 5353616131824470143
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MonsterSpecialGain_Buff_2
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 589
+        width: 27
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39e929b89a0533e00800000000000000
+      internalID: 1023250229464571539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MonsterSpecialGain_Buff_3
+      rect:
+        serializedVersion: 2
+        x: 383
+        y: 589
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68f36814da5dd3980800000000000000
+      internalID: -8557448776828698746
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MonsterSpecialGain_Buff_4
+      rect:
+        serializedVersion: 2
+        x: 297
+        y: 582
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a13c1a7fa01fa000800000000000000
+      internalID: 49276466778354089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MonsterSpecialGain_Buff_5
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 574
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f30c2b830ed578dd0800000000000000
+      internalID: -2483913451866243009
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MonsterSpecialGain_Buff_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 968
+        height: 580
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bac08c832ee85bbb0800000000000000
+      internalID: -4920869915566011221
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MonsterSpecialGain_Buff_7
+      rect:
+        serializedVersion: 2
+        x: 352
+        y: 566
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9dc1903f636839470800000000000000
+      internalID: 8400205300539923673
       vertices: []
       indices: 
       edges: []
@@ -175,6 +363,13 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       MonsterSpecialGain_Buff_0: 3364336758508748703
+      MonsterSpecialGain_Buff_1: 5353616131824470143
+      MonsterSpecialGain_Buff_2: 1023250229464571539
+      MonsterSpecialGain_Buff_3: -8557448776828698746
+      MonsterSpecialGain_Buff_4: 49276466778354089
+      MonsterSpecialGain_Buff_5: -2483913451866243009
+      MonsterSpecialGain_Buff_6: -4920869915566011221
+      MonsterSpecialGain_Buff_7: 8400205300539923673
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -26,8 +26,8 @@ MonoBehaviour:
   projectileSpeed: 700
   projectileGravitySpeedExponent: 0.5
   projectileVisualScale: 1.5
-  projectileDamage: 30
-  baseEnemyProjectilesPerAttack: 3
+  projectileDamage: 20
+  baseEnemyProjectilesPerAttack: 2
   sfxProjectileHitTile: {fileID: 8300000, guid: 23223cee22f6a6c4caceff40d1bcd1e6, type: 3}
   sfxProjectileHitTileClips:
   - {fileID: 8300000, guid: fccb4318ede48ff4db14c0d040030810, type: 3}
@@ -122,7 +122,7 @@ MonoBehaviour:
     allowRepeat: 0
     cooldown: 20
   - kind: 2
-    weight: 5
+    weight: 30
     allowRepeat: 1
     cooldown: 12
   - kind: 3
@@ -130,9 +130,9 @@ MonoBehaviour:
     allowRepeat: 1
     cooldown: 12
   - kind: 4
-    weight: 3
+    weight: 10
     allowRepeat: 0
-    cooldown: 30
+    cooldown: 90
   - kind: 5
     weight: 1
     allowRepeat: 0

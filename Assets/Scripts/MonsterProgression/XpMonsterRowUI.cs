@@ -440,9 +440,10 @@ public class XpMonsterRowUI : MonoBehaviour
 
         int percent = Mathf.RoundToInt(Mathf.Clamp01(conversionFraction) * 100f);
         xpTransferInfoText.text = TetrabeastsLocalization.LocalizeFormat(
-            "Converted from {0} run EXP at {1}%",
-            FormatXp(drainableXp),
-            percent);
+            "{0} permanent EXP ({1}% of {2} transferable EXP)",
+            FormatXp(preservedXp),
+            percent,
+            FormatXp(drainableXp));
     }
 
     public void HideXpTransferInfo()

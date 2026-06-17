@@ -112,7 +112,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -121,7 +121,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -159,7 +159,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: Standalone
+    buildTarget: iOS
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -185,6 +185,19 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -198,7 +211,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: iOS
+    buildTarget: WindowsStoreApps
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -217,10 +230,10 @@ TextureImporter:
       name: DisableNextPreview_Debuff_0
       rect:
         serializedVersion: 2
-        x: 11
-        y: 0
-        width: 679
-        height: 1024
+        x: 25
+        y: 455
+        width: 132
+        height: 363
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -239,10 +252,10 @@ TextureImporter:
       name: DisableNextPreview_Debuff_1
       rect:
         serializedVersion: 2
-        x: 681
-        y: 919
-        width: 25
-        height: 28
+        x: 218
+        y: 581
+        width: 174
+        height: 205
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -261,10 +274,10 @@ TextureImporter:
       name: DisableNextPreview_Debuff_2
       rect:
         serializedVersion: 2
-        x: 683
-        y: 727
-        width: 163
-        height: 205
+        x: 220
+        y: 773
+        width: 33
+        height: 28
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -283,10 +296,10 @@ TextureImporter:
       name: DisableNextPreview_Debuff_3
       rect:
         serializedVersion: 2
-        x: 782
-        y: 0
-        width: 731
-        height: 1024
+        x: 375
+        y: 382
+        width: 219
+        height: 437
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -305,8 +318,8 @@ TextureImporter:
       name: DisableNextPreview_Debuff_4
       rect:
         serializedVersion: 2
-        x: 646
-        y: 871
+        x: 193
+        y: 725
         width: 15
         height: 18
       alignment: 0
@@ -327,10 +340,10 @@ TextureImporter:
       name: DisableNextPreview_Debuff_5
       rect:
         serializedVersion: 2
-        x: 655
-        y: 855
-        width: 10
-        height: 10
+        x: 210
+        y: 732
+        width: 27
+        height: 36
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -349,10 +362,10 @@ TextureImporter:
       name: DisableNextPreview_Debuff_6
       rect:
         serializedVersion: 2
-        x: 854
-        y: 840
-        width: 16
-        height: 16
+        x: 416
+        y: 723
+        width: 28
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -371,10 +384,10 @@ TextureImporter:
       name: DisableNextPreview_Debuff_7
       rect:
         serializedVersion: 2
-        x: 883
-        y: 856
-        width: 9
-        height: 11
+        x: 202
+        y: 709
+        width: 10
+        height: 10
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -393,8 +406,8 @@ TextureImporter:
       name: DisableNextPreview_Debuff_8
       rect:
         serializedVersion: 2
-        x: 582
-        y: 817
+        x: 401
+        y: 694
         width: 16
         height: 16
       alignment: 0
@@ -415,10 +428,10 @@ TextureImporter:
       name: DisableNextPreview_Debuff_9
       rect:
         serializedVersion: 2
-        x: 655
-        y: 833
-        width: 24
-        height: 17
+        x: 430
+        y: 710
+        width: 9
+        height: 11
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -437,10 +450,10 @@ TextureImporter:
       name: DisableNextPreview_Debuff_10
       rect:
         serializedVersion: 2
-        x: 846
-        y: 823
-        width: 6
-        height: 10
+        x: 191
+        y: 689
+        width: 35
+        height: 17
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -459,8 +472,8 @@ TextureImporter:
       name: DisableNextPreview_Debuff_11
       rect:
         serializedVersion: 2
-        x: 863
-        y: 831
+        x: 410
+        y: 685
         width: 8
         height: 8
       alignment: 0
@@ -481,10 +494,10 @@ TextureImporter:
       name: DisableNextPreview_Debuff_12
       rect:
         serializedVersion: 2
-        x: 638
-        y: 815
-        width: 19
-        height: 10
+        x: 182
+        y: 665
+        width: 25
+        height: 14
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -503,8 +516,8 @@ TextureImporter:
       name: DisableNextPreview_Debuff_13
       rect:
         serializedVersion: 2
-        x: 840
-        y: 816
+        x: 387
+        y: 670
         width: 6
         height: 7
       alignment: 0
@@ -525,10 +538,10 @@ TextureImporter:
       name: DisableNextPreview_Debuff_14
       rect:
         serializedVersion: 2
-        x: 842
-        y: 652
-        width: 138
-        height: 175
+        x: 393
+        y: 677
+        width: 6
+        height: 10
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -547,8 +560,8 @@ TextureImporter:
       name: DisableNextPreview_Debuff_15
       rect:
         serializedVersion: 2
-        x: 943
-        y: 822
+        x: 490
+        y: 676
         width: 10
         height: 9
       alignment: 0
@@ -569,8 +582,8 @@ TextureImporter:
       name: DisableNextPreview_Debuff_16
       rect:
         serializedVersion: 2
-        x: 573
-        y: 647
+        x: 120
+        y: 501
         width: 148
         height: 163
       alignment: 0
@@ -591,8 +604,8 @@ TextureImporter:
       name: DisableNextPreview_Debuff_17
       rect:
         serializedVersion: 2
-        x: 830
-        y: 793
+        x: 377
+        y: 647
         width: 15
         height: 16
       alignment: 0
@@ -613,8 +626,8 @@ TextureImporter:
       name: DisableNextPreview_Debuff_18
       rect:
         serializedVersion: 2
-        x: 713
-        y: 702
+        x: 260
+        y: 556
         width: 20
         height: 22
       alignment: 0
@@ -635,8 +648,8 @@ TextureImporter:
       name: DisableNextPreview_Debuff_19
       rect:
         serializedVersion: 2
-        x: 747
-        y: 705
+        x: 294
+        y: 559
         width: 31
         height: 17
       alignment: 0
@@ -657,10 +670,10 @@ TextureImporter:
       name: DisableNextPreview_Debuff_20
       rect:
         serializedVersion: 2
-        x: 774
-        y: 679
+        x: 321
+        y: 533
         width: 44
-        height: 41
+        height: 44
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -679,10 +692,10 @@ TextureImporter:
       name: DisableNextPreview_Debuff_21
       rect:
         serializedVersion: 2
-        x: 830
-        y: 703
-        width: 8
-        height: 10
+        x: 374
+        y: 554
+        width: 11
+        height: 13
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -701,10 +714,10 @@ TextureImporter:
       name: DisableNextPreview_Debuff_22
       rect:
         serializedVersion: 2
-        x: 494
-        y: 64
-        width: 553
-        height: 629
+        x: 6
+        y: 0
+        width: 598
+        height: 545
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -723,8 +736,8 @@ TextureImporter:
       name: DisableNextPreview_Debuff_23
       rect:
         serializedVersion: 2
-        x: 503
-        y: 328
+        x: 50
+        y: 182
         width: 13
         height: 10
       alignment: 0
@@ -745,10 +758,10 @@ TextureImporter:
       name: DisableNextPreview_Debuff_24
       rect:
         serializedVersion: 2
-        x: 493
-        y: 304
-        width: 20
-        height: 16
+        x: 47
+        y: 159
+        width: 13
+        height: 15
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -767,10 +780,10 @@ TextureImporter:
       name: DisableNextPreview_Debuff_25
       rect:
         serializedVersion: 2
-        x: 1024
-        y: 263
+        x: 571
+        y: 117
         width: 17
-        height: 11
+        height: 10
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -789,7 +802,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 

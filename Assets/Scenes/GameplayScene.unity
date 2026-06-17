@@ -12505,8 +12505,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -73.53247, y: -50}
-  m_SizeDelta: {x: 214, y: 100}
+  m_AnchoredPosition: {x: -7.0324707, y: -50}
+  m_SizeDelta: {x: 347, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &855981067
 MonoBehaviour:
@@ -20597,9 +20597,9 @@ MonoBehaviour:
   magicExplosiveSprite: {fileID: 21300000, guid: 769a4051cad8b3841828f0aa68867ab0, type: 3}
   bossObstacleBackgroundSprite: {fileID: 3066412145347965409, guid: 31244b13aa6488140b0cbbe8cd4f3454, type: 3}
   explosiveFillColor: {r: 0.3077478, g: 1, b: 0.25098038, a: 1}
-  explosiveBackColor: {r: 1, g: 1, b: 1, a: 1}
+  explosiveBackColor: {r: 0.86, g: 0.86, b: 0.86, a: 1}
   explosiveFlashColor: {r: 1, g: 0.1, b: 0.1, a: 1}
-  explosiveFuseOverlayAlpha: 0.65
+  explosiveFuseOverlayAlpha: 1
   poisonBorderSprite: {fileID: -2150452836756340232, guid: dc0f4bc7092c40a40aecd2a1406b4a25, type: 3}
   fireBorderSprite: {fileID: -2737431570772258390, guid: 3f2b08c7023ae6045a1a36eda95861fd, type: 3}
   lightningBorderSprite: {fileID: -4774492201383427687, guid: 860ad36f38971b241b3613006f023743, type: 3}
@@ -29566,7 +29566,7 @@ MonoBehaviour:
     You have
     cleared the final demo level. If you enjoyed your time with the game, please
     consider buying the full version.'
-  baseXpPerLevel: 30
+  baseXpPerLevel: 25
   clearTimeXpParSeconds: 60
   clearTimeXpFullBonusSeconds: 25
   clearTimeXpFullPenaltySeconds: 180
@@ -29820,7 +29820,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 433e723cd1e13c44185e776bf85f5eec, type: 2}
   - {fileID: 11400000, guid: beed2f869003d004da23471404171e2d, type: 2}
   currencyUI: {fileID: 4886256355278967974}
-  currencyPerRoundWin: 10
+  currencyPerRoundWin: 15
   currencyChancePerClearedRow: 0.05
   currencyPopupSprite: {fileID: -2974602154233032688, guid: 045a2b01aaa469141a5d64398b71ec1c, type: 3}
   currencyPopupDuration: 0.6
@@ -29976,7 +29976,7 @@ MonoBehaviour:
   - Grock
   - Liktor
   comboWindowSeconds: 5
-  baseRunEndXpConversion: 0.2
+  baseRunEndXpConversion: 0.15
   starDifficultyRunEndXpBonusPerStar: 0.05
   finalLevelWinXpConversionBonus: 0.1
   logRowDamageBreakdown: 1
@@ -32039,6 +32039,7 @@ MonoBehaviour:
   optOutToggleGroup: {fileID: 910130000000072}
   contentRoot: {fileID: 910130000000021}
   actionRoot: {fileID: 910130000000041}
+  lossOneLinerSpacer: {fileID: 0}
   transitionFont: {fileID: 11400000, guid: a1470b117e5ec7a4c9c2c4151211f423, type: 2}
   continueButtonPrefab: {fileID: 6826685574233894395, guid: 5e7f2b5277a37d041a57b07dbb619341, type: 3}
   winOneLiners:

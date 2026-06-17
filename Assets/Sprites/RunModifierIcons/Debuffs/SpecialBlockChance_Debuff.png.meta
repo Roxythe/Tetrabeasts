@@ -58,7 +58,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -67,7 +67,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -105,7 +105,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: Standalone
+    buildTarget: iOS
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -131,6 +131,19 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -144,7 +157,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: iOS
+    buildTarget: WindowsStoreApps
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -163,10 +176,10 @@ TextureImporter:
       name: SpecialBlockChance_Debuff_0
       rect:
         serializedVersion: 2
-        x: 35
-        y: 425
-        width: 678
-        height: 410
+        x: 0
+        y: 179
+        width: 677
+        height: 409
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -185,8 +198,8 @@ TextureImporter:
       name: SpecialBlockChance_Debuff_1
       rect:
         serializedVersion: 2
-        x: 212
-        y: 424
+        x: 176
+        y: 178
         width: 17
         height: 7
       alignment: 0
@@ -207,8 +220,8 @@ TextureImporter:
       name: SpecialBlockChance_Debuff_2
       rect:
         serializedVersion: 2
-        x: 443
-        y: 379
+        x: 407
+        y: 133
         width: 120
         height: 113
       alignment: 0
@@ -229,8 +242,8 @@ TextureImporter:
       name: SpecialBlockChance_Debuff_3
       rect:
         serializedVersion: 2
-        x: 486
-        y: 348
+        x: 450
+        y: 102
         width: 203
         height: 149
       alignment: 0
@@ -251,10 +264,10 @@ TextureImporter:
       name: SpecialBlockChance_Debuff_4
       rect:
         serializedVersion: 2
-        x: 767
-        y: 245
-        width: 219
-        height: 186
+        x: 731
+        y: 0
+        width: 218
+        height: 185
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -273,8 +286,8 @@ TextureImporter:
       name: SpecialBlockChance_Debuff_5
       rect:
         serializedVersion: 2
-        x: 218
-        y: 289
+        x: 182
+        y: 43
         width: 131
         height: 116
       alignment: 0
@@ -295,8 +308,8 @@ TextureImporter:
       name: SpecialBlockChance_Debuff_6
       rect:
         serializedVersion: 2
-        x: 265
-        y: 253
+        x: 229
+        y: 7
         width: 208
         height: 145
       alignment: 0
@@ -317,8 +330,8 @@ TextureImporter:
       name: SpecialBlockChance_Debuff_7
       rect:
         serializedVersion: 2
-        x: 716
-        y: 320
+        x: 680
+        y: 74
         width: 103
         height: 95
       alignment: 0
@@ -339,7 +352,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 

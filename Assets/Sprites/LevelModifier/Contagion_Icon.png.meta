@@ -70,7 +70,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -117,7 +117,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: Standalone
+    buildTarget: iOS
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -143,6 +143,19 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -156,7 +169,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: iOS
+    buildTarget: WindowsStoreApps
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -175,8 +188,8 @@ TextureImporter:
       name: Contagion_Icon_0
       rect:
         serializedVersion: 2
-        x: 127
-        y: 669
+        x: 23
+        y: 539
         width: 205
         height: 196
       alignment: 0
@@ -197,8 +210,8 @@ TextureImporter:
       name: Contagion_Icon_1
       rect:
         serializedVersion: 2
-        x: 319
-        y: 695
+        x: 215
+        y: 565
         width: 68
         height: 150
       alignment: 0
@@ -219,10 +232,10 @@ TextureImporter:
       name: Contagion_Icon_2
       rect:
         serializedVersion: 2
-        x: 387
-        y: 748
+        x: 283
+        y: 618
         width: 142
-        height: 127
+        height: 126
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -241,8 +254,8 @@ TextureImporter:
       name: Contagion_Icon_3
       rect:
         serializedVersion: 2
-        x: 560
-        y: 831
+        x: 456
+        y: 701
         width: 40
         height: 36
       alignment: 0
@@ -263,8 +276,8 @@ TextureImporter:
       name: Contagion_Icon_4
       rect:
         serializedVersion: 2
-        x: 687
-        y: 687
+        x: 583
+        y: 557
         width: 224
         height: 162
       alignment: 0
@@ -285,8 +298,8 @@ TextureImporter:
       name: Contagion_Icon_5
       rect:
         serializedVersion: 2
-        x: 551
-        y: 727
+        x: 447
+        y: 597
         width: 36
         height: 82
       alignment: 0
@@ -307,8 +320,8 @@ TextureImporter:
       name: Contagion_Icon_6
       rect:
         serializedVersion: 2
-        x: 585
-        y: 759
+        x: 481
+        y: 629
         width: 65
         height: 67
       alignment: 0
@@ -329,8 +342,8 @@ TextureImporter:
       name: Contagion_Icon_7
       rect:
         serializedVersion: 2
-        x: 615
-        y: 724
+        x: 511
+        y: 594
         width: 59
         height: 64
       alignment: 0
@@ -351,8 +364,8 @@ TextureImporter:
       name: Contagion_Icon_8
       rect:
         serializedVersion: 2
-        x: 105
-        y: 695
+        x: 1
+        y: 565
         width: 30
         height: 34
       alignment: 0
@@ -373,10 +386,10 @@ TextureImporter:
       name: Contagion_Icon_9
       rect:
         serializedVersion: 2
-        x: 146
-        y: 57
-        width: 767
-        height: 679
+        x: 42
+        y: 5
+        width: 766
+        height: 601
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -395,8 +408,8 @@ TextureImporter:
       name: Contagion_Icon_10
       rect:
         serializedVersion: 2
-        x: 671
-        y: 643
+        x: 567
+        y: 513
         width: 50
         height: 105
       alignment: 0
@@ -417,9 +430,9 @@ TextureImporter:
       name: Contagion_Icon_11
       rect:
         serializedVersion: 2
-        x: 103
-        y: 559
-        width: 124
+        x: 0
+        y: 429
+        width: 123
         height: 120
       alignment: 0
       pivot: {x: 0, y: 0}
