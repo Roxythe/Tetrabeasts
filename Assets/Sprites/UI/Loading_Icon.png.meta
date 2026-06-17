@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: 972299321fbab844ab6b88404769e918
+guid: 16167b22e29d2154eb76d9046ff5b46a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4397577389740731362
-    second: HealRange_Buff_0
+      213: 95772594917493220
+    second: Loading_Icon_0
+  - first:
+      213: -7027869672465087493
+    second: Loading_Icon_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +40,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -46,7 +49,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -152,13 +155,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: HealRange_Buff_0
+      name: Loading_Icon_0
       rect:
         serializedVersion: 2
-        x: 14
-        y: 38
-        width: 996
-        height: 964
+        x: 34
+        y: 0
+        width: 778
+        height: 772
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -167,8 +170,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2eb29cb2655570d30800000000000000
-      internalID: 4397577389740731362
+      spriteID: 4e9464beaa0445100800000000000000
+      internalID: 95772594917493220
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading_Icon_1
+      rect:
+        serializedVersion: 2
+        x: 353
+        y: 692
+        width: 187
+        height: 129
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf34af4a4cdf77e90800000000000000
+      internalID: -7027869672465087493
       vertices: []
       indices: 
       edges: []
@@ -177,7 +202,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -187,7 +212,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      HealRange_Buff_0: 4397577389740731362
+      Loading_Icon_0: 95772594917493220
+      Loading_Icon_1: -7027869672465087493
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

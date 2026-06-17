@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -7,6 +8,10 @@ public class ShopPanelUI : MonoBehaviour
 {
     const string RuntimeTooltipRootName = "ShopTooltip_Panel";
     const string RuntimeTooltipTextName = "ShopTooltip_Text";
+    const string WelcomePromptPrefsKey = "Tetrabeasts.ShopPrompt.Welcome.Used";
+    const string PurchasePromptPrefsKey = "Tetrabeasts.ShopPrompt.Purchase.Used";
+    const string RefundPromptPrefsKey = "Tetrabeasts.ShopPrompt.Refund.Used";
+    const string IdlePromptPrefsKey = "Tetrabeasts.ShopPrompt.Idle.Used";
 
     enum ShopKeeperPromptType
     {
@@ -65,6 +70,11 @@ public class ShopPanelUI : MonoBehaviour
     int _lastPurchaseImageIndex = -1;
     int _lastRefundImageIndex = -1;
     int _lastIdleImageIndex = -1;
+    string _claimedWelcomeText = string.Empty;
+    Sprite _claimedWelcomeSprite;
+    bool _hasClaimedWelcomePrompt;
+    static readonly Dictionary<string, HashSet<int>> s_sessionUsedPromptTextIndices = new();
+    static readonly Dictionary<string, int> s_sessionLastPromptTextIndex = new();
 
     void Awake()
     {
@@ -119,12 +129,28 @@ public class ShopPanelUI : MonoBehaviour
         ResolveShopKeeperReferences();
         _shopPanelOpen = true;
         RegisterShopActivity();
-        ShowShopKeeperPrompt(ShopKeeperPromptType.Welcome);
+
+        if (_hasClaimedWelcomePrompt)
+            ShowSelectedShopKeeperPrompt(_claimedWelcomeText, _claimedWelcomeSprite);
+        else
+            ShowShopKeeperPrompt(ShopKeeperPromptType.Welcome);
+    }
+
+    public void ClaimWelcomePromptForShopButtonPress()
+    {
+        ResolveShopKeeperReferences();
+        _claimedWelcomeText = PickRandomText(welcomeText, WelcomePromptPrefsKey, ref _lastWelcomeTextIndex);
+        _claimedWelcomeSprite = PickRandomSprite(welcomeImages, ref _lastWelcomeImageIndex);
+        _hasClaimedWelcomePrompt = true;
+        ApplyShopKeeperPromptContent(_claimedWelcomeText, _claimedWelcomeSprite);
     }
 
     public void NotifyShopClosed()
     {
         _shopPanelOpen = false;
+        _hasClaimedWelcomePrompt = false;
+        _claimedWelcomeText = string.Empty;
+        _claimedWelcomeSprite = null;
         HideShopKeeperPrompt();
     }
 
@@ -188,36 +214,59 @@ public class ShopPanelUI : MonoBehaviour
         switch (promptType)
         {
             case ShopKeeperPromptType.Welcome:
-                ShowShopKeeperPrompt(welcomeText, welcomeImages, ref _lastWelcomeTextIndex, ref _lastWelcomeImageIndex);
+                ShowShopKeeperPrompt(welcomeText, welcomeImages, WelcomePromptPrefsKey, ref _lastWelcomeTextIndex, ref _lastWelcomeImageIndex);
                 break;
             case ShopKeeperPromptType.Purchase:
-                ShowShopKeeperPrompt(purchaseMadeText, purchaseImages, ref _lastPurchaseTextIndex, ref _lastPurchaseImageIndex);
+                ShowShopKeeperPrompt(purchaseMadeText, purchaseImages, PurchasePromptPrefsKey, ref _lastPurchaseTextIndex, ref _lastPurchaseImageIndex);
                 break;
             case ShopKeeperPromptType.Refund:
-                ShowShopKeeperPrompt(refundText, refundImages, ref _lastRefundTextIndex, ref _lastRefundImageIndex);
+                ShowShopKeeperPrompt(refundText, refundImages, RefundPromptPrefsKey, ref _lastRefundTextIndex, ref _lastRefundImageIndex);
                 break;
             case ShopKeeperPromptType.Idle:
-                ShowShopKeeperPrompt(idleText, idleImages, ref _lastIdleTextIndex, ref _lastIdleImageIndex);
+                ShowShopKeeperPrompt(idleText, idleImages, IdlePromptPrefsKey, ref _lastIdleTextIndex, ref _lastIdleImageIndex);
                 break;
         }
     }
 
-    void ShowShopKeeperPrompt(string[] textOptions, Sprite[] imageOptions, ref int lastTextIndex, ref int lastImageIndex)
+    void ShowShopKeeperPrompt(string[] textOptions, Sprite[] imageOptions, string promptPrefsKey, ref int lastTextIndex, ref int lastImageIndex)
     {
         if (!shopTextPopUp)
             return;
 
-        string selectedText = PickRandomText(textOptions, ref lastTextIndex);
+        string selectedText = PickRandomText(textOptions, promptPrefsKey, ref lastTextIndex);
         Sprite selectedSprite = PickRandomSprite(imageOptions, ref lastImageIndex);
+
+        ShowSelectedShopKeeperPrompt(selectedText, selectedSprite);
+    }
+
+    void ShowSelectedShopKeeperPrompt(string selectedText, Sprite selectedSprite)
+    {
+        if (!shopTextPopUp)
+            return;
 
         if (string.IsNullOrWhiteSpace(selectedText) && !selectedSprite)
             return;
 
+        shopTextPopUp.SetActive(true);
+        ApplyShopKeeperPromptContent(selectedText, selectedSprite);
+
+        if (_shopKeeperPopupRoutine != null)
+            StopCoroutine(_shopKeeperPopupRoutine);
+
+        _shopKeeperPopupRoutine = StartCoroutine(HideShopKeeperPromptAfterDelay());
+    }
+
+    void ApplyShopKeeperPromptContent(string selectedText, Sprite selectedSprite)
+    {
         if (shopText)
         {
-            shopText.text = string.IsNullOrWhiteSpace(selectedText)
+            string englishText = selectedText?.Trim() ?? string.Empty;
+            BindPromptTextLocalizationFallback(shopText, englishText);
+
+            string localizedText = string.IsNullOrWhiteSpace(englishText)
                 ? string.Empty
-                : TetrabeastsLocalization.LocalizeText(selectedText);
+                : TetrabeastsLocalization.LocalizeText(englishText);
+            SetPromptText(shopText, localizedText);
         }
 
         if (shopKeeperImage)
@@ -226,12 +275,7 @@ public class ShopPanelUI : MonoBehaviour
                 shopKeeperImage.sprite = selectedSprite;
         }
 
-        shopTextPopUp.SetActive(true);
-
-        if (_shopKeeperPopupRoutine != null)
-            StopCoroutine(_shopKeeperPopupRoutine);
-
-        _shopKeeperPopupRoutine = StartCoroutine(HideShopKeeperPromptAfterDelay());
+        Canvas.ForceUpdateCanvases();
     }
 
     IEnumerator HideShopKeeperPromptAfterDelay()
@@ -256,14 +300,14 @@ public class ShopPanelUI : MonoBehaviour
             shopTextPopUp.SetActive(false);
     }
 
-    static string PickRandomText(string[] options, ref int lastIndex)
+    static string PickRandomText(string[] options, string prefsKey, ref int lastIndex)
     {
-        int index = PickRandomIndex(options, lastIndex);
+        int index = PickNonRepeatingTextIndex(options, prefsKey, lastIndex);
         if (index < 0)
             return string.Empty;
 
         lastIndex = index;
-        return options[index];
+        return options[index].Trim();
     }
 
     static Sprite PickRandomSprite(Sprite[] options, ref int lastIndex)
@@ -289,6 +333,185 @@ public class ShopPanelUI : MonoBehaviour
             index = (index + Random.Range(1, options.Length)) % options.Length;
 
         return index;
+    }
+
+    static int PickNonRepeatingTextIndex(string[] options, string prefsKey, int lastIndex)
+    {
+        if (options == null || options.Length == 0)
+            return -1;
+
+        var validIndices = new List<int>();
+        var validLookup = new HashSet<int>();
+        for (int i = 0; i < options.Length; i++)
+        {
+            if (string.IsNullOrWhiteSpace(options[i]))
+                continue;
+
+            validIndices.Add(i);
+            validLookup.Add(i);
+        }
+
+        if (validIndices.Count == 0)
+            return -1;
+
+        if (validIndices.Count == 1)
+            return validIndices[0];
+
+        if (!validLookup.Contains(lastIndex))
+            lastIndex = LoadLastPromptTextIndex(prefsKey);
+        if (!validLookup.Contains(lastIndex))
+            lastIndex = -1;
+
+        var usedIndices = LoadUsedPromptTextIndices(prefsKey);
+        RemoveInvalidPromptTextIndices(usedIndices, validLookup);
+
+        var candidates = BuildUnusedPromptTextCandidates(validIndices, usedIndices);
+        if (candidates.Count == 0)
+        {
+            usedIndices.Clear();
+            candidates.AddRange(validIndices);
+        }
+
+        if (candidates.Count > 1)
+            candidates.Remove(lastIndex);
+
+        int pickedIndex = candidates[Random.Range(0, candidates.Count)];
+        usedIndices.Add(pickedIndex);
+        SaveUsedPromptTextIndices(prefsKey, usedIndices, pickedIndex);
+        return pickedIndex;
+    }
+
+    static List<int> BuildUnusedPromptTextCandidates(List<int> validIndices, HashSet<int> usedIndices)
+    {
+        var candidates = new List<int>();
+        for (int i = 0; i < validIndices.Count; i++)
+        {
+            int index = validIndices[i];
+            if (usedIndices == null || !usedIndices.Contains(index))
+                candidates.Add(index);
+        }
+
+        return candidates;
+    }
+
+    static HashSet<int> LoadUsedPromptTextIndices(string prefsKey)
+    {
+        var usedIndices = new HashSet<int>();
+
+        if (string.IsNullOrWhiteSpace(prefsKey))
+            return usedIndices;
+
+        string rawValue = PlayerPrefs.GetString(prefsKey, string.Empty);
+        if (!string.IsNullOrWhiteSpace(rawValue))
+        {
+            string[] parts = rawValue.Split(',');
+            for (int i = 0; i < parts.Length; i++)
+            {
+                if (int.TryParse(parts[i], out int index))
+                    usedIndices.Add(index);
+            }
+        }
+
+        if (s_sessionUsedPromptTextIndices.TryGetValue(prefsKey, out var sessionUsedIndices))
+            usedIndices.UnionWith(sessionUsedIndices);
+
+        return usedIndices;
+    }
+
+    static int LoadLastPromptTextIndex(string prefsKey)
+    {
+        if (string.IsNullOrWhiteSpace(prefsKey))
+            return -1;
+
+        if (s_sessionLastPromptTextIndex.TryGetValue(prefsKey, out int sessionLastIndex))
+            return sessionLastIndex;
+
+        return PlayerPrefs.GetInt(GetLastPromptTextPrefsKey(prefsKey), -1);
+    }
+
+    static void RemoveInvalidPromptTextIndices(HashSet<int> usedIndices, HashSet<int> validLookup)
+    {
+        if (usedIndices == null || usedIndices.Count == 0 || validLookup == null)
+            return;
+
+        var staleIndices = new List<int>();
+        foreach (int index in usedIndices)
+        {
+            if (!validLookup.Contains(index))
+                staleIndices.Add(index);
+        }
+
+        for (int i = 0; i < staleIndices.Count; i++)
+            usedIndices.Remove(staleIndices[i]);
+    }
+
+    static void SaveUsedPromptTextIndices(string prefsKey, HashSet<int> usedIndices, int lastPickedIndex)
+    {
+        if (string.IsNullOrWhiteSpace(prefsKey))
+            return;
+
+        if (!s_sessionUsedPromptTextIndices.TryGetValue(prefsKey, out var sessionUsedIndices))
+        {
+            sessionUsedIndices = new HashSet<int>();
+            s_sessionUsedPromptTextIndices[prefsKey] = sessionUsedIndices;
+        }
+
+        sessionUsedIndices.Clear();
+
+        if (usedIndices == null || usedIndices.Count == 0)
+        {
+            PlayerPrefs.DeleteKey(prefsKey);
+        }
+        else
+        {
+            var values = new List<string>(usedIndices.Count);
+            foreach (int index in usedIndices)
+            {
+                sessionUsedIndices.Add(index);
+                values.Add(index.ToString());
+            }
+
+            PlayerPrefs.SetString(prefsKey, string.Join(",", values));
+        }
+
+        s_sessionLastPromptTextIndex[prefsKey] = lastPickedIndex;
+        PlayerPrefs.SetInt(GetLastPromptTextPrefsKey(prefsKey), lastPickedIndex);
+        PlayerPrefs.Save();
+    }
+
+    static string GetLastPromptTextPrefsKey(string prefsKey)
+    {
+        return prefsKey + ".Last";
+    }
+
+    static void SetPromptText(TMP_Text target, string text)
+    {
+        if (!target)
+            return;
+
+        target.text = string.Empty;
+        target.ForceMeshUpdate(true, true);
+        target.text = text ?? string.Empty;
+        target.SetVerticesDirty();
+        target.SetLayoutDirty();
+        target.ForceMeshUpdate(true, true);
+    }
+
+    static void BindPromptTextLocalizationFallback(TMP_Text target, string englishText)
+    {
+        if (!target || string.IsNullOrWhiteSpace(englishText))
+            return;
+
+        var staticBinding = target.GetComponent<TetrabeastsLocalizedText>();
+        if (staticBinding)
+            staticBinding.enabled = false;
+
+        var rawBinding = target.GetComponent<TetrabeastsLocalizedRawText>();
+        if (!rawBinding && TetrabeastsLocalization.HasRuntimeTranslation(englishText))
+            rawBinding = target.gameObject.AddComponent<TetrabeastsLocalizedRawText>();
+
+        if (rawBinding)
+            rawBinding.Configure(target, englishText);
     }
 
     public void ShowTooltip(ShopBuffEntryUI entry, RectTransform targetRect)

@@ -5,6 +5,15 @@ TextureImporter:
   - first:
       213: -6283755927373232298
     second: EnemyProjectileDamage_Debuff_0
+  - first:
+      213: 2509139226833642770
+    second: EnemyProjectileDamage_Debuff_1
+  - first:
+      213: -539247584092540469
+    second: EnemyProjectileDamage_Debuff_2
+  - first:
+      213: -8774140781452828858
+    second: EnemyProjectileDamage_Debuff_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -155,10 +164,10 @@ TextureImporter:
       name: EnemyProjectileDamage_Debuff_0
       rect:
         serializedVersion: 2
-        x: 5
-        y: 1
-        width: 1420
-        height: 996
+        x: 725
+        y: 969
+        width: 10
+        height: 11
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -169,6 +178,72 @@ TextureImporter:
       bones: []
       spriteID: 657c9add64d9bc8a0800000000000000
       internalID: -6283755927373232298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyProjectileDamage_Debuff_1
+      rect:
+        serializedVersion: 2
+        x: 827
+        y: 949
+        width: 24
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 215ea6335d042d220800000000000000
+      internalID: 2509139226833642770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyProjectileDamage_Debuff_2
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 54
+        width: 974
+        height: 906
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc13d28ed253488f0800000000000000
+      internalID: -539247584092540469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnemyProjectileDamage_Debuff_3
+      rect:
+        serializedVersion: 2
+        x: 631
+        y: 951
+        width: 26
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64f5c38527dfb3680800000000000000
+      internalID: -8774140781452828858
       vertices: []
       indices: 
       edges: []
@@ -188,6 +263,9 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       EnemyProjectileDamage_Debuff_0: -6283755927373232298
+      EnemyProjectileDamage_Debuff_1: 2509139226833642770
+      EnemyProjectileDamage_Debuff_2: -539247584092540469
+      EnemyProjectileDamage_Debuff_3: -8774140781452828858
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -406,6 +406,9 @@ public class TitleMenuUI : MonoBehaviour
         if (!shopPanel) return;
 
         bool show = !UIPanelTransition.IsVisible(shopPanel);
+        if (show)
+            shopPanelUI?.ClaimWelcomePromptForShopButtonPress();
+
         UIPanelTransition.SetVisible(shopPanel, show);
 
         if (show)
