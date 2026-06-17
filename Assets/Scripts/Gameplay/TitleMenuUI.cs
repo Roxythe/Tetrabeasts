@@ -531,7 +531,7 @@ public class TitleMenuUI : MonoBehaviour
 
         DEV_ClearAchievementProgress(); // Wipe achievement/stat file 
 
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Reload to reflect cleared progress
+        LoadingScreen.LoadSceneAsync(SceneManager.GetActiveScene().name); // Reload to reflect cleared progress
     }
 
     public void DEV_TestAchievementToast()
@@ -1057,8 +1057,11 @@ public class TitleMenuUI : MonoBehaviour
         if (!string.IsNullOrEmpty(gameplaySceneName))
         {
             TetrabeastsControls.SuppressMenuSubmit(0.35f);
-            SceneManager.LoadScene(gameplaySceneName);
-            return true;
+            if (LoadingScreen.LoadSceneAsync(gameplaySceneName))
+                return true;
+
+            Debug.LogError("TitleMenuUI: failed to start loading gameplay scene.");
+            return false;
         }
 
         Debug.LogError("TitleMenuUI: gameplaySceneName is empty.");

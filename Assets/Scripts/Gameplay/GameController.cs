@@ -560,7 +560,7 @@ public class GameController : MonoBehaviour
     public int MaxReserveUnits => EffectiveMaxUnitLives;
     public int CurrentStarDifficulty => _starDifficulty;
     public float CurrentMisfortune => misfortune + _starDifficultyModifiers.misfortuneAdd;
-    public bool IsGameplaySuspended => gameOver || levelWon || isPaused || ConfirmationPopupUI.IsAnyShowing || tutorialSuspended || _roundTransitionActive || _specialAbilityCinematicActive || _levelStartBlocked || _environmentRowClearResolving || (levelModifierController && levelModifierController.IsSelectionRunning);
+    public bool IsGameplaySuspended => gameOver || levelWon || isPaused || LoadingScreen.IsVisible || ConfirmationPopupUI.IsAnyShowing || tutorialSuspended || _roundTransitionActive || _specialAbilityCinematicActive || _levelStartBlocked || _environmentRowClearResolving || (levelModifierController && levelModifierController.IsSelectionRunning);
     public bool IsRoundActive => !IsGameplaySuspended && !gameOver && !levelWon;
     public bool IsTutorialPieceInputBlocked => tutorialPieceInputBlocked;
     public bool IsTutorialHardDropInputGraceActive => Time.unscaledTime < _tutorialHardDropInputBlockedUntilRealtime;
@@ -1294,6 +1294,9 @@ public class GameController : MonoBehaviour
         RefreshGameplayControlTextsIfNeeded();
         UpdateTimedSlowGravityTimerUI();
 
+        if (LoadingScreen.IsVisible)
+            return;
+
         if (tutorialSuspended)
             return;
 
@@ -1736,7 +1739,7 @@ public class GameController : MonoBehaviour
             nextPreview.SyncBorderToImmunity(immunityActive, gameBoard.immuneBorderColor, gameBoard.normalBorderColor);
     }
 
-    public bool CanSpawnNewPiece() => !gameOver && !levelWon && !_levelStartBlocked;
+    public bool CanSpawnNewPiece() => !gameOver && !levelWon && !_levelStartBlocked && !LoadingScreen.IsVisible;
 
     public void SpawnNextPiece()
     {
@@ -1841,6 +1844,8 @@ public class GameController : MonoBehaviour
 
     IEnumerator CoShowLevelStartTransition()
     {
+        yield return WaitForLoadingScreenToClose();
+
         PauseGameplayForRoundTransition(showCursor: false);
 
         if (levelStartRoundTransitionDelaySeconds > 0f)
@@ -2081,6 +2086,8 @@ public class GameController : MonoBehaviour
     IEnumerator CoShowRoundTransition(string message, RoundTransitionVariant variant, string optOutLabel, bool optOutInitialValue,
                                       System.Action<bool> onOptOutContinue, string claimedOneLiner = "")
     {
+        yield return WaitForLoadingScreenToClose();
+
         ResolveRoundTransitionUI();
 
         bool continued = false;
@@ -2107,6 +2114,8 @@ public class GameController : MonoBehaviour
 
     IEnumerator CoShowTimedRoundTransition(string message)
     {
+        yield return WaitForLoadingScreenToClose();
+
         ResolveRoundTransitionUI();
 
         bool completed = false;
@@ -2116,6 +2125,12 @@ public class GameController : MonoBehaviour
             completed = true;
 
         yield return new WaitUntil(() => completed);
+    }
+
+    IEnumerator WaitForLoadingScreenToClose()
+    {
+        while (LoadingScreen.IsVisible)
+            yield return null;
     }
 
     void HideRoundTransitionImmediate()
@@ -5151,7 +5166,8 @@ public class GameController : MonoBehaviour
         if (!string.IsNullOrEmpty(titleSceneName))
         {
             TetrabeastsControls.SuppressMenuSubmit(0.35f);
-            UnityEngine.SceneManagement.SceneManager.LoadScene(titleSceneName);
+            if (!LoadingScreen.LoadSceneAsync(titleSceneName))
+                Debug.LogError("GameController: failed to start loading title scene.");
         }
         else
             Debug.LogError("GameController.titleSceneName is empty or not set.");

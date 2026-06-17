@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3f9083f3c30461db98cd74e1f9c3cc7, type: 3}
+  m_Name: LoadingScreenSettings
+  m_EditorClassIdentifier: 
+  loadingIconPrefab: {fileID: 3049634458175589757, guid: c20f52bd49ab66749a35ed3d18581a94, type: 3}
+  backgroundImages:
+  - {fileID: 5234511868603304439, guid: 68e9e34f2c7e9274ba5dec2c3e5b5bf9, type: 3}
+  - {fileID: 4754495682956534853, guid: 6e3f07a0f17bc77408e03b0c53b14774, type: 3}
+  - {fileID: 4909802203796110863, guid: 7e857df340f66db4ead52031e63864e9, type: 3}
+  - {fileID: 9006906523233308660, guid: 48baf4e39d163a840abfc1196e5b24db, type: 3}
+  - {fileID: 4365635246747746590, guid: 4e597a51a60149d4fbc609d8c23f4f09, type: 3}
+  - {fileID: -2139418448998771526, guid: 7ee931540bbe9b6428dd938d931e4ae0, type: 3}
+  backgroundImageTint: {r: 1, g: 1, b: 1, a: 1}
+  minimumVisibleSeconds: 3
+  hideDelayFrames: 1
+  iconMargin: {x: 48, y: 36}
+  loadingTextMinAlpha: 0.15
+  loadingTextFadeSeconds: 1.1
+  vignetteEnabled: 1
+  vignetteColor: {r: 0, g: 0, b: 0, a: 1}
+  vignetteCenterAlpha: 0
+  vignetteEdgeAlpha: 1
+  vignetteInnerRadius: 0.55
+  vignetteOuterRadius: 1.169
+  vignetteMeshSubdivisions: 32

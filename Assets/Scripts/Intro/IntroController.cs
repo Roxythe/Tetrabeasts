@@ -38,6 +38,7 @@ public class IntroController : MonoBehaviour
 
     bool _loadingTitle = false;
     Coroutine _prepareTimeoutCR;
+    Coroutine _playPreparedVideoCR;
 
     void Start()
     {
@@ -83,6 +84,7 @@ public class IntroController : MonoBehaviour
 
         _firstFrameShown = false;
         if (blackOverlay) blackOverlay.SetActive(true);
+        LoadingScreen.Show();
 
         if (videoAudioSource)
         {
@@ -191,9 +193,19 @@ public class IntroController : MonoBehaviour
             videoPlayer.Stop();
         }
 
+        if (_playPreparedVideoCR != null)
+        {
+            StopCoroutine(_playPreparedVideoCR);
+            _playPreparedVideoCR = null;
+        }
+
         if (blackOverlay) blackOverlay.SetActive(false);
 
-        SceneManager.LoadScene(titleSceneName);
+        if (!LoadingScreen.LoadSceneAsync(titleSceneName))
+        {
+            LoadingScreen.Hide();
+            Debug.LogError("IntroController: titleSceneName is empty or not set.");
+        }
     }
 
     System.Collections.IEnumerator FadePressAnyKeyLoop()
@@ -236,6 +248,24 @@ public class IntroController : MonoBehaviour
             _prepareTimeoutCR = null;
         }
 
+        if (_playPreparedVideoCR != null)
+            StopCoroutine(_playPreparedVideoCR);
+
+        _playPreparedVideoCR = StartCoroutine(PlayPreparedVideoAfterLoadingMinimum(vp));
+    }
+
+    System.Collections.IEnumerator PlayPreparedVideoAfterLoadingMinimum(VideoPlayer vp)
+    {
+        if (vp)
+            vp.Pause();
+
+        yield return LoadingScreen.HideAndWaitUntilInactive();
+
+        _playPreparedVideoCR = null;
+
+        if (_loadingTitle || !vp)
+            yield break;
+
         vp.Play();
     }
 
@@ -247,6 +277,7 @@ public class IntroController : MonoBehaviour
         _firstFrameShown = true;
 
         if (blackOverlay) blackOverlay.SetActive(false);
+        LoadingScreen.Hide();
 
         if (videoAudioSource)
             videoAudioSource.volume = _savedVideoVolume;
