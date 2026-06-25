@@ -965,9 +965,16 @@ public class LevelModifierController : MonoBehaviour
         RemoveGrowingOvergrowth(cell);
 
         if (board.TryGetMonster(cell, out var inst) && inst.data != null)
+        {
+            if (board.TilesDamageImmune && inst.hp > 0f)
+                return;
+
             board.ForceKillMonsterAndRemove(cell, Board.DamageSource.Overgrowth);
+        }
         else if (!board.IsFree(cell))
+        {
             board.RemovePlacedCellImmediate(cell);
+        }
 
         board.TrySpawnCustomObstacle(cell, Board.ObstacleType.Overgrowth, ActiveModifier.overgrowthFullSprite, 1, false);
     }

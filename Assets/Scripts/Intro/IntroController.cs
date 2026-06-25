@@ -39,6 +39,12 @@ public class IntroController : MonoBehaviour
     bool _loadingTitle = false;
     Coroutine _prepareTimeoutCR;
     Coroutine _playPreparedVideoCR;
+    bool _allowVideoFrameReveal = false;
+
+    void Awake()
+    {
+        SuspendVideoUntilLoadingCompletes();
+    }
 
     void Start()
     {
@@ -71,9 +77,7 @@ public class IntroController : MonoBehaviour
             return;
         }
 
-        videoPlayer.playOnAwake = false;
-        videoPlayer.waitForFirstFrame = true;
-        videoPlayer.skipOnDrop = true;
+        SuspendVideoUntilLoadingCompletes();
 
         if (videoPlayer.clip == null && string.IsNullOrWhiteSpace(videoPlayer.url))
         {
@@ -83,6 +87,7 @@ public class IntroController : MonoBehaviour
         }
 
         _firstFrameShown = false;
+        _allowVideoFrameReveal = false;
         if (blackOverlay) blackOverlay.SetActive(true);
         LoadingScreen.Show();
 
@@ -105,7 +110,7 @@ public class IntroController : MonoBehaviour
         videoPlayer.loopPointReached -= OnVideoFinished;
         videoPlayer.loopPointReached += OnVideoFinished;
 
-        videoPlayer.sendFrameReadyEvents = true;
+        videoPlayer.sendFrameReadyEvents = false;
         videoPlayer.frameReady -= OnFrameReady;
         videoPlayer.frameReady += OnFrameReady;
 
@@ -183,6 +188,7 @@ public class IntroController : MonoBehaviour
     {
         if (_loadingTitle) return;
         _loadingTitle = true;
+        _allowVideoFrameReveal = false;
 
         HideSkipPromptInstant(); // Ensures prompt/coroutine fully stops
 
@@ -242,6 +248,8 @@ public class IntroController : MonoBehaviour
 
     void OnVideoPrepared(VideoPlayer vp)
     {
+        if (_loadingTitle) return;
+
         if (_prepareTimeoutCR != null)
         {
             StopCoroutine(_prepareTimeoutCR);
@@ -259,6 +267,7 @@ public class IntroController : MonoBehaviour
         if (vp)
             vp.Pause();
 
+        LoadingScreen.RestartMinimumVisibleTimer();
         yield return LoadingScreen.HideAndWaitUntilInactive();
 
         _playPreparedVideoCR = null;
@@ -266,18 +275,22 @@ public class IntroController : MonoBehaviour
         if (_loadingTitle || !vp)
             yield break;
 
+        vp.frameReady -= OnFrameReady;
+        vp.frameReady += OnFrameReady;
+        vp.sendFrameReadyEvents = true;
+        _allowVideoFrameReveal = true;
         vp.Play();
     }
 
     void OnFrameReady(VideoPlayer vp, long frameIdx)
     {
+        if (!_allowVideoFrameReveal) return;
         if (_firstFrameShown) return;
-        if (frameIdx < 1) return;
 
         _firstFrameShown = true;
+        _allowVideoFrameReveal = false;
 
         if (blackOverlay) blackOverlay.SetActive(false);
-        LoadingScreen.Hide();
 
         if (videoAudioSource)
             videoAudioSource.volume = _savedVideoVolume;
@@ -308,6 +321,18 @@ public class IntroController : MonoBehaviour
     {
         Debug.LogWarning($"VideoPlayer error: {message}. Loading title scene.");
         LoadTitle();
+    }
+
+    void SuspendVideoUntilLoadingCompletes()
+    {
+        if (!videoPlayer) return;
+
+        videoPlayer.playOnAwake = false;
+        videoPlayer.waitForFirstFrame = true;
+        videoPlayer.skipOnDrop = true;
+        videoPlayer.sendFrameReadyEvents = false;
+
+        videoPlayer.Stop();
     }
 
     void OnApplicationFocus(bool hasFocus)

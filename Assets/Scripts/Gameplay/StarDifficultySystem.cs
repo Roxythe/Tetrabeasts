@@ -14,11 +14,11 @@ public struct StarDifficultyModifiers
     public StarDifficultyModifiers(int stars)
     {
         this.stars = StarDifficultySystem.ClampStars(stars);
-        enemyHealthMultiplier = 1f + this.stars;
-        enemyDamageMultiplier = 1f + this.stars;
+        enemyHealthMultiplier = 1f + (this.stars * 0.50f);
+        enemyDamageMultiplier = 1f + (this.stars * 0.50f);
         misfortuneAdd = this.stars * 20f;
-        specialGaugeGainMultiplier = Mathf.Max(0.01f, 1f - (this.stars * 0.15f));
-        expGainMultiplier = 1f + (this.stars * 0.50f);
+        specialGaugeGainMultiplier = Mathf.Max(0.01f, 1f - (this.stars * 0.10f));
+        expGainMultiplier = 1f + (this.stars * 0.30f);
         scoreGainMultiplier = 1f + (this.stars * 0.50f);
     }
 
@@ -75,7 +75,7 @@ public static class StarDifficultySystem
         maxUnlockedStars = ClampStars(maxUnlockedStars);
 
         if (stars <= 0)
-            return "0-Star Difficulty\nNormal difficulty.\nNo gameplay modifiers.";
+            return "0-Star Difficulty\nBase values.\nNo modifiers.";
 
         StarDifficultyModifiers modifiers = GetModifiers(stars);
         StringBuilder sb = new StringBuilder(192);

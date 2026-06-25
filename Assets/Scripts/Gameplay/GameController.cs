@@ -4766,7 +4766,7 @@ public class GameController : MonoBehaviour
                 if (piece && piece.enabled) piece.SetInlineBorderColor(Color.black);
 
                 if (nextPreview)
-                    nextPreview.SyncBorderToImmunity(true, gameBoard.immuneBorderColor, gameBoard.normalBorderColor);
+                    nextPreview.SyncBorderToImmunity(false, gameBoard.immuneBorderColor, gameBoard.normalBorderColor);
 
                 yield return new WaitForSeconds(pulseDur * 0.5f);
 
@@ -4788,7 +4788,7 @@ public class GameController : MonoBehaviour
         if (piece && piece.enabled) piece.ResetInlineBorderColor(gameBoard.normalBorderColor);
 
         if (nextPreview)
-            nextPreview.SyncBorderToImmunity(true, gameBoard.immuneBorderColor, gameBoard.normalBorderColor);
+            nextPreview.SyncBorderToImmunity(false, gameBoard.immuneBorderColor, gameBoard.normalBorderColor);
 
         if (selectedCharacter && selectedCharacter.sfxImmunityOff && AudioManager.I)
             AudioManager.I.PlaySFX(selectedCharacter.sfxImmunityOff);
@@ -4796,12 +4796,11 @@ public class GameController : MonoBehaviour
 
     public void StyleInlineBorder(RectTransform rt)
     {
-        var borderImg = rt ? rt.GetComponent<UnityEngine.UI.Image>() : null;
-        if (!borderImg) return;
+        if (!gameBoard || !rt) return;
 
-        borderImg.color = immunityActive
-            ? gameBoard.immuneBorderColor  // Gold during immunity
-            : gameBoard.normalBorderColor; // Black otherwise
+        gameBoard.SetInlineBorderColor(rt, immunityActive
+            ? gameBoard.immuneBorderColor
+            : gameBoard.normalBorderColor);
     }
 
     // ================ Pause Menu Button Functions ===================

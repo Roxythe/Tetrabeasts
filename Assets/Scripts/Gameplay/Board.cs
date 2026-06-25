@@ -589,10 +589,8 @@ public class Board : MonoBehaviour
         Stretch(gridRoot);
         Stretch(overlayRoot);
 
-        underlayRoot.SetSiblingIndex(0);
-        gridRoot.SetSiblingIndex(1);
-        overlayRoot.SetAsLastSibling();
         EnsureBoardVfxRoot();
+        MaintainBoardVfxLayering();
     }
 
     void Start()
@@ -1283,17 +1281,17 @@ public class Board : MonoBehaviour
     public bool DamageTile(Vector2Int cell, float amount, DamageSource src = DamageSource.Generic,
                            AudioClip sfxOverride = null)
     {
-        if (tilesImmune)
-        {
-            if (AudioManager.I && sfxImmuneHit) AudioManager.I.PlaySFX(sfxImmuneHit);
-            return true; // No damage taken
-        }
-
         if (!monsters.TryGetValue(cell, out var inst) || inst.data == null)
             return false;
 
         if (inst.hp <= 0f)
             return false;
+
+        if (tilesImmune)
+        {
+            if (AudioManager.I && sfxImmuneHit) AudioManager.I.PlaySFX(sfxImmuneHit);
+            return true; // No damage taken
+        }
 
         if (_gc && _gc.levelModifierController)
             amount = _gc.levelModifierController.ModifyIncomingDamage(cell, inst.data, amount, src);
@@ -1997,28 +1995,24 @@ public class Board : MonoBehaviour
     public void SetTilesDamageImmunity(bool on)
     {
         tilesImmune = on;
+        RefreshAllTileBorders();
     }
 
     public bool TilesDamageImmune => tilesImmune;
 
     public void SetAllTileBorderColor(Color c)
     {
-        // Apply to all placed tiles
         foreach (var kv in placed)
         {
             var rt = kv.Value;
             if (!rt) continue;
-
-            // Border is the Image on the root of the tile
-            var img = rt.GetComponent<UnityEngine.UI.Image>();
-            if (img) img.color = c;
+            SetInlineBorderColor(rt, c);
         }
     }
 
     public void StyleInlineBorder(RectTransform rt, Color c)
     {
-        var img = rt ? rt.GetComponent<UnityEngine.UI.Image>() : null;
-        if (img) img.color = c; // Border only
+        SetInlineBorderColor(rt, c);
     }
 
     void DrawGridOverlay()
@@ -2674,23 +2668,33 @@ public class Board : MonoBehaviour
 
     void EnsureBoardVfxRoot()
     {
-        if (!gridRoot)
+        if (boardVfxRoot)
+        {
+            boardVfxRoot.name = "BoardVFXRoot";
+            if (boardVfxRoot.transform.parent != transform)
+                boardVfxRoot.SetParent(transform, false);
             return;
+        }
 
-        if (boardVfxRoot && boardVfxRoot.transform.parent == gridRoot)
-            return;
+        Transform existing = transform.Find("BoardVFXRoot");
 
-        Transform existing = gridRoot.Find("BoardVFXRoot");
+        if (!existing && gridRoot)
+            existing = gridRoot.Find("BoardVFXRoot");
+
         if (existing)
         {
             boardVfxRoot = existing as RectTransform;
             if (boardVfxRoot)
+            {
+                if (boardVfxRoot.transform.parent != transform)
+                    boardVfxRoot.SetParent(transform, false);
                 return;
+            }
         }
 
         var go = new GameObject("BoardVFXRoot", typeof(RectTransform));
         boardVfxRoot = go.GetComponent<RectTransform>();
-        boardVfxRoot.SetParent(gridRoot, false);
+        boardVfxRoot.SetParent(transform, false);
     }
 
     void ConfigureBoardVfxRoot()
@@ -2708,10 +2712,26 @@ public class Board : MonoBehaviour
 
     void MaintainBoardVfxLayering()
     {
-        if (!boardVfxRoot || !gridRoot)
+        if (!boardVfxRoot)
             return;
 
-        boardVfxRoot.SetAsFirstSibling();
+        if (boardVfxRoot.transform.parent != transform)
+            boardVfxRoot.SetParent(transform, false);
+
+        if (boardVfxRoot.transform.parent == transform)
+            boardVfxRoot.SetAsFirstSibling();
+
+        if (underlayRoot && underlayRoot.transform.parent == transform)
+            underlayRoot.SetSiblingIndex(Mathf.Min(1, transform.childCount - 1));
+
+        if (gridRoot && gridRoot.transform.parent == transform)
+            gridRoot.SetSiblingIndex(Mathf.Min(2, transform.childCount - 1));
+
+        if (overlayRoot && overlayRoot.transform.parent == transform)
+            overlayRoot.SetAsLastSibling();
+
+        if (!gridRoot)
+            return;
 
         var gridLines = new List<Transform>();
         for (int i = 0; i < gridRoot.childCount; i++)
@@ -3628,8 +3648,10 @@ public class Board : MonoBehaviour
 
         float after = monsters.TryGetValue(cell, out var instAfter) ? instAfter.hp : 0f;
         float applied = Mathf.Max(0f, before - after);
+        if (applied <= 0f)
+            return true;
 
-        if (PlayerProgress.I && applied > 0f)
+        if (PlayerProgress.I)
         {
             if (fxType == FloorEffectType.Poison)
                 PlayerProgress.I.AddLifetimeFloat(AchievementSystem.Stat.PoisonDamage, applied);

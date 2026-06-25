@@ -100,15 +100,25 @@ public sealed class LoadingScreen : MonoBehaviour
         yield return loadingScreen.WaitForMinimumVisible();
     }
 
+    public static void RestartMinimumVisibleTimer()
+    {
+        var loadingScreen = Ensure();
+        if (!loadingScreen || !IsVisible)
+            return;
+
+        loadingScreen._shownAtRealtime = Time.unscaledTime;
+    }
+
     public static IEnumerator HideAndWaitUntilInactive()
     {
         var loadingScreen = Ensure();
         if (!loadingScreen || !IsVisible)
             yield break;
 
-        Hide();
+        if (loadingScreen._sceneLoadCoroutine == null)
+            loadingScreen.HideAfterSettled();
 
-        while (IsVisible)
+        while (loadingScreen && loadingScreen._canvas && loadingScreen._canvas.gameObject.activeSelf)
             yield return null;
     }
 

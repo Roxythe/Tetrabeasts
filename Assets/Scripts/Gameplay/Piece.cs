@@ -1303,7 +1303,16 @@ public class Piece : MonoBehaviour
     {
         for (int i = 0; i < visuals.Count; i++)
         {
-            var img = visuals[i] ? visuals[i].GetComponent<UnityEngine.UI.Image>() : null;
+            var rt = visuals[i];
+            if (!rt) continue;
+
+            if (board)
+            {
+                board.SetInlineBorderColor(rt, c);
+                continue;
+            }
+
+            var img = rt.GetComponent<UnityEngine.UI.Image>();
             if (img) img.color = c;
         }
     }

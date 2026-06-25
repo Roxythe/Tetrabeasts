@@ -17198,7 +17198,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 5050173363409499257, guid: 90a5271ed2b6c9f41b73bb0ebef9c720, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 90a5271ed2b6c9f41b73bb0ebef9c720, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -32133,9 +32133,9 @@ MonoBehaviour:
   lossAppearSfxVolume: 1
   lossActiveLoopSfxClip: {fileID: 8300000, guid: f13f93e7f928b734f8e1f5a7f5bdfc0d, type: 3}
   lossActiveLoopSfxVolume: 1
-  fadeInSeconds: 1.85
-  autoHoldSeconds: 3
-  autoFadeOutSeconds: 1.35
+  fadeInSeconds: 1.5
+  autoHoldSeconds: 1.5
+  autoFadeOutSeconds: 1.5
   backgroundAlpha: 0.72
   circularRevealSeconds: 1
   circularRevealStartDiameter: 1

@@ -96,6 +96,7 @@ public class TitleMenuUI : MonoBehaviour
     public UICursorController uiCursorController;
 
     TitleStarDifficultyUI _starDifficultyUI;
+    Coroutine _titleMusicStartCoroutine;
     readonly Dictionary<Selectable, Navigation> automaticNavigationScope = new();
     GameObject automaticNavigationRoot;
     GameObject lastNavigationRoot;
@@ -163,9 +164,7 @@ public class TitleMenuUI : MonoBehaviour
 
         SettingsStore.ApplySavedVolumesToAudio();
 
-        // Start title BGM
-        if (AudioManager.I)
-            AudioManager.I.PlayTitleMusic();
+        StartTitleMusicWhenLoadingComplete();
 
         if (volumePanelUI && volumePanelUI.uiCursor)
             volumePanelUI.uiCursor.SetScale(SettingsStore.LoadCursorScale());
@@ -192,7 +191,32 @@ public class TitleMenuUI : MonoBehaviour
 
     void OnDisable()
     {
+        if (_titleMusicStartCoroutine != null)
+        {
+            StopCoroutine(_titleMusicStartCoroutine);
+            _titleMusicStartCoroutine = null;
+        }
+
         RestoreAutomaticNavigationScope();
+    }
+
+    void StartTitleMusicWhenLoadingComplete()
+    {
+        if (_titleMusicStartCoroutine != null)
+            StopCoroutine(_titleMusicStartCoroutine);
+
+        _titleMusicStartCoroutine = StartCoroutine(PlayTitleMusicWhenLoadingComplete());
+    }
+
+    System.Collections.IEnumerator PlayTitleMusicWhenLoadingComplete()
+    {
+        while (LoadingScreen.IsVisible)
+            yield return null;
+
+        _titleMusicStartCoroutine = null;
+
+        if (AudioManager.I)
+            AudioManager.I.PlayTitleMusic();
     }
 
     void ApplyDemoBuildGuardRailsSetting()
