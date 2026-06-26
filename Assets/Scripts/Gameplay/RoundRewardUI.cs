@@ -815,7 +815,7 @@ public class RoundRewardUI : MonoBehaviour
             if (blinkImage1) blinkImage1.SetActive(!blinkImage1.activeSelf);
             if (blinkImage2) blinkImage2.SetActive(!blinkImage2.activeSelf);
 
-            yield return new WaitForSeconds(blinkIntervalSeconds);
+            yield return new WaitForSecondsRealtime(blinkIntervalSeconds);
         }
 
         _blinkRoutine = null;
