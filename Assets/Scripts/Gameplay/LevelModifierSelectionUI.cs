@@ -145,7 +145,6 @@ public class LevelModifierSelectionUI : MonoBehaviour
         _isSpinning = false;
         _tutorialInteractionLocked = false;
         _currentChosenModifier = chosen;
-        RefreshSelectedModifierPanel(chosen);
         SetRootInteractable(true);
 
         CacheSlotMachineLights();
@@ -168,7 +167,6 @@ public class LevelModifierSelectionUI : MonoBehaviour
             _modNameBaseScale = modDisplayNameText.rectTransform.localScale;
             _modNameBaseColor = modDisplayNameText.color;
             modDisplayNameText.rectTransform.localScale = _modNameBaseScale;
-            modDisplayNameText.text = string.Empty;
         }
 
         if (modDisplayNameShadowText)
@@ -176,9 +174,9 @@ public class LevelModifierSelectionUI : MonoBehaviour
             _modNameShadowBaseScale = modDisplayNameShadowText.rectTransform.localScale;
             _modNameShadowBaseColor = modDisplayNameShadowText.color;
             modDisplayNameShadowText.rectTransform.localScale = _modNameShadowBaseScale;
-            modDisplayNameShadowText.text = string.Empty;
         }
 
+        ClearModDisplayNameText(forceMeshUpdate: true);
         StopModNameAnimation();
 
         ClearModifierReveal();
@@ -258,7 +256,6 @@ public class LevelModifierSelectionUI : MonoBehaviour
 
                 chosen = rerolledModifier;
                 _currentChosenModifier = rerolledModifier;
-                RefreshSelectedModifierPanel(chosen);
                 ResetSlotMachineLights();
                 shouldSpinAgain = true;
                 break;
@@ -315,6 +312,8 @@ public class LevelModifierSelectionUI : MonoBehaviour
         }
 
         DisableMenuNavigation();
+        StopModNameAnimation();
+        ClearModDisplayNameText(forceMeshUpdate: false);
         ResetSlotMachineLights();
         SetLeverButtonEnabled(true);
         _tutorialInteractionLocked = false;
@@ -352,6 +351,8 @@ public class LevelModifierSelectionUI : MonoBehaviour
             return;
         }
 
+        EnsureModDisplayNameTextRefs();
+
         if (!modDisplayNameText || !modDisplayNameShadowText)
             Debug.LogWarning("LevelModifierSelectionUI: Mod display name text or shadow text is missing.");
 
@@ -372,6 +373,18 @@ public class LevelModifierSelectionUI : MonoBehaviour
 
         EnsureSelectedModifierTextRefs();
         ConfigureLeverTargetVisual();
+    }
+
+    void EnsureModDisplayNameTextRefs()
+    {
+        Transform searchRoot = root ? root : transform;
+        TMP_Text mainText = FindTextByName(searchRoot, "ModName_Text", "ModNameText");
+        if (mainText)
+            modDisplayNameText = mainText;
+
+        TMP_Text shadowText = FindTextByName(searchRoot, "ModNameShadow_Text", "ShadowModName_Text", "ModNameShadowText");
+        if (shadowText)
+            modDisplayNameShadowText = shadowText;
     }
 
     void EnsureSelectedModifierTextRefs()
@@ -895,11 +908,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
 
         string displayName = TetrabeastsLocalization.LocalizeText(chosen.displayName);
 
-        if (modDisplayNameText)
-            modDisplayNameText.text = displayName;
-
-        if (modDisplayNameShadowText)
-            modDisplayNameShadowText.text = displayName;
+        SetModDisplayNameText(displayName, forceMeshUpdate: true);
 
         PlayModNameAnimation();
         PopulateModifierInfoPanel(chosen);
@@ -922,11 +931,10 @@ public class LevelModifierSelectionUI : MonoBehaviour
     {
         StopModNameAnimation();
 
-        if (modDisplayNameText)
-            modDisplayNameText.text = string.Empty;
+        ClearModDisplayNameText(forceMeshUpdate: true);
 
-        if (modDisplayNameShadowText)
-            modDisplayNameShadowText.text = string.Empty;
+        ClearSelectedModifierInfoContent();
+        _lastInfoModifier = null;
 
         if (continueButton)
         {
@@ -948,6 +956,29 @@ public class LevelModifierSelectionUI : MonoBehaviour
 
         if (modifierInfoPanel)
             UIPanelTransition.Hide(modifierInfoPanel, true);
+    }
+
+    void ClearSelectedModifierInfoContent()
+    {
+        EnsureSelectedModifierTextRefs();
+        SetDynamicText(selectedModifierTitleText, string.Empty, forceMeshUpdate: false);
+        SetDynamicText(selectedModifierShadowTitleText, string.Empty, forceMeshUpdate: false);
+        SetDynamicText(selectedModifierDescText, string.Empty, forceMeshUpdate: false);
+
+        if (modifierInfoIcon)
+            modifierInfoIcon.sprite = null;
+    }
+
+    void SetModDisplayNameText(string value, bool forceMeshUpdate)
+    {
+        EnsureModDisplayNameTextRefs();
+        SetDynamicText(modDisplayNameText, value, forceMeshUpdate);
+        SetDynamicText(modDisplayNameShadowText, value, forceMeshUpdate);
+    }
+
+    void ClearModDisplayNameText(bool forceMeshUpdate)
+    {
+        SetModDisplayNameText(string.Empty, forceMeshUpdate);
     }
 
     void RefreshRerollUI(int availableRerolls, bool showButton, RerollHandler rerollHandler)

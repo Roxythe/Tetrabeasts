@@ -121,6 +121,7 @@ public class GameController : MonoBehaviour
     // Runtime cache
     float _level1FallInterval;
     float _lastShownFallInterval = -1f;
+    int _lastShownLevelTimerSeconds = -1;
     float _levelTimer = 0f;
     float _thisLevelBaseFallInterval;
 
@@ -273,6 +274,9 @@ public class GameController : MonoBehaviour
     float _castleAttackTimer = 0f;
     int castleProjectileDamage = 1;
     float castleProjectileVisualScale = 1f;
+    readonly List<int> _castleAliveTargetColumns = new();
+    readonly List<int> _castleDeadOnlyTargetColumns = new();
+    readonly List<int> _castleProjectileColumns = new();
 
     [Header("Enemy Attack Interval Ramp")]
     [SerializeField] bool enableEnemyAttackIntervalRamp = true;
@@ -361,6 +365,7 @@ public class GameController : MonoBehaviour
     public float bossPylonDamageMult = 0.5f; // Damage taken while pylons exist (0.5 = 50%)
 
     bool _bossPylonShieldActive = false;
+    readonly List<int> _bossObstacleCandidateColumns = new();
 
     [Header("Boss: Magic Explosive")]
     public bool bossEnableMagicExplosive = true;
@@ -506,6 +511,7 @@ public class GameController : MonoBehaviour
     int _comboCount = 0;
     float _comboTimer = 0f;
     float comboDamMult = 0.05f; // 5% per combo count (e.g. 20 combo = +100% damage)
+    bool _rowClearComboResolutionActive;
 
     [Header("Level Performance Tracking - Bonus XP")]
     int _maxComboThisLevel = 0;
@@ -1437,43 +1443,43 @@ public class GameController : MonoBehaviour
             UpdateLevelTimerUI();
 
             // Keep the currently falling piece synced to the current interval
+            float intervalNow = GetCurrentFallInterval();
             if (piece && piece.enabled)
             {
-                float interval = GetCurrentFallInterval();
-                piece.SetFallInterval(interval, resetAccumulator: false);
-                UpdateGravityText(interval);
+                piece.SetFallInterval(intervalNow, resetAccumulator: false);
+                UpdateGravityText(intervalNow);
             }
 
             // Gravity cap accumulator only while active and not blocked by tutorial prompt
-            float intervalNow = GetCurrentFallInterval();
             if (!blockGravityTimer && intervalNow <= (CurrentGravityMinFallInterval + 0.0001f))
                 _gravityCapAccumSeconds += Time.deltaTime;
 
-            if (PlayerProgress.I != null)
+            var playerProgress = PlayerProgress.I;
+            if (playerProgress != null)
             {
-                if (_gravityCapAccumSeconds >= 30f && PlayerProgress.I.GetRunInt(AchievementSystem.Stat.RunGravityCap30) == 0)
-                    PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunGravityCap30, 1);
+                if (_gravityCapAccumSeconds >= 30f && playerProgress.GetRunInt(AchievementSystem.Stat.RunGravityCap30) == 0)
+                    playerProgress.AddRunInt(AchievementSystem.Stat.RunGravityCap30, 1);
 
-                if (_gravityCapAccumSeconds >= 60f && PlayerProgress.I.GetRunInt(AchievementSystem.Stat.RunGravityCap60) == 0)
-                    PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunGravityCap60, 1);
+                if (_gravityCapAccumSeconds >= 60f && playerProgress.GetRunInt(AchievementSystem.Stat.RunGravityCap60) == 0)
+                    playerProgress.AddRunInt(AchievementSystem.Stat.RunGravityCap60, 1);
             }
 
             // Time-based achievements (survive for X seconds in a level)
-            if (PlayerProgress.I != null)
+            if (playerProgress != null)
             {
-                if (_levelTimer >= 180f && PlayerProgress.I.GetRunInt(AchievementSystem.Stat.RunLevelTime180) == 0)
-                    PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunLevelTime180, 1);
+                if (_levelTimer >= 180f && playerProgress.GetRunInt(AchievementSystem.Stat.RunLevelTime180) == 0)
+                    playerProgress.AddRunInt(AchievementSystem.Stat.RunLevelTime180, 1);
 
-                if (_levelTimer >= 240f && PlayerProgress.I.GetRunInt(AchievementSystem.Stat.RunLevelTime240) == 0)
-                    PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunLevelTime240, 1);
+                if (_levelTimer >= 240f && playerProgress.GetRunInt(AchievementSystem.Stat.RunLevelTime240) == 0)
+                    playerProgress.AddRunInt(AchievementSystem.Stat.RunLevelTime240, 1);
 
-                if (_levelTimer >= 300f && PlayerProgress.I.GetRunInt(AchievementSystem.Stat.RunLevelTime300) == 0)
-                    PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunLevelTime300, 1);
+                if (_levelTimer >= 300f && playerProgress.GetRunInt(AchievementSystem.Stat.RunLevelTime300) == 0)
+                    playerProgress.AddRunInt(AchievementSystem.Stat.RunLevelTime300, 1);
             }
         }
 
         // Combo timer (clearing another row resets this timer)
-        if (IsRoundActive && _comboCount > 0)
+        if (IsRoundActive && _comboCount > 0 && !_rowClearComboResolutionActive)
         {
             _comboTimer -= Time.deltaTime;
             if (_comboTimer <= 0f)
@@ -2048,6 +2054,25 @@ public class GameController : MonoBehaviour
         _roundTransitionActive = false;
         isPaused = false;
         Time.timeScale = 1f;
+        AudioListener.pause = false;
+
+        if (showCursor)
+        {
+            EnterUICursorMode();
+            StartCoroutine(ReapplyUICursorNextFrame());
+        }
+        else
+        {
+            EnterGameplayCursorMode();
+            StartCoroutine(ReapplyGameplayCursorNextFrame());
+        }
+    }
+
+    void FinishRoundTransitionAndKeepGameplayPaused(bool showCursor = true)
+    {
+        _roundTransitionActive = false;
+        isPaused = true;
+        Time.timeScale = 0f;
         AudioListener.pause = false;
 
         if (showCursor)
@@ -2658,6 +2683,11 @@ public class GameController : MonoBehaviour
         return finalDamage;
     }
 
+    public void SetRowClearComboResolutionActive(bool active)
+    {
+        _rowClearComboResolutionActive = active;
+    }
+
     int IncrementCombo()
     {
         _comboCount = Mathf.Max(0, _comboCount) + 1;
@@ -2854,7 +2884,7 @@ public class GameController : MonoBehaviour
         _claimedRoundWinOneLiner = string.Empty;
 
         yield return CoShowRoundTransition(RoundWinTransitionText, RoundTransitionVariant.Win, claimedOneLiner);
-        ResumeGameplayAfterRoundTransition();
+        FinishRoundTransitionAndKeepGameplayPaused();
 
         int completedLevelNumber = currentLevel + 1;
         bool finalLevel = IsFinalLevelIndex(currentLevel);
@@ -2891,7 +2921,8 @@ public class GameController : MonoBehaviour
                 roster,
                 computed.perMonsterAwardXp,
                 ContinueAfterRoundXp,
-                hideOnFinalContinue: false);
+                hideOnFinalContinue: false,
+                perMonsterReductionPercent: computed.perMonsterXpReductionPercent);
             yield break;
         }
 
@@ -2950,7 +2981,12 @@ public class GameController : MonoBehaviour
             if (AudioManager.I)
                 AudioManager.I.PlayIntermissionWinMusic();
 
-            xpAwardUI.ShowRoundWin(computed.breakdown, roster, computed.perMonsterAwardXp, () => done = true);
+            xpAwardUI.ShowRoundWin(
+                computed.breakdown,
+                roster,
+                computed.perMonsterAwardXp,
+                () => done = true,
+                perMonsterReductionPercent: computed.perMonsterXpReductionPercent);
             yield return new WaitUntil(() => done);
             yield break;
         }
@@ -3077,12 +3113,12 @@ public class GameController : MonoBehaviour
                 TrySpendRoundRewardReroll);
 
             if (closeXpAfterRewardOpen)
-                StartCoroutine(CoCloseXpAfterPanelFullyShown(roundRewardUI.rootPanel));
+                StartCoroutine(CoCloseXpAfterPanelFullyShown(roundRewardUI.rootPanel, resumeGameplay: false));
         }
         else
         {
             if (closeXpAfterRewardOpen)
-                CloseAndHideXpUiMode();
+                CloseAndHideXpUiMode(resumeGameplay: false);
 
             ContinueAfterRoundRewards();
         }
@@ -3459,10 +3495,10 @@ public class GameController : MonoBehaviour
         action?.Invoke();
     }
 
-    IEnumerator CoCloseXpAfterPanelFullyShown(GameObject panel)
+    IEnumerator CoCloseXpAfterPanelFullyShown(GameObject panel, bool resumeGameplay = true)
     {
         yield return CoWaitForPanelFullyShown(panel);
-        CloseAndHideXpUiMode();
+        CloseAndHideXpUiMode(resumeGameplay);
     }
 
     IEnumerator CoWaitForPanelFullyShown(GameObject panel)
@@ -4502,9 +4538,8 @@ public class GameController : MonoBehaviour
         if (!CanLaunchCastleProjectile())
             return;
 
-        // Find columns with targets: alive and dead-only
-        var aliveCols = new List<int>();
-        var deadOnlyCols = new List<int>();
+        _castleAliveTargetColumns.Clear();
+        _castleDeadOnlyTargetColumns.Clear();
 
         for (int x = 0; x < gameBoard.width; x++)
         {
@@ -4520,15 +4555,15 @@ public class GameController : MonoBehaviour
                 { hasAlive = true; break; }
             }
 
-            if (hasAlive) aliveCols.Add(x);
-            else if (hasAny) deadOnlyCols.Add(x);
+            if (hasAlive) _castleAliveTargetColumns.Add(x);
+            else if (hasAny) _castleDeadOnlyTargetColumns.Add(x);
         }
 
-        if (aliveCols.Count == 0 && deadOnlyCols.Count == 0)
+        if (_castleAliveTargetColumns.Count == 0 && _castleDeadOnlyTargetColumns.Count == 0)
             return; // No targets on board
 
         int projectileCount = GetCurrentCastleProjectilesPerAttack();
-        var columns = PickCastleProjectileColumns(aliveCols, deadOnlyCols, projectileCount);
+        var columns = PickCastleProjectileColumns(_castleAliveTargetColumns, _castleDeadOnlyTargetColumns, projectileCount);
         for (int i = 0; i < columns.Count; i++)
             SpawnCastleDownshotInColumn(columns[i]);
     }
@@ -4547,13 +4582,13 @@ public class GameController : MonoBehaviour
 
     List<int> PickCastleProjectileColumns(List<int> aliveCols, List<int> deadOnlyCols, int maxCount)
     {
-        var columns = new List<int>();
+        _castleProjectileColumns.Clear();
         int limit = Mathf.Max(0, maxCount);
 
-        AddRandomCastleProjectileColumns(aliveCols, columns, limit);
-        AddRandomCastleProjectileColumns(deadOnlyCols, columns, limit);
+        AddRandomCastleProjectileColumns(aliveCols, _castleProjectileColumns, limit);
+        AddRandomCastleProjectileColumns(deadOnlyCols, _castleProjectileColumns, limit);
 
-        return columns;
+        return _castleProjectileColumns;
     }
 
     void AddRandomCastleProjectileColumns(List<int> source, List<int> columns, int limit)
@@ -4562,7 +4597,10 @@ public class GameController : MonoBehaviour
         {
             int pick = UnityEngine.Random.Range(0, source.Count);
             columns.Add(source[pick]);
-            source.RemoveAt(pick);
+
+            int lastIndex = source.Count - 1;
+            source[pick] = source[lastIndex];
+            source.RemoveAt(lastIndex);
         }
     }
 
@@ -5443,6 +5481,7 @@ public class GameController : MonoBehaviour
     void ResetLevelTimerAndDrop(int levelIndex)
     {
         _levelTimer = 0f;
+        _lastShownLevelTimerSeconds = -1;
         _gravityCapAccumSeconds = 0f;
         ResetPlayerGravitySpecialEffect();
         ResetSlowGravitySpecialEffect();
@@ -5732,9 +5771,14 @@ public class GameController : MonoBehaviour
     {
         if (!levelTimerText) return;
 
-        int mins = Mathf.FloorToInt(_levelTimer / 60f);
-        int secs = Mathf.FloorToInt(_levelTimer % 60f);
-        levelTimerText.text = $"{mins:00}:{secs:00}";
+        int totalSeconds = Mathf.Max(0, Mathf.FloorToInt(_levelTimer));
+        if (totalSeconds == _lastShownLevelTimerSeconds)
+            return;
+
+        _lastShownLevelTimerSeconds = totalSeconds;
+        int mins = totalSeconds / 60;
+        int secs = totalSeconds % 60;
+        levelTimerText.SetText("{0:00}:{1:00}", mins, secs);
     }
 
     void UpdateGravityText(float currentInterval)
@@ -6611,8 +6655,7 @@ public class GameController : MonoBehaviour
                 if (minFreeInRowExclusive > 0 && gameBoard.CountFreeCellsInRow(y) <= minFreeInRowExclusive)
                     continue;
 
-                // Collect valid candidates for this y
-                var candidates = new List<int>();
+                _bossObstacleCandidateColumns.Clear();
                 for (int x = 0; x < gameBoard.width; x++)
                 {
                     var c = new Vector2Int(x, y);
@@ -6621,12 +6664,12 @@ public class GameController : MonoBehaviour
                     if (bossAvoidCompletingRow && gameBoard.WouldCompleteRowIfFilled(c))
                         continue;
 
-                    candidates.Add(x);
+                    _bossObstacleCandidateColumns.Add(x);
                 }
 
-                if (candidates.Count > 0)
+                if (_bossObstacleCandidateColumns.Count > 0)
                 {
-                    int xPick = candidates[Random.Range(0, candidates.Count)];
+                    int xPick = _bossObstacleCandidateColumns[Random.Range(0, _bossObstacleCandidateColumns.Count)];
                     cell = new Vector2Int(xPick, y);
                     return true;
                 }
@@ -8024,6 +8067,7 @@ public class GameController : MonoBehaviour
     {
         public XpAwardUI.RoundXpBreakdown breakdown;
         public Dictionary<string, float> perMonsterAwardXp;
+        public Dictionary<string, float> perMonsterXpReductionPercent;
     }
 
     ComputedRoundXp ComputeRoundWinXp(int gameLevelNumber)
@@ -8050,6 +8094,7 @@ public class GameController : MonoBehaviour
 
         var roster = GetActiveMonsterRoster();
         var perMonster = new Dictionary<string, float>();
+        var perMonsterReductionPercent = new Dictionary<string, float>();
 
         if (roster != null)
         {
@@ -8062,6 +8107,10 @@ public class GameController : MonoBehaviour
                 float levelMultiplier = GetOverleveledRoundXpMultiplier(monsterLevel, gameLevelNumber);
                 float finalXp = totalBeforeReduction * levelMultiplier;
                 perMonster[md.monsterName] = Mathf.Max(0f, finalXp);
+
+                float reductionPercent = Mathf.Clamp01(1f - levelMultiplier) * 100f;
+                if (reductionPercent > 0.01f)
+                    perMonsterReductionPercent[md.monsterName] = reductionPercent;
             }
         }
 
@@ -8084,7 +8133,8 @@ public class GameController : MonoBehaviour
                 totalBeforeDifficulty = totalBeforeDifficulty,
                 totalBeforeReduction = totalBeforeReduction
             },
-            perMonsterAwardXp = perMonster
+            perMonsterAwardXp = perMonster,
+            perMonsterXpReductionPercent = perMonsterReductionPercent
         };
     }
 
@@ -8139,6 +8189,8 @@ public class GameController : MonoBehaviour
     void OpenXpUiMode()
     {
         isPaused = true;
+        Time.timeScale = 0f;
+        AudioListener.pause = false;
 
         // Ensure pause menu itself is not shown
         if (pausePanel) UIPanelTransition.Hide(pausePanel, true);
@@ -8152,7 +8204,17 @@ public class GameController : MonoBehaviour
 
     void CloseXpUiMode()
     {
-        isPaused = false;
+        CloseXpUiMode(resumeGameplay: true);
+    }
+
+    void CloseXpUiMode(bool resumeGameplay)
+    {
+        if (resumeGameplay)
+        {
+            isPaused = false;
+            Time.timeScale = 1f;
+            AudioListener.pause = false;
+        }
 
         EnterUICursorMode();
         StartCoroutine(ReapplyUICursorNextFrame());
@@ -8160,10 +8222,15 @@ public class GameController : MonoBehaviour
 
     void CloseAndHideXpUiMode()
     {
+        CloseAndHideXpUiMode(resumeGameplay: true);
+    }
+
+    void CloseAndHideXpUiMode(bool resumeGameplay)
+    {
         if (xpAwardUI)
             xpAwardUI.HideAll();
 
-        CloseXpUiMode();
+        CloseXpUiMode(resumeGameplay);
     }
 
     void ResolveVictoryPanelUi(bool logWarning = true)

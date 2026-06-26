@@ -108,6 +108,9 @@ public class RoundRewardUI : MonoBehaviour
         StopPanelTutorials(markComplete: false);
         SetRootPanelInteractable(true);
 
+        ClearRewardOptions(buffContainer);
+        ClearRewardOptions(debuffContainer);
+
         if (rootPanel)
             rootPanel.transform.SetAsLastSibling();
 
@@ -329,8 +332,10 @@ public class RoundRewardUI : MonoBehaviour
 
     void Populate(Transform container, List<RunModifierSO> picks, bool isBuff)
     {
-        for (int i = container.childCount - 1; i >= 0; i--)
-            Destroy(container.GetChild(i).gameObject);
+        ClearRewardOptions(container);
+
+        if (!container || picks == null)
+            return;
 
         foreach (var mod in picks)
         {
@@ -363,6 +368,22 @@ public class RoundRewardUI : MonoBehaviour
                     confirmDebuffButton.interactable = true;
                 }
             });
+        }
+    }
+
+    static void ClearRewardOptions(Transform container)
+    {
+        if (!container)
+            return;
+
+        for (int i = container.childCount - 1; i >= 0; i--)
+        {
+            var child = container.GetChild(i);
+            if (!child)
+                continue;
+
+            child.gameObject.SetActive(false);
+            Destroy(child.gameObject);
         }
     }
 

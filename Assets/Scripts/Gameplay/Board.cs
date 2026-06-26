@@ -509,14 +509,24 @@ public class Board : MonoBehaviour
         SetEdgeThickness(rt, left, right, top, bottom);
     }
 
+    public bool ShouldShareInlineBorderEdge(Vector2Int cell, Vector2Int neighbor)
+    {
+        if (!InBounds(neighbor) || !placed.ContainsKey(neighbor))
+            return false;
+
+        return !obstacles.ContainsKey(cell) && !obstacles.ContainsKey(neighbor);
+    }
+
+    public bool IsObstacleCell(Vector2Int cell) => obstacles.ContainsKey(cell);
+
     public void RefreshTileBordersAt(Vector2Int cell)
     {
         if (!placed.TryGetValue(cell, out var rt) || !rt) return;
 
-        bool leftShared = InBounds(cell + Vector2Int.left) && placed.ContainsKey(cell + Vector2Int.left);
-        bool rightShared = InBounds(cell + Vector2Int.right) && placed.ContainsKey(cell + Vector2Int.right);
-        bool topShared = InBounds(cell + Vector2Int.up) && placed.ContainsKey(cell + Vector2Int.up);
-        bool bottomShared = InBounds(cell + Vector2Int.down) && placed.ContainsKey(cell + Vector2Int.down);
+        bool leftShared = ShouldShareInlineBorderEdge(cell, cell + Vector2Int.left);
+        bool rightShared = ShouldShareInlineBorderEdge(cell, cell + Vector2Int.right);
+        bool topShared = ShouldShareInlineBorderEdge(cell, cell + Vector2Int.up);
+        bool bottomShared = ShouldShareInlineBorderEdge(cell, cell + Vector2Int.down);
 
         rt.sizeDelta = GetCellSize();
         rt.anchoredPosition = CellToAnchoredPos(cell);
@@ -1364,17 +1374,34 @@ public class Board : MonoBehaviour
     {
         for (int i = 0; i < cells.Length; i++)
         {
-            var c = cells[i];
-
-            if (c.x < 0 || c.x >= width) return false; // X must always be inside columns
-
-            if (c.y >= height) continue; // Above the board is OK (spawn zone)
-
-            if (c.y < 0) return false; // Below the board is not OK (floor)
-
-            if (placed.ContainsKey(c)) return false; // Inside the board: must be empty
+            if (!IsValidActivePieceCell(cells[i]))
+                return false;
         }
         return true;
+    }
+
+    public bool Valid(IReadOnlyList<Vector2Int> cells)
+    {
+        if (cells == null)
+            return false;
+
+        for (int i = 0; i < cells.Count; i++)
+        {
+            if (!IsValidActivePieceCell(cells[i]))
+                return false;
+        }
+        return true;
+    }
+
+    bool IsValidActivePieceCell(Vector2Int c)
+    {
+        if (c.x < 0 || c.x >= width) return false; // X must always be inside columns
+
+        if (c.y >= height) return true; // Above the board is OK (spawn zone)
+
+        if (c.y < 0) return false; // Below the board is not OK (floor)
+
+        return !placed.ContainsKey(c); // Inside the board: must be empty
     }
 
     public void Place(Vector2Int c, RectTransform visual)
@@ -1643,6 +1670,11 @@ public class Board : MonoBehaviour
         var stonesDamaged = new HashSet<Vector2Int>();
         var fullRows = new List<int>();
 
+        if (gc)
+            gc.SetRowClearComboResolutionActive(true);
+
+        try
+        {
         while (true)
         {
             fullRows.Clear();
@@ -1781,6 +1813,12 @@ public class Board : MonoBehaviour
             // Redraw at least one frame so cascade-created full rows are visible before being cleared.
             // The cascade pause is already included in the shared pre-clear timing above.
             yield return null;
+        }
+        }
+        finally
+        {
+            if (gc)
+                gc.SetRowClearComboResolutionActive(false);
         }
 
         CleanOrphanedTiles();
@@ -2877,6 +2915,16 @@ public class Board : MonoBehaviour
     public List<Vector2Int> GetMonsterCells(bool includeDead = false)
     {
         var result = new List<Vector2Int>();
+        GetMonsterCellsNonAlloc(result, includeDead);
+        return result;
+    }
+
+    public void GetMonsterCellsNonAlloc(List<Vector2Int> result, bool includeDead = false)
+    {
+        if (result == null)
+            return;
+
+        result.Clear();
         foreach (var kv in monsters)
         {
             if (kv.Value.data == null)
@@ -2887,8 +2935,6 @@ public class Board : MonoBehaviour
 
             result.Add(kv.Key);
         }
-
-        return result;
     }
 
     public void RemovePlacedCellImmediate(Vector2Int cell)

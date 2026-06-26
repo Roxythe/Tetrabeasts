@@ -27,7 +27,13 @@ public class Piece : MonoBehaviour
     readonly List<RectTransform> visuals = new();
     readonly List<MonsterData> monstersForCells = new();
     readonly List<RectTransform> hintOverlays = new();
+    readonly List<Vector2Int> candidateCells = new();
+    readonly List<Vector2Int> landingCells = new();
+    readonly List<Vector2Int> landingTestCells = new();
+    readonly HashSet<Vector2Int> activeCellSet = new();
+    readonly HashSet<Vector2Int> hardDropPreviewCells = new();
     static readonly Color hintColor = new Color(1f, 0f, 0f, 0.5f); // Light red
+    GameController gameController;
 
     float fallTimer = 0f, lockTimer;
     Coroutine visualTransitionCoroutine;
@@ -48,6 +54,11 @@ public class Piece : MonoBehaviour
         return _onePx;
     }
 
+    void Awake()
+    {
+        gameController = GetComponent<GameController>();
+    }
+
     void OnEnable()
     {
         fallTimer = 0f; lockTimer = 0f;
@@ -66,10 +77,10 @@ public class Piece : MonoBehaviour
         foreach (var c in data.cells) cells.Add(origin + c);
 
         // If blocked, try one row lower; else game over
-        if (!board.Valid(cells.ToArray()))
+        if (!board.Valid(cells))
         {
             Shift(Vector2Int.down);
-            if (!board.Valid(cells.ToArray())) { enabled = false; return; }
+            if (!board.Valid(cells)) { enabled = false; return; }
         }
         BuildVisuals();
     }
@@ -81,7 +92,7 @@ public class Piece : MonoBehaviour
 
     void Update()
     {
-        var gc = FindFirstObjectByType<GameController>();
+        var gc = GetGameController();
 
         bool tutorialPromptActive = gc != null && gc.IsTutorialPromptActive;
         bool gameplaySuspended = gc != null && gc.IsGameplaySuspended;
@@ -235,7 +246,9 @@ public class Piece : MonoBehaviour
 
         if (board == null || board.gridRoot == null) return;
 
-        var activeSet = new HashSet<Vector2Int>(cells);
+        var activeSet = RebuildActiveCellSet();
+        var gc = GetGameController();
+        Color borderColor = (gc && gc.immunityActive) ? board.immuneBorderColor : board.normalBorderColor;
 
         for (int i = 0; i < cells.Count; i++)
         {
@@ -259,8 +272,6 @@ public class Piece : MonoBehaviour
             rt.anchoredPosition = board.CellToAnchoredPos(c);
 
             // Pick outline color (gold while immune, otherwise black)
-            var gc = FindFirstObjectByType<GameController>();
-            Color borderColor = (gc && gc.immunityActive) ? board.immuneBorderColor : board.normalBorderColor;
             board.SetInlineBorderColor(rt, borderColor);
 
             // Build inner fill first so ApplySharedEdges can resize it correctly on shared edges
@@ -281,10 +292,10 @@ public class Piece : MonoBehaviour
             board.ConfigureTetrominoBackgroundPulse(fill, color, data ? data.backgroundImage : null);
 
             // Halve thickness on shared edges
-            bool L = activeSet.Contains(c + Vector2Int.left) || (board.InBounds(c + Vector2Int.left) && !board.IsFree(c + Vector2Int.left));
-            bool R = activeSet.Contains(c + Vector2Int.right) || (board.InBounds(c + Vector2Int.right) && !board.IsFree(c + Vector2Int.right));
-            bool U = activeSet.Contains(c + Vector2Int.up) || (board.InBounds(c + Vector2Int.up) && !board.IsFree(c + Vector2Int.up));
-            bool D = activeSet.Contains(c + Vector2Int.down) || (board.InBounds(c + Vector2Int.down) && !board.IsFree(c + Vector2Int.down));
+            bool L = IsVisualEdgeShared(c, c + Vector2Int.left, activeSet);
+            bool R = IsVisualEdgeShared(c, c + Vector2Int.right, activeSet);
+            bool U = IsVisualEdgeShared(c, c + Vector2Int.up, activeSet);
+            bool D = IsVisualEdgeShared(c, c + Vector2Int.down, activeSet);
 
             board.ApplySharedEdges(rt, L, R, U, D);
 
@@ -379,7 +390,7 @@ public class Piece : MonoBehaviour
 
     void ApplyActiveVisualBorders()
     {
-        var activeSet = new HashSet<Vector2Int>(cells);
+        var activeSet = RebuildActiveCellSet();
 
         for (int i = 0; i < visuals.Count && i < cells.Count; i++)
         {
@@ -387,13 +398,32 @@ public class Piece : MonoBehaviour
                 continue;
 
             var c = cells[i];
-            bool L = activeSet.Contains(c + Vector2Int.left) || (board.InBounds(c + Vector2Int.left) && !board.IsFree(c + Vector2Int.left));
-            bool R = activeSet.Contains(c + Vector2Int.right) || (board.InBounds(c + Vector2Int.right) && !board.IsFree(c + Vector2Int.right));
-            bool U = activeSet.Contains(c + Vector2Int.up) || (board.InBounds(c + Vector2Int.up) && !board.IsFree(c + Vector2Int.up));
-            bool D = activeSet.Contains(c + Vector2Int.down) || (board.InBounds(c + Vector2Int.down) && !board.IsFree(c + Vector2Int.down));
+            bool L = IsVisualEdgeShared(c, c + Vector2Int.left, activeSet);
+            bool R = IsVisualEdgeShared(c, c + Vector2Int.right, activeSet);
+            bool U = IsVisualEdgeShared(c, c + Vector2Int.up, activeSet);
+            bool D = IsVisualEdgeShared(c, c + Vector2Int.down, activeSet);
 
             board.ApplySharedEdges(visuals[i], L, R, U, D);
         }
+    }
+
+    HashSet<Vector2Int> RebuildActiveCellSet()
+    {
+        activeCellSet.Clear();
+        for (int i = 0; i < cells.Count; i++)
+            activeCellSet.Add(cells[i]);
+        return activeCellSet;
+    }
+
+    bool IsVisualEdgeShared(Vector2Int cell, Vector2Int neighbor, HashSet<Vector2Int> activeSet)
+    {
+        if (!board)
+            return false;
+
+        if (activeSet.Contains(neighbor))
+            return !board.IsObstacleCell(cell);
+
+        return board.ShouldShareInlineBorderEdge(cell, neighbor);
     }
 
     void ApplyHardDropSettledBorderPreview()
@@ -409,8 +439,9 @@ public class Piece : MonoBehaviour
         if (data == null || data.special != SpecialType.None || board == null || cells.Count == 0)
             return;
 
-        var activeSet = new HashSet<Vector2Int>(cells);
-        var previewCells = new HashSet<Vector2Int>();
+        var activeSet = RebuildActiveCellSet();
+        var previewCells = hardDropPreviewCells;
+        previewCells.Clear();
 
         for (int i = 0; i < cells.Count; i++)
         {
@@ -425,14 +456,16 @@ public class Piece : MonoBehaviour
             if (!board.TryGetTileRect(c, out var rt))
                 continue;
 
-            bool L = IsHardDropPreviewShared(c + Vector2Int.left, activeSet);
-            bool R = IsHardDropPreviewShared(c + Vector2Int.right, activeSet);
-            bool U = IsHardDropPreviewShared(c + Vector2Int.up, activeSet);
-            bool D = IsHardDropPreviewShared(c + Vector2Int.down, activeSet);
+            bool L = IsVisualEdgeShared(c, c + Vector2Int.left, activeSet);
+            bool R = IsVisualEdgeShared(c, c + Vector2Int.right, activeSet);
+            bool U = IsVisualEdgeShared(c, c + Vector2Int.up, activeSet);
+            bool D = IsVisualEdgeShared(c, c + Vector2Int.down, activeSet);
 
             board.ApplySharedEdges(rt, L, R, U, D);
             hardDropPreviewBorderCells.Add(c);
         }
+
+        previewCells.Clear();
     }
 
     void AddHardDropPreviewNeighbor(Vector2Int cell, HashSet<Vector2Int> activeSet, HashSet<Vector2Int> previewCells)
@@ -441,11 +474,6 @@ public class Piece : MonoBehaviour
             return;
 
         previewCells.Add(cell);
-    }
-
-    bool IsHardDropPreviewShared(Vector2Int cell, HashSet<Vector2Int> activeSet)
-    {
-        return activeSet.Contains(cell) || (board.InBounds(cell) && !board.IsFree(cell));
     }
 
     void RestoreHardDropPreviewNeighborBorders()
@@ -603,18 +631,25 @@ public class Piece : MonoBehaviour
 
     GameController GetGameController()
     {
-        var gc = GetComponent<GameController>();
-        if (!gc)
-            gc = FindFirstObjectByType<GameController>();
-        return gc;
+        if (gameController)
+            return gameController;
+
+        gameController = GetComponent<GameController>();
+        if (!gameController)
+            gameController = FindFirstObjectByType<GameController>();
+
+        return gameController;
     }
 
     bool TryMove(Vector2Int delta, bool syncVisuals = true)
     {
-        var next = new Vector2Int[cells.Count];
-        for (int i = 0; i < cells.Count; i++) next[i] = cells[i] + delta;
-        if (!board.Valid(next)) return false;
-        for (int i = 0; i < cells.Count; i++) cells[i] = next[i];
+        candidateCells.Clear();
+        for (int i = 0; i < cells.Count; i++)
+            candidateCells.Add(cells[i] + delta);
+
+        if (!board.Valid(candidateCells)) return false;
+
+        for (int i = 0; i < cells.Count; i++) cells[i] = candidateCells[i];
         origin += delta;
         if (syncVisuals)
             SyncVisuals();
@@ -656,16 +691,16 @@ public class Piece : MonoBehaviour
     void RotateCW(bool notifyTutorial = false)
     {
         Vector2Int rotationOrigin = origin;
-        var next = new Vector2Int[cells.Count];
+        candidateCells.Clear();
         for (int i = 0; i < cells.Count; i++)
         {
             var r = cells[i] - origin; // Around origin
             var rot = new Vector2Int(r.y, -r.x);
-            next[i] = origin + rot;
+            candidateCells.Add(origin + rot);
         }
-        if (board.Valid(next))
+        if (board.Valid(candidateCells))
         {
-            for (int i = 0; i < cells.Count; i++) cells[i] = next[i];
+            for (int i = 0; i < cells.Count; i++) cells[i] = candidateCells[i];
             AnimateVisualsForRotation(rotationOrigin, -90f);
             if (notifyTutorial)
                 NotifyTutorialEvent(TutorialGameplayEvent.RotateClockwise);
@@ -675,16 +710,16 @@ public class Piece : MonoBehaviour
     void RotateCCW(bool notifyTutorial = false)
     {
         Vector2Int rotationOrigin = origin;
-        var next = new Vector2Int[cells.Count];
+        candidateCells.Clear();
         for (int i = 0; i < cells.Count; i++)
         {
             var r = cells[i] - origin;
             var rot = new Vector2Int(-r.y, r.x);
-            next[i] = origin + rot;
+            candidateCells.Add(origin + rot);
         }
-        if (board.Valid(next))
+        if (board.Valid(candidateCells))
         {
-            for (int i = 0; i < cells.Count; i++) cells[i] = next[i];
+            for (int i = 0; i < cells.Count; i++) cells[i] = candidateCells[i];
             AnimateVisualsForRotation(rotationOrigin, 90f);
             if (notifyTutorial)
                 NotifyTutorialEvent(TutorialGameplayEvent.RotateCounterClockwise);
@@ -699,7 +734,7 @@ public class Piece : MonoBehaviour
         visualTransitionCoroutine = null;
         hardDropVisualLockPending = false;
 
-        var gc = GetComponent<GameController>();
+        var gc = GetGameController();
         bool toppedOut = false;
         bool isSpecial = data.special != SpecialType.None;
 
@@ -1204,20 +1239,22 @@ public class Piece : MonoBehaviour
 
     List<Vector2Int> ComputeLandingCells()
     {
-        var landing = new List<Vector2Int>(cells); // Make a working copy of the current cells
+        landingCells.Clear();
+        for (int i = 0; i < cells.Count; i++)
+            landingCells.Add(cells[i]);
 
         // Try dropping the copy straight down until it would collide
         bool canDrop = true;
         while (canDrop)
         {
-            // Build next test
-            var next = new Vector2Int[landing.Count];
-            for (int i = 0; i < landing.Count; i++)
-                next[i] = landing[i] + Vector2Int.down;
+            landingTestCells.Clear();
+            for (int i = 0; i < landingCells.Count; i++)
+                landingTestCells.Add(landingCells[i] + Vector2Int.down);
 
-            if (board.Valid(next))
+            if (board.Valid(landingTestCells))
             {
-                for (int i = 0; i < landing.Count; i++) landing[i] = next[i];
+                for (int i = 0; i < landingCells.Count; i++)
+                    landingCells[i] = landingTestCells[i];
             }
             else
             {
@@ -1226,16 +1263,16 @@ public class Piece : MonoBehaviour
         }
 
         // Clamp to visible board only (ignore any cells above the top)
-        for (int i = landing.Count - 1; i >= 0; i--)
-            if (landing[i].y < 0 || landing[i].y >= board.height)
-                landing.RemoveAt(i);
+        for (int i = landingCells.Count - 1; i >= 0; i--)
+            if (landingCells[i].y < 0 || landingCells[i].y >= board.height)
+                landingCells.RemoveAt(i);
 
-        return landing;
+        return landingCells;
     }
 
     void UpdateNormalHints()
     {
-        var gc = FindFirstObjectByType<GameController>();
+        var gc = GetGameController();
 
         ClearHints();
 
@@ -1350,8 +1387,7 @@ public class Piece : MonoBehaviour
 
     void NotifyTutorialEvent(TutorialGameplayEvent gameplayEvent)
     {
-        var gc = GetComponent<GameController>();
-        if (!gc) gc = FindFirstObjectByType<GameController>();
+        var gc = GetGameController();
         gc?.NotifyTutorialGameplayEvent(gameplayEvent);
     }
 

@@ -47,6 +47,7 @@ public class LevelModifierController : MonoBehaviour
     readonly Dictionary<Vector2Int, Image> _contagionFloorVisuals = new();
     readonly Dictionary<Vector2Int, Image> _infectionVisuals = new();
     readonly HashSet<int> _soulLinkPropagationGroups = new();
+    readonly List<Vector2Int> _soulLinkScratchCells = new();
 
     GameController _gc;
     LevelModifierSelectionUI _selectionUI;
@@ -420,10 +421,10 @@ public class LevelModifierController : MonoBehaviour
 
         try
         {
-            var cells = board.GetMonsterCells(includeDead: false);
-            for (int i = 0; i < cells.Count; i++)
+            board.GetMonsterCellsNonAlloc(_soulLinkScratchCells, includeDead: false);
+            for (int i = 0; i < _soulLinkScratchCells.Count; i++)
             {
-                Vector2Int other = cells[i];
+                Vector2Int other = _soulLinkScratchCells[i];
                 if (other == cell)
                     continue;
 
@@ -435,6 +436,7 @@ public class LevelModifierController : MonoBehaviour
         }
         finally
         {
+            _soulLinkScratchCells.Clear();
             _soulLinkPropagationGroups.Remove(groupId);
         }
     }
@@ -453,10 +455,10 @@ public class LevelModifierController : MonoBehaviour
 
         try
         {
-            var cells = board.GetMonsterCells(includeDead: false);
-            for (int i = 0; i < cells.Count; i++)
+            board.GetMonsterCellsNonAlloc(_soulLinkScratchCells, includeDead: false);
+            for (int i = 0; i < _soulLinkScratchCells.Count; i++)
             {
-                Vector2Int other = cells[i];
+                Vector2Int other = _soulLinkScratchCells[i];
                 if (other == cell)
                     continue;
 
@@ -468,6 +470,7 @@ public class LevelModifierController : MonoBehaviour
         }
         finally
         {
+            _soulLinkScratchCells.Clear();
             _soulLinkPropagationGroups.Remove(groupId);
         }
     }

@@ -21,6 +21,9 @@ public class XpMonsterRowUI : MonoBehaviour
     public RectTransform xpOrbDistRect;
     public RectTransform xpOrbDrainRect;
 
+    [Header("Transfer Info Colors")]
+    [SerializeField] Color xpReductionInfoColor = new Color(1f, 0.18f, 0.18f, 1f);
+
     public TMP_Text levelUpText;
     public TMP_Text levelUpShadowText;
     public TMP_Text levelUpStatsText;
@@ -53,6 +56,8 @@ public class XpMonsterRowUI : MonoBehaviour
     float _uiXpInto = 0f;
     int _levelTransitionStartLevel = 1;
     bool _showingLevelTransition;
+    Color _xpTransferInfoDefaultColor = Color.white;
+    bool _xpTransferInfoDefaultColorCached;
 
     public void BindStatic(Sprite portrait, string displayName)
     {
@@ -84,6 +89,7 @@ public class XpMonsterRowUI : MonoBehaviour
 
         if (xpTransferInfoText)
         {
+            RestoreXpTransferInfoDefaultColor();
             xpTransferInfoText.gameObject.SetActive(false);
             xpTransferInfoText.text = string.Empty;
         }
@@ -421,6 +427,7 @@ public class XpMonsterRowUI : MonoBehaviour
         if (!xpTransferInfoText)
             return;
 
+        RestoreXpTransferInfoDefaultColor();
         xpTransferInfoText.gameObject.SetActive(true);
 
         int percent = Mathf.RoundToInt(Mathf.Clamp01(conversionFraction) * 100f);
@@ -436,6 +443,7 @@ public class XpMonsterRowUI : MonoBehaviour
         if (!xpTransferInfoText)
             return;
 
+        RestoreXpTransferInfoDefaultColor();
         xpTransferInfoText.gameObject.SetActive(true);
 
         int percent = Mathf.RoundToInt(Mathf.Clamp01(conversionFraction) * 100f);
@@ -446,13 +454,45 @@ public class XpMonsterRowUI : MonoBehaviour
             FormatXp(drainableXp));
     }
 
+    public void ShowXpReductionInfo(float reductionPercent)
+    {
+        if (!xpTransferInfoText)
+            return;
+
+        CacheXpTransferInfoDefaultColor();
+        xpTransferInfoText.gameObject.SetActive(true);
+        xpTransferInfoText.color = xpReductionInfoColor;
+
+        int percent = Mathf.Clamp(Mathf.RoundToInt(reductionPercent), 1, 100);
+        xpTransferInfoText.text = TetrabeastsLocalization.LocalizeFormat(
+            "Unit EXP reduced by {0}% Enemies too weak.",
+            percent);
+    }
+
     public void HideXpTransferInfo()
     {
         if (!xpTransferInfoText)
             return;
 
+        RestoreXpTransferInfoDefaultColor();
         xpTransferInfoText.gameObject.SetActive(false);
         xpTransferInfoText.text = string.Empty;
+    }
+
+    void CacheXpTransferInfoDefaultColor()
+    {
+        if (_xpTransferInfoDefaultColorCached || !xpTransferInfoText)
+            return;
+
+        _xpTransferInfoDefaultColor = xpTransferInfoText.color;
+        _xpTransferInfoDefaultColorCached = true;
+    }
+
+    void RestoreXpTransferInfoDefaultColor()
+    {
+        CacheXpTransferInfoDefaultColor();
+        if (xpTransferInfoText)
+            xpTransferInfoText.color = _xpTransferInfoDefaultColor;
     }
 
     public int GetUiLevel() => _uiLevel;

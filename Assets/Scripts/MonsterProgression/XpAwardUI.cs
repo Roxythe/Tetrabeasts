@@ -222,7 +222,8 @@ public class XpAwardUI : MonoBehaviour
     }
 
     public void ShowRoundWin(RoundXpBreakdown breakdown, List<MonsterData> roster, Dictionary<string, float> perMonsterAwardXp,
-                             Action onContinueToRewards, bool hideOnFinalContinue = true)
+                             Action onContinueToRewards, bool hideOnFinalContinue = true,
+                             Dictionary<string, float> perMonsterReductionPercent = null)
     {
         if (!gameObject.activeSelf)
             gameObject.SetActive(true);
@@ -252,7 +253,7 @@ public class XpAwardUI : MonoBehaviour
             breakdownContinueButton.onClick.AddListener(() =>
             {
                 HardStopAndClearAllVfx();
-                StartCoroutine(CoRoundDistribute(roster, perMonsterAwardXp, onContinueToRewards));
+                StartCoroutine(CoRoundDistribute(roster, perMonsterAwardXp, perMonsterReductionPercent, onContinueToRewards));
             });
         }
     }
@@ -441,7 +442,8 @@ public class XpAwardUI : MonoBehaviour
         return valueText;
     }
 
-    IEnumerator CoRoundDistribute(List<MonsterData> roster, Dictionary<string, float> perMonsterAwardXp, Action onContinue)
+    IEnumerator CoRoundDistribute(List<MonsterData> roster, Dictionary<string, float> perMonsterAwardXp,
+                                  Dictionary<string, float> perMonsterReductionPercent, Action onContinue)
     {
         if (roundBreakdownPanel) roundBreakdownPanel.SetActive(false);
         if (roundDistributePanel) roundDistributePanel.SetActive(true);
@@ -464,6 +466,13 @@ public class XpAwardUI : MonoBehaviour
 
             if (perMonsterAwardXp != null && perMonsterAwardXp.TryGetValue(md.monsterName, out var award))
                 _rows[i].ShowXpDist(award);
+
+            if (perMonsterReductionPercent != null &&
+                perMonsterReductionPercent.TryGetValue(md.monsterName, out var reductionPercent) &&
+                reductionPercent > 0f)
+            {
+                _rows[i].ShowXpReductionInfo(reductionPercent);
+            }
         }
 
         var startLevels = new Dictionary<string, int>();
