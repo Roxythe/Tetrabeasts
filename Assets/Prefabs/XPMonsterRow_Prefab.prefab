@@ -405,8 +405,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Exp Transfer
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a1470b117e5ec7a4c9c2c4151211f423, type: 2}
-  m_sharedMaterial: {fileID: 3855398030641842644, guid: a1470b117e5ec7a4c9c2c4151211f423, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ec795d11b5f50cb4499368c7ebf2f081, type: 2}
+  m_sharedMaterial: {fileID: 3855398030641842644, guid: ec795d11b5f50cb4499368c7ebf2f081, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1976,6 +1976,7 @@ MonoBehaviour:
   xpBarCenterRect: {fileID: 5288306687179148502}
   xpOrbDistRect: {fileID: 3267729233031011742}
   xpOrbDrainRect: {fileID: 2265988201471649577}
+  xpReductionInfoColor: {r: 1, g: 0.18, b: 0.18, a: 1}
   levelUpText: {fileID: 6228028232954269910}
   levelUpShadowText: {fileID: 1918473528339341524}
   levelUpStatsText: {fileID: 7982594933905829581}
