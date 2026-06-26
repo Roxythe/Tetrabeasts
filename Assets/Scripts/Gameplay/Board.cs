@@ -1429,6 +1429,7 @@ public class Board : MonoBehaviour
         monsters.Clear();
         obstacles.Clear();
         floorEffects.Clear();
+        magicExplosives.Clear();
 
         healTimers.Clear();
         attackPortraitIdleTimers.Clear();
@@ -1465,6 +1466,26 @@ public class Board : MonoBehaviour
         RecomputeCellMetrics();
         ConfigureBoardVfxRoot();
         DrawGridOverlay();
+    }
+
+    public void ClearRoundTransientEffects()
+    {
+        magicExplosives.Clear();
+        DestroyOverlayChildrenNamed("BossWarning");
+        DestroyOverlayChildrenNamed("CellVFX");
+    }
+
+    void DestroyOverlayChildrenNamed(string childName)
+    {
+        if (!overlayRoot || string.IsNullOrEmpty(childName))
+            return;
+
+        for (int i = overlayRoot.childCount - 1; i >= 0; i--)
+        {
+            Transform child = overlayRoot.GetChild(i);
+            if (child && child.name == childName)
+                Destroy(child.gameObject);
+        }
     }
 
     float CalcMonsterDamageContribution(in MonsterInstance inst, GameController gc)

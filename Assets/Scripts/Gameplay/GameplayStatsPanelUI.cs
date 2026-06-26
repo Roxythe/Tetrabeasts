@@ -307,6 +307,7 @@ public class GameplayStatsPanelUI : MonoBehaviour
         AddComparedFloat(_statsContent, "Line Clear Currency Chance", gc.EffectiveCurrencyChancePerClearedRowForStats,
             gc.BaseCurrencyChancePerClearedRowForStats, FormatPercent, FormatSignedPercentDelta, higherIsBetter: true,
             sources: SourcesFor(shopBuff: ShopBuffEffects.GoldChanceBonus > Epsilon,
+                starDifficulty: gc.PostFinalSurvivalStarCurrencyBonusActiveForStats,
                 runModStats: new[] { RunModStat.LineClearCurrencyChanceAdd }));
         AddComparedFloat(_statsContent, "Line Clear Currency Amount", gc.LineClearCurrencyAmountMultiplierForStats, 1f,
             FormatMultiplier, FormatSignedPercentDelta, higherIsBetter: true,

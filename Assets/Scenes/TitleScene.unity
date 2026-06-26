@@ -9275,7 +9275,13 @@ MonoBehaviour:
     well as any spike traps.'
   - 'Tip: The bomb special block will force unsupported units in the effected columns
     to fall.'
-  - 'Tip: Unlock harder difficulties by beating all 15 levels in a single run.'
+  - 'Tip: Unlock harder difficulties by beating all 14 levels in a single run.'
+  - 'Tip: Destroying stone obstacles has a chance to drop a buff to make your run
+    a bit easier.'
+  - 'Tip: The final level is endless, but will grow more difficult to survive over
+    time.'
+  - 'Tip: There is an increased chance to find gold after clearing a row in the endless
+    level based on your star difficulty (+5% chance per star).'
 --- !u!1001 &920613064
 PrefabInstance:
   m_ObjectHideFlags: 0

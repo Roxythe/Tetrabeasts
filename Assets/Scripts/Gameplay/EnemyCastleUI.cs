@@ -502,6 +502,18 @@ public class EnemyCastleUI : MonoBehaviour
         _invulnCR = StartCoroutine(InvulnRoutine(seconds));
     }
 
+    public void ClearInvulnerability()
+    {
+        if (_invulnCR != null)
+        {
+            StopCoroutine(_invulnCR);
+            _invulnCR = null;
+        }
+
+        _invulnerable = false;
+        SetInvulnerabilityVFX(false);
+    }
+
     IEnumerator InvulnRoutine(float seconds)
     {
         _invulnerable = true;

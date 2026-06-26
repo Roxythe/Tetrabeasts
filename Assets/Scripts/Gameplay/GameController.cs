@@ -79,8 +79,8 @@ public class GameController : MonoBehaviour
 
     [Header("Run Grid Growth")]
     public bool enableRunGridGrowth = true;
-    public int growVerticalEveryNRounds = 2;   // +1 height every 2nd round
-    public int growHorizontalEveryNRounds = 3; // +1 width every 3rd round
+    public int growVerticalEveryNRounds = 3;   // +1 height every 3rd round
+    public int growHorizontalEveryNRounds = 4; // +1 width every 4th round
 
     int _baseBoardWidth = -1;
     int _baseBoardHeight = -1;
@@ -97,6 +97,10 @@ public class GameController : MonoBehaviour
     [SerializeField] bool forcePostFinalSurvivalInfiniteHealth = true;
     [SerializeField] bool forcePostFinalSurvivalBossLevel = true;
     [SerializeField, Min(0f)] float postFinalSurvivalDamageTakenIncreasePer60Seconds = 0.10f;
+    [SerializeField, Min(0f)] float postFinalSurvivalBaseGravityBonus = 0.75f;
+    [SerializeField, Min(0f)] float postFinalSurvivalGravityIncreasePerSecond = 0.04f;
+    [SerializeField, Min(0f)] float postFinalSurvivalMinGravityRampRateMultiplier = 1f;
+    [SerializeField, Range(0f, 1f)] float postFinalSurvivalCurrencyChancePerStar = 0.05f;
 
     [Header("Gravity UI")]
     [SerializeField] TMP_Text levelTimerText;
@@ -105,7 +109,7 @@ public class GameController : MonoBehaviour
 
     [SerializeField] float startFallInterval = 1.0f;
     [SerializeField] float minFallInterval = 0.08f;
-    [SerializeField] float finalSurvivalMinFallInterval = 0.07f;
+    [SerializeField] float finalSurvivalMinFallInterval = 0.05f;
 
     [Header("Gravity Progression")]
     [SerializeField] float gravityIncreasePerSecond = 0.01f;
@@ -380,6 +384,7 @@ public class GameController : MonoBehaviour
     // ================= Boss Ability Pool runtime =================
     CastleData.BossAbilityKind _bossLastAbility = (CastleData.BossAbilityKind)(-1);
     readonly Dictionary<CastleData.BossAbilityKind, float> _bossNextReadyTime = new();
+    int _roundLifecycleToken = 1;
 
     // =========== Run Modifiers (reset each run) ===========
     [Header("Run Modifiers (runtime)")]
@@ -460,7 +465,12 @@ public class GameController : MonoBehaviour
     float EffectiveFallRampRateMult => Mathf.Max(0f, fallRampRateMult) * ShopBuffEffects.VelocityMultiplier * _slowGravitySpecialRampRateMultActive; // Velocity Down: slows ramping (mult < 1 => slower ramp)
     float ActiveLevelModifierGravityMult => levelModifierController ? levelModifierController.ActiveGravityMultiplier : 1f;
     float EffectiveCurrencyChancePerClearedRow => // Gold Up: +2% chance per level
-        Mathf.Clamp01(currencyChancePerClearedRow + lineClearCurrencyChanceAdd + ShopBuffEffects.GoldChanceBonus);
+        Mathf.Clamp01(currencyChancePerClearedRow + lineClearCurrencyChanceAdd + ShopBuffEffects.GoldChanceBonus +
+                      PostFinalSurvivalStarCurrencyChanceBonus);
+    float PostFinalSurvivalStarCurrencyChanceBonus =>
+        _postFinalSurvivalActive
+            ? Mathf.Max(0, _starDifficulty) * Mathf.Clamp01(postFinalSurvivalCurrencyChancePerStar)
+            : 0f;
     float EffectiveLuck => luck + ShopBuffEffects.LuckBonus; // Luck Up: +10 per level 
     float CurrentGravityMinFallInterval
     {
@@ -578,6 +588,7 @@ public class GameController : MonoBehaviour
     public int BaseCurrencyPerRoundWinForStats => _baseGameplayStatsCached ? _baseCurrencyPerRoundWin : currencyPerRoundWin;
     public float EffectiveCurrencyChancePerClearedRowForStats => EffectiveCurrencyChancePerClearedRow;
     public float BaseCurrencyChancePerClearedRowForStats => _baseGameplayStatsCached ? _baseCurrencyChancePerClearedRow : currencyChancePerClearedRow;
+    public bool PostFinalSurvivalStarCurrencyBonusActiveForStats => _postFinalSurvivalActive && _starDifficulty > 0 && postFinalSurvivalCurrencyChancePerStar > 0f;
     public float CurrentComboWindowSecondsForStats => CurrentComboWindowSeconds;
     public float BaseComboWindowSecondsForStats => _baseGameplayStatsCached ? _baseComboWindowSeconds : comboWindowSeconds;
     public float CurrentStoneBuffDropChanceForStats => CurrentStoneBuffDropChance;
@@ -586,7 +597,7 @@ public class GameController : MonoBehaviour
     public float CurrentPartyExperienceGainMultiplierForStats => CurrentPartyExperienceGainMultiplier;
     public float LineClearCurrencyAmountMultiplierForStats => lineClearCurrencyAmountMult * CurrentCurrencyGainMultiplier;
     public float EffectivePieceGravityMultForStats => EffectivePieceGravityMult * ActiveLevelModifierGravityMult;
-    public float EffectiveFallRampRateMultForStats => EffectiveFallRampRateMult * ActiveLevelModifierGravityMult;
+    public float EffectiveFallRampRateMultForStats => GetCurrentFallRampRateMultiplier(_slowGravitySpecialRampRateMultActive) * ActiveLevelModifierGravityMult;
     public bool LevelModifierGravitySlowActiveForStats => levelModifierController && levelModifierController.AppliesAutoMovementGravitySlow;
     public bool BossGravityActiveForStats => _bossGravityBonusActive > 0.0001f;
     public float EffectiveLuckForStats => EffectiveLuck;
@@ -2779,6 +2790,70 @@ public class GameController : MonoBehaviour
         return Mathf.Max(0, castlesByLevel != null ? castlesByLevel.Length : currentLevel + 1);
     }
 
+    void InvalidateRoundTransientActions()
+    {
+        unchecked
+        {
+            _roundLifecycleToken++;
+            if (_roundLifecycleToken == 0)
+                _roundLifecycleToken = 1;
+        }
+    }
+
+    bool IsRoundActionTokenCurrent(int token)
+    {
+        return token == _roundLifecycleToken && !gameOver && !levelWon && gameBoard;
+    }
+
+    void CleanupRoundTransientGameplayObjects()
+    {
+        InvalidateRoundTransientActions();
+        ClearProjectileRootTransients();
+        gameBoard?.ClearRoundTransientEffects();
+
+        if (_bossGravityCR != null)
+        {
+            StopCoroutine(_bossGravityCR);
+            _bossGravityCR = null;
+        }
+
+        _bossGravityBonusActive = 0f;
+        ResetBossGravityVisuals();
+
+        if (enemyCastleUI)
+        {
+            enemyCastleUI.ClearInvulnerability();
+            enemyCastleUI.SetMagicShieldActive(false);
+        }
+
+        _bossPylonShieldActive = false;
+        _environmentRowClearResolving = false;
+    }
+
+    void ClearProjectileRootTransients()
+    {
+        RectTransform root = projectileRoot ? projectileRoot : (gameBoard ? gameBoard.gridRoot : null);
+        if (!root)
+            return;
+
+        for (int i = root.childCount - 1; i >= 0; i--)
+        {
+            Transform child = root.GetChild(i);
+            if (IsProjectileRootTransient(child))
+                Destroy(child.gameObject);
+        }
+    }
+
+    bool IsProjectileRootTransient(Transform child)
+    {
+        if (!child)
+            return false;
+
+        string childName = child.name;
+        return childName.StartsWith("AttackProjectile", System.StringComparison.Ordinal) ||
+               childName.StartsWith("CastleDownshot", System.StringComparison.Ordinal) ||
+               childName.StartsWith("AttackExplosion", System.StringComparison.Ordinal);
+    }
 
     void InitLevel(int levelIndex)
     {
@@ -2857,6 +2932,7 @@ public class GameController : MonoBehaviour
         if (gameOver || levelWon) return;
         levelWon = true;
         _claimedRoundWinOneLiner = ClaimRoundTransitionOneLiner(RoundTransitionVariant.Win);
+        CleanupRoundTransientGameplayObjects();
 
         StartCoroutine(CoHandleCastleDestroyedVictory());
     }
@@ -3215,6 +3291,8 @@ public class GameController : MonoBehaviour
 
     void StartNextLevel()
     {
+        CleanupRoundTransientGameplayObjects();
+
         if (piece) piece.ResetPiece();
         if (gameBoard) gameBoard.ClearAll();
 
@@ -3275,6 +3353,8 @@ public class GameController : MonoBehaviour
 
         if (roundRewardUI)
             roundRewardUI.Hide();
+
+        CleanupRoundTransientGameplayObjects();
 
         if (piece)
             piece.ResetPiece();
@@ -4275,19 +4355,18 @@ public class GameController : MonoBehaviour
             yield return null;
         }
 
+        if (!rt)
+            yield break;
+
         var impactRoot = projectileRoot ? projectileRoot : (gameBoard ? gameBoard.gridRoot : null);
         Vector2 impactPosition = targetAnchored;
 
-        if (rt)
-        {
-            rt.anchoredPosition = targetAnchored;
-            impactPosition = rt.anchoredPosition;
-        }
+        rt.anchoredPosition = targetAnchored;
+        impactPosition = rt.anchoredPosition;
 
         bool impactEndedLevel = ApplyCastleAttackDamage(damage, attackerMD, impactClip, impactRoot, impactPosition);
 
-        if (rt)
-            Destroy(rt.gameObject);
+        Destroy(rt.gameObject);
 
         SpawnAttackExplosion(impactRoot, impactPosition);
 
@@ -4305,6 +4384,7 @@ public class GameController : MonoBehaviour
             return;
 
         GameObject go = Instantiate(prefab, parent, false);
+        go.name = "AttackExplosion";
 
         foreach (var graphic in go.GetComponentsInChildren<Graphic>(true))
             graphic.raycastTarget = false;
@@ -5488,6 +5568,9 @@ public class GameController : MonoBehaviour
 
         int displayedLevel = Mathf.Max(1, levelIndex + 1);
         float levelBonus = Mathf.Max(0, displayedLevel - 1) * Mathf.Max(0f, levelBaseGravityIncrease);
+        if (_postFinalSurvivalActive)
+            levelBonus += Mathf.Max(0f, postFinalSurvivalBaseGravityBonus);
+
         float baseGravity = 1f / Mathf.Max(0.0001f, _level1FallInterval);
         float levelStartGravity = Mathf.Max(0.0001f, baseGravity + levelBonus);
 
@@ -5626,8 +5709,8 @@ public class GameController : MonoBehaviour
         float baseGravity = 1f / Mathf.Max(0.0001f, _thisLevelBaseFallInterval);
         float gravityRamp = playerBaseOverrideActive
             ? 0f
-            : Mathf.Max(0f, gravityIncreasePerSecond) *
-              Mathf.Max(0f, CalculateFallRampRateMultiplier(slowGravitySpecialRampRateMult)) *
+            : GetCurrentGravityIncreasePerSecond() *
+              GetCurrentFallRampRateMultiplier(slowGravitySpecialRampRateMult) *
               _levelTimer;
         float interval = 1f / Mathf.Max(0.0001f, baseGravity + gravityRamp);
 
@@ -5653,6 +5736,23 @@ public class GameController : MonoBehaviour
         return Mathf.Max(0f, fallRampRateMult) *
             ShopBuffEffects.VelocityMultiplier *
             Mathf.Max(0f, slowGravitySpecialRampRateMult);
+    }
+
+    float GetCurrentGravityIncreasePerSecond()
+    {
+        float normal = Mathf.Max(0f, gravityIncreasePerSecond);
+        return _postFinalSurvivalActive
+            ? Mathf.Max(normal, Mathf.Max(0f, postFinalSurvivalGravityIncreasePerSecond))
+            : normal;
+    }
+
+    float GetCurrentFallRampRateMultiplier(float slowGravitySpecialRampRateMult)
+    {
+        float multiplier = Mathf.Max(0f, CalculateFallRampRateMultiplier(slowGravitySpecialRampRateMult));
+        if (_postFinalSurvivalActive)
+            multiplier = Mathf.Max(multiplier, Mathf.Max(0f, postFinalSurvivalMinGravityRampRateMultiplier));
+
+        return multiplier;
     }
 
     bool ShouldReplaceTimedSlowGravityEffect(
@@ -6039,6 +6139,9 @@ public class GameController : MonoBehaviour
         if (amount <= 0 || !gameBoard)
             return;
 
+        if (ShouldSuppressUnitFloatingDamageText(src))
+            return;
+
         EnsureFloatingDamageText();
         if (!floatingDamageText)
             return;
@@ -6054,6 +6157,14 @@ public class GameController : MonoBehaviour
         if (gameBoard.gridRoot)
             floatingDamageText.ShowAtLocalPosition(gameBoard.gridRoot, gameBoard.CellToAnchoredPos(cell),
                 gameBoard.GetCellSize(), amount, kind, killingBlow);
+    }
+
+    bool ShouldSuppressUnitFloatingDamageText(Board.DamageSource src)
+    {
+        return src == Board.DamageSource.FloorPoison &&
+               levelModifierController &&
+               levelModifierController.ActiveModifier &&
+               levelModifierController.ActiveModifier.kind == LevelModifierKind.Swamp;
     }
 
     void ShowCastleFloatingDamageText(int amount, bool killingBlow, RectTransform impactRoot = null,
@@ -6704,7 +6815,7 @@ public class GameController : MonoBehaviour
         if (!bossEnablePylonShield) return;
         if (!gameBoard || _castleData == null) return;
 
-        StartCoroutine(Boss_PylonShieldRoutine());
+        StartCoroutine(Boss_PylonShieldRoutine(_roundLifecycleToken));
     }
 
     void RefreshPylonShieldState()
@@ -6722,7 +6833,7 @@ public class GameController : MonoBehaviour
         if (!bossEnableMagicExplosive) return;
         if (!gameBoard || _castleData == null) return;
 
-        StartCoroutine(Boss_MagicExplosiveRoutine());
+        StartCoroutine(Boss_MagicExplosiveRoutine(_roundLifecycleToken));
     }
 
     bool TryPickBossObstacleCellExcluding(HashSet<Vector2Int> used, HashSet<int> usedRows,
@@ -6748,8 +6859,11 @@ public class GameController : MonoBehaviour
         return false;
     }
 
-    IEnumerator Boss_PylonShieldRoutine()
+    IEnumerator Boss_PylonShieldRoutine(int roundToken)
     {
+        if (!IsRoundActionTokenCurrent(roundToken))
+            yield break;
+
         float baseWarn = BossWarnSeconds();
         int blockedPlacements = 0;
         int want = Mathf.Max(1, _castleData.bossPylonCount);
@@ -6763,6 +6877,9 @@ public class GameController : MonoBehaviour
 
         while (remaining > 0 && batches < maxBatches)
         {
+            if (!IsRoundActionTokenCurrent(roundToken))
+                yield break;
+
             batches++;
 
             // Pick remaining cells for this batch
@@ -6796,6 +6913,9 @@ public class GameController : MonoBehaviour
             if (warn > 0f)
                 yield return new WaitForSeconds(warn);
 
+            if (!IsRoundActionTokenCurrent(roundToken))
+                yield break;
+
             // Spawn all at once
             int spawnedThisBatch = 0;
             var spawnedColsByRow = new Dictionary<int, List<int>>();
@@ -6820,14 +6940,20 @@ public class GameController : MonoBehaviour
             if (rowClearStarted)
                 yield return new WaitUntil(() => !_environmentRowClearResolving);
 
+            if (!IsRoundActionTokenCurrent(roundToken))
+                yield break;
+
             remaining -= spawnedThisBatch; // Retry only for those that failed
         }
 
         RefreshPylonShieldState(); // Final state refresh in case some spawned late in the process
     }
 
-    IEnumerator Boss_MagicExplosiveRoutine()
+    IEnumerator Boss_MagicExplosiveRoutine(int roundToken)
     {
+        if (!IsRoundActionTokenCurrent(roundToken))
+            yield break;
+
         float baseWarn = BossWarnSeconds();
         int blockedPlacements = 0;
         var used = new HashSet<Vector2Int>(); // Used cells so retries don't keep flashing the same tile
@@ -6835,6 +6961,9 @@ public class GameController : MonoBehaviour
         // Safety cap so it won't loop forever
         for (int attempts = 0; attempts < 10; attempts++)
         {
+            if (!IsRoundActionTokenCurrent(roundToken))
+                yield break;
+
             if (!TryPickBossObstacleCellExcluding(used, null, out var cell, 1))
                 yield break;
 
@@ -6846,6 +6975,9 @@ public class GameController : MonoBehaviour
 
             if (warn > 0f)
                 yield return new WaitForSeconds(warn);
+
+            if (!IsRoundActionTokenCurrent(roundToken))
+                yield break;
 
             // If spawn fails, pick a new cell, flash again, and retry
             if (gameBoard.TrySpawnMagicExplosiveObstacle(
@@ -7067,7 +7199,8 @@ public class GameController : MonoBehaviour
         StartCoroutine(BossRowBlastWarnThenDamage(
             targets,
             dmg,
-            PickWarningSprite(_castleData.bossRowBlastWarningSprite)
+            PickWarningSprite(_castleData.bossRowBlastWarningSprite),
+            _roundLifecycleToken
         ));
     }
 
@@ -7093,11 +7226,14 @@ public class GameController : MonoBehaviour
 
         if (targets.Count == 0) return;
 
-        StartCoroutine(BossFullBoardBlastWarnThenDamage(targets, dmg, warn));
+        StartCoroutine(BossFullBoardBlastWarnThenDamage(targets, dmg, warn, _roundLifecycleToken));
     }
 
-    IEnumerator BossRowBlastWarnThenDamage(List<Vector2Int> targets, float damage, Sprite warningSprite)
+    IEnumerator BossRowBlastWarnThenDamage(List<Vector2Int> targets, float damage, Sprite warningSprite, int roundToken)
     {
+        if (!IsRoundActionTokenCurrent(roundToken))
+            yield break;
+
         float warn = BossWarnSeconds();
 
         if (warningSprite != null)
@@ -7110,6 +7246,9 @@ public class GameController : MonoBehaviour
 
         yield return new WaitForSeconds(warn);
 
+        if (!IsRoundActionTokenCurrent(roundToken))
+            yield break;
+
         if (AudioManager.I) AudioManager.I.PlayBossRowBlastHit();
 
         foreach (var c in targets)
@@ -7117,8 +7256,11 @@ public class GameController : MonoBehaviour
                 gameBoard.DamageTile(c, damage, Board.DamageSource.BossAbility);
     }
 
-    IEnumerator BossFullBoardBlastWarnThenDamage(List<Vector2Int> targets, float dmg, float warn)
+    IEnumerator BossFullBoardBlastWarnThenDamage(List<Vector2Int> targets, float dmg, float warn, int roundToken)
     {
+        if (!IsRoundActionTokenCurrent(roundToken))
+            yield break;
+
         PlayBossAbilityWarningSFX(); // SFX at warning start
 
         Sprite sprite = _castleData.bossFullBoardWarningSprite;
@@ -7126,6 +7268,9 @@ public class GameController : MonoBehaviour
             FlashBossWarning(c, sprite, warn);
 
         yield return new WaitForSeconds(warn);
+
+        if (!IsRoundActionTokenCurrent(roundToken))
+            yield break;
 
         if (AudioManager.I) AudioManager.I.PlayBossBoardBlastHit();
 
@@ -7169,7 +7314,7 @@ public class GameController : MonoBehaviour
             candidates.RemoveAt(pickIndex); // ensures uniqueness
 
             float warn = BossWarnSeconds();
-            StartCoroutine(BossLightningRoutine(target, warn));
+            StartCoroutine(BossLightningRoutine(target, warn, _roundLifecycleToken));
         }
 
     }
@@ -7182,8 +7327,11 @@ public class GameController : MonoBehaviour
         gameBoard.FlashWarningAtCell(cell, sprite, seconds, toggleInterval: toggle);
     }
 
-    IEnumerator BossDelayedDamageRoutine(List<Vector2Int> targets, float damage, Sprite warningSprite)
+    IEnumerator BossDelayedDamageRoutine(List<Vector2Int> targets, float damage, Sprite warningSprite, int roundToken)
     {
+        if (!IsRoundActionTokenCurrent(roundToken))
+            yield break;
+
         float warn = BossWarnSeconds();
 
         if (warningSprite != null)
@@ -7196,14 +7344,19 @@ public class GameController : MonoBehaviour
 
         yield return new WaitForSeconds(warn);
 
+        if (!IsRoundActionTokenCurrent(roundToken))
+            yield break;
+
         foreach (var c in targets)
             if (gameBoard.InBounds(c))
                 gameBoard.DamageTile(c, damage, Board.DamageSource.BossAbility);
     }
 
-    IEnumerator BossLightningRoutine(Vector2Int cell, float warningSeconds)
+    IEnumerator BossLightningRoutine(Vector2Int cell, float warningSeconds, int roundToken)
     {
         if (_castleData == null || gameBoard == null) yield break;
+        if (!IsRoundActionTokenCurrent(roundToken))
+            yield break;
 
         // Warning flash
         if (_castleData.bossLightningWarningSprite)
@@ -7213,6 +7366,9 @@ public class GameController : MonoBehaviour
         }
 
         yield return new WaitForSeconds(warningSeconds);
+
+        if (!IsRoundActionTokenCurrent(roundToken))
+            yield break;
 
         if (AudioManager.I) AudioManager.I.PlayBossLightningStrike();
 
@@ -7232,7 +7388,8 @@ public class GameController : MonoBehaviour
 
         yield return new WaitForSeconds(duration);
 
-        gameBoard.ClearFloorEffect(cell);
+        if (IsRoundActionTokenCurrent(roundToken))
+            gameBoard.ClearFloorEffect(cell);
     }
 
     struct TrapSpawnBatch
@@ -7249,7 +7406,7 @@ public class GameController : MonoBehaviour
             Boss_MagicExplosive();
 
         var castOpt = GetBossTrapOptionForThisSpawn();
-        StartCoroutine(BossSpawnTrapsSplitWithWarningRoutine(castOpt));
+        StartCoroutine(BossSpawnTrapsSplitWithWarningRoutine(castOpt, _roundLifecycleToken));
     }
 
     void FlashBossTrapWarning(Vector2Int cell, Sprite sprite, float seconds)
@@ -7273,8 +7430,11 @@ public class GameController : MonoBehaviour
         return opt;
     }
 
-    IEnumerator BossSpawnTrapsSplitWithWarningRoutine(CastleData.BossTrapSpawnOption castOpt)
+    IEnumerator BossSpawnTrapsSplitWithWarningRoutine(CastleData.BossTrapSpawnOption castOpt, int roundToken)
     {
+        if (!IsRoundActionTokenCurrent(roundToken))
+            yield break;
+
         float warn = BossWarnSeconds();
 
         var reserved = new HashSet<Vector2Int>();
@@ -7315,6 +7475,9 @@ public class GameController : MonoBehaviour
         }
 
         yield return new WaitForSeconds(warn);
+
+        if (!IsRoundActionTokenCurrent(roundToken))
+            yield break;
 
         // Place after warning ends
         foreach (var b in batches)

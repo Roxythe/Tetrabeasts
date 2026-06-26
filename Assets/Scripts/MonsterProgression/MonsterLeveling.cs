@@ -587,9 +587,9 @@ public static class MonsterLeveling
             case StatStep.Hp:
                 return "+ 5 HP";
             case StatStep.Attack:
-                return "ATK+";
+                return $"+ {FormatStatAmount(AttackPowerPerLevelStep)} ATK";
             case StatStep.SpecialGain:
-                return "Special+";
+                return $"+ {FormatStatAmount(SpecialGaugeGainPerLevelStep)} Special";
             case StatStep.HealPower:
                 return "+ 1 Heal";
             case StatStep.HealRange:

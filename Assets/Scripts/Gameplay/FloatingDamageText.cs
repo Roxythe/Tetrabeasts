@@ -48,7 +48,7 @@ public class FloatingDamageText : MonoBehaviour
 
     [Header("Performance")]
     [SerializeField, Min(0)] int prewarmCount = 32;
-    [SerializeField, Min(1)] int maxActivePopups = 64;
+    [SerializeField, Min(1)] int maxActivePopups = 15;
     [SerializeField] bool aggregateBurstDamage = true;
     [SerializeField, Min(0f)] float burstAggregateSeconds = 0.04f;
     [SerializeField, Min(0f)] float burstAggregatePositionRadius = 28f;
@@ -310,8 +310,10 @@ public class FloatingDamageText : MonoBehaviour
 
         if (popup == null)
         {
-            int activeLimit = Mathf.Max(1, maxActivePopups);
-            popup = activePopups.Count >= activeLimit ? RecycleOldestActivePopup() : CreatePopup(root);
+            if (activePopups.Count >= Mathf.Max(1, maxActivePopups))
+                return null;
+
+            popup = CreatePopup(root);
         }
 
         if (popup == null || !popup.rect)
@@ -319,37 +321,6 @@ public class FloatingDamageText : MonoBehaviour
 
         popup.rect.SetParent(root, false);
         activePopups.Add(popup);
-        return popup;
-    }
-
-    PopupInstance RecycleOldestActivePopup()
-    {
-        if (activePopups.Count == 0)
-            return null;
-
-        int oldestIndex = 0;
-        float oldestTime = activePopups[0] != null ? activePopups[0].activatedAt : float.MaxValue;
-
-        for (int i = 1; i < activePopups.Count; i++)
-        {
-            PopupInstance candidate = activePopups[i];
-            float candidateTime = candidate != null ? candidate.activatedAt : float.MaxValue;
-            if (candidateTime < oldestTime)
-            {
-                oldestTime = candidateTime;
-                oldestIndex = i;
-            }
-        }
-
-        PopupInstance popup = activePopups[oldestIndex];
-        activePopups.RemoveAt(oldestIndex);
-
-        if (popup != null && popup.routine != null)
-        {
-            StopCoroutine(popup.routine);
-            popup.routine = null;
-        }
-
         return popup;
     }
 
