@@ -15,6 +15,10 @@ public sealed class LoadingScreen : MonoBehaviour
 
     static LoadingScreen _instance;
     static LoadingScreenSettings _settings;
+    static readonly List<int> _backgroundImageBag = new();
+    static LoadingScreenSettings _backgroundBagSettings;
+    static int _backgroundBagLength = -1;
+    static int _lastBackgroundImageIndex = -1;
 
     Canvas _canvas;
     CanvasGroup _canvasGroup;
@@ -429,17 +433,7 @@ public sealed class LoadingScreen : MonoBehaviour
             return;
 
         var settings = Settings;
-        Sprite selectedSprite = null;
-        if (settings && settings.backgroundImages != null && settings.backgroundImages.Length > 0)
-        {
-            int startIndex = UnityEngine.Random.Range(0, settings.backgroundImages.Length);
-            for (int i = 0; i < settings.backgroundImages.Length; i++)
-            {
-                selectedSprite = settings.backgroundImages[(startIndex + i) % settings.backgroundImages.Length];
-                if (selectedSprite)
-                    break;
-            }
-        }
+        Sprite selectedSprite = PickRandomBackgroundSprite(settings);
 
         _backgroundImage.sprite = selectedSprite;
         _backgroundImage.color = selectedSprite ? (settings ? settings.backgroundImageTint : Color.white) : Color.clear;
@@ -447,6 +441,80 @@ public sealed class LoadingScreen : MonoBehaviour
         _backgroundImage.preserveAspect = false;
 
         RefreshVignetteGraphic();
+    }
+
+    static Sprite PickRandomBackgroundSprite(LoadingScreenSettings settings)
+    {
+        if (!settings || settings.backgroundImages == null || settings.backgroundImages.Length == 0)
+        {
+            _backgroundImageBag.Clear();
+            _backgroundBagSettings = null;
+            _backgroundBagLength = -1;
+            _lastBackgroundImageIndex = -1;
+            return null;
+        }
+
+        if (_backgroundBagSettings != settings || _backgroundBagLength != settings.backgroundImages.Length)
+        {
+            _backgroundImageBag.Clear();
+            _backgroundBagSettings = settings;
+            _backgroundBagLength = settings.backgroundImages.Length;
+            _lastBackgroundImageIndex = -1;
+        }
+
+        while (true)
+        {
+            if (_backgroundImageBag.Count == 0)
+                RefillBackgroundImageBag(settings);
+
+            if (_backgroundImageBag.Count == 0)
+                return null;
+
+            int last = _backgroundImageBag.Count - 1;
+            int imageIndex = _backgroundImageBag[last];
+            _backgroundImageBag.RemoveAt(last);
+
+            Sprite sprite = imageIndex >= 0 && imageIndex < settings.backgroundImages.Length
+                ? settings.backgroundImages[imageIndex]
+                : null;
+
+            if (!sprite)
+                continue;
+
+            _lastBackgroundImageIndex = imageIndex;
+            return sprite;
+        }
+    }
+
+    static void RefillBackgroundImageBag(LoadingScreenSettings settings)
+    {
+        _backgroundImageBag.Clear();
+
+        if (!settings || settings.backgroundImages == null)
+            return;
+
+        for (int i = 0; i < settings.backgroundImages.Length; i++)
+        {
+            if (settings.backgroundImages[i])
+                _backgroundImageBag.Add(i);
+        }
+
+        for (int i = _backgroundImageBag.Count - 1; i > 0; i--)
+        {
+            int swapIndex = UnityEngine.Random.Range(0, i + 1);
+            int tmp = _backgroundImageBag[i];
+            _backgroundImageBag[i] = _backgroundImageBag[swapIndex];
+            _backgroundImageBag[swapIndex] = tmp;
+        }
+
+        int lastSlot = _backgroundImageBag.Count - 1;
+        if (lastSlot > 0 && _backgroundImageBag[lastSlot] == _lastBackgroundImageIndex)
+        {
+            int swapIndex = UnityEngine.Random.Range(0, lastSlot);
+            int tmp = _backgroundImageBag[lastSlot];
+            _backgroundImageBag[lastSlot] = _backgroundImageBag[swapIndex];
+            _backgroundImageBag[swapIndex] = tmp;
+        }
     }
 
     void RefreshVignetteGraphic()

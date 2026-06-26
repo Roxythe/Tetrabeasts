@@ -141,7 +141,7 @@ public class XpMonsterRowUI : MonoBehaviour
             BeginLevelUpSequence();
 
         _levelUpCount += 1;
-        _statLines.Add(TetrabeastsLocalization.LocalizeText(line));
+        _statLines.Add(LocalizeStatLine(line));
 
         UpdateLevelUpHeader();
 
@@ -166,6 +166,21 @@ public class XpMonsterRowUI : MonoBehaviour
 
         if (levelUpText) levelUpText.text = header;
         if (levelUpShadowText) levelUpShadowText.text = header;
+    }
+
+    static string LocalizeStatLine(string line)
+    {
+        if (string.IsNullOrWhiteSpace(line))
+            return string.Empty;
+
+        if (!line.Contains("\n"))
+            return TetrabeastsLocalization.LocalizeText(line);
+
+        string[] parts = line.Split(new[] { '\n' });
+        for (int i = 0; i < parts.Length; i++)
+            parts[i] = TetrabeastsLocalization.LocalizeText(parts[i].TrimEnd('\r'));
+
+        return string.Join("\n", parts);
     }
 
     public void ShowXpDist(float gainedXp)

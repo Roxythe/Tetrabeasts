@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -45,6 +46,13 @@ public class FloatingDamageText : MonoBehaviour
     [SerializeField, Min(1f)] float pulseScale = 1.3f;
     [SerializeField, Min(0.01f)] float pulseDuration = 0.18f;
 
+    [Header("Performance")]
+    [SerializeField, Min(0)] int prewarmCount = 32;
+    [SerializeField, Min(1)] int maxActivePopups = 64;
+    [SerializeField] bool aggregateBurstDamage = true;
+    [SerializeField, Min(0f)] float burstAggregateSeconds = 0.04f;
+    [SerializeField, Min(0f)] float burstAggregatePositionRadius = 28f;
+
     [Header("Colors")]
     [SerializeField] Color normalColor = Color.white;
     [SerializeField] Color fireColor = new(1f, 0.45f, 0.05f, 1f);
@@ -64,11 +72,58 @@ public class FloatingDamageText : MonoBehaviour
     [SerializeField] Color outlineColor = new(0f, 0f, 0f, 0.85f);
     [SerializeField, Range(0f, 1f)] float outlineWidth = 0.22f;
 
+    sealed class PopupInstance
+    {
+        public RectTransform rect;
+        public TextMeshProUGUI text;
+        public Coroutine routine;
+        public float activatedAt;
+    }
+
+    struct PendingPopup
+    {
+        public Vector3 worldPosition;
+        public int amount;
+        public DamageKind kind;
+        public bool killingBlow;
+        public Vector2 sourceSize;
+    }
+
+    readonly List<PopupInstance> pooledPopups = new();
+    readonly List<PopupInstance> activePopups = new();
+    readonly List<PendingPopup> pendingPopups = new();
+
     RectTransform fallbackRoot;
+    Coroutine flushPendingCoroutine;
+    bool poolPrewarmed;
 
     public void SetFallbackRoot(RectTransform root)
     {
         fallbackRoot = root;
+
+        if (isActiveAndEnabled)
+            Prewarm();
+    }
+
+    public void Prewarm()
+    {
+        RectTransform root = ResolveRoot();
+        if (root)
+            EnsurePoolPrewarmed(root);
+    }
+
+    void OnDisable()
+    {
+        if (flushPendingCoroutine != null)
+        {
+            StopCoroutine(flushPendingCoroutine);
+            flushPendingCoroutine = null;
+        }
+
+        pendingPopups.Clear();
+
+        while (activePopups.Count > 0)
+            StopAndPool(activePopups[activePopups.Count - 1]);
     }
 
     public void Show(RectTransform target, int amount, DamageKind kind, bool killingBlow)
@@ -99,15 +154,112 @@ public class FloatingDamageText : MonoBehaviour
         if (!enabledText || amount <= 0)
             return;
 
+        if (aggregateBurstDamage && burstAggregateSeconds > 0f)
+        {
+            QueuePendingPopup(worldPosition, amount, kind, killingBlow, sourceSize);
+            return;
+        }
+
+        SpawnPopupAtWorldPosition(worldPosition, amount, kind, killingBlow, sourceSize);
+    }
+
+    void QueuePendingPopup(Vector3 worldPosition, int amount, DamageKind kind, bool killingBlow, Vector2 sourceSize)
+    {
+        int existingIndex = FindPendingPopup(worldPosition, kind);
+        if (existingIndex >= 0)
+        {
+            PendingPopup pending = pendingPopups[existingIndex];
+            pending.amount += amount;
+            pending.killingBlow |= killingBlow;
+            pending.sourceSize = new Vector2(
+                Mathf.Max(pending.sourceSize.x, sourceSize.x),
+                Mathf.Max(pending.sourceSize.y, sourceSize.y));
+            pendingPopups[existingIndex] = pending;
+        }
+        else
+        {
+            pendingPopups.Add(new PendingPopup
+            {
+                worldPosition = worldPosition,
+                amount = amount,
+                kind = kind,
+                killingBlow = killingBlow,
+                sourceSize = sourceSize
+            });
+        }
+
+        if (flushPendingCoroutine == null)
+            flushPendingCoroutine = StartCoroutine(FlushPendingPopupsAfterDelay());
+    }
+
+    int FindPendingPopup(Vector3 worldPosition, DamageKind kind)
+    {
+        float radius = Mathf.Max(0f, burstAggregatePositionRadius);
+        float radiusSqr = radius * radius;
+
+        for (int i = 0; i < pendingPopups.Count; i++)
+        {
+            PendingPopup pending = pendingPopups[i];
+            if (pending.kind != kind)
+                continue;
+
+            float distanceSqr = (pending.worldPosition - worldPosition).sqrMagnitude;
+            if (radius <= 0f)
+            {
+                if (distanceSqr <= 0.01f)
+                    return i;
+            }
+            else if (distanceSqr <= radiusSqr)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    IEnumerator FlushPendingPopupsAfterDelay()
+    {
+        float endTime = Time.unscaledTime + Mathf.Max(0f, burstAggregateSeconds);
+        while (Time.unscaledTime < endTime)
+            yield return null;
+
+        FlushPendingPopups();
+        flushPendingCoroutine = null;
+    }
+
+    void FlushPendingPopups()
+    {
+        for (int i = 0; i < pendingPopups.Count; i++)
+        {
+            PendingPopup pending = pendingPopups[i];
+            SpawnPopupAtWorldPosition(pending.worldPosition, pending.amount, pending.kind, pending.killingBlow, pending.sourceSize);
+        }
+
+        pendingPopups.Clear();
+    }
+
+    void SpawnPopupAtWorldPosition(Vector3 worldPosition, int amount, DamageKind kind, bool killingBlow, Vector2 sourceSize)
+    {
+        if (!enabledText || amount <= 0)
+            return;
+
         RectTransform root = ResolveRoot();
         if (!root)
             return;
 
         root.SetAsLastSibling();
+        EnsurePoolPrewarmed(root);
 
-        var go = new GameObject("FloatingDamageText", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
-        var rt = go.GetComponent<RectTransform>();
-        rt.SetParent(root, false);
+        PopupInstance popup = GetPopup(root);
+        if (popup == null || !popup.rect || !popup.text)
+            return;
+
+        RectTransform rt = popup.rect;
+        TextMeshProUGUI text = popup.text;
+
+        rt.gameObject.SetActive(true);
+        rt.SetAsLastSibling();
         rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
         rt.pivot = new Vector2(0.5f, 0.5f);
         rt.localScale = Vector3.one;
@@ -118,18 +270,18 @@ public class FloatingDamageText : MonoBehaviour
         rt.anchoredPosition = new Vector2(localPosition.x, localPosition.y) + jitter;
 
         float fontSize = ResolveFontSize(amount);
+        string amountText = amount.ToString();
         rt.sizeDelta = new Vector2(
-            Mathf.Max(minTextWidth, fontSize * Mathf.Max(4f, amount.ToString().Length + 2f), sourceSize.x * 1.5f),
+            Mathf.Max(minTextWidth, fontSize * Mathf.Max(4f, amountText.Length + 2f), sourceSize.x * 1.5f),
             fontSize + textHeightPadding);
 
-        var text = go.GetComponent<TextMeshProUGUI>();
         text.raycastTarget = false;
         text.alignment = TextAlignmentOptions.Center;
         text.textWrappingMode = TextWrappingModes.NoWrap;
         text.overflowMode = TextOverflowModes.Overflow;
         text.fontStyle = fontStyle;
         text.fontSize = fontSize;
-        text.text = showMinusSign ? $"-{amount}" : amount.ToString();
+        text.text = showMinusSign ? "-" + amountText : amountText;
         text.color = killingBlow ? killingBlowColor : ColorForKind(kind);
 
         if (fontAsset)
@@ -138,7 +290,138 @@ public class FloatingDamageText : MonoBehaviour
         text.outlineColor = outlineColor;
         text.outlineWidth = outlineWidth;
 
-        StartCoroutine(AnimateAndDestroy(rt, text));
+        popup.activatedAt = Time.unscaledTime;
+        popup.routine = StartCoroutine(AnimateAndRelease(popup));
+    }
+
+    PopupInstance GetPopup(RectTransform root)
+    {
+        PopupInstance popup = null;
+
+        while (pooledPopups.Count > 0 && popup == null)
+        {
+            int last = pooledPopups.Count - 1;
+            popup = pooledPopups[last];
+            pooledPopups.RemoveAt(last);
+
+            if (popup == null || !popup.rect || !popup.text)
+                popup = null;
+        }
+
+        if (popup == null)
+        {
+            int activeLimit = Mathf.Max(1, maxActivePopups);
+            popup = activePopups.Count >= activeLimit ? RecycleOldestActivePopup() : CreatePopup(root);
+        }
+
+        if (popup == null || !popup.rect)
+            return null;
+
+        popup.rect.SetParent(root, false);
+        activePopups.Add(popup);
+        return popup;
+    }
+
+    PopupInstance RecycleOldestActivePopup()
+    {
+        if (activePopups.Count == 0)
+            return null;
+
+        int oldestIndex = 0;
+        float oldestTime = activePopups[0] != null ? activePopups[0].activatedAt : float.MaxValue;
+
+        for (int i = 1; i < activePopups.Count; i++)
+        {
+            PopupInstance candidate = activePopups[i];
+            float candidateTime = candidate != null ? candidate.activatedAt : float.MaxValue;
+            if (candidateTime < oldestTime)
+            {
+                oldestTime = candidateTime;
+                oldestIndex = i;
+            }
+        }
+
+        PopupInstance popup = activePopups[oldestIndex];
+        activePopups.RemoveAt(oldestIndex);
+
+        if (popup != null && popup.routine != null)
+        {
+            StopCoroutine(popup.routine);
+            popup.routine = null;
+        }
+
+        return popup;
+    }
+
+    PopupInstance CreatePopup(RectTransform root)
+    {
+        var go = new GameObject("FloatingDamageText", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
+        var rt = go.GetComponent<RectTransform>();
+        rt.SetParent(root, false);
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.localScale = Vector3.one;
+
+        var text = go.GetComponent<TextMeshProUGUI>();
+        text.raycastTarget = false;
+        text.alignment = TextAlignmentOptions.Center;
+        text.textWrappingMode = TextWrappingModes.NoWrap;
+        text.overflowMode = TextOverflowModes.Overflow;
+
+        go.SetActive(false);
+
+        return new PopupInstance
+        {
+            rect = rt,
+            text = text
+        };
+    }
+
+    void EnsurePoolPrewarmed(RectTransform root)
+    {
+        if (poolPrewarmed)
+            return;
+
+        poolPrewarmed = true;
+
+        int count = Mathf.Min(Mathf.Max(0, prewarmCount), Mathf.Max(1, maxActivePopups));
+        for (int i = 0; i < count; i++)
+        {
+            PopupInstance popup = CreatePopup(root);
+            if (popup != null)
+                pooledPopups.Add(popup);
+        }
+    }
+
+    void StopAndPool(PopupInstance popup)
+    {
+        if (popup == null)
+            return;
+
+        if (popup.routine != null)
+        {
+            StopCoroutine(popup.routine);
+            popup.routine = null;
+        }
+
+        PoolPopup(popup);
+    }
+
+    void PoolPopup(PopupInstance popup)
+    {
+        if (popup == null)
+            return;
+
+        activePopups.Remove(popup);
+        popup.routine = null;
+
+        if (!popup.rect)
+            return;
+
+        popup.rect.gameObject.SetActive(false);
+
+        if (!pooledPopups.Contains(popup))
+            pooledPopups.Add(popup);
     }
 
     RectTransform ResolveRoot()
@@ -198,10 +481,16 @@ public class FloatingDamageText : MonoBehaviour
         };
     }
 
-    IEnumerator AnimateAndDestroy(RectTransform rt, TMP_Text text)
+    IEnumerator AnimateAndRelease(PopupInstance popup)
     {
-        if (!rt || !text)
+        if (popup == null || !popup.rect || !popup.text)
+        {
+            activePopups.Remove(popup);
             yield break;
+        }
+
+        RectTransform rt = popup.rect;
+        TMP_Text text = popup.text;
 
         float duration = 1f / Mathf.Max(0.05f, fadeSpeed);
         float elapsed = 0f;
@@ -231,7 +520,6 @@ public class FloatingDamageText : MonoBehaviour
             yield return null;
         }
 
-        if (rt)
-            Destroy(rt.gameObject);
+        PoolPopup(popup);
     }
 }

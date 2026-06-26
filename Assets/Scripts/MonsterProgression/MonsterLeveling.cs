@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 public struct MonsterPassiveBonuses
@@ -290,8 +291,15 @@ public static class MonsterLeveling
 {
     public const int XpPerLevel = 100;
     public const int MaxLevel = 100;
+    const float HpPerLevelStep = 5f;
     const float AttackPowerPerLevelStep = 0.1f;
+    const float HealPowerPerLevelStep = 3f;
+    const float HealRangePerLevelStep = 1f;
     const float SpecialGaugeGainPerLevelStep = 0.1f;
+    const int RoleMilestoneInterval = 10;
+    const float AttackRoleMilestoneBonus = 1.0f;
+    const float DefenseRoleMilestoneHpBonus = 25.0f;
+    const float HealerRoleMilestoneHealBonus = 7.0f;
 
     public struct LeveledStats
     {
@@ -326,11 +334,13 @@ public static class MonsterLeveling
 
         for (int newLevel = 2; newLevel <= level; newLevel++)
         {
-            if (MonsterPassiveSystem.ReplacesStatUpgrade(data, newLevel))
-                continue;
+            if (!MonsterPassiveSystem.ReplacesStatUpgrade(data, newLevel))
+            {
+                int stepIndex = GetStepIndexForLevel(newLevel, cycleLength);
+                ApplyStep(ref s, cycle[stepIndex]);
+            }
 
-            int stepIndex = GetStepIndexForLevel(newLevel, cycleLength);
-            ApplyStep(ref s, cycle[stepIndex]);
+            ApplyRoleMilestoneBonus(ref s, data.role, newLevel);
         }
 
         return s;
@@ -355,7 +365,7 @@ public static class MonsterLeveling
         switch (step)
         {
             case StatStep.Hp:
-                s.maxHealth += 5f;
+                s.maxHealth += HpPerLevelStep;
                 break;
             case StatStep.Attack:
                 s.attackPower += AttackPowerPerLevelStep;
@@ -364,12 +374,36 @@ public static class MonsterLeveling
                 s.specialGaugeGain += SpecialGaugeGainPerLevelStep;
                 break;
             case StatStep.HealPower:
-                s.healAmount += 1f;
+                s.healAmount += HealPowerPerLevelStep;
                 break;
             case StatStep.HealRange:
-                s.healRange += 1f;
+                s.healRange += HealRangePerLevelStep;
                 break;
         }
+    }
+
+    static void ApplyRoleMilestoneBonus(ref LeveledStats s, MonsterRole role, int newLevel)
+    {
+        if (!IsRoleMilestoneLevel(newLevel))
+            return;
+
+        switch (role)
+        {
+            case MonsterRole.Attack:
+                s.attackPower += AttackRoleMilestoneBonus;
+                break;
+            case MonsterRole.Defense:
+                s.maxHealth += DefenseRoleMilestoneHpBonus;
+                break;
+            case MonsterRole.Healer:
+                s.healAmount += HealerRoleMilestoneHealBonus;
+                break;
+        }
+    }
+
+    static bool IsRoleMilestoneLevel(int newLevel)
+    {
+        return newLevel > 1 && RoleMilestoneInterval > 0 && newLevel % RoleMilestoneInterval == 0;
     }
 
     public static string GetStatIncreaseSummary(MonsterData data, int fromLevel, int toLevel)
@@ -379,7 +413,11 @@ public static class MonsterLeveling
         toLevel = Mathf.Clamp(toLevel, 1, MaxLevel);
         if (toLevel <= fromLevel) return "";
 
-        int hp = 0, atkSteps = 0, specialSteps = 0, heal = 0, range = 0;
+        float hp = 0f;
+        float attack = 0f;
+        int specialSteps = 0;
+        float heal = 0f;
+        float range = 0f;
         var specialLines = new List<string>();
 
         var cycle = GetCycleForRole(data.role);
@@ -390,28 +428,31 @@ public static class MonsterLeveling
             if (MonsterPassiveSystem.ReplacesStatUpgrade(data, newLevel))
             {
                 specialLines.Add("Passive+");
-                continue;
+            }
+            else
+            {
+                int stepIndex = GetStepIndexForLevel(newLevel, n);
+                switch (cycle[stepIndex])
+                {
+                    case StatStep.Hp: hp += HpPerLevelStep; break;
+                    case StatStep.Attack: attack += AttackPowerPerLevelStep; break;
+                    case StatStep.SpecialGain: specialSteps++; break;
+                    case StatStep.HealPower: heal += HealPowerPerLevelStep; break;
+                    case StatStep.HealRange: range += HealRangePerLevelStep; break;
+                }
             }
 
-            int stepIndex = GetStepIndexForLevel(newLevel, n);
-            switch (cycle[stepIndex])
-            {
-                case StatStep.Hp: hp++; break;
-                case StatStep.Attack: atkSteps++; break;
-                case StatStep.SpecialGain: specialSteps++; break;
-                case StatStep.HealPower: heal++; break;
-                case StatStep.HealRange: range++; break;
-            }
+            AddRoleMilestoneAmounts(data.role, newLevel, ref hp, ref attack, ref heal);
         }
 
         // Build compact UI string
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
-        void AddInt(string label, int v)
+        void AddNumber(string label, float v)
         {
             if (v <= 0) return;
             if (sb.Length > 0) sb.Append(", ");
-            sb.Append(label).Append(" +").Append(v);
+            sb.Append(label).Append(" +").Append(FormatStatAmount(v));
         }
 
         void AddSymbolic(string label, int steps)
@@ -421,11 +462,11 @@ public static class MonsterLeveling
             sb.Append(label).Append("+");
         }
 
-        AddInt("HP", hp);
-        AddSymbolic("ATK", atkSteps);
+        AddNumber("HP", hp);
+        AddNumber("ATK", attack);
         AddSymbolic("Special", specialSteps);
-        AddInt("Heal", heal);
-        AddInt("Range", range);
+        AddNumber("Heal", heal);
+        AddNumber("Range", range);
 
         foreach (var line in specialLines)
         {
@@ -434,6 +475,32 @@ public static class MonsterLeveling
         }
 
         return sb.ToString();
+    }
+
+    static void AddRoleMilestoneAmounts(MonsterRole role, int newLevel, ref float hp, ref float attack, ref float heal)
+    {
+        if (!IsRoleMilestoneLevel(newLevel))
+            return;
+
+        switch (role)
+        {
+            case MonsterRole.Attack:
+                attack += AttackRoleMilestoneBonus;
+                break;
+            case MonsterRole.Defense:
+                hp += DefenseRoleMilestoneHpBonus;
+                break;
+            case MonsterRole.Healer:
+                heal += HealerRoleMilestoneHealBonus;
+                break;
+        }
+    }
+
+    static string FormatStatAmount(float value)
+    {
+        return Mathf.Approximately(value, Mathf.Round(value))
+            ? Mathf.RoundToInt(value).ToString(CultureInfo.InvariantCulture)
+            : value.ToString("0.#", CultureInfo.InvariantCulture);
     }
 
     static StatStep[] GetCycleForRole(MonsterRole role)
@@ -491,35 +558,76 @@ public static class MonsterLeveling
 
         for (int newLevel = fromLevel + 1; newLevel <= toLevel; newLevel++)
         {
+            string line;
             if (MonsterPassiveSystem.ReplacesStatUpgrade(data, newLevel))
             {
-                lines.Add("Passive+");
-                continue;
+                line = "Passive+";
             }
-
-            int stepIndex = GetStepIndexForLevel(newLevel, n);
-            var step = cycle[stepIndex];
-
-            switch (step)
+            else
             {
-                case StatStep.Hp:
-                    lines.Add("+ 5 HP");
-                    break;
-                case StatStep.Attack:
-                    lines.Add("ATK+");
-                    break;
-                case StatStep.SpecialGain:
-                    lines.Add("Special+");
-                    break;
-                case StatStep.HealPower:
-                    lines.Add("+ 5 Heal");
-                    break;
-                case StatStep.HealRange:
-                    lines.Add("+ 1 Range");
-                    break;
+                int stepIndex = GetStepIndexForLevel(newLevel, n);
+                var step = cycle[stepIndex];
+                line = GetStatStepLine(step);
             }
+
+            string milestoneLine = GetRoleMilestoneLine(data.role, newLevel);
+            line = CombineStatStepLines(line, milestoneLine);
+
+            if (!string.IsNullOrWhiteSpace(line))
+                lines.Add(line);
         }
 
         return lines;
+    }
+
+    static string GetStatStepLine(StatStep step)
+    {
+        switch (step)
+        {
+            case StatStep.Hp:
+                return "+ 5 HP";
+            case StatStep.Attack:
+                return "ATK+";
+            case StatStep.SpecialGain:
+                return "Special+";
+            case StatStep.HealPower:
+                return "+ 1 Heal";
+            case StatStep.HealRange:
+                return "+ 1 Range";
+            default:
+                return "";
+        }
+    }
+
+    static string GetRoleMilestoneLine(MonsterRole role, int newLevel)
+    {
+        if (!IsRoleMilestoneLevel(newLevel))
+            return "";
+
+        switch (role)
+        {
+            case MonsterRole.Attack:
+                return "+ 0.5 ATK";
+            case MonsterRole.Defense:
+                return "+ 25 HP";
+            case MonsterRole.Healer:
+                return "+ 5 Heal";
+            default:
+                return "";
+        }
+    }
+
+    static string CombineStatStepLines(string first, string second)
+    {
+        bool hasFirst = !string.IsNullOrWhiteSpace(first);
+        bool hasSecond = !string.IsNullOrWhiteSpace(second);
+
+        if (hasFirst && hasSecond)
+            return first + "\n" + second;
+
+        if (hasFirst)
+            return first;
+
+        return hasSecond ? second : "";
     }
 }

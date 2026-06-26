@@ -26031,6 +26031,11 @@ MonoBehaviour:
   spawnJitter: 8
   pulseScale: 1.3
   pulseDuration: 0.18
+  prewarmCount: 32
+  maxActivePopups: 64
+  aggregateBurstDamage: 1
+  burstAggregateSeconds: 0.04
+  burstAggregatePositionRadius: 28
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   fireColor: {r: 1, g: 0.45, b: 0.05, a: 1}
   poisonColor: {r: 0.72, g: 0.25, b: 1, a: 1}
@@ -32043,11 +32048,11 @@ MonoBehaviour:
   transitionFont: {fileID: 11400000, guid: a1470b117e5ec7a4c9c2c4151211f423, type: 2}
   continueButtonPrefab: {fileID: 6826685574233894395, guid: 5e7f2b5277a37d041a57b07dbb619341, type: 3}
   winOneLiners:
-  - Castle cleared. Momentum gained.
-  - Victory looks good on the roster.
-  - One less wall between you and legend.
+  - Castle cleared. On to the next one.
+  - This is definitley going on my next job application.
+  - One less wall between you and legendary status.
   - Hide in your shell little turtles, the horde will crack you open.
-  - Onward before the dust settles.
+  - Easy breezy.
   - GG EZ.
   - If that's the best they've got, this will be a breeze.
   - Watch them flee like scared little turtles.
