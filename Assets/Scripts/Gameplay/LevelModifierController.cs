@@ -243,6 +243,9 @@ public class LevelModifierController : MonoBehaviour
     public bool BlocksManualHorizontalShift => ActiveModifier && ActiveModifier.kind == LevelModifierKind.AutoShift;
     public bool BlocksSpecialUsage => ActiveModifier && ActiveModifier.kind == LevelModifierKind.SpecialLock;
     public bool BlocksSpecialPieceSpawns => ActiveModifier && ActiveModifier.kind == LevelModifierKind.NoSpecialPieces;
+    public bool EnablesPiercingCastleProjectiles => ActiveModifier && ActiveModifier.kind == LevelModifierKind.PiercingShot;
+    public Sprite ActivePiercingCastleProjectileSprite =>
+        EnablesPiercingCastleProjectiles ? ActiveModifier.piercingProjectileSprite : null;
     public bool AppliesAutoMovementGravitySlow => ActiveModifier &&
         (ActiveModifier.kind == LevelModifierKind.AutoRotate || ActiveModifier.kind == LevelModifierKind.AutoShift);
     public float ActiveGravityMultiplier => AppliesAutoMovementGravitySlow ? AutoMovementGravityMultiplier : 1f;
@@ -1402,20 +1405,14 @@ public class LevelModifierController : MonoBehaviour
 
     void MaintainSelectionCursorState()
     {
-        TetrabeastsControls.RefreshActiveInputProfile();
-        bool keyboardMouse = TetrabeastsControls.ActiveInputProfile == TetrabeastsControlProfile.KeyboardMouse;
-        bool hasCustomCursor = _gc && _gc.pauseCursor;
-
-        Cursor.lockState = keyboardMouse ? CursorLockMode.None : CursorLockMode.Locked;
-        Cursor.visible = keyboardMouse && !hasCustomCursor;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = false;
 
         if (_gc && _gc.pauseCursor)
         {
-            _gc.pauseCursor.SetKeepVisibleDuringButtonNavigation(keyboardMouse);
-            _gc.pauseCursor.SetVisible(keyboardMouse);
-
-            if (keyboardMouse)
-                _gc.pauseCursor.SetScale(SettingsStore.LoadCursorScale());
+            _gc.pauseCursor.SetKeepVisibleDuringButtonNavigation(false);
+            _gc.pauseCursor.SetVisible(true);
+            _gc.pauseCursor.SetScale(SettingsStore.LoadCursorScale());
         }
     }
 

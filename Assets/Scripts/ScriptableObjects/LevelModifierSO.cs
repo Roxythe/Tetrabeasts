@@ -18,7 +18,8 @@ public enum LevelModifierKind
     ComboShield,
     NoSpecialPieces,
     HalfHealthStart,
-    SoulLink
+    SoulLink,
+    PiercingShot
 }
 
 [System.Serializable]
@@ -124,4 +125,7 @@ public class LevelModifierSO : ScriptableObject
 
     [Header("Half Health Start")]
     [Range(0.01f, 1f)] public float startingHealthFraction = 0.5f;
+
+    [Header("Piercing Shot")]
+    public Sprite piercingProjectileSprite;
 }

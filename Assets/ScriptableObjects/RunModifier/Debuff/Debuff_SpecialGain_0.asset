@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90562e4e9a0c7934aab92bcb4ad86cca, type: 3}
   m_Name: Debuff_SpecialGain_0
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
-  displayName: All Special Gain Down
-  description: Slightly decrease the amount of special gained from all sources.
-  icon: {fileID: 21300000, guid: fa2870466c816de4dbecf650db64d5f7, type: 3}
+  displayName: Passive Special Drain
+  description: Slightly drains the special gauge over time.
+  icon: {fileID: 21300000, guid: 29e16b7b265afe74a8a66ea7d602d25d, type: 3}
   isBuff: 0
   rarity: 0
-  stat: 5
-  op: 1
-  value: 0.9
+  stat: 6
+  op: 0
+  value: 0.1

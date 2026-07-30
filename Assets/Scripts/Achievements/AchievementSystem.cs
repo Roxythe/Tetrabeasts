@@ -16,8 +16,17 @@ public static class AchievementSystem
         public Compare compare;
     }
 
+    public struct ProgressInfo
+    {
+        public double current;
+        public double target;
+        public float normalized;
+        public bool lowerIsBetter;
+    }
+
     static bool _init;
     static readonly List<Def> _defs = new();
+    static readonly string[] CommanderProgressIds = { "Bosco", "Crono", "Elise", "Grock", "Liktor" };
 
     // ---------- Stat keys ----------
     public static class Stat
@@ -266,6 +275,164 @@ public static class AchievementSystem
     static void Add(string id, Scope scope, string statKey, double target, Compare compare = Compare.Gte)
     {
         _defs.Add(new Def { id = id, scope = scope, statKey = statKey, target = target, compare = compare });
+    }
+
+    public static ProgressInfo GetProgress(string achievementId)
+    {
+        if (!_init) EnsureInitialized();
+
+        bool unlocked = PlayerProgress.I != null && PlayerProgress.I.IsUnlocked(achievementId);
+
+        if (TryGetCompositeProgress(achievementId, unlocked, out var compositeProgress))
+            return compositeProgress;
+
+        Def def = FindDef(achievementId);
+        if (def == null)
+            return BuildProgress(unlocked ? 1.0 : 0.0, 1.0, Compare.Gte, unlocked);
+
+        return BuildProgress(ReadProgressStat(def), def.target, def.compare, unlocked);
+    }
+
+    static Def FindDef(string achievementId)
+    {
+        if (string.IsNullOrEmpty(achievementId))
+            return null;
+
+        for (int i = 0; i < _defs.Count; i++)
+        {
+            if (_defs[i].id == achievementId)
+                return _defs[i];
+        }
+
+        return null;
+    }
+
+    static bool TryGetCompositeProgress(string achievementId, bool unlocked, out ProgressInfo progress)
+    {
+        progress = default;
+
+        if (achievementId == Ach.SpecialsEachChar_20)
+        {
+            progress = BuildProgress(ReadCommanderSpecialProgress(20), CommanderProgressIds.Length * 20.0, Compare.Gte, unlocked);
+            return true;
+        }
+
+        if (achievementId == Ach.SpecialsEachChar_100)
+        {
+            progress = BuildProgress(ReadCommanderSpecialProgress(100), CommanderProgressIds.Length * 100.0, Compare.Gte, unlocked);
+            return true;
+        }
+
+        if (achievementId == Ach.FinalWinAllChars)
+        {
+            progress = BuildProgress(ReadCommanderFinalWinProgress(), CommanderProgressIds.Length, Compare.Gte, unlocked);
+            return true;
+        }
+
+        return false;
+    }
+
+    static double ReadCommanderSpecialProgress(int requiredPerCommander)
+    {
+        if (PlayerProgress.I == null)
+            return 0;
+
+        double total = 0;
+        for (int i = 0; i < CommanderProgressIds.Length; i++)
+        {
+            long uses = PlayerProgress.I.GetLifetimeInt("lt_specials_used_char_" + CommanderProgressIds[i]);
+            total += Math.Min(Math.Max(0, uses), requiredPerCommander);
+        }
+
+        return total;
+    }
+
+    static double ReadCommanderFinalWinProgress()
+    {
+        if (PlayerProgress.I == null)
+            return 0;
+
+        double total = 0;
+        for (int i = 0; i < CommanderProgressIds.Length; i++)
+        {
+            if (PlayerProgress.I.GetLifetimeInt("lt_final_win_char_" + CommanderProgressIds[i]) > 0)
+                total++;
+        }
+
+        return total;
+    }
+
+    static ProgressInfo BuildProgress(double current, double target, Compare compare, bool unlocked)
+    {
+        if (double.IsNaN(current) || double.IsInfinity(current))
+            current = 0;
+
+        if (double.IsNaN(target) || double.IsInfinity(target) || target <= 0)
+            target = 1;
+
+        current = Math.Max(0, current);
+
+        if (unlocked)
+        {
+            if (compare == Compare.Gte && current < target)
+                current = target;
+            else if (compare == Compare.Lte && (current <= 0 || current > target))
+                current = target;
+        }
+
+        float normalized = 0f;
+        if (compare == Compare.Lte)
+            normalized = current <= 0 ? 0f : (current <= target ? 1f : Mathf.Clamp01((float)(target / current)));
+        else
+            normalized = Mathf.Clamp01((float)(current / target));
+
+        if (unlocked)
+            normalized = 1f;
+
+        return new ProgressInfo
+        {
+            current = current,
+            target = target,
+            normalized = normalized,
+            lowerIsBetter = compare == Compare.Lte
+        };
+    }
+
+    static double ReadProgressStat(Def d)
+    {
+        if (PlayerProgress.I == null)
+            return 0;
+
+        switch (d.scope)
+        {
+            case Scope.LifetimeInt:
+                return PlayerProgress.I.GetLifetimeInt(d.statKey);
+            case Scope.LifetimeFloat:
+                return PlayerProgress.I.GetLifetimeFloat(d.statKey);
+            case Scope.RunInt:
+                return Math.Max(PlayerProgress.I.GetRunInt(d.statKey), PlayerProgress.I.GetBestRunInt(d.statKey));
+            case Scope.RunFloat:
+                if (d.compare == Compare.Lte)
+                    return MinPositive(PlayerProgress.I.GetRunFloat(d.statKey), PlayerProgress.I.GetBestRunFloatMin(d.statKey));
+
+                return PlayerProgress.I.GetRunFloat(d.statKey);
+        }
+
+        return 0;
+    }
+
+    static double MinPositive(double a, double b)
+    {
+        bool hasA = a > 0;
+        bool hasB = b > 0;
+
+        if (hasA && hasB)
+            return Math.Min(a, b);
+
+        if (hasA)
+            return a;
+
+        return hasB ? b : 0;
     }
 
     public static void OnStatChanged(string statKey)

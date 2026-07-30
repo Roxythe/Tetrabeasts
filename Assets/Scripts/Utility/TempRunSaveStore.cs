@@ -47,6 +47,8 @@ public static class TempRunSaveStore
         public float enemyProjectileDamageMult = 1f;
         public float enemyProjectileSpeedMult = 1f;
         public float specialGainMult = 1f;
+        public float specialGaugeGainPerSecond = 0f;
+        public float specialGaugeDrainPerSecond = 0f;
         public float specialDrainMult = 1f;
         public float specialBlockChanceAdd = 0f;
         public float pieceGravityMult = 1f;

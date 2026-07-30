@@ -324,7 +324,7 @@ public class GameplayStatsPanelUI : MonoBehaviour
             FormatMultiplier, FormatSignedPercentDelta, higherIsBetter: true,
             sources: SourcesFor(starDifficulty: gc.CurrentStarDifficulty > 0,
                 levelMod: gc.SpecialUsageLockedForStats,
-                runModStats: new[] { RunModStat.MonsterSpecialGainMult, RunModStat.SpecialGainMult }));
+                runModStats: new[] { RunModStat.MonsterSpecialGainMult }));
         AddComparedFloat(_statsContent, "Monster Max HP", gc.monsterMaxHpMult, 1f,
             FormatMultiplier, FormatSignedPercentDelta, higherIsBetter: true,
             sources: SourcesFor(runModStats: new[] { RunModStat.MonsterMaxHpMult }));
@@ -410,11 +410,15 @@ public class GameplayStatsPanelUI : MonoBehaviour
         AddComparedFloat(_statsContent, "Commander Special Gain", gc.EffectiveSpecialGaugeGainMultiplierForStats, 1f,
             FormatMultiplier, FormatSignedPercentDelta, higherIsBetter: true,
             sources: SourcesFor(starDifficulty: gc.CurrentStarDifficulty > 0,
+                levelMod: gc.SpecialUsageLockedForStats));
+        AddComparedFloat(_statsContent, "Special Gauge Gain Per Second", gc.SpecialGaugeGainPerSecondForStats, 0f,
+            FormatPerSecond, FormatSignedPerSecond, higherIsBetter: true,
+            sources: SourcesFor(starDifficulty: gc.CurrentStarDifficulty > 0 && gc.specialGaugeGainPerSecond > Epsilon,
                 levelMod: gc.SpecialUsageLockedForStats,
-                runModStats: new[] { RunModStat.SpecialGainMult }));
-        AddComparedFloat(_statsContent, "Special Drain", gc.specialDrainMult, 1f,
-            FormatMultiplier, FormatSignedPercentDelta, higherIsBetter: false,
-            sources: SourcesFor(runModStats: new[] { RunModStat.SpecialDrainMult }));
+                runModStats: new[] { RunModStat.SpecialGaugeGainPerSecond }));
+        AddComparedFloat(_statsContent, "Special Gauge Drain Per Second", gc.SpecialGaugeDrainPerSecondForStats, 0f,
+            FormatPerSecond, FormatSignedPerSecond, higherIsBetter: false,
+            sources: SourcesFor(runModStats: new[] { RunModStat.SpecialGaugeDrainPerSecond }));
         AddComparedBool(_statsContent, "Next Preview Disabled", gc.disableNextPreview, false, trueIsPositive: false,
             sources: SourcesFor(runModStats: new[] { RunModStat.DisableNextPreview }));
         AddComparedBool(_statsContent, "Landing Hint Disabled", gc.disableLandingHint, false, trueIsPositive: false,
@@ -575,6 +579,12 @@ public class GameplayStatsPanelUI : MonoBehaviour
 
             case LevelModifierKind.SoulLink:
                 AddTextStat(_statsContent, "Monster Damage Sharing", "Active", negativeColor, sources: levelModSource);
+                break;
+
+            case LevelModifierKind.PiercingShot:
+                AddComparedBool(_statsContent, "Enemy Projectiles", true, false, trueIsPositive: false,
+                    displayOverride: "Pierce Monsters", sources: levelModSource);
+                AddTextStat(_statsContent, "Projectile Stops On", "Defense Units", negativeColor, sources: levelModSource);
                 break;
 
             default:
@@ -1509,6 +1519,20 @@ public class GameplayStatsPanelUI : MonoBehaviour
     static string FormatPercent(float value)
     {
         return $"{value * 100f:0.#}%";
+    }
+
+    static string FormatPerSecond(float value)
+    {
+        return $"{FormatNumber(value)}/s";
+    }
+
+    static string FormatSignedPerSecond(float value)
+    {
+        if (Approximately(value, 0f))
+            return "0/s";
+
+        string formatted = FormatNumber(Mathf.Abs(value));
+        return value > 0f ? $"+{formatted}/s" : $"-{formatted}/s";
     }
 
     static string FormatSignedPercentDelta(float value)

@@ -26,6 +26,10 @@ public class RoundRewardUI : MonoBehaviour
     [Range(0.5f, 2.5f)]
     public float bossLevelRarityMultiplier = 1.35f;
 
+    [Tooltip("Slightly amplifies Luck when rolling buff reward rarity.")]
+    [Range(1f, 1.5f)]
+    public float buffLuckRarityInfluenceMultiplier = 1.15f;
+
     [Header("Buff UI")]
     public Transform buffContainer;
     public Button confirmBuffButton;
@@ -86,7 +90,7 @@ public class RoundRewardUI : MonoBehaviour
                  Func<bool> trySpendReroll = null)
     {
         var gc = FindFirstObjectByType<GameController>();
-        float luck = gc ? gc.luck : RunModsStore.Luck;
+        float luck = gc ? gc.EffectiveLuckForStats : RunModsStore.Luck;
         float misfortune = gc ? gc.CurrentMisfortune : RunModsStore.Misfortune;
 
         bool wasBossLevel = gc && gc.LastLevelWasBoss;
@@ -184,7 +188,8 @@ public class RoundRewardUI : MonoBehaviour
 
     List<RunModifierSO> PickBuffRewards()
     {
-        return Pick3UniqueWeighted(_buffPool, _currentLuck, _currentWasBossLevel);
+        float buffLuck = Mathf.Max(0f, _currentLuck) * Mathf.Max(1f, buffLuckRarityInfluenceMultiplier);
+        return Pick3UniqueWeighted(_buffPool, buffLuck, _currentWasBossLevel);
     }
 
     List<RunModifierSO> PickDebuffRewards()

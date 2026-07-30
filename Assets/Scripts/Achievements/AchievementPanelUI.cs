@@ -30,16 +30,27 @@ public class AchievementPanelUI : MonoBehaviour
         Rebuild();
 
         if (PlayerProgress.I != null)
+        {
             PlayerProgress.I.AchievementUnlocked += OnUnlocked;
+            PlayerProgress.I.StatChanged += OnStatChanged;
+        }
     }
 
     void OnDisable()
     {
         if (PlayerProgress.I != null)
+        {
             PlayerProgress.I.AchievementUnlocked -= OnUnlocked;
+            PlayerProgress.I.StatChanged -= OnStatChanged;
+        }
     }
 
     void OnUnlocked(string id)
+    {
+        Rebuild();
+    }
+
+    void OnStatChanged(string key, double value)
     {
         Rebuild();
     }

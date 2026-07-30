@@ -12,8 +12,8 @@ public enum RunModStat
     EnemyCastleHpMult,
 
     // Special
-    SpecialGainMult,
-    SpecialDrainMult,
+    SpecialGaugeGainPerSecond,
+    SpecialGaugeDrainPerSecond,
 
     // Piece / Specials
     SpecialBlockChanceAdd,
@@ -118,12 +118,12 @@ public class RunModifier : RunModifierSO
                 break;
 
             // ---------------- Special ----------------
-            case RunModStat.SpecialGainMult:
-                ApplyFloat(ref gc.specialGainMult);
+            case RunModStat.SpecialGaugeGainPerSecond:
+                ApplyFloat(ref gc.specialGaugeGainPerSecond);
                 break;
 
-            case RunModStat.SpecialDrainMult:
-                ApplyFloat(ref gc.specialDrainMult);
+            case RunModStat.SpecialGaugeDrainPerSecond:
+                ApplyFloat(ref gc.specialGaugeDrainPerSecond);
                 break;
 
             // ---------------- Piece / specials ----------------

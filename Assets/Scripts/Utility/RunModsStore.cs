@@ -11,7 +11,8 @@ public static class RunModsStore
     public static float EnemyProjectileSpeedMult = 1f;
 
     public static float SpecialGainMult = 1f;
-    public static float SpecialDrainMult = 1f;
+    public static float SpecialGaugeGainPerSecond = 0f;
+    public static float SpecialGaugeDrainPerSecond = 0f;
     public static float SpecialBlockChanceAdd = 0f;
 
     public static float PieceGravityMult = 1f;
@@ -53,7 +54,8 @@ public static class RunModsStore
         EnemyProjectileSpeedMult = 1f;
 
         SpecialGainMult = 1f;
-        SpecialDrainMult = 1f;
+        SpecialGaugeGainPerSecond = 0f;
+        SpecialGaugeDrainPerSecond = 0f;
         SpecialBlockChanceAdd = 0f;
 
         PieceGravityMult = 1f;

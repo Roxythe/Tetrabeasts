@@ -397,7 +397,8 @@ public class GameController : MonoBehaviour
     [SerializeField, Min(0f)] float floorEffectDamageIncreasePerLevel = 0.05f;
 
     public float specialGainMult = 1f;             // Gauge gain multiplier
-    public float specialDrainMult = 1f;
+    public float specialGaugeGainPerSecond = 0f;
+    public float specialGaugeDrainPerSecond = 0f;
 
     public float specialBlockChanceAdd = 0f;       // Additive to specialChancePerEnqueue
     public float pieceGravityMult = 1f;            // < 1 = slower falling, > 1 = faster
@@ -515,6 +516,7 @@ public class GameController : MonoBehaviour
     bool levelWon = false;
     bool _environmentRowClearResolving = false;
     private bool winQueued = false;
+    bool _currentRoundWinStatsRecorded = false;
 
     [Header("Combo Scoring")]
     public float comboWindowSeconds = 10f;
@@ -638,6 +640,9 @@ public class GameController : MonoBehaviour
 
     public float MonsterSpecialGaugeGainMultiplierForStats =>
         Mathf.Max(0f, monsterSpecialGainMult) * EffectiveSpecialGaugeGainMultiplierForStats;
+    public float SpecialGaugeGainPerSecondForStats =>
+        Mathf.Max(0f, specialGaugeGainPerSecond) * EffectiveSpecialGaugeGainMultiplierForStats;
+    public float SpecialGaugeDrainPerSecondForStats => GetActiveSpecialGaugeDrainPerSecond();
 
     private CastleData currentCastleData;
 
@@ -1025,7 +1030,8 @@ public class GameController : MonoBehaviour
         RunModsStore.EnemyProjectileDamageMult = snapshot.enemyProjectileDamageMult;
         RunModsStore.EnemyProjectileSpeedMult = snapshot.enemyProjectileSpeedMult;
         RunModsStore.SpecialGainMult = snapshot.specialGainMult;
-        RunModsStore.SpecialDrainMult = snapshot.specialDrainMult;
+        RunModsStore.SpecialGaugeGainPerSecond = snapshot.specialGaugeGainPerSecond;
+        RunModsStore.SpecialGaugeDrainPerSecond = snapshot.specialGaugeDrainPerSecond;
         RunModsStore.SpecialBlockChanceAdd = snapshot.specialBlockChanceAdd;
         RunModsStore.PieceGravityMult = snapshot.pieceGravityMult;
         RunModsStore.FallRampRateMult = snapshot.fallRampRateMult;
@@ -1408,7 +1414,10 @@ public class GameController : MonoBehaviour
             ActivateSpecial();
 
         if (IsRoundActive && !IsTutorialPromptActive)
+        {
             RunSummaryStats.AddActiveTime(Time.deltaTime);
+            TickPassiveSpecialGauge(Time.deltaTime);
+        }
 
         // Periodic castle projectile
         if (IsRoundActive && gameBoard)
@@ -1601,7 +1610,8 @@ public class GameController : MonoBehaviour
         enemyProjectileSpeedMult = RunModsStore.EnemyProjectileSpeedMult;
 
         specialGainMult = RunModsStore.SpecialGainMult;
-        specialDrainMult = RunModsStore.SpecialDrainMult;
+        specialGaugeGainPerSecond = RunModsStore.SpecialGaugeGainPerSecond;
+        specialGaugeDrainPerSecond = RunModsStore.SpecialGaugeDrainPerSecond;
         specialBlockChanceAdd = RunModsStore.SpecialBlockChanceAdd;
 
         pieceGravityMult = RunModsStore.PieceGravityMult;
@@ -1637,6 +1647,42 @@ public class GameController : MonoBehaviour
     float GetEffectiveSpecialGaugeGainMultiplier()
     {
         return Mathf.Max(0f, specialGainMult * _starDifficultyModifiers.specialGaugeGainMultiplier);
+    }
+
+    void TickPassiveSpecialGauge(float deltaTime)
+    {
+        if (isPaused || deltaTime <= 0f || specialGaugeMax <= 0f)
+            return;
+
+        float gainPerSecond = Mathf.Max(0f, specialGaugeGainPerSecond);
+        if (gainPerSecond > 0f)
+        {
+            if (levelModifierController)
+                gainPerSecond = Mathf.Max(0f, levelModifierController.ModifySpecialGaugeGain(gainPerSecond));
+
+            gainPerSecond *= GetEffectiveSpecialGaugeGainMultiplier();
+        }
+
+        float drainPerSecond = GetActiveSpecialGaugeDrainPerSecond();
+        float delta = (gainPerSecond - drainPerSecond) * deltaTime;
+        if (Mathf.Abs(delta) <= 0.0001f)
+            return;
+
+        float nextGauge = Mathf.Clamp(specialGauge + delta, 0f, specialGaugeMax);
+        if (Mathf.Abs(nextGauge - specialGauge) <= 0.0001f)
+            return;
+
+        SetSpecialGaugeImmediate(nextGauge, playGaugeFullSFX: delta > 0f);
+    }
+
+    float GetActiveSpecialGaugeDrainPerSecond()
+    {
+        return IsSpecialGaugeFullForDrainPause() ? 0f : Mathf.Max(0f, specialGaugeDrainPerSecond);
+    }
+
+    bool IsSpecialGaugeFullForDrainPause()
+    {
+        return specialGaugeMax > 0f && specialGauge >= (specialGaugeMax - 0.001f);
     }
 
     int GetScaledScorePoints(int points)
@@ -1906,7 +1952,8 @@ public class GameController : MonoBehaviour
                 enemyProjectileDamageMult = enemyProjectileDamageMult,
                 enemyProjectileSpeedMult = enemyProjectileSpeedMult,
                 specialGainMult = specialGainMult,
-                specialDrainMult = specialDrainMult,
+                specialGaugeGainPerSecond = specialGaugeGainPerSecond,
+                specialGaugeDrainPerSecond = specialGaugeDrainPerSecond,
                 specialBlockChanceAdd = specialBlockChanceAdd,
                 pieceGravityMult = pieceGravityMult,
                 fallRampRateMult = fallRampRateMult,
@@ -2859,6 +2906,7 @@ public class GameController : MonoBehaviour
     {
         levelWon = false;
         winQueued = false;
+        _currentRoundWinStatsRecorded = false;
         ResetBossGravityVisuals();
 
         ResetCombo();
@@ -2931,10 +2979,33 @@ public class GameController : MonoBehaviour
     {
         if (gameOver || levelWon) return;
         levelWon = true;
+        TrackCurrentRoundWinStats();
         _claimedRoundWinOneLiner = ClaimRoundTransitionOneLiner(RoundTransitionVariant.Win);
         CleanupRoundTransientGameplayObjects();
 
         StartCoroutine(CoHandleCastleDestroyedVictory());
+    }
+
+    void TrackCurrentRoundWinStats()
+    {
+        if (_currentRoundWinStatsRecorded)
+            return;
+
+        var playerProgress = PlayerProgress.I;
+        if (playerProgress == null)
+            return;
+
+        _currentRoundWinStatsRecorded = true;
+
+        playerProgress.AddLifetimeInt(AchievementSystem.Stat.LevelsWon, 1);
+        playerProgress.AddRunInt(AchievementSystem.Stat.RunLevelsWon, 1);
+
+        playerProgress.SetRunBestFloatMin(AchievementSystem.Stat.RunBestLevelWinSeconds, _levelTimer);
+        playerProgress.SetRunBestFloatMin(AchievementSystem.Stat.RunBestLevelSeconds, _levelTimer);
+
+        int maxLivesNow = EffectiveMaxUnitLives;
+        if (unitLives >= maxLivesNow)
+            playerProgress.AddLifetimeInt(AchievementSystem.Stat.PerfectLevelWins, 1);
     }
 
     IEnumerator CoHandleCastleDestroyedVictory()
@@ -3132,23 +3203,11 @@ public class GameController : MonoBehaviour
 
     void ContinueAfterRoundWinRewards(bool closeXpAfterRewardOpen = false)
     {
+        TrackCurrentRoundWinStats();
+
         currentLevel++;
         levelModifierController?.GrantRerollForCompletedLevel(currentLevel);
         _roundRewardRerollsAvailable += Mathf.Max(0, rewardRerollsGrantedPerCompletedLevel);
-
-        // Track level wins for achievements
-        if (PlayerProgress.I)
-        {
-            PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.LevelsWon, 1);
-            PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunLevelsWon, 1);
-
-            PlayerProgress.I.SetRunBestFloatMin(AchievementSystem.Stat.RunBestLevelWinSeconds, _levelTimer);
-            PlayerProgress.I.SetRunBestFloatMin(AchievementSystem.Stat.RunBestLevelSeconds, _levelTimer);
-
-            int maxLivesNow = EffectiveMaxUnitLives;
-            if (unitLives >= maxLivesNow)
-                PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.PerfectLevelWins, 1);
-        }
 
         RefreshActiveMonsterPassives(applyStartingReserveDelta: true);
 
@@ -3243,7 +3302,8 @@ public class GameController : MonoBehaviour
         RunModsStore.EnemyProjectileSpeedMult = enemyProjectileSpeedMult;
 
         RunModsStore.SpecialGainMult = specialGainMult;
-        RunModsStore.SpecialDrainMult = specialDrainMult;
+        RunModsStore.SpecialGaugeGainPerSecond = specialGaugeGainPerSecond;
+        RunModsStore.SpecialGaugeDrainPerSecond = specialGaugeDrainPerSecond;
         RunModsStore.SpecialBlockChanceAdd = specialBlockChanceAdd;
 
         RunModsStore.PieceGravityMult = pieceGravityMult;
@@ -3594,21 +3654,10 @@ public class GameController : MonoBehaviour
 
     void ApplyFinalLevelRoundWinBookkeeping()
     {
+        TrackCurrentRoundWinStats();
+
         currentLevel++;
         levelModifierController?.GrantRerollForCompletedLevel(currentLevel);
-
-        if (PlayerProgress.I)
-        {
-            PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.LevelsWon, 1);
-            PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunLevelsWon, 1);
-
-            PlayerProgress.I.SetRunBestFloatMin(AchievementSystem.Stat.RunBestLevelWinSeconds, _levelTimer);
-            PlayerProgress.I.SetRunBestFloatMin(AchievementSystem.Stat.RunBestLevelSeconds, _levelTimer);
-
-            int maxLivesNow = EffectiveMaxUnitLives;
-            if (unitLives >= maxLivesNow)
-                PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.PerfectLevelWins, 1);
-        }
 
         RefreshActiveMonsterPassives(applyStartingReserveDelta: true);
 
@@ -4712,7 +4761,19 @@ public class GameController : MonoBehaviour
                 AudioManager.I.PlaySFX(fireClip);
         }
 
-        SpawnCastleDownProjectile(castleProjectileSprite, start, end, col);
+        SpawnCastleDownProjectile(GetCurrentCastleProjectileSprite(), start, end, col);
+    }
+
+    Sprite GetCurrentCastleProjectileSprite()
+    {
+        if (levelModifierController)
+        {
+            Sprite overrideSprite = levelModifierController.ActivePiercingCastleProjectileSprite;
+            if (overrideSprite)
+                return overrideSprite;
+        }
+
+        return castleProjectileSprite;
     }
 
     void SpawnCastleDownProjectile(Sprite sprite, Vector2 start, Vector2 end, int column)
@@ -4735,6 +4796,13 @@ public class GameController : MonoBehaviour
     System.Collections.IEnumerator CastleDownshotCo(RectTransform rt, Vector2 end, int column)
     {
         float speed = GetCurrentCastleProjectileSpeed();
+        bool piercing = levelModifierController && levelModifierController.EnablesPiercingCastleProjectiles;
+        if (piercing)
+        {
+            yield return CastlePiercingDownshotCo(rt, end, column, speed);
+            yield break;
+        }
+
         while (rt && (rt.anchoredPosition - end).sqrMagnitude > 4f)
         {
             Vector2 previous = rt.anchoredPosition;
@@ -4755,8 +4823,44 @@ public class GameController : MonoBehaviour
         if (rt) Destroy(rt.gameObject);
     }
 
+    System.Collections.IEnumerator CastlePiercingDownshotCo(RectTransform rt, Vector2 end, int column, float speed)
+    {
+        var hitCells = new HashSet<Vector2Int>();
+
+        while (rt && (rt.anchoredPosition - end).sqrMagnitude > 4f)
+        {
+            Vector2 previous = rt.anchoredPosition;
+            rt.anchoredPosition = Vector2.MoveTowards(rt.anchoredPosition, end, speed * Time.deltaTime);
+
+            while (TryGetCastleDownshotImpactCell(column, previous, rt.anchoredPosition,
+                       out var hitCell, out bool damageMonster, hitCells, ignoreObstacles: true))
+            {
+                hitCells.Add(hitCell);
+                bool stopOnHit = ResolveCastleDownshotImpact(hitCell, damageMonster, forceMonsterHitSfx: true);
+
+                if (stopOnHit || levelWon || gameOver)
+                {
+                    if (rt)
+                    {
+                        if (gameBoard)
+                            rt.anchoredPosition = BoardLocalToProjectileRoot(gameBoard.CellToAnchoredPos(hitCell));
+
+                        Destroy(rt.gameObject);
+                    }
+
+                    yield break;
+                }
+            }
+
+            yield return null;
+        }
+
+        if (rt) Destroy(rt.gameObject);
+    }
+
     bool TryGetCastleDownshotImpactCell(int column, Vector2 previousRootPos, Vector2 currentRootPos,
-                                        out Vector2Int hitCell, out bool damageMonster)
+                                        out Vector2Int hitCell, out bool damageMonster,
+                                        HashSet<Vector2Int> ignoredCells = null, bool ignoreObstacles = false)
     {
         hitCell = default;
         damageMonster = false;
@@ -4773,6 +4877,9 @@ public class GameController : MonoBehaviour
         for (int y = gameBoard.height - 1; y >= 0; y--)
         {
             var c = new Vector2Int(column, y);
+            if (ignoredCells != null && ignoredCells.Contains(c))
+                continue;
+
             float centerY = gameBoard.CellToAnchoredPos(c).y;
             float cellTop = centerY + halfCell;
             float cellBottom = centerY - halfCell;
@@ -4780,7 +4887,7 @@ public class GameController : MonoBehaviour
             if (sweepTop < cellBottom || sweepBottom > cellTop)
                 continue;
 
-            if (gameBoard.HasObstacle(c))
+            if (!ignoreObstacles && gameBoard.HasObstacle(c))
             {
                 hitCell = c;
                 return true;
@@ -4817,20 +4924,29 @@ public class GameController : MonoBehaviour
             : LocalTo(root, gameBoard.gridRoot, anchored);
     }
 
-    void ResolveCastleDownshotImpact(Vector2Int hitCell, bool damageMonster)
+    bool ResolveCastleDownshotImpact(Vector2Int hitCell, bool damageMonster, bool forceMonsterHitSfx = false)
     {
         if (!gameBoard || levelWon || gameOver)
-            return;
+            return true;
 
         AudioClip hitClip = null;
         if (currentCastleData)
             hitClip = currentCastleData.PickRandom(currentCastleData.sfxProjectileHitTileClips,
                                                    currentCastleData.sfxProjectileHitTile);
 
+        bool hitDefensiveMonster = false;
+
         if (damageMonster)
         {
+            if (gameBoard.TryGetMonster(hitCell, out var beforeHit) && beforeHit.data)
+                hitDefensiveMonster = beforeHit.data.role == MonsterRole.Defense;
+
+            AudioClip damageTileSfx = forceMonsterHitSfx ? null : hitClip;
             bool aliveAfter = gameBoard.DamageTile(hitCell, castleProjectileDamage,
-                                                   Board.DamageSource.CastleProjectile, hitClip);
+                                                   Board.DamageSource.CastleProjectile, damageTileSfx);
+
+            if (forceMonsterHitSfx && AudioManager.I && hitClip)
+                AudioManager.I.PlaySFX(hitClip);
 
             if (gameBoard.TryGetMonster(hitCell, out var inst) && inst.data)
                 Debug.Log($"Hit {inst.data.name} at {hitCell}: {inst.hp}/{inst.data.maxHealth}"
@@ -4840,6 +4956,8 @@ public class GameController : MonoBehaviour
         {
             AudioManager.I.PlaySFX(hitClip);
         }
+
+        return hitDefensiveMonster;
     }
 
     // ================ Global Immunity System ===================

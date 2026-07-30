@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90562e4e9a0c7934aab92bcb4ad86cca, type: 3}
   m_Name: Buff_SpecialGain_2
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
-  displayName: All Special Gain Up
-  description: Moderatley increase the amount of special gained from all sources.
-  icon: {fileID: 21300000, guid: 0738f7787076a40469df3ed467eac09d, type: 3}
+  displayName: Passive Special Gain
+  description: Moderately charges the special gauge over time.
+  icon: {fileID: 21300000, guid: ecef9a7adb0737d4b940c28732447aad, type: 3}
   isBuff: 1
   rarity: 2
   stat: 5
-  op: 1
-  value: 1.75
+  op: 0
+  value: 0.3

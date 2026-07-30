@@ -44,7 +44,6 @@ public class UICursorController : MonoBehaviour
     float _scale = 1f;
     bool externalVisible = true;
     bool inputVisible = true;
-    bool keepVisibleDuringButtonNavigation;
     CanvasGroup cursorCanvasGroup;
     Vector2 virtualScreenPosition;
     GameObject virtualPointerTarget;
@@ -108,6 +107,8 @@ public class UICursorController : MonoBehaviour
         bool wasInputHidden = !inputVisible;
         bool useScreenOverrideThisFrame = false;
         bool mouseUsed = WasMouseUsedThisFrame();
+        bool keyboardButtonUsed = WasKeyboardButtonPressedThisFrame();
+        bool gamepadButtonUsed = WasGamepadControlButtonPressedThisFrame();
         Vector2 stick = ReadGamepadCursorStick();
         bool virtualCursorUsed = allowGamepadCursor && stick.sqrMagnitude >= gamepadCursorDeadzone * gamepadCursorDeadzone;
         bool buttonNavigationUsed = hideWhenButtonNavigating &&
@@ -132,6 +133,12 @@ public class UICursorController : MonoBehaviour
                 virtualScreenPosition = Input.mousePosition;
             }
         }
+        else if (keyboardButtonUsed || gamepadButtonUsed)
+        {
+            ActivateButtonNavigationTargetSource();
+            inputVisible = false;
+            ClearVirtualPointerTarget();
+        }
         else if (virtualCursorUsed)
         {
             Vector2 selectedCenter = default;
@@ -154,7 +161,7 @@ public class UICursorController : MonoBehaviour
         else if (buttonNavigationUsed)
         {
             ActivateButtonNavigationTargetSource();
-            inputVisible = keepVisibleDuringButtonNavigation;
+            inputVisible = false;
             ClearVirtualPointerTarget();
         }
 
@@ -196,20 +203,18 @@ public class UICursorController : MonoBehaviour
     {
         externalVisible = visible;
 
-        if (visible)
-            inputVisible = true;
-        else
+        if (!visible)
+        {
+            inputVisible = false;
             ClearVirtualPointerTarget();
+        }
 
         ApplyCursorVisibility();
     }
 
     public void SetKeepVisibleDuringButtonNavigation(bool keepVisible)
     {
-        keepVisibleDuringButtonNavigation = keepVisible;
-
-        if (keepVisible && externalVisible)
-            inputVisible = true;
+        _ = keepVisible;
 
         ApplyCursorVisibility();
     }
@@ -342,6 +347,77 @@ public class UICursorController : MonoBehaviour
 #endif
 
         return used;
+    }
+
+    static bool WasKeyboardButtonPressedThisFrame()
+    {
+#if ENABLE_INPUT_SYSTEM
+        var keyboard = Keyboard.current;
+        if (keyboard != null && keyboard.anyKey.wasPressedThisFrame)
+            return true;
+#endif
+
+#if ENABLE_LEGACY_INPUT_MANAGER
+        if (Input.anyKeyDown &&
+            !Input.GetMouseButtonDown(0) &&
+            !Input.GetMouseButtonDown(1) &&
+            !Input.GetMouseButtonDown(2) &&
+            !WasLegacyGamepadButtonPressedThisFrame())
+            return true;
+#endif
+
+        return false;
+    }
+
+    static bool WasGamepadControlButtonPressedThisFrame()
+    {
+#if ENABLE_INPUT_SYSTEM
+        if (TetrabeastsControls.TryGetActiveGamepad(out var gamepad))
+        {
+            try
+            {
+                return gamepad.buttonSouth.wasPressedThisFrame ||
+                    gamepad.buttonEast.wasPressedThisFrame ||
+                    gamepad.buttonWest.wasPressedThisFrame ||
+                    gamepad.buttonNorth.wasPressedThisFrame ||
+                    gamepad.leftShoulder.wasPressedThisFrame ||
+                    gamepad.rightShoulder.wasPressedThisFrame ||
+                    gamepad.leftTrigger.wasPressedThisFrame ||
+                    gamepad.rightTrigger.wasPressedThisFrame ||
+                    gamepad.startButton.wasPressedThisFrame ||
+                    gamepad.selectButton.wasPressedThisFrame ||
+                    gamepad.leftStickButton.wasPressedThisFrame ||
+                    gamepad.rightStickButton.wasPressedThisFrame ||
+                    gamepad.dpad.left.wasPressedThisFrame ||
+                    gamepad.dpad.right.wasPressedThisFrame ||
+                    gamepad.dpad.down.wasPressedThisFrame ||
+                    gamepad.dpad.up.wasPressedThisFrame;
+            }
+            catch (System.InvalidOperationException)
+            {
+            }
+        }
+#endif
+
+#if ENABLE_LEGACY_INPUT_MANAGER
+        if (WasLegacyGamepadButtonPressedThisFrame())
+            return true;
+#endif
+
+        return false;
+    }
+
+    static bool WasLegacyGamepadButtonPressedThisFrame()
+    {
+#if ENABLE_LEGACY_INPUT_MANAGER
+        for (int i = 0; i <= 19; i++)
+        {
+            if (Input.GetKeyDown((KeyCode)((int)KeyCode.JoystickButton0 + i)))
+                return true;
+        }
+#endif
+
+        return false;
     }
 
     static void ActivateMousePointerTargetSource()
