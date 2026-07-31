@@ -6031,6 +6031,7 @@ MonoBehaviour:
   debuffPanel: {fileID: 1121565957}
   normalLevelRarityMultiplier: 0.66
   bossLevelRarityMultiplier: 1.33
+  buffLuckRarityInfluenceMultiplier: 1.15
   buffContainer: {fileID: 686597565}
   confirmBuffButton: {fileID: 277598729}
   buffRerollButton: {fileID: 578664764}
@@ -29958,7 +29959,8 @@ MonoBehaviour:
   enemyCastleHpMult: 1
   floorEffectDamageIncreasePerLevel: 0.05
   specialGainMult: 1
-  specialDrainMult: 1
+  specialGaugeGainPerSecond: 0
+  specialGaugeDrainPerSecond: 0
   specialBlockChanceAdd: 0
   pieceGravityMult: 1
   fallRampRateMult: 1

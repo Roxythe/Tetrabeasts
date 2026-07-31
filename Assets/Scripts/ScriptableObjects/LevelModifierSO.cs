@@ -19,7 +19,8 @@ public enum LevelModifierKind
     NoSpecialPieces,
     HalfHealthStart,
     SoulLink,
-    PiercingShot
+    PiercingShot,
+    Disarray
 }
 
 [System.Serializable]
@@ -128,4 +129,8 @@ public class LevelModifierSO : ScriptableObject
 
     [Header("Piercing Shot")]
     public Sprite piercingProjectileSprite;
+
+    [Header("Disarray")]
+    [Range(0f, 1f)] public float disarrayTriminoChance = 0.15f;
+    [Range(0f, 1f)] public float disarrayPentaminoChance = 0.15f;
 }

@@ -587,6 +587,13 @@ public class GameplayStatsPanelUI : MonoBehaviour
                 AddTextStat(_statsContent, "Projectile Stops On", "Defense Units", negativeColor, sources: levelModSource);
                 break;
 
+            case LevelModifierKind.Disarray:
+                AddComparedFloat(_statsContent, "Trimino Spawn Chance", modifier.disarrayTriminoChance, 0f, FormatPercent,
+                    FormatSignedPercentDelta, false, forceNegative: true, sources: levelModSource);
+                AddComparedFloat(_statsContent, "Pentamino Spawn Chance", modifier.disarrayPentaminoChance, 0f, FormatPercent,
+                    FormatSignedPercentDelta, false, forceNegative: true, sources: levelModSource);
+                break;
+
             default:
                 AddTextStat(_statsContent, "Effect", modifier.description, negativeColor, sources: levelModSource);
                 break;

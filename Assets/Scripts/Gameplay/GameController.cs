@@ -18,6 +18,13 @@ public class GameController : MonoBehaviour
         PlayerAbility
     }
 
+    enum DisarrayMutationKind
+    {
+        None,
+        Trimino,
+        Pentamino
+    }
+
     public Board gameBoard;
     public Piece piece;
     public Button restartButton;
@@ -180,7 +187,15 @@ public class GameController : MonoBehaviour
 
     [Header("Monsters")]
     public MonsterData[] fallbackMonsters; // 2 defaults, set in Inspector
+    readonly List<TetrominoData> generatedDisarrayPieces = new();
     readonly Queue<MonsterData[]> monstersBag = new(); // Parallel to 'bag'
+    static readonly Vector2Int[] DisarrayDirections =
+    {
+        Vector2Int.left,
+        Vector2Int.right,
+        Vector2Int.up,
+        Vector2Int.down
+    };
 
     [Header("Currency")]
     public CurrencyUI currencyUI;          // Drag your Currency prefab instance in GameplayScene
@@ -1514,6 +1529,7 @@ public class GameController : MonoBehaviour
     void OnDestroy()
     {
         ClearPrewarmedSpecialAbilityPopup();
+        ClearGeneratedDisarrayPieces();
 
         SteamInputService.ControllerDisconnected -= HandleControllerDisconnected;
         SteamPlatformService.OverlayActiveChanged -= HandleSteamOverlayActiveChanged;
@@ -1854,6 +1870,7 @@ public class GameController : MonoBehaviour
 
         bag.Clear();
         monstersBag.Clear();
+        ClearGeneratedDisarrayPieces();
 
         bool roundRewardHiddenByLevelModifierPanel = false;
         void HideRoundRewardPanelAfterLevelModifierPanelShown()
@@ -2436,6 +2453,9 @@ public class GameController : MonoBehaviour
                 }
             }
 
+            if (use && use.special == SpecialType.None)
+                use = CreateDisarrayVariantIfNeeded(use);
+
             bag.Enqueue(use); // Enqueue selected piece
 
             // Enqueue monsters array in parallel
@@ -2477,6 +2497,169 @@ public class GameController : MonoBehaviour
                 monstersBag.Enqueue(System.Array.Empty<MonsterData>());
             }
         }
+    }
+
+    TetrominoData CreateDisarrayVariantIfNeeded(TetrominoData source)
+    {
+        if (!source || source.special != SpecialType.None || source.cells == null || source.cells.Length != 4)
+            return source;
+
+        LevelModifierSO modifier = levelModifierController ? levelModifierController.ActiveModifier : null;
+        if (!modifier || modifier.kind != LevelModifierKind.Disarray)
+            return source;
+
+        var mutation = RollDisarrayMutation(modifier);
+        if (mutation == DisarrayMutationKind.None)
+            return source;
+
+        if (!TryBuildDisarrayCells(source.cells, mutation, out var mutatedCells))
+            return source;
+
+        var mutated = ScriptableObject.CreateInstance<TetrominoData>();
+        mutated.hideFlags = HideFlags.DontSave;
+        mutated.name = string.IsNullOrEmpty(source.name)
+            ? $"Disarray_{mutation}"
+            : $"{source.name}_{mutation}";
+        mutated.id = string.IsNullOrEmpty(source.id)
+            ? mutated.name
+            : $"{source.id}_{mutation}";
+        mutated.color = source.color;
+        mutated.backgroundImage = source.backgroundImage;
+        mutated.cells = mutatedCells;
+        mutated.special = SpecialType.None;
+        mutated.specialSprite = null;
+        mutated.spawnWeight = source.spawnWeight;
+        mutated.specialFlashSprite = null;
+        mutated.flashOnlyOccupied = source.flashOnlyOccupied;
+        mutated.specialSFX = null;
+        mutated.slowGravityMultiplier = source.slowGravityMultiplier;
+        mutated.slowGravityRampRateMultiplier = source.slowGravityRampRateMultiplier;
+
+        generatedDisarrayPieces.Add(mutated);
+        return mutated;
+    }
+
+    DisarrayMutationKind RollDisarrayMutation(LevelModifierSO modifier)
+    {
+        float triminoChance = Mathf.Clamp01(modifier.disarrayTriminoChance);
+        float pentaminoChance = Mathf.Clamp01(modifier.disarrayPentaminoChance);
+        float roll = Random.value;
+
+        if (roll < triminoChance)
+            return DisarrayMutationKind.Trimino;
+
+        if (roll < triminoChance + pentaminoChance)
+            return DisarrayMutationKind.Pentamino;
+
+        return DisarrayMutationKind.None;
+    }
+
+    bool TryBuildDisarrayCells(Vector2Int[] sourceCells, DisarrayMutationKind mutation, out Vector2Int[] mutatedCells)
+    {
+        mutatedCells = null;
+
+        var sourceSet = new HashSet<Vector2Int>(sourceCells);
+        if (sourceSet.Count != sourceCells.Length)
+            return false;
+
+        if (mutation == DisarrayMutationKind.Trimino)
+            return TryBuildTriminoCells(sourceCells, out mutatedCells);
+
+        if (mutation == DisarrayMutationKind.Pentamino)
+            return TryBuildPentaminoCells(sourceCells, sourceSet, out mutatedCells);
+
+        return false;
+    }
+
+    bool TryBuildTriminoCells(Vector2Int[] sourceCells, out Vector2Int[] mutatedCells)
+    {
+        mutatedCells = null;
+        var candidates = new List<Vector2Int[]>();
+
+        for (int removeIndex = 0; removeIndex < sourceCells.Length; removeIndex++)
+        {
+            var cells = new Vector2Int[sourceCells.Length - 1];
+            int write = 0;
+            for (int i = 0; i < sourceCells.Length; i++)
+            {
+                if (i == removeIndex)
+                    continue;
+
+                cells[write++] = sourceCells[i];
+            }
+
+            if (CellsAreConnected(cells))
+                candidates.Add(cells);
+        }
+
+        if (candidates.Count == 0)
+            return false;
+
+        mutatedCells = candidates[Random.Range(0, candidates.Count)];
+        return true;
+    }
+
+    bool TryBuildPentaminoCells(Vector2Int[] sourceCells, HashSet<Vector2Int> sourceSet, out Vector2Int[] mutatedCells)
+    {
+        mutatedCells = null;
+        var additions = new List<Vector2Int>();
+
+        for (int i = 0; i < sourceCells.Length; i++)
+        {
+            for (int d = 0; d < DisarrayDirections.Length; d++)
+            {
+                Vector2Int candidate = sourceCells[i] + DisarrayDirections[d];
+                if (sourceSet.Contains(candidate) || additions.Contains(candidate))
+                    continue;
+
+                additions.Add(candidate);
+            }
+        }
+
+        if (additions.Count == 0)
+            return false;
+
+        mutatedCells = new Vector2Int[sourceCells.Length + 1];
+        System.Array.Copy(sourceCells, mutatedCells, sourceCells.Length);
+        mutatedCells[mutatedCells.Length - 1] = additions[Random.Range(0, additions.Count)];
+        return true;
+    }
+
+    static bool CellsAreConnected(IReadOnlyList<Vector2Int> cells)
+    {
+        if (cells == null || cells.Count == 0)
+            return false;
+
+        var remaining = new HashSet<Vector2Int>(cells);
+        var frontier = new Queue<Vector2Int>();
+        frontier.Enqueue(cells[0]);
+        remaining.Remove(cells[0]);
+
+        while (frontier.Count > 0)
+        {
+            Vector2Int cell = frontier.Dequeue();
+            for (int i = 0; i < DisarrayDirections.Length; i++)
+            {
+                Vector2Int neighbor = cell + DisarrayDirections[i];
+                if (!remaining.Remove(neighbor))
+                    continue;
+
+                frontier.Enqueue(neighbor);
+            }
+        }
+
+        return remaining.Count == 0;
+    }
+
+    void ClearGeneratedDisarrayPieces()
+    {
+        for (int i = 0; i < generatedDisarrayPieces.Count; i++)
+        {
+            if (generatedDisarrayPieces[i])
+                Destroy(generatedDisarrayPieces[i]);
+        }
+
+        generatedDisarrayPieces.Clear();
     }
 
     public void OnPieceLocked(int rowsCleared, List<Vector2Int> removedCells, int damageFromMonsters,
