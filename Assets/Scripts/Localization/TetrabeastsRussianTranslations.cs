@@ -1113,8 +1113,8 @@ public static class TetrabeastsRussianTranslations
         Add(text, "Units", "Бойцы");
         Add(text, "Health", "Здоровье");
         Add(text, "Level {0}", "Уровень {0}");
-        Add(text, "{0} of {1} {2} discovered. Total codex unlocked {3}%",
-            "Открыто {0} из {1} {2}. Всего кодекса открыто: {3}%");
+        Add(text, "{0} of {1} {2} discovered ({3}%)",
+            "Открыто {0} из {1} {2} ({3}%)");
         Add(text, "Buffs", "Усиления");
         Add(text, "Debuffs", "Ослабления");
         Add(text, "Level Modifiers", "Модификаторы уровня");

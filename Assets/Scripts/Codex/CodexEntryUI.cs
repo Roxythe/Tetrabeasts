@@ -1,9 +1,30 @@
 using TMPro;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CodexEntryUI : MonoBehaviour
 {
+    static readonly Regex LeadingIntensityRegex = new Regex(
+        @"^\s*(?:slightly|modestly|moderately|moderatley|greatly|significantly|massively|massivley)\s+",
+        RegexOptions.IgnoreCase);
+    static readonly Regex MultiplierVerbRegex = new Regex(
+        @"^\s*(?:double|doubles|triple|triples|quadruple|quadruples|quintuple|quintuples|qunituple|qunituples)\b",
+        RegexOptions.IgnoreCase);
+    static readonly Regex LeadingDecreaseSynonymRegex = new Regex(
+        @"^\s*(?:reduce|reduces)\b",
+        RegexOptions.IgnoreCase);
+    static readonly Regex LeadingIncreaseInfinitiveRegex = new Regex(
+        @"^\s*(?:increase|incecrease|incecreases)\b",
+        RegexOptions.IgnoreCase);
+    static readonly Regex LeadingDecreaseInfinitiveRegex = new Regex(
+        @"^\s*decrease\b",
+        RegexOptions.IgnoreCase);
+    static readonly Regex NumericAmountSuffixRegex = new Regex(
+        @"\s+by\s+\d+(?:\.\d+)?%?(?=\s*[.!?]?$)",
+        RegexOptions.IgnoreCase);
+    static readonly Regex RepeatedWhitespaceRegex = new Regex(@"\s{2,}");
+
     [Header("Refs")]
     [SerializeField] Image backgroundImage;
     [SerializeField] Image iconImage;
@@ -61,6 +82,8 @@ public class CodexEntryUI : MonoBehaviour
         string displayDescription = unlocked
             ? TetrabeastsLocalization.LocalizeText(description ?? string.Empty)
             : TetrabeastsLocalization.LocalizeText("Modifier not yet discovered.");
+        if (unlocked && IsRunModifierCategory(category))
+            displayDescription = BuildGenericRunModifierDescription(displayDescription);
 
         if (titleText)
             titleText.text = displayTitle;
@@ -84,5 +107,39 @@ public class CodexEntryUI : MonoBehaviour
             EntryCategory.LevelModifier => levelModifierBackgroundColor,
             _ => notFoundBackgroundColor
         };
+    }
+
+    static bool IsRunModifierCategory(EntryCategory category)
+    {
+        return category == EntryCategory.RunBuff || category == EntryCategory.RunDebuff;
+    }
+
+    static string BuildGenericRunModifierDescription(string description)
+    {
+        if (string.IsNullOrWhiteSpace(description))
+            return description ?? string.Empty;
+
+        string text = description.Trim();
+        text = LeadingIntensityRegex.Replace(text, string.Empty);
+        text = MultiplierVerbRegex.Replace(text, "Increases");
+        text = LeadingDecreaseSynonymRegex.Replace(text, "Decreases");
+        text = LeadingIncreaseInfinitiveRegex.Replace(text, "Increases");
+        text = LeadingDecreaseInfinitiveRegex.Replace(text, "Decreases");
+        text = NumericAmountSuffixRegex.Replace(text, string.Empty);
+        text = RepeatedWhitespaceRegex.Replace(text, " ").Trim();
+
+        return CapitalizeFirstLetter(text);
+    }
+
+    static string CapitalizeFirstLetter(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return text;
+
+        char first = text[0];
+        if (!char.IsLetter(first) || char.IsUpper(first))
+            return text;
+
+        return char.ToUpperInvariant(first) + text.Substring(1);
     }
 }

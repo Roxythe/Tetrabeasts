@@ -981,7 +981,7 @@ public static class TetrabeastsChineseTranslations
         Add(text, "Units", "单位");
         Add(text, "Health", "生命");
         Add(text, "Level {0}", "关卡 {0}");
-        Add(text, "{0} of {1} {2} discovered. Total codex unlocked {3}%", "已发现 {1} 个{2}中的 {0} 个。图鉴总解锁率 {3}%");
+        Add(text, "{0} of {1} {2} discovered ({3}%)", "已发现 {1} 个{2}中的 {0} 个（{3}%）");
         Add(text, "Level Modifiers", "关卡修改器");
     }
 

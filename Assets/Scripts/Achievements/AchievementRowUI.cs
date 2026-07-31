@@ -61,7 +61,19 @@ public class AchievementRowUI : MonoBehaviour
         }
 
         if (progressText)
-            progressText.text = $"{FormatProgressNumber(progress.current)} / {FormatProgressNumber(progress.target)}";
+        {
+            if (!string.IsNullOrEmpty(progress.textOverride))
+            {
+                progressText.text = progress.textOverride;
+            }
+            else
+            {
+                double displayedCurrent = progress.lowerIsBetter
+                    ? progress.current
+                    : System.Math.Min(progress.current, progress.target);
+                progressText.text = $"{FormatProgressNumber(displayedCurrent)} / {FormatProgressNumber(progress.target)}";
+            }
+        }
 
         if (progressFill)
             progressFill.color = unlocked ? unlockedProgressFillColor : lockedProgressFillColor;

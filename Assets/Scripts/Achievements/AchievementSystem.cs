@@ -22,11 +22,15 @@ public static class AchievementSystem
         public double target;
         public float normalized;
         public bool lowerIsBetter;
+        public string textOverride;
     }
 
     static bool _init;
     static readonly List<Def> _defs = new();
     static readonly string[] CommanderProgressIds = { "Bosco", "Crono", "Elise", "Grock", "Liktor" };
+    const string CommanderCompleteColor = "#FFD700";
+    const string CommanderIncompleteColor = "#FF3333";
+    const string CommanderDividerColor = "#FFFFFF";
 
     // ---------- Stat keys ----------
     public static class Stat
@@ -189,7 +193,7 @@ public static class AchievementSystem
         Add(Ach.Rows_1000, Scope.LifetimeInt, Stat.TotalRowClears, 1000);
         Add(Ach.Rows_10000, Scope.LifetimeInt, Stat.TotalRowClears, 10000);
 
-        Add(Ach.AllCharsUnlocked, Scope.LifetimeInt, Stat.CharactersUnlocked, 4); // Number of unlockable Commanders 
+        Add(Ach.AllCharsUnlocked, Scope.LifetimeInt, Stat.CharactersUnlocked, CommanderProgressIds.Length);
 
         Add(Ach.AllMonstersUnlocked, Scope.LifetimeInt, Stat.MonstersUnlocked, 9);
 
@@ -313,56 +317,59 @@ public static class AchievementSystem
 
         if (achievementId == Ach.SpecialsEachChar_20)
         {
-            progress = BuildProgress(ReadCommanderSpecialProgress(20), CommanderProgressIds.Length * 20.0, Compare.Gte, unlocked);
+            progress = BuildCommanderConditionProgress(unlocked, id =>
+                PlayerProgress.I != null && PlayerProgress.I.GetLifetimeInt("lt_specials_used_char_" + id) >= 20);
             return true;
         }
 
         if (achievementId == Ach.SpecialsEachChar_100)
         {
-            progress = BuildProgress(ReadCommanderSpecialProgress(100), CommanderProgressIds.Length * 100.0, Compare.Gte, unlocked);
+            progress = BuildCommanderConditionProgress(unlocked, id =>
+                PlayerProgress.I != null && PlayerProgress.I.GetLifetimeInt("lt_specials_used_char_" + id) >= 100);
             return true;
         }
 
         if (achievementId == Ach.FinalWinAllChars)
         {
-            progress = BuildProgress(ReadCommanderFinalWinProgress(), CommanderProgressIds.Length, Compare.Gte, unlocked);
+            progress = BuildCommanderConditionProgress(unlocked, id =>
+                PlayerProgress.I != null && PlayerProgress.I.GetLifetimeInt("lt_final_win_char_" + id) > 0);
             return true;
         }
 
         return false;
     }
 
-    static double ReadCommanderSpecialProgress(int requiredPerCommander)
+    static ProgressInfo BuildCommanderConditionProgress(bool unlocked, Func<string, bool> isCommanderComplete)
     {
-        if (PlayerProgress.I == null)
-            return 0;
-
-        double total = 0;
+        bool[] complete = new bool[CommanderProgressIds.Length];
+        int completed = 0;
         for (int i = 0; i < CommanderProgressIds.Length; i++)
         {
-            long uses = PlayerProgress.I.GetLifetimeInt("lt_specials_used_char_" + CommanderProgressIds[i]);
-            total += Math.Min(Math.Max(0, uses), requiredPerCommander);
+            complete[i] = unlocked || (isCommanderComplete != null && isCommanderComplete(CommanderProgressIds[i]));
+            if (complete[i])
+                completed++;
         }
 
-        return total;
+        return BuildProgress(completed, CommanderProgressIds.Length, Compare.Gte, unlocked, BuildCommanderConditionText(complete));
     }
 
-    static double ReadCommanderFinalWinProgress()
+    static string BuildCommanderConditionText(bool[] complete)
     {
-        if (PlayerProgress.I == null)
-            return 0;
-
-        double total = 0;
+        string text = string.Empty;
         for (int i = 0; i < CommanderProgressIds.Length; i++)
         {
-            if (PlayerProgress.I.GetLifetimeInt("lt_final_win_char_" + CommanderProgressIds[i]) > 0)
-                total++;
+            if (i > 0)
+                text += $" <color={CommanderDividerColor}>|</color> ";
+
+            bool commanderComplete = complete != null && i < complete.Length && complete[i];
+            string color = commanderComplete ? CommanderCompleteColor : CommanderIncompleteColor;
+            text += $"<color={color}>{CommanderProgressIds[i]}</color>";
         }
 
-        return total;
+        return text;
     }
 
-    static ProgressInfo BuildProgress(double current, double target, Compare compare, bool unlocked)
+    static ProgressInfo BuildProgress(double current, double target, Compare compare, bool unlocked, string textOverride = null)
     {
         if (double.IsNaN(current) || double.IsInfinity(current))
             current = 0;
@@ -394,7 +401,8 @@ public static class AchievementSystem
             current = current,
             target = target,
             normalized = normalized,
-            lowerIsBetter = compare == Compare.Lte
+            lowerIsBetter = compare == Compare.Lte,
+            textOverride = textOverride
         };
     }
 

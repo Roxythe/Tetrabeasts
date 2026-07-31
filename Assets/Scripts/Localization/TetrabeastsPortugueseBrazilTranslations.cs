@@ -1114,8 +1114,8 @@ public static class TetrabeastsPortugueseBrazilTranslations
         Add(text, "Units", "Unidades");
         Add(text, "Health", "Vida");
         Add(text, "Level {0}", "Nível {0}");
-        Add(text, "{0} of {1} {2} discovered. Total codex unlocked {3}%",
-            "{0} de {1} {2} descobertos. Códice total desbloqueado: {3}%");
+        Add(text, "{0} of {1} {2} discovered ({3}%)",
+            "{0} de {1} {2} descobertos ({3}%)");
         Add(text, "Buffs", "Melhorias");
         Add(text, "Debuffs", "Penalidades");
         Add(text, "Level Modifiers", "Modificadores de nível");

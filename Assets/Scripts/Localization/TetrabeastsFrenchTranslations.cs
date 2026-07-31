@@ -905,7 +905,7 @@ public static class TetrabeastsFrenchTranslations
         Add(text, "Units", "Unités");
         Add(text, "Health", "Santé");
         Add(text, "Level {0}", "Niveau {0}");
-        Add(text, "{0} of {1} {2} discovered. Total codex unlocked {3}%", "{0} sur {1} {2} découverts. Grimoire débloqué au total : {3} %");
+        Add(text, "{0} of {1} {2} discovered ({3}%)", "{0} sur {1} {2} découverts ({3} %)");
         Add(text, "Buffs", "Bonus");
         Add(text, "Debuffs", "Malus");
         Add(text, "Level Modifiers", "Modificateurs de niveau");

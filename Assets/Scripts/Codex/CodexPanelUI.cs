@@ -368,18 +368,16 @@ public class CodexPanelUI : MonoBehaviour
         int sectionTotal;
         string sectionLabel = GetCurrentSectionLabelAndCounts(out sectionUnlocked, out sectionTotal);
 
-        int totalUnlocked = GetTotalUnlockedCount();
-        int totalEntries = GetTotalEntryCount();
-        int totalPercent = totalEntries > 0
-            ? Mathf.RoundToInt((float)totalUnlocked / totalEntries * 100f)
+        int sectionPercent = sectionTotal > 0
+            ? Mathf.RoundToInt((float)sectionUnlocked / sectionTotal * 100f)
             : 0;
 
         discoverySummaryText.text = TetrabeastsLocalization.LocalizeFormat(
-            "{0} of {1} {2} discovered. Total codex unlocked {3}%",
+            "{0} of {1} {2} discovered ({3}%)",
             sectionUnlocked,
             sectionTotal,
             TetrabeastsLocalization.LocalizeText(sectionLabel),
-            totalPercent);
+            sectionPercent);
     }
 
     string GetCurrentSectionLabelAndCounts(out int unlocked, out int total)
@@ -401,20 +399,6 @@ public class CodexPanelUI : MonoBehaviour
                 total = CountTotalLevelModifiers();
                 return "Level Modifiers";
         }
-    }
-
-    int GetTotalUnlockedCount()
-    {
-        return CountUnlocked(buffRunModifiers)
-             + CountUnlocked(debuffRunModifiers)
-             + CountUnlockedLevelModifiers();
-    }
-
-    int GetTotalEntryCount()
-    {
-        return CountUnique(buffRunModifiers)
-             + CountUnique(debuffRunModifiers)
-             + CountTotalLevelModifiers();
     }
 
     int CountUnlocked(RunModifierSO[] source)
