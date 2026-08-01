@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelModifierSO
   kind: 18
   displayName: Disarray
-  description: Monster pieces have a chance to spawn as connected trimino or pentamino variants based on the tetromino that would have spawned.
-  icon: {fileID: 21300000, guid: 39431b1b8582969469a97ca623b4258c, type: 3}
+  description: Monster pieces have a chance to spawn as groups of 3 or 5 instead
+    of the normal 4 that ussually spawn.
+  icon: {fileID: 21300000, guid: 42f2db22516666240bcbc2fcf0f9c0be, type: 3}
   backgroundOverrideSprite: {fileID: 0}
   enableRainOverlay: 0
   rainDrops: 44
@@ -78,3 +79,20 @@ MonoBehaviour:
   piercingProjectileSprite: {fileID: 0}
   disarrayTriminoChance: 0.15
   disarrayPentaminoChance: 0.15
+  outFlankedProjectileSprite: {fileID: 0}
+  outFlankedIntervalMin: 6
+  outFlankedIntervalMax: 10
+  outFlankedRowsPerWave: 1
+  outFlankedProjectileSizeMultiplier: 1
+  volcanicEruptionIntervalMin: 12
+  volcanicEruptionIntervalMax: 20
+  volcanicEruptionTargetCount: 4
+  volcanicEruptionExcludedTopRows: 4
+  volcanicEruptionWarningSeconds: 2
+  volcanicEruptionWarningSprite: {fileID: 0}
+  volcanicEruptionWarningTint: {r: 1, g: 0.08, b: 0, a: 0.45}
+  hardenedLavaObstacleSprite: {fileID: 0}
+  volcanicVolcanoAnimFrames: []
+  volcanicVolcanoAnimFrameSeconds: 0.16
+  volcanicVolcanoAnimSize: {x: 160, y: 160}
+  roulettePreviewInterval: 1

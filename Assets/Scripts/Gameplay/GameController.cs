@@ -189,6 +189,7 @@ public class GameController : MonoBehaviour
     public MonsterData[] fallbackMonsters; // 2 defaults, set in Inspector
     readonly List<TetrominoData> generatedDisarrayPieces = new();
     readonly Queue<MonsterData[]> monstersBag = new(); // Parallel to 'bag'
+    float _roulettePreviewTimer;
     static readonly Vector2Int[] DisarrayDirections =
     {
         Vector2Int.left,
@@ -621,6 +622,8 @@ public class GameController : MonoBehaviour
     public MonsterPassiveBonuses PartyPassiveBonusesForStats => _partyPassiveBonuses;
     public CastleData CurrentCastleDataForStats => currentCastleData;
     public int CastleProjectileDamageForStats => castleProjectileDamage;
+    public float CurrentEnemyProjectileSpeedForModifiers => GetCurrentCastleProjectileSpeed();
+    public float CurrentEnemyProjectileVisualScaleForModifiers => castleProjectileVisualScale;
     public bool SpecialUsageLockedForStats => levelModifierController && levelModifierController.BlocksSpecialUsage;
     public bool SpecialBlocksLockedForStats => levelModifierController && levelModifierController.BlocksSpecialPieceSpawns;
     public float BaseSpecialChancePerEnqueueForStats => _baseGameplayStatsCached ? _baseSpecialChancePerEnqueue : specialChancePerEnqueue;
@@ -1432,6 +1435,7 @@ public class GameController : MonoBehaviour
         {
             RunSummaryStats.AddActiveTime(Time.deltaTime);
             TickPassiveSpecialGauge(Time.deltaTime);
+            HandleRoulettePreview(Time.deltaTime);
         }
 
         // Periodic castle projectile
@@ -1860,6 +1864,7 @@ public class GameController : MonoBehaviour
         // Keep bags topped and refresh preview after consuming one
         EnsureMinBag(3);
         ShowNextPreview();
+        _roulettePreviewTimer = 0f;
     }
 
     IEnumerator BeginCurrentLevelSequence(bool useSavedLevelModifier = false,
@@ -1870,6 +1875,7 @@ public class GameController : MonoBehaviour
 
         bag.Clear();
         monstersBag.Clear();
+        _roulettePreviewTimer = 0f;
         ClearGeneratedDisarrayPieces();
 
         bool roundRewardHiddenByLevelModifierPanel = false;
@@ -2497,6 +2503,170 @@ public class GameController : MonoBehaviour
                 monstersBag.Enqueue(System.Array.Empty<MonsterData>());
             }
         }
+    }
+
+    void HandleRoulettePreview(float dt)
+    {
+        if (!IsRouletteModifierActive())
+        {
+            _roulettePreviewTimer = 0f;
+            return;
+        }
+
+        if (!piece || !piece.enabled || !piece.HasActiveCells)
+        {
+            _roulettePreviewTimer = 0f;
+            return;
+        }
+
+        LevelModifierSO modifier = levelModifierController ? levelModifierController.ActiveModifier : null;
+        float interval = Mathf.Max(0.1f, modifier ? modifier.roulettePreviewInterval : 1f);
+
+        _roulettePreviewTimer += Mathf.Max(0f, dt);
+        if (_roulettePreviewTimer < interval)
+            return;
+
+        _roulettePreviewTimer = 0f;
+        ReplaceRoulettePreviewHead();
+    }
+
+    bool IsRouletteModifierActive()
+    {
+        return levelModifierController &&
+               levelModifierController.ActiveModifier &&
+               levelModifierController.ActiveModifier.kind == LevelModifierKind.Roulette;
+    }
+
+    bool ReplaceRoulettePreviewHead()
+    {
+        EnsureMinBag(3);
+        if (bag.Count == 0)
+            return false;
+
+        TetrominoData replacement = PickRandomQueuedPiece();
+        if (!replacement)
+            return false;
+
+        var pieces = new List<TetrominoData>(bag);
+        var monsterSets = new List<MonsterData[]>(monstersBag);
+
+        while (monsterSets.Count < pieces.Count)
+            monsterSets.Add(BuildMonsterArrayForQueuedPiece(pieces[monsterSets.Count]));
+
+        while (monsterSets.Count > pieces.Count)
+            monsterSets.RemoveAt(monsterSets.Count - 1);
+
+        pieces[0] = replacement;
+        monsterSets[0] = BuildMonsterArrayForQueuedPiece(replacement);
+
+        bag.Clear();
+        for (int i = 0; i < pieces.Count; i++)
+            bag.Enqueue(pieces[i]);
+
+        monstersBag.Clear();
+        for (int i = 0; i < monsterSets.Count; i++)
+            monstersBag.Enqueue(monsterSets[i]);
+
+        ShowNextPreview();
+        return true;
+    }
+
+    TetrominoData PickRandomQueuedPiece()
+    {
+        TetrominoData use = null;
+        bool canSpawnSpecial =
+            !(levelModifierController && levelModifierController.BlocksSpecialPieceSpawns) &&
+            Random.value < GetEffectiveSpecialBlockChanceForQueue();
+
+        if (canSpawnSpecial && TryPickWeightedSpecialBlock(out var specialPick))
+            use = specialPick;
+
+        if (!use)
+            use = PickRandomNormalTetromino();
+
+        if (use && use.special == SpecialType.None)
+            use = CreateDisarrayVariantIfNeeded(use);
+
+        return use;
+    }
+
+    float GetEffectiveSpecialBlockChanceForQueue()
+    {
+        if (specialBlocks == null || specialBlocks.Length == 0)
+            return 0f;
+
+        float chanceCap = Mathf.Max(0f, maxSpecialChance);
+        float chanceFloor = Mathf.Min(Mathf.Clamp01(minSpecialChance), chanceCap);
+        return Mathf.Clamp(specialChancePerEnqueue + specialBlockChanceAdd, chanceFloor, chanceCap);
+    }
+
+    bool TryPickWeightedSpecialBlock(out TetrominoData specialPick)
+    {
+        specialPick = null;
+        if (specialBlocks == null || specialBlocks.Length == 0)
+            return false;
+
+        float total = 0f;
+        for (int i = 0; i < specialBlocks.Length; i++)
+            if (specialBlocks[i]) total += Mathf.Max(0f, specialBlocks[i].spawnWeight);
+
+        if (total <= 0f)
+            return false;
+
+        float r = Random.Range(0f, total);
+        for (int i = 0; i < specialBlocks.Length; i++)
+        {
+            var sp = specialBlocks[i];
+            if (!sp) continue;
+            float w = Mathf.Max(0f, sp.spawnWeight);
+            if ((r -= w) <= 0f)
+            {
+                specialPick = sp;
+                return true;
+            }
+        }
+
+        for (int i = specialBlocks.Length - 1; i >= 0; i--)
+        {
+            if (!specialBlocks[i])
+                continue;
+
+            specialPick = specialBlocks[i];
+            return true;
+        }
+
+        return false;
+    }
+
+    TetrominoData PickRandomNormalTetromino()
+    {
+        if (allTetrominoes == null || allTetrominoes.Length == 0)
+            return null;
+
+        var normals = new List<TetrominoData>();
+        for (int i = 0; i < allTetrominoes.Length; i++)
+            if (allTetrominoes[i])
+                normals.Add(allTetrominoes[i]);
+
+        if (normals.Count == 0)
+            return null;
+
+        return normals[Random.Range(0, normals.Count)];
+    }
+
+    MonsterData[] BuildMonsterArrayForQueuedPiece(TetrominoData data)
+    {
+        if (!data || data.special != SpecialType.None)
+            return System.Array.Empty<MonsterData>();
+
+        int cellsCount = Mathf.Max(1, data.cells != null ? data.cells.Length : 1);
+        var arr = new MonsterData[cellsCount];
+        var roster = GetActiveMonsterRoster();
+        MonsterData chosen = roster != null && roster.Count > 0 ? WeightedPick(roster) : null;
+        for (int i = 0; i < arr.Length; i++)
+            arr[i] = chosen;
+
+        return arr;
     }
 
     TetrominoData CreateDisarrayVariantIfNeeded(TetrominoData source)
@@ -4951,7 +5121,7 @@ public class GameController : MonoBehaviour
     {
         if (levelModifierController)
         {
-            Sprite overrideSprite = levelModifierController.ActivePiercingCastleProjectileSprite;
+            Sprite overrideSprite = levelModifierController.ActiveCastleProjectileSpriteOverride;
             if (overrideSprite)
                 return overrideSprite;
         }
@@ -5137,7 +5307,12 @@ public class GameController : MonoBehaviour
         }
         else if (AudioManager.I && hitClip)
         {
+            gameBoard.TryHandleEnemyProjectileObstacleImpact(hitCell);
             AudioManager.I.PlaySFX(hitClip);
+        }
+        else
+        {
+            gameBoard.TryHandleEnemyProjectileObstacleImpact(hitCell);
         }
 
         return hitDefensiveMonster;
@@ -6515,6 +6690,7 @@ public class GameController : MonoBehaviour
             Board.DamageSource.MagicExplosive => FloatingDamageText.DamageKind.MagicExplosive,
             Board.DamageSource.Overgrowth => FloatingDamageText.DamageKind.Overgrowth,
             Board.DamageSource.RearAmbush => FloatingDamageText.DamageKind.RearAmbush,
+            Board.DamageSource.VolcanicEruption => FloatingDamageText.DamageKind.Fire,
             _ => FloatingDamageText.DamageKind.Normal
         };
     }
@@ -6610,6 +6786,12 @@ public class GameController : MonoBehaviour
 
             case Board.DamageSource.RearAmbush:
                 fromLabel = "rear ambush";
+                break;
+
+            case Board.DamageSource.VolcanicEruption:
+                damageTypeWord = "fire";
+                damageTypeColor = GetBattleLogFireColor();
+                fromLabel = "eruption";
                 break;
 
             default:

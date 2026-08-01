@@ -78,7 +78,8 @@ public class Board : MonoBehaviour
         Contagion,
         Rations,
         DeathExplosion,
-        RearAmbush
+        RearAmbush,
+        VolcanicEruption
     }
 
     // Runtime
@@ -173,7 +174,7 @@ public class Board : MonoBehaviour
     readonly Dictionary<Vector2Int, Coroutine> _portraitAltSwapCo = new();
     static Sprite s_lastTetrominoBackgroundSprite;
 
-    public enum ObstacleType { Stone, MagicPylon, MagicExplosive, SoldierWall, Overgrowth }
+    public enum ObstacleType { Stone, MagicPylon, MagicExplosive, SoldierWall, Overgrowth, HardenedLava }
 
     [System.Serializable]
     public struct ObstacleState
@@ -3090,6 +3091,17 @@ public class Board : MonoBehaviour
         return true;
     }
 
+    public bool TryHandleEnemyProjectileObstacleImpact(Vector2Int cell)
+    {
+        if (!obstacles.TryGetValue(cell, out var obs))
+            return false;
+
+        if (obs.type == ObstacleType.HardenedLava)
+            DestroyObstacleImmediate(cell);
+
+        return true;
+    }
+
     public bool TrySpawnStoneObstacle(Vector2Int cell, int hitsToBreak = 3)
     {
         if (!InBounds(cell)) return false;
@@ -3467,7 +3479,8 @@ public class Board : MonoBehaviour
             foreach (var c in affectedCells)
             {
                 if (!InBounds(c)) continue;
-                if (obstacles.TryGetValue(c, out var obs) && obs.type == ObstacleType.Stone)
+                if (obstacles.TryGetValue(c, out var obs) &&
+                    (obs.type == ObstacleType.Stone || obs.type == ObstacleType.HardenedLava))
                 {
                     DestroyObstacleImmediate(c);
                 }
@@ -3482,6 +3495,9 @@ public class Board : MonoBehaviour
                 {
                     ClearFloorEffect(c);
                 }
+
+                if (obstacles.TryGetValue(c, out var obs) && obs.type == ObstacleType.HardenedLava)
+                    DestroyObstacleImmediate(c);
             }
         }
 
@@ -3852,6 +3868,32 @@ public class Board : MonoBehaviour
 
                     return true;
                 }
+
+            case ObstacleType.HardenedLava:
+                {
+                    if (obs.indestructible)
+                    {
+                        StopPortraitAltSwap(cell, restoreNormal: false);
+                        monsters.Remove(cell);
+                        return true;
+                    }
+
+                    obs.hitsRemaining = Mathf.Max(0, obs.hitsRemaining - 1);
+
+                    if (obs.hitsRemaining <= 0)
+                    {
+                        DestroyObstacleImmediate(cell);
+                        removedCells?.Add(cell);
+                    }
+                    else
+                    {
+                        obstacles[cell] = obs;
+                    }
+
+                    StopPortraitAltSwap(cell, restoreNormal: false);
+                    monsters.Remove(cell);
+                    return true;
+                }
         }
 
         return false;
@@ -3901,6 +3943,11 @@ public class Board : MonoBehaviour
         return StartCoroutine(FlashWarningRoutine(cell, warningSprite, seconds, toggleInterval, alpha));
     }
 
+    public Coroutine FlashTintAtCell(Vector2Int cell, Color tint, float seconds, float toggleInterval = 0.08f)
+    {
+        return StartCoroutine(FlashTintRoutine(cell, tint, seconds, toggleInterval));
+    }
+
     IEnumerator FlashWarningRoutine(Vector2Int cell, Sprite warningSprite, float seconds, float toggleInterval, float alpha)
     {
         if (!InBounds(cell) || warningSprite == null) yield break;
@@ -3919,6 +3966,47 @@ public class Board : MonoBehaviour
         img.color = new Color(1f, 1f, 1f, alpha);
 
         var rt = img.rectTransform;
+        rt.sizeDelta = cellSize;
+        rt.anchoredPosition = CellToAnchoredPos(cell);
+
+        float t = 0f;
+        float tog = 0f;
+        bool on = true;
+
+        while (t < seconds)
+        {
+            t += Time.deltaTime;
+            tog += Time.deltaTime;
+            if (tog >= toggleInterval)
+            {
+                tog = 0f;
+                on = !on;
+                img.enabled = on;
+            }
+            yield return null;
+        }
+
+        if (img) Destroy(img.gameObject);
+    }
+
+    IEnumerator FlashTintRoutine(Vector2Int cell, Color tint, float seconds, float toggleInterval)
+    {
+        if (!InBounds(cell)) yield break;
+
+        if (!overlayRoot) overlayRoot = gridRoot;
+
+        var go = new GameObject("CellWarningTint", typeof(Image));
+        go.transform.SetParent(overlayRoot, false);
+
+        var img = go.GetComponent<Image>();
+        img.sprite = OnePx();
+        img.type = Image.Type.Simple;
+        img.preserveAspect = false;
+        img.raycastTarget = false;
+        img.color = tint;
+
+        var rt = img.rectTransform;
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
         rt.sizeDelta = cellSize;
         rt.anchoredPosition = CellToAnchoredPos(cell);
 

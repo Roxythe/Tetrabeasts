@@ -1,13 +1,13 @@
 
 
-- New level modifier "Disarray" chance to spawn monster pieces in a trimino (three block) or pentamino (five block) formation instead of the normal tetramino formation that should have spawn. The mutated piece should be based on the next piece that was supposed to spawn with one additional or one less block attached to the original piece.
+- New level modifier "Disarray" chance to spawn monster pieces in a trimino (three block) or pentamino (five block) formation instead of the normal tetramino formation that should have spawn. The mutated piece should be based on the next piece that was supposed to spawn with one additional or one less block attached to the original piece. The mutated piece should be decided on before spawning and should appear in the next piece preview.
 
 - New level modifier "Out Flanked". Arrows spawn on the left and right side of the board periodically and move horizontally across the board until they hit a monster unit dealing damage or reach the opposite end of the board and are destroyed. Enemy projectile sprite override should be used for that level and the damage of the enemy projectile should be based on that levels set enemy projectile damage.
-- new projectile sprite
+- new enemy projectile sprite override for out flanked level modifier
 
 - New Level Modifier "Volcanic Eruption" where four different individual squares (cells) are choesn every 12-20 seconds (top four rows of the board excluded). the selected squares will flash with a red tint and with an untinted warning sprite for 2 seconds. After 2 seconds that cell will either deal damage to a monster unit if it is occupying the cell based on enemy projectile damage for that level or spawn a new obstacle in that cell. The hardened lava obstacle will block one instance of damage either from the player or an enemy projectile (depending on what hits it first) if a projectile hits the hardened lava obstacle it will destroy the projectile and the lava obstacle. Lava obstacle should be treated like a stone obstacle that can also be removed by bomb special, lightning special, or row clear. Lava obstacle should also function like a set piece so that an active piece that lands on it will be stopped and set in place.
-- New hardened lava sprite
-- New volcanic wasteland background
+- New hardened lava obstacle sprite
+- New volcanic wasteland background image override for volcanic eruption level modifier script
 - New animated volcano sprite anim
 
 - New Level Modifier "Roulette" the next piece preview changes every second. When the current active piece is set, the current next piece is the provided next active piece.
@@ -23,6 +23,8 @@
 
 - Add special unlockable skin for each monster unit. Unlocked when that monster is in the players squad after beating the 14th level (reaching the last unbeatable/endless boss level)
 - Each monster needs a new alternate sprite for the new skin as well.
+
+
 
 ****** TODO ******
 

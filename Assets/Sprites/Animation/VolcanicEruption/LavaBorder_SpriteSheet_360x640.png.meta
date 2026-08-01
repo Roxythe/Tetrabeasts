@@ -1,0 +1,6073 @@
+fileFormatVersion: 2
+guid: e69e4be1c7d1e2045b8123e7fa1d89b7
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3163363243888628305
+    second: LavaBorder_SpriteSheet_360x640_0
+  - first:
+      213: -6897473886428974698
+    second: LavaBorder_SpriteSheet_360x640_1
+  - first:
+      213: -8871431329263687377
+    second: LavaBorder_SpriteSheet_360x640_2
+  - first:
+      213: -8240773437092565791
+    second: LavaBorder_SpriteSheet_360x640_3
+  - first:
+      213: -3496748339932315913
+    second: LavaBorder_SpriteSheet_360x640_4
+  - first:
+      213: -2315577455392841347
+    second: LavaBorder_SpriteSheet_360x640_5
+  - first:
+      213: -2510527463095739612
+    second: LavaBorder_SpriteSheet_360x640_6
+  - first:
+      213: 1173298571290184756
+    second: LavaBorder_SpriteSheet_360x640_7
+  - first:
+      213: 1954647904199050369
+    second: LavaBorder_SpriteSheet_360x640_8
+  - first:
+      213: 3851865092605310628
+    second: LavaBorder_SpriteSheet_360x640_9
+  - first:
+      213: -9170525374339120800
+    second: LavaBorder_SpriteSheet_360x640_10
+  - first:
+      213: 8109743864492488146
+    second: LavaBorder_SpriteSheet_360x640_11
+  - first:
+      213: 2089585206747688768
+    second: LavaBorder_SpriteSheet_360x640_12
+  - first:
+      213: -638114771594875505
+    second: LavaBorder_SpriteSheet_360x640_13
+  - first:
+      213: -3885214692208507034
+    second: LavaBorder_SpriteSheet_360x640_14
+  - first:
+      213: -5082212513510428079
+    second: LavaBorder_SpriteSheet_360x640_15
+  - first:
+      213: 706183090777959648
+    second: LavaBorder_SpriteSheet_360x640_16
+  - first:
+      213: 8190252555482507903
+    second: LavaBorder_SpriteSheet_360x640_17
+  - first:
+      213: 7330704721495265787
+    second: LavaBorder_SpriteSheet_360x640_18
+  - first:
+      213: -6356375659746272346
+    second: LavaBorder_SpriteSheet_360x640_19
+  - first:
+      213: 5359292387446208168
+    second: LavaBorder_SpriteSheet_360x640_20
+  - first:
+      213: 2084413472363512200
+    second: LavaBorder_SpriteSheet_360x640_21
+  - first:
+      213: 8842861866378036229
+    second: LavaBorder_SpriteSheet_360x640_22
+  - first:
+      213: -632333993419471928
+    second: LavaBorder_SpriteSheet_360x640_23
+  - first:
+      213: -3354936732923266606
+    second: LavaBorder_SpriteSheet_360x640_24
+  - first:
+      213: -2475951651533871329
+    second: LavaBorder_SpriteSheet_360x640_25
+  - first:
+      213: -7752243135933057295
+    second: LavaBorder_SpriteSheet_360x640_26
+  - first:
+      213: -610069848649236384
+    second: LavaBorder_SpriteSheet_360x640_27
+  - first:
+      213: -4711323280220544126
+    second: LavaBorder_SpriteSheet_360x640_28
+  - first:
+      213: -2319447232211038156
+    second: LavaBorder_SpriteSheet_360x640_29
+  - first:
+      213: 2342417454006339087
+    second: LavaBorder_SpriteSheet_360x640_30
+  - first:
+      213: -2192660225383854386
+    second: LavaBorder_SpriteSheet_360x640_31
+  - first:
+      213: 1227135307788771587
+    second: LavaBorder_SpriteSheet_360x640_32
+  - first:
+      213: -2217485870260008018
+    second: LavaBorder_SpriteSheet_360x640_33
+  - first:
+      213: -983888129870998545
+    second: LavaBorder_SpriteSheet_360x640_34
+  - first:
+      213: 1255890474828051431
+    second: LavaBorder_SpriteSheet_360x640_35
+  - first:
+      213: -5217440828676291508
+    second: LavaBorder_SpriteSheet_360x640_36
+  - first:
+      213: -6823734940859418604
+    second: LavaBorder_SpriteSheet_360x640_37
+  - first:
+      213: -8481841697002832628
+    second: LavaBorder_SpriteSheet_360x640_38
+  - first:
+      213: -348373976478293587
+    second: LavaBorder_SpriteSheet_360x640_39
+  - first:
+      213: -1972890686208924793
+    second: LavaBorder_SpriteSheet_360x640_40
+  - first:
+      213: -7518367500642852053
+    second: LavaBorder_SpriteSheet_360x640_41
+  - first:
+      213: 5726845850261691903
+    second: LavaBorder_SpriteSheet_360x640_42
+  - first:
+      213: 1319086854213842750
+    second: LavaBorder_SpriteSheet_360x640_43
+  - first:
+      213: -8675787988232732022
+    second: LavaBorder_SpriteSheet_360x640_44
+  - first:
+      213: 8230294633104668594
+    second: LavaBorder_SpriteSheet_360x640_45
+  - first:
+      213: -1650943029253996956
+    second: LavaBorder_SpriteSheet_360x640_46
+  - first:
+      213: 4581734426196230970
+    second: LavaBorder_SpriteSheet_360x640_47
+  - first:
+      213: 8322112681270557202
+    second: LavaBorder_SpriteSheet_360x640_48
+  - first:
+      213: 8520395768394019241
+    second: LavaBorder_SpriteSheet_360x640_49
+  - first:
+      213: 7941815881511255687
+    second: LavaBorder_SpriteSheet_360x640_50
+  - first:
+      213: 5282410327005925440
+    second: LavaBorder_SpriteSheet_360x640_51
+  - first:
+      213: -4012408628623315236
+    second: LavaBorder_SpriteSheet_360x640_52
+  - first:
+      213: 9047984061968737465
+    second: LavaBorder_SpriteSheet_360x640_53
+  - first:
+      213: -1648663262974717387
+    second: LavaBorder_SpriteSheet_360x640_54
+  - first:
+      213: 1625346944998565866
+    second: LavaBorder_SpriteSheet_360x640_55
+  - first:
+      213: 2852861138461830674
+    second: LavaBorder_SpriteSheet_360x640_56
+  - first:
+      213: 7469746285152274171
+    second: LavaBorder_SpriteSheet_360x640_57
+  - first:
+      213: 3705440521421390283
+    second: LavaBorder_SpriteSheet_360x640_58
+  - first:
+      213: 4096824548843049248
+    second: LavaBorder_SpriteSheet_360x640_59
+  - first:
+      213: -2045365267388290073
+    second: LavaBorder_SpriteSheet_360x640_60
+  - first:
+      213: -5671905261371524861
+    second: LavaBorder_SpriteSheet_360x640_61
+  - first:
+      213: 9018047674251188817
+    second: LavaBorder_SpriteSheet_360x640_62
+  - first:
+      213: -6432068266915830420
+    second: LavaBorder_SpriteSheet_360x640_63
+  - first:
+      213: -2069123951329455870
+    second: LavaBorder_SpriteSheet_360x640_64
+  - first:
+      213: -600751779763233902
+    second: LavaBorder_SpriteSheet_360x640_65
+  - first:
+      213: 189722751938886025
+    second: LavaBorder_SpriteSheet_360x640_66
+  - first:
+      213: 7716059472141870534
+    second: LavaBorder_SpriteSheet_360x640_67
+  - first:
+      213: 5877128225282195313
+    second: LavaBorder_SpriteSheet_360x640_68
+  - first:
+      213: 8553750538093976715
+    second: LavaBorder_SpriteSheet_360x640_69
+  - first:
+      213: -2703582891036106019
+    second: LavaBorder_SpriteSheet_360x640_70
+  - first:
+      213: -7525675240526236374
+    second: LavaBorder_SpriteSheet_360x640_71
+  - first:
+      213: -5760567400992892210
+    second: LavaBorder_SpriteSheet_360x640_72
+  - first:
+      213: 5387197698149822252
+    second: LavaBorder_SpriteSheet_360x640_73
+  - first:
+      213: 6488293874076819242
+    second: LavaBorder_SpriteSheet_360x640_74
+  - first:
+      213: 5133347780999383590
+    second: LavaBorder_SpriteSheet_360x640_75
+  - first:
+      213: 3277628184444338705
+    second: LavaBorder_SpriteSheet_360x640_76
+  - first:
+      213: -2568232263704524824
+    second: LavaBorder_SpriteSheet_360x640_77
+  - first:
+      213: 3307549478415886564
+    second: LavaBorder_SpriteSheet_360x640_78
+  - first:
+      213: -9189306438248478271
+    second: LavaBorder_SpriteSheet_360x640_79
+  - first:
+      213: 603247935388713083
+    second: LavaBorder_SpriteSheet_360x640_80
+  - first:
+      213: -6039080740684021631
+    second: LavaBorder_SpriteSheet_360x640_81
+  - first:
+      213: 3001465357490798917
+    second: LavaBorder_SpriteSheet_360x640_82
+  - first:
+      213: -2587939331976944479
+    second: LavaBorder_SpriteSheet_360x640_83
+  - first:
+      213: -3324630603932087907
+    second: LavaBorder_SpriteSheet_360x640_84
+  - first:
+      213: 352470369498850345
+    second: LavaBorder_SpriteSheet_360x640_85
+  - first:
+      213: -1803384237988503321
+    second: LavaBorder_SpriteSheet_360x640_86
+  - first:
+      213: 7401617433482070318
+    second: LavaBorder_SpriteSheet_360x640_87
+  - first:
+      213: -3571076445353272800
+    second: LavaBorder_SpriteSheet_360x640_88
+  - first:
+      213: -267447834708561248
+    second: LavaBorder_SpriteSheet_360x640_89
+  - first:
+      213: 8678235397045659156
+    second: LavaBorder_SpriteSheet_360x640_90
+  - first:
+      213: 3665563325414531044
+    second: LavaBorder_SpriteSheet_360x640_91
+  - first:
+      213: -4030006162372854840
+    second: LavaBorder_SpriteSheet_360x640_92
+  - first:
+      213: -6623525492700269845
+    second: LavaBorder_SpriteSheet_360x640_93
+  - first:
+      213: 2427252892334214126
+    second: LavaBorder_SpriteSheet_360x640_94
+  - first:
+      213: 3644507422745672539
+    second: LavaBorder_SpriteSheet_360x640_95
+  - first:
+      213: -1440326871787547404
+    second: LavaBorder_SpriteSheet_360x640_96
+  - first:
+      213: -2885472560254168609
+    second: LavaBorder_SpriteSheet_360x640_97
+  - first:
+      213: -5330617915106015828
+    second: LavaBorder_SpriteSheet_360x640_98
+  - first:
+      213: 3188243126031792147
+    second: LavaBorder_SpriteSheet_360x640_99
+  - first:
+      213: -6333925462968718897
+    second: LavaBorder_SpriteSheet_360x640_100
+  - first:
+      213: -5492193009390255366
+    second: LavaBorder_SpriteSheet_360x640_101
+  - first:
+      213: -5796311617650649253
+    second: LavaBorder_SpriteSheet_360x640_102
+  - first:
+      213: -946191606620199089
+    second: LavaBorder_SpriteSheet_360x640_103
+  - first:
+      213: 8474572515679828994
+    second: LavaBorder_SpriteSheet_360x640_104
+  - first:
+      213: -7040040395558742765
+    second: LavaBorder_SpriteSheet_360x640_105
+  - first:
+      213: 1328893691600019755
+    second: LavaBorder_SpriteSheet_360x640_106
+  - first:
+      213: -2060374223451499796
+    second: LavaBorder_SpriteSheet_360x640_107
+  - first:
+      213: -5318071846465427386
+    second: LavaBorder_SpriteSheet_360x640_108
+  - first:
+      213: 7530324707083560627
+    second: LavaBorder_SpriteSheet_360x640_109
+  - first:
+      213: 1944050130032303020
+    second: LavaBorder_SpriteSheet_360x640_110
+  - first:
+      213: -3120281923159671464
+    second: LavaBorder_SpriteSheet_360x640_111
+  - first:
+      213: 2868384181035025331
+    second: LavaBorder_SpriteSheet_360x640_112
+  - first:
+      213: 8441907373571498971
+    second: LavaBorder_SpriteSheet_360x640_113
+  - first:
+      213: -5001771395851490126
+    second: LavaBorder_SpriteSheet_360x640_114
+  - first:
+      213: -4475457567795952725
+    second: LavaBorder_SpriteSheet_360x640_115
+  - first:
+      213: 1706518299988923230
+    second: LavaBorder_SpriteSheet_360x640_116
+  - first:
+      213: -6787406400192403603
+    second: LavaBorder_SpriteSheet_360x640_117
+  - first:
+      213: -5563285587543165681
+    second: LavaBorder_SpriteSheet_360x640_118
+  - first:
+      213: 2848001471828616758
+    second: LavaBorder_SpriteSheet_360x640_119
+  - first:
+      213: -2692304080615587600
+    second: LavaBorder_SpriteSheet_360x640_120
+  - first:
+      213: 3596749292677474334
+    second: LavaBorder_SpriteSheet_360x640_121
+  - first:
+      213: -27581542672476826
+    second: LavaBorder_SpriteSheet_360x640_122
+  - first:
+      213: -8861702350351162685
+    second: LavaBorder_SpriteSheet_360x640_123
+  - first:
+      213: -4063755547599703166
+    second: LavaBorder_SpriteSheet_360x640_124
+  - first:
+      213: -3771043228336289618
+    second: LavaBorder_SpriteSheet_360x640_125
+  - first:
+      213: 8626194137332329974
+    second: LavaBorder_SpriteSheet_360x640_126
+  - first:
+      213: 5520852831542935053
+    second: LavaBorder_SpriteSheet_360x640_127
+  - first:
+      213: 8992056227676600384
+    second: LavaBorder_SpriteSheet_360x640_128
+  - first:
+      213: 4752457879608484338
+    second: LavaBorder_SpriteSheet_360x640_129
+  - first:
+      213: -3908307358209300118
+    second: LavaBorder_SpriteSheet_360x640_130
+  - first:
+      213: 6615851856432827918
+    second: LavaBorder_SpriteSheet_360x640_131
+  - first:
+      213: -6692499757636138865
+    second: LavaBorder_SpriteSheet_360x640_132
+  - first:
+      213: 5716531105503541448
+    second: LavaBorder_SpriteSheet_360x640_133
+  - first:
+      213: -280752845453915905
+    second: LavaBorder_SpriteSheet_360x640_134
+  - first:
+      213: 1721845655444416257
+    second: LavaBorder_SpriteSheet_360x640_135
+  - first:
+      213: 4835863974386885927
+    second: LavaBorder_SpriteSheet_360x640_136
+  - first:
+      213: 7376907284233283357
+    second: LavaBorder_SpriteSheet_360x640_137
+  - first:
+      213: 6504041714711761874
+    second: LavaBorder_SpriteSheet_360x640_138
+  - first:
+      213: -8092459189210987730
+    second: LavaBorder_SpriteSheet_360x640_139
+  - first:
+      213: -462314182492344394
+    second: LavaBorder_SpriteSheet_360x640_140
+  - first:
+      213: -6497678604253937335
+    second: LavaBorder_SpriteSheet_360x640_141
+  - first:
+      213: -4289847859723072566
+    second: LavaBorder_SpriteSheet_360x640_142
+  - first:
+      213: 1431956035757202375
+    second: LavaBorder_SpriteSheet_360x640_143
+  - first:
+      213: 1628396096975183080
+    second: LavaBorder_SpriteSheet_360x640_144
+  - first:
+      213: -7478183328572363646
+    second: LavaBorder_SpriteSheet_360x640_145
+  - first:
+      213: 1823178972904313287
+    second: LavaBorder_SpriteSheet_360x640_146
+  - first:
+      213: -2657491159096840151
+    second: LavaBorder_SpriteSheet_360x640_147
+  - first:
+      213: 4760878368882819076
+    second: LavaBorder_SpriteSheet_360x640_148
+  - first:
+      213: 2075138191232559936
+    second: LavaBorder_SpriteSheet_360x640_149
+  - first:
+      213: 5915262460342553190
+    second: LavaBorder_SpriteSheet_360x640_150
+  - first:
+      213: 9025158296973467874
+    second: LavaBorder_SpriteSheet_360x640_151
+  - first:
+      213: -1266632044251275954
+    second: LavaBorder_SpriteSheet_360x640_152
+  - first:
+      213: 8440174857757990035
+    second: LavaBorder_SpriteSheet_360x640_153
+  - first:
+      213: -4179480119495688309
+    second: LavaBorder_SpriteSheet_360x640_154
+  - first:
+      213: -2275531426752009318
+    second: LavaBorder_SpriteSheet_360x640_155
+  - first:
+      213: -3581181359684608399
+    second: LavaBorder_SpriteSheet_360x640_156
+  - first:
+      213: -4506234006173081716
+    second: LavaBorder_SpriteSheet_360x640_157
+  - first:
+      213: 4218637297878730474
+    second: LavaBorder_SpriteSheet_360x640_158
+  - first:
+      213: 6325757490146740625
+    second: LavaBorder_SpriteSheet_360x640_159
+  - first:
+      213: 1662894621216231893
+    second: LavaBorder_SpriteSheet_360x640_160
+  - first:
+      213: -6400029741960367261
+    second: LavaBorder_SpriteSheet_360x640_161
+  - first:
+      213: 6289096940174001430
+    second: LavaBorder_SpriteSheet_360x640_162
+  - first:
+      213: 3850105245040528587
+    second: LavaBorder_SpriteSheet_360x640_163
+  - first:
+      213: -3974294392149483367
+    second: LavaBorder_SpriteSheet_360x640_164
+  - first:
+      213: -409272150587654093
+    second: LavaBorder_SpriteSheet_360x640_165
+  - first:
+      213: -8200466919588478151
+    second: LavaBorder_SpriteSheet_360x640_166
+  - first:
+      213: 4946346021205516667
+    second: LavaBorder_SpriteSheet_360x640_167
+  - first:
+      213: 7936066278955127652
+    second: LavaBorder_SpriteSheet_360x640_168
+  - first:
+      213: -197672707724511989
+    second: LavaBorder_SpriteSheet_360x640_169
+  - first:
+      213: -2122287634693220419
+    second: LavaBorder_SpriteSheet_360x640_170
+  - first:
+      213: 4728876547490785058
+    second: LavaBorder_SpriteSheet_360x640_171
+  - first:
+      213: 8281413883459129503
+    second: LavaBorder_SpriteSheet_360x640_172
+  - first:
+      213: -4328414518532792151
+    second: LavaBorder_SpriteSheet_360x640_173
+  - first:
+      213: -9210820907032490388
+    second: LavaBorder_SpriteSheet_360x640_174
+  - first:
+      213: 3574995180274981962
+    second: LavaBorder_SpriteSheet_360x640_175
+  - first:
+      213: -4361980245259202770
+    second: LavaBorder_SpriteSheet_360x640_176
+  - first:
+      213: 8568782006105732619
+    second: LavaBorder_SpriteSheet_360x640_177
+  - first:
+      213: -8893763814886263874
+    second: LavaBorder_SpriteSheet_360x640_178
+  - first:
+      213: 6131682996167904211
+    second: LavaBorder_SpriteSheet_360x640_179
+  - first:
+      213: -2812614362878095529
+    second: LavaBorder_SpriteSheet_360x640_180
+  - first:
+      213: 2700753083952104379
+    second: LavaBorder_SpriteSheet_360x640_181
+  - first:
+      213: -5206410258067113387
+    second: LavaBorder_SpriteSheet_360x640_182
+  - first:
+      213: 2368785076095170130
+    second: LavaBorder_SpriteSheet_360x640_183
+  - first:
+      213: -971900193892315005
+    second: LavaBorder_SpriteSheet_360x640_184
+  - first:
+      213: -8253795071635904232
+    second: LavaBorder_SpriteSheet_360x640_185
+  - first:
+      213: -2962309449598241875
+    second: LavaBorder_SpriteSheet_360x640_186
+  - first:
+      213: 5252712400644845505
+    second: LavaBorder_SpriteSheet_360x640_187
+  - first:
+      213: 336530636274840697
+    second: LavaBorder_SpriteSheet_360x640_188
+  - first:
+      213: -2804982119192044812
+    second: LavaBorder_SpriteSheet_360x640_189
+  - first:
+      213: 8658102596452850566
+    second: LavaBorder_SpriteSheet_360x640_190
+  - first:
+      213: -3402151977585269669
+    second: LavaBorder_SpriteSheet_360x640_191
+  - first:
+      213: -3020231010732426029
+    second: LavaBorder_SpriteSheet_360x640_192
+  - first:
+      213: 6873095609494450911
+    second: LavaBorder_SpriteSheet_360x640_193
+  - first:
+      213: -9191157332951628680
+    second: LavaBorder_SpriteSheet_360x640_194
+  - first:
+      213: 7769646908802273685
+    second: LavaBorder_SpriteSheet_360x640_195
+  - first:
+      213: -3133633311536573124
+    second: LavaBorder_SpriteSheet_360x640_196
+  - first:
+      213: -4845715621803442784
+    second: LavaBorder_SpriteSheet_360x640_197
+  - first:
+      213: 1620230541485349808
+    second: LavaBorder_SpriteSheet_360x640_198
+  - first:
+      213: 1924581008796915938
+    second: LavaBorder_SpriteSheet_360x640_199
+  - first:
+      213: 1376463378614069806
+    second: LavaBorder_SpriteSheet_360x640_200
+  - first:
+      213: -3989014733498072721
+    second: LavaBorder_SpriteSheet_360x640_201
+  - first:
+      213: -8834648244647186337
+    second: LavaBorder_SpriteSheet_360x640_202
+  - first:
+      213: 2800591820478605815
+    second: LavaBorder_SpriteSheet_360x640_203
+  - first:
+      213: -5225784918525839572
+    second: LavaBorder_SpriteSheet_360x640_204
+  - first:
+      213: -5879228429407029714
+    second: LavaBorder_SpriteSheet_360x640_205
+  - first:
+      213: -923172680880065290
+    second: LavaBorder_SpriteSheet_360x640_206
+  - first:
+      213: 4993501060025433838
+    second: LavaBorder_SpriteSheet_360x640_207
+  - first:
+      213: 2990673567930207581
+    second: LavaBorder_SpriteSheet_360x640_208
+  - first:
+      213: -4681841821983049270
+    second: LavaBorder_SpriteSheet_360x640_209
+  - first:
+      213: -4309514210265109669
+    second: LavaBorder_SpriteSheet_360x640_210
+  - first:
+      213: -3287740928099207913
+    second: LavaBorder_SpriteSheet_360x640_211
+  - first:
+      213: -4127061846563425277
+    second: LavaBorder_SpriteSheet_360x640_212
+  - first:
+      213: 2243174483463927862
+    second: LavaBorder_SpriteSheet_360x640_213
+  - first:
+      213: -8398168831773287526
+    second: LavaBorder_SpriteSheet_360x640_214
+  - first:
+      213: 5184705664628007139
+    second: LavaBorder_SpriteSheet_360x640_215
+  - first:
+      213: -7006801518430283619
+    second: LavaBorder_SpriteSheet_360x640_216
+  - first:
+      213: -7595491892648807662
+    second: LavaBorder_SpriteSheet_360x640_217
+  - first:
+      213: 3968640057506475392
+    second: LavaBorder_SpriteSheet_360x640_218
+  - first:
+      213: -8564483926827363182
+    second: LavaBorder_SpriteSheet_360x640_219
+  - first:
+      213: 4832962368037186960
+    second: LavaBorder_SpriteSheet_360x640_220
+  - first:
+      213: 7001835699392414527
+    second: LavaBorder_SpriteSheet_360x640_221
+  - first:
+      213: 6101299876520993080
+    second: LavaBorder_SpriteSheet_360x640_222
+  - first:
+      213: 7117005383586000361
+    second: LavaBorder_SpriteSheet_360x640_223
+  - first:
+      213: 5867470069364324392
+    second: LavaBorder_SpriteSheet_360x640_224
+  - first:
+      213: -3768778439359234838
+    second: LavaBorder_SpriteSheet_360x640_225
+  - first:
+      213: 5877496046178961067
+    second: LavaBorder_SpriteSheet_360x640_226
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 8960
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 152528f2c1686eb20800000000000000
+      internalID: 3163363243888628305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_1
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 8960
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6913edf6b004740a0800000000000000
+      internalID: -6897473886428974698
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_2
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 8960
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2967f9753852e480800000000000000
+      internalID: -8871431329263687377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_3
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 8960
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ec6f9f6834e2ad80800000000000000
+      internalID: -8240773437092565791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_4
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 8960
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7feb56159ed097fc0800000000000000
+      internalID: -3496748339932315913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_5
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 8960
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d712861a29a6ddfd0800000000000000
+      internalID: -2315577455392841347
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_6
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 8960
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42bd05bd290d82dd0800000000000000
+      internalID: -2510527463095739612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_7
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 8960
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43c893d85d4684010800000000000000
+      internalID: 1173298571290184756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_8
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 8960
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1840fb6a9ed402b10800000000000000
+      internalID: 1954647904199050369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_9
+      rect:
+        serializedVersion: 2
+        x: 3240
+        y: 8960
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a67777c4e2947530800000000000000
+      internalID: 3851865092605310628
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_10
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 8960
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0618fc272cfbbb080800000000000000
+      internalID: -9170525374339120800
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_11
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 8960
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d57a76d3199b8070800000000000000
+      internalID: 8109743864492488146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_12
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 8960
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04f6b18aca2bffc10800000000000000
+      internalID: 2089585206747688768
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_13
+      rect:
+        serializedVersion: 2
+        x: 4680
+        y: 8960
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8d68210ff5f427f0800000000000000
+      internalID: -638114771594875505
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_14
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 8960
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66788ca72d1f41ac0800000000000000
+      internalID: -3885214692208507034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_15
+      rect:
+        serializedVersion: 2
+        x: 5400
+        y: 8960
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1527a2b45aa5879b0800000000000000
+      internalID: -5082212513510428079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_16
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 8320
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ec253097cddcc900800000000000000
+      internalID: 706183090777959648
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_17
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 8320
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7a254e2e4f99a170800000000000000
+      internalID: 8190252555482507903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_18
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 8320
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf1110eba15ebb560800000000000000
+      internalID: 7330704721495265787
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_19
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 8320
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ab52e5d30e99c7a0800000000000000
+      internalID: -6356375659746272346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_20
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 8320
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a6bf291808006a40800000000000000
+      internalID: 5359292387446208168
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_21
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 8320
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 881044962035dec10800000000000000
+      internalID: 2084413472363512200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_22
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 8320
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5048f47140828ba70800000000000000
+      internalID: 8842861866378036229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_23
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 8320
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c304de459f7937f0800000000000000
+      internalID: -632333993419471928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_24
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 8320
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d9f23e01ded071d0800000000000000
+      internalID: -3354936732923266606
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_25
+      rect:
+        serializedVersion: 2
+        x: 3240
+        y: 8320
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1728415717a3add0800000000000000
+      internalID: -2475951651533871329
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_26
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 8320
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f6ff36e0ff7a6490800000000000000
+      internalID: -7752243135933057295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_27
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 8320
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 060061774b89887f0800000000000000
+      internalID: -610069848649236384
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_28
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 8320
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2832d6430740e9eb0800000000000000
+      internalID: -4711323280220544126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_29
+      rect:
+        serializedVersion: 2
+        x: 4680
+        y: 8320
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4305cc0080bafcfd0800000000000000
+      internalID: -2319447232211038156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_30
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 8320
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0609b58340f18020800000000000000
+      internalID: 2342417454006339087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_31
+      rect:
+        serializedVersion: 2
+        x: 5400
+        y: 8320
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ece0ed8642b1291e0800000000000000
+      internalID: -2192660225383854386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_32
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 7680
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 301e6109f09a70110800000000000000
+      internalID: 1227135307788771587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_33
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 7680
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eab44b88958e931e0800000000000000
+      internalID: -2217485870260008018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_34
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 7680
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe3d05075f68852f0800000000000000
+      internalID: -983888129870998545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_35
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 7680
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e33cec9bb1dd6110800000000000000
+      internalID: 1255890474828051431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_36
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 7680
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c444122a53de797b0800000000000000
+      internalID: -5217440828676291508
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_37
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 7680
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41837a899393d41a0800000000000000
+      internalID: -6823734940859418604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_38
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 7680
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0dbc015ae17a4a80800000000000000
+      internalID: -8481841697002832628
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_39
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 7680
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da16503d6b35a2bf0800000000000000
+      internalID: -348373976478293587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_40
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 7680
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78327dbaf52ee94e0800000000000000
+      internalID: -1972890686208924793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_41
+      rect:
+        serializedVersion: 2
+        x: 3240
+        y: 7680
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b236759979469a790800000000000000
+      internalID: -7518367500642852053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_42
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 7680
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ffd944c65f7d97f40800000000000000
+      internalID: 5726845850261691903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_43
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 7680
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e37bd4d41865e4210800000000000000
+      internalID: 1319086854213842750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_44
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 7680
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8289ce7ac8699780800000000000000
+      internalID: -8675787988232732022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_45
+      rect:
+        serializedVersion: 2
+        x: 4680
+        y: 7680
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b7f103ec51e73270800000000000000
+      internalID: 8230294633104668594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_46
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 7680
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46e78ecdf0ca619e0800000000000000
+      internalID: -1650943029253996956
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_47
+      rect:
+        serializedVersion: 2
+        x: 5400
+        y: 7680
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a33ca908f27959f30800000000000000
+      internalID: 4581734426196230970
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_48
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 7040
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21ab7e324651e7370800000000000000
+      internalID: 8322112681270557202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_49
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 7040
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a1fdd0fec68e3670800000000000000
+      internalID: 8520395768394019241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_50
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 7040
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78eb809777ff63e60800000000000000
+      internalID: 7941815881511255687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_51
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 7040
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0401b0b7434ee4940800000000000000
+      internalID: 5282410327005925440
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_52
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 7040
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cdee1356c9f0158c0800000000000000
+      internalID: -4012408628623315236
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_53
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 7040
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b4ea0be095e09d70800000000000000
+      internalID: 9047984061968737465
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_54
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 7040
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 532d7205f75ce19e0800000000000000
+      internalID: -1648663262974717387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_55
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 7040
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae7e76d5f646e8610800000000000000
+      internalID: 1625346944998565866
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_56
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 7040
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21ea88f1716679720800000000000000
+      internalID: 2852861138461830674
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_57
+      rect:
+        serializedVersion: 2
+        x: 3240
+        y: 7040
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf68bc08baed9a760800000000000000
+      internalID: 7469746285152274171
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_58
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 7040
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc109af958e5c6330800000000000000
+      internalID: 3705440521421390283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_59
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 7040
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 021d3e4a838dad830800000000000000
+      internalID: 4096824548843049248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_60
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 7040
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7eb266940276d93e0800000000000000
+      internalID: -2045365267388290073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_61
+      rect:
+        serializedVersion: 2
+        x: 4680
+        y: 7040
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 309f74047385941b0800000000000000
+      internalID: -5671905261371524861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_62
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 7040
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15a974f749a862d70800000000000000
+      internalID: 9018047674251188817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_63
+      rect:
+        serializedVersion: 2
+        x: 5400
+        y: 7040
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c656b636df3bcb6a0800000000000000
+      internalID: -6432068266915830420
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_64
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 6400
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20151cc9abef843e0800000000000000
+      internalID: -2069123951329455870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_65
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 6400
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29b57017073b9a7f0800000000000000
+      internalID: -600751779763233902
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_66
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 6400
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 989702376d702a200800000000000000
+      internalID: 189722751938886025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_67
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 6400
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c5edce5533f41b60800000000000000
+      internalID: 7716059472141870534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_68
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 6400
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17ffd578bf0cf8150800000000000000
+      internalID: 5877128225282195313
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_69
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 6400
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8cd5607bc605b670800000000000000
+      internalID: 8553750538093976715
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_70
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 6400
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd228fe4fa1fa7ad0800000000000000
+      internalID: -2703582891036106019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_71
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 6400
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a253b71dd3e6f8790800000000000000
+      internalID: -7525675240526236374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_72
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 6400
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eca9f17387a5e00b0800000000000000
+      internalID: -5760567400992892210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_73
+      rect:
+        serializedVersion: 2
+        x: 3240
+        y: 6400
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2fa50d83cb23ca40800000000000000
+      internalID: 5387197698149822252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_74
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 6400
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2f11bae6ec0b0a50800000000000000
+      internalID: 6488293874076819242
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_75
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 6400
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62a0203fb905d3740800000000000000
+      internalID: 5133347780999383590
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_76
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 6400
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1120d97d7797c7d20800000000000000
+      internalID: 3277628184444338705
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_77
+      rect:
+        serializedVersion: 2
+        x: 4680
+        y: 6400
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e7c13dfc5ecb5cd0800000000000000
+      internalID: -2568232263704524824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_78
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 6400
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e8e10af9b6c6ed20800000000000000
+      internalID: 3307549478415886564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_79
+      rect:
+        serializedVersion: 2
+        x: 5400
+        y: 6400
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c94dff3b76097080800000000000000
+      internalID: -9189306438248478271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_80
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 5760
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7005541dca2f5800800000000000000
+      internalID: 603247935388713083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_81
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 5760
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18040a11010e03ca0800000000000000
+      internalID: -6039080740684021631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_82
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 5760
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54141e617d857a920800000000000000
+      internalID: 3001465357490798917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_83
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 5760
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a4a04993eac51cd0800000000000000
+      internalID: -2587939331976944479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_84
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 5760
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d994c33941a8cd1d0800000000000000
+      internalID: -3324630603932087907
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_85
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 5760
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 92464dffee934e400800000000000000
+      internalID: 352470369498850345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_86
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 5760
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e0282d179719f6e0800000000000000
+      internalID: -1803384237988503321
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_87
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 5760
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e29890e17d3d7b660800000000000000
+      internalID: 7401617433482070318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_88
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 5760
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02a14f0b4ecf07ec0800000000000000
+      internalID: -3571076445353272800
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_89
+      rect:
+        serializedVersion: 2
+        x: 3240
+        y: 5760
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a2bf308c95d94cf0800000000000000
+      internalID: -267447834708561248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_90
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 5760
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 416a0264d194f6870800000000000000
+      internalID: 8678235397045659156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_91
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 5760
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ef58096c62bed230800000000000000
+      internalID: 3665563325414531044
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_92
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 5760
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8cb71294fba8218c0800000000000000
+      internalID: -4030006162372854840
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_93
+      rect:
+        serializedVersion: 2
+        x: 4680
+        y: 5760
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be23bd648a28414a0800000000000000
+      internalID: -6623525492700269845
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_94
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 5760
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eebce9b35a55fa120800000000000000
+      internalID: 2427252892334214126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_95
+      rect:
+        serializedVersion: 2
+        x: 5400
+        y: 5760
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5bb70a0134e39230800000000000000
+      internalID: 3644507422745672539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_96
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 5120
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f457ae575ee20ce0800000000000000
+      internalID: -1440326871787547404
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_97
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 5120
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd1d9ec8efdb4f7d0800000000000000
+      internalID: -2885472560254168609
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_98
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 5120
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca5c5c0cf37d506b0800000000000000
+      internalID: -5330617915106015828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_99
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 5120
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 318b4b82b3aee3c20800000000000000
+      internalID: 3188243126031792147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_100
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 5120
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc9a2f999506918a0800000000000000
+      internalID: -6333925462968718897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_101
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 5120
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af2096d8e8fc7c3b0800000000000000
+      internalID: -5492193009390255366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_102
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 5120
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b57967e3b4d5f8fa0800000000000000
+      internalID: -5796311617650649253
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_103
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 5120
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4762f53fb37ed2f0800000000000000
+      internalID: -946191606620199089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_104
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 5120
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20c72648dcabb9570800000000000000
+      internalID: 8474572515679828994
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_105
+      rect:
+        serializedVersion: 2
+        x: 3240
+        y: 5120
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 315125a5f80cc4e90800000000000000
+      internalID: -7040040395558742765
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_106
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 5120
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b21a31095cd217210800000000000000
+      internalID: 1328893691600019755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_107
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 5120
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce25dc26f841863e0800000000000000
+      internalID: -2060374223451499796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_108
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 5120
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6482c6df4d96236b0800000000000000
+      internalID: -5318071846465427386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_109
+      rect:
+        serializedVersion: 2
+        x: 4680
+        y: 5120
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b620197c66118860800000000000000
+      internalID: 7530324707083560627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_110
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 5120
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cab90221b47aafa10800000000000000
+      internalID: 1944050130032303020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_111
+      rect:
+        serializedVersion: 2
+        x: 5400
+        y: 5120
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85dbef27f1882b4d0800000000000000
+      internalID: -3120281923159671464
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_112
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b341fd173c8ec720800000000000000
+      internalID: 2868384181035025331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_113
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd3ea74770ea72570800000000000000
+      internalID: 8441907373571498971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_114
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2bcef8e7a63269ab0800000000000000
+      internalID: -5001771395851490126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_115
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba34038dd0bf3e1c0800000000000000
+      internalID: -4475457567795952725
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_116
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e531b813a55cea710800000000000000
+      internalID: 1706518299988923230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_117
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d67a15a17d94ec1a0800000000000000
+      internalID: -6787406400192403603
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_118
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f057072db3d3bc2b0800000000000000
+      internalID: -5563285587543165681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_119
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6366220df32268720800000000000000
+      internalID: 2848001471828616758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_120
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f0c29ff3b303aad0800000000000000
+      internalID: -2692304080615587600
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_121
+      rect:
+        serializedVersion: 2
+        x: 3240
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e18ad20ec683ae130800000000000000
+      internalID: 3596749292677474334
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_122
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66556aaabb20e9ff0800000000000000
+      internalID: -27581542672476826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_123
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c22316e9a8e40580800000000000000
+      internalID: -8861702350351162685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_124
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 283fb433cd3aa97c0800000000000000
+      internalID: -4063755547599703166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_125
+      rect:
+        serializedVersion: 2
+        x: 4680
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea88f56e9209aabc0800000000000000
+      internalID: -3771043228336289618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_126
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6fd20474dd566b770800000000000000
+      internalID: 8626194137332329974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_127
+      rect:
+        serializedVersion: 2
+        x: 5400
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0e735946620e9c40800000000000000
+      internalID: 5520852831542935053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_128
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 048b0034f733acc70800000000000000
+      internalID: 8992056227676600384
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_129
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f1e11c034f14f140800000000000000
+      internalID: 4752457879608484338
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_130
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a69a3e03a27e2c9c0800000000000000
+      internalID: -3908307358209300118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_131
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0e894d063a30db50800000000000000
+      internalID: 6615851856432827918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_132
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f88c5b6cde67f13a0800000000000000
+      internalID: -6692499757636138865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_133
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c87203c0c2355f40800000000000000
+      internalID: 5716531105503541448
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_134
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff80a0946c09a1cf0800000000000000
+      internalID: -280752845453915905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_135
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10760da308935e710800000000000000
+      internalID: 1721845655444416257
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_136
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7256077c9a07c1340800000000000000
+      internalID: 4835863974386885927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_137
+      rect:
+        serializedVersion: 2
+        x: 3240
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1767b9271a006660800000000000000
+      internalID: 7376907284233283357
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_138
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d397b9ca7ff24a50800000000000000
+      internalID: 6504041714711761874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_139
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e23cbbb3e3fc1bf80800000000000000
+      internalID: -8092459189210987730
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_140
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6bf2be153b78599f0800000000000000
+      internalID: -462314182492344394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_141
+      rect:
+        serializedVersion: 2
+        x: 4680
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 941c9c05cbb93d5a0800000000000000
+      internalID: -6497678604253937335
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_142
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: acb8cb4a9166774c0800000000000000
+      internalID: -4289847859723072566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_143
+      rect:
+        serializedVersion: 2
+        x: 5400
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7cbd84d7d645fd310800000000000000
+      internalID: 1431956035757202375
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_144
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ec96d16f99399610800000000000000
+      internalID: 1628396096975183080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_145
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28c223f32e7283890800000000000000
+      internalID: -7478183328572363646
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_146
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c15ce1cd9b3d4910800000000000000
+      internalID: 1823178972904313287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_147
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 920ba4ceed1be1bd0800000000000000
+      internalID: -2657491159096840151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_148
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4000a1cf6a9021240800000000000000
+      internalID: 4760878368882819076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_149
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04b634cb03f5ccc10800000000000000
+      internalID: 2075138191232559936
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_150
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66acbe50edb371250800000000000000
+      internalID: 5915262460342553190
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_151
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e0e5cc57adcf3d70800000000000000
+      internalID: 9025158296973467874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_152
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4d964dddd40c6ee0800000000000000
+      internalID: -1266632044251275954
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_153
+      rect:
+        serializedVersion: 2
+        x: 3240
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39c19dea056812570800000000000000
+      internalID: 8440174857757990035
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_154
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8ff6a3a9f08ff5c0800000000000000
+      internalID: -4179480119495688309
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_155
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9b65314930bb60e0800000000000000
+      internalID: -2275531426752009318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_156
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17e9fbbf6861d4ec0800000000000000
+      internalID: -3581181359684608399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_157
+      rect:
+        serializedVersion: 2
+        x: 4680
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8f9443eb04a671c0800000000000000
+      internalID: -4506234006173081716
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_158
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae68648654c9b8a30800000000000000
+      internalID: 4218637297878730474
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_159
+      rect:
+        serializedVersion: 2
+        x: 5400
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19986770cea99c750800000000000000
+      internalID: 6325757490146740625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_160
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d1508cf8d9c31710800000000000000
+      internalID: 1662894621216231893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_161
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3637486cbd68e27a0800000000000000
+      internalID: -6400029741960367261
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_162
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6154115985c574750800000000000000
+      internalID: 6289096940174001430
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_163
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bcc428652525e6530800000000000000
+      internalID: 3850105245040528587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_164
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9906a1b9e4878d8c0800000000000000
+      internalID: -3974294392149483367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_165
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33043cfb529f15af0800000000000000
+      internalID: -409272150587654093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_166
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9334699d8c6123e80800000000000000
+      internalID: -8200466919588478151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_167
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b712f1adf73f4a440800000000000000
+      internalID: 4946346021205516667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_168
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 463931fcb32922e60800000000000000
+      internalID: 7936066278955127652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_169
+      rect:
+        serializedVersion: 2
+        x: 3240
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b057a4a38b9b14df0800000000000000
+      internalID: -197672707724511989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_170
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db718eef3ae1c82e0800000000000000
+      internalID: -2122287634693220419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_171
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2272ddf4a2850a140800000000000000
+      internalID: 4728876547490785058
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_172
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f90d199dc0e7de270800000000000000
+      internalID: 8281413883459129503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_173
+      rect:
+        serializedVersion: 2
+        x: 4680
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a0a536ade16ee3c0800000000000000
+      internalID: -4328414518532792151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_174
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6e4692af279c2080800000000000000
+      internalID: -9210820907032490388
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_175
+      rect:
+        serializedVersion: 2
+        x: 5400
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4c1602ec2fec9130800000000000000
+      internalID: 3574995180274981962
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_176
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e2fcd04e3122773c0800000000000000
+      internalID: -4361980245259202770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_177
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b06f0bfc5dd6ae670800000000000000
+      internalID: 8568782006105732619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_178
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb33b797ee0039480800000000000000
+      internalID: -8893763814886263874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_179
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3db04eda23d181550800000000000000
+      internalID: 6131682996167904211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_180
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75f4d7a832697f8d0800000000000000
+      internalID: -2812614362878095529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_181
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb38103ee900b7520800000000000000
+      internalID: 2700753083952104379
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_182
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55ab5fc747d1fb7b0800000000000000
+      internalID: -5206410258067113387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_183
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25636e1f97d9fd020800000000000000
+      internalID: 2368785076095170130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_184
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3805ae94ced1382f0800000000000000
+      internalID: -971900193892315005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_185
+      rect:
+        serializedVersion: 2
+        x: 3240
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 819a542ec11a47d80800000000000000
+      internalID: -8253795071635904232
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_186
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da3f9e52043c3e6d0800000000000000
+      internalID: -2962309449598241875
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_187
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1cfa9bb291265e840800000000000000
+      internalID: 5252712400644845505
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_188
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 974b237a4d89ba400800000000000000
+      internalID: 336530636274840697
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_189
+      rect:
+        serializedVersion: 2
+        x: 4680
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4fa5c30cf93b219d0800000000000000
+      internalID: -2804982119192044812
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_190
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68b957a5072c72870800000000000000
+      internalID: 8658102596452850566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_191
+      rect:
+        serializedVersion: 2
+        x: 5400
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5423204dc029c0d0800000000000000
+      internalID: -3402151977585269669
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_192
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3dcbca9c5ebf516d0800000000000000
+      internalID: -3020231010732426029
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_193
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd2b637aa04226f50800000000000000
+      internalID: 6873095609494450911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_194
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87401be3a13727080800000000000000
+      internalID: -9191157332951628680
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_195
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5911f5db2b453db60800000000000000
+      internalID: 7769646908802273685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_196
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c3518891b191384d0800000000000000
+      internalID: -3133633311536573124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_197
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ad38dfc05f80ccb0800000000000000
+      internalID: -4845715621803442784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_198
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bb1977d7173c7610800000000000000
+      internalID: 1620230541485349808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_199
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e89dca0b3c75ba10800000000000000
+      internalID: 1924581008796915938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_200
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e2a20a8662e2a1310800000000000000
+      internalID: 1376463378614069806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_201
+      rect:
+        serializedVersion: 2
+        x: 3240
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f614c0e0c3c24a8c0800000000000000
+      internalID: -3989014733498072721
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_202
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f50b64eba36056580800000000000000
+      internalID: -8834648244647186337
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_203
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f9ed7c2c63bdd620800000000000000
+      internalID: 2800591820478605815
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_204
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c277ca2dd484a77b0800000000000000
+      internalID: -5225784918525839572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_205
+      rect:
+        serializedVersion: 2
+        x: 4680
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e26f0d794e8c86ea0800000000000000
+      internalID: -5879228429407029714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_206
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f47cc1865b3033f0800000000000000
+      internalID: -923172680880065290
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_207
+      rect:
+        serializedVersion: 2
+        x: 5400
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eee3a54e1ca7c4540800000000000000
+      internalID: 4993501060025433838
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_208
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5d41a7c3c1018920800000000000000
+      internalID: 2990673567930207581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_209
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac9f12a1ba1c60fb0800000000000000
+      internalID: -4681841821983049270
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_210
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5b66a698a78134c0800000000000000
+      internalID: -4309514210265109669
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_211
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 715322b8b099f52d0800000000000000
+      internalID: -3287740928099207913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_212
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 304f48ddd1bb9b6c0800000000000000
+      internalID: -4127061846563425277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_213
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6387610de4b512f10800000000000000
+      internalID: 2243174483463927862
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_214
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9b556261f5b37b80800000000000000
+      internalID: -8398168831773287526
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_215
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e0ab1d0556c3f740800000000000000
+      internalID: 5184705664628007139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_216
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d989b428427d2ce90800000000000000
+      internalID: -7006801518430283619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_217
+      rect:
+        serializedVersion: 2
+        x: 3240
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 213fe44cd54679690800000000000000
+      internalID: -7595491892648807662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_218
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08d2f050b11731730800000000000000
+      internalID: 3968640057506475392
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_219
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29499e0ce37d42980800000000000000
+      internalID: -8564483926827363182
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_220
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09defa7eaa1221340800000000000000
+      internalID: 4832962368037186960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_221
+      rect:
+        serializedVersion: 2
+        x: 4680
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f330fe5a8748b2160800000000000000
+      internalID: 7001835699392414527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_222
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8312b2069eb2ca450800000000000000
+      internalID: 6101299876520993080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_223
+      rect:
+        serializedVersion: 2
+        x: 5400
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9edaf2950bea4c260800000000000000
+      internalID: 7117005383586000361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_224
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82872bed0f07d6150800000000000000
+      internalID: 5867470069364324392
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_225
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 0
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aec77dc2afb92bbc0800000000000000
+      internalID: -3768778439359234838
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LavaBorder_SpriteSheet_360x640_226
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 0
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba68241838f019150800000000000000
+      internalID: 5877496046178961067
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: fb0740f2647f9f24595620dea9b9097a
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":360.0,"y":640.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      LavaBorder_SpriteSheet_360x640_0: 3163363243888628305
+      LavaBorder_SpriteSheet_360x640_1: -6897473886428974698
+      LavaBorder_SpriteSheet_360x640_10: -9170525374339120800
+      LavaBorder_SpriteSheet_360x640_100: -6333925462968718897
+      LavaBorder_SpriteSheet_360x640_101: -5492193009390255366
+      LavaBorder_SpriteSheet_360x640_102: -5796311617650649253
+      LavaBorder_SpriteSheet_360x640_103: -946191606620199089
+      LavaBorder_SpriteSheet_360x640_104: 8474572515679828994
+      LavaBorder_SpriteSheet_360x640_105: -7040040395558742765
+      LavaBorder_SpriteSheet_360x640_106: 1328893691600019755
+      LavaBorder_SpriteSheet_360x640_107: -2060374223451499796
+      LavaBorder_SpriteSheet_360x640_108: -5318071846465427386
+      LavaBorder_SpriteSheet_360x640_109: 7530324707083560627
+      LavaBorder_SpriteSheet_360x640_11: 8109743864492488146
+      LavaBorder_SpriteSheet_360x640_110: 1944050130032303020
+      LavaBorder_SpriteSheet_360x640_111: -3120281923159671464
+      LavaBorder_SpriteSheet_360x640_112: 2868384181035025331
+      LavaBorder_SpriteSheet_360x640_113: 8441907373571498971
+      LavaBorder_SpriteSheet_360x640_114: -5001771395851490126
+      LavaBorder_SpriteSheet_360x640_115: -4475457567795952725
+      LavaBorder_SpriteSheet_360x640_116: 1706518299988923230
+      LavaBorder_SpriteSheet_360x640_117: -6787406400192403603
+      LavaBorder_SpriteSheet_360x640_118: -5563285587543165681
+      LavaBorder_SpriteSheet_360x640_119: 2848001471828616758
+      LavaBorder_SpriteSheet_360x640_12: 2089585206747688768
+      LavaBorder_SpriteSheet_360x640_120: -2692304080615587600
+      LavaBorder_SpriteSheet_360x640_121: 3596749292677474334
+      LavaBorder_SpriteSheet_360x640_122: -27581542672476826
+      LavaBorder_SpriteSheet_360x640_123: -8861702350351162685
+      LavaBorder_SpriteSheet_360x640_124: -4063755547599703166
+      LavaBorder_SpriteSheet_360x640_125: -3771043228336289618
+      LavaBorder_SpriteSheet_360x640_126: 8626194137332329974
+      LavaBorder_SpriteSheet_360x640_127: 5520852831542935053
+      LavaBorder_SpriteSheet_360x640_128: 8992056227676600384
+      LavaBorder_SpriteSheet_360x640_129: 4752457879608484338
+      LavaBorder_SpriteSheet_360x640_13: -638114771594875505
+      LavaBorder_SpriteSheet_360x640_130: -3908307358209300118
+      LavaBorder_SpriteSheet_360x640_131: 6615851856432827918
+      LavaBorder_SpriteSheet_360x640_132: -6692499757636138865
+      LavaBorder_SpriteSheet_360x640_133: 5716531105503541448
+      LavaBorder_SpriteSheet_360x640_134: -280752845453915905
+      LavaBorder_SpriteSheet_360x640_135: 1721845655444416257
+      LavaBorder_SpriteSheet_360x640_136: 4835863974386885927
+      LavaBorder_SpriteSheet_360x640_137: 7376907284233283357
+      LavaBorder_SpriteSheet_360x640_138: 6504041714711761874
+      LavaBorder_SpriteSheet_360x640_139: -8092459189210987730
+      LavaBorder_SpriteSheet_360x640_14: -3885214692208507034
+      LavaBorder_SpriteSheet_360x640_140: -462314182492344394
+      LavaBorder_SpriteSheet_360x640_141: -6497678604253937335
+      LavaBorder_SpriteSheet_360x640_142: -4289847859723072566
+      LavaBorder_SpriteSheet_360x640_143: 1431956035757202375
+      LavaBorder_SpriteSheet_360x640_144: 1628396096975183080
+      LavaBorder_SpriteSheet_360x640_145: -7478183328572363646
+      LavaBorder_SpriteSheet_360x640_146: 1823178972904313287
+      LavaBorder_SpriteSheet_360x640_147: -2657491159096840151
+      LavaBorder_SpriteSheet_360x640_148: 4760878368882819076
+      LavaBorder_SpriteSheet_360x640_149: 2075138191232559936
+      LavaBorder_SpriteSheet_360x640_15: -5082212513510428079
+      LavaBorder_SpriteSheet_360x640_150: 5915262460342553190
+      LavaBorder_SpriteSheet_360x640_151: 9025158296973467874
+      LavaBorder_SpriteSheet_360x640_152: -1266632044251275954
+      LavaBorder_SpriteSheet_360x640_153: 8440174857757990035
+      LavaBorder_SpriteSheet_360x640_154: -4179480119495688309
+      LavaBorder_SpriteSheet_360x640_155: -2275531426752009318
+      LavaBorder_SpriteSheet_360x640_156: -3581181359684608399
+      LavaBorder_SpriteSheet_360x640_157: -4506234006173081716
+      LavaBorder_SpriteSheet_360x640_158: 4218637297878730474
+      LavaBorder_SpriteSheet_360x640_159: 6325757490146740625
+      LavaBorder_SpriteSheet_360x640_16: 706183090777959648
+      LavaBorder_SpriteSheet_360x640_160: 1662894621216231893
+      LavaBorder_SpriteSheet_360x640_161: -6400029741960367261
+      LavaBorder_SpriteSheet_360x640_162: 6289096940174001430
+      LavaBorder_SpriteSheet_360x640_163: 3850105245040528587
+      LavaBorder_SpriteSheet_360x640_164: -3974294392149483367
+      LavaBorder_SpriteSheet_360x640_165: -409272150587654093
+      LavaBorder_SpriteSheet_360x640_166: -8200466919588478151
+      LavaBorder_SpriteSheet_360x640_167: 4946346021205516667
+      LavaBorder_SpriteSheet_360x640_168: 7936066278955127652
+      LavaBorder_SpriteSheet_360x640_169: -197672707724511989
+      LavaBorder_SpriteSheet_360x640_17: 8190252555482507903
+      LavaBorder_SpriteSheet_360x640_170: -2122287634693220419
+      LavaBorder_SpriteSheet_360x640_171: 4728876547490785058
+      LavaBorder_SpriteSheet_360x640_172: 8281413883459129503
+      LavaBorder_SpriteSheet_360x640_173: -4328414518532792151
+      LavaBorder_SpriteSheet_360x640_174: -9210820907032490388
+      LavaBorder_SpriteSheet_360x640_175: 3574995180274981962
+      LavaBorder_SpriteSheet_360x640_176: -4361980245259202770
+      LavaBorder_SpriteSheet_360x640_177: 8568782006105732619
+      LavaBorder_SpriteSheet_360x640_178: -8893763814886263874
+      LavaBorder_SpriteSheet_360x640_179: 6131682996167904211
+      LavaBorder_SpriteSheet_360x640_18: 7330704721495265787
+      LavaBorder_SpriteSheet_360x640_180: -2812614362878095529
+      LavaBorder_SpriteSheet_360x640_181: 2700753083952104379
+      LavaBorder_SpriteSheet_360x640_182: -5206410258067113387
+      LavaBorder_SpriteSheet_360x640_183: 2368785076095170130
+      LavaBorder_SpriteSheet_360x640_184: -971900193892315005
+      LavaBorder_SpriteSheet_360x640_185: -8253795071635904232
+      LavaBorder_SpriteSheet_360x640_186: -2962309449598241875
+      LavaBorder_SpriteSheet_360x640_187: 5252712400644845505
+      LavaBorder_SpriteSheet_360x640_188: 336530636274840697
+      LavaBorder_SpriteSheet_360x640_189: -2804982119192044812
+      LavaBorder_SpriteSheet_360x640_19: -6356375659746272346
+      LavaBorder_SpriteSheet_360x640_190: 8658102596452850566
+      LavaBorder_SpriteSheet_360x640_191: -3402151977585269669
+      LavaBorder_SpriteSheet_360x640_192: -3020231010732426029
+      LavaBorder_SpriteSheet_360x640_193: 6873095609494450911
+      LavaBorder_SpriteSheet_360x640_194: -9191157332951628680
+      LavaBorder_SpriteSheet_360x640_195: 7769646908802273685
+      LavaBorder_SpriteSheet_360x640_196: -3133633311536573124
+      LavaBorder_SpriteSheet_360x640_197: -4845715621803442784
+      LavaBorder_SpriteSheet_360x640_198: 1620230541485349808
+      LavaBorder_SpriteSheet_360x640_199: 1924581008796915938
+      LavaBorder_SpriteSheet_360x640_2: -8871431329263687377
+      LavaBorder_SpriteSheet_360x640_20: 5359292387446208168
+      LavaBorder_SpriteSheet_360x640_200: 1376463378614069806
+      LavaBorder_SpriteSheet_360x640_201: -3989014733498072721
+      LavaBorder_SpriteSheet_360x640_202: -8834648244647186337
+      LavaBorder_SpriteSheet_360x640_203: 2800591820478605815
+      LavaBorder_SpriteSheet_360x640_204: -5225784918525839572
+      LavaBorder_SpriteSheet_360x640_205: -5879228429407029714
+      LavaBorder_SpriteSheet_360x640_206: -923172680880065290
+      LavaBorder_SpriteSheet_360x640_207: 4993501060025433838
+      LavaBorder_SpriteSheet_360x640_208: 2990673567930207581
+      LavaBorder_SpriteSheet_360x640_209: -4681841821983049270
+      LavaBorder_SpriteSheet_360x640_21: 2084413472363512200
+      LavaBorder_SpriteSheet_360x640_210: -4309514210265109669
+      LavaBorder_SpriteSheet_360x640_211: -3287740928099207913
+      LavaBorder_SpriteSheet_360x640_212: -4127061846563425277
+      LavaBorder_SpriteSheet_360x640_213: 2243174483463927862
+      LavaBorder_SpriteSheet_360x640_214: -8398168831773287526
+      LavaBorder_SpriteSheet_360x640_215: 5184705664628007139
+      LavaBorder_SpriteSheet_360x640_216: -7006801518430283619
+      LavaBorder_SpriteSheet_360x640_217: -7595491892648807662
+      LavaBorder_SpriteSheet_360x640_218: 3968640057506475392
+      LavaBorder_SpriteSheet_360x640_219: -8564483926827363182
+      LavaBorder_SpriteSheet_360x640_22: 8842861866378036229
+      LavaBorder_SpriteSheet_360x640_220: 4832962368037186960
+      LavaBorder_SpriteSheet_360x640_221: 7001835699392414527
+      LavaBorder_SpriteSheet_360x640_222: 6101299876520993080
+      LavaBorder_SpriteSheet_360x640_223: 7117005383586000361
+      LavaBorder_SpriteSheet_360x640_224: 5867470069364324392
+      LavaBorder_SpriteSheet_360x640_225: -3768778439359234838
+      LavaBorder_SpriteSheet_360x640_226: 5877496046178961067
+      LavaBorder_SpriteSheet_360x640_23: -632333993419471928
+      LavaBorder_SpriteSheet_360x640_24: -3354936732923266606
+      LavaBorder_SpriteSheet_360x640_25: -2475951651533871329
+      LavaBorder_SpriteSheet_360x640_26: -7752243135933057295
+      LavaBorder_SpriteSheet_360x640_27: -610069848649236384
+      LavaBorder_SpriteSheet_360x640_28: -4711323280220544126
+      LavaBorder_SpriteSheet_360x640_29: -2319447232211038156
+      LavaBorder_SpriteSheet_360x640_3: -8240773437092565791
+      LavaBorder_SpriteSheet_360x640_30: 2342417454006339087
+      LavaBorder_SpriteSheet_360x640_31: -2192660225383854386
+      LavaBorder_SpriteSheet_360x640_32: 1227135307788771587
+      LavaBorder_SpriteSheet_360x640_33: -2217485870260008018
+      LavaBorder_SpriteSheet_360x640_34: -983888129870998545
+      LavaBorder_SpriteSheet_360x640_35: 1255890474828051431
+      LavaBorder_SpriteSheet_360x640_36: -5217440828676291508
+      LavaBorder_SpriteSheet_360x640_37: -6823734940859418604
+      LavaBorder_SpriteSheet_360x640_38: -8481841697002832628
+      LavaBorder_SpriteSheet_360x640_39: -348373976478293587
+      LavaBorder_SpriteSheet_360x640_4: -3496748339932315913
+      LavaBorder_SpriteSheet_360x640_40: -1972890686208924793
+      LavaBorder_SpriteSheet_360x640_41: -7518367500642852053
+      LavaBorder_SpriteSheet_360x640_42: 5726845850261691903
+      LavaBorder_SpriteSheet_360x640_43: 1319086854213842750
+      LavaBorder_SpriteSheet_360x640_44: -8675787988232732022
+      LavaBorder_SpriteSheet_360x640_45: 8230294633104668594
+      LavaBorder_SpriteSheet_360x640_46: -1650943029253996956
+      LavaBorder_SpriteSheet_360x640_47: 4581734426196230970
+      LavaBorder_SpriteSheet_360x640_48: 8322112681270557202
+      LavaBorder_SpriteSheet_360x640_49: 8520395768394019241
+      LavaBorder_SpriteSheet_360x640_5: -2315577455392841347
+      LavaBorder_SpriteSheet_360x640_50: 7941815881511255687
+      LavaBorder_SpriteSheet_360x640_51: 5282410327005925440
+      LavaBorder_SpriteSheet_360x640_52: -4012408628623315236
+      LavaBorder_SpriteSheet_360x640_53: 9047984061968737465
+      LavaBorder_SpriteSheet_360x640_54: -1648663262974717387
+      LavaBorder_SpriteSheet_360x640_55: 1625346944998565866
+      LavaBorder_SpriteSheet_360x640_56: 2852861138461830674
+      LavaBorder_SpriteSheet_360x640_57: 7469746285152274171
+      LavaBorder_SpriteSheet_360x640_58: 3705440521421390283
+      LavaBorder_SpriteSheet_360x640_59: 4096824548843049248
+      LavaBorder_SpriteSheet_360x640_6: -2510527463095739612
+      LavaBorder_SpriteSheet_360x640_60: -2045365267388290073
+      LavaBorder_SpriteSheet_360x640_61: -5671905261371524861
+      LavaBorder_SpriteSheet_360x640_62: 9018047674251188817
+      LavaBorder_SpriteSheet_360x640_63: -6432068266915830420
+      LavaBorder_SpriteSheet_360x640_64: -2069123951329455870
+      LavaBorder_SpriteSheet_360x640_65: -600751779763233902
+      LavaBorder_SpriteSheet_360x640_66: 189722751938886025
+      LavaBorder_SpriteSheet_360x640_67: 7716059472141870534
+      LavaBorder_SpriteSheet_360x640_68: 5877128225282195313
+      LavaBorder_SpriteSheet_360x640_69: 8553750538093976715
+      LavaBorder_SpriteSheet_360x640_7: 1173298571290184756
+      LavaBorder_SpriteSheet_360x640_70: -2703582891036106019
+      LavaBorder_SpriteSheet_360x640_71: -7525675240526236374
+      LavaBorder_SpriteSheet_360x640_72: -5760567400992892210
+      LavaBorder_SpriteSheet_360x640_73: 5387197698149822252
+      LavaBorder_SpriteSheet_360x640_74: 6488293874076819242
+      LavaBorder_SpriteSheet_360x640_75: 5133347780999383590
+      LavaBorder_SpriteSheet_360x640_76: 3277628184444338705
+      LavaBorder_SpriteSheet_360x640_77: -2568232263704524824
+      LavaBorder_SpriteSheet_360x640_78: 3307549478415886564
+      LavaBorder_SpriteSheet_360x640_79: -9189306438248478271
+      LavaBorder_SpriteSheet_360x640_8: 1954647904199050369
+      LavaBorder_SpriteSheet_360x640_80: 603247935388713083
+      LavaBorder_SpriteSheet_360x640_81: -6039080740684021631
+      LavaBorder_SpriteSheet_360x640_82: 3001465357490798917
+      LavaBorder_SpriteSheet_360x640_83: -2587939331976944479
+      LavaBorder_SpriteSheet_360x640_84: -3324630603932087907
+      LavaBorder_SpriteSheet_360x640_85: 352470369498850345
+      LavaBorder_SpriteSheet_360x640_86: -1803384237988503321
+      LavaBorder_SpriteSheet_360x640_87: 7401617433482070318
+      LavaBorder_SpriteSheet_360x640_88: -3571076445353272800
+      LavaBorder_SpriteSheet_360x640_89: -267447834708561248
+      LavaBorder_SpriteSheet_360x640_9: 3851865092605310628
+      LavaBorder_SpriteSheet_360x640_90: 8678235397045659156
+      LavaBorder_SpriteSheet_360x640_91: 3665563325414531044
+      LavaBorder_SpriteSheet_360x640_92: -4030006162372854840
+      LavaBorder_SpriteSheet_360x640_93: -6623525492700269845
+      LavaBorder_SpriteSheet_360x640_94: 2427252892334214126
+      LavaBorder_SpriteSheet_360x640_95: 3644507422745672539
+      LavaBorder_SpriteSheet_360x640_96: -1440326871787547404
+      LavaBorder_SpriteSheet_360x640_97: -2885472560254168609
+      LavaBorder_SpriteSheet_360x640_98: -5330617915106015828
+      LavaBorder_SpriteSheet_360x640_99: 3188243126031792147
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

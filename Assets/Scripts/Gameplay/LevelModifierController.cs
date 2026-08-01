@@ -48,6 +48,10 @@ public class LevelModifierController : MonoBehaviour
     readonly Dictionary<Vector2Int, Image> _infectionVisuals = new();
     readonly HashSet<int> _soulLinkPropagationGroups = new();
     readonly List<Vector2Int> _soulLinkScratchCells = new();
+    readonly List<int> _outFlankedRows = new();
+    readonly List<RectTransform> _outFlankedProjectiles = new();
+    readonly HashSet<Vector2Int> _volcanicTargetSet = new();
+    readonly List<Vector2Int> _volcanicTargetList = new();
 
     GameController _gc;
     LevelModifierSelectionUI _selectionUI;
@@ -62,11 +66,16 @@ public class LevelModifierController : MonoBehaviour
     float _autoShiftTimer;
     float _autoShiftPauseRemaining;
     bool _autoShiftMovingRight = true;
+    float _outFlankedCountdown;
+    float _volcanicEruptionCountdown;
+    float _volcanoAnimTimer;
+    int _volcanoAnimFrameIndex;
     int _availableRerolls;
     int _comboShieldRemaining;
     int _pendingComboShieldBreaks;
     int _rearAmbushRowsSpawnedThisLevel;
     Coroutine _comboShieldPulseCR;
+    Image _volcanoAnimImage;
 
     static Sprite _onePx;
 
@@ -108,6 +117,13 @@ public class LevelModifierController : MonoBehaviour
                 break;
             case LevelModifierKind.Contagion:
                 UpdateContagion(dt);
+                break;
+            case LevelModifierKind.OutFlanked:
+                UpdateOutFlanked(dt);
+                break;
+            case LevelModifierKind.VolcanicEruption:
+                UpdateVolcanicEruption(dt);
+                UpdateVolcanoAnimation(dt);
                 break;
         }
 
@@ -246,6 +262,22 @@ public class LevelModifierController : MonoBehaviour
     public bool EnablesPiercingCastleProjectiles => ActiveModifier && ActiveModifier.kind == LevelModifierKind.PiercingShot;
     public Sprite ActivePiercingCastleProjectileSprite =>
         EnablesPiercingCastleProjectiles ? ActiveModifier.piercingProjectileSprite : null;
+    public Sprite ActiveCastleProjectileSpriteOverride
+    {
+        get
+        {
+            if (!ActiveModifier)
+                return null;
+
+            if (ActiveModifier.kind == LevelModifierKind.PiercingShot)
+                return ActiveModifier.piercingProjectileSprite;
+
+            if (ActiveModifier.kind == LevelModifierKind.OutFlanked)
+                return ActiveModifier.outFlankedProjectileSprite;
+
+            return null;
+        }
+    }
     public bool AppliesAutoMovementGravitySlow => ActiveModifier &&
         (ActiveModifier.kind == LevelModifierKind.AutoRotate || ActiveModifier.kind == LevelModifierKind.AutoShift);
     public float ActiveGravityMultiplier => AppliesAutoMovementGravitySlow ? AutoMovementGravityMultiplier : 1f;
@@ -510,6 +542,10 @@ public class LevelModifierController : MonoBehaviour
         _autoShiftTimer = 0f;
         _autoShiftPauseRemaining = 0f;
         _autoShiftMovingRight = true;
+        _outFlankedCountdown = 0f;
+        _volcanicEruptionCountdown = 0f;
+        _volcanoAnimTimer = 0f;
+        _volcanoAnimFrameIndex = 0;
 
         if (ActiveModifier.kind == LevelModifierKind.SpecialLock)
             _gc?.SetSpecialGaugeImmediate(0f);
@@ -533,6 +569,15 @@ public class LevelModifierController : MonoBehaviour
 
         if (ActiveModifier.kind == LevelModifierKind.Swamp)
             ApplySwampRows();
+
+        if (ActiveModifier.kind == LevelModifierKind.OutFlanked)
+            ScheduleOutFlankedWave();
+
+        if (ActiveModifier.kind == LevelModifierKind.VolcanicEruption)
+        {
+            ScheduleVolcanicEruption();
+            EnsureVolcanoAnimation();
+        }
     }
 
     void RefreshModifierUI()
@@ -766,6 +811,450 @@ public class LevelModifierController : MonoBehaviour
 
             _contagionFloorSpreadTimers[cell] = timer;
         }
+    }
+
+    void UpdateOutFlanked(float dt)
+    {
+        _outFlankedCountdown -= dt;
+        if (_outFlankedCountdown > 0f)
+            return;
+
+        ScheduleOutFlankedWave();
+        SpawnOutFlankedWave();
+    }
+
+    void ScheduleOutFlankedWave()
+    {
+        if (!ActiveModifier)
+        {
+            _outFlankedCountdown = 0f;
+            return;
+        }
+
+        float min = Mathf.Min(ActiveModifier.outFlankedIntervalMin, ActiveModifier.outFlankedIntervalMax);
+        float max = Mathf.Max(ActiveModifier.outFlankedIntervalMin, ActiveModifier.outFlankedIntervalMax);
+        _outFlankedCountdown = Random.Range(Mathf.Max(0.1f, min), Mathf.Max(0.1f, max));
+    }
+
+    void SpawnOutFlankedWave()
+    {
+        if (!board || !ActiveModifier)
+            return;
+
+        int rowsToSpawn = Mathf.Max(1, ActiveModifier.outFlankedRowsPerWave);
+        PickOutFlankedRows(_outFlankedRows, rowsToSpawn);
+
+        for (int i = 0; i < _outFlankedRows.Count; i++)
+        {
+            int row = _outFlankedRows[i];
+            SpawnOutFlankedProjectile(row, fromLeft: true, ActiveModifier);
+            SpawnOutFlankedProjectile(row, fromLeft: false, ActiveModifier);
+        }
+    }
+
+    void PickOutFlankedRows(List<int> rows, int count)
+    {
+        rows.Clear();
+        if (!board || board.height <= 0 || count <= 0)
+            return;
+
+        var aliveRows = new List<int>();
+        var seen = new HashSet<int>();
+        var monsterCells = board.GetMonsterCells(includeDead: false);
+        for (int i = 0; i < monsterCells.Count; i++)
+        {
+            int row = monsterCells[i].y;
+            if (row >= 0 && row < board.height && seen.Add(row))
+                aliveRows.Add(row);
+        }
+
+        while (rows.Count < count && aliveRows.Count > 0)
+        {
+            int index = Random.Range(0, aliveRows.Count);
+            rows.Add(aliveRows[index]);
+            aliveRows.RemoveAt(index);
+        }
+
+        int maxRows = Mathf.Min(count, board.height);
+        int safety = board.height * 3;
+        while (rows.Count < maxRows && safety-- > 0)
+        {
+            int row = Random.Range(0, board.height);
+            if (!rows.Contains(row))
+                rows.Add(row);
+        }
+    }
+
+    void SpawnOutFlankedProjectile(int row, bool fromLeft, LevelModifierSO modifier)
+    {
+        if (!board || !modifier || row < 0 || row >= board.height)
+            return;
+
+        RectTransform root = board.overlayRoot ? board.overlayRoot : board.gridRoot;
+        if (!root)
+            return;
+
+        Sprite sprite = modifier.outFlankedProjectileSprite ? modifier.outFlankedProjectileSprite : modifier.icon;
+        var go = new GameObject(fromLeft ? "OutFlankedArrow_Left" : "OutFlankedArrow_Right", typeof(Image));
+        go.transform.SetParent(root, false);
+
+        var img = go.GetComponent<Image>();
+        img.sprite = sprite ? sprite : OnePx();
+        img.preserveAspect = true;
+        img.raycastTarget = false;
+
+        Vector2 cellSize = board.GetCellSize();
+        float visualScale = _gc ? _gc.CurrentEnemyProjectileVisualScaleForModifiers : 1f;
+        img.rectTransform.sizeDelta = cellSize *
+            Mathf.Max(0.1f, visualScale) *
+            Mathf.Max(0.1f, modifier.outFlankedProjectileSizeMultiplier);
+
+        Vector2 left = board.CellToAnchoredPos(new Vector2Int(0, row)) - new Vector2(cellSize.x * 0.75f, 0f);
+        Vector2 right = board.CellToAnchoredPos(new Vector2Int(board.width - 1, row)) + new Vector2(cellSize.x * 0.75f, 0f);
+
+        img.rectTransform.anchorMin = img.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+        img.rectTransform.anchoredPosition = BoardLocalToRoot(root, fromLeft ? left : right);
+        img.rectTransform.localEulerAngles = new Vector3(0f, 0f, fromLeft ? 90f : -90f);
+
+        _outFlankedProjectiles.Add(img.rectTransform);
+        StartCoroutine(OutFlankedProjectileRoutine(img.rectTransform, row, fromLeft, modifier));
+    }
+
+    IEnumerator OutFlankedProjectileRoutine(RectTransform projectile, int row, bool movingRight, LevelModifierSO modifier)
+    {
+        RectTransform root = projectile ? projectile.parent as RectTransform : null;
+        if (!projectile || !root || !board)
+            yield break;
+
+        Vector2 cellSize = board.GetCellSize();
+        Vector2 endBoard = movingRight
+            ? board.CellToAnchoredPos(new Vector2Int(board.width - 1, row)) + new Vector2(cellSize.x * 0.75f, 0f)
+            : board.CellToAnchoredPos(new Vector2Int(0, row)) - new Vector2(cellSize.x * 0.75f, 0f);
+        Vector2 end = BoardLocalToRoot(root, endBoard);
+
+        while (projectile && ActiveModifier == modifier && board)
+        {
+            if (_gc && !_gc.IsRoundActive)
+            {
+                yield return null;
+                continue;
+            }
+
+            if ((projectile.anchoredPosition - end).sqrMagnitude <= 4f)
+                break;
+
+            Vector2 previous = projectile.anchoredPosition;
+            float speed = Mathf.Max(10f, _gc ? _gc.CurrentEnemyProjectileSpeedForModifiers : 280f);
+            projectile.anchoredPosition = Vector2.MoveTowards(projectile.anchoredPosition, end, speed * Time.deltaTime);
+
+            if (TryGetOutFlankedImpactCell(root, row, previous, projectile.anchoredPosition, movingRight, out var hitCell))
+            {
+                projectile.anchoredPosition = BoardLocalToRoot(root, board.CellToAnchoredPos(hitCell));
+
+                if (board.HasObstacle(hitCell))
+                    board.TryHandleEnemyProjectileObstacleImpact(hitCell);
+                else
+                    board.DamageTile(hitCell, _gc ? _gc.CastleProjectileDamageForStats : 1, Board.DamageSource.CastleProjectile);
+
+                DestroyOutFlankedProjectile(projectile);
+                yield break;
+            }
+
+            yield return null;
+        }
+
+        DestroyOutFlankedProjectile(projectile);
+    }
+
+    bool TryGetOutFlankedImpactCell(RectTransform root, int row, Vector2 previousRootPos, Vector2 currentRootPos,
+                                    bool movingRight, out Vector2Int hitCell)
+    {
+        hitCell = default;
+        if (!board || row < 0 || row >= board.height)
+            return false;
+
+        Vector2 previousBoard = RootLocalToBoard(root, previousRootPos);
+        Vector2 currentBoard = RootLocalToBoard(root, currentRootPos);
+        float sweepLeft = Mathf.Min(previousBoard.x, currentBoard.x);
+        float sweepRight = Mathf.Max(previousBoard.x, currentBoard.x);
+        float halfCell = board.GetCellSize().x * 0.5f;
+
+        int start = movingRight ? 0 : board.width - 1;
+        int end = movingRight ? board.width : -1;
+        int step = movingRight ? 1 : -1;
+
+        for (int x = start; x != end; x += step)
+        {
+            var c = new Vector2Int(x, row);
+            float centerX = board.CellToAnchoredPos(c).x;
+            float cellLeft = centerX - halfCell;
+            float cellRight = centerX + halfCell;
+
+            if (sweepRight < cellLeft || sweepLeft > cellRight)
+                continue;
+
+            if (board.HasObstacle(c))
+            {
+                hitCell = c;
+                return true;
+            }
+
+            if (board.TryGetMonster(c, out var inst) && inst.data && inst.hp > 0f)
+            {
+                hitCell = c;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    void UpdateVolcanicEruption(float dt)
+    {
+        _volcanicEruptionCountdown -= dt;
+        if (_volcanicEruptionCountdown > 0f)
+            return;
+
+        ScheduleVolcanicEruption();
+        TryStartVolcanicEruption();
+    }
+
+    void ScheduleVolcanicEruption()
+    {
+        if (!ActiveModifier)
+        {
+            _volcanicEruptionCountdown = 0f;
+            return;
+        }
+
+        float min = Mathf.Min(ActiveModifier.volcanicEruptionIntervalMin, ActiveModifier.volcanicEruptionIntervalMax);
+        float max = Mathf.Max(ActiveModifier.volcanicEruptionIntervalMin, ActiveModifier.volcanicEruptionIntervalMax);
+        _volcanicEruptionCountdown = Random.Range(Mathf.Max(0.1f, min), Mathf.Max(0.1f, max));
+    }
+
+    void TryStartVolcanicEruption()
+    {
+        if (!board || !ActiveModifier)
+            return;
+
+        if (!PickVolcanicTargets(_volcanicTargetList))
+            return;
+
+        StartCoroutine(VolcanicEruptionRoutine(new List<Vector2Int>(_volcanicTargetList), ActiveModifier));
+    }
+
+    bool PickVolcanicTargets(List<Vector2Int> targets)
+    {
+        targets.Clear();
+        _volcanicTargetSet.Clear();
+
+        if (!board || !ActiveModifier)
+            return false;
+
+        int availableRows = board.height - Mathf.Max(0, ActiveModifier.volcanicEruptionExcludedTopRows);
+        if (availableRows <= 0)
+            return false;
+
+        var candidates = new List<Vector2Int>();
+        for (int y = 0; y < availableRows; y++)
+        {
+            for (int x = 0; x < board.width; x++)
+            {
+                Vector2Int cell = new Vector2Int(x, y);
+                if (board.HasObstacle(cell))
+                    continue;
+
+                if (board.TryGetMonster(cell, out var inst) && inst.data && inst.hp > 0f)
+                {
+                    candidates.Add(cell);
+                    continue;
+                }
+
+                if (board.IsFree(cell))
+                    candidates.Add(cell);
+            }
+        }
+
+        int targetCount = Mathf.Min(Mathf.Max(1, ActiveModifier.volcanicEruptionTargetCount), candidates.Count);
+        while (targets.Count < targetCount && candidates.Count > 0)
+        {
+            int index = Random.Range(0, candidates.Count);
+            Vector2Int cell = candidates[index];
+            candidates.RemoveAt(index);
+            if (_volcanicTargetSet.Add(cell))
+                targets.Add(cell);
+        }
+
+        return targets.Count > 0;
+    }
+
+    IEnumerator VolcanicEruptionRoutine(List<Vector2Int> targets, LevelModifierSO modifier)
+    {
+        if (targets == null || targets.Count == 0 || !board || !modifier)
+            yield break;
+
+        float warningSeconds = Mathf.Max(0.1f, modifier.volcanicEruptionWarningSeconds);
+        Sprite warningSprite = modifier.volcanicEruptionWarningSprite ? modifier.volcanicEruptionWarningSprite : modifier.icon;
+        Color warningTint = modifier.volcanicEruptionWarningTint;
+
+        for (int i = 0; i < targets.Count; i++)
+        {
+            Vector2Int cell = targets[i];
+            board.FlashTintAtCell(cell, warningTint, warningSeconds, 0.08f);
+            board.FlashWarningAtCell(cell, warningSprite, warningSeconds, 0.08f, 1f);
+        }
+
+        yield return new WaitForSeconds(warningSeconds);
+
+        if (ActiveModifier != modifier || !board)
+            yield break;
+
+        float damage = _gc ? _gc.CastleProjectileDamageForStats : 1f;
+        for (int i = 0; i < targets.Count; i++)
+        {
+            Vector2Int cell = targets[i];
+            if (!board.InBounds(cell) || board.HasObstacle(cell))
+                continue;
+
+            if (board.TryGetMonster(cell, out var inst) && inst.data && inst.hp > 0f)
+            {
+                board.DamageTile(cell, damage, Board.DamageSource.VolcanicEruption);
+                continue;
+            }
+
+            if (board.IsFree(cell))
+                board.TrySpawnCustomObstacle(cell, Board.ObstacleType.HardenedLava,
+                    modifier.hardenedLavaObstacleSprite, 1, false);
+        }
+    }
+
+    void UpdateVolcanoAnimation(float dt)
+    {
+        if (!ActiveModifier || ActiveModifier.kind != LevelModifierKind.VolcanicEruption)
+            return;
+
+        EnsureVolcanoAnimation();
+
+        var frames = ActiveModifier.volcanicVolcanoAnimFrames;
+        if (!_volcanoAnimImage || frames == null || frames.Length == 0)
+            return;
+
+        float frameSeconds = Mathf.Max(0.02f, ActiveModifier.volcanicVolcanoAnimFrameSeconds);
+        _volcanoAnimTimer += Mathf.Max(0f, dt);
+        if (_volcanoAnimTimer < frameSeconds)
+            return;
+
+        _volcanoAnimTimer = 0f;
+        _volcanoAnimFrameIndex = (_volcanoAnimFrameIndex + 1) % frames.Length;
+        Sprite next = frames[_volcanoAnimFrameIndex];
+        if (next)
+            _volcanoAnimImage.sprite = next;
+    }
+
+    void EnsureVolcanoAnimation()
+    {
+        if (!ActiveModifier || ActiveModifier.kind != LevelModifierKind.VolcanicEruption)
+            return;
+
+        var frames = ActiveModifier.volcanicVolcanoAnimFrames;
+        if (frames == null || frames.Length == 0)
+        {
+            DestroyVolcanoAnimation();
+            return;
+        }
+
+        if (!_volcanoAnimImage)
+        {
+            EnsureBoardPresentation();
+            RectTransform parent = backgroundOverrideImage ? backgroundOverrideImage.rectTransform : null;
+            if (!parent && board)
+                parent = board.transform as RectTransform;
+
+            if (!parent)
+                return;
+
+            var go = new GameObject("VolcanicEruptionVolcano", typeof(Image));
+            go.transform.SetParent(parent, false);
+
+            _volcanoAnimImage = go.GetComponent<Image>();
+            _volcanoAnimImage.preserveAspect = true;
+            _volcanoAnimImage.raycastTarget = false;
+            _volcanoAnimImage.color = Color.white;
+
+            var rt = _volcanoAnimImage.rectTransform;
+            rt.anchorMin = rt.anchorMax = new Vector2(1f, 0f);
+            rt.pivot = new Vector2(1f, 0f);
+            rt.anchoredPosition = new Vector2(-20f, 20f);
+            rt.localScale = Vector3.one;
+        }
+
+        _volcanoAnimImage.rectTransform.sizeDelta = ActiveModifier.volcanicVolcanoAnimSize;
+        _volcanoAnimImage.gameObject.SetActive(true);
+
+        if (!_volcanoAnimImage.sprite)
+        {
+            _volcanoAnimFrameIndex = 0;
+            for (int i = 0; i < frames.Length; i++)
+            {
+                if (!frames[i])
+                    continue;
+
+                _volcanoAnimFrameIndex = i;
+                _volcanoAnimImage.sprite = frames[i];
+                break;
+            }
+        }
+    }
+
+    void DestroyVolcanoAnimation()
+    {
+        if (_volcanoAnimImage)
+            Destroy(_volcanoAnimImage.gameObject);
+
+        _volcanoAnimImage = null;
+    }
+
+    Vector2 BoardLocalToRoot(RectTransform root, Vector2 anchored)
+    {
+        if (!board || !board.gridRoot || !root || root == board.gridRoot)
+            return anchored;
+
+        var world = board.gridRoot.TransformPoint(new Vector3(anchored.x, anchored.y, 0f));
+        var local = root.InverseTransformPoint(world);
+        return new Vector2(local.x, local.y);
+    }
+
+    Vector2 RootLocalToBoard(RectTransform root, Vector2 anchored)
+    {
+        if (!board || !board.gridRoot || !root || root == board.gridRoot)
+            return anchored;
+
+        var world = root.TransformPoint(new Vector3(anchored.x, anchored.y, 0f));
+        var local = board.gridRoot.InverseTransformPoint(world);
+        return new Vector2(local.x, local.y);
+    }
+
+    void DestroyOutFlankedProjectile(RectTransform projectile)
+    {
+        if (projectile)
+        {
+            _outFlankedProjectiles.Remove(projectile);
+            Destroy(projectile.gameObject);
+            return;
+        }
+
+        _outFlankedProjectiles.Remove(projectile);
+    }
+
+    void ClearOutFlankedProjectiles()
+    {
+        for (int i = _outFlankedProjectiles.Count - 1; i >= 0; i--)
+        {
+            if (_outFlankedProjectiles[i])
+                Destroy(_outFlankedProjectiles[i].gameObject);
+        }
+
+        _outFlankedProjectiles.Clear();
     }
 
     void SpreadContagionFromFloor(Vector2Int cell)
@@ -1237,6 +1726,10 @@ public class LevelModifierController : MonoBehaviour
         _autoShiftTimer = 0f;
         _autoShiftPauseRemaining = 0f;
         _autoShiftMovingRight = true;
+        _outFlankedCountdown = 0f;
+        _volcanicEruptionCountdown = 0f;
+        _volcanoAnimTimer = 0f;
+        _volcanoAnimFrameIndex = 0;
         _comboShieldRemaining = 0;
         _pendingComboShieldBreaks = 0;
         _rearAmbushRowsSpawnedThisLevel = 0;
@@ -1245,10 +1738,15 @@ public class LevelModifierController : MonoBehaviour
         _growingOvergrowth.Clear();
         _contagionFloorSpreadTimers.Clear();
         _soulLinkPropagationGroups.Clear();
+        _outFlankedRows.Clear();
+        _volcanicTargetSet.Clear();
+        _volcanicTargetList.Clear();
 
         ClearVisualDictionary(_overgrowthVisuals);
         ClearVisualDictionary(_contagionFloorVisuals);
         ClearVisualDictionary(_infectionVisuals);
+        ClearOutFlankedProjectiles();
+        DestroyVolcanoAnimation();
 
         ApplyResolvedBackgroundSprite();
 

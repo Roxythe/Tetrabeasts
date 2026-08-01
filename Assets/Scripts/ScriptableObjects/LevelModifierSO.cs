@@ -20,7 +20,10 @@ public enum LevelModifierKind
     HalfHealthStart,
     SoulLink,
     PiercingShot,
-    Disarray
+    Disarray,
+    OutFlanked,
+    VolcanicEruption,
+    Roulette
 }
 
 [System.Serializable]
@@ -133,4 +136,27 @@ public class LevelModifierSO : ScriptableObject
     [Header("Disarray")]
     [Range(0f, 1f)] public float disarrayTriminoChance = 0.15f;
     [Range(0f, 1f)] public float disarrayPentaminoChance = 0.15f;
+
+    [Header("Out Flanked")]
+    public Sprite outFlankedProjectileSprite;
+    [Min(0.1f)] public float outFlankedIntervalMin = 6f;
+    [Min(0.1f)] public float outFlankedIntervalMax = 10f;
+    [Min(1)] public int outFlankedRowsPerWave = 1;
+    [Min(0.1f)] public float outFlankedProjectileSizeMultiplier = 1f;
+
+    [Header("Volcanic Eruption")]
+    [Min(0.1f)] public float volcanicEruptionIntervalMin = 12f;
+    [Min(0.1f)] public float volcanicEruptionIntervalMax = 20f;
+    [Min(1)] public int volcanicEruptionTargetCount = 4;
+    [Min(0)] public int volcanicEruptionExcludedTopRows = 4;
+    [Min(0.1f)] public float volcanicEruptionWarningSeconds = 2f;
+    public Sprite volcanicEruptionWarningSprite;
+    public Color volcanicEruptionWarningTint = new Color(1f, 0.08f, 0f, 0.45f);
+    public Sprite hardenedLavaObstacleSprite;
+    public Sprite[] volcanicVolcanoAnimFrames;
+    [Min(0.02f)] public float volcanicVolcanoAnimFrameSeconds = 0.16f;
+    public Vector2 volcanicVolcanoAnimSize = new Vector2(160f, 160f);
+
+    [Header("Roulette")]
+    [Min(0.1f)] public float roulettePreviewInterval = 1f;
 }

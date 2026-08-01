@@ -594,6 +594,35 @@ public class GameplayStatsPanelUI : MonoBehaviour
                     FormatSignedPercentDelta, false, forceNegative: true, sources: levelModSource);
                 break;
 
+            case LevelModifierKind.OutFlanked:
+                AddTextStat(_statsContent, "Arrow Interval",
+                    $"{FormatSeconds(Mathf.Min(modifier.outFlankedIntervalMin, modifier.outFlankedIntervalMax))} to {FormatSeconds(Mathf.Max(modifier.outFlankedIntervalMin, modifier.outFlankedIntervalMax))}",
+                    negativeColor, sources: levelModSource);
+                AddComparedFloat(_statsContent, "Rows Per Wave", modifier.outFlankedRowsPerWave, 0f, FormatWhole,
+                    FormatSignedWhole, false, forceNegative: true, sources: levelModSource);
+                AddComparedFloat(_statsContent, "Arrow Damage", gameController ? gameController.CastleProjectileDamageForStats : 0f, 0f,
+                    FormatNumber, FormatSignedNumber, false, forceNegative: true, sources: levelModSource);
+                break;
+
+            case LevelModifierKind.VolcanicEruption:
+                AddTextStat(_statsContent, "Eruption Interval",
+                    $"{FormatSeconds(Mathf.Min(modifier.volcanicEruptionIntervalMin, modifier.volcanicEruptionIntervalMax))} to {FormatSeconds(Mathf.Max(modifier.volcanicEruptionIntervalMin, modifier.volcanicEruptionIntervalMax))}",
+                    negativeColor, sources: levelModSource);
+                AddComparedFloat(_statsContent, "Warning Time", modifier.volcanicEruptionWarningSeconds, 0f, FormatSeconds,
+                    FormatSignedSeconds, false, forceNegative: true, sources: levelModSource);
+                AddComparedFloat(_statsContent, "Cells Targeted", modifier.volcanicEruptionTargetCount, 0f, FormatWhole,
+                    FormatSignedWhole, false, forceNegative: true, sources: levelModSource);
+                AddComparedFloat(_statsContent, "Top Rows Excluded", modifier.volcanicEruptionExcludedTopRows, 0f, FormatWhole,
+                    FormatSignedWhole, true, sources: levelModSource);
+                AddComparedFloat(_statsContent, "Eruption Damage", gameController ? gameController.CastleProjectileDamageForStats : 0f, 0f,
+                    FormatNumber, FormatSignedNumber, false, forceNegative: true, sources: levelModSource);
+                break;
+
+            case LevelModifierKind.Roulette:
+                AddComparedFloat(_statsContent, "Preview Change Interval", modifier.roulettePreviewInterval, 0f, FormatSeconds,
+                    FormatSignedSeconds, false, forceNegative: true, sources: levelModSource);
+                break;
+
             default:
                 AddTextStat(_statsContent, "Effect", modifier.description, negativeColor, sources: levelModSource);
                 break;

@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcae7d88244247b6a7e32226574b936e, type: 3}
+  m_Name: VolcanicEruption
+  m_EditorClassIdentifier: Assembly-CSharp::LevelModifierSO
+  kind: 20
+  displayName: Volcanic Eruption
+  description: Active volcanoes will periodically bombard the board damaging occupied
+    cells with monster units or hardening into one-hit lava obstacles that will block
+    a single projectile if the cell is empty.
+  icon: {fileID: 21300000, guid: 6d37fec01126a8841888331787b7d73a, type: 3}
+  backgroundOverrideSprite: {fileID: 21300000, guid: 6c1344058a7856243a4ce141a642f4b1, type: 3}
+  enableRainOverlay: 0
+  rainDrops: 44
+  rainSpeed: 140
+  rainDropLength: 16
+  rainDropWidth: 2
+  rainAngle: -18
+  rainTint: {r: 0.85, g: 0.93, b: 1, a: 0.55}
+  dealtDamageMultiplier: 2
+  receivedDamageMultiplier: 2
+  overgrowthTargetInterval: 2.5
+  overgrowthInitialTargetRows: 3
+  overgrowthCellsPerExtraRow: 6
+  overgrowthPartialSeconds: 5
+  overgrowthFullSeconds: 10
+  overgrowthInitialSprite: {fileID: 0}
+  overgrowthPartialSprite: {fileID: 0}
+  overgrowthFullSprite: {fileID: 0}
+  overgrowthTint: {r: 1, g: 1, b: 1, a: 1}
+  stormStrikeIntervalMin: 5
+  stormStrikeIntervalMax: 8
+  stormTargetsMin: 1
+  stormTargetsMax: 2
+  stormCrossChance: 0.6
+  stormLowerRowsOnlyCount: 8
+  stormInitialStrikeDamage: 2
+  stormFloorTickDamage: 1
+  stormFloorTickInterval: 0.5
+  stormFloorDuration: 4
+  rearAmbushInterval: 10
+  rearAmbushSoldierSprite: {fileID: 0}
+  lowRationsTickInterval: 3
+  lowRationsNegligibleReserveThreshold: 5
+  lowRationsNegligibleDamage: 0.1
+  lowRationsDamageAtMaxReserve: 1.35
+  contagionInfectionChanceOnPieceSet: 0.3
+  contagionTickInterval: 3
+  contagionPercentDamagePerTick: 0.04
+  contagionPercentIncreasePerTick: 0.02
+  contagionSpreadInterval: 4
+  contagionSpreadChance: 0.15
+  contagionUnitOverlaySprite: {fileID: 0}
+  contagionFloorSprite: {fileID: 0}
+  contagionUnitTint: {r: 0.6, g: 1, b: 0.45, a: 0.85}
+  contagionFloorTint: {r: 0.45, g: 0.9, b: 0.35, a: 0.5}
+  deathExplosionMaxHpPercent: 0.3
+  swampPoisonDamage: 1
+  swampPoisonInterval: 1
+  swampPoisonTicks: -1
+  autoRotateInterval: 0.75
+  autoShiftInterval: 0.4
+  autoShiftEdgePauseSeconds: 0.6
+  comboThreshold: 3
+  comboBelowThresholdDamageMultiplier: 0.2
+  comboAtOrAboveThresholdDamageMultiplier: 1.5
+  comboShieldThreshold: 4
+  comboShieldCount: 3
+  comboShieldBlockedDamageMultiplier: 0.1
+  startingHealthFraction: 0.5
+  piercingProjectileSprite: {fileID: 0}
+  disarrayTriminoChance: 0.15
+  disarrayPentaminoChance: 0.15
+  outFlankedProjectileSprite: {fileID: 0}
+  outFlankedIntervalMin: 6
+  outFlankedIntervalMax: 10
+  outFlankedRowsPerWave: 1
+  outFlankedProjectileSizeMultiplier: 1
+  volcanicEruptionIntervalMin: 12
+  volcanicEruptionIntervalMax: 20
+  volcanicEruptionTargetCount: 4
+  volcanicEruptionExcludedTopRows: 4
+  volcanicEruptionWarningSeconds: 2
+  volcanicEruptionWarningSprite: {fileID: 21300000, guid: d19d870a8f0846543902f860960a9e6e, type: 3}
+  volcanicEruptionWarningTint: {r: 1, g: 0.08, b: 0, a: 0.45}
+  hardenedLavaObstacleSprite: {fileID: 21300000, guid: ae32e7f2d751d274e8ea9030b8d4a3e1, type: 3}
+  volcanicVolcanoAnimFrames:
+  - {fileID: 21300000, guid: a573f3b91b63426b965c690cf3be30ba, type: 3}
+  - {fileID: 21300000, guid: 513b0bed5c854891ab7868b478d139e7, type: 3}
+  - {fileID: 21300000, guid: 5cd272f7194b42e2917410f2456f5d03, type: 3}
+  - {fileID: 21300000, guid: 78898a2fc48a49f684a80aec84bbc7dd, type: 3}
+  volcanicVolcanoAnimFrameSeconds: 0.16
+  volcanicVolcanoAnimSize: {x: 160, y: 160}
+  roulettePreviewInterval: 1
