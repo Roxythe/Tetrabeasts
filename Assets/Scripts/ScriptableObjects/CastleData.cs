@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Video;
 
 [CreateAssetMenu(menuName = "Tetrabeasts/Castle Data")]
 public class CastleData : ScriptableObject
@@ -11,6 +12,8 @@ public class CastleData : ScriptableObject
 
     [Tooltip("Optional background sprite shown by the enemy castle UI for this level.")]
     public Sprite levelBackgroundSprite;
+    [Tooltip("Optional animated background video shown on the gameplay board for this level. Static sprites remain the fallback.")]
+    public VideoClip levelBackgroundVideoClip;
 
     [Header("Stats")]
     public int maxHP = 100;

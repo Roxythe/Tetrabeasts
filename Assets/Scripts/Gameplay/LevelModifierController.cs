@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Video;
 using UnityEngine.UI;
 
 public class LevelModifierController : MonoBehaviour
@@ -19,7 +20,11 @@ public class LevelModifierController : MonoBehaviour
     [SerializeField] Piece piece;
     [SerializeField] BattleLogUI battleLog;
     [SerializeField] Image backgroundOverrideImage;
+    [SerializeField] RawImage animatedBackgroundDisplay;
+    [SerializeField] VideoPlayer animatedBackgroundPlayer;
     [SerializeField] Sprite defaultBackgroundSprite;
+    [SerializeField] GameObject volcanicEruptionAnimsRoot;
+    [SerializeField] GameObject defaultBoardBordersRoot;
 
     [Header("Modifier UI")]
     [SerializeField] GameObject specialGaugeRoot;
@@ -57,6 +62,9 @@ public class LevelModifierController : MonoBehaviour
     LevelModifierSelectionUI _selectionUI;
     RainOverlayUI _rainOverlay;
     Sprite _currentLevelBackgroundSprite;
+    VideoClip _currentLevelBackgroundVideoClip;
+    VideoClip _pendingAnimatedBackgroundClip;
+    VideoPlayer _hookedAnimatedBackgroundPlayer;
 
     float _overgrowthSpawnTimer;
     float _stormCountdown;
@@ -89,6 +97,21 @@ public class LevelModifierController : MonoBehaviour
         if (!board) board = FindFirstObjectByType<Board>();
         if (!piece) piece = GetComponent<Piece>();
         if (!battleLog) battleLog = FindFirstObjectByType<BattleLogUI>(FindObjectsInactive.Include);
+    }
+
+    void Start()
+    {
+        EnsureAnimatedBackgroundRefs();
+        if (ActiveModifier)
+            ApplyResolvedBackgroundSprite();
+        else
+            StopAnimatedBackground(clearTexture: false);
+        SyncVolcanicBoardAnimationRoots();
+    }
+
+    void OnDestroy()
+    {
+        UnhookAnimatedBackgroundEvents();
     }
 
     void Update()
@@ -576,7 +599,12 @@ public class LevelModifierController : MonoBehaviour
         if (ActiveModifier.kind == LevelModifierKind.VolcanicEruption)
         {
             ScheduleVolcanicEruption();
+            SyncVolcanicBoardAnimationRoots();
             EnsureVolcanoAnimation();
+        }
+        else
+        {
+            SyncVolcanicBoardAnimationRoots();
         }
     }
 
@@ -914,9 +942,10 @@ public class LevelModifierController : MonoBehaviour
 
         img.rectTransform.anchorMin = img.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
         img.rectTransform.anchoredPosition = BoardLocalToRoot(root, fromLeft ? left : right);
-        img.rectTransform.localEulerAngles = new Vector3(0f, 0f, fromLeft ? 90f : -90f);
+        img.rectTransform.localEulerAngles = new Vector3(0f, 0f, fromLeft ? 90f : 270f);
 
         _outFlankedProjectiles.Add(img.rectTransform);
+        _gc?.PlayEnemyProjectileFiredSfx();
         StartCoroutine(OutFlankedProjectileRoutine(img.rectTransform, row, fromLeft, modifier));
     }
 
@@ -952,9 +981,16 @@ public class LevelModifierController : MonoBehaviour
                 projectile.anchoredPosition = BoardLocalToRoot(root, board.CellToAnchoredPos(hitCell));
 
                 if (board.HasObstacle(hitCell))
+                {
                     board.TryHandleEnemyProjectileObstacleImpact(hitCell);
+                    _gc?.PlayEnemyProjectileHitSfx();
+                }
                 else
-                    board.DamageTile(hitCell, _gc ? _gc.CastleProjectileDamageForStats : 1, Board.DamageSource.CastleProjectile);
+                {
+                    AudioClip hitClip = _gc ? _gc.PickEnemyProjectileHitSfx() : null;
+                    board.DamageTile(hitCell, _gc ? _gc.CastleProjectileDamageForStats : 1,
+                        Board.DamageSource.CastleProjectile, hitClip);
+                }
 
                 DestroyOutFlankedProjectile(projectile);
                 yield break;
@@ -1155,6 +1191,13 @@ public class LevelModifierController : MonoBehaviour
     {
         if (!ActiveModifier || ActiveModifier.kind != LevelModifierKind.VolcanicEruption)
             return;
+
+        EnsureVolcanicBoardAnimationRefs();
+        if (volcanicEruptionAnimsRoot)
+        {
+            DestroyVolcanoAnimation();
+            return;
+        }
 
         var frames = ActiveModifier.volcanicVolcanoAnimFrames;
         if (frames == null || frames.Length == 0)
@@ -1653,6 +1696,9 @@ public class LevelModifierController : MonoBehaviour
         if (!board)
             return;
 
+        EnsureAnimatedBackgroundRefs();
+        EnsureVolcanicBoardAnimationRefs();
+
         if (!backgroundOverrideImage)
         {
             var go = new GameObject("LevelModifierBackground", typeof(Image));
@@ -1673,6 +1719,7 @@ public class LevelModifierController : MonoBehaviour
         }
 
         ApplyResolvedBackgroundSprite();
+        SyncVolcanicBoardAnimationRoots();
 
         if (ActiveModifier && ActiveModifier.enableRainOverlay)
         {
@@ -1749,6 +1796,7 @@ public class LevelModifierController : MonoBehaviour
         DestroyVolcanoAnimation();
 
         ApplyResolvedBackgroundSprite();
+        SyncVolcanicBoardAnimationRoots();
 
         if (_rainOverlay)
             _rainOverlay.gameObject.SetActive(false);
@@ -1761,6 +1809,7 @@ public class LevelModifierController : MonoBehaviour
     void CacheLevelBackground(CastleData castleData)
     {
         _currentLevelBackgroundSprite = castleData ? castleData.levelBackgroundSprite : null;
+        _currentLevelBackgroundVideoClip = castleData ? castleData.levelBackgroundVideoClip : null;
     }
 
     void CacheLevelBackgroundFromCurrentLevel()
@@ -1787,15 +1836,209 @@ public class LevelModifierController : MonoBehaviour
         return _currentLevelBackgroundSprite ? _currentLevelBackgroundSprite : defaultBackgroundSprite;
     }
 
+    VideoClip ResolveBackgroundVideoClip()
+    {
+        if (ActiveModifier && ActiveModifier.backgroundOverrideVideoClip)
+            return ActiveModifier.backgroundOverrideVideoClip;
+
+        return _currentLevelBackgroundVideoClip;
+    }
+
     void ApplyResolvedBackgroundSprite()
     {
         if (!backgroundOverrideImage)
             return;
 
+        VideoClip videoClip = ResolveBackgroundVideoClip();
+        bool showingVideo = ApplyAnimatedBackground(videoClip);
+
         Sprite bg = ResolveBackgroundSprite();
         backgroundOverrideImage.sprite = bg;
         backgroundOverrideImage.color = Color.white;
-        backgroundOverrideImage.gameObject.SetActive(bg != null);
+        backgroundOverrideImage.gameObject.SetActive(!showingVideo && bg != null);
+    }
+
+    bool ApplyAnimatedBackground(VideoClip clip)
+    {
+        EnsureAnimatedBackgroundRefs();
+        if (!clip || !animatedBackgroundDisplay || !animatedBackgroundPlayer)
+        {
+            StopAnimatedBackground(clearTexture: clip == null);
+            return false;
+        }
+
+        HookAnimatedBackgroundEvents();
+
+        GameObject displayGO = animatedBackgroundDisplay.gameObject;
+        if (!displayGO.activeSelf)
+            displayGO.SetActive(true);
+
+        GameObject playerGO = animatedBackgroundPlayer.gameObject;
+        if (!playerGO.activeSelf)
+            playerGO.SetActive(true);
+
+        animatedBackgroundDisplay.enabled = true;
+        animatedBackgroundDisplay.raycastTarget = false;
+
+        if (!animatedBackgroundPlayer.targetTexture && animatedBackgroundDisplay.texture is RenderTexture displayTexture)
+            animatedBackgroundPlayer.targetTexture = displayTexture;
+
+        if (animatedBackgroundPlayer.targetTexture)
+            animatedBackgroundDisplay.texture = animatedBackgroundPlayer.targetTexture;
+
+        animatedBackgroundDisplay.rectTransform.SetAsFirstSibling();
+        animatedBackgroundPlayer.playOnAwake = false;
+        animatedBackgroundPlayer.isLooping = true;
+        animatedBackgroundPlayer.renderMode = VideoRenderMode.RenderTexture;
+        animatedBackgroundPlayer.audioOutputMode = VideoAudioOutputMode.None;
+
+        if (animatedBackgroundPlayer.clip == clip && (animatedBackgroundPlayer.isPlaying || animatedBackgroundPlayer.isPrepared))
+            return true;
+
+        ClearAnimatedBackgroundRenderTexture();
+
+        _pendingAnimatedBackgroundClip = clip;
+        animatedBackgroundPlayer.Stop();
+        animatedBackgroundPlayer.clip = clip;
+        animatedBackgroundPlayer.Prepare();
+        return true;
+    }
+
+    void StopAnimatedBackground(bool clearTexture)
+    {
+        EnsureAnimatedBackgroundRefs();
+        _pendingAnimatedBackgroundClip = null;
+
+        if (animatedBackgroundPlayer)
+        {
+            animatedBackgroundPlayer.Stop();
+            animatedBackgroundPlayer.clip = null;
+
+            if (clearTexture)
+                ClearAnimatedBackgroundRenderTexture();
+
+            animatedBackgroundPlayer.gameObject.SetActive(false);
+        }
+
+        if (animatedBackgroundDisplay)
+        {
+            animatedBackgroundDisplay.enabled = false;
+            animatedBackgroundDisplay.gameObject.SetActive(false);
+        }
+    }
+
+    void ClearAnimatedBackgroundRenderTexture()
+    {
+        if (!animatedBackgroundPlayer || !animatedBackgroundPlayer.targetTexture)
+            return;
+
+        RenderTexture rt = animatedBackgroundPlayer.targetTexture;
+        RenderTexture previous = RenderTexture.active;
+        RenderTexture.active = rt;
+        GL.Clear(true, true, Color.clear);
+        RenderTexture.active = previous;
+    }
+
+    void EnsureAnimatedBackgroundRefs()
+    {
+        if (!board)
+            return;
+
+        if (!animatedBackgroundDisplay)
+            animatedBackgroundDisplay = FindComponentByGameObjectName<RawImage>("AnimatedBG_VideoDisplay_RawImage");
+
+        if (!animatedBackgroundPlayer)
+        {
+            if (animatedBackgroundDisplay)
+                animatedBackgroundPlayer = animatedBackgroundDisplay.GetComponentInChildren<VideoPlayer>(true);
+
+            if (!animatedBackgroundPlayer)
+                animatedBackgroundPlayer = FindComponentByGameObjectName<VideoPlayer>("AnimatedBG_VideoPlayer");
+        }
+
+        HookAnimatedBackgroundEvents();
+    }
+
+    void HookAnimatedBackgroundEvents()
+    {
+        if (!animatedBackgroundPlayer || _hookedAnimatedBackgroundPlayer == animatedBackgroundPlayer)
+            return;
+
+        UnhookAnimatedBackgroundEvents();
+        animatedBackgroundPlayer.prepareCompleted += OnAnimatedBackgroundPrepared;
+        _hookedAnimatedBackgroundPlayer = animatedBackgroundPlayer;
+    }
+
+    void UnhookAnimatedBackgroundEvents()
+    {
+        if (!_hookedAnimatedBackgroundPlayer)
+            return;
+
+        _hookedAnimatedBackgroundPlayer.prepareCompleted -= OnAnimatedBackgroundPrepared;
+        _hookedAnimatedBackgroundPlayer = null;
+    }
+
+    void OnAnimatedBackgroundPrepared(VideoPlayer player)
+    {
+        if (!player || (_pendingAnimatedBackgroundClip && player.clip != _pendingAnimatedBackgroundClip))
+            return;
+
+        player.Play();
+    }
+
+    void EnsureVolcanicBoardAnimationRefs()
+    {
+        if (!board)
+            return;
+
+        if (!volcanicEruptionAnimsRoot)
+            volcanicEruptionAnimsRoot = FindChildGameObjectByName("VolcanicEruption_Anims");
+
+        if (!defaultBoardBordersRoot)
+            defaultBoardBordersRoot = FindChildGameObjectByName("DefaultBoardBorders");
+    }
+
+    void SyncVolcanicBoardAnimationRoots()
+    {
+        EnsureVolcanicBoardAnimationRefs();
+
+        bool volcanicActive = ActiveModifier && ActiveModifier.kind == LevelModifierKind.VolcanicEruption;
+
+        if (volcanicEruptionAnimsRoot)
+            volcanicEruptionAnimsRoot.SetActive(volcanicActive);
+
+        if (defaultBoardBordersRoot)
+            defaultBoardBordersRoot.SetActive(!volcanicActive);
+    }
+
+    T FindComponentByGameObjectName<T>(string objectName) where T : Component
+    {
+        if (!board || string.IsNullOrWhiteSpace(objectName))
+            return null;
+
+        var components = board.GetComponentsInChildren<T>(true);
+        for (int i = 0; i < components.Length; i++)
+        {
+            if (components[i] && components[i].gameObject.name == objectName)
+                return components[i];
+        }
+
+        return null;
+    }
+
+    GameObject FindChildGameObjectByName(string objectName)
+    {
+        if (!board || string.IsNullOrWhiteSpace(objectName))
+            return null;
+
+        var transforms = board.GetComponentsInChildren<Transform>(true);
+        for (int i = 0; i < transforms.Length; i++)
+        {
+            if (transforms[i] && transforms[i].name == objectName)
+                return transforms[i].gameObject;
+        }
+
+        return null;
     }
 
     void ClearVisualDictionary(Dictionary<Vector2Int, Image> dict)

@@ -5103,18 +5103,42 @@ public class GameController : MonoBehaviour
             end = LocalTo(root, gameBoard.gridRoot, end);
         }
 
-        if (AudioManager.I && currentCastleData)
-        {
-            var fireClip = currentCastleData.PickRandom(
-                currentCastleData.sfxProjectileFiredClips,
-                currentCastleData.sfxProjectileFired // fallback
-            );
-
-            if (fireClip)
-                AudioManager.I.PlaySFX(fireClip);
-        }
+        PlayEnemyProjectileFiredSfx();
 
         SpawnCastleDownProjectile(GetCurrentCastleProjectileSprite(), start, end, col);
+    }
+
+    public void PlayEnemyProjectileFiredSfx()
+    {
+        if (!AudioManager.I || !currentCastleData)
+            return;
+
+        AudioClip fireClip = currentCastleData.PickRandom(
+            currentCastleData.sfxProjectileFiredClips,
+            currentCastleData.sfxProjectileFired);
+
+        if (fireClip)
+            AudioManager.I.PlaySFX(fireClip);
+    }
+
+    public AudioClip PickEnemyProjectileHitSfx()
+    {
+        if (!currentCastleData)
+            return null;
+
+        return currentCastleData.PickRandom(
+            currentCastleData.sfxProjectileHitTileClips,
+            currentCastleData.sfxProjectileHitTile);
+    }
+
+    public void PlayEnemyProjectileHitSfx()
+    {
+        if (!AudioManager.I)
+            return;
+
+        AudioClip hitClip = PickEnemyProjectileHitSfx();
+        if (hitClip)
+            AudioManager.I.PlaySFX(hitClip);
     }
 
     Sprite GetCurrentCastleProjectileSprite()
@@ -5284,8 +5308,7 @@ public class GameController : MonoBehaviour
 
         AudioClip hitClip = null;
         if (currentCastleData)
-            hitClip = currentCastleData.PickRandom(currentCastleData.sfxProjectileHitTileClips,
-                                                   currentCastleData.sfxProjectileHitTile);
+            hitClip = PickEnemyProjectileHitSfx();
 
         bool hitDefensiveMonster = false;
 

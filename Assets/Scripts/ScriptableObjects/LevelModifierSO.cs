@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Video;
 
 public enum LevelModifierKind
 {
@@ -45,6 +46,8 @@ public class LevelModifierSO : ScriptableObject
     [Header("Presentation")]
     [Tooltip("Optional map/background sprite override shown while this modifier is active.")]
     public Sprite backgroundOverrideSprite;
+    [Tooltip("Optional animated background video override shown while this modifier is active. Static sprites remain the fallback.")]
+    public VideoClip backgroundOverrideVideoClip;
     public bool enableRainOverlay = false;
     [Range(8, 128)] public int rainDrops = 44;
     [Range(40f, 280f)] public float rainSpeed = 140f;
