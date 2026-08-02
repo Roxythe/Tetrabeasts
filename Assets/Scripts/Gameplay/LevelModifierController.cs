@@ -76,14 +76,11 @@ public class LevelModifierController : MonoBehaviour
     bool _autoShiftMovingRight = true;
     float _outFlankedCountdown;
     float _volcanicEruptionCountdown;
-    float _volcanoAnimTimer;
-    int _volcanoAnimFrameIndex;
     int _availableRerolls;
     int _comboShieldRemaining;
     int _pendingComboShieldBreaks;
     int _rearAmbushRowsSpawnedThisLevel;
     Coroutine _comboShieldPulseCR;
-    Image _volcanoAnimImage;
 
     static Sprite _onePx;
 
@@ -146,7 +143,6 @@ public class LevelModifierController : MonoBehaviour
                 break;
             case LevelModifierKind.VolcanicEruption:
                 UpdateVolcanicEruption(dt);
-                UpdateVolcanoAnimation(dt);
                 break;
         }
 
@@ -294,9 +290,6 @@ public class LevelModifierController : MonoBehaviour
 
             if (ActiveModifier.kind == LevelModifierKind.PiercingShot)
                 return ActiveModifier.piercingProjectileSprite;
-
-            if (ActiveModifier.kind == LevelModifierKind.OutFlanked)
-                return ActiveModifier.outFlankedProjectileSprite;
 
             return null;
         }
@@ -567,8 +560,6 @@ public class LevelModifierController : MonoBehaviour
         _autoShiftMovingRight = true;
         _outFlankedCountdown = 0f;
         _volcanicEruptionCountdown = 0f;
-        _volcanoAnimTimer = 0f;
-        _volcanoAnimFrameIndex = 0;
 
         if (ActiveModifier.kind == LevelModifierKind.SpecialLock)
             _gc?.SetSpecialGaugeImmediate(0f);
@@ -600,7 +591,6 @@ public class LevelModifierController : MonoBehaviour
         {
             ScheduleVolcanicEruption();
             SyncVolcanicBoardAnimationRoots();
-            EnsureVolcanoAnimation();
         }
         else
         {
@@ -937,15 +927,15 @@ public class LevelModifierController : MonoBehaviour
             Mathf.Max(0.1f, visualScale) *
             Mathf.Max(0.1f, modifier.outFlankedProjectileSizeMultiplier);
 
-        Vector2 left = board.CellToAnchoredPos(new Vector2Int(0, row)) - new Vector2(cellSize.x * 0.75f, 0f);
-        Vector2 right = board.CellToAnchoredPos(new Vector2Int(board.width - 1, row)) + new Vector2(cellSize.x * 0.75f, 0f);
+        float sideOffset = cellSize.x * Mathf.Max(0.5f, modifier.outFlankedProjectileSideOffsetCells);
+        Vector2 left = board.CellToAnchoredPos(new Vector2Int(0, row)) - new Vector2(sideOffset, 0f);
+        Vector2 right = board.CellToAnchoredPos(new Vector2Int(board.width - 1, row)) + new Vector2(sideOffset, 0f);
 
         img.rectTransform.anchorMin = img.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
         img.rectTransform.anchoredPosition = BoardLocalToRoot(root, fromLeft ? left : right);
-        img.rectTransform.localEulerAngles = new Vector3(0f, 0f, fromLeft ? 90f : 270f);
+        img.rectTransform.localEulerAngles = new Vector3(0f, 0f, fromLeft ? 0f : 180f);
 
         _outFlankedProjectiles.Add(img.rectTransform);
-        _gc?.PlayEnemyProjectileFiredSfx();
         StartCoroutine(OutFlankedProjectileRoutine(img.rectTransform, row, fromLeft, modifier));
     }
 
@@ -955,10 +945,44 @@ public class LevelModifierController : MonoBehaviour
         if (!projectile || !root || !board)
             yield break;
 
+        Image image = projectile.GetComponent<Image>();
+        float warningSeconds = Mathf.Max(0f, modifier ? modifier.outFlankedWarningSeconds : 2f);
+        float warningTimer = 0f;
+        const float warningFlashInterval = 0.15f;
+        while (projectile && ActiveModifier == modifier && board && warningTimer < warningSeconds)
+        {
+            if (_gc && !_gc.IsRoundActive)
+            {
+                yield return null;
+                continue;
+            }
+
+            if (image)
+                image.enabled = Mathf.FloorToInt(warningTimer / warningFlashInterval) % 2 == 0;
+
+            warningTimer += Time.deltaTime;
+            yield return null;
+        }
+
+        if (!projectile)
+            yield break;
+
+        if (ActiveModifier != modifier || !board)
+        {
+            DestroyOutFlankedProjectile(projectile);
+            yield break;
+        }
+
+        if (image)
+            image.enabled = true;
+
+        _gc?.PlayEnemyProjectileFiredSfx();
+
         Vector2 cellSize = board.GetCellSize();
+        float sideOffset = cellSize.x * Mathf.Max(0.5f, modifier.outFlankedProjectileSideOffsetCells);
         Vector2 endBoard = movingRight
-            ? board.CellToAnchoredPos(new Vector2Int(board.width - 1, row)) + new Vector2(cellSize.x * 0.75f, 0f)
-            : board.CellToAnchoredPos(new Vector2Int(0, row)) - new Vector2(cellSize.x * 0.75f, 0f);
+            ? board.CellToAnchoredPos(new Vector2Int(board.width - 1, row)) + new Vector2(sideOffset, 0f)
+            : board.CellToAnchoredPos(new Vector2Int(0, row)) - new Vector2(sideOffset, 0f);
         Vector2 end = BoardLocalToRoot(root, endBoard);
 
         while (projectile && ActiveModifier == modifier && board)
@@ -973,7 +997,9 @@ public class LevelModifierController : MonoBehaviour
                 break;
 
             Vector2 previous = projectile.anchoredPosition;
-            float speed = Mathf.Max(10f, _gc ? _gc.CurrentEnemyProjectileSpeedForModifiers : 280f);
+            float baseSpeed = _gc ? _gc.CurrentEnemyProjectileSpeedForModifiers : 280f;
+            float speedMultiplier = Mathf.Max(0.05f, modifier.outFlankedProjectileSpeedMultiplier);
+            float speed = Mathf.Max(10f, baseSpeed * speedMultiplier);
             projectile.anchoredPosition = Vector2.MoveTowards(projectile.anchoredPosition, end, speed * Time.deltaTime);
 
             if (TryGetOutFlankedImpactCell(root, row, previous, projectile.anchoredPosition, movingRight, out var hitCell))
@@ -1091,7 +1117,8 @@ public class LevelModifierController : MonoBehaviour
         if (availableRows <= 0)
             return false;
 
-        var candidates = new List<Vector2Int>();
+        var monsterCandidates = new List<Vector2Int>();
+        var openCandidates = new List<Vector2Int>();
         for (int y = 0; y < availableRows; y++)
         {
             for (int x = 0; x < board.width; x++)
@@ -1102,21 +1129,30 @@ public class LevelModifierController : MonoBehaviour
 
                 if (board.TryGetMonster(cell, out var inst) && inst.data && inst.hp > 0f)
                 {
-                    candidates.Add(cell);
+                    monsterCandidates.Add(cell);
                     continue;
                 }
 
                 if (board.IsFree(cell))
-                    candidates.Add(cell);
+                    openCandidates.Add(cell);
             }
         }
 
-        int targetCount = Mathf.Min(Mathf.Max(1, ActiveModifier.volcanicEruptionTargetCount), candidates.Count);
-        while (targets.Count < targetCount && candidates.Count > 0)
+        int candidateCount = monsterCandidates.Count + openCandidates.Count;
+        int targetCount = Mathf.Min(Mathf.Max(1, ActiveModifier.volcanicEruptionTargetCount), candidateCount);
+        float monsterTargetChance = Mathf.Clamp01(ActiveModifier.volcanicEruptionMonsterTargetChance);
+
+        while (targets.Count < targetCount && (monsterCandidates.Count > 0 || openCandidates.Count > 0))
         {
-            int index = Random.Range(0, candidates.Count);
-            Vector2Int cell = candidates[index];
-            candidates.RemoveAt(index);
+            bool targetMonster = monsterCandidates.Count > 0 && Random.value < monsterTargetChance;
+            List<Vector2Int> source = targetMonster ? monsterCandidates : openCandidates;
+            if (source.Count == 0)
+                source = monsterCandidates.Count > 0 ? monsterCandidates : openCandidates;
+
+            int index = Random.Range(0, source.Count);
+            Vector2Int cell = source[index];
+            source.RemoveAt(index);
+
             if (_volcanicTargetSet.Add(cell))
                 targets.Add(cell);
         }
@@ -1160,101 +1196,8 @@ public class LevelModifierController : MonoBehaviour
 
             if (board.IsFree(cell))
                 board.TrySpawnCustomObstacle(cell, Board.ObstacleType.HardenedLava,
-                    modifier.hardenedLavaObstacleSprite, 1, false);
+                    modifier.hardenedLavaObstacleSprite, 1, false, warningSprite);
         }
-    }
-
-    void UpdateVolcanoAnimation(float dt)
-    {
-        if (!ActiveModifier || ActiveModifier.kind != LevelModifierKind.VolcanicEruption)
-            return;
-
-        EnsureVolcanoAnimation();
-
-        var frames = ActiveModifier.volcanicVolcanoAnimFrames;
-        if (!_volcanoAnimImage || frames == null || frames.Length == 0)
-            return;
-
-        float frameSeconds = Mathf.Max(0.02f, ActiveModifier.volcanicVolcanoAnimFrameSeconds);
-        _volcanoAnimTimer += Mathf.Max(0f, dt);
-        if (_volcanoAnimTimer < frameSeconds)
-            return;
-
-        _volcanoAnimTimer = 0f;
-        _volcanoAnimFrameIndex = (_volcanoAnimFrameIndex + 1) % frames.Length;
-        Sprite next = frames[_volcanoAnimFrameIndex];
-        if (next)
-            _volcanoAnimImage.sprite = next;
-    }
-
-    void EnsureVolcanoAnimation()
-    {
-        if (!ActiveModifier || ActiveModifier.kind != LevelModifierKind.VolcanicEruption)
-            return;
-
-        EnsureVolcanicBoardAnimationRefs();
-        if (volcanicEruptionAnimsRoot)
-        {
-            DestroyVolcanoAnimation();
-            return;
-        }
-
-        var frames = ActiveModifier.volcanicVolcanoAnimFrames;
-        if (frames == null || frames.Length == 0)
-        {
-            DestroyVolcanoAnimation();
-            return;
-        }
-
-        if (!_volcanoAnimImage)
-        {
-            EnsureBoardPresentation();
-            RectTransform parent = backgroundOverrideImage ? backgroundOverrideImage.rectTransform : null;
-            if (!parent && board)
-                parent = board.transform as RectTransform;
-
-            if (!parent)
-                return;
-
-            var go = new GameObject("VolcanicEruptionVolcano", typeof(Image));
-            go.transform.SetParent(parent, false);
-
-            _volcanoAnimImage = go.GetComponent<Image>();
-            _volcanoAnimImage.preserveAspect = true;
-            _volcanoAnimImage.raycastTarget = false;
-            _volcanoAnimImage.color = Color.white;
-
-            var rt = _volcanoAnimImage.rectTransform;
-            rt.anchorMin = rt.anchorMax = new Vector2(1f, 0f);
-            rt.pivot = new Vector2(1f, 0f);
-            rt.anchoredPosition = new Vector2(-20f, 20f);
-            rt.localScale = Vector3.one;
-        }
-
-        _volcanoAnimImage.rectTransform.sizeDelta = ActiveModifier.volcanicVolcanoAnimSize;
-        _volcanoAnimImage.gameObject.SetActive(true);
-
-        if (!_volcanoAnimImage.sprite)
-        {
-            _volcanoAnimFrameIndex = 0;
-            for (int i = 0; i < frames.Length; i++)
-            {
-                if (!frames[i])
-                    continue;
-
-                _volcanoAnimFrameIndex = i;
-                _volcanoAnimImage.sprite = frames[i];
-                break;
-            }
-        }
-    }
-
-    void DestroyVolcanoAnimation()
-    {
-        if (_volcanoAnimImage)
-            Destroy(_volcanoAnimImage.gameObject);
-
-        _volcanoAnimImage = null;
     }
 
     Vector2 BoardLocalToRoot(RectTransform root, Vector2 anchored)
@@ -1775,8 +1718,6 @@ public class LevelModifierController : MonoBehaviour
         _autoShiftMovingRight = true;
         _outFlankedCountdown = 0f;
         _volcanicEruptionCountdown = 0f;
-        _volcanoAnimTimer = 0f;
-        _volcanoAnimFrameIndex = 0;
         _comboShieldRemaining = 0;
         _pendingComboShieldBreaks = 0;
         _rearAmbushRowsSpawnedThisLevel = 0;
@@ -1793,7 +1734,6 @@ public class LevelModifierController : MonoBehaviour
         ClearVisualDictionary(_contagionFloorVisuals);
         ClearVisualDictionary(_infectionVisuals);
         ClearOutFlankedProjectiles();
-        DestroyVolcanoAnimation();
 
         ApplyResolvedBackgroundSprite();
         SyncVolcanicBoardAnimationRoots();
@@ -1850,12 +1790,15 @@ public class LevelModifierController : MonoBehaviour
             return;
 
         VideoClip videoClip = ResolveBackgroundVideoClip();
-        bool showingVideo = ApplyAnimatedBackground(videoClip);
+        ApplyAnimatedBackground(videoClip);
 
         Sprite bg = ResolveBackgroundSprite();
-        backgroundOverrideImage.sprite = bg;
+        if (bg)
+            backgroundOverrideImage.sprite = bg;
+
         backgroundOverrideImage.color = Color.white;
-        backgroundOverrideImage.gameObject.SetActive(!showingVideo && bg != null);
+        backgroundOverrideImage.gameObject.SetActive(true);
+        backgroundOverrideImage.enabled = true;
     }
 
     bool ApplyAnimatedBackground(VideoClip clip)
@@ -2004,11 +1947,44 @@ public class LevelModifierController : MonoBehaviour
 
         bool volcanicActive = ActiveModifier && ActiveModifier.kind == LevelModifierKind.VolcanicEruption;
 
+        ConfigureVolcanicLavaBorderAnimators();
+
         if (volcanicEruptionAnimsRoot)
             volcanicEruptionAnimsRoot.SetActive(volcanicActive);
 
         if (defaultBoardBordersRoot)
             defaultBoardBordersRoot.SetActive(!volcanicActive);
+    }
+
+    void ConfigureVolcanicLavaBorderAnimators()
+    {
+        if (!volcanicEruptionAnimsRoot)
+            return;
+
+        var animators = volcanicEruptionAnimsRoot.GetComponentsInChildren<Animator>(true);
+        for (int i = 0; i < animators.Length; i++)
+        {
+            Animator animator = animators[i];
+            if (animator && IsVolcanicLavaBorderAnimator(animator))
+                animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+        }
+    }
+
+    bool IsVolcanicLavaBorderAnimator(Animator animator)
+    {
+        Transform current = animator ? animator.transform : null;
+        while (current)
+        {
+            if (current.name.IndexOf("LavaBorder", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+
+            if (volcanicEruptionAnimsRoot && current == volcanicEruptionAnimsRoot.transform)
+                break;
+
+            current = current.parent;
+        }
+
+        return false;
     }
 
     T FindComponentByGameObjectName<T>(string objectName) where T : Component
@@ -2028,14 +2004,28 @@ public class LevelModifierController : MonoBehaviour
 
     GameObject FindChildGameObjectByName(string objectName)
     {
-        if (!board || string.IsNullOrWhiteSpace(objectName))
+        if (string.IsNullOrWhiteSpace(objectName))
             return null;
 
-        var transforms = board.GetComponentsInChildren<Transform>(true);
-        for (int i = 0; i < transforms.Length; i++)
+        if (board)
         {
-            if (transforms[i] && transforms[i].name == objectName)
-                return transforms[i].gameObject;
+            var childTransforms = board.GetComponentsInChildren<Transform>(true);
+            for (int i = 0; i < childTransforms.Length; i++)
+            {
+                if (childTransforms[i] && childTransforms[i].name == objectName)
+                    return childTransforms[i].gameObject;
+            }
+        }
+
+        var sceneTransforms = FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        for (int i = 0; i < sceneTransforms.Length; i++)
+        {
+            if (sceneTransforms[i] &&
+                sceneTransforms[i].gameObject.scene.IsValid() &&
+                sceneTransforms[i].name == objectName)
+            {
+                return sceneTransforms[i].gameObject;
+            }
         }
 
         return null;

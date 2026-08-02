@@ -145,6 +145,9 @@ public class LevelModifierSO : ScriptableObject
     [Min(0.1f)] public float outFlankedIntervalMin = 6f;
     [Min(0.1f)] public float outFlankedIntervalMax = 10f;
     [Min(1)] public int outFlankedRowsPerWave = 1;
+    [Min(0f)] public float outFlankedWarningSeconds = 2f;
+    [Min(0.5f)] public float outFlankedProjectileSideOffsetCells = 3.25f;
+    [Min(0.05f)] public float outFlankedProjectileSpeedMultiplier = 0.75f;
     [Min(0.1f)] public float outFlankedProjectileSizeMultiplier = 1f;
 
     [Header("Volcanic Eruption")]
@@ -153,12 +156,10 @@ public class LevelModifierSO : ScriptableObject
     [Min(1)] public int volcanicEruptionTargetCount = 4;
     [Min(0)] public int volcanicEruptionExcludedTopRows = 4;
     [Min(0.1f)] public float volcanicEruptionWarningSeconds = 2f;
+    [Range(0f, 1f)] public float volcanicEruptionMonsterTargetChance = 0.5f;
     public Sprite volcanicEruptionWarningSprite;
     public Color volcanicEruptionWarningTint = new Color(1f, 0.08f, 0f, 0.45f);
     public Sprite hardenedLavaObstacleSprite;
-    public Sprite[] volcanicVolcanoAnimFrames;
-    [Min(0.02f)] public float volcanicVolcanoAnimFrameSeconds = 0.16f;
-    public Vector2 volcanicVolcanoAnimSize = new Vector2(160f, 160f);
 
     [Header("Roulette")]
     [Min(0.1f)] public float roulettePreviewInterval = 1f;

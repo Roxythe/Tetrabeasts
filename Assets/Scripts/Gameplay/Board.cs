@@ -3079,16 +3079,26 @@ public class Board : MonoBehaviour
 
     public bool TrySpawnCustomObstacle(Vector2Int cell, ObstacleType type, Sprite sprite, int hitsToBreak = 1, bool indestructible = false)
     {
+        return TrySpawnCustomObstacle(cell, type, sprite, hitsToBreak, indestructible, null);
+    }
+
+    public bool TrySpawnCustomObstacle(Vector2Int cell, ObstacleType type, Sprite sprite, int hitsToBreak, bool indestructible, Sprite backgroundSprite)
+    {
         if (!InBounds(cell)) return false;
         if (!IsFree(cell)) return false;
 
-        var rt = InstantiateTileUI(Color.white, sprite, GetBossObstacleBackgroundSprite());
+        var rt = InstantiateTileUI(Color.white, sprite, backgroundSprite ? backgroundSprite : GetBossObstacleBackgroundSprite());
         rt.anchoredPosition = CellToAnchoredPos(cell);
         Place(cell, rt);
 
         obstacles[cell] = new ObstacleState(type, hitsToBreak, indestructible);
         RefreshTileBordersAround(cell);
         return true;
+    }
+
+    public bool HasObstacleOfType(Vector2Int cell, ObstacleType type)
+    {
+        return obstacles.TryGetValue(cell, out var obs) && obs.type == type;
     }
 
     public bool TryHandleEnemyProjectileObstacleImpact(Vector2Int cell)
@@ -3099,6 +3109,18 @@ public class Board : MonoBehaviour
         if (obs.type == ObstacleType.HardenedLava)
             DestroyObstacleImmediate(cell);
 
+        return true;
+    }
+
+    public bool TryHandlePlayerAttackObstacleImpact(Vector2Int cell)
+    {
+        if (!obstacles.TryGetValue(cell, out var obs))
+            return false;
+
+        if (obs.type != ObstacleType.HardenedLava)
+            return false;
+
+        DestroyObstacleImmediate(cell);
         return true;
     }
 

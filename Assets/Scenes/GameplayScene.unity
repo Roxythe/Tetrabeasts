@@ -3077,7 +3077,7 @@ MonoBehaviour:
     clipLength: 2.35
   intervalRangeSeconds: {x: 30, y: 120}
   playbackSpeed: 0.66
-  useUnscaledTime: 1
+  useUnscaledTime: 0
   finalFrameSampleOffsetSeconds: 0.001
   disableAnimatorWhileActive: 1
   animatorToDisableWhileActive: {fileID: 0}
@@ -7463,7 +7463,7 @@ MonoBehaviour:
     clipLength: 3.8333333
   intervalRangeSeconds: {x: 20, y: 84}
   playbackSpeed: 0.24
-  useUnscaledTime: 1
+  useUnscaledTime: 0
   finalFrameSampleOffsetSeconds: 0.001
   disableAnimatorWhileActive: 1
   animatorToDisableWhileActive: {fileID: 0}
@@ -11238,7 +11238,7 @@ MonoBehaviour:
     clipLength: 2.35
   intervalRangeSeconds: {x: 60, y: 150}
   playbackSpeed: 0.66
-  useUnscaledTime: 1
+  useUnscaledTime: 0
   finalFrameSampleOffsetSeconds: 0.001
   disableAnimatorWhileActive: 1
   animatorToDisableWhileActive: {fileID: 0}
@@ -17879,7 +17879,7 @@ MonoBehaviour:
     clipLength: 2.35
   intervalRangeSeconds: {x: 20, y: 80}
   playbackSpeed: 0.66
-  useUnscaledTime: 1
+  useUnscaledTime: 0
   finalFrameSampleOffsetSeconds: 0.001
   disableAnimatorWhileActive: 1
   animatorToDisableWhileActive: {fileID: 0}
@@ -19867,7 +19867,7 @@ MonoBehaviour:
     clipLength: 2.35
   intervalRangeSeconds: {x: 40, y: 120}
   playbackSpeed: 0.66
-  useUnscaledTime: 1
+  useUnscaledTime: 0
   finalFrameSampleOffsetSeconds: 0.001
   disableAnimatorWhileActive: 1
   animatorToDisableWhileActive: {fileID: 0}
@@ -22626,7 +22626,7 @@ MonoBehaviour:
     clipLength: 2.35
   intervalRangeSeconds: {x: 80, y: 200}
   playbackSpeed: 0.66
-  useUnscaledTime: 1
+  useUnscaledTime: 0
   finalFrameSampleOffsetSeconds: 0.001
   disableAnimatorWhileActive: 1
   animatorToDisableWhileActive: {fileID: 0}
@@ -26634,7 +26634,7 @@ MonoBehaviour:
     clipLength: 2.35
   intervalRangeSeconds: {x: 20, y: 250}
   playbackSpeed: 0.66
-  useUnscaledTime: 1
+  useUnscaledTime: 0
   finalFrameSampleOffsetSeconds: 0.001
   disableAnimatorWhileActive: 1
   animatorToDisableWhileActive: {fileID: 0}
@@ -30155,7 +30155,7 @@ MonoBehaviour:
     clipLength: 3.8333333
   intervalRangeSeconds: {x: 12, y: 60}
   playbackSpeed: 0.24
-  useUnscaledTime: 1
+  useUnscaledTime: 0
   finalFrameSampleOffsetSeconds: 0.001
   disableAnimatorWhileActive: 1
   animatorToDisableWhileActive: {fileID: 0}
@@ -31770,6 +31770,8 @@ MonoBehaviour:
   fallbackMonsters:
   - {fileID: 11400000, guid: 433e723cd1e13c44185e776bf85f5eec, type: 2}
   - {fileID: 11400000, guid: beed2f869003d004da23471404171e2d, type: 2}
+  - {fileID: 11400000, guid: d4d85dbe02ecb8842a4f7113ddd64b76, type: 2}
+  - {fileID: 11400000, guid: d9b2cf3a66b90e94e87a013247773b65, type: 2}
   currencyUI: {fileID: 4886256355278967974}
   currencyPerRoundWin: 15
   currencyChancePerClearedRow: 0.05
@@ -31785,6 +31787,9 @@ MonoBehaviour:
   specialSlider: {fileID: 901058035}
   specialText: {fileID: 360363618}
   gameplayControlsText: {fileID: 1402636635}
+  gameplayControlsTitleText: {fileID: 1134954553}
+  gameplayControlsUnderlayRect: {fileID: 1473687343}
+  gameplayControlsMinimizedUnderlayHeight: 78
   specialAbilityPopupPrefab: {fileID: 4518732633352361137, guid: 99d993e0115d2cc449eade83d4e9fd29, type: 3}
   specialAbilityPopupRoot: {fileID: 0}
   specialAbilityPopupLoopSFX: {fileID: 8300000, guid: 2c6a5fea2ee3ffb42b59c9ec7678a00f, type: 3}
@@ -32126,7 +32131,11 @@ MonoBehaviour:
   piece: {fileID: 2092384765}
   battleLog: {fileID: 1041077125}
   backgroundOverrideImage: {fileID: 1021661073}
+  animatedBackgroundDisplay: {fileID: 0}
+  animatedBackgroundPlayer: {fileID: 0}
   defaultBackgroundSprite: {fileID: 21300000, guid: 18650169a22c0b14b8b3cbc3b8e211c5, type: 3}
+  volcanicEruptionAnimsRoot: {fileID: 1988055450}
+  defaultBoardBordersRoot: {fileID: 348296253}
   specialGaugeRoot: {fileID: 177440591}
   activeModifierTitleText: {fileID: 454683325}
   comboShieldImageA: {fileID: 104022080}

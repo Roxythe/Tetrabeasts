@@ -18,6 +18,7 @@ MonoBehaviour:
     of the normal 4 that ussually spawn.
   icon: {fileID: 21300000, guid: 42f2db22516666240bcbc2fcf0f9c0be, type: 3}
   backgroundOverrideSprite: {fileID: 0}
+  backgroundOverrideVideoClip: {fileID: 0}
   enableRainOverlay: 0
   rainDrops: 44
   rainSpeed: 140
@@ -77,12 +78,14 @@ MonoBehaviour:
   comboShieldBlockedDamageMultiplier: 0.1
   startingHealthFraction: 0.5
   piercingProjectileSprite: {fileID: 0}
-  disarrayTriminoChance: 0.15
-  disarrayPentaminoChance: 0.15
+  disarrayTriminoChance: 0.33
+  disarrayPentaminoChance: 0.33
   outFlankedProjectileSprite: {fileID: 0}
   outFlankedIntervalMin: 6
   outFlankedIntervalMax: 10
   outFlankedRowsPerWave: 1
+  outFlankedWarningSeconds: 2
+  outFlankedProjectileSpeedMultiplier: 0.5
   outFlankedProjectileSizeMultiplier: 1
   volcanicEruptionIntervalMin: 12
   volcanicEruptionIntervalMax: 20
@@ -92,7 +95,4 @@ MonoBehaviour:
   volcanicEruptionWarningSprite: {fileID: 0}
   volcanicEruptionWarningTint: {r: 1, g: 0.08, b: 0, a: 0.45}
   hardenedLavaObstacleSprite: {fileID: 0}
-  volcanicVolcanoAnimFrames: []
-  volcanicVolcanoAnimFrameSeconds: 0.16
-  volcanicVolcanoAnimSize: {x: 160, y: 160}
   roulettePreviewInterval: 1

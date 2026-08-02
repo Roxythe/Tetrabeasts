@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeee6209ccafb68438616e30a515b029, type: 3}
+  m_Name: Bosco
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterData
+  displayName: Bosco
+  portrait: {fileID: -5746821224976465101, guid: a24c064514663e54fafc251fedbf5cb9, type: 3}
+  defaultBorder: {fileID: -8959656473859090931, guid: 986885f1f4df3a641bdf64e2c1cb2727, type: 3}
+  specialAbilityName: Charge!
+  specialDescription: Send all units from the bottom 3 rows to attack immediatley,
+    no need for fully formed lines. Damage based on the number of units cleared.
+  startsLocked: 1
+  unlockCost: 100
+  ability: 0
+  clearRows: 3
+  cooldownSeconds: 0
+  specialGaugeMax: 100
+  specialAbilityAnimationPrefab: {fileID: 3263783689272246130, guid: d116023b5ccbdae429903b5d2313c6b6, type: 3}
+  specialAbilityAnimationSFX: {fileID: 8300000, guid: 7b4ae982ff5c30d408535a4bebfac709, type: 3}
+  specialAbilityAnimationSFXVolume: 1
+  reviveAllVFXSprite: {fileID: 0}
+  sfxRestoreAll: {fileID: 0}
+  immunityDuration: 5
+  sfxImmunityOn: {fileID: 0}
+  sfxImmunityWarn: {fileID: 0}
+  sfxImmunityOff: {fileID: 0}
+  reducedGravityDuration: 10
+  reducedGravityMultiplier: 0.333334
+  doubleStatsDuration: 10
+  sfxDoubleStatsOn: {fileID: 0}
+  sfxDoubleStatsOff: {fileID: 0}

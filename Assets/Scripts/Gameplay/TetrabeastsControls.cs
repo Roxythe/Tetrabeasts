@@ -28,7 +28,8 @@ public enum TetrabeastsControlAction
     Pause,
     MenuNavigate,
     MenuSubmit,
-    MenuCancel
+    MenuCancel,
+    ToggleControls
 }
 
 public readonly struct TetrabeastsControlBindingRow
@@ -95,6 +96,7 @@ public static class TetrabeastsControls
         TetrabeastsControlAction.HardDrop,
         TetrabeastsControlAction.Special,
         TetrabeastsControlAction.Pause,
+        TetrabeastsControlAction.ToggleControls,
         TetrabeastsControlAction.MenuSubmit,
         TetrabeastsControlAction.MenuCancel
     };
@@ -961,6 +963,7 @@ public static class TetrabeastsControls
             TetrabeastsControlAction.HardDrop => "Hard Drop",
             TetrabeastsControlAction.Special => "Special",
             TetrabeastsControlAction.Pause => "Pause",
+            TetrabeastsControlAction.ToggleControls => "Toggle Controls",
             TetrabeastsControlAction.MenuNavigate => "Menu Navigate",
             TetrabeastsControlAction.MenuSubmit => "Menu Confirm",
             TetrabeastsControlAction.MenuCancel => "Menu Back",
@@ -1760,12 +1763,14 @@ public static class TetrabeastsControls
             for (int i = 0; i < DisplayActions.Length; i++)
                 state.Bindings[DisplayActions[i]] = new List<TetrabeastsControlBinding>();
 
+            var loadedActions = new HashSet<TetrabeastsControlAction>();
             for (int i = 0; i < saveData.actions.Count; i++)
             {
                 var actionData = saveData.actions[i];
                 if (actionData == null || !Enum.TryParse(actionData.action, out TetrabeastsControlAction action))
                     continue;
 
+                loadedActions.Add(action);
                 var bindings = new List<TetrabeastsControlBinding>();
                 if (actionData.bindings != null)
                 {
@@ -1782,7 +1787,11 @@ public static class TetrabeastsControls
                 state.Bindings[action] = bindings;
             }
 
+            bool changed = AddMissingDefaultBindings(profile, state, loadedActions);
             if (NormalizeLoadedBindingState(profile, state))
+                changed = true;
+
+            if (changed)
                 SaveBindingProfileState(profile, state);
 
             return state;
@@ -1811,6 +1820,30 @@ public static class TetrabeastsControls
             : BuildControllerDefaultBindings(profile);
     }
 
+    static bool AddMissingDefaultBindings(
+        TetrabeastsControlProfile profile,
+        BindingProfileState state,
+        HashSet<TetrabeastsControlAction> loadedActions)
+    {
+        if (state?.Bindings == null)
+            return false;
+
+        bool changed = false;
+        var defaults = BuildDefaultBindings(profile);
+        foreach (var action in DisplayActions)
+        {
+            if (loadedActions != null && loadedActions.Contains(action))
+                continue;
+
+            state.Bindings[action] = defaults.TryGetValue(action, out var bindings)
+                ? new List<TetrabeastsControlBinding>(bindings)
+                : new List<TetrabeastsControlBinding>();
+            changed = true;
+        }
+
+        return changed;
+    }
+
     static Dictionary<TetrabeastsControlAction, List<TetrabeastsControlBinding>> BuildKeyboardMouseDefaultBindings()
     {
         return new Dictionary<TetrabeastsControlAction, List<TetrabeastsControlBinding>>
@@ -1823,6 +1856,7 @@ public static class TetrabeastsControls
             [TetrabeastsControlAction.HardDrop] = Bindings(Binding("<Keyboard>/space", "Space")),
             [TetrabeastsControlAction.Special] = Bindings(Binding("<Keyboard>/r", "R")),
             [TetrabeastsControlAction.Pause] = Bindings(Binding("<Keyboard>/escape", "Escape")),
+            [TetrabeastsControlAction.ToggleControls] = Bindings(Binding("<Keyboard>/c", "C")),
             [TetrabeastsControlAction.MenuNavigate] = Bindings(
                 Binding("<Keyboard>/w", "W"),
                 Binding("<Keyboard>/a", "A"),
@@ -1850,6 +1884,7 @@ public static class TetrabeastsControls
             [TetrabeastsControlAction.HardDrop] = Bindings(Binding("<Gamepad>/buttonSouth", ControllerSouthLabel(profile))),
             [TetrabeastsControlAction.Special] = Bindings(Binding("<Gamepad>/buttonNorth", ControllerNorthLabel(profile))),
             [TetrabeastsControlAction.Pause] = Bindings(Binding("<Gamepad>/start", ControllerMenuLabel(profile))),
+            [TetrabeastsControlAction.ToggleControls] = Bindings(Binding("<Gamepad>/select", ControllerBackLabel(profile))),
             [TetrabeastsControlAction.MenuNavigate] = Bindings(Binding("<Gamepad>/leftStick", "Left Stick"), Binding("<Gamepad>/dpad", "D-Pad")),
             [TetrabeastsControlAction.MenuSubmit] = Bindings(Binding("<Gamepad>/buttonSouth", ControllerSouthLabel(profile))),
             [TetrabeastsControlAction.MenuCancel] = Bindings(Binding("<Gamepad>/buttonEast", ControllerEastLabel(profile)))
@@ -2208,10 +2243,16 @@ public static class TetrabeastsControls
             state.Bindings = BuildDefaultBindings(profile);
         }
 
+        Dictionary<TetrabeastsControlAction, List<TetrabeastsControlBinding>> defaults = null;
         foreach (var action in DisplayActions)
         {
             if (!state.Bindings.ContainsKey(action))
-                state.Bindings[action] = new List<TetrabeastsControlBinding>();
+            {
+                defaults ??= BuildDefaultBindings(profile);
+                state.Bindings[action] = defaults.TryGetValue(action, out var bindings)
+                    ? new List<TetrabeastsControlBinding>(bindings)
+                    : new List<TetrabeastsControlBinding>();
+            }
         }
     }
 
@@ -2627,6 +2668,7 @@ public static class TetrabeastsControls
             TetrabeastsControlAction.HardDrop => "Space",
             TetrabeastsControlAction.Special => "R",
             TetrabeastsControlAction.Pause => "Escape",
+            TetrabeastsControlAction.ToggleControls => "C",
             TetrabeastsControlAction.MenuNavigate => "WASD",
             TetrabeastsControlAction.MenuSubmit => "Enter",
             TetrabeastsControlAction.MenuCancel => "Escape",
@@ -2653,6 +2695,7 @@ public static class TetrabeastsControls
         string west = ControllerWestLabel(profile);
         string north = ControllerNorthLabel(profile);
         string menu = ControllerMenuLabel(profile);
+        string back = ControllerBackLabel(profile);
 
         return action switch
         {
@@ -2664,6 +2707,7 @@ public static class TetrabeastsControls
             TetrabeastsControlAction.HardDrop => south,
             TetrabeastsControlAction.Special => north,
             TetrabeastsControlAction.Pause => menu,
+            TetrabeastsControlAction.ToggleControls => back,
             TetrabeastsControlAction.MenuNavigate => "Left Stick",
             TetrabeastsControlAction.MenuSubmit => south,
             TetrabeastsControlAction.MenuCancel => east,
@@ -2683,6 +2727,7 @@ public static class TetrabeastsControls
             TetrabeastsControlAction.HardDrop => "<Gamepad>/buttonSouth",
             TetrabeastsControlAction.Special => "<Gamepad>/buttonNorth",
             TetrabeastsControlAction.Pause => "<Gamepad>/start",
+            TetrabeastsControlAction.ToggleControls => "<Gamepad>/select",
             TetrabeastsControlAction.MenuNavigate => "<Gamepad>/leftStick",
             TetrabeastsControlAction.MenuSubmit => "<Gamepad>/buttonSouth",
             TetrabeastsControlAction.MenuCancel => "<Gamepad>/buttonEast",
@@ -2773,6 +2818,7 @@ public static class TetrabeastsControls
             TetrabeastsControlAction.HardDrop => keyboard.spaceKey.wasPressedThisFrame,
             TetrabeastsControlAction.Special => keyboard.rKey.wasPressedThisFrame,
             TetrabeastsControlAction.Pause => keyboard.escapeKey.wasPressedThisFrame,
+            TetrabeastsControlAction.ToggleControls => keyboard.cKey.wasPressedThisFrame,
             TetrabeastsControlAction.MenuNavigate =>
                 keyboard.wKey.wasPressedThisFrame ||
                 keyboard.aKey.wasPressedThisFrame ||
@@ -2806,6 +2852,7 @@ public static class TetrabeastsControls
                 TetrabeastsControlAction.HardDrop => gamepad.buttonSouth.wasPressedThisFrame,
                 TetrabeastsControlAction.Special => gamepad.buttonNorth.wasPressedThisFrame,
                 TetrabeastsControlAction.Pause => gamepad.startButton.wasPressedThisFrame,
+                TetrabeastsControlAction.ToggleControls => gamepad.selectButton.wasPressedThisFrame,
                 TetrabeastsControlAction.MenuNavigate =>
                     gamepad.dpad.left.wasPressedThisFrame ||
                     gamepad.dpad.right.wasPressedThisFrame ||
@@ -3005,6 +3052,7 @@ public static class TetrabeastsControls
             TetrabeastsControlAction.HardDrop => keyboard.spaceKey.isPressed,
             TetrabeastsControlAction.Special => keyboard.rKey.isPressed,
             TetrabeastsControlAction.Pause => keyboard.escapeKey.isPressed,
+            TetrabeastsControlAction.ToggleControls => keyboard.cKey.isPressed,
             TetrabeastsControlAction.MenuNavigate =>
                 keyboard.wKey.isPressed ||
                 keyboard.aKey.isPressed ||
@@ -3040,6 +3088,7 @@ public static class TetrabeastsControls
                 TetrabeastsControlAction.HardDrop => gamepad.buttonSouth.isPressed,
                 TetrabeastsControlAction.Special => gamepad.buttonNorth.isPressed,
                 TetrabeastsControlAction.Pause => gamepad.startButton.isPressed,
+                TetrabeastsControlAction.ToggleControls => gamepad.selectButton.isPressed,
                 TetrabeastsControlAction.MenuNavigate =>
                     gamepad.dpad.left.isPressed ||
                     gamepad.dpad.right.isPressed ||
@@ -3131,6 +3180,7 @@ public static class TetrabeastsControls
             TetrabeastsControlAction.HardDrop => Input.GetKeyDown(KeyCode.Space),
             TetrabeastsControlAction.Special => Input.GetKeyDown(KeyCode.R),
             TetrabeastsControlAction.Pause => Input.GetKeyDown(KeyCode.Escape),
+            TetrabeastsControlAction.ToggleControls => Input.GetKeyDown(KeyCode.C),
             TetrabeastsControlAction.MenuNavigate =>
                 Input.GetKeyDown(KeyCode.W) ||
                 Input.GetKeyDown(KeyCode.A) ||
@@ -3294,6 +3344,7 @@ public static class TetrabeastsControls
             TetrabeastsControlAction.HardDrop => Input.GetKey(KeyCode.Space),
             TetrabeastsControlAction.Special => Input.GetKey(KeyCode.R),
             TetrabeastsControlAction.Pause => Input.GetKey(KeyCode.Escape),
+            TetrabeastsControlAction.ToggleControls => Input.GetKey(KeyCode.C),
             TetrabeastsControlAction.MenuNavigate =>
                 Input.GetKey(KeyCode.W) ||
                 Input.GetKey(KeyCode.A) ||
@@ -3333,10 +3384,11 @@ public static class TetrabeastsControls
     static bool IsLegacySingleButtonAction(TetrabeastsControlAction action)
     {
         return action == TetrabeastsControlAction.HardDrop ||
-            action == TetrabeastsControlAction.Special ||
-            action == TetrabeastsControlAction.Pause ||
-            action == TetrabeastsControlAction.MenuSubmit ||
-            action == TetrabeastsControlAction.MenuCancel;
+               action == TetrabeastsControlAction.Special ||
+               action == TetrabeastsControlAction.Pause ||
+               action == TetrabeastsControlAction.ToggleControls ||
+               action == TetrabeastsControlAction.MenuSubmit ||
+               action == TetrabeastsControlAction.MenuCancel;
     }
 
     static KeyCode GetLegacyControllerButtonKey(TetrabeastsControlProfile profile, TetrabeastsControlAction action)
@@ -3350,6 +3402,7 @@ public static class TetrabeastsControls
             TetrabeastsControlAction.HardDrop => playStation ? KeyCode.JoystickButton1 : KeyCode.JoystickButton0,
             TetrabeastsControlAction.Special => KeyCode.JoystickButton3,
             TetrabeastsControlAction.Pause => playStation ? KeyCode.JoystickButton9 : KeyCode.JoystickButton7,
+            TetrabeastsControlAction.ToggleControls => playStation ? KeyCode.JoystickButton8 : KeyCode.JoystickButton6,
             TetrabeastsControlAction.MenuSubmit => playStation ? KeyCode.JoystickButton1 : KeyCode.JoystickButton0,
             TetrabeastsControlAction.MenuCancel => playStation ? KeyCode.JoystickButton2 : KeyCode.JoystickButton1,
             _ => KeyCode.None

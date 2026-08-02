@@ -216,6 +216,9 @@ public class GameController : MonoBehaviour
     public UnityEngine.UI.Slider specialSlider;
     public TMP_Text specialText;
     [SerializeField] TMP_Text gameplayControlsText;
+    [SerializeField] TMP_Text gameplayControlsTitleText;
+    [SerializeField] RectTransform gameplayControlsUnderlayRect;
+    [SerializeField, Min(40f)] float gameplayControlsMinimizedUnderlayHeight = 78f;
 
     [Header("Special Ability Popup")]
     [SerializeField] GameObject specialAbilityPopupPrefab;
@@ -242,7 +245,15 @@ public class GameController : MonoBehaviour
     TetrabeastsControlProfile _lastControlsTextEffectiveProfile;
     TetrabeastsControlProfile _lastControlsTextActiveProfile;
     string _lastControlsTextSpecialBinding;
+    string _lastControlsTextToggleBinding;
+    bool _lastControlsTextMinimized;
     bool _hasControlsTextSnapshot;
+    bool _gameplayControlsMinimized;
+    bool _gameplayControlsLayoutCached;
+    Vector2 _gameplayControlsUnderlayDefaultSize;
+    Vector2 _gameplayControlsUnderlayDefaultAnchoredPosition;
+    Vector2 _gameplayControlsTitleDefaultAnchoredPosition;
+    bool _gameplayControlsBodyDefaultActive = true;
 
     class SpecialTextDefaults
     {
@@ -1345,6 +1356,9 @@ public class GameController : MonoBehaviour
             return;
 
         if (_specialAbilityCinematicActive)
+            return;
+
+        if (HandleGameplayControlsToggleInput())
             return;
 
         if (TetrabeastsControls.WasPressed(TetrabeastsControlAction.Pause))
@@ -4734,7 +4748,23 @@ public class GameController : MonoBehaviour
 
         while (rt && (rt.anchoredPosition - targetAnchored).sqrMagnitude > 9f)
         {
+            Vector2 previousPosition = rt.anchoredPosition;
             rt.anchoredPosition = Vector2.MoveTowards(rt.anchoredPosition, targetAnchored, speed * Time.deltaTime);
+
+            if (TryGetPlayerAttackHardenedLavaImpactCell(previousPosition, rt.anchoredPosition, out var lavaCell) &&
+                gameBoard.TryHandlePlayerAttackObstacleImpact(lavaCell))
+            {
+                var lavaImpactRoot = projectileRoot ? projectileRoot : (gameBoard ? gameBoard.gridRoot : null);
+                Vector2 lavaImpactPosition = BoardLocalToProjectileRoot(gameBoard.CellToAnchoredPos(lavaCell));
+                rt.anchoredPosition = lavaImpactPosition;
+
+                if (AudioManager.I && impactClip)
+                    AudioManager.I.PlaySFX(impactClip);
+
+                Destroy(rt.gameObject);
+                SpawnAttackExplosion(lavaImpactRoot, lavaImpactPosition);
+                yield break;
+            }
 
             if (animType == AttackAnimType.MirrorToggle && topImg)
             {
@@ -4774,6 +4804,50 @@ public class GameController : MonoBehaviour
 
         if (impactEndedLevel)
             yield break;
+    }
+
+    bool TryGetPlayerAttackHardenedLavaImpactCell(Vector2 previousRootPos, Vector2 currentRootPos, out Vector2Int hitCell)
+    {
+        hitCell = default;
+
+        if (!gameBoard)
+            return false;
+
+        Vector2 previousBoard = ProjectileRootToBoardLocal(previousRootPos);
+        Vector2 currentBoard = ProjectileRootToBoardLocal(currentRootPos);
+        Vector2 cellSize = gameBoard.GetCellSize();
+        float projectileX = currentBoard.x;
+        float sweepTop = Mathf.Max(previousBoard.y, currentBoard.y);
+        float sweepBottom = Mathf.Min(previousBoard.y, currentBoard.y);
+        float halfCellX = cellSize.x * 0.5f;
+        float halfCellY = cellSize.y * 0.5f;
+        bool movingUp = currentBoard.y >= previousBoard.y;
+
+        int y = movingUp ? 0 : gameBoard.height - 1;
+        int yEndExclusive = movingUp ? gameBoard.height : -1;
+        int yStep = movingUp ? 1 : -1;
+
+        for (; y != yEndExclusive; y += yStep)
+        {
+            for (int x = 0; x < gameBoard.width; x++)
+            {
+                var cell = new Vector2Int(x, y);
+                if (!gameBoard.HasObstacleOfType(cell, Board.ObstacleType.HardenedLava))
+                    continue;
+
+                Vector2 center = gameBoard.CellToAnchoredPos(cell);
+                if (projectileX < center.x - halfCellX || projectileX > center.x + halfCellX)
+                    continue;
+
+                if (sweepTop < center.y - halfCellY || sweepBottom > center.y + halfCellY)
+                    continue;
+
+                hitCell = cell;
+                return true;
+            }
+        }
+
+        return false;
     }
 
     void SpawnAttackExplosion(RectTransform parent, Vector2 anchoredPosition)
@@ -8415,18 +8489,46 @@ public class GameController : MonoBehaviour
         RefreshGameplayControlTexts();
     }
 
+    bool HandleGameplayControlsToggleInput()
+    {
+        if (ConfirmationPopupUI.IsAnyShowing || IsPauseMenuInputLocked())
+            return false;
+
+        if (isPaused && volumePanelInPause && UIPanelTransition.IsVisible(volumePanelInPause.gameObject))
+            return false;
+
+        if (!TetrabeastsControls.WasPressed(TetrabeastsControlAction.ToggleControls))
+            return false;
+
+        SetGameplayControlsMinimized(!_gameplayControlsMinimized);
+        return true;
+    }
+
+    void SetGameplayControlsMinimized(bool minimized)
+    {
+        if (_gameplayControlsMinimized == minimized && _gameplayControlsLayoutCached)
+            return;
+
+        _gameplayControlsMinimized = minimized;
+        ApplyGameplayControlsLayout();
+        RefreshGameplayControlTexts();
+    }
+
     void RefreshGameplayControlTextsIfNeeded()
     {
         TetrabeastsControlProfile savedProfile = TetrabeastsControls.SavedProfile;
         TetrabeastsControlProfile effectiveProfile = TetrabeastsControls.EffectiveProfile;
         TetrabeastsControlProfile activeProfile = TetrabeastsControls.ActiveInputProfile;
         string specialBinding = GetGameplayBindingLabel(TetrabeastsControlAction.Special);
+        string toggleBinding = GetGameplayBindingLabel(TetrabeastsControlAction.ToggleControls);
 
         if (_hasControlsTextSnapshot &&
             _lastControlsTextSavedProfile == savedProfile &&
             _lastControlsTextEffectiveProfile == effectiveProfile &&
             _lastControlsTextActiveProfile == activeProfile &&
-            string.Equals(_lastControlsTextSpecialBinding, specialBinding, System.StringComparison.Ordinal))
+            _lastControlsTextMinimized == _gameplayControlsMinimized &&
+            string.Equals(_lastControlsTextSpecialBinding, specialBinding, System.StringComparison.Ordinal) &&
+            string.Equals(_lastControlsTextToggleBinding, toggleBinding, System.StringComparison.Ordinal))
             return;
 
         RefreshGameplayControlTexts();
@@ -8434,17 +8536,25 @@ public class GameController : MonoBehaviour
 
     void RefreshGameplayControlTexts()
     {
-        ResolveGameplayControlsText();
+        ResolveGameplayControlsRefs();
+        ApplyGameplayControlsLayout();
 
         TetrabeastsControlProfile savedProfile = TetrabeastsControls.SavedProfile;
         TetrabeastsControlProfile effectiveProfile = TetrabeastsControls.EffectiveProfile;
         TetrabeastsControlProfile activeProfile = TetrabeastsControls.ActiveInputProfile;
         string specialBinding = GetGameplayBindingLabel(TetrabeastsControlAction.Special);
+        string toggleBinding = GetGameplayBindingLabel(TetrabeastsControlAction.ToggleControls);
 
         if (activateSpecialGaugeText)
         {
             activateSpecialGaugeText.richText = true;
             activateSpecialGaugeText.text = FormatSpecialReadyPrompt(specialBinding);
+        }
+
+        if (gameplayControlsTitleText)
+        {
+            gameplayControlsTitleText.richText = true;
+            gameplayControlsTitleText.text = FormatGameplayControlsTitle(toggleBinding);
         }
 
         if (gameplayControlsText)
@@ -8469,24 +8579,92 @@ public class GameController : MonoBehaviour
         _lastControlsTextEffectiveProfile = effectiveProfile;
         _lastControlsTextActiveProfile = activeProfile;
         _lastControlsTextSpecialBinding = specialBinding;
+        _lastControlsTextToggleBinding = toggleBinding;
+        _lastControlsTextMinimized = _gameplayControlsMinimized;
         _hasControlsTextSnapshot = true;
     }
 
-    void ResolveGameplayControlsText()
+    void ResolveGameplayControlsRefs()
     {
-        if (gameplayControlsText)
-            return;
-
         var labels = GetComponentsInChildren<TMP_Text>(true);
-        for (int i = 0; i < labels.Length; i++)
+        for (int i = 0; i < labels.Length && (!gameplayControlsText || !gameplayControlsTitleText); i++)
         {
             var label = labels[i];
             if (label && label.name == "Control_Text")
-            {
                 gameplayControlsText = label;
-                return;
+            else if (label && label.name == "ControlTitle_Text")
+                gameplayControlsTitleText = label;
+        }
+
+        if (!gameplayControlsUnderlayRect)
+        {
+            var rects = GetComponentsInChildren<RectTransform>(true);
+            for (int i = 0; i < rects.Length; i++)
+            {
+                var rect = rects[i];
+                if (rect && rect.name == "BG_Underlay_Controls")
+                {
+                    gameplayControlsUnderlayRect = rect;
+                    break;
+                }
             }
         }
+    }
+
+    void CacheGameplayControlsLayoutIfNeeded()
+    {
+        if (_gameplayControlsLayoutCached)
+            return;
+
+        ResolveGameplayControlsRefs();
+
+        if (gameplayControlsUnderlayRect)
+        {
+            _gameplayControlsUnderlayDefaultSize = gameplayControlsUnderlayRect.sizeDelta;
+            _gameplayControlsUnderlayDefaultAnchoredPosition = gameplayControlsUnderlayRect.anchoredPosition;
+        }
+
+        if (gameplayControlsTitleText)
+            _gameplayControlsTitleDefaultAnchoredPosition = gameplayControlsTitleText.rectTransform.anchoredPosition;
+
+        _gameplayControlsBodyDefaultActive = !gameplayControlsText || gameplayControlsText.gameObject.activeSelf;
+        _gameplayControlsLayoutCached = true;
+    }
+
+    void ApplyGameplayControlsLayout()
+    {
+        CacheGameplayControlsLayoutIfNeeded();
+
+        if (gameplayControlsText)
+            gameplayControlsText.gameObject.SetActive(!_gameplayControlsMinimized && _gameplayControlsBodyDefaultActive);
+
+        if (gameplayControlsUnderlayRect)
+        {
+            Vector2 size = _gameplayControlsUnderlayDefaultSize;
+            Vector2 position = _gameplayControlsUnderlayDefaultAnchoredPosition;
+            if (_gameplayControlsMinimized)
+            {
+                size.y = Mathf.Max(40f, gameplayControlsMinimizedUnderlayHeight);
+                float topEdgeFactor = 1f - gameplayControlsUnderlayRect.pivot.y;
+                position.y += (_gameplayControlsUnderlayDefaultSize.y - size.y) * topEdgeFactor;
+            }
+
+            gameplayControlsUnderlayRect.sizeDelta = size;
+            gameplayControlsUnderlayRect.anchoredPosition = position;
+        }
+
+        if (gameplayControlsTitleText)
+            gameplayControlsTitleText.rectTransform.anchoredPosition = _gameplayControlsTitleDefaultAnchoredPosition;
+    }
+
+    string FormatGameplayControlsTitle(string toggleBinding)
+    {
+        string action = _gameplayControlsMinimized ? "Expand" : "Minimize";
+        string binding = string.IsNullOrWhiteSpace(toggleBinding)
+            ? TetrabeastsControls.GetActionLabel(TetrabeastsControlAction.ToggleControls)
+            : toggleBinding;
+
+        return $"{TetrabeastsLocalization.LocalizeText("Controls")}   ({binding}) {TetrabeastsLocalization.LocalizeText(action)}";
     }
 
     string FormatGameplayControlLine(TetrabeastsControlAction action)
@@ -8540,6 +8718,7 @@ public class GameController : MonoBehaviour
             TetrabeastsControlAction.RotateCounterClockwise => "Rotate Counterclockwise",
             TetrabeastsControlAction.HardDrop => "Hard Drop",
             TetrabeastsControlAction.Pause => "Pause",
+            TetrabeastsControlAction.ToggleControls => "Toggle Controls",
             _ => TetrabeastsControls.GetActionLabel(action)
         };
     }
