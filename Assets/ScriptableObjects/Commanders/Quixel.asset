@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeee6209ccafb68438616e30a515b029, type: 3}
+  m_Name: Quixel
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterData
+  displayName: Quixel
+  portrait: {fileID: -4317765012634617379, guid: 99c160bb05880744fbfa55e71e83055b, type: 3}
+  defaultBorder: {fileID: 8803301233112118933, guid: 839729afad7eb024ebc8f1991fca6afa, type: 3}
+  specialAbilityName: Bombs Away
+  specialDescription: Drop four bombs down different columns at once. Each bomb detonates when it hits a set unit or the bottom of the board.
+  startsLocked: 1
+  unlockCost: 100
+  ability: 6
+  clearRows: 3
+  cooldownSeconds: 0
+  specialGaugeMax: 100
+  specialAbilityAnimationPrefab: {fileID: 8527199040219002353, guid: da620725fad363640b3397bc5e3f1cee, type: 3}
+  specialAbilityAnimationSFX: {fileID: 8300000, guid: cb528153c8275064bb517a88902c4454, type: 3}
+  specialAbilityAnimationSFXVolume: 1
+  reviveAllVFXSprite: {fileID: 0}
+  sfxRestoreAll: {fileID: 0}
+  immunityDuration: 5
+  sfxImmunityOn: {fileID: 0}
+  sfxImmunityWarn: {fileID: 0}
+  sfxImmunityOff: {fileID: 0}
+  reducedGravityDuration: 10
+  reducedGravityMultiplier: 0.333334
+  doubleStatsDuration: 10
+  sfxDoubleStatsOn: {fileID: 0}
+  sfxDoubleStatsOff: {fileID: 0}

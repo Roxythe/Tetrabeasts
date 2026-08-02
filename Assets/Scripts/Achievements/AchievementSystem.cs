@@ -27,7 +27,8 @@ public static class AchievementSystem
 
     static bool _init;
     static readonly List<Def> _defs = new();
-    static readonly string[] CommanderProgressIds = { "Bosco", "Crono", "Elise", "Grock", "Liktor" };
+    static readonly string[] CommanderProgressIds = { "Bosco", "Crono", "Elise", "Grock", "Liktor", "Mao", "Quixel" };
+    static readonly HashSet<string> CommanderStartingUnlockedIds = new(System.StringComparer.OrdinalIgnoreCase) { "Elise" };
     const string CommanderCompleteColor = "#FFD700";
     const string CommanderIncompleteColor = "#FF3333";
     const string CommanderDividerColor = "#FFFFFF";
@@ -322,6 +323,12 @@ public static class AchievementSystem
             return true;
         }
 
+        if (achievementId == Ach.AllCharsUnlocked)
+        {
+            progress = BuildCommanderConditionProgress(unlocked, IsCommanderUnlockedForAchievements);
+            return true;
+        }
+
         if (achievementId == Ach.SpecialsEachChar_100)
         {
             progress = BuildCommanderConditionProgress(unlocked, id =>
@@ -367,6 +374,17 @@ public static class AchievementSystem
         }
 
         return text;
+    }
+
+    static bool IsCommanderUnlockedForAchievements(string commanderId)
+    {
+        if (string.IsNullOrWhiteSpace(commanderId))
+            return false;
+
+        if (CommanderStartingUnlockedIds.Contains(commanderId))
+            return true;
+
+        return PlayerPrefs.GetInt("unlock_char_" + commanderId, 0) == 1;
     }
 
     static ProgressInfo BuildProgress(double current, double target, Compare compare, bool unlocked, string textOverride = null)
@@ -471,14 +489,40 @@ public static class AchievementSystem
     {
         if (PlayerProgress.I.IsUnlocked(d.id)) return;
 
+        if (d.id == Ach.AllCharsUnlocked)
+        {
+            if (!AreAllCommanderConditionsComplete(IsCommanderUnlockedForAchievements))
+                return;
+
+            UnlockOrDefer(d.id);
+            return;
+        }
+
         double v = ReadStat(d.scope, d.statKey);
         bool ok = d.compare == Compare.Gte ? (v >= d.target) : (v <= d.target && v > 0);
         if (!ok) return;
 
+        UnlockOrDefer(d.id);
+    }
+
+    static bool AreAllCommanderConditionsComplete(Func<string, bool> isCommanderComplete)
+    {
+        if (CommanderProgressIds.Length == 0 || isCommanderComplete == null)
+            return false;
+
+        for (int i = 0; i < CommanderProgressIds.Length; i++)
+            if (!isCommanderComplete(CommanderProgressIds[i]))
+                return false;
+
+        return true;
+    }
+
+    static void UnlockOrDefer(string achievementId)
+    {
         if (DemoBuildGuardRails.ShouldDeferAchievementUnlocks)
-            PlayerProgress.I.DeferDemoAchievementUnlock(d.id);
+            PlayerProgress.I.DeferDemoAchievementUnlock(achievementId);
         else
-            PlayerProgress.I.UnlockAchievement(d.id);
+            PlayerProgress.I.UnlockAchievement(achievementId);
     }
 
     static double ReadStat(Scope scope, string key)

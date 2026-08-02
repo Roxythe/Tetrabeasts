@@ -534,7 +534,7 @@ public class GameController : MonoBehaviour
     bool _baseGameplayStatsCached;
 
     // ======== Achievements helpers ========
-    [SerializeField] string[] achievementCharacterIds = new string[5]; // Set 5 character asset names
+    [SerializeField] string[] achievementCharacterIds = new string[7]; // Set character asset names used by commander-wide achievements
     float _gravityCapAccumSeconds = 0f;
 
     readonly Queue<TetrominoData> bag = new();
@@ -4055,7 +4055,7 @@ public class GameController : MonoBehaviour
         if (PlayerProgress.I == null) return;
         if (PlayerProgress.I.GetLifetimeInt(AchievementSystem.Stat.FinalWinAllChars) != 0) return;
 
-        if (achievementCharacterIds == null || achievementCharacterIds.Length < 5) return;
+        if (achievementCharacterIds == null || achievementCharacterIds.Length == 0) return;
 
         for (int i = 0; i < achievementCharacterIds.Length; i++)
         {
@@ -4527,7 +4527,257 @@ public class GameController : MonoBehaviour
                     ResetSpecialGauge();
                     break;
                 }
+
+            case SpecialAbility.ShakeNQuake:
+                {
+                    RunSummaryStats.AddSpecialUsed();
+                    ResetSpecialGauge();
+                    StartCoroutine(ShakeNQuakeSpecialCo());
+                    break;
+                }
+
+            case SpecialAbility.BombsAway:
+                {
+                    RunSummaryStats.AddSpecialUsed();
+                    ResetSpecialGauge();
+                    StartCoroutine(BombsAwaySpecialCo());
+                    break;
+                }
         }
+    }
+
+    IEnumerator ShakeNQuakeSpecialCo()
+    {
+        if (!gameBoard)
+            yield break;
+
+        _specialAbilityCinematicActive = true;
+
+        try
+        {
+            TetrominoData earthquakeData = FindSpecialBlockData(SpecialType.Earthquake);
+
+            if (AudioManager.I && earthquakeData && earthquakeData.specialSFX)
+                AudioManager.I.PlaySFX(earthquakeData.specialSFX);
+
+            gameBoard.PlaySpecialBoardVFX(SpecialType.Earthquake);
+
+            var affected = new List<Vector2Int>();
+            for (int y = 0; y < gameBoard.height; y++)
+                for (int x = 0; x < gameBoard.width; x++)
+                    affected.Add(new Vector2Int(x, y));
+
+            if (earthquakeData)
+                gameBoard.FlashCells(affected, earthquakeData.specialFlashSprite, earthquakeData.flashOnlyOccupied);
+
+            gameBoard.SettleAllColumns(true);
+
+            yield return null;
+            if (gameBoard && gameBoard.cascadeClearVisualDelay > 0f)
+                yield return new WaitForSecondsRealtime(gameBoard.cascadeClearVisualDelay);
+
+            if (!gameBoard)
+                yield break;
+
+            bool clearComplete = false;
+            gameBoard.ClearFullLinesAnimated((rowsCleared, removedCells, damageFromMonsters, specialChargeFromMonsters, rowDamage, rowDominantMonster) =>
+            {
+                if (PlayerProgress.I != null && rowsCleared > 0)
+                    PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.EarthquakeRowClears, rowsCleared);
+
+                var emptyCols = new Dictionary<int, List<int>>();
+                OnPieceLocked(rowsCleared, removedCells, damageFromMonsters, specialChargeFromMonsters, rowDamage, rowDominantMonster, emptyCols);
+                clearComplete = true;
+            }, overrideCascadeDelay: 0f);
+
+            while (!clearComplete)
+                yield return null;
+        }
+        finally
+        {
+            _specialAbilityCinematicActive = false;
+            StartCoroutine(CoPrewarmSpecialAbilityPopupDeferred());
+        }
+    }
+
+    IEnumerator BombsAwaySpecialCo()
+    {
+        if (!gameBoard)
+            yield break;
+
+        _specialAbilityCinematicActive = true;
+
+        try
+        {
+            TetrominoData bombData = FindSpecialBlockData(SpecialType.Bomb);
+            var columns = PickBombsAwayColumns(4);
+            if (columns.Count == 0)
+                yield break;
+
+            var landingCells = new List<Vector2Int>(columns.Count);
+            var visuals = new List<RectTransform>(columns.Count);
+            Vector2 cellSize = gameBoard.GetCellSize();
+
+            for (int i = 0; i < columns.Count; i++)
+            {
+                int column = columns[i];
+                Vector2Int landing = GetBombsAwayLandingCell(column);
+                landingCells.Add(landing);
+
+                RectTransform visual = CreateBombsAwayVisual(bombData);
+                if (visual)
+                {
+                    visual.anchoredPosition = gameBoard.CellToAnchoredPos(new Vector2Int(column, gameBoard.height - 1))
+                                            + new Vector2(0f, cellSize.y * 1.25f);
+                    visual.SetAsLastSibling();
+                }
+
+                visuals.Add(visual);
+            }
+
+            if (AudioManager.I && bombData && bombData.specialSFX)
+                AudioManager.I.PlaySFX(bombData.specialSFX);
+
+            float speed = Mathf.Max(1f, projectileSpeed);
+            bool anyMoving = visuals.Count > 0;
+            while (anyMoving)
+            {
+                anyMoving = false;
+                float step = speed * Time.unscaledDeltaTime;
+                for (int i = 0; i < visuals.Count && i < landingCells.Count; i++)
+                {
+                    RectTransform visual = visuals[i];
+                    if (!visual)
+                        continue;
+
+                    Vector2 target = gameBoard.CellToAnchoredPos(landingCells[i]);
+                    visual.anchoredPosition = Vector2.MoveTowards(visual.anchoredPosition, target, step);
+                    if ((visual.anchoredPosition - target).sqrMagnitude > 1f)
+                        anyMoving = true;
+                }
+
+                yield return null;
+            }
+
+            for (int i = 0; i < visuals.Count; i++)
+                if (visuals[i])
+                    Destroy(visuals[i].gameObject);
+
+            if (AudioManager.I && bombData && bombData.specialSFX)
+                AudioManager.I.PlaySFX(bombData.specialSFX);
+
+            gameBoard.PlaySpecialBoardVFX(SpecialType.Bomb);
+            yield return ResolveBombsAwayDetonationsCo(bombData, landingCells);
+        }
+        finally
+        {
+            _specialAbilityCinematicActive = false;
+            StartCoroutine(CoPrewarmSpecialAbilityPopupDeferred());
+        }
+    }
+
+    TetrominoData FindSpecialBlockData(SpecialType special)
+    {
+        if (specialBlocks == null)
+            return null;
+
+        for (int i = 0; i < specialBlocks.Length; i++)
+        {
+            TetrominoData data = specialBlocks[i];
+            if (data && data.special == special)
+                return data;
+        }
+
+        return null;
+    }
+
+    List<int> PickBombsAwayColumns(int count)
+    {
+        var columns = new List<int>();
+        if (!gameBoard)
+            return columns;
+
+        for (int x = 0; x < gameBoard.width; x++)
+            columns.Add(x);
+
+        for (int i = 0; i < columns.Count; i++)
+        {
+            int swap = UnityEngine.Random.Range(i, columns.Count);
+            (columns[i], columns[swap]) = (columns[swap], columns[i]);
+        }
+
+        int keep = Mathf.Clamp(count, 0, columns.Count);
+        if (columns.Count > keep)
+            columns.RemoveRange(keep, columns.Count - keep);
+
+        return columns;
+    }
+
+    Vector2Int GetBombsAwayLandingCell(int column)
+    {
+        column = Mathf.Clamp(column, 0, gameBoard.width - 1);
+
+        for (int y = gameBoard.height - 1; y >= 0; y--)
+        {
+            var cell = new Vector2Int(column, y);
+            if (gameBoard.TryGetMonster(cell, out var inst) && inst.data)
+                return cell;
+        }
+
+        return new Vector2Int(column, 0);
+    }
+
+    RectTransform CreateBombsAwayVisual(TetrominoData bombData)
+    {
+        if (!gameBoard)
+            return null;
+
+        Sprite sprite = bombData ? bombData.specialSprite : null;
+        Sprite background = bombData ? bombData.backgroundImage : null;
+        Color color = bombData ? bombData.color : Color.white;
+        return gameBoard.InstantiateTileUI(color, sprite, background, portraitScale: 0.9f);
+    }
+
+    IEnumerator ResolveBombsAwayDetonationsCo(TetrominoData bombData, List<Vector2Int> landingCells)
+    {
+        if (!gameBoard || landingCells == null || landingCells.Count == 0)
+            yield break;
+
+        var affectedEnvironment = new HashSet<Vector2Int>();
+        var toRemove = new HashSet<Vector2Int>();
+
+        for (int i = 0; i < landingCells.Count; i++)
+        {
+            Vector2Int center = landingCells[i];
+            for (int dy = -1; dy <= 1; dy++)
+                for (int dx = -1; dx <= 1; dx++)
+                {
+                    var cell = new Vector2Int(center.x + dx, center.y + dy);
+                    if (!gameBoard.InBounds(cell))
+                        continue;
+
+                    affectedEnvironment.Add(cell);
+                    if (!gameBoard.IsFree(cell))
+                        toRemove.Add(cell);
+                }
+        }
+
+        gameBoard.ApplySpecialToEnvironment(affectedEnvironment, SpecialType.Bomb);
+        if (bombData)
+            gameBoard.FlashCells(toRemove, bombData.specialFlashSprite, bombData.flashOnlyOccupied);
+
+        gameBoard.RemoveCellsAndFall(toRemove, out var removedA, out int dmgA, out float chargeA);
+
+        bool clearComplete = false;
+        gameBoard.ClearFullLinesAnimated((rowsAfter, removedB, dmgB, chargeB, rowDamageB, rowDomB) =>
+        {
+            var emptyCols = new Dictionary<int, List<int>>();
+            OnPieceLocked(rowsAfter, removedB, dmgA + dmgB, chargeA + chargeB, rowDamageB, rowDomB, emptyCols);
+            clearComplete = true;
+        });
+
+        while (!clearComplete)
+            yield return null;
     }
 
     void TryMarkSpecialsEachCharacter(int needed, string flagKey)
@@ -4535,8 +4785,7 @@ public class GameController : MonoBehaviour
         if (PlayerProgress.I == null) return;
         if (PlayerProgress.I.GetLifetimeInt(flagKey) != 0) return;
 
-        // Must have all 5 ids set
-        if (achievementCharacterIds == null || achievementCharacterIds.Length < 5) return;
+        if (achievementCharacterIds == null || achievementCharacterIds.Length == 0) return;
 
         for (int i = 0; i < achievementCharacterIds.Length; i++)
         {
@@ -8664,7 +8913,7 @@ public class GameController : MonoBehaviour
             ? TetrabeastsControls.GetActionLabel(TetrabeastsControlAction.ToggleControls)
             : toggleBinding;
 
-        return $"{TetrabeastsLocalization.LocalizeText("Controls")}   ({binding}) {TetrabeastsLocalization.LocalizeText(action)}";
+        return $"{TetrabeastsLocalization.LocalizeText("Controls")}   [{binding}] {TetrabeastsLocalization.LocalizeText(action)}";
     }
 
     string FormatGameplayControlLine(TetrabeastsControlAction action)

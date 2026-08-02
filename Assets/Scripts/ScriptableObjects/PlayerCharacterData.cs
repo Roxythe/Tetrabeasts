@@ -7,7 +7,9 @@ public enum SpecialAbility
     RestoreAllToFull,   // Revive (hp>0) and heal to max for all inactive tiles
     GlobalImmunity,     // Tiles take no damage for a duration, with gold border + pulse
     ReducedGravity,     // Temporarily reduce gravity by 1/3 for a duration
-    DoubleStats         // Temporarily double all tile stats for a duration
+    DoubleStats,        // Temporarily double all tile stats for a duration
+    ShakeNQuake,        // Settle every column like an earthquake special block
+    BombsAway           // Drop multiple bomb special blocks at once
 }
 
 [CreateAssetMenu(menuName = "Run/Player Character", fileName = "NewPlayerCharacter")]
