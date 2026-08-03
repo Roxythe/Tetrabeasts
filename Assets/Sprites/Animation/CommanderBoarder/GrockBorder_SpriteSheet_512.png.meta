@@ -1,0 +1,4624 @@
+fileFormatVersion: 2
+guid: 485d8bc1c65245d4b8826a6917056ef5
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1213768103809294247
+    second: GrockBorder_SpriteSheet_512_0
+  - first:
+      213: 8285202767530153929
+    second: GrockBorder_SpriteSheet_512_1
+  - first:
+      213: 5977592470085586214
+    second: GrockBorder_SpriteSheet_512_2
+  - first:
+      213: -1349742586863453359
+    second: GrockBorder_SpriteSheet_512_3
+  - first:
+      213: 7975895938803515943
+    second: GrockBorder_SpriteSheet_512_4
+  - first:
+      213: 3377687142802651652
+    second: GrockBorder_SpriteSheet_512_5
+  - first:
+      213: -8820776969736090528
+    second: GrockBorder_SpriteSheet_512_6
+  - first:
+      213: -8518485104079615128
+    second: GrockBorder_SpriteSheet_512_7
+  - first:
+      213: -7361283603501775067
+    second: GrockBorder_SpriteSheet_512_8
+  - first:
+      213: -3483916161229884382
+    second: GrockBorder_SpriteSheet_512_9
+  - first:
+      213: -3533680568427379483
+    second: GrockBorder_SpriteSheet_512_10
+  - first:
+      213: -5152056543119600690
+    second: GrockBorder_SpriteSheet_512_11
+  - first:
+      213: -4018010387380547336
+    second: GrockBorder_SpriteSheet_512_12
+  - first:
+      213: -7820957522379777633
+    second: GrockBorder_SpriteSheet_512_13
+  - first:
+      213: -3897655641198348007
+    second: GrockBorder_SpriteSheet_512_14
+  - first:
+      213: -1099088914659557135
+    second: GrockBorder_SpriteSheet_512_15
+  - first:
+      213: 5644545653750966176
+    second: GrockBorder_SpriteSheet_512_16
+  - first:
+      213: 6926548274893893533
+    second: GrockBorder_SpriteSheet_512_17
+  - first:
+      213: -8756770835278898318
+    second: GrockBorder_SpriteSheet_512_18
+  - first:
+      213: 4170189947856980133
+    second: GrockBorder_SpriteSheet_512_19
+  - first:
+      213: 1788445623576082446
+    second: GrockBorder_SpriteSheet_512_20
+  - first:
+      213: 5846460629169175206
+    second: GrockBorder_SpriteSheet_512_21
+  - first:
+      213: -6069199432172749269
+    second: GrockBorder_SpriteSheet_512_22
+  - first:
+      213: 576715381967275076
+    second: GrockBorder_SpriteSheet_512_23
+  - first:
+      213: -285034509640516243
+    second: GrockBorder_SpriteSheet_512_24
+  - first:
+      213: 4686245556543244954
+    second: GrockBorder_SpriteSheet_512_25
+  - first:
+      213: -4199525750457695304
+    second: GrockBorder_SpriteSheet_512_26
+  - first:
+      213: 213063339835005521
+    second: GrockBorder_SpriteSheet_512_27
+  - first:
+      213: -3160593011071829718
+    second: GrockBorder_SpriteSheet_512_28
+  - first:
+      213: -3894141465011861982
+    second: GrockBorder_SpriteSheet_512_29
+  - first:
+      213: -7879988694750453462
+    second: GrockBorder_SpriteSheet_512_30
+  - first:
+      213: 110864037173833826
+    second: GrockBorder_SpriteSheet_512_31
+  - first:
+      213: -8595452816018354605
+    second: GrockBorder_SpriteSheet_512_32
+  - first:
+      213: -2859332640124202324
+    second: GrockBorder_SpriteSheet_512_33
+  - first:
+      213: -5043273652948884377
+    second: GrockBorder_SpriteSheet_512_34
+  - first:
+      213: -2741311015725531916
+    second: GrockBorder_SpriteSheet_512_35
+  - first:
+      213: 5406505575604894202
+    second: GrockBorder_SpriteSheet_512_36
+  - first:
+      213: -2175987555158129302
+    second: GrockBorder_SpriteSheet_512_37
+  - first:
+      213: -3632072255302630700
+    second: GrockBorder_SpriteSheet_512_38
+  - first:
+      213: -5205407562719730073
+    second: GrockBorder_SpriteSheet_512_39
+  - first:
+      213: 6947751884447653545
+    second: GrockBorder_SpriteSheet_512_40
+  - first:
+      213: -1348452218441903652
+    second: GrockBorder_SpriteSheet_512_41
+  - first:
+      213: -8108988163697268256
+    second: GrockBorder_SpriteSheet_512_42
+  - first:
+      213: -3381627837874780138
+    second: GrockBorder_SpriteSheet_512_43
+  - first:
+      213: -6162429660264158161
+    second: GrockBorder_SpriteSheet_512_44
+  - first:
+      213: 3905440623264764849
+    second: GrockBorder_SpriteSheet_512_45
+  - first:
+      213: 4376836974494861097
+    second: GrockBorder_SpriteSheet_512_46
+  - first:
+      213: 7749381845890970215
+    second: GrockBorder_SpriteSheet_512_47
+  - first:
+      213: 4931486351776260061
+    second: GrockBorder_SpriteSheet_512_48
+  - first:
+      213: 845283621914459216
+    second: GrockBorder_SpriteSheet_512_49
+  - first:
+      213: 2022926892792449075
+    second: GrockBorder_SpriteSheet_512_50
+  - first:
+      213: 3133725086673287660
+    second: GrockBorder_SpriteSheet_512_51
+  - first:
+      213: 2261789776782292541
+    second: GrockBorder_SpriteSheet_512_52
+  - first:
+      213: 3196742831534187776
+    second: GrockBorder_SpriteSheet_512_53
+  - first:
+      213: 4888634252795333931
+    second: GrockBorder_SpriteSheet_512_54
+  - first:
+      213: -8410433377928576005
+    second: GrockBorder_SpriteSheet_512_55
+  - first:
+      213: -2549089808916442172
+    second: GrockBorder_SpriteSheet_512_56
+  - first:
+      213: 7022873791275162968
+    second: GrockBorder_SpriteSheet_512_57
+  - first:
+      213: -2724655405663666809
+    second: GrockBorder_SpriteSheet_512_58
+  - first:
+      213: -929638733446206762
+    second: GrockBorder_SpriteSheet_512_59
+  - first:
+      213: -1190672835681096572
+    second: GrockBorder_SpriteSheet_512_60
+  - first:
+      213: 3323951201398773269
+    second: GrockBorder_SpriteSheet_512_61
+  - first:
+      213: 3463807550605414323
+    second: GrockBorder_SpriteSheet_512_62
+  - first:
+      213: 134763510522083192
+    second: GrockBorder_SpriteSheet_512_63
+  - first:
+      213: -4462707394165321857
+    second: GrockBorder_SpriteSheet_512_64
+  - first:
+      213: -3148458230069985398
+    second: GrockBorder_SpriteSheet_512_65
+  - first:
+      213: -4238157102625840376
+    second: GrockBorder_SpriteSheet_512_66
+  - first:
+      213: -453781062933022138
+    second: GrockBorder_SpriteSheet_512_67
+  - first:
+      213: -3691238241445595753
+    second: GrockBorder_SpriteSheet_512_68
+  - first:
+      213: -7320199312499446932
+    second: GrockBorder_SpriteSheet_512_69
+  - first:
+      213: -4626595394370408780
+    second: GrockBorder_SpriteSheet_512_70
+  - first:
+      213: -3909241021109568567
+    second: GrockBorder_SpriteSheet_512_71
+  - first:
+      213: -3008326402623680025
+    second: GrockBorder_SpriteSheet_512_72
+  - first:
+      213: -2438938951374334419
+    second: GrockBorder_SpriteSheet_512_73
+  - first:
+      213: 2593710321263848602
+    second: GrockBorder_SpriteSheet_512_74
+  - first:
+      213: 1228613294309918067
+    second: GrockBorder_SpriteSheet_512_75
+  - first:
+      213: 8965994741413634727
+    second: GrockBorder_SpriteSheet_512_76
+  - first:
+      213: 7495537454965121792
+    second: GrockBorder_SpriteSheet_512_77
+  - first:
+      213: 8574151095935423514
+    second: GrockBorder_SpriteSheet_512_78
+  - first:
+      213: 1319310574748758752
+    second: GrockBorder_SpriteSheet_512_79
+  - first:
+      213: -7018074495680478868
+    second: GrockBorder_SpriteSheet_512_80
+  - first:
+      213: -5373309422147029790
+    second: GrockBorder_SpriteSheet_512_81
+  - first:
+      213: -5616046403897822760
+    second: GrockBorder_SpriteSheet_512_82
+  - first:
+      213: 5356579980198775912
+    second: GrockBorder_SpriteSheet_512_83
+  - first:
+      213: -2211413452046870491
+    second: GrockBorder_SpriteSheet_512_84
+  - first:
+      213: -183554604892011790
+    second: GrockBorder_SpriteSheet_512_85
+  - first:
+      213: 4607195987527820010
+    second: GrockBorder_SpriteSheet_512_86
+  - first:
+      213: 6268145285592373724
+    second: GrockBorder_SpriteSheet_512_87
+  - first:
+      213: -713315338052554909
+    second: GrockBorder_SpriteSheet_512_88
+  - first:
+      213: -8544228883922201974
+    second: GrockBorder_SpriteSheet_512_89
+  - first:
+      213: -5328823495256759005
+    second: GrockBorder_SpriteSheet_512_90
+  - first:
+      213: -217101870519961473
+    second: GrockBorder_SpriteSheet_512_91
+  - first:
+      213: 7034998699739796928
+    second: GrockBorder_SpriteSheet_512_92
+  - first:
+      213: -6564174870164284948
+    second: GrockBorder_SpriteSheet_512_93
+  - first:
+      213: 4073396420724417566
+    second: GrockBorder_SpriteSheet_512_94
+  - first:
+      213: 4608376656720865209
+    second: GrockBorder_SpriteSheet_512_95
+  - first:
+      213: 4496736554666227964
+    second: GrockBorder_SpriteSheet_512_96
+  - first:
+      213: -6519391160137306613
+    second: GrockBorder_SpriteSheet_512_97
+  - first:
+      213: 2711675315919094469
+    second: GrockBorder_SpriteSheet_512_98
+  - first:
+      213: 5050890896073770126
+    second: GrockBorder_SpriteSheet_512_99
+  - first:
+      213: -846721320329709912
+    second: GrockBorder_SpriteSheet_512_100
+  - first:
+      213: 7400392849299443783
+    second: GrockBorder_SpriteSheet_512_101
+  - first:
+      213: -1460940108373364657
+    second: GrockBorder_SpriteSheet_512_102
+  - first:
+      213: 1829120058909528439
+    second: GrockBorder_SpriteSheet_512_103
+  - first:
+      213: -3531904090912791237
+    second: GrockBorder_SpriteSheet_512_104
+  - first:
+      213: 2240198674280452513
+    second: GrockBorder_SpriteSheet_512_105
+  - first:
+      213: 3512002650136550770
+    second: GrockBorder_SpriteSheet_512_106
+  - first:
+      213: -2654835150457200849
+    second: GrockBorder_SpriteSheet_512_107
+  - first:
+      213: 8366738492168299045
+    second: GrockBorder_SpriteSheet_512_108
+  - first:
+      213: 7841150321667148532
+    second: GrockBorder_SpriteSheet_512_109
+  - first:
+      213: -3193044977851871344
+    second: GrockBorder_SpriteSheet_512_110
+  - first:
+      213: -3781882429279187881
+    second: GrockBorder_SpriteSheet_512_111
+  - first:
+      213: -630153638359783987
+    second: GrockBorder_SpriteSheet_512_112
+  - first:
+      213: 1356364775516950462
+    second: GrockBorder_SpriteSheet_512_113
+  - first:
+      213: 6234937219126844439
+    second: GrockBorder_SpriteSheet_512_114
+  - first:
+      213: -7345749031896785467
+    second: GrockBorder_SpriteSheet_512_115
+  - first:
+      213: -4398658007830899957
+    second: GrockBorder_SpriteSheet_512_116
+  - first:
+      213: 5487740510029687947
+    second: GrockBorder_SpriteSheet_512_117
+  - first:
+      213: -3006644223871687002
+    second: GrockBorder_SpriteSheet_512_118
+  - first:
+      213: -9139149802754747965
+    second: GrockBorder_SpriteSheet_512_119
+  - first:
+      213: 433672954713416223
+    second: GrockBorder_SpriteSheet_512_120
+  - first:
+      213: -7345655495488340239
+    second: GrockBorder_SpriteSheet_512_121
+  - first:
+      213: -7670958455328353181
+    second: GrockBorder_SpriteSheet_512_122
+  - first:
+      213: 1443654071723673578
+    second: GrockBorder_SpriteSheet_512_123
+  - first:
+      213: -1537432478917316608
+    second: GrockBorder_SpriteSheet_512_124
+  - first:
+      213: 1725392065664643349
+    second: GrockBorder_SpriteSheet_512_125
+  - first:
+      213: 5356289011321120990
+    second: GrockBorder_SpriteSheet_512_126
+  - first:
+      213: 1220628442350582812
+    second: GrockBorder_SpriteSheet_512_127
+  - first:
+      213: -4790386786425495986
+    second: GrockBorder_SpriteSheet_512_128
+  - first:
+      213: 1878973346827315996
+    second: GrockBorder_SpriteSheet_512_129
+  - first:
+      213: 5992346933445169974
+    second: GrockBorder_SpriteSheet_512_130
+  - first:
+      213: -2304382530201095224
+    second: GrockBorder_SpriteSheet_512_131
+  - first:
+      213: -661589165851602501
+    second: GrockBorder_SpriteSheet_512_132
+  - first:
+      213: -8162547465547372000
+    second: GrockBorder_SpriteSheet_512_133
+  - first:
+      213: -6272310162991523438
+    second: GrockBorder_SpriteSheet_512_134
+  - first:
+      213: -7178448934983030932
+    second: GrockBorder_SpriteSheet_512_135
+  - first:
+      213: 1907290259846343598
+    second: GrockBorder_SpriteSheet_512_136
+  - first:
+      213: -2599752776810617106
+    second: GrockBorder_SpriteSheet_512_137
+  - first:
+      213: -3368979016769674651
+    second: GrockBorder_SpriteSheet_512_138
+  - first:
+      213: -8210094904497718695
+    second: GrockBorder_SpriteSheet_512_139
+  - first:
+      213: -8025121043786555127
+    second: GrockBorder_SpriteSheet_512_140
+  - first:
+      213: -476715041978063093
+    second: GrockBorder_SpriteSheet_512_141
+  - first:
+      213: -2480358838637856806
+    second: GrockBorder_SpriteSheet_512_142
+  - first:
+      213: 6068051052500382320
+    second: GrockBorder_SpriteSheet_512_143
+  - first:
+      213: -6296748838487237455
+    second: GrockBorder_SpriteSheet_512_144
+  - first:
+      213: -7505293488512756107
+    second: GrockBorder_SpriteSheet_512_145
+  - first:
+      213: 4329595770171551149
+    second: GrockBorder_SpriteSheet_512_146
+  - first:
+      213: 2035205827990836465
+    second: GrockBorder_SpriteSheet_512_147
+  - first:
+      213: -6834732929514844844
+    second: GrockBorder_SpriteSheet_512_148
+  - first:
+      213: -7570390833526923035
+    second: GrockBorder_SpriteSheet_512_149
+  - first:
+      213: 1612625383216374286
+    second: GrockBorder_SpriteSheet_512_150
+  - first:
+      213: 2324181836256791202
+    second: GrockBorder_SpriteSheet_512_151
+  - first:
+      213: 5675322001821147095
+    second: GrockBorder_SpriteSheet_512_152
+  - first:
+      213: 325265624342998024
+    second: GrockBorder_SpriteSheet_512_153
+  - first:
+      213: 1934034439889569219
+    second: GrockBorder_SpriteSheet_512_154
+  - first:
+      213: 5555407558725269533
+    second: GrockBorder_SpriteSheet_512_155
+  - first:
+      213: -7528586251041817401
+    second: GrockBorder_SpriteSheet_512_156
+  - first:
+      213: -1458024858424025243
+    second: GrockBorder_SpriteSheet_512_157
+  - first:
+      213: -7813486814450998283
+    second: GrockBorder_SpriteSheet_512_158
+  - first:
+      213: -3644102216605693880
+    second: GrockBorder_SpriteSheet_512_159
+  - first:
+      213: -6602284320781827306
+    second: GrockBorder_SpriteSheet_512_160
+  - first:
+      213: 8256579091367236826
+    second: GrockBorder_SpriteSheet_512_161
+  - first:
+      213: 1717172438110655408
+    second: GrockBorder_SpriteSheet_512_162
+  - first:
+      213: 1807296800960640486
+    second: GrockBorder_SpriteSheet_512_163
+  - first:
+      213: 8094646117704936435
+    second: GrockBorder_SpriteSheet_512_164
+  - first:
+      213: -3999306771263533070
+    second: GrockBorder_SpriteSheet_512_165
+  - first:
+      213: 7310212602971293664
+    second: GrockBorder_SpriteSheet_512_166
+  - first:
+      213: 5501300564251442096
+    second: GrockBorder_SpriteSheet_512_167
+  - first:
+      213: -7650371617467522045
+    second: GrockBorder_SpriteSheet_512_168
+  - first:
+      213: 1385702656524771794
+    second: GrockBorder_SpriteSheet_512_169
+  - first:
+      213: -577372048402008931
+    second: GrockBorder_SpriteSheet_512_170
+  - first:
+      213: 909808154700766444
+    second: GrockBorder_SpriteSheet_512_171
+  - first:
+      213: 5048843691849331628
+    second: GrockBorder_SpriteSheet_512_172
+  - first:
+      213: 3971762854207993028
+    second: GrockBorder_SpriteSheet_512_173
+  - first:
+      213: 5618026924911850771
+    second: GrockBorder_SpriteSheet_512_174
+  - first:
+      213: -5480733336347228737
+    second: GrockBorder_SpriteSheet_512_175
+  - first:
+      213: 329870075580662009
+    second: GrockBorder_SpriteSheet_512_176
+  - first:
+      213: -4218276291376693571
+    second: GrockBorder_SpriteSheet_512_177
+  - first:
+      213: -3333354055720065966
+    second: GrockBorder_SpriteSheet_512_178
+  - first:
+      213: 3524289846321351762
+    second: GrockBorder_SpriteSheet_512_179
+  - first:
+      213: -5209055597013111393
+    second: GrockBorder_SpriteSheet_512_180
+  - first:
+      213: -4954401480313592284
+    second: GrockBorder_SpriteSheet_512_181
+  - first:
+      213: 6772939092806500776
+    second: GrockBorder_SpriteSheet_512_182
+  - first:
+      213: -8828786830368790293
+    second: GrockBorder_SpriteSheet_512_183
+  - first:
+      213: 8294768239922978499
+    second: GrockBorder_SpriteSheet_512_184
+  - first:
+      213: 5678680589745319458
+    second: GrockBorder_SpriteSheet_512_185
+  - first:
+      213: 5528753562007832348
+    second: GrockBorder_SpriteSheet_512_186
+  - first:
+      213: 2846000595685190970
+    second: GrockBorder_SpriteSheet_512_187
+  - first:
+      213: -3121463856602976463
+    second: GrockBorder_SpriteSheet_512_188
+  - first:
+      213: -3384229310120808726
+    second: GrockBorder_SpriteSheet_512_189
+  - first:
+      213: 2257434108482537300
+    second: GrockBorder_SpriteSheet_512_190
+  - first:
+      213: -6480562911648195277
+    second: GrockBorder_SpriteSheet_512_191
+  - first:
+      213: -2781031720983232088
+    second: GrockBorder_SpriteSheet_512_192
+  - first:
+      213: -192664772379512507
+    second: GrockBorder_SpriteSheet_512_193
+  - first:
+      213: -6777778847542444986
+    second: GrockBorder_SpriteSheet_512_194
+  - first:
+      213: 5960899834417790521
+    second: GrockBorder_SpriteSheet_512_195
+  - first:
+      213: -3659135332351862663
+    second: GrockBorder_SpriteSheet_512_196
+  - first:
+      213: -225664358490274352
+    second: GrockBorder_SpriteSheet_512_197
+  - first:
+      213: -50390912974756275
+    second: GrockBorder_SpriteSheet_512_198
+  - first:
+      213: -8430785538930164271
+    second: GrockBorder_SpriteSheet_512_199
+  - first:
+      213: 8568941571944606114
+    second: GrockBorder_SpriteSheet_512_200
+  - first:
+      213: -329279472984273160
+    second: GrockBorder_SpriteSheet_512_201
+  - first:
+      213: -1946770234798773463
+    second: GrockBorder_SpriteSheet_512_202
+  - first:
+      213: -5363169097703106097
+    second: GrockBorder_SpriteSheet_512_203
+  - first:
+      213: -8758325121827525738
+    second: GrockBorder_SpriteSheet_512_204
+  - first:
+      213: -5030051721352834584
+    second: GrockBorder_SpriteSheet_512_205
+  - first:
+      213: 2640383080819035318
+    second: GrockBorder_SpriteSheet_512_206
+  - first:
+      213: 2232438912991217854
+    second: GrockBorder_SpriteSheet_512_207
+  - first:
+      213: 8946120801449287637
+    second: GrockBorder_SpriteSheet_512_208
+  - first:
+      213: 1031151148912732589
+    second: GrockBorder_SpriteSheet_512_209
+  - first:
+      213: 6563254668575909960
+    second: GrockBorder_SpriteSheet_512_210
+  - first:
+      213: 9080592999276485170
+    second: GrockBorder_SpriteSheet_512_211
+  - first:
+      213: 8637007176661911140
+    second: GrockBorder_SpriteSheet_512_212
+  - first:
+      213: 3038545419539941302
+    second: GrockBorder_SpriteSheet_512_213
+  - first:
+      213: -967655789677252218
+    second: GrockBorder_SpriteSheet_512_214
+  - first:
+      213: 8067229751282398014
+    second: GrockBorder_SpriteSheet_512_215
+  - first:
+      213: -4258241558604641001
+    second: GrockBorder_SpriteSheet_512_216
+  - first:
+      213: -6298413002416008263
+    second: GrockBorder_SpriteSheet_512_217
+  - first:
+      213: -7735019373913903903
+    second: GrockBorder_SpriteSheet_512_218
+  - first:
+      213: 8393992408927753403
+    second: GrockBorder_SpriteSheet_512_219
+  - first:
+      213: 3945588593998342967
+    second: GrockBorder_SpriteSheet_512_220
+  - first:
+      213: 2680273374623907814
+    second: GrockBorder_SpriteSheet_512_221
+  - first:
+      213: 6969672374262711531
+    second: GrockBorder_SpriteSheet_512_222
+  - first:
+      213: 2447320911130047246
+    second: GrockBorder_SpriteSheet_512_223
+  - first:
+      213: 6913983814951050666
+    second: GrockBorder_SpriteSheet_512_224
+  - first:
+      213: -5957018912124006786
+    second: GrockBorder_SpriteSheet_512_225
+  - first:
+      213: -1172269513635760513
+    second: GrockBorder_SpriteSheet_512_226
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7af904bd8ab28d010800000000000000
+      internalID: 1213768103809294247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_1
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c7d7ba2504faf270800000000000000
+      internalID: 8285202767530153929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_2
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62d408f4eaca4f250800000000000000
+      internalID: 5977592470085586214
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_3
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15b79cbb440c44de0800000000000000
+      internalID: -1349742586863453359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_4
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7224dd5291310be60800000000000000
+      internalID: 7975895938803515943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_5
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 40af7258f84ffde20800000000000000
+      internalID: 3377687142802651652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_6
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06c0feb941e469580800000000000000
+      internalID: -8820776969736090528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_7
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86bc0e24ee248c980800000000000000
+      internalID: -8518485104079615128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_8
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5278e5a709777d990800000000000000
+      internalID: -7361283603501775067
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_9
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22476aeb5b4a6afc0800000000000000
+      internalID: -3483916161229884382
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_10
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e48f29ce38d5fec0800000000000000
+      internalID: -3533680568427379483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_11
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec311aceed73088b0800000000000000
+      internalID: -5152056543119600690
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_12
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f05a5c47d82d38c0800000000000000
+      internalID: -4018010387380547336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_13
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9952231290667390800000000000000
+      internalID: -7820957522379777633
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_14
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 919339158deb8e9c0800000000000000
+      internalID: -3897655641198348007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_15
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f0c52194704fb0f0800000000000000
+      internalID: -1099088914659557135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_16
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a72d42bd54755e40800000000000000
+      internalID: 5644545653750966176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_17
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9f25a425fa002060800000000000000
+      internalID: 6926548274893893533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_18
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27b53b71253b97680800000000000000
+      internalID: -8756770835278898318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_19
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5a88be7b9ad7fd930800000000000000
+      internalID: 4170189947856980133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_20
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e08ba5da1d5d1d810800000000000000
+      internalID: 1788445623576082446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_21
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6aa7fe267fcc22150800000000000000
+      internalID: 5846460629169175206
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_22
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2e375eb54fd5cba0800000000000000
+      internalID: -6069199432172749269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_23
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 444c9a69597e00800800000000000000
+      internalID: 576715381967275076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_24
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6d3628af9a5b0cf0800000000000000
+      internalID: -285034509640516243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_25
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9a43004183e80140800000000000000
+      internalID: 4686245556543244954
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_26
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b30dda749948b5c0800000000000000
+      internalID: -4199525750457695304
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_27
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15a168d8af3f4f200800000000000000
+      internalID: 213063339835005521
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_28
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a293b77e6615324d0800000000000000
+      internalID: -3160593011071829718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_29
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22649d838fa35f9c0800000000000000
+      internalID: -3894141465011861982
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_30
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a212e473808a4a290800000000000000
+      internalID: -7879988694750453462
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_31
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 260bc12214ed98100800000000000000
+      internalID: 110864037173833826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_32
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35e48995431d6b880800000000000000
+      internalID: -8595452816018354605
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_33
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca297bafc1c9158d0800000000000000
+      internalID: -2859332640124202324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_34
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76425e24551b20ab0800000000000000
+      internalID: -5043273652948884377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_35
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4fc70d0c728e4f9d0800000000000000
+      internalID: -2741311015725531916
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_36
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af939161d24c70b40800000000000000
+      internalID: 5406505575604894202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_37
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a650123f8d65dc1e0800000000000000
+      internalID: -2175987555158129302
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_38
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d282200789489dc0800000000000000
+      internalID: -3632072255302630700
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_39
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76665f0b66da2c7b0800000000000000
+      internalID: -5205407562719730073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_40
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ae9d04378f5b6060800000000000000
+      internalID: 6947751884447653545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_41
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd1de2b0ad5594de0800000000000000
+      internalID: -1348452218441903652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_42
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e92af67a36177f80800000000000000
+      internalID: -8108988163697268256
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_43
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 618c6e8e56b0211d0800000000000000
+      internalID: -3381627837874780138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_44
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2caf9abfd6aa7aa0800000000000000
+      internalID: -6162429660264158161
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_45
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b393111e89e23630800000000000000
+      internalID: 3905440623264764849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_46
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 927cf80f906adbc30800000000000000
+      internalID: 4376836974494861097
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_47
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76231391bb55b8b60800000000000000
+      internalID: 7749381845890970215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_48
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ddf9f4475b8207440800000000000000
+      internalID: 4931486351776260061
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_49
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05cbaa2c9fc0bbb00800000000000000
+      internalID: 845283621914459216
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_50
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3388a738a41e21c10800000000000000
+      internalID: 2022926892792449075
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_51
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce934e6fc5a3d7b20800000000000000
+      internalID: 3133725086673287660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_52
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d36f7b981dd736f10800000000000000
+      internalID: 2261789776782292541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_53
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0052fdf0bac1d5c20800000000000000
+      internalID: 3196742831534187776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_54
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2d4caaa3fae7d340800000000000000
+      internalID: 4888634252795333931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_55
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf38a753763284b80800000000000000
+      internalID: -8410433377928576005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_56
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c397fe0350df9cd0800000000000000
+      internalID: -2549089808916442172
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_57
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85d5b5f1182467160800000000000000
+      internalID: 7022873791275162968
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_58
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78db11a2854103ad0800000000000000
+      internalID: -2724655405663666809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_59
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6daae735f724913f0800000000000000
+      internalID: -929638733446206762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_60
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 48c65894d51e97fe0800000000000000
+      internalID: -1190672835681096572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_61
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5165b12b10c012e20800000000000000
+      internalID: 3323951201398773269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_62
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3bfc6208d9ae11030800000000000000
+      internalID: 3463807550605414323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_63
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8777a55e2b6ced100800000000000000
+      internalID: 134763510522083192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_64
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7f444af4474112c0800000000000000
+      internalID: -4462707394165321857
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_65
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8ff586cbed6e44d0800000000000000
+      internalID: -3148458230069985398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_66
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80320b3e19a0f25c0800000000000000
+      internalID: -4238157102625840376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_67
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64af31a0788d3b9f0800000000000000
+      internalID: -453781062933022138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_68
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7953c4d506616ccc0800000000000000
+      internalID: -3691238241445595753
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_69
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6b6965628d696a90800000000000000
+      internalID: -7320199312499446932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_70
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4bee71760080bcfb0800000000000000
+      internalID: -4626595394370408780
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_71
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9cbf06bd0069fb9c0800000000000000
+      internalID: -3909241021109568567
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_72
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e1df2b53174046d0800000000000000
+      internalID: -3008326402623680025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_73
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d26187e12f5272ed0800000000000000
+      internalID: -2438938951374334419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_74
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9c223d8bc5bef320800000000000000
+      internalID: 2593710321263848602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_75
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3754aad1849ec0110800000000000000
+      internalID: 1228613294309918067
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_76
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a2eaf3a6bc9d6c70800000000000000
+      internalID: 8965994741413634727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_77
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 003e4db2a9f750860800000000000000
+      internalID: 7495537454965121792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_78
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a14d1c37ef08df670800000000000000
+      internalID: 8574151095935423514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_79
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e2f05c4af12f4210800000000000000
+      internalID: 1319310574748758752
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_80
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c618cb5fd6aca9e90800000000000000
+      internalID: -7018074495680478868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_81
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e4baa0bc8b2e65b0800000000000000
+      internalID: -5373309422147029790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_82
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d17f8dfc8bcf02b0800000000000000
+      internalID: -5616046403897822760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_83
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86c87b29c15665a40800000000000000
+      internalID: 5356579980198775912
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_84
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 528d9339e2b7f41e0800000000000000
+      internalID: -2211413452046870491
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_85
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f246823f02e37df0800000000000000
+      internalID: -183554604892011790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_86
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae26337375c00ff30800000000000000
+      internalID: 4607195987527820010
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_87
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd9d54c5dececf650800000000000000
+      internalID: 6268145285592373724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_88
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36f2a86ba7bc916f0800000000000000
+      internalID: -713315338052554909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_89
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a825f2e691dcc6980800000000000000
+      internalID: -8544228883922201974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_90
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 325277ea3473c06b0800000000000000
+      internalID: -5328823495256759005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_91
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f78b59fbff2bcfcf0800000000000000
+      internalID: -217101870519961473
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_92
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c5535d5b0651a160800000000000000
+      internalID: 7034998699739796928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_93
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce9df4cebbd57e4a0800000000000000
+      internalID: -6564174870164284948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_94
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1460ae767c978830800000000000000
+      internalID: 4073396420724417566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_95
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b7ac0f272e34ff30800000000000000
+      internalID: 4608376656720865209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_96
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf8f46d521e976e30800000000000000
+      internalID: 4496736554666227964
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_97
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0ea134f7487685a0800000000000000
+      internalID: -6519391160137306613
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_98
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c28d8f255ec1a520800000000000000
+      internalID: 2711675315919094469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_99
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e844bbb528e581640800000000000000
+      internalID: 5050890896073770126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_100
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a67ffdf177df34f0800000000000000
+      internalID: -846721320329709912
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_101
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74095d4661a73b660800000000000000
+      internalID: 7400392849299443783
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_102
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f40f84a36b2b9bbe0800000000000000
+      internalID: -1460940108373364657
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_103
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 77118d2a007526910800000000000000
+      internalID: 1829120058909528439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_104
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b35e46031f72cfec0800000000000000
+      internalID: -3531904090912791237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_105
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a199ce33d8c61f10800000000000000
+      internalID: 2240198674280452513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_106
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27d9e9b8dc32db030800000000000000
+      internalID: 3512002650136550770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_107
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2f17cf1f71282bd0800000000000000
+      internalID: -2654835150457200849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_108
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 522674a6450ac1470800000000000000
+      internalID: 8366738492168299045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_109
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4fa09616cac51dc60800000000000000
+      internalID: 7841150321667148532
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_110
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09f4b47928600b3d0800000000000000
+      internalID: -3193044977851871344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_111
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75cc584c7fd048bc0800000000000000
+      internalID: -3781882429279187881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_112
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc525a7ca9e3147f0800000000000000
+      internalID: -630153638359783987
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_113
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ebf4a86b396c2d210800000000000000
+      internalID: 1356364775516950462
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_114
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71cdaeedd52f68650800000000000000
+      internalID: 6234937219126844439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_115
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5cd5f98cc28ae0a90800000000000000
+      internalID: -7345749031896785467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_116
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b03dfc2d8d3d4f2c0800000000000000
+      internalID: -4398658007830899957
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_117
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8c27d72bee582c40800000000000000
+      internalID: 5487740510029687947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_118
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a6e52e12014646d0800000000000000
+      internalID: -3006644223871687002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_119
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c1d8b9fca73b2180800000000000000
+      internalID: -9139149802754747965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_120
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f12236e2147b40600800000000000000
+      internalID: 433672954713416223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_121
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1fe750dee3dfe0a90800000000000000
+      internalID: -7345655495488340239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_122
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 364df576de74b8590800000000000000
+      internalID: -7670958455328353181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_123
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae7c2abbab3e80410800000000000000
+      internalID: 1443654071723673578
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_124
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0003cfb5e41f9aae0800000000000000
+      internalID: -1537432478917316608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_125
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 511f73431f2d1f710800000000000000
+      internalID: 1725392065664643349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_126
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed8af1a1a7c555a40800000000000000
+      internalID: 5356289011321120990
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_127
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1c7b05e91b80f010800000000000000
+      internalID: 1220628442350582812
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_128
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4e126a2990258db0800000000000000
+      internalID: -4790386786425495986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_129
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1ba110cd44731a10800000000000000
+      internalID: 1878973346827315996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_130
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63396e289c7192350800000000000000
+      internalID: 5992346933445169974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_131
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c37fb44c403500e0800000000000000
+      internalID: -2304382530201095224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_132
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb11b2ea82091d6f0800000000000000
+      internalID: -661589165851602501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_133
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02aa8cdb35ec8be80800000000000000
+      internalID: -8162547465547372000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_134
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29951dd832744f8a0800000000000000
+      internalID: -6272310162991523438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_135
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c672e080ab6016c90800000000000000
+      internalID: -7178448934983030932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_136
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eab24b5d26e087a10800000000000000
+      internalID: 1907290259846343598
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_137
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee62e52af92dbebd0800000000000000
+      internalID: -2599752776810617106
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_138
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 562e2b11f6bfe31d0800000000000000
+      internalID: -3368979016769674651
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_139
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95a3b2dee22ef0e80800000000000000
+      internalID: -8210094904497718695
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_140
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9012799fdea01a090800000000000000
+      internalID: -8025121043786555127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_141
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b07efcfe13e5269f0800000000000000
+      internalID: -476715041978063093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_142
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad77d7b17cef39dd0800000000000000
+      internalID: -2480358838637856806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_143
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0727837484c063450800000000000000
+      internalID: 6068051052500382320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_144
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1bc5d120b447d98a0800000000000000
+      internalID: -6296748838487237455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_145
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57615224657d7d790800000000000000
+      internalID: -7505293488512756107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_146
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dadeb1ee960d51c30800000000000000
+      internalID: 4329595770171551149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_147
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f4d236eae08e3c10800000000000000
+      internalID: 2035205827990836465
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_148
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45d4a91dc962621a0800000000000000
+      internalID: -6834732929514844844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_149
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e021c485a190f690800000000000000
+      internalID: -7570390833526923035
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_150
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e02e362fd32316610800000000000000
+      internalID: 1612625383216374286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_151
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2aa4087e017214020800000000000000
+      internalID: 2324181836256791202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_152
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7df1280aa4bc2ce40800000000000000
+      internalID: 5675322001821147095
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_153
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80c2c9cac53938400800000000000000
+      internalID: 325265624342998024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_154
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c54dfc731217da10800000000000000
+      internalID: 1934034439889569219
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_155
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d18f658adb5c81d40800000000000000
+      internalID: 5555407558725269533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_156
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7cc33cd51b6158790800000000000000
+      internalID: -7528586251041817401
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_157
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56f52ffbd1e04cbe0800000000000000
+      internalID: -1458024858424025243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_158
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f3237fc32be09390800000000000000
+      internalID: -7813486814450998283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_159
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 848010e575c8d6dc0800000000000000
+      internalID: -3644102216605693880
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_160
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6130ba10469ff54a0800000000000000
+      internalID: -6602284320781827306
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_161
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad49cd830f2459270800000000000000
+      internalID: 8256579091367236826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_162
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b35da70c3f94d710800000000000000
+      internalID: 1717172438110655408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrockBorder_SpriteSheet_512_163
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e575f07ddec41910800000000000000
+      internalID: 1807296800960640486
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: b20af1fb8f5825a4ea579e849ae5b3d4
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":512.0,"y":512.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      GrockBorder_SpriteSheet_512_0: 1213768103809294247
+      GrockBorder_SpriteSheet_512_1: 8285202767530153929
+      GrockBorder_SpriteSheet_512_10: -3533680568427379483
+      GrockBorder_SpriteSheet_512_100: -846721320329709912
+      GrockBorder_SpriteSheet_512_101: 7400392849299443783
+      GrockBorder_SpriteSheet_512_102: -1460940108373364657
+      GrockBorder_SpriteSheet_512_103: 1829120058909528439
+      GrockBorder_SpriteSheet_512_104: -3531904090912791237
+      GrockBorder_SpriteSheet_512_105: 2240198674280452513
+      GrockBorder_SpriteSheet_512_106: 3512002650136550770
+      GrockBorder_SpriteSheet_512_107: -2654835150457200849
+      GrockBorder_SpriteSheet_512_108: 8366738492168299045
+      GrockBorder_SpriteSheet_512_109: 7841150321667148532
+      GrockBorder_SpriteSheet_512_11: -5152056543119600690
+      GrockBorder_SpriteSheet_512_110: -3193044977851871344
+      GrockBorder_SpriteSheet_512_111: -3781882429279187881
+      GrockBorder_SpriteSheet_512_112: -630153638359783987
+      GrockBorder_SpriteSheet_512_113: 1356364775516950462
+      GrockBorder_SpriteSheet_512_114: 6234937219126844439
+      GrockBorder_SpriteSheet_512_115: -7345749031896785467
+      GrockBorder_SpriteSheet_512_116: -4398658007830899957
+      GrockBorder_SpriteSheet_512_117: 5487740510029687947
+      GrockBorder_SpriteSheet_512_118: -3006644223871687002
+      GrockBorder_SpriteSheet_512_119: -9139149802754747965
+      GrockBorder_SpriteSheet_512_12: -4018010387380547336
+      GrockBorder_SpriteSheet_512_120: 433672954713416223
+      GrockBorder_SpriteSheet_512_121: -7345655495488340239
+      GrockBorder_SpriteSheet_512_122: -7670958455328353181
+      GrockBorder_SpriteSheet_512_123: 1443654071723673578
+      GrockBorder_SpriteSheet_512_124: -1537432478917316608
+      GrockBorder_SpriteSheet_512_125: 1725392065664643349
+      GrockBorder_SpriteSheet_512_126: 5356289011321120990
+      GrockBorder_SpriteSheet_512_127: 1220628442350582812
+      GrockBorder_SpriteSheet_512_128: -4790386786425495986
+      GrockBorder_SpriteSheet_512_129: 1878973346827315996
+      GrockBorder_SpriteSheet_512_13: -7820957522379777633
+      GrockBorder_SpriteSheet_512_130: 5992346933445169974
+      GrockBorder_SpriteSheet_512_131: -2304382530201095224
+      GrockBorder_SpriteSheet_512_132: -661589165851602501
+      GrockBorder_SpriteSheet_512_133: -8162547465547372000
+      GrockBorder_SpriteSheet_512_134: -6272310162991523438
+      GrockBorder_SpriteSheet_512_135: -7178448934983030932
+      GrockBorder_SpriteSheet_512_136: 1907290259846343598
+      GrockBorder_SpriteSheet_512_137: -2599752776810617106
+      GrockBorder_SpriteSheet_512_138: -3368979016769674651
+      GrockBorder_SpriteSheet_512_139: -8210094904497718695
+      GrockBorder_SpriteSheet_512_14: -3897655641198348007
+      GrockBorder_SpriteSheet_512_140: -8025121043786555127
+      GrockBorder_SpriteSheet_512_141: -476715041978063093
+      GrockBorder_SpriteSheet_512_142: -2480358838637856806
+      GrockBorder_SpriteSheet_512_143: 6068051052500382320
+      GrockBorder_SpriteSheet_512_144: -6296748838487237455
+      GrockBorder_SpriteSheet_512_145: -7505293488512756107
+      GrockBorder_SpriteSheet_512_146: 4329595770171551149
+      GrockBorder_SpriteSheet_512_147: 2035205827990836465
+      GrockBorder_SpriteSheet_512_148: -6834732929514844844
+      GrockBorder_SpriteSheet_512_149: -7570390833526923035
+      GrockBorder_SpriteSheet_512_15: -1099088914659557135
+      GrockBorder_SpriteSheet_512_150: 1612625383216374286
+      GrockBorder_SpriteSheet_512_151: 2324181836256791202
+      GrockBorder_SpriteSheet_512_152: 5675322001821147095
+      GrockBorder_SpriteSheet_512_153: 325265624342998024
+      GrockBorder_SpriteSheet_512_154: 1934034439889569219
+      GrockBorder_SpriteSheet_512_155: 5555407558725269533
+      GrockBorder_SpriteSheet_512_156: -7528586251041817401
+      GrockBorder_SpriteSheet_512_157: -1458024858424025243
+      GrockBorder_SpriteSheet_512_158: -7813486814450998283
+      GrockBorder_SpriteSheet_512_159: -3644102216605693880
+      GrockBorder_SpriteSheet_512_16: 5644545653750966176
+      GrockBorder_SpriteSheet_512_160: -6602284320781827306
+      GrockBorder_SpriteSheet_512_161: 8256579091367236826
+      GrockBorder_SpriteSheet_512_162: 1717172438110655408
+      GrockBorder_SpriteSheet_512_163: 1807296800960640486
+      GrockBorder_SpriteSheet_512_17: 6926548274893893533
+      GrockBorder_SpriteSheet_512_18: -8756770835278898318
+      GrockBorder_SpriteSheet_512_19: 4170189947856980133
+      GrockBorder_SpriteSheet_512_2: 5977592470085586214
+      GrockBorder_SpriteSheet_512_20: 1788445623576082446
+      GrockBorder_SpriteSheet_512_21: 5846460629169175206
+      GrockBorder_SpriteSheet_512_22: -6069199432172749269
+      GrockBorder_SpriteSheet_512_23: 576715381967275076
+      GrockBorder_SpriteSheet_512_24: -285034509640516243
+      GrockBorder_SpriteSheet_512_25: 4686245556543244954
+      GrockBorder_SpriteSheet_512_26: -4199525750457695304
+      GrockBorder_SpriteSheet_512_27: 213063339835005521
+      GrockBorder_SpriteSheet_512_28: -3160593011071829718
+      GrockBorder_SpriteSheet_512_29: -3894141465011861982
+      GrockBorder_SpriteSheet_512_3: -1349742586863453359
+      GrockBorder_SpriteSheet_512_30: -7879988694750453462
+      GrockBorder_SpriteSheet_512_31: 110864037173833826
+      GrockBorder_SpriteSheet_512_32: -8595452816018354605
+      GrockBorder_SpriteSheet_512_33: -2859332640124202324
+      GrockBorder_SpriteSheet_512_34: -5043273652948884377
+      GrockBorder_SpriteSheet_512_35: -2741311015725531916
+      GrockBorder_SpriteSheet_512_36: 5406505575604894202
+      GrockBorder_SpriteSheet_512_37: -2175987555158129302
+      GrockBorder_SpriteSheet_512_38: -3632072255302630700
+      GrockBorder_SpriteSheet_512_39: -5205407562719730073
+      GrockBorder_SpriteSheet_512_4: 7975895938803515943
+      GrockBorder_SpriteSheet_512_40: 6947751884447653545
+      GrockBorder_SpriteSheet_512_41: -1348452218441903652
+      GrockBorder_SpriteSheet_512_42: -8108988163697268256
+      GrockBorder_SpriteSheet_512_43: -3381627837874780138
+      GrockBorder_SpriteSheet_512_44: -6162429660264158161
+      GrockBorder_SpriteSheet_512_45: 3905440623264764849
+      GrockBorder_SpriteSheet_512_46: 4376836974494861097
+      GrockBorder_SpriteSheet_512_47: 7749381845890970215
+      GrockBorder_SpriteSheet_512_48: 4931486351776260061
+      GrockBorder_SpriteSheet_512_49: 845283621914459216
+      GrockBorder_SpriteSheet_512_5: 3377687142802651652
+      GrockBorder_SpriteSheet_512_50: 2022926892792449075
+      GrockBorder_SpriteSheet_512_51: 3133725086673287660
+      GrockBorder_SpriteSheet_512_52: 2261789776782292541
+      GrockBorder_SpriteSheet_512_53: 3196742831534187776
+      GrockBorder_SpriteSheet_512_54: 4888634252795333931
+      GrockBorder_SpriteSheet_512_55: -8410433377928576005
+      GrockBorder_SpriteSheet_512_56: -2549089808916442172
+      GrockBorder_SpriteSheet_512_57: 7022873791275162968
+      GrockBorder_SpriteSheet_512_58: -2724655405663666809
+      GrockBorder_SpriteSheet_512_59: -929638733446206762
+      GrockBorder_SpriteSheet_512_6: -8820776969736090528
+      GrockBorder_SpriteSheet_512_60: -1190672835681096572
+      GrockBorder_SpriteSheet_512_61: 3323951201398773269
+      GrockBorder_SpriteSheet_512_62: 3463807550605414323
+      GrockBorder_SpriteSheet_512_63: 134763510522083192
+      GrockBorder_SpriteSheet_512_64: -4462707394165321857
+      GrockBorder_SpriteSheet_512_65: -3148458230069985398
+      GrockBorder_SpriteSheet_512_66: -4238157102625840376
+      GrockBorder_SpriteSheet_512_67: -453781062933022138
+      GrockBorder_SpriteSheet_512_68: -3691238241445595753
+      GrockBorder_SpriteSheet_512_69: -7320199312499446932
+      GrockBorder_SpriteSheet_512_7: -8518485104079615128
+      GrockBorder_SpriteSheet_512_70: -4626595394370408780
+      GrockBorder_SpriteSheet_512_71: -3909241021109568567
+      GrockBorder_SpriteSheet_512_72: -3008326402623680025
+      GrockBorder_SpriteSheet_512_73: -2438938951374334419
+      GrockBorder_SpriteSheet_512_74: 2593710321263848602
+      GrockBorder_SpriteSheet_512_75: 1228613294309918067
+      GrockBorder_SpriteSheet_512_76: 8965994741413634727
+      GrockBorder_SpriteSheet_512_77: 7495537454965121792
+      GrockBorder_SpriteSheet_512_78: 8574151095935423514
+      GrockBorder_SpriteSheet_512_79: 1319310574748758752
+      GrockBorder_SpriteSheet_512_8: -7361283603501775067
+      GrockBorder_SpriteSheet_512_80: -7018074495680478868
+      GrockBorder_SpriteSheet_512_81: -5373309422147029790
+      GrockBorder_SpriteSheet_512_82: -5616046403897822760
+      GrockBorder_SpriteSheet_512_83: 5356579980198775912
+      GrockBorder_SpriteSheet_512_84: -2211413452046870491
+      GrockBorder_SpriteSheet_512_85: -183554604892011790
+      GrockBorder_SpriteSheet_512_86: 4607195987527820010
+      GrockBorder_SpriteSheet_512_87: 6268145285592373724
+      GrockBorder_SpriteSheet_512_88: -713315338052554909
+      GrockBorder_SpriteSheet_512_89: -8544228883922201974
+      GrockBorder_SpriteSheet_512_9: -3483916161229884382
+      GrockBorder_SpriteSheet_512_90: -5328823495256759005
+      GrockBorder_SpriteSheet_512_91: -217101870519961473
+      GrockBorder_SpriteSheet_512_92: 7034998699739796928
+      GrockBorder_SpriteSheet_512_93: -6564174870164284948
+      GrockBorder_SpriteSheet_512_94: 4073396420724417566
+      GrockBorder_SpriteSheet_512_95: 4608376656720865209
+      GrockBorder_SpriteSheet_512_96: 4496736554666227964
+      GrockBorder_SpriteSheet_512_97: -6519391160137306613
+      GrockBorder_SpriteSheet_512_98: 2711675315919094469
+      GrockBorder_SpriteSheet_512_99: 5050890896073770126
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,4312 @@
+fileFormatVersion: 2
+guid: 3550d2a63c9d43b4f99a9643caa4d899
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7121223773132210447
+    second: EliseBorder_SpriteSheet_512_0
+  - first:
+      213: -7664587668127018659
+    second: EliseBorder_SpriteSheet_512_1
+  - first:
+      213: 2256587126765359168
+    second: EliseBorder_SpriteSheet_512_2
+  - first:
+      213: -995702070350860442
+    second: EliseBorder_SpriteSheet_512_3
+  - first:
+      213: -7980149007095182669
+    second: EliseBorder_SpriteSheet_512_4
+  - first:
+      213: 7061081481423722884
+    second: EliseBorder_SpriteSheet_512_5
+  - first:
+      213: 2776069131066510240
+    second: EliseBorder_SpriteSheet_512_6
+  - first:
+      213: -8044274152929710893
+    second: EliseBorder_SpriteSheet_512_7
+  - first:
+      213: -5685539916078840457
+    second: EliseBorder_SpriteSheet_512_8
+  - first:
+      213: 2867137875451341113
+    second: EliseBorder_SpriteSheet_512_9
+  - first:
+      213: 4226302426759126676
+    second: EliseBorder_SpriteSheet_512_10
+  - first:
+      213: -2632511029219327567
+    second: EliseBorder_SpriteSheet_512_11
+  - first:
+      213: 582489077589136950
+    second: EliseBorder_SpriteSheet_512_12
+  - first:
+      213: 972187487309432810
+    second: EliseBorder_SpriteSheet_512_13
+  - first:
+      213: -1414293790523665202
+    second: EliseBorder_SpriteSheet_512_14
+  - first:
+      213: 2808231916036771123
+    second: EliseBorder_SpriteSheet_512_15
+  - first:
+      213: -1938206556418190972
+    second: EliseBorder_SpriteSheet_512_16
+  - first:
+      213: 4914949728714349378
+    second: EliseBorder_SpriteSheet_512_17
+  - first:
+      213: -1317556509930751085
+    second: EliseBorder_SpriteSheet_512_18
+  - first:
+      213: 6954359895353140289
+    second: EliseBorder_SpriteSheet_512_19
+  - first:
+      213: -1623119918394264881
+    second: EliseBorder_SpriteSheet_512_20
+  - first:
+      213: 6648148599068105838
+    second: EliseBorder_SpriteSheet_512_21
+  - first:
+      213: -2261060524778302568
+    second: EliseBorder_SpriteSheet_512_22
+  - first:
+      213: 9162071189208081733
+    second: EliseBorder_SpriteSheet_512_23
+  - first:
+      213: 3388384768351896716
+    second: EliseBorder_SpriteSheet_512_24
+  - first:
+      213: -195788535770463245
+    second: EliseBorder_SpriteSheet_512_25
+  - first:
+      213: -3826913118643628688
+    second: EliseBorder_SpriteSheet_512_26
+  - first:
+      213: -3559844572344114736
+    second: EliseBorder_SpriteSheet_512_27
+  - first:
+      213: -547680703888376209
+    second: EliseBorder_SpriteSheet_512_28
+  - first:
+      213: -2350705593096339223
+    second: EliseBorder_SpriteSheet_512_29
+  - first:
+      213: 1741324281570982973
+    second: EliseBorder_SpriteSheet_512_30
+  - first:
+      213: -6373700853266917065
+    second: EliseBorder_SpriteSheet_512_31
+  - first:
+      213: -5786731471737207408
+    second: EliseBorder_SpriteSheet_512_32
+  - first:
+      213: -4356504511323112230
+    second: EliseBorder_SpriteSheet_512_33
+  - first:
+      213: -7645912462064420466
+    second: EliseBorder_SpriteSheet_512_34
+  - first:
+      213: -2359816497187535455
+    second: EliseBorder_SpriteSheet_512_35
+  - first:
+      213: 564841921081685192
+    second: EliseBorder_SpriteSheet_512_36
+  - first:
+      213: 2168035362581524828
+    second: EliseBorder_SpriteSheet_512_37
+  - first:
+      213: 242067573687146121
+    second: EliseBorder_SpriteSheet_512_38
+  - first:
+      213: -6750806213594874993
+    second: EliseBorder_SpriteSheet_512_39
+  - first:
+      213: -4507919519925481839
+    second: EliseBorder_SpriteSheet_512_40
+  - first:
+      213: 9083063628992908192
+    second: EliseBorder_SpriteSheet_512_41
+  - first:
+      213: -7050373906524889304
+    second: EliseBorder_SpriteSheet_512_42
+  - first:
+      213: 7814380688030279861
+    second: EliseBorder_SpriteSheet_512_43
+  - first:
+      213: 3473542884676809681
+    second: EliseBorder_SpriteSheet_512_44
+  - first:
+      213: 2725634344012840156
+    second: EliseBorder_SpriteSheet_512_45
+  - first:
+      213: -5233364234211538163
+    second: EliseBorder_SpriteSheet_512_46
+  - first:
+      213: -7672382213850092280
+    second: EliseBorder_SpriteSheet_512_47
+  - first:
+      213: 8170128109819215273
+    second: EliseBorder_SpriteSheet_512_48
+  - first:
+      213: -3955237600197719409
+    second: EliseBorder_SpriteSheet_512_49
+  - first:
+      213: -6593311345272417939
+    second: EliseBorder_SpriteSheet_512_50
+  - first:
+      213: 3212699831368566513
+    second: EliseBorder_SpriteSheet_512_51
+  - first:
+      213: -1068103343806777330
+    second: EliseBorder_SpriteSheet_512_52
+  - first:
+      213: 973878237235878743
+    second: EliseBorder_SpriteSheet_512_53
+  - first:
+      213: -5512360990743146341
+    second: EliseBorder_SpriteSheet_512_54
+  - first:
+      213: -7027248795122102764
+    second: EliseBorder_SpriteSheet_512_55
+  - first:
+      213: -2146870581455391138
+    second: EliseBorder_SpriteSheet_512_56
+  - first:
+      213: -9213659569710013862
+    second: EliseBorder_SpriteSheet_512_57
+  - first:
+      213: -5563575759683343226
+    second: EliseBorder_SpriteSheet_512_58
+  - first:
+      213: -6934007793044484706
+    second: EliseBorder_SpriteSheet_512_59
+  - first:
+      213: 4410724606996253431
+    second: EliseBorder_SpriteSheet_512_60
+  - first:
+      213: 3690461251259801596
+    second: EliseBorder_SpriteSheet_512_61
+  - first:
+      213: 594265795820001050
+    second: EliseBorder_SpriteSheet_512_62
+  - first:
+      213: 2666587307202447317
+    second: EliseBorder_SpriteSheet_512_63
+  - first:
+      213: 8725435977588496755
+    second: EliseBorder_SpriteSheet_512_64
+  - first:
+      213: 6077078693350289896
+    second: EliseBorder_SpriteSheet_512_65
+  - first:
+      213: -2508637185643929462
+    second: EliseBorder_SpriteSheet_512_66
+  - first:
+      213: 8971623304634357855
+    second: EliseBorder_SpriteSheet_512_67
+  - first:
+      213: -5326768010016394079
+    second: EliseBorder_SpriteSheet_512_68
+  - first:
+      213: 2303001997312852144
+    second: EliseBorder_SpriteSheet_512_69
+  - first:
+      213: 5781703800437363698
+    second: EliseBorder_SpriteSheet_512_70
+  - first:
+      213: 8382633817561699919
+    second: EliseBorder_SpriteSheet_512_71
+  - first:
+      213: 8554164239331755618
+    second: EliseBorder_SpriteSheet_512_72
+  - first:
+      213: -4419503339263423154
+    second: EliseBorder_SpriteSheet_512_73
+  - first:
+      213: 6022757443561498383
+    second: EliseBorder_SpriteSheet_512_74
+  - first:
+      213: 2922962640515105003
+    second: EliseBorder_SpriteSheet_512_75
+  - first:
+      213: -2878339785769478503
+    second: EliseBorder_SpriteSheet_512_76
+  - first:
+      213: -2775709350204880601
+    second: EliseBorder_SpriteSheet_512_77
+  - first:
+      213: -4761873731164898644
+    second: EliseBorder_SpriteSheet_512_78
+  - first:
+      213: 1522490586809031804
+    second: EliseBorder_SpriteSheet_512_79
+  - first:
+      213: -4665813686671596200
+    second: EliseBorder_SpriteSheet_512_80
+  - first:
+      213: 8927628498520877680
+    second: EliseBorder_SpriteSheet_512_81
+  - first:
+      213: -1744537393471937703
+    second: EliseBorder_SpriteSheet_512_82
+  - first:
+      213: 1185454542429856497
+    second: EliseBorder_SpriteSheet_512_83
+  - first:
+      213: -9178868043403516876
+    second: EliseBorder_SpriteSheet_512_84
+  - first:
+      213: 4411965566354818704
+    second: EliseBorder_SpriteSheet_512_85
+  - first:
+      213: 4400590820983647824
+    second: EliseBorder_SpriteSheet_512_86
+  - first:
+      213: 346242075572909345
+    second: EliseBorder_SpriteSheet_512_87
+  - first:
+      213: -2656440723147874872
+    second: EliseBorder_SpriteSheet_512_88
+  - first:
+      213: -433932325708891961
+    second: EliseBorder_SpriteSheet_512_89
+  - first:
+      213: 3203986503367866437
+    second: EliseBorder_SpriteSheet_512_90
+  - first:
+      213: -9206773864546798295
+    second: EliseBorder_SpriteSheet_512_91
+  - first:
+      213: -4764695736541495973
+    second: EliseBorder_SpriteSheet_512_92
+  - first:
+      213: -8051665800150691359
+    second: EliseBorder_SpriteSheet_512_93
+  - first:
+      213: 2834981131649769574
+    second: EliseBorder_SpriteSheet_512_94
+  - first:
+      213: 5129965668226416292
+    second: EliseBorder_SpriteSheet_512_95
+  - first:
+      213: 6342057566951547576
+    second: EliseBorder_SpriteSheet_512_96
+  - first:
+      213: 6416201403798093803
+    second: EliseBorder_SpriteSheet_512_97
+  - first:
+      213: 3607839598717016346
+    second: EliseBorder_SpriteSheet_512_98
+  - first:
+      213: -4761527098137826900
+    second: EliseBorder_SpriteSheet_512_99
+  - first:
+      213: -1547707633897953778
+    second: EliseBorder_SpriteSheet_512_100
+  - first:
+      213: 5766086220032288131
+    second: EliseBorder_SpriteSheet_512_101
+  - first:
+      213: -3400213146289234970
+    second: EliseBorder_SpriteSheet_512_102
+  - first:
+      213: -7749306345153689320
+    second: EliseBorder_SpriteSheet_512_103
+  - first:
+      213: 1522074475393582374
+    second: EliseBorder_SpriteSheet_512_104
+  - first:
+      213: 4289453692225994748
+    second: EliseBorder_SpriteSheet_512_105
+  - first:
+      213: -7569012637309727925
+    second: EliseBorder_SpriteSheet_512_106
+  - first:
+      213: -1174587256527578825
+    second: EliseBorder_SpriteSheet_512_107
+  - first:
+      213: 1422468148691678752
+    second: EliseBorder_SpriteSheet_512_108
+  - first:
+      213: 6956408125255088093
+    second: EliseBorder_SpriteSheet_512_109
+  - first:
+      213: 4987711723263646623
+    second: EliseBorder_SpriteSheet_512_110
+  - first:
+      213: 8268523032113134295
+    second: EliseBorder_SpriteSheet_512_111
+  - first:
+      213: -5486745576581670774
+    second: EliseBorder_SpriteSheet_512_112
+  - first:
+      213: -924784715117156623
+    second: EliseBorder_SpriteSheet_512_113
+  - first:
+      213: -1956308828322372460
+    second: EliseBorder_SpriteSheet_512_114
+  - first:
+      213: 8311211801495685835
+    second: EliseBorder_SpriteSheet_512_115
+  - first:
+      213: -1204835447176717674
+    second: EliseBorder_SpriteSheet_512_116
+  - first:
+      213: -6561045024136881443
+    second: EliseBorder_SpriteSheet_512_117
+  - first:
+      213: 4269141810714336808
+    second: EliseBorder_SpriteSheet_512_118
+  - first:
+      213: -2059266259479556343
+    second: EliseBorder_SpriteSheet_512_119
+  - first:
+      213: -2850480937659753914
+    second: EliseBorder_SpriteSheet_512_120
+  - first:
+      213: 8763217542848692055
+    second: EliseBorder_SpriteSheet_512_121
+  - first:
+      213: -2741646961031431302
+    second: EliseBorder_SpriteSheet_512_122
+  - first:
+      213: 5636806505538812357
+    second: EliseBorder_SpriteSheet_512_123
+  - first:
+      213: 3926553899979423182
+    second: EliseBorder_SpriteSheet_512_124
+  - first:
+      213: 2613946187355609273
+    second: EliseBorder_SpriteSheet_512_125
+  - first:
+      213: -4481015894015754747
+    second: EliseBorder_SpriteSheet_512_126
+  - first:
+      213: 5887829490568586302
+    second: EliseBorder_SpriteSheet_512_127
+  - first:
+      213: -8733372466024218957
+    second: EliseBorder_SpriteSheet_512_128
+  - first:
+      213: 2619420137672942956
+    second: EliseBorder_SpriteSheet_512_129
+  - first:
+      213: -5522805809638046968
+    second: EliseBorder_SpriteSheet_512_130
+  - first:
+      213: -1703233421271142977
+    second: EliseBorder_SpriteSheet_512_131
+  - first:
+      213: 6225287628660254320
+    second: EliseBorder_SpriteSheet_512_132
+  - first:
+      213: 5835250046583771959
+    second: EliseBorder_SpriteSheet_512_133
+  - first:
+      213: 2152471663838826338
+    second: EliseBorder_SpriteSheet_512_134
+  - first:
+      213: -6228331283035780825
+    second: EliseBorder_SpriteSheet_512_135
+  - first:
+      213: -7730216242756550473
+    second: EliseBorder_SpriteSheet_512_136
+  - first:
+      213: 1181504742493827458
+    second: EliseBorder_SpriteSheet_512_137
+  - first:
+      213: 2908024699513978004
+    second: EliseBorder_SpriteSheet_512_138
+  - first:
+      213: -3915708014856659836
+    second: EliseBorder_SpriteSheet_512_139
+  - first:
+      213: 8799138039088549936
+    second: EliseBorder_SpriteSheet_512_140
+  - first:
+      213: -2435947140519854744
+    second: EliseBorder_SpriteSheet_512_141
+  - first:
+      213: -6353222523700408402
+    second: EliseBorder_SpriteSheet_512_142
+  - first:
+      213: -4497396383332815971
+    second: EliseBorder_SpriteSheet_512_143
+  - first:
+      213: 6626691460411541583
+    second: EliseBorder_SpriteSheet_512_144
+  - first:
+      213: -3672777639003966183
+    second: EliseBorder_SpriteSheet_512_145
+  - first:
+      213: 1221497719392132650
+    second: EliseBorder_SpriteSheet_512_146
+  - first:
+      213: -1252452580386193241
+    second: EliseBorder_SpriteSheet_512_147
+  - first:
+      213: 2549635061172995641
+    second: EliseBorder_SpriteSheet_512_148
+  - first:
+      213: 3907010348044348873
+    second: EliseBorder_SpriteSheet_512_149
+  - first:
+      213: 1457008419909017746
+    second: EliseBorder_SpriteSheet_512_150
+  - first:
+      213: 812605298184837057
+    second: EliseBorder_SpriteSheet_512_151
+  - first:
+      213: 2204030898727045693
+    second: EliseBorder_SpriteSheet_512_152
+  - first:
+      213: -4844762206415654736
+    second: EliseBorder_SpriteSheet_512_153
+  - first:
+      213: -301557675361274958
+    second: EliseBorder_SpriteSheet_512_154
+  - first:
+      213: 3151354047179932732
+    second: EliseBorder_SpriteSheet_512_155
+  - first:
+      213: -5417733997098866035
+    second: EliseBorder_SpriteSheet_512_156
+  - first:
+      213: 667782881124994152
+    second: EliseBorder_SpriteSheet_512_157
+  - first:
+      213: -112841242521904323
+    second: EliseBorder_SpriteSheet_512_158
+  - first:
+      213: 4617482789897495322
+    second: EliseBorder_SpriteSheet_512_159
+  - first:
+      213: -3041861877230641309
+    second: EliseBorder_SpriteSheet_512_160
+  - first:
+      213: -3319305338099913428
+    second: EliseBorder_SpriteSheet_512_161
+  - first:
+      213: 7221546530088636800
+    second: EliseBorder_SpriteSheet_512_162
+  - first:
+      213: -1294123850188663405
+    second: EliseBorder_SpriteSheet_512_163
+  - first:
+      213: -3786047159402236978
+    second: EliseBorder_SpriteSheet_512_164
+  - first:
+      213: -1741371963966418104
+    second: EliseBorder_SpriteSheet_512_165
+  - first:
+      213: 4756362565928680814
+    second: EliseBorder_SpriteSheet_512_166
+  - first:
+      213: 2772734964867338643
+    second: EliseBorder_SpriteSheet_512_167
+  - first:
+      213: -1788473249960677334
+    second: EliseBorder_SpriteSheet_512_168
+  - first:
+      213: -6712980019846313650
+    second: EliseBorder_SpriteSheet_512_169
+  - first:
+      213: 7322545868399159229
+    second: EliseBorder_SpriteSheet_512_170
+  - first:
+      213: 6831437731275333341
+    second: EliseBorder_SpriteSheet_512_171
+  - first:
+      213: -302854469259769026
+    second: EliseBorder_SpriteSheet_512_172
+  - first:
+      213: -6958571657580988583
+    second: EliseBorder_SpriteSheet_512_173
+  - first:
+      213: -5052415375012866168
+    second: EliseBorder_SpriteSheet_512_174
+  - first:
+      213: -4710743805591518208
+    second: EliseBorder_SpriteSheet_512_175
+  - first:
+      213: -6549546230852146420
+    second: EliseBorder_SpriteSheet_512_176
+  - first:
+      213: 4072653822491394920
+    second: EliseBorder_SpriteSheet_512_177
+  - first:
+      213: 5649152800688110542
+    second: EliseBorder_SpriteSheet_512_178
+  - first:
+      213: 617572323804481749
+    second: EliseBorder_SpriteSheet_512_179
+  - first:
+      213: 1236778180385191338
+    second: EliseBorder_SpriteSheet_512_180
+  - first:
+      213: -4287332223197707044
+    second: EliseBorder_SpriteSheet_512_181
+  - first:
+      213: -4029870878464839165
+    second: EliseBorder_SpriteSheet_512_182
+  - first:
+      213: -4904675815289244761
+    second: EliseBorder_SpriteSheet_512_183
+  - first:
+      213: -4063829362484114239
+    second: EliseBorder_SpriteSheet_512_184
+  - first:
+      213: -2683791787999574300
+    second: EliseBorder_SpriteSheet_512_185
+  - first:
+      213: 2067648557775255905
+    second: EliseBorder_SpriteSheet_512_186
+  - first:
+      213: 5754631708994799722
+    second: EliseBorder_SpriteSheet_512_187
+  - first:
+      213: 1725720354686531212
+    second: EliseBorder_SpriteSheet_512_188
+  - first:
+      213: 380664127217793767
+    second: EliseBorder_SpriteSheet_512_189
+  - first:
+      213: 6485450470871240043
+    second: EliseBorder_SpriteSheet_512_190
+  - first:
+      213: -5280874781928979121
+    second: EliseBorder_SpriteSheet_512_191
+  - first:
+      213: -4604972013847783104
+    second: EliseBorder_SpriteSheet_512_192
+  - first:
+      213: 1010604503464186430
+    second: EliseBorder_SpriteSheet_512_193
+  - first:
+      213: 5169181541980776968
+    second: EliseBorder_SpriteSheet_512_194
+  - first:
+      213: -3638853520936592529
+    second: EliseBorder_SpriteSheet_512_195
+  - first:
+      213: -4124516155948376923
+    second: EliseBorder_SpriteSheet_512_196
+  - first:
+      213: 6368356399989165725
+    second: EliseBorder_SpriteSheet_512_197
+  - first:
+      213: 6769098685263628743
+    second: EliseBorder_SpriteSheet_512_198
+  - first:
+      213: 9170388656571816476
+    second: EliseBorder_SpriteSheet_512_199
+  - first:
+      213: 1053613895186844243
+    second: EliseBorder_SpriteSheet_512_200
+  - first:
+      213: 1839718756851457065
+    second: EliseBorder_SpriteSheet_512_201
+  - first:
+      213: 6355565225561735690
+    second: EliseBorder_SpriteSheet_512_202
+  - first:
+      213: -1315479296229898829
+    second: EliseBorder_SpriteSheet_512_203
+  - first:
+      213: -2951017335456799295
+    second: EliseBorder_SpriteSheet_512_204
+  - first:
+      213: -3922662366979470860
+    second: EliseBorder_SpriteSheet_512_205
+  - first:
+      213: 7679882214970892061
+    second: EliseBorder_SpriteSheet_512_206
+  - first:
+      213: 1211306042312663001
+    second: EliseBorder_SpriteSheet_512_207
+  - first:
+      213: 2971937838009725288
+    second: EliseBorder_SpriteSheet_512_208
+  - first:
+      213: 6437681433914586489
+    second: EliseBorder_SpriteSheet_512_209
+  - first:
+      213: -5193690211734976892
+    second: EliseBorder_SpriteSheet_512_210
+  - first:
+      213: 3383035716735331268
+    second: EliseBorder_SpriteSheet_512_211
+  - first:
+      213: 8234992911042609580
+    second: EliseBorder_SpriteSheet_512_212
+  - first:
+      213: -2230437646789659219
+    second: EliseBorder_SpriteSheet_512_213
+  - first:
+      213: 1453602247910233623
+    second: EliseBorder_SpriteSheet_512_214
+  - first:
+      213: 5448373104841469554
+    second: EliseBorder_SpriteSheet_512_215
+  - first:
+      213: -7131332908903931857
+    second: EliseBorder_SpriteSheet_512_216
+  - first:
+      213: -164370423704288065
+    second: EliseBorder_SpriteSheet_512_217
+  - first:
+      213: -7439442434306225938
+    second: EliseBorder_SpriteSheet_512_218
+  - first:
+      213: -5710276038478071910
+    second: EliseBorder_SpriteSheet_512_219
+  - first:
+      213: -6850434256074592064
+    second: EliseBorder_SpriteSheet_512_220
+  - first:
+      213: -578591620019923790
+    second: EliseBorder_SpriteSheet_512_221
+  - first:
+      213: -7357380427712336555
+    second: EliseBorder_SpriteSheet_512_222
+  - first:
+      213: -7286767308656549621
+    second: EliseBorder_SpriteSheet_512_223
+  - first:
+      213: -3462739620949560017
+    second: EliseBorder_SpriteSheet_512_224
+  - first:
+      213: -2567135549232095763
+    second: EliseBorder_SpriteSheet_512_225
+  - first:
+      213: 3612975351161343503
+    second: EliseBorder_SpriteSheet_512_226
+  - first:
+      213: 3435763939276698732
+    second: EliseBorder_SpriteSheet_512_227
+  - first:
+      213: 4090857369416306922
+    second: EliseBorder_SpriteSheet_512_228
+  - first:
+      213: 4138461176594799060
+    second: EliseBorder_SpriteSheet_512_229
+  - first:
+      213: 1566642513392802012
+    second: EliseBorder_SpriteSheet_512_230
+  - first:
+      213: -1336618572391251101
+    second: EliseBorder_SpriteSheet_512_231
+  - first:
+      213: -7968223993378288979
+    second: EliseBorder_SpriteSheet_512_232
+  - first:
+      213: 4011030725729131332
+    second: EliseBorder_SpriteSheet_512_233
+  - first:
+      213: 3151930224142764884
+    second: EliseBorder_SpriteSheet_512_234
+  - first:
+      213: -8868943357427903244
+    second: EliseBorder_SpriteSheet_512_235
+  - first:
+      213: -5027506390961461300
+    second: EliseBorder_SpriteSheet_512_236
+  - first:
+      213: 7268962106296296277
+    second: EliseBorder_SpriteSheet_512_237
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1fe336c45b45c2d90800000000000000
+      internalID: -7121223773132210447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_1
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d511373ef1ae1a590800000000000000
+      internalID: -7664587668127018659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_2
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 040919f2902015f10800000000000000
+      internalID: 2256587126765359168
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_3
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66fad921e3e8e22f0800000000000000
+      internalID: -995702070350860442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_4
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3bac76932c0d04190800000000000000
+      internalID: -7980149007095182669
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_5
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 489995632300ef160800000000000000
+      internalID: 7061081481423722884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_6
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ab852d9a24968620800000000000000
+      internalID: 2776069131066510240
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_7
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3dca4ce374ffc5090800000000000000
+      internalID: -8044274152929710893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_8
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 77501d1d197e811b0800000000000000
+      internalID: -5685539916078840457
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_9
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 939685cf4be1ac720800000000000000
+      internalID: 2867137875451341113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_10
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49e595c4aa7d6aa30800000000000000
+      internalID: 4226302426759126676
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_11
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b18514aa21777bd0800000000000000
+      internalID: -2632511029219327567
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_12
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 636de3bdaba651800800000000000000
+      internalID: 582489077589136950
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_13
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae7882c6e57ed7d00800000000000000
+      internalID: 972187487309432810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_14
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec4dbcf6a4b6f5ce0800000000000000
+      internalID: -1414293790523665202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_15
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33d494a8c08d8f620800000000000000
+      internalID: 2808231916036771123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_16
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4815c5fe76b1a15e0800000000000000
+      internalID: -1938206556418190972
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_17
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24bdbecdcb8653440800000000000000
+      internalID: 4914949728714349378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_18
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39bf21eb55917bde0800000000000000
+      internalID: -1317556509930751085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_19
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1442fb2aa79d28060800000000000000
+      internalID: 6954359895353140289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_20
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc2bf3ca8058979e0800000000000000
+      internalID: -1623119918394264881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_21
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6c177d6de7f24c50800000000000000
+      internalID: 6648148599068105838
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_22
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8935eecae691f90e0800000000000000
+      internalID: -2261060524778302568
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_23
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 545a69f2437362f70800000000000000
+      internalID: 9162071189208081733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_24
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8485ff8ef5f50f20800000000000000
+      internalID: 3388384768351896716
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_25
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f3ce423d5b684df0800000000000000
+      internalID: -195788535770463245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_26
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 075d6f06bc214eac0800000000000000
+      internalID: -3826913118643628688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_27
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d1a3d9e834e89ec0800000000000000
+      internalID: -3559844572344114736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_28
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6eb5623d4f3668f0800000000000000
+      internalID: -547680703888376209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_29
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e008f7b7bd906fd0800000000000000
+      internalID: -2350705593096339223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_30
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3cfcc9453d6a2810800000000000000
+      internalID: 1741324281570982973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_31
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 739db60e7d01c87a0800000000000000
+      internalID: -6373700853266917065
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_32
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 095c788c26661bfa0800000000000000
+      internalID: -5786731471737207408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_33
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: adcf23c8a369a83c0800000000000000
+      internalID: -4356504511323112230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_34
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e89fae2202344e590800000000000000
+      internalID: -7645912462064420466
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_35
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a5c70e066f304fd0800000000000000
+      internalID: -2359816497187535455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_36
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c4b25c0cb8b6d700800000000000000
+      internalID: 564841921081685192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_37
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c51382feca8661e10800000000000000
+      internalID: 2168035362581524828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_38
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 986534dfc2ffb5300800000000000000
+      internalID: 242067573687146121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_39
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8b7d2b14815052a0800000000000000
+      internalID: -6750806213594874993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_40
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19ecac2a417a071c0800000000000000
+      internalID: -4507919519925481839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_41
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ab84661f368d0e70800000000000000
+      internalID: 9083063628992908192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_42
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82f96e7594a082e90800000000000000
+      internalID: -7050373906524889304
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_43
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b8a7b955d1427c60800000000000000
+      internalID: 7814380688030279861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_44
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d33f3999d0843030800000000000000
+      internalID: 3473542884676809681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_45
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cdc7d7eaef563d520800000000000000
+      internalID: 2725634344012840156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_46
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0b469fd4fa5f57b0800000000000000
+      internalID: -5233364234211538163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_47
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80da07ac609368590800000000000000
+      internalID: -7672382213850092280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_48
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ad353b8a30226170800000000000000
+      internalID: 8170128109819215273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_49
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8a42fdbb5c2c19c0800000000000000
+      internalID: -3955237600197719409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_50
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d611c7ba34adf74a0800000000000000
+      internalID: -6593311345272417939
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_51
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f64eaa997dc59c20800000000000000
+      internalID: 3212699831368566513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_52
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e087df8faa55d21f0800000000000000
+      internalID: -1068103343806777330
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_53
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75b9de0d819e38d00800000000000000
+      internalID: 973878237235878743
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_54
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b90d80972e82083b0800000000000000
+      internalID: -5512360990743146341
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_55
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41e847ae3723a7e90800000000000000
+      internalID: -7027248795122102764
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_56
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e567d9da498c432e0800000000000000
+      internalID: -2146870581455391138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_57
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a526e0aff61822080800000000000000
+      internalID: -9213659569710013862
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_58
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68ca91bd2553ac2b0800000000000000
+      internalID: -5563575759683343226
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_59
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9d0bc176a475cf90800000000000000
+      internalID: -6934007793044484706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_60
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fa061a39aa063d30800000000000000
+      internalID: 4410724606996253431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_61
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cff1fa284f6273330800000000000000
+      internalID: 3690461251259801596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_62
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a17140eb7914f3800800000000000000
+      internalID: 594265795820001050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_63
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d70e58170f910520800000000000000
+      internalID: 2666587307202447317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_64
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3795392dac9f61970800000000000000
+      internalID: 8725435977588496755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_65
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e13d35bfde165450800000000000000
+      internalID: 6077078693350289896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_66
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a80ab5f55c78f2dd0800000000000000
+      internalID: -2508637185643929462
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_67
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f58d853acdb918c70800000000000000
+      internalID: 8971623304634357855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_68
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a4fe02a7b48316b0800000000000000
+      internalID: -5326768010016394079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_69
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b009de5d18e5ff10800000000000000
+      internalID: 2303001997312852144
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_70
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f3589549fcbc3050800000000000000
+      internalID: 5781703800437363698
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_71
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4611f14b09155470800000000000000
+      internalID: 8382633817561699919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_72
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26608b3cd0f76b670800000000000000
+      internalID: 8554164239331755618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_73
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4d0d83e025caa2c0800000000000000
+      internalID: -4419503339263423154
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_74
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f07a2d72cf1259350800000000000000
+      internalID: 6022757443561498383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_75
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be004a7f803709820800000000000000
+      internalID: 2922962640515105003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_76
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 996165607351e08d0800000000000000
+      internalID: -2878339785769478503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_77
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 729ce456d03ba79d0800000000000000
+      internalID: -2775709350204880601
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_78
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: caaf6ac221d6aedb0800000000000000
+      internalID: -4761873731164898644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_79
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7cd0a84f19f02510800000000000000
+      internalID: 1522490586809031804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_80
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 855a8c92c23bf3fb0800000000000000
+      internalID: -4665813686671596200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_81
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07aadfc91de45eb70800000000000000
+      internalID: 8927628498520877680
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_82
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95328bccb782ac7e0800000000000000
+      internalID: -1744537393471937703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_83
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f2a7e220a4937010800000000000000
+      internalID: 1185454542429856497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_84
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 434afb0752c1e9080800000000000000
+      internalID: -9178868043403516876
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_85
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09685d79e437a3d30800000000000000
+      internalID: 4411965566354818704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_86
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05e239e490a021d30800000000000000
+      internalID: 4400590820983647824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_87
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12531d055591ec400800000000000000
+      internalID: 346242075572909345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_88
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8cd93e99c3d622bd0800000000000000
+      internalID: -2656440723147874872
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_89
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c8ff8d49dc5af9f0800000000000000
+      internalID: -433932325708891961
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_90
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5483366dfb8d67c20800000000000000
+      internalID: 3203986503367866437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_91
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 925765423f7fa3080800000000000000
+      internalID: -9206773864546798295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_92
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5d30a8d87660edb0800000000000000
+      internalID: -4764695736541495973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_93
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e15bd34d9cb24090800000000000000
+      internalID: -8051665800150691359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_94
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6606be0a150e75720800000000000000
+      internalID: 2834981131649769574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_95
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4aeb594789c413740800000000000000
+      internalID: 5129965668226416292
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_96
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b2a93761c3830850800000000000000
+      internalID: 6342057566951547576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_97
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bef7fb8ae2dea0950800000000000000
+      internalID: 6416201403798093803
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_98
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a199d18fffe911230800000000000000
+      internalID: 3607839598717016346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_99
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca92917f458abedb0800000000000000
+      internalID: -4761527098137826900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_100
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e062a596b10758ae0800000000000000
+      internalID: -1547707633897953778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_101
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 385ac49fdd0450050800000000000000
+      internalID: 5766086220032288131
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_102
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6eb11d6982400d0d0800000000000000
+      internalID: -3400213146289234970
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_103
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8190f69cfeee47490800000000000000
+      internalID: -7749306345153689320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_104
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 625068bcbae7f1510800000000000000
+      internalID: 1522074475393582374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_105
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cff3e951863378b30800000000000000
+      internalID: 4289453692225994748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_106
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4b06b4db1775f690800000000000000
+      internalID: -7569012637309727925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_107
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73919f80d1703bfe0800000000000000
+      internalID: -1174587256527578825
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_108
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0263313ae3f9db310800000000000000
+      internalID: 1422468148691678752
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_109
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd7787255502a8060800000000000000
+      internalID: 6956408125255088093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_110
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9b5e23e269e73540800000000000000
+      internalID: 4987711723263646623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_111
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7da3d32a3e1bfb270800000000000000
+      internalID: 8268523032113134295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_112
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8857e6d7f92bd3b0800000000000000
+      internalID: -5486745576581670774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_113
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f62bb983318a23f0800000000000000
+      internalID: -924784715117156623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_114
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49462e05c7bc9d4e0800000000000000
+      internalID: -1956308828322372460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_115
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bca4f29491b575370800000000000000
+      internalID: 8311211801495685835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_116
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69a9b365b80974fe0800000000000000
+      internalID: -1204835447176717674
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_117
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dda1afcff4c72f4a0800000000000000
+      internalID: -6561045024136881443
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_118
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82e5563abd90f3b30800000000000000
+      internalID: 4269141810714336808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_119
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90f06c95f340c63e0800000000000000
+      internalID: -2059266259479556343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_120
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64a94cf80be0178d0800000000000000
+      internalID: -2850480937659753914
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_121
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75fb7fafce33d9970800000000000000
+      internalID: 8763217542848692055
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_122
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a7b31346d96b3f9d0800000000000000
+      internalID: -2741646961031431302
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_123
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c97046d6a5f93e40800000000000000
+      internalID: 5636806505538812357
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_124
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ecdb2bfd7fbed7630800000000000000
+      internalID: 3926553899979423182
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_125
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b85157453a964420800000000000000
+      internalID: 2613946187355609273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_126
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50ebf4c29cb30d1c0800000000000000
+      internalID: -4481015894015754747
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_127
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e34e8630ab5c5b150800000000000000
+      internalID: 5887829490568586302
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_128
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3bef2777304dcc680800000000000000
+      internalID: -8733372466024218957
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_129
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c652087acbc0a5420800000000000000
+      internalID: 2619420137672942956
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_130
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8038f01906d0b53b0800000000000000
+      internalID: -5522805809638046968
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_131
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fbd6f8b3a36ec58e0800000000000000
+      internalID: -1703233421271142977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_132
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 076ade28d1aa46650800000000000000
+      internalID: 6225287628660254320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_133
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 733153a3009faf050800000000000000
+      internalID: 5835250046583771959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_134
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26f0530f29d1fdd10800000000000000
+      internalID: 2152471663838826338
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_135
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 729033b72b58099a0800000000000000
+      internalID: -6228331283035780825
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_136
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b08a8d9841c8b490800000000000000
+      internalID: -7730216242756550473
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_137
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 281b8ccad4c856010800000000000000
+      internalID: 1181504742493827458
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_138
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49cb79c8e016b5820800000000000000
+      internalID: 2908024699513978004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_139
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 48c915a8e4c98a9c0800000000000000
+      internalID: -3915708014856659836
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_140
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 030108d3d61dc1a70800000000000000
+      internalID: 8799138039088549936
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_141
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86d7fad5bf6c13ed0800000000000000
+      internalID: -2435947140519854744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_142
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eaf83d786c1d4d7a0800000000000000
+      internalID: -6353222523700408402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_143
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9b225d41d90691c0800000000000000
+      internalID: -4497396383332815971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_144
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f48c1f506ccb6fb50800000000000000
+      internalID: 6626691460411541583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_145
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 915bb20523ca70dc0800000000000000
+      internalID: -3672777639003966183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_146
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2e515a34b1a3f010800000000000000
+      internalID: 1221497719392132650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_147
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a04f0093056e9ee0800000000000000
+      internalID: -1252452580386193241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EliseBorder_SpriteSheet_512_148
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9360910649f126320800000000000000
+      internalID: 2549635061172995641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 2974c2a1679a63b448430043fdd9bf2f
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":512.0,"y":512.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      EliseBorder_SpriteSheet_512_0: -7121223773132210447
+      EliseBorder_SpriteSheet_512_1: -7664587668127018659
+      EliseBorder_SpriteSheet_512_10: 4226302426759126676
+      EliseBorder_SpriteSheet_512_100: -1547707633897953778
+      EliseBorder_SpriteSheet_512_101: 5766086220032288131
+      EliseBorder_SpriteSheet_512_102: -3400213146289234970
+      EliseBorder_SpriteSheet_512_103: -7749306345153689320
+      EliseBorder_SpriteSheet_512_104: 1522074475393582374
+      EliseBorder_SpriteSheet_512_105: 4289453692225994748
+      EliseBorder_SpriteSheet_512_106: -7569012637309727925
+      EliseBorder_SpriteSheet_512_107: -1174587256527578825
+      EliseBorder_SpriteSheet_512_108: 1422468148691678752
+      EliseBorder_SpriteSheet_512_109: 6956408125255088093
+      EliseBorder_SpriteSheet_512_11: -2632511029219327567
+      EliseBorder_SpriteSheet_512_110: 4987711723263646623
+      EliseBorder_SpriteSheet_512_111: 8268523032113134295
+      EliseBorder_SpriteSheet_512_112: -5486745576581670774
+      EliseBorder_SpriteSheet_512_113: -924784715117156623
+      EliseBorder_SpriteSheet_512_114: -1956308828322372460
+      EliseBorder_SpriteSheet_512_115: 8311211801495685835
+      EliseBorder_SpriteSheet_512_116: -1204835447176717674
+      EliseBorder_SpriteSheet_512_117: -6561045024136881443
+      EliseBorder_SpriteSheet_512_118: 4269141810714336808
+      EliseBorder_SpriteSheet_512_119: -2059266259479556343
+      EliseBorder_SpriteSheet_512_12: 582489077589136950
+      EliseBorder_SpriteSheet_512_120: -2850480937659753914
+      EliseBorder_SpriteSheet_512_121: 8763217542848692055
+      EliseBorder_SpriteSheet_512_122: -2741646961031431302
+      EliseBorder_SpriteSheet_512_123: 5636806505538812357
+      EliseBorder_SpriteSheet_512_124: 3926553899979423182
+      EliseBorder_SpriteSheet_512_125: 2613946187355609273
+      EliseBorder_SpriteSheet_512_126: -4481015894015754747
+      EliseBorder_SpriteSheet_512_127: 5887829490568586302
+      EliseBorder_SpriteSheet_512_128: -8733372466024218957
+      EliseBorder_SpriteSheet_512_129: 2619420137672942956
+      EliseBorder_SpriteSheet_512_13: 972187487309432810
+      EliseBorder_SpriteSheet_512_130: -5522805809638046968
+      EliseBorder_SpriteSheet_512_131: -1703233421271142977
+      EliseBorder_SpriteSheet_512_132: 6225287628660254320
+      EliseBorder_SpriteSheet_512_133: 5835250046583771959
+      EliseBorder_SpriteSheet_512_134: 2152471663838826338
+      EliseBorder_SpriteSheet_512_135: -6228331283035780825
+      EliseBorder_SpriteSheet_512_136: -7730216242756550473
+      EliseBorder_SpriteSheet_512_137: 1181504742493827458
+      EliseBorder_SpriteSheet_512_138: 2908024699513978004
+      EliseBorder_SpriteSheet_512_139: -3915708014856659836
+      EliseBorder_SpriteSheet_512_14: -1414293790523665202
+      EliseBorder_SpriteSheet_512_140: 8799138039088549936
+      EliseBorder_SpriteSheet_512_141: -2435947140519854744
+      EliseBorder_SpriteSheet_512_142: -6353222523700408402
+      EliseBorder_SpriteSheet_512_143: -4497396383332815971
+      EliseBorder_SpriteSheet_512_144: 6626691460411541583
+      EliseBorder_SpriteSheet_512_145: -3672777639003966183
+      EliseBorder_SpriteSheet_512_146: 1221497719392132650
+      EliseBorder_SpriteSheet_512_147: -1252452580386193241
+      EliseBorder_SpriteSheet_512_148: 2549635061172995641
+      EliseBorder_SpriteSheet_512_15: 2808231916036771123
+      EliseBorder_SpriteSheet_512_16: -1938206556418190972
+      EliseBorder_SpriteSheet_512_17: 4914949728714349378
+      EliseBorder_SpriteSheet_512_18: -1317556509930751085
+      EliseBorder_SpriteSheet_512_19: 6954359895353140289
+      EliseBorder_SpriteSheet_512_2: 2256587126765359168
+      EliseBorder_SpriteSheet_512_20: -1623119918394264881
+      EliseBorder_SpriteSheet_512_21: 6648148599068105838
+      EliseBorder_SpriteSheet_512_22: -2261060524778302568
+      EliseBorder_SpriteSheet_512_23: 9162071189208081733
+      EliseBorder_SpriteSheet_512_24: 3388384768351896716
+      EliseBorder_SpriteSheet_512_25: -195788535770463245
+      EliseBorder_SpriteSheet_512_26: -3826913118643628688
+      EliseBorder_SpriteSheet_512_27: -3559844572344114736
+      EliseBorder_SpriteSheet_512_28: -547680703888376209
+      EliseBorder_SpriteSheet_512_29: -2350705593096339223
+      EliseBorder_SpriteSheet_512_3: -995702070350860442
+      EliseBorder_SpriteSheet_512_30: 1741324281570982973
+      EliseBorder_SpriteSheet_512_31: -6373700853266917065
+      EliseBorder_SpriteSheet_512_32: -5786731471737207408
+      EliseBorder_SpriteSheet_512_33: -4356504511323112230
+      EliseBorder_SpriteSheet_512_34: -7645912462064420466
+      EliseBorder_SpriteSheet_512_35: -2359816497187535455
+      EliseBorder_SpriteSheet_512_36: 564841921081685192
+      EliseBorder_SpriteSheet_512_37: 2168035362581524828
+      EliseBorder_SpriteSheet_512_38: 242067573687146121
+      EliseBorder_SpriteSheet_512_39: -6750806213594874993
+      EliseBorder_SpriteSheet_512_4: -7980149007095182669
+      EliseBorder_SpriteSheet_512_40: -4507919519925481839
+      EliseBorder_SpriteSheet_512_41: 9083063628992908192
+      EliseBorder_SpriteSheet_512_42: -7050373906524889304
+      EliseBorder_SpriteSheet_512_43: 7814380688030279861
+      EliseBorder_SpriteSheet_512_44: 3473542884676809681
+      EliseBorder_SpriteSheet_512_45: 2725634344012840156
+      EliseBorder_SpriteSheet_512_46: -5233364234211538163
+      EliseBorder_SpriteSheet_512_47: -7672382213850092280
+      EliseBorder_SpriteSheet_512_48: 8170128109819215273
+      EliseBorder_SpriteSheet_512_49: -3955237600197719409
+      EliseBorder_SpriteSheet_512_5: 7061081481423722884
+      EliseBorder_SpriteSheet_512_50: -6593311345272417939
+      EliseBorder_SpriteSheet_512_51: 3212699831368566513
+      EliseBorder_SpriteSheet_512_52: -1068103343806777330
+      EliseBorder_SpriteSheet_512_53: 973878237235878743
+      EliseBorder_SpriteSheet_512_54: -5512360990743146341
+      EliseBorder_SpriteSheet_512_55: -7027248795122102764
+      EliseBorder_SpriteSheet_512_56: -2146870581455391138
+      EliseBorder_SpriteSheet_512_57: -9213659569710013862
+      EliseBorder_SpriteSheet_512_58: -5563575759683343226
+      EliseBorder_SpriteSheet_512_59: -6934007793044484706
+      EliseBorder_SpriteSheet_512_6: 2776069131066510240
+      EliseBorder_SpriteSheet_512_60: 4410724606996253431
+      EliseBorder_SpriteSheet_512_61: 3690461251259801596
+      EliseBorder_SpriteSheet_512_62: 594265795820001050
+      EliseBorder_SpriteSheet_512_63: 2666587307202447317
+      EliseBorder_SpriteSheet_512_64: 8725435977588496755
+      EliseBorder_SpriteSheet_512_65: 6077078693350289896
+      EliseBorder_SpriteSheet_512_66: -2508637185643929462
+      EliseBorder_SpriteSheet_512_67: 8971623304634357855
+      EliseBorder_SpriteSheet_512_68: -5326768010016394079
+      EliseBorder_SpriteSheet_512_69: 2303001997312852144
+      EliseBorder_SpriteSheet_512_7: -8044274152929710893
+      EliseBorder_SpriteSheet_512_70: 5781703800437363698
+      EliseBorder_SpriteSheet_512_71: 8382633817561699919
+      EliseBorder_SpriteSheet_512_72: 8554164239331755618
+      EliseBorder_SpriteSheet_512_73: -4419503339263423154
+      EliseBorder_SpriteSheet_512_74: 6022757443561498383
+      EliseBorder_SpriteSheet_512_75: 2922962640515105003
+      EliseBorder_SpriteSheet_512_76: -2878339785769478503
+      EliseBorder_SpriteSheet_512_77: -2775709350204880601
+      EliseBorder_SpriteSheet_512_78: -4761873731164898644
+      EliseBorder_SpriteSheet_512_79: 1522490586809031804
+      EliseBorder_SpriteSheet_512_8: -5685539916078840457
+      EliseBorder_SpriteSheet_512_80: -4665813686671596200
+      EliseBorder_SpriteSheet_512_81: 8927628498520877680
+      EliseBorder_SpriteSheet_512_82: -1744537393471937703
+      EliseBorder_SpriteSheet_512_83: 1185454542429856497
+      EliseBorder_SpriteSheet_512_84: -9178868043403516876
+      EliseBorder_SpriteSheet_512_85: 4411965566354818704
+      EliseBorder_SpriteSheet_512_86: 4400590820983647824
+      EliseBorder_SpriteSheet_512_87: 346242075572909345
+      EliseBorder_SpriteSheet_512_88: -2656440723147874872
+      EliseBorder_SpriteSheet_512_89: -433932325708891961
+      EliseBorder_SpriteSheet_512_9: 2867137875451341113
+      EliseBorder_SpriteSheet_512_90: 3203986503367866437
+      EliseBorder_SpriteSheet_512_91: -9206773864546798295
+      EliseBorder_SpriteSheet_512_92: -4764695736541495973
+      EliseBorder_SpriteSheet_512_93: -8051665800150691359
+      EliseBorder_SpriteSheet_512_94: 2834981131649769574
+      EliseBorder_SpriteSheet_512_95: 5129965668226416292
+      EliseBorder_SpriteSheet_512_96: 6342057566951547576
+      EliseBorder_SpriteSheet_512_97: 6416201403798093803
+      EliseBorder_SpriteSheet_512_98: 3607839598717016346
+      EliseBorder_SpriteSheet_512_99: -4761527098137826900
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

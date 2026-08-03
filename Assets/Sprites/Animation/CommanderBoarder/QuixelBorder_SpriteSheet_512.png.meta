@@ -1,0 +1,6653 @@
+fileFormatVersion: 2
+guid: ccbb0e2af99022341a86e9e2be0b2dfb
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3601276438209542214
+    second: QuixelBorder_SpriteSheet_512_0
+  - first:
+      213: 4646899577531891870
+    second: QuixelBorder_SpriteSheet_512_1
+  - first:
+      213: 3981953330630261000
+    second: QuixelBorder_SpriteSheet_512_2
+  - first:
+      213: -2450386412810130709
+    second: QuixelBorder_SpriteSheet_512_3
+  - first:
+      213: 6960898484932930233
+    second: QuixelBorder_SpriteSheet_512_4
+  - first:
+      213: -7343763128708651537
+    second: QuixelBorder_SpriteSheet_512_5
+  - first:
+      213: -4576479120060686076
+    second: QuixelBorder_SpriteSheet_512_6
+  - first:
+      213: -9150134321421417905
+    second: QuixelBorder_SpriteSheet_512_7
+  - first:
+      213: -101280178905437823
+    second: QuixelBorder_SpriteSheet_512_8
+  - first:
+      213: 6150834557567238233
+    second: QuixelBorder_SpriteSheet_512_9
+  - first:
+      213: 2567417570906040058
+    second: QuixelBorder_SpriteSheet_512_10
+  - first:
+      213: 3466762580756465471
+    second: QuixelBorder_SpriteSheet_512_11
+  - first:
+      213: -3475584928373323329
+    second: QuixelBorder_SpriteSheet_512_12
+  - first:
+      213: -4267036227422961722
+    second: QuixelBorder_SpriteSheet_512_13
+  - first:
+      213: -9043995690034330637
+    second: QuixelBorder_SpriteSheet_512_14
+  - first:
+      213: -100825111338818813
+    second: QuixelBorder_SpriteSheet_512_15
+  - first:
+      213: -742263489497763661
+    second: QuixelBorder_SpriteSheet_512_16
+  - first:
+      213: -4659742219348828659
+    second: QuixelBorder_SpriteSheet_512_17
+  - first:
+      213: -1484618223051606900
+    second: QuixelBorder_SpriteSheet_512_18
+  - first:
+      213: -2512140935818994997
+    second: QuixelBorder_SpriteSheet_512_19
+  - first:
+      213: -3565566172119668179
+    second: QuixelBorder_SpriteSheet_512_20
+  - first:
+      213: 8280349255875520317
+    second: QuixelBorder_SpriteSheet_512_21
+  - first:
+      213: 9106149810468279258
+    second: QuixelBorder_SpriteSheet_512_22
+  - first:
+      213: -8961522925663117038
+    second: QuixelBorder_SpriteSheet_512_23
+  - first:
+      213: 4743903607638207235
+    second: QuixelBorder_SpriteSheet_512_24
+  - first:
+      213: -476644800792632509
+    second: QuixelBorder_SpriteSheet_512_25
+  - first:
+      213: -7315598405898236210
+    second: QuixelBorder_SpriteSheet_512_26
+  - first:
+      213: 1071334904881427111
+    second: QuixelBorder_SpriteSheet_512_27
+  - first:
+      213: -585777055995008658
+    second: QuixelBorder_SpriteSheet_512_28
+  - first:
+      213: -152603163172870608
+    second: QuixelBorder_SpriteSheet_512_29
+  - first:
+      213: -4657528891751993813
+    second: QuixelBorder_SpriteSheet_512_30
+  - first:
+      213: -3577702696542607142
+    second: QuixelBorder_SpriteSheet_512_31
+  - first:
+      213: -3399116408596256627
+    second: QuixelBorder_SpriteSheet_512_32
+  - first:
+      213: 5810574793580909821
+    second: QuixelBorder_SpriteSheet_512_33
+  - first:
+      213: -8606800742316795748
+    second: QuixelBorder_SpriteSheet_512_34
+  - first:
+      213: -2605474303700872937
+    second: QuixelBorder_SpriteSheet_512_35
+  - first:
+      213: 1925398047291533446
+    second: QuixelBorder_SpriteSheet_512_36
+  - first:
+      213: 4173063416911965242
+    second: QuixelBorder_SpriteSheet_512_37
+  - first:
+      213: -1693365161257263215
+    second: QuixelBorder_SpriteSheet_512_38
+  - first:
+      213: 5027076210233979948
+    second: QuixelBorder_SpriteSheet_512_39
+  - first:
+      213: 7923967043380955505
+    second: QuixelBorder_SpriteSheet_512_40
+  - first:
+      213: 8811565125136875167
+    second: QuixelBorder_SpriteSheet_512_41
+  - first:
+      213: 2188545913799421005
+    second: QuixelBorder_SpriteSheet_512_42
+  - first:
+      213: 5295951021281842422
+    second: QuixelBorder_SpriteSheet_512_43
+  - first:
+      213: 2537100700166714029
+    second: QuixelBorder_SpriteSheet_512_44
+  - first:
+      213: 5171737218098455663
+    second: QuixelBorder_SpriteSheet_512_45
+  - first:
+      213: -4511196445395965121
+    second: QuixelBorder_SpriteSheet_512_46
+  - first:
+      213: 3903026558306050728
+    second: QuixelBorder_SpriteSheet_512_47
+  - first:
+      213: 3526191621447385820
+    second: QuixelBorder_SpriteSheet_512_48
+  - first:
+      213: -1449141800890130576
+    second: QuixelBorder_SpriteSheet_512_49
+  - first:
+      213: -3782545947563224519
+    second: QuixelBorder_SpriteSheet_512_50
+  - first:
+      213: 2562026193504921855
+    second: QuixelBorder_SpriteSheet_512_51
+  - first:
+      213: -2628231202828067062
+    second: QuixelBorder_SpriteSheet_512_52
+  - first:
+      213: -1196012541693366128
+    second: QuixelBorder_SpriteSheet_512_53
+  - first:
+      213: 6953851222686215849
+    second: QuixelBorder_SpriteSheet_512_54
+  - first:
+      213: -6577795913256773861
+    second: QuixelBorder_SpriteSheet_512_55
+  - first:
+      213: 1453062542119601728
+    second: QuixelBorder_SpriteSheet_512_56
+  - first:
+      213: -5703759018324122067
+    second: QuixelBorder_SpriteSheet_512_57
+  - first:
+      213: -17246742913831822
+    second: QuixelBorder_SpriteSheet_512_58
+  - first:
+      213: 4495231818219314977
+    second: QuixelBorder_SpriteSheet_512_59
+  - first:
+      213: -1362295223947420594
+    second: QuixelBorder_SpriteSheet_512_60
+  - first:
+      213: -8514723763405683833
+    second: QuixelBorder_SpriteSheet_512_61
+  - first:
+      213: 5586445457196970427
+    second: QuixelBorder_SpriteSheet_512_62
+  - first:
+      213: 1837915639929267754
+    second: QuixelBorder_SpriteSheet_512_63
+  - first:
+      213: -7024157397148047098
+    second: QuixelBorder_SpriteSheet_512_64
+  - first:
+      213: 4125488515150261716
+    second: QuixelBorder_SpriteSheet_512_65
+  - first:
+      213: -736777812415101627
+    second: QuixelBorder_SpriteSheet_512_66
+  - first:
+      213: -3681504685220342891
+    second: QuixelBorder_SpriteSheet_512_67
+  - first:
+      213: -6236750109382212252
+    second: QuixelBorder_SpriteSheet_512_68
+  - first:
+      213: -6665599639560706123
+    second: QuixelBorder_SpriteSheet_512_69
+  - first:
+      213: 5011438442602542624
+    second: QuixelBorder_SpriteSheet_512_70
+  - first:
+      213: 7799671109655873066
+    second: QuixelBorder_SpriteSheet_512_71
+  - first:
+      213: 5751377878420678490
+    second: QuixelBorder_SpriteSheet_512_72
+  - first:
+      213: 3257458283556074190
+    second: QuixelBorder_SpriteSheet_512_73
+  - first:
+      213: 7199068568826824502
+    second: QuixelBorder_SpriteSheet_512_74
+  - first:
+      213: 6040752534260889696
+    second: QuixelBorder_SpriteSheet_512_75
+  - first:
+      213: -7769051764700017411
+    second: QuixelBorder_SpriteSheet_512_76
+  - first:
+      213: -1655169209191474366
+    second: QuixelBorder_SpriteSheet_512_77
+  - first:
+      213: 9082711747407774639
+    second: QuixelBorder_SpriteSheet_512_78
+  - first:
+      213: -4967988827168284451
+    second: QuixelBorder_SpriteSheet_512_79
+  - first:
+      213: 1455660696650020684
+    second: QuixelBorder_SpriteSheet_512_80
+  - first:
+      213: 3759095039137664254
+    second: QuixelBorder_SpriteSheet_512_81
+  - first:
+      213: -8164510472640770837
+    second: QuixelBorder_SpriteSheet_512_82
+  - first:
+      213: -3272304486459097976
+    second: QuixelBorder_SpriteSheet_512_83
+  - first:
+      213: -3838658376601606877
+    second: QuixelBorder_SpriteSheet_512_84
+  - first:
+      213: -4831714272064556867
+    second: QuixelBorder_SpriteSheet_512_85
+  - first:
+      213: 211067692853964419
+    second: QuixelBorder_SpriteSheet_512_86
+  - first:
+      213: 489511779915435550
+    second: QuixelBorder_SpriteSheet_512_87
+  - first:
+      213: 7427046798694933326
+    second: QuixelBorder_SpriteSheet_512_88
+  - first:
+      213: 617503748241418033
+    second: QuixelBorder_SpriteSheet_512_89
+  - first:
+      213: 4547737946458555763
+    second: QuixelBorder_SpriteSheet_512_90
+  - first:
+      213: -2156384577426991775
+    second: QuixelBorder_SpriteSheet_512_91
+  - first:
+      213: 8781915922278819588
+    second: QuixelBorder_SpriteSheet_512_92
+  - first:
+      213: -9145982334352361157
+    second: QuixelBorder_SpriteSheet_512_93
+  - first:
+      213: -9035686423348754586
+    second: QuixelBorder_SpriteSheet_512_94
+  - first:
+      213: 6932756938164361868
+    second: QuixelBorder_SpriteSheet_512_95
+  - first:
+      213: -6482954555605743667
+    second: QuixelBorder_SpriteSheet_512_96
+  - first:
+      213: 4417734455358441515
+    second: QuixelBorder_SpriteSheet_512_97
+  - first:
+      213: -6499819639125897445
+    second: QuixelBorder_SpriteSheet_512_98
+  - first:
+      213: 5926511749246509569
+    second: QuixelBorder_SpriteSheet_512_99
+  - first:
+      213: 7870112762942639233
+    second: QuixelBorder_SpriteSheet_512_100
+  - first:
+      213: -3121806937093697918
+    second: QuixelBorder_SpriteSheet_512_101
+  - first:
+      213: -2746563953560060118
+    second: QuixelBorder_SpriteSheet_512_102
+  - first:
+      213: -2596311142233979770
+    second: QuixelBorder_SpriteSheet_512_103
+  - first:
+      213: 3142406636144410352
+    second: QuixelBorder_SpriteSheet_512_104
+  - first:
+      213: -1577461818932285533
+    second: QuixelBorder_SpriteSheet_512_105
+  - first:
+      213: -6290838139024651000
+    second: QuixelBorder_SpriteSheet_512_106
+  - first:
+      213: 7289689286885602346
+    second: QuixelBorder_SpriteSheet_512_107
+  - first:
+      213: 4163474449319255290
+    second: QuixelBorder_SpriteSheet_512_108
+  - first:
+      213: -6745121682605400144
+    second: QuixelBorder_SpriteSheet_512_109
+  - first:
+      213: -4418583412056348796
+    second: QuixelBorder_SpriteSheet_512_110
+  - first:
+      213: 3931803048052718585
+    second: QuixelBorder_SpriteSheet_512_111
+  - first:
+      213: -7914342891480427012
+    second: QuixelBorder_SpriteSheet_512_112
+  - first:
+      213: -2267985028522529972
+    second: QuixelBorder_SpriteSheet_512_113
+  - first:
+      213: -4684471714771300989
+    second: QuixelBorder_SpriteSheet_512_114
+  - first:
+      213: -3382565991540887742
+    second: QuixelBorder_SpriteSheet_512_115
+  - first:
+      213: -5705862721124897679
+    second: QuixelBorder_SpriteSheet_512_116
+  - first:
+      213: 8236622328147610748
+    second: QuixelBorder_SpriteSheet_512_117
+  - first:
+      213: 6744421196371982739
+    second: QuixelBorder_SpriteSheet_512_118
+  - first:
+      213: 5317247785436669949
+    second: QuixelBorder_SpriteSheet_512_119
+  - first:
+      213: 7813771987760167131
+    second: QuixelBorder_SpriteSheet_512_120
+  - first:
+      213: -2626987227679077819
+    second: QuixelBorder_SpriteSheet_512_121
+  - first:
+      213: 5289063675488212375
+    second: QuixelBorder_SpriteSheet_512_122
+  - first:
+      213: 3678103438097164007
+    second: QuixelBorder_SpriteSheet_512_123
+  - first:
+      213: -2859613494335029229
+    second: QuixelBorder_SpriteSheet_512_124
+  - first:
+      213: 6172715804392215893
+    second: QuixelBorder_SpriteSheet_512_125
+  - first:
+      213: 8894144080283609796
+    second: QuixelBorder_SpriteSheet_512_126
+  - first:
+      213: -4569187429704658809
+    second: QuixelBorder_SpriteSheet_512_127
+  - first:
+      213: -6618403642549074119
+    second: QuixelBorder_SpriteSheet_512_128
+  - first:
+      213: -8336515122076541792
+    second: QuixelBorder_SpriteSheet_512_129
+  - first:
+      213: -8457347432229065617
+    second: QuixelBorder_SpriteSheet_512_130
+  - first:
+      213: -4758864782786219245
+    second: QuixelBorder_SpriteSheet_512_131
+  - first:
+      213: -8357484038740605723
+    second: QuixelBorder_SpriteSheet_512_132
+  - first:
+      213: -2645254236375582122
+    second: QuixelBorder_SpriteSheet_512_133
+  - first:
+      213: 8156163932467275581
+    second: QuixelBorder_SpriteSheet_512_134
+  - first:
+      213: -8242523716443267449
+    second: QuixelBorder_SpriteSheet_512_135
+  - first:
+      213: 2103276360402087947
+    second: QuixelBorder_SpriteSheet_512_136
+  - first:
+      213: 3744457695084290613
+    second: QuixelBorder_SpriteSheet_512_137
+  - first:
+      213: 152569472548837608
+    second: QuixelBorder_SpriteSheet_512_138
+  - first:
+      213: -9162346537212056589
+    second: QuixelBorder_SpriteSheet_512_139
+  - first:
+      213: -8296031015683922167
+    second: QuixelBorder_SpriteSheet_512_140
+  - first:
+      213: 2705568378712921788
+    second: QuixelBorder_SpriteSheet_512_141
+  - first:
+      213: 3409002252600481571
+    second: QuixelBorder_SpriteSheet_512_142
+  - first:
+      213: -7841833311181773581
+    second: QuixelBorder_SpriteSheet_512_143
+  - first:
+      213: 467246140601866792
+    second: QuixelBorder_SpriteSheet_512_144
+  - first:
+      213: -7332424155522926072
+    second: QuixelBorder_SpriteSheet_512_145
+  - first:
+      213: 8225268018272135405
+    second: QuixelBorder_SpriteSheet_512_146
+  - first:
+      213: 4631479668606850047
+    second: QuixelBorder_SpriteSheet_512_147
+  - first:
+      213: -7516707423014211026
+    second: QuixelBorder_SpriteSheet_512_148
+  - first:
+      213: 1507845046474922060
+    second: QuixelBorder_SpriteSheet_512_149
+  - first:
+      213: 1297561072680591397
+    second: QuixelBorder_SpriteSheet_512_150
+  - first:
+      213: 2184657765716174996
+    second: QuixelBorder_SpriteSheet_512_151
+  - first:
+      213: -2039094485102641908
+    second: QuixelBorder_SpriteSheet_512_152
+  - first:
+      213: -7754860448427220102
+    second: QuixelBorder_SpriteSheet_512_153
+  - first:
+      213: 1405704079955971948
+    second: QuixelBorder_SpriteSheet_512_154
+  - first:
+      213: -1615799500736999629
+    second: QuixelBorder_SpriteSheet_512_155
+  - first:
+      213: 4129582099159855019
+    second: QuixelBorder_SpriteSheet_512_156
+  - first:
+      213: -8574944288075769467
+    second: QuixelBorder_SpriteSheet_512_157
+  - first:
+      213: 4597674016462301988
+    second: QuixelBorder_SpriteSheet_512_158
+  - first:
+      213: 8183667092011777742
+    second: QuixelBorder_SpriteSheet_512_159
+  - first:
+      213: -3909918037335448436
+    second: QuixelBorder_SpriteSheet_512_160
+  - first:
+      213: -2540723763005482782
+    second: QuixelBorder_SpriteSheet_512_161
+  - first:
+      213: 4236589933856387316
+    second: QuixelBorder_SpriteSheet_512_162
+  - first:
+      213: -8867843582582718938
+    second: QuixelBorder_SpriteSheet_512_163
+  - first:
+      213: -3538956471930673496
+    second: QuixelBorder_SpriteSheet_512_164
+  - first:
+      213: 283462780655483287
+    second: QuixelBorder_SpriteSheet_512_165
+  - first:
+      213: 7437297266266141770
+    second: QuixelBorder_SpriteSheet_512_166
+  - first:
+      213: 4662314478305478842
+    second: QuixelBorder_SpriteSheet_512_167
+  - first:
+      213: -4575233208761284227
+    second: QuixelBorder_SpriteSheet_512_168
+  - first:
+      213: 5760569457538139748
+    second: QuixelBorder_SpriteSheet_512_169
+  - first:
+      213: 1124698840040800250
+    second: QuixelBorder_SpriteSheet_512_170
+  - first:
+      213: 7113241862739723742
+    second: QuixelBorder_SpriteSheet_512_171
+  - first:
+      213: -2550803108407296471
+    second: QuixelBorder_SpriteSheet_512_172
+  - first:
+      213: -6923821492949159792
+    second: QuixelBorder_SpriteSheet_512_173
+  - first:
+      213: -2409088742676786733
+    second: QuixelBorder_SpriteSheet_512_174
+  - first:
+      213: 3608365292791223928
+    second: QuixelBorder_SpriteSheet_512_175
+  - first:
+      213: 2600787148497970899
+    second: QuixelBorder_SpriteSheet_512_176
+  - first:
+      213: 3548944635229369793
+    second: QuixelBorder_SpriteSheet_512_177
+  - first:
+      213: 6224885437905347675
+    second: QuixelBorder_SpriteSheet_512_178
+  - first:
+      213: 2284485459960995687
+    second: QuixelBorder_SpriteSheet_512_179
+  - first:
+      213: -534016177467975722
+    second: QuixelBorder_SpriteSheet_512_180
+  - first:
+      213: 4175090605397974446
+    second: QuixelBorder_SpriteSheet_512_181
+  - first:
+      213: 1148792460371901430
+    second: QuixelBorder_SpriteSheet_512_182
+  - first:
+      213: -2391471649862359052
+    second: QuixelBorder_SpriteSheet_512_183
+  - first:
+      213: -6825254841985957686
+    second: QuixelBorder_SpriteSheet_512_184
+  - first:
+      213: 498931721049931906
+    second: QuixelBorder_SpriteSheet_512_185
+  - first:
+      213: -3333103914962181817
+    second: QuixelBorder_SpriteSheet_512_186
+  - first:
+      213: -9089346877745710054
+    second: QuixelBorder_SpriteSheet_512_187
+  - first:
+      213: -8546482472783174605
+    second: QuixelBorder_SpriteSheet_512_188
+  - first:
+      213: 7533309858213544758
+    second: QuixelBorder_SpriteSheet_512_189
+  - first:
+      213: -1963429211714990484
+    second: QuixelBorder_SpriteSheet_512_190
+  - first:
+      213: 3316398137613266793
+    second: QuixelBorder_SpriteSheet_512_191
+  - first:
+      213: -1128653624934802693
+    second: QuixelBorder_SpriteSheet_512_192
+  - first:
+      213: 7204996897178814570
+    second: QuixelBorder_SpriteSheet_512_193
+  - first:
+      213: 474175787517159206
+    second: QuixelBorder_SpriteSheet_512_194
+  - first:
+      213: -601164457130259569
+    second: QuixelBorder_SpriteSheet_512_195
+  - first:
+      213: -3321920885860104315
+    second: QuixelBorder_SpriteSheet_512_196
+  - first:
+      213: 5838529881159228894
+    second: QuixelBorder_SpriteSheet_512_197
+  - first:
+      213: -8592090266351510427
+    second: QuixelBorder_SpriteSheet_512_198
+  - first:
+      213: 4879312754196952517
+    second: QuixelBorder_SpriteSheet_512_199
+  - first:
+      213: 8831348114593168786
+    second: QuixelBorder_SpriteSheet_512_200
+  - first:
+      213: -6351152218938538786
+    second: QuixelBorder_SpriteSheet_512_201
+  - first:
+      213: -2853259994044775355
+    second: QuixelBorder_SpriteSheet_512_202
+  - first:
+      213: 8251291528197886583
+    second: QuixelBorder_SpriteSheet_512_203
+  - first:
+      213: -2291664272451435185
+    second: QuixelBorder_SpriteSheet_512_204
+  - first:
+      213: -7792287346316634572
+    second: QuixelBorder_SpriteSheet_512_205
+  - first:
+      213: -4383745904910429145
+    second: QuixelBorder_SpriteSheet_512_206
+  - first:
+      213: -953031938988051744
+    second: QuixelBorder_SpriteSheet_512_207
+  - first:
+      213: 297376744712915684
+    second: QuixelBorder_SpriteSheet_512_208
+  - first:
+      213: -5093989649316682711
+    second: QuixelBorder_SpriteSheet_512_209
+  - first:
+      213: -7594474280500179249
+    second: QuixelBorder_SpriteSheet_512_210
+  - first:
+      213: 7176719833489007642
+    second: QuixelBorder_SpriteSheet_512_211
+  - first:
+      213: -6138346811907280296
+    second: QuixelBorder_SpriteSheet_512_212
+  - first:
+      213: 5324545358411482166
+    second: QuixelBorder_SpriteSheet_512_213
+  - first:
+      213: -4311531880231695489
+    second: QuixelBorder_SpriteSheet_512_214
+  - first:
+      213: 1221470584634216783
+    second: QuixelBorder_SpriteSheet_512_215
+  - first:
+      213: 1753200035720459399
+    second: QuixelBorder_SpriteSheet_512_216
+  - first:
+      213: -3155172730731009237
+    second: QuixelBorder_SpriteSheet_512_217
+  - first:
+      213: -3277780502842744095
+    second: QuixelBorder_SpriteSheet_512_218
+  - first:
+      213: -29845757562736490
+    second: QuixelBorder_SpriteSheet_512_219
+  - first:
+      213: -7372481991234795393
+    second: QuixelBorder_SpriteSheet_512_220
+  - first:
+      213: -2941740411586911210
+    second: QuixelBorder_SpriteSheet_512_221
+  - first:
+      213: -3708669733060710322
+    second: QuixelBorder_SpriteSheet_512_222
+  - first:
+      213: -201226843129430672
+    second: QuixelBorder_SpriteSheet_512_223
+  - first:
+      213: -6529882683426006933
+    second: QuixelBorder_SpriteSheet_512_224
+  - first:
+      213: 3211309835513674141
+    second: QuixelBorder_SpriteSheet_512_225
+  - first:
+      213: -6256167114737654207
+    second: QuixelBorder_SpriteSheet_512_226
+  - first:
+      213: 7654889003591417059
+    second: QuixelBorder_SpriteSheet_512_227
+  - first:
+      213: -2409827572194219621
+    second: QuixelBorder_SpriteSheet_512_228
+  - first:
+      213: 2373074292695872301
+    second: QuixelBorder_SpriteSheet_512_229
+  - first:
+      213: 5521192901412379163
+    second: QuixelBorder_SpriteSheet_512_230
+  - first:
+      213: 2920549793877105810
+    second: QuixelBorder_SpriteSheet_512_231
+  - first:
+      213: 8407567136670763872
+    second: QuixelBorder_SpriteSheet_512_232
+  - first:
+      213: 761051324749188575
+    second: QuixelBorder_SpriteSheet_512_233
+  - first:
+      213: 7917404420665124257
+    second: QuixelBorder_SpriteSheet_512_234
+  - first:
+      213: 6158945800084729529
+    second: QuixelBorder_SpriteSheet_512_235
+  - first:
+      213: 3180263659131279523
+    second: QuixelBorder_SpriteSheet_512_236
+  - first:
+      213: 3610666845261762242
+    second: QuixelBorder_SpriteSheet_512_237
+  - first:
+      213: 10963169003004648
+    second: QuixelBorder_SpriteSheet_512_238
+  - first:
+      213: 4981018502526519759
+    second: QuixelBorder_SpriteSheet_512_239
+  - first:
+      213: -194118058038286177
+    second: QuixelBorder_SpriteSheet_512_240
+  - first:
+      213: -405812384639191428
+    second: QuixelBorder_SpriteSheet_512_241
+  - first:
+      213: 6222089709990882877
+    second: QuixelBorder_SpriteSheet_512_242
+  - first:
+      213: 5516729309656874653
+    second: QuixelBorder_SpriteSheet_512_243
+  - first:
+      213: -926953353719314245
+    second: QuixelBorder_SpriteSheet_512_244
+  - first:
+      213: -3006921147803705157
+    second: QuixelBorder_SpriteSheet_512_245
+  - first:
+      213: -6645385592833059335
+    second: QuixelBorder_SpriteSheet_512_246
+  - first:
+      213: 7284932157238798673
+    second: QuixelBorder_SpriteSheet_512_247
+  - first:
+      213: 3371896816374533002
+    second: QuixelBorder_SpriteSheet_512_248
+  - first:
+      213: 6418962607650160405
+    second: QuixelBorder_SpriteSheet_512_249
+  - first:
+      213: 6242820028734000767
+    second: QuixelBorder_SpriteSheet_512_250
+  - first:
+      213: 1275541498160824336
+    second: QuixelBorder_SpriteSheet_512_251
+  - first:
+      213: -5912090743196581789
+    second: QuixelBorder_SpriteSheet_512_252
+  - first:
+      213: 3226024838704950440
+    second: QuixelBorder_SpriteSheet_512_253
+  - first:
+      213: -3494514730442344608
+    second: QuixelBorder_SpriteSheet_512_254
+  - first:
+      213: 7117469332396783443
+    second: QuixelBorder_SpriteSheet_512_255
+  - first:
+      213: 7198363397753445183
+    second: QuixelBorder_SpriteSheet_512_256
+  - first:
+      213: -5017622526993927100
+    second: QuixelBorder_SpriteSheet_512_257
+  - first:
+      213: 1417478106673242083
+    second: QuixelBorder_SpriteSheet_512_258
+  - first:
+      213: 2475160701944799711
+    second: QuixelBorder_SpriteSheet_512_259
+  - first:
+      213: -5687621230560350665
+    second: QuixelBorder_SpriteSheet_512_260
+  - first:
+      213: -980804703182092858
+    second: QuixelBorder_SpriteSheet_512_261
+  - first:
+      213: 1904938127083174390
+    second: QuixelBorder_SpriteSheet_512_262
+  - first:
+      213: 8949257889638196095
+    second: QuixelBorder_SpriteSheet_512_263
+  - first:
+      213: -7480373172455203489
+    second: QuixelBorder_SpriteSheet_512_264
+  - first:
+      213: 3211077532197485195
+    second: QuixelBorder_SpriteSheet_512_265
+  - first:
+      213: 8824550933188958145
+    second: QuixelBorder_SpriteSheet_512_266
+  - first:
+      213: -2007796851911774225
+    second: QuixelBorder_SpriteSheet_512_267
+  - first:
+      213: 3614460226987949656
+    second: QuixelBorder_SpriteSheet_512_268
+  - first:
+      213: -2412696668640297797
+    second: QuixelBorder_SpriteSheet_512_269
+  - first:
+      213: -4220423376091691484
+    second: QuixelBorder_SpriteSheet_512_270
+  - first:
+      213: 3001217944486058236
+    second: QuixelBorder_SpriteSheet_512_271
+  - first:
+      213: -6637269651093307917
+    second: QuixelBorder_SpriteSheet_512_272
+  - first:
+      213: 1357650509836712050
+    second: QuixelBorder_SpriteSheet_512_273
+  - first:
+      213: 1221045856440294799
+    second: QuixelBorder_SpriteSheet_512_274
+  - first:
+      213: 4255550469906276512
+    second: QuixelBorder_SpriteSheet_512_275
+  - first:
+      213: -4636330726887295925
+    second: QuixelBorder_SpriteSheet_512_276
+  - first:
+      213: -2938819803997513870
+    second: QuixelBorder_SpriteSheet_512_277
+  - first:
+      213: 4844425064982538136
+    second: QuixelBorder_SpriteSheet_512_278
+  - first:
+      213: 4008957376485084362
+    second: QuixelBorder_SpriteSheet_512_279
+  - first:
+      213: -8356968716819044634
+    second: QuixelBorder_SpriteSheet_512_280
+  - first:
+      213: 8622962450116546214
+    second: QuixelBorder_SpriteSheet_512_281
+  - first:
+      213: -1973805626775940298
+    second: QuixelBorder_SpriteSheet_512_282
+  - first:
+      213: -433194647428919176
+    second: QuixelBorder_SpriteSheet_512_283
+  - first:
+      213: 6858612944901864242
+    second: QuixelBorder_SpriteSheet_512_284
+  - first:
+      213: 8440065473822027472
+    second: QuixelBorder_SpriteSheet_512_285
+  - first:
+      213: -5657912636850457808
+    second: QuixelBorder_SpriteSheet_512_286
+  - first:
+      213: 8233806117077659558
+    second: QuixelBorder_SpriteSheet_512_287
+  - first:
+      213: -1532483848690217168
+    second: QuixelBorder_SpriteSheet_512_288
+  - first:
+      213: 2954184109594190141
+    second: QuixelBorder_SpriteSheet_512_289
+  - first:
+      213: -8454973529944843843
+    second: QuixelBorder_SpriteSheet_512_290
+  - first:
+      213: -4025152067351460041
+    second: QuixelBorder_SpriteSheet_512_291
+  - first:
+      213: -3616687271006351082
+    second: QuixelBorder_SpriteSheet_512_292
+  - first:
+      213: -6961224110413677266
+    second: QuixelBorder_SpriteSheet_512_293
+  - first:
+      213: -8778961526086689434
+    second: QuixelBorder_SpriteSheet_512_294
+  - first:
+      213: -5248123894897926241
+    second: QuixelBorder_SpriteSheet_512_295
+  - first:
+      213: 5102596406447528808
+    second: QuixelBorder_SpriteSheet_512_296
+  - first:
+      213: -8361645521653963915
+    second: QuixelBorder_SpriteSheet_512_297
+  - first:
+      213: 6127966745258416179
+    second: QuixelBorder_SpriteSheet_512_298
+  - first:
+      213: 5690955459016800740
+    second: QuixelBorder_SpriteSheet_512_299
+  - first:
+      213: 5985904578394320669
+    second: QuixelBorder_SpriteSheet_512_300
+  - first:
+      213: -7085222085407488944
+    second: QuixelBorder_SpriteSheet_512_301
+  - first:
+      213: 6366586315682521215
+    second: QuixelBorder_SpriteSheet_512_302
+  - first:
+      213: 3849678963629833240
+    second: QuixelBorder_SpriteSheet_512_303
+  - first:
+      213: 7313616312845467403
+    second: QuixelBorder_SpriteSheet_512_304
+  - first:
+      213: -5055784610287329982
+    second: QuixelBorder_SpriteSheet_512_305
+  - first:
+      213: -7181211936369911337
+    second: QuixelBorder_SpriteSheet_512_306
+  - first:
+      213: 5817007334012631032
+    second: QuixelBorder_SpriteSheet_512_307
+  - first:
+      213: -3797421704190499637
+    second: QuixelBorder_SpriteSheet_512_308
+  - first:
+      213: 7238231895660229616
+    second: QuixelBorder_SpriteSheet_512_309
+  - first:
+      213: -4558843927751866776
+    second: QuixelBorder_SpriteSheet_512_310
+  - first:
+      213: 6585413423175950797
+    second: QuixelBorder_SpriteSheet_512_311
+  - first:
+      213: -4077774127899632767
+    second: QuixelBorder_SpriteSheet_512_312
+  - first:
+      213: -8160422591830592447
+    second: QuixelBorder_SpriteSheet_512_313
+  - first:
+      213: 3009910343890166302
+    second: QuixelBorder_SpriteSheet_512_314
+  - first:
+      213: -7600291748802906111
+    second: QuixelBorder_SpriteSheet_512_315
+  - first:
+      213: -2309769283934808932
+    second: QuixelBorder_SpriteSheet_512_316
+  - first:
+      213: -4558840745356420725
+    second: QuixelBorder_SpriteSheet_512_317
+  - first:
+      213: 7340808429612452686
+    second: QuixelBorder_SpriteSheet_512_318
+  - first:
+      213: -336993254197347168
+    second: QuixelBorder_SpriteSheet_512_319
+  - first:
+      213: -5980566085968479018
+    second: QuixelBorder_SpriteSheet_512_320
+  - first:
+      213: -4296186666503224894
+    second: QuixelBorder_SpriteSheet_512_321
+  - first:
+      213: -3444362586752140189
+    second: QuixelBorder_SpriteSheet_512_322
+  - first:
+      213: -3976423079925066821
+    second: QuixelBorder_SpriteSheet_512_323
+  - first:
+      213: 3591541681483297425
+    second: QuixelBorder_SpriteSheet_512_324
+  - first:
+      213: 2138108704962590654
+    second: QuixelBorder_SpriteSheet_512_325
+  - first:
+      213: -1167593978970908155
+    second: QuixelBorder_SpriteSheet_512_326
+  - first:
+      213: 3216705462303997394
+    second: QuixelBorder_SpriteSheet_512_327
+  - first:
+      213: 7071048155293426431
+    second: QuixelBorder_SpriteSheet_512_328
+  - first:
+      213: 1407405396609551063
+    second: QuixelBorder_SpriteSheet_512_329
+  - first:
+      213: -907440680623105824
+    second: QuixelBorder_SpriteSheet_512_330
+  - first:
+      213: -986547350892716345
+    second: QuixelBorder_SpriteSheet_512_331
+  - first:
+      213: -9042944736988364521
+    second: QuixelBorder_SpriteSheet_512_332
+  - first:
+      213: -4596571458249783873
+    second: QuixelBorder_SpriteSheet_512_333
+  - first:
+      213: -1867048457326223409
+    second: QuixelBorder_SpriteSheet_512_334
+  - first:
+      213: -7538228795108619096
+    second: QuixelBorder_SpriteSheet_512_335
+  - first:
+      213: 6571296461527759671
+    second: QuixelBorder_SpriteSheet_512_336
+  - first:
+      213: -9172393384618368303
+    second: QuixelBorder_SpriteSheet_512_337
+  - first:
+      213: 3480041759085881823
+    second: QuixelBorder_SpriteSheet_512_338
+  - first:
+      213: -1381240926894295617
+    second: QuixelBorder_SpriteSheet_512_339
+  - first:
+      213: -8743712870128715683
+    second: QuixelBorder_SpriteSheet_512_340
+  - first:
+      213: -5044003677755262760
+    second: QuixelBorder_SpriteSheet_512_341
+  - first:
+      213: -2539769943603805261
+    second: QuixelBorder_SpriteSheet_512_342
+  - first:
+      213: -409013602809989122
+    second: QuixelBorder_SpriteSheet_512_343
+  - first:
+      213: 3514147293172178097
+    second: QuixelBorder_SpriteSheet_512_344
+  - first:
+      213: -814853930830033162
+    second: QuixelBorder_SpriteSheet_512_345
+  - first:
+      213: 1285030877175266671
+    second: QuixelBorder_SpriteSheet_512_346
+  - first:
+      213: 4946868909017403055
+    second: QuixelBorder_SpriteSheet_512_347
+  - first:
+      213: -4165444763163908069
+    second: QuixelBorder_SpriteSheet_512_348
+  - first:
+      213: 1082007859519209204
+    second: QuixelBorder_SpriteSheet_512_349
+  - first:
+      213: 6514270154574387144
+    second: QuixelBorder_SpriteSheet_512_350
+  - first:
+      213: 276985910908104416
+    second: QuixelBorder_SpriteSheet_512_351
+  - first:
+      213: 7903198770912804179
+    second: QuixelBorder_SpriteSheet_512_352
+  - first:
+      213: 1895579673599484556
+    second: QuixelBorder_SpriteSheet_512_353
+  - first:
+      213: -8604224973486671299
+    second: QuixelBorder_SpriteSheet_512_354
+  - first:
+      213: -8786581991998109590
+    second: QuixelBorder_SpriteSheet_512_355
+  - first:
+      213: 109534022409680559
+    second: QuixelBorder_SpriteSheet_512_356
+  - first:
+      213: 3175991353788274678
+    second: QuixelBorder_SpriteSheet_512_357
+  - first:
+      213: -1703200877720498729
+    second: QuixelBorder_SpriteSheet_512_358
+  - first:
+      213: -6114570053199223948
+    second: QuixelBorder_SpriteSheet_512_359
+  - first:
+      213: 2623011221681568314
+    second: QuixelBorder_SpriteSheet_512_360
+  - first:
+      213: 684394984865929989
+    second: QuixelBorder_SpriteSheet_512_361
+  - first:
+      213: 8996253422500732048
+    second: QuixelBorder_SpriteSheet_512_362
+  - first:
+      213: -7653072281267842461
+    second: QuixelBorder_SpriteSheet_512_363
+  - first:
+      213: -599560251155368945
+    second: QuixelBorder_SpriteSheet_512_364
+  - first:
+      213: 704559513901507625
+    second: QuixelBorder_SpriteSheet_512_365
+  - first:
+      213: -6604740038429236587
+    second: QuixelBorder_SpriteSheet_512_366
+  - first:
+      213: -5021681650683988580
+    second: QuixelBorder_SpriteSheet_512_367
+  - first:
+      213: 4240552391829507267
+    second: QuixelBorder_SpriteSheet_512_368
+  - first:
+      213: -4884148368452578581
+    second: QuixelBorder_SpriteSheet_512_369
+  - first:
+      213: -8885175029746747026
+    second: QuixelBorder_SpriteSheet_512_370
+  - first:
+      213: -725091310118775180
+    second: QuixelBorder_SpriteSheet_512_371
+  - first:
+      213: -2261511372991561183
+    second: QuixelBorder_SpriteSheet_512_372
+  - first:
+      213: 4115213891780447874
+    second: QuixelBorder_SpriteSheet_512_373
+  - first:
+      213: 3133219025598022754
+    second: QuixelBorder_SpriteSheet_512_374
+  - first:
+      213: 1857055710835217577
+    second: QuixelBorder_SpriteSheet_512_375
+  - first:
+      213: -8090352622679813901
+    second: QuixelBorder_SpriteSheet_512_376
+  - first:
+      213: 8287328198442098722
+    second: QuixelBorder_SpriteSheet_512_377
+  - first:
+      213: 4590871652329393858
+    second: QuixelBorder_SpriteSheet_512_378
+  - first:
+      213: 1461043102798026598
+    second: QuixelBorder_SpriteSheet_512_379
+  - first:
+      213: 2083799505396901601
+    second: QuixelBorder_SpriteSheet_512_380
+  - first:
+      213: -8143658961552687225
+    second: QuixelBorder_SpriteSheet_512_381
+  - first:
+      213: 6323178703148099731
+    second: QuixelBorder_SpriteSheet_512_382
+  - first:
+      213: 3780571186012501110
+    second: QuixelBorder_SpriteSheet_512_383
+  - first:
+      213: 7180919327013067176
+    second: QuixelBorder_SpriteSheet_512_384
+  - first:
+      213: 8950616889960883689
+    second: QuixelBorder_SpriteSheet_512_385
+  - first:
+      213: 6159567642489187815
+    second: QuixelBorder_SpriteSheet_512_386
+  - first:
+      213: 5515342916190800710
+    second: QuixelBorder_SpriteSheet_512_387
+  - first:
+      213: -4146690490069679910
+    second: QuixelBorder_SpriteSheet_512_388
+  - first:
+      213: -4829641351436850176
+    second: QuixelBorder_SpriteSheet_512_389
+  - first:
+      213: -6250175538483966519
+    second: QuixelBorder_SpriteSheet_512_390
+  - first:
+      213: -49751724359816560
+    second: QuixelBorder_SpriteSheet_512_391
+  - first:
+      213: -2852689115291371873
+    second: QuixelBorder_SpriteSheet_512_392
+  - first:
+      213: 1527365328211691655
+    second: QuixelBorder_SpriteSheet_512_393
+  - first:
+      213: 1907833426952291413
+    second: QuixelBorder_SpriteSheet_512_394
+  - first:
+      213: -3441473853019987245
+    second: QuixelBorder_SpriteSheet_512_395
+  - first:
+      213: -9008625241950898177
+    second: QuixelBorder_SpriteSheet_512_396
+  - first:
+      213: -340135673445379488
+    second: QuixelBorder_SpriteSheet_512_397
+  - first:
+      213: -836389371196456678
+    second: QuixelBorder_SpriteSheet_512_398
+  - first:
+      213: 2397609115962062502
+    second: QuixelBorder_SpriteSheet_512_399
+  - first:
+      213: -7367700084571349081
+    second: QuixelBorder_SpriteSheet_512_400
+  - first:
+      213: 8126453332758531453
+    second: QuixelBorder_SpriteSheet_512_401
+  - first:
+      213: 9150419904489806102
+    second: QuixelBorder_SpriteSheet_512_402
+  - first:
+      213: -2308598443642182104
+    second: QuixelBorder_SpriteSheet_512_403
+  - first:
+      213: -4731083487553944182
+    second: QuixelBorder_SpriteSheet_512_404
+  - first:
+      213: -2619618784903767621
+    second: QuixelBorder_SpriteSheet_512_405
+  - first:
+      213: 8209884591840633605
+    second: QuixelBorder_SpriteSheet_512_406
+  - first:
+      213: -3914182990523749131
+    second: QuixelBorder_SpriteSheet_512_407
+  - first:
+      213: 6383081446624383286
+    second: QuixelBorder_SpriteSheet_512_408
+  - first:
+      213: 2250820328768435846
+    second: QuixelBorder_SpriteSheet_512_409
+  - first:
+      213: -6229529647617908278
+    second: QuixelBorder_SpriteSheet_512_410
+  - first:
+      213: 4349144066390005389
+    second: QuixelBorder_SpriteSheet_512_411
+  - first:
+      213: 3018301649955918627
+    second: QuixelBorder_SpriteSheet_512_412
+  - first:
+      213: 1350099455491944203
+    second: QuixelBorder_SpriteSheet_512_413
+  - first:
+      213: -5446041986184273469
+    second: QuixelBorder_SpriteSheet_512_414
+  - first:
+      213: 139834583871971560
+    second: QuixelBorder_SpriteSheet_512_415
+  - first:
+      213: -6797007027850672127
+    second: QuixelBorder_SpriteSheet_512_416
+  - first:
+      213: 2827496287013986212
+    second: QuixelBorder_SpriteSheet_512_417
+  - first:
+      213: 6513363611316938243
+    second: QuixelBorder_SpriteSheet_512_418
+  - first:
+      213: 99813856363711516
+    second: QuixelBorder_SpriteSheet_512_419
+  - first:
+      213: 875065612915086104
+    second: QuixelBorder_SpriteSheet_512_420
+  - first:
+      213: 1576827341479000369
+    second: QuixelBorder_SpriteSheet_512_421
+  - first:
+      213: -2601993926359206120
+    second: QuixelBorder_SpriteSheet_512_422
+  - first:
+      213: 8659005898406309411
+    second: QuixelBorder_SpriteSheet_512_423
+  - first:
+      213: 8489469033128743454
+    second: QuixelBorder_SpriteSheet_512_424
+  - first:
+      213: 3436627711161910950
+    second: QuixelBorder_SpriteSheet_512_425
+  - first:
+      213: 7944759936766358348
+    second: QuixelBorder_SpriteSheet_512_426
+  - first:
+      213: -7900279920789352603
+    second: QuixelBorder_SpriteSheet_512_427
+  - first:
+      213: -2322406403864405062
+    second: QuixelBorder_SpriteSheet_512_428
+  - first:
+      213: -2652405913522278117
+    second: QuixelBorder_SpriteSheet_512_429
+  - first:
+      213: -5178540732795467355
+    second: QuixelBorder_SpriteSheet_512_430
+  - first:
+      213: 5588019943517523365
+    second: QuixelBorder_SpriteSheet_512_431
+  - first:
+      213: 2752932616218498165
+    second: QuixelBorder_SpriteSheet_512_432
+  - first:
+      213: -2876729795176686208
+    second: QuixelBorder_SpriteSheet_512_433
+  - first:
+      213: 4278568444986932599
+    second: QuixelBorder_SpriteSheet_512_434
+  - first:
+      213: -4220394319003809611
+    second: QuixelBorder_SpriteSheet_512_435
+  - first:
+      213: 1178341408081267026
+    second: QuixelBorder_SpriteSheet_512_436
+  - first:
+      213: -5999070507136632874
+    second: QuixelBorder_SpriteSheet_512_437
+  - first:
+      213: -4640819711602283297
+    second: QuixelBorder_SpriteSheet_512_438
+  - first:
+      213: -7186645003044747483
+    second: QuixelBorder_SpriteSheet_512_439
+  - first:
+      213: 746863358909238980
+    second: QuixelBorder_SpriteSheet_512_440
+  - first:
+      213: -4017809905360217048
+    second: QuixelBorder_SpriteSheet_512_441
+  - first:
+      213: 1208746975469550492
+    second: QuixelBorder_SpriteSheet_512_442
+  - first:
+      213: 3481735451273956103
+    second: QuixelBorder_SpriteSheet_512_443
+  - first:
+      213: 8778439843671657692
+    second: QuixelBorder_SpriteSheet_512_444
+  - first:
+      213: 151100073574597494
+    second: QuixelBorder_SpriteSheet_512_445
+  - first:
+      213: 3457544120722200533
+    second: QuixelBorder_SpriteSheet_512_446
+  - first:
+      213: -7894156769191170449
+    second: QuixelBorder_SpriteSheet_512_447
+  - first:
+      213: 3266091432198931279
+    second: QuixelBorder_SpriteSheet_512_448
+  - first:
+      213: -5521779406991970131
+    second: QuixelBorder_SpriteSheet_512_449
+  - first:
+      213: -3994935611391772664
+    second: QuixelBorder_SpriteSheet_512_450
+  - first:
+      213: -3860229028808966294
+    second: QuixelBorder_SpriteSheet_512_451
+  - first:
+      213: -1941722699985796881
+    second: QuixelBorder_SpriteSheet_512_452
+  - first:
+      213: 8836121476849439890
+    second: QuixelBorder_SpriteSheet_512_453
+  - first:
+      213: -7361910712965070603
+    second: QuixelBorder_SpriteSheet_512_454
+  - first:
+      213: 3891096712426628860
+    second: QuixelBorder_SpriteSheet_512_455
+  - first:
+      213: 4004858987354120781
+    second: QuixelBorder_SpriteSheet_512_456
+  - first:
+      213: -8545894850318862355
+    second: QuixelBorder_SpriteSheet_512_457
+  - first:
+      213: -1941423914524960801
+    second: QuixelBorder_SpriteSheet_512_458
+  - first:
+      213: -5614104056877550951
+    second: QuixelBorder_SpriteSheet_512_459
+  - first:
+      213: -3470087853362388535
+    second: QuixelBorder_SpriteSheet_512_460
+  - first:
+      213: 1219182136113603491
+    second: QuixelBorder_SpriteSheet_512_461
+  - first:
+      213: 5073213421344113260
+    second: QuixelBorder_SpriteSheet_512_462
+  - first:
+      213: -6302774616536321519
+    second: QuixelBorder_SpriteSheet_512_463
+  - first:
+      213: 7553782506835967600
+    second: QuixelBorder_SpriteSheet_512_464
+  - first:
+      213: -5583490966680929354
+    second: QuixelBorder_SpriteSheet_512_465
+  - first:
+      213: 6501892308796964768
+    second: QuixelBorder_SpriteSheet_512_466
+  - first:
+      213: 8014616719685250606
+    second: QuixelBorder_SpriteSheet_512_467
+  - first:
+      213: 8875187349151848468
+    second: QuixelBorder_SpriteSheet_512_468
+  - first:
+      213: -7031047161427911584
+    second: QuixelBorder_SpriteSheet_512_469
+  - first:
+      213: 8647528306571406024
+    second: QuixelBorder_SpriteSheet_512_470
+  - first:
+      213: -2382174636657895697
+    second: QuixelBorder_SpriteSheet_512_471
+  - first:
+      213: -224016142380769325
+    second: QuixelBorder_SpriteSheet_512_472
+  - first:
+      213: -991865570625696194
+    second: QuixelBorder_SpriteSheet_512_473
+  - first:
+      213: 5022059085048432120
+    second: QuixelBorder_SpriteSheet_512_474
+  - first:
+      213: 6204398231828143060
+    second: QuixelBorder_SpriteSheet_512_475
+  - first:
+      213: -5332510924382420773
+    second: QuixelBorder_SpriteSheet_512_476
+  - first:
+      213: 6645506952437839509
+    second: QuixelBorder_SpriteSheet_512_477
+  - first:
+      213: 7257604841381968749
+    second: QuixelBorder_SpriteSheet_512_478
+  - first:
+      213: 4906265625755619247
+    second: QuixelBorder_SpriteSheet_512_479
+  - first:
+      213: 1043766041720604938
+    second: QuixelBorder_SpriteSheet_512_480
+  - first:
+      213: -17532790611360970
+    second: QuixelBorder_SpriteSheet_512_481
+  - first:
+      213: -7147582203941724714
+    second: QuixelBorder_SpriteSheet_512_482
+  - first:
+      213: 860676983498154255
+    second: QuixelBorder_SpriteSheet_512_483
+  - first:
+      213: -722812028429905996
+    second: QuixelBorder_SpriteSheet_512_484
+  - first:
+      213: 7718812820911357914
+    second: QuixelBorder_SpriteSheet_512_485
+  - first:
+      213: -7421817543873993528
+    second: QuixelBorder_SpriteSheet_512_486
+  - first:
+      213: 233942786625258753
+    second: QuixelBorder_SpriteSheet_512_487
+  - first:
+      213: 7153275164190613026
+    second: QuixelBorder_SpriteSheet_512_488
+  - first:
+      213: -2643629886927612950
+    second: QuixelBorder_SpriteSheet_512_489
+  - first:
+      213: 6138255529664704593
+    second: QuixelBorder_SpriteSheet_512_490
+  - first:
+      213: -4816761931739968771
+    second: QuixelBorder_SpriteSheet_512_491
+  - first:
+      213: -1592181033543610908
+    second: QuixelBorder_SpriteSheet_512_492
+  - first:
+      213: 8816211784807383408
+    second: QuixelBorder_SpriteSheet_512_493
+  - first:
+      213: -2497500562814243154
+    second: QuixelBorder_SpriteSheet_512_494
+  - first:
+      213: 1338095799605626294
+    second: QuixelBorder_SpriteSheet_512_495
+  - first:
+      213: 1046852613595640967
+    second: QuixelBorder_SpriteSheet_512_496
+  - first:
+      213: -4195327169827176999
+    second: QuixelBorder_SpriteSheet_512_497
+  - first:
+      213: 8748033286653198054
+    second: QuixelBorder_SpriteSheet_512_498
+  - first:
+      213: -4198793117491057772
+    second: QuixelBorder_SpriteSheet_512_499
+  - first:
+      213: 9083917468485184598
+    second: QuixelBorder_SpriteSheet_512_500
+  - first:
+      213: 5592107439990277070
+    second: QuixelBorder_SpriteSheet_512_501
+  - first:
+      213: -862045076298272862
+    second: QuixelBorder_SpriteSheet_512_502
+  - first:
+      213: 5892095227791100950
+    second: QuixelBorder_SpriteSheet_512_503
+  - first:
+      213: 4940234286708549570
+    second: QuixelBorder_SpriteSheet_512_504
+  - first:
+      213: 4074820908799585144
+    second: QuixelBorder_SpriteSheet_512_505
+  - first:
+      213: 5622048864044391697
+    second: QuixelBorder_SpriteSheet_512_506
+  - first:
+      213: -3245838273831020297
+    second: QuixelBorder_SpriteSheet_512_507
+  - first:
+      213: -3278365531985802535
+    second: QuixelBorder_SpriteSheet_512_508
+  - first:
+      213: -7154705072545612026
+    second: QuixelBorder_SpriteSheet_512_509
+  - first:
+      213: 641461169252470035
+    second: QuixelBorder_SpriteSheet_512_510
+  - first:
+      213: 3434029360666454323
+    second: QuixelBorder_SpriteSheet_512_511
+  - first:
+      213: 6627361804485438208
+    second: QuixelBorder_SpriteSheet_512_512
+  - first:
+      213: -791472244960276562
+    second: QuixelBorder_SpriteSheet_512_513
+  - first:
+      213: 4311746686323056413
+    second: QuixelBorder_SpriteSheet_512_514
+  - first:
+      213: -6423957369184783865
+    second: QuixelBorder_SpriteSheet_512_515
+  - first:
+      213: 2321303281542186476
+    second: QuixelBorder_SpriteSheet_512_516
+  - first:
+      213: -4199667493252421266
+    second: QuixelBorder_SpriteSheet_512_517
+  - first:
+      213: -6731369373575813707
+    second: QuixelBorder_SpriteSheet_512_518
+  - first:
+      213: -3985546095585109402
+    second: QuixelBorder_SpriteSheet_512_519
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 7168
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab7498ae822b50ec0800000000000000
+      internalID: -3601276438209542214
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_1
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 7168
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9083b1ab8a1d7040800000000000000
+      internalID: 4646899577531891870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_2
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 7168
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8097668f47db24730800000000000000
+      internalID: 3981953330630261000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_3
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 7168
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bea220e4a8a7efdd0800000000000000
+      internalID: -2450386412810130709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_4
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 7168
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ba6bf7aa441a9060800000000000000
+      internalID: 6960898484932930233
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_5
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 7168
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe5a5b6e756b51a90800000000000000
+      internalID: -7343763128708651537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_6
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 7168
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4016acecc741d70c0800000000000000
+      internalID: -4576479120060686076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_7
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 7168
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f42019c6051340180800000000000000
+      internalID: -9150134321421417905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_8
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 7168
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 189ad81c63e289ef0800000000000000
+      internalID: -101280178905437823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_9
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 7168
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9500efb01772c5550800000000000000
+      internalID: 6150834557567238233
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_10
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 7168
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af663ff8dac41a320800000000000000
+      internalID: 2567417570906040058
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_11
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 7168
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f370b92133a6c1030800000000000000
+      internalID: 3466762580756465471
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_12
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 7168
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb94b9d0ced34cfc0800000000000000
+      internalID: -3475584928373323329
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_13
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 7168
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cf3bbca82178c4c0800000000000000
+      internalID: -4267036227422961722
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_14
+      rect:
+        serializedVersion: 2
+        x: 7168
+        y: 7168
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f3075946d54d7280800000000000000
+      internalID: -9043995690034330637
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 6656
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 303e53e681cc99ef0800000000000000
+      internalID: -100825111338818813
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_16
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 6656
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b07ebaf943f2b5f0800000000000000
+      internalID: -742263489497763661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_17
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 6656
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0e92dec325455fb0800000000000000
+      internalID: -4659742219348828659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_18
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 6656
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c84ffeb8793956be0800000000000000
+      internalID: -1484618223051606900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_19
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 6656
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bca9ac6f025132dd0800000000000000
+      internalID: -2512140935818994997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_20
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 6656
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2a68a72570948ec0800000000000000
+      internalID: -3565566172119668179
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_21
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 6656
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3761ace6c5b9e270800000000000000
+      internalID: 8280349255875520317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_22
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 6656
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad3d374910b8f5e70800000000000000
+      internalID: 9106149810468279258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_23
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 6656
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 211a459116642a380800000000000000
+      internalID: -8961522925663117038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_24
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 6656
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30b28f5623bb5d140800000000000000
+      internalID: 4743903607638207235
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_25
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 6656
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 343e7bc341e9269f0800000000000000
+      internalID: -476644800792632509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_26
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 6656
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ece85017206c97a90800000000000000
+      internalID: -7315598405898236210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_27
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 6656
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a23fe87b652ede00800000000000000
+      internalID: 1071334904881427111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_28
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 6656
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e69e7d30fd6eed7f0800000000000000
+      internalID: -585777055995008658
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_29
+      rect:
+        serializedVersion: 2
+        x: 7168
+        y: 6656
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 036ea7b4b38d1edf0800000000000000
+      internalID: -152603163172870608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_30
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2ee00c46222d5fb0800000000000000
+      internalID: -4657528891751993813
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_31
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad8ee9c5a52795ec0800000000000000
+      internalID: -3577702696542607142
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_32
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d882b6bb2a9e3d0d0800000000000000
+      internalID: -3399116408596256627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_33
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df49a303dfe43a050800000000000000
+      internalID: 5810574793580909821
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_34
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9893ad53508e8880800000000000000
+      internalID: -8606800742316795748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_35
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7115088dcee77dbd0800000000000000
+      internalID: -2605474303700872937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_36
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 688ea04a25368ba10800000000000000
+      internalID: 1925398047291533446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_37
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3c273e5113b9e930800000000000000
+      internalID: 4173063416911965242
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_38
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19f1d309b55ff78e0800000000000000
+      internalID: -1693365161257263215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_39
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2430d9bd23c3c540800000000000000
+      internalID: 5027076210233979948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_40
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 179cf900b0697fd60800000000000000
+      internalID: 7923967043380955505
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_41
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9ef00fabc7f84a70800000000000000
+      internalID: 8811565125136875167
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_42
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4ca5a6c9e64f5e10800000000000000
+      internalID: 2188545913799421005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_43
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f41f5b056ffe7940800000000000000
+      internalID: 5295951021281842422
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_44
+      rect:
+        serializedVersion: 2
+        x: 7168
+        y: 6144
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da2f4d805a7953320800000000000000
+      internalID: 2537100700166714029
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_45
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f64ec6c4993b5c740800000000000000
+      internalID: 5171737218098455663
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_46
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3b2b28fbb20561c0800000000000000
+      internalID: -4511196445395965121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_47
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a26fb4c9f55a2630800000000000000
+      internalID: 3903026558306050728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_48
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd2845ed89c8fe030800000000000000
+      internalID: 3526191621447385820
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_49
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07f16c0c53d93ebe0800000000000000
+      internalID: -1449141800890130576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_50
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93296e06082b18bc0800000000000000
+      internalID: -3782545947563224519
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_51
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff86b11bf352e8320800000000000000
+      internalID: 2562026193504921855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_52
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0fd5df55a5a68bd0800000000000000
+      internalID: -2628231202828067062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_53
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09074791ee8e66fe0800000000000000
+      internalID: -1196012541693366128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_54
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9aea02d08da018060800000000000000
+      internalID: 6953851222686215849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_55
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b175051b779f6b4a0800000000000000
+      internalID: -6577795913256773861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_56
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0460773fea05a2410800000000000000
+      internalID: 1453062542119601728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_57
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d262c54846d28d0b0800000000000000
+      internalID: -5703759018324122067
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_58
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27ca61fbd2ab2cff0800000000000000
+      internalID: -17246742913831822
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_59
+      rect:
+        serializedVersion: 2
+        x: 7168
+        y: 5632
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12fdefb9585426e30800000000000000
+      internalID: 4495231818219314977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_60
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4c176926b7281de0800000000000000
+      internalID: -1362295223947420594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_61
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78380a1a9df95d980800000000000000
+      internalID: -8514723763405683833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_62
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb1f1598b8a078d40800000000000000
+      internalID: 5586445457196970427
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_63
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a266e1d6986918910800000000000000
+      internalID: 1837915639929267754
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_64
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 609ee88101e258e90800000000000000
+      internalID: -7024157397148047098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_65
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4dd2c7e52fda04930800000000000000
+      internalID: 4125488515150261716
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_66
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 545cb94bb7076c5f0800000000000000
+      internalID: -736777812415101627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_67
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59351868efaa8ecc0800000000000000
+      internalID: -3681504685220342891
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_68
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4650569b1dc9279a0800000000000000
+      internalID: -6236750109382212252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_69
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b7230591780f73a0800000000000000
+      internalID: -6665599639560706123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_70
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 026bf0936b43c8540800000000000000
+      internalID: 5011438442602542624
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_71
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a264aefbc8ffd3c60800000000000000
+      internalID: 7799671109655873066
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_72
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a57ed4455bff0df40800000000000000
+      internalID: 5751377878420678490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_73
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec27306dc01d43d20800000000000000
+      internalID: 3257458283556074190
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_74
+      rect:
+        serializedVersion: 2
+        x: 7168
+        y: 5120
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6374a9698ba38e360800000000000000
+      internalID: 7199068568826824502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_75
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06839a4bc6015d350800000000000000
+      internalID: 6040752534260889696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_76
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dfc0f6b0598ce2490800000000000000
+      internalID: -7769051764700017411
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_77
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24b5afaaf58a709e0800000000000000
+      internalID: -1655169209191474366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_78
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa3028546364c0e70800000000000000
+      internalID: 9082711747407774639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_79
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd06684bb782e0bb0800000000000000
+      internalID: -4967988827168284451
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_80
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c477251f0bb833410800000000000000
+      internalID: 1455660696650020684
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_81
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: efccbb4850dfa2430800000000000000
+      internalID: 3759095039137664254
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_82
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bec4a498bf4d1be80800000000000000
+      internalID: -8164510472640770837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_83
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88c30bf28607692d0800000000000000
+      internalID: -3272304486459097976
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_84
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32565986b885abac0800000000000000
+      internalID: -3838658376601606877
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_85
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db03865187d42fcb0800000000000000
+      internalID: -4831714272064556867
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_86
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38e2f18c2fcdde200800000000000000
+      internalID: 211067692853964419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_87
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1e8a3bce581bc600800000000000000
+      internalID: 489511779915435550
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_88
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e43e96696bb221760800000000000000
+      internalID: 7427046798694933326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_89
+      rect:
+        serializedVersion: 2
+        x: 7168
+        y: 4608
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 137e6692360d19800800000000000000
+      internalID: 617503748241418033
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_90
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3750a3e319fcc1f30800000000000000
+      internalID: 4547737946458555763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_91
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 165555fd6abf212e0800000000000000
+      internalID: -2156384577426991775
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_92
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 407a6c2b002afd970800000000000000
+      internalID: 8781915922278819588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_93
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b39fdee3681f21180800000000000000
+      internalID: -9145982334352361157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_94
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6674a72321bca9280800000000000000
+      internalID: -9035686423348754586
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_95
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8a596534b9163060800000000000000
+      internalID: 6932756938164361868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_96
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc78e1a0e2be706a0800000000000000
+      internalID: -6482954555605743667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_97
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b28c4abb412fe4d30800000000000000
+      internalID: 4417734455358441515
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_98
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1f0bc9c9700cc5a0800000000000000
+      internalID: -6499819639125897445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_99
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 102640339033f3250800000000000000
+      internalID: 5926511749246509569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_100
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18cc6793cd1483d60800000000000000
+      internalID: 7870112762942639233
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_101
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28e0e29712d1da4d0800000000000000
+      internalID: -3121806937093697918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_102
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2ff82bd2ae32e9d0800000000000000
+      internalID: -2746563953560060118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_103
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68441c0a5cc08fbd0800000000000000
+      internalID: -2596311142233979770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_104
+      rect:
+        serializedVersion: 2
+        x: 7168
+        y: 4096
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0feb737bf221c9b20800000000000000
+      internalID: 3142406636144410352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_105
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3afaccb55dabb1ae0800000000000000
+      internalID: -1577461818932285533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_106
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80dc4f7fa0472b8a0800000000000000
+      internalID: -6290838139024651000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_107
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2479c3b8cd2a2560800000000000000
+      internalID: 7289689286885602346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_108
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: afcd61fd3f1a7c930800000000000000
+      internalID: 4163474449319255290
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_109
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bf158d11938462a0800000000000000
+      internalID: -6745121682605400144
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_110
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 487a2f12cc90ea2c0800000000000000
+      internalID: -4418583412056348796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_111
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9fbfaf56a02909630800000000000000
+      internalID: 3931803048052718585
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_112
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf5dbaa721b9a2290800000000000000
+      internalID: -7914342891480427012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_113
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c4ba20302af7680e0800000000000000
+      internalID: -2267985028522529972
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_114
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38d01b87bc96dfeb0800000000000000
+      internalID: -4684471714771300989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_115
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24f63ecf626be01d0800000000000000
+      internalID: -3382565991540887742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_116
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17ce43a0614b0d0b0800000000000000
+      internalID: -5705862721124897679
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_117
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7c0a423e5c5e4270800000000000000
+      internalID: 8236622328147610748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_118
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 399fd59385ff89d50800000000000000
+      internalID: 6744421196371982739
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_119
+      rect:
+        serializedVersion: 2
+        x: 7168
+        y: 3584
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df76fa950b8aac940800000000000000
+      internalID: 5317247785436669949
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_120
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd8b7564938107c60800000000000000
+      internalID: 7813771987760167131
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_121
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54a43b8e8011b8bd0800000000000000
+      internalID: -2626987227679077819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_122
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79595e3e367866940800000000000000
+      internalID: 5289063675488212375
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_123
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e6aceae69f3b0330800000000000000
+      internalID: 3678103438097164007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_124
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3104f338dac9058d0800000000000000
+      internalID: -2859613494335029229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_125
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 555dc34d154e9a550800000000000000
+      internalID: 6172715804392215893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_126
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4caa276fae85e6b70800000000000000
+      internalID: 8894144080283609796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_127
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7801644cd3cf690c0800000000000000
+      internalID: -4569187429704658809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_128
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93706b1f3f4b624a0800000000000000
+      internalID: -6618403642549074119
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_129
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ac94fb4aafbe4c80800000000000000
+      internalID: -8336515122076541792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_130
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6cacefb15771aa80800000000000000
+      internalID: -8457347432229065617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_131
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31339ef81bd15fdb0800000000000000
+      internalID: -4758864782786219245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_132
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e48edeeb80440c80800000000000000
+      internalID: -8357484038740605723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_133
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65a7c34894b2a4bd0800000000000000
+      internalID: -2645254236375582122
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_134
+      rect:
+        serializedVersion: 2
+        x: 7168
+        y: 3072
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d37a09422e3803170800000000000000
+      internalID: 8156163932467275581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_135
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78e9aa4c95cac9d80800000000000000
+      internalID: -8242523716443267449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_136
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b003e36c4b6503d10800000000000000
+      internalID: 2103276360402087947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_137
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5322af74f6cf6f330800000000000000
+      internalID: 3744457695084290613
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_138
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e897de70290e1200800000000000000
+      internalID: 152569472548837608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_139
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fbe17c5e5ec8d080800000000000000
+      internalID: -9162346537212056589
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_140
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9076988deb39edc80800000000000000
+      internalID: -8296031015683922167
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_141
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb696b01b1c1c8520800000000000000
+      internalID: 2705568378712921788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_142
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32712c0bc753f4f20800000000000000
+      internalID: 3409002252600481571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_143
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f46f2bb6263c2390800000000000000
+      internalID: -7841833311181773581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_144
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82a1f39a3edfb7600800000000000000
+      internalID: 467246140601866792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_145
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80aff83541ffd3a90800000000000000
+      internalID: -7332424155522926072
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_146
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de8ed7beea5062270800000000000000
+      internalID: 8225268018272135405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_147
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff351cf4832564040800000000000000
+      internalID: 4631479668606850047
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_148
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e2232ba8c6a4fa790800000000000000
+      internalID: -7516707423014211026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_149
+      rect:
+        serializedVersion: 2
+        x: 7168
+        y: 2560
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c485873b411fce410800000000000000
+      internalID: 1507845046474922060
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_150
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 520608bbbecd10210800000000000000
+      internalID: 1297561072680591397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_151
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 498af41c9a6715e10800000000000000
+      internalID: 2184657765716174996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_152
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0dbfff8e5ea3b3e0800000000000000
+      internalID: -2039094485102641908
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_153
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a73e4c85283316490800000000000000
+      internalID: -7754860448427220102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_154
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6fc719b960128310800000000000000
+      internalID: 1405704079955971948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_155
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33f415a3ae68399e0800000000000000
+      internalID: -1615799500736999629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_156
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: baf2c3b2a093f4930800000000000000
+      internalID: 4129582099159855019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_157
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5899a7c1a9daff880800000000000000
+      internalID: -8574944288075769467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_158
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42b674098283ecf30800000000000000
+      internalID: 4597674016462301988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_159
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ece7a6b7cd9329170800000000000000
+      internalID: 8183667092011777742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_160
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c846abbb24e2db9c0800000000000000
+      internalID: -3909918037335448436
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_161
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e81aa9e2398dbcd0800000000000000
+      internalID: -2540723763005482782
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_162
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f0718239146bca30800000000000000
+      internalID: 4236589933856387316
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_163
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62efd68de371fe480800000000000000
+      internalID: -8867843582582718938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_164
+      rect:
+        serializedVersion: 2
+        x: 7168
+        y: 2048
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a6a007c6d913eec0800000000000000
+      internalID: -3538956471930673496
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_165
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 799b30ca5ef0fe300800000000000000
+      internalID: 283462780655483287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_166
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a44f6cc8576963760800000000000000
+      internalID: 7437297266266141770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_167
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab80f86e05ed3b040800000000000000
+      internalID: 4662314478305478842
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_168
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d79863323a18180c0800000000000000
+      internalID: -4575233208761284227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_169
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 466868c9667a1ff40800000000000000
+      internalID: 5760569457538139748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_170
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: afffce7d2abbb9f00800000000000000
+      internalID: 1124698840040800250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_171
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed50a0e59cf47b260800000000000000
+      internalID: 7113241862739723742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_172
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 92ebb6f661ab99cd0800000000000000
+      internalID: -2550803108407296471
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_173
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 090fc804905a9ef90800000000000000
+      internalID: -6923821492949159792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_174
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d19b5c6d82319ed0800000000000000
+      internalID: -2409088742676786733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_175
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8765ba8ad1d731230800000000000000
+      internalID: 3608365292791223928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_176
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d66f9ac12ad71420800000000000000
+      internalID: 2600787148497970899
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_177
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c5ff56b752604130800000000000000
+      internalID: 3548944635229369793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_178
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b54a9dd235c336650800000000000000
+      internalID: 6224885437905347675
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_179
+      rect:
+        serializedVersion: 2
+        x: 7168
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76f158f0c6f14bf10800000000000000
+      internalID: 2284485459960995687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_180
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d795bdad1bc698f0800000000000000
+      internalID: -534016177467975722
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_181
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ead11d7f8c6e0f930800000000000000
+      internalID: 4175090605397974446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_182
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6fb3d19f7a451ff00800000000000000
+      internalID: 1148792460371901430
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_183
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f7698b7439cfced0800000000000000
+      internalID: -2391471649862359052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_184
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac089e902e2d741a0800000000000000
+      internalID: -6825254841985957686
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_185
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2800b50c1cf8ce600800000000000000
+      internalID: 498931721049931906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_186
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 741273d16af6eb1d0800000000000000
+      internalID: -3333103914962181817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_187
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1c39af0c272cd180800000000000000
+      internalID: -9089346877745710054
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_188
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33428a2e87bc46980800000000000000
+      internalID: -8546482472783174605
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_189
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63344c12761bb8860800000000000000
+      internalID: 7533309858213544758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_190
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6e4a1ed88f70c4e0800000000000000
+      internalID: -1963429211714990484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_191
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96fa43ef886360e20800000000000000
+      internalID: 3316398137613266793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_192
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bfadd4b02873650f0800000000000000
+      internalID: -1128653624934802693
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_193
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a688228118a4df360800000000000000
+      internalID: 7204996897178814570
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_194
+      rect:
+        serializedVersion: 2
+        x: 7168
+        y: 1024
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6272d00dd5c949600800000000000000
+      internalID: 474175787517159206
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_195
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8b09218c1c38a7f0800000000000000
+      internalID: -601164457130259569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_196
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5878b5afd8a26e1d0800000000000000
+      internalID: -3321920885860104315
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_197
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: edddff83eff960150800000000000000
+      internalID: 5838529881159228894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_198
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56cd604fc63c2c880800000000000000
+      internalID: -8592090266351510427
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_199
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c531f5291dc6b340800000000000000
+      internalID: 4879312754196952517
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_200
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29d342ad1504f8a70800000000000000
+      internalID: 8831348114593168786
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_201
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed40cbbe4bc2cd7a0800000000000000
+      internalID: -6351152218938538786
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_202
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 544c023172f2768d0800000000000000
+      internalID: -2853259994044775355
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_203
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 772dc6c7de9728270800000000000000
+      internalID: 8251291528197886583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_204
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4504186c7f5230e0800000000000000
+      internalID: -2291664272451435185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_205
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 436960f91fb3cd390800000000000000
+      internalID: -7792287346316634572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_206
+      rect:
+        serializedVersion: 2
+        x: 5632
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7249d38535ec923c0800000000000000
+      internalID: -4383745904910429145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_207
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e2f309308626c2f0800000000000000
+      internalID: -953031938988051744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_208
+      rect:
+        serializedVersion: 2
+        x: 6656
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ea4311e29e702400800000000000000
+      internalID: 297376744712915684
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_209
+      rect:
+        serializedVersion: 2
+        x: 7168
+        y: 512
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 92466fe27638e49b0800000000000000
+      internalID: -5093989649316682711
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_210
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fce42fe01e10b9690800000000000000
+      internalID: -7594474280500179249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_211
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a14ec972aa4d89360800000000000000
+      internalID: 7176719833489007642
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_212
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8527d10d81630daa0800000000000000
+      internalID: -6138346811907280296
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuixelBorder_SpriteSheet_512_213
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6344296fac594e940800000000000000
+      internalID: 5324545358411482166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: df6f8a906f6a70f4eabd7495c6b4129d
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":512.0,"y":512.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      QuixelBorder_SpriteSheet_512_0: -3601276438209542214
+      QuixelBorder_SpriteSheet_512_1: 4646899577531891870
+      QuixelBorder_SpriteSheet_512_10: 2567417570906040058
+      QuixelBorder_SpriteSheet_512_100: 7870112762942639233
+      QuixelBorder_SpriteSheet_512_101: -3121806937093697918
+      QuixelBorder_SpriteSheet_512_102: -2746563953560060118
+      QuixelBorder_SpriteSheet_512_103: -2596311142233979770
+      QuixelBorder_SpriteSheet_512_104: 3142406636144410352
+      QuixelBorder_SpriteSheet_512_105: -1577461818932285533
+      QuixelBorder_SpriteSheet_512_106: -6290838139024651000
+      QuixelBorder_SpriteSheet_512_107: 7289689286885602346
+      QuixelBorder_SpriteSheet_512_108: 4163474449319255290
+      QuixelBorder_SpriteSheet_512_109: -6745121682605400144
+      QuixelBorder_SpriteSheet_512_11: 3466762580756465471
+      QuixelBorder_SpriteSheet_512_110: -4418583412056348796
+      QuixelBorder_SpriteSheet_512_111: 3931803048052718585
+      QuixelBorder_SpriteSheet_512_112: -7914342891480427012
+      QuixelBorder_SpriteSheet_512_113: -2267985028522529972
+      QuixelBorder_SpriteSheet_512_114: -4684471714771300989
+      QuixelBorder_SpriteSheet_512_115: -3382565991540887742
+      QuixelBorder_SpriteSheet_512_116: -5705862721124897679
+      QuixelBorder_SpriteSheet_512_117: 8236622328147610748
+      QuixelBorder_SpriteSheet_512_118: 6744421196371982739
+      QuixelBorder_SpriteSheet_512_119: 5317247785436669949
+      QuixelBorder_SpriteSheet_512_12: -3475584928373323329
+      QuixelBorder_SpriteSheet_512_120: 7813771987760167131
+      QuixelBorder_SpriteSheet_512_121: -2626987227679077819
+      QuixelBorder_SpriteSheet_512_122: 5289063675488212375
+      QuixelBorder_SpriteSheet_512_123: 3678103438097164007
+      QuixelBorder_SpriteSheet_512_124: -2859613494335029229
+      QuixelBorder_SpriteSheet_512_125: 6172715804392215893
+      QuixelBorder_SpriteSheet_512_126: 8894144080283609796
+      QuixelBorder_SpriteSheet_512_127: -4569187429704658809
+      QuixelBorder_SpriteSheet_512_128: -6618403642549074119
+      QuixelBorder_SpriteSheet_512_129: -8336515122076541792
+      QuixelBorder_SpriteSheet_512_13: -4267036227422961722
+      QuixelBorder_SpriteSheet_512_130: -8457347432229065617
+      QuixelBorder_SpriteSheet_512_131: -4758864782786219245
+      QuixelBorder_SpriteSheet_512_132: -8357484038740605723
+      QuixelBorder_SpriteSheet_512_133: -2645254236375582122
+      QuixelBorder_SpriteSheet_512_134: 8156163932467275581
+      QuixelBorder_SpriteSheet_512_135: -8242523716443267449
+      QuixelBorder_SpriteSheet_512_136: 2103276360402087947
+      QuixelBorder_SpriteSheet_512_137: 3744457695084290613
+      QuixelBorder_SpriteSheet_512_138: 152569472548837608
+      QuixelBorder_SpriteSheet_512_139: -9162346537212056589
+      QuixelBorder_SpriteSheet_512_14: -9043995690034330637
+      QuixelBorder_SpriteSheet_512_140: -8296031015683922167
+      QuixelBorder_SpriteSheet_512_141: 2705568378712921788
+      QuixelBorder_SpriteSheet_512_142: 3409002252600481571
+      QuixelBorder_SpriteSheet_512_143: -7841833311181773581
+      QuixelBorder_SpriteSheet_512_144: 467246140601866792
+      QuixelBorder_SpriteSheet_512_145: -7332424155522926072
+      QuixelBorder_SpriteSheet_512_146: 8225268018272135405
+      QuixelBorder_SpriteSheet_512_147: 4631479668606850047
+      QuixelBorder_SpriteSheet_512_148: -7516707423014211026
+      QuixelBorder_SpriteSheet_512_149: 1507845046474922060
+      QuixelBorder_SpriteSheet_512_15: -100825111338818813
+      QuixelBorder_SpriteSheet_512_150: 1297561072680591397
+      QuixelBorder_SpriteSheet_512_151: 2184657765716174996
+      QuixelBorder_SpriteSheet_512_152: -2039094485102641908
+      QuixelBorder_SpriteSheet_512_153: -7754860448427220102
+      QuixelBorder_SpriteSheet_512_154: 1405704079955971948
+      QuixelBorder_SpriteSheet_512_155: -1615799500736999629
+      QuixelBorder_SpriteSheet_512_156: 4129582099159855019
+      QuixelBorder_SpriteSheet_512_157: -8574944288075769467
+      QuixelBorder_SpriteSheet_512_158: 4597674016462301988
+      QuixelBorder_SpriteSheet_512_159: 8183667092011777742
+      QuixelBorder_SpriteSheet_512_16: -742263489497763661
+      QuixelBorder_SpriteSheet_512_160: -3909918037335448436
+      QuixelBorder_SpriteSheet_512_161: -2540723763005482782
+      QuixelBorder_SpriteSheet_512_162: 4236589933856387316
+      QuixelBorder_SpriteSheet_512_163: -8867843582582718938
+      QuixelBorder_SpriteSheet_512_164: -3538956471930673496
+      QuixelBorder_SpriteSheet_512_165: 283462780655483287
+      QuixelBorder_SpriteSheet_512_166: 7437297266266141770
+      QuixelBorder_SpriteSheet_512_167: 4662314478305478842
+      QuixelBorder_SpriteSheet_512_168: -4575233208761284227
+      QuixelBorder_SpriteSheet_512_169: 5760569457538139748
+      QuixelBorder_SpriteSheet_512_17: -4659742219348828659
+      QuixelBorder_SpriteSheet_512_170: 1124698840040800250
+      QuixelBorder_SpriteSheet_512_171: 7113241862739723742
+      QuixelBorder_SpriteSheet_512_172: -2550803108407296471
+      QuixelBorder_SpriteSheet_512_173: -6923821492949159792
+      QuixelBorder_SpriteSheet_512_174: -2409088742676786733
+      QuixelBorder_SpriteSheet_512_175: 3608365292791223928
+      QuixelBorder_SpriteSheet_512_176: 2600787148497970899
+      QuixelBorder_SpriteSheet_512_177: 3548944635229369793
+      QuixelBorder_SpriteSheet_512_178: 6224885437905347675
+      QuixelBorder_SpriteSheet_512_179: 2284485459960995687
+      QuixelBorder_SpriteSheet_512_18: -1484618223051606900
+      QuixelBorder_SpriteSheet_512_180: -534016177467975722
+      QuixelBorder_SpriteSheet_512_181: 4175090605397974446
+      QuixelBorder_SpriteSheet_512_182: 1148792460371901430
+      QuixelBorder_SpriteSheet_512_183: -2391471649862359052
+      QuixelBorder_SpriteSheet_512_184: -6825254841985957686
+      QuixelBorder_SpriteSheet_512_185: 498931721049931906
+      QuixelBorder_SpriteSheet_512_186: -3333103914962181817
+      QuixelBorder_SpriteSheet_512_187: -9089346877745710054
+      QuixelBorder_SpriteSheet_512_188: -8546482472783174605
+      QuixelBorder_SpriteSheet_512_189: 7533309858213544758
+      QuixelBorder_SpriteSheet_512_19: -2512140935818994997
+      QuixelBorder_SpriteSheet_512_190: -1963429211714990484
+      QuixelBorder_SpriteSheet_512_191: 3316398137613266793
+      QuixelBorder_SpriteSheet_512_192: -1128653624934802693
+      QuixelBorder_SpriteSheet_512_193: 7204996897178814570
+      QuixelBorder_SpriteSheet_512_194: 474175787517159206
+      QuixelBorder_SpriteSheet_512_195: -601164457130259569
+      QuixelBorder_SpriteSheet_512_196: -3321920885860104315
+      QuixelBorder_SpriteSheet_512_197: 5838529881159228894
+      QuixelBorder_SpriteSheet_512_198: -8592090266351510427
+      QuixelBorder_SpriteSheet_512_199: 4879312754196952517
+      QuixelBorder_SpriteSheet_512_2: 3981953330630261000
+      QuixelBorder_SpriteSheet_512_20: -3565566172119668179
+      QuixelBorder_SpriteSheet_512_200: 8831348114593168786
+      QuixelBorder_SpriteSheet_512_201: -6351152218938538786
+      QuixelBorder_SpriteSheet_512_202: -2853259994044775355
+      QuixelBorder_SpriteSheet_512_203: 8251291528197886583
+      QuixelBorder_SpriteSheet_512_204: -2291664272451435185
+      QuixelBorder_SpriteSheet_512_205: -7792287346316634572
+      QuixelBorder_SpriteSheet_512_206: -4383745904910429145
+      QuixelBorder_SpriteSheet_512_207: -953031938988051744
+      QuixelBorder_SpriteSheet_512_208: 297376744712915684
+      QuixelBorder_SpriteSheet_512_209: -5093989649316682711
+      QuixelBorder_SpriteSheet_512_21: 8280349255875520317
+      QuixelBorder_SpriteSheet_512_210: -7594474280500179249
+      QuixelBorder_SpriteSheet_512_211: 7176719833489007642
+      QuixelBorder_SpriteSheet_512_212: -6138346811907280296
+      QuixelBorder_SpriteSheet_512_213: 5324545358411482166
+      QuixelBorder_SpriteSheet_512_22: 9106149810468279258
+      QuixelBorder_SpriteSheet_512_23: -8961522925663117038
+      QuixelBorder_SpriteSheet_512_24: 4743903607638207235
+      QuixelBorder_SpriteSheet_512_25: -476644800792632509
+      QuixelBorder_SpriteSheet_512_26: -7315598405898236210
+      QuixelBorder_SpriteSheet_512_27: 1071334904881427111
+      QuixelBorder_SpriteSheet_512_28: -585777055995008658
+      QuixelBorder_SpriteSheet_512_29: -152603163172870608
+      QuixelBorder_SpriteSheet_512_3: -2450386412810130709
+      QuixelBorder_SpriteSheet_512_30: -4657528891751993813
+      QuixelBorder_SpriteSheet_512_31: -3577702696542607142
+      QuixelBorder_SpriteSheet_512_32: -3399116408596256627
+      QuixelBorder_SpriteSheet_512_33: 5810574793580909821
+      QuixelBorder_SpriteSheet_512_34: -8606800742316795748
+      QuixelBorder_SpriteSheet_512_35: -2605474303700872937
+      QuixelBorder_SpriteSheet_512_36: 1925398047291533446
+      QuixelBorder_SpriteSheet_512_37: 4173063416911965242
+      QuixelBorder_SpriteSheet_512_38: -1693365161257263215
+      QuixelBorder_SpriteSheet_512_39: 5027076210233979948
+      QuixelBorder_SpriteSheet_512_4: 6960898484932930233
+      QuixelBorder_SpriteSheet_512_40: 7923967043380955505
+      QuixelBorder_SpriteSheet_512_41: 8811565125136875167
+      QuixelBorder_SpriteSheet_512_42: 2188545913799421005
+      QuixelBorder_SpriteSheet_512_43: 5295951021281842422
+      QuixelBorder_SpriteSheet_512_44: 2537100700166714029
+      QuixelBorder_SpriteSheet_512_45: 5171737218098455663
+      QuixelBorder_SpriteSheet_512_46: -4511196445395965121
+      QuixelBorder_SpriteSheet_512_47: 3903026558306050728
+      QuixelBorder_SpriteSheet_512_48: 3526191621447385820
+      QuixelBorder_SpriteSheet_512_49: -1449141800890130576
+      QuixelBorder_SpriteSheet_512_5: -7343763128708651537
+      QuixelBorder_SpriteSheet_512_50: -3782545947563224519
+      QuixelBorder_SpriteSheet_512_51: 2562026193504921855
+      QuixelBorder_SpriteSheet_512_52: -2628231202828067062
+      QuixelBorder_SpriteSheet_512_53: -1196012541693366128
+      QuixelBorder_SpriteSheet_512_54: 6953851222686215849
+      QuixelBorder_SpriteSheet_512_55: -6577795913256773861
+      QuixelBorder_SpriteSheet_512_56: 1453062542119601728
+      QuixelBorder_SpriteSheet_512_57: -5703759018324122067
+      QuixelBorder_SpriteSheet_512_58: -17246742913831822
+      QuixelBorder_SpriteSheet_512_59: 4495231818219314977
+      QuixelBorder_SpriteSheet_512_6: -4576479120060686076
+      QuixelBorder_SpriteSheet_512_60: -1362295223947420594
+      QuixelBorder_SpriteSheet_512_61: -8514723763405683833
+      QuixelBorder_SpriteSheet_512_62: 5586445457196970427
+      QuixelBorder_SpriteSheet_512_63: 1837915639929267754
+      QuixelBorder_SpriteSheet_512_64: -7024157397148047098
+      QuixelBorder_SpriteSheet_512_65: 4125488515150261716
+      QuixelBorder_SpriteSheet_512_66: -736777812415101627
+      QuixelBorder_SpriteSheet_512_67: -3681504685220342891
+      QuixelBorder_SpriteSheet_512_68: -6236750109382212252
+      QuixelBorder_SpriteSheet_512_69: -6665599639560706123
+      QuixelBorder_SpriteSheet_512_7: -9150134321421417905
+      QuixelBorder_SpriteSheet_512_70: 5011438442602542624
+      QuixelBorder_SpriteSheet_512_71: 7799671109655873066
+      QuixelBorder_SpriteSheet_512_72: 5751377878420678490
+      QuixelBorder_SpriteSheet_512_73: 3257458283556074190
+      QuixelBorder_SpriteSheet_512_74: 7199068568826824502
+      QuixelBorder_SpriteSheet_512_75: 6040752534260889696
+      QuixelBorder_SpriteSheet_512_76: -7769051764700017411
+      QuixelBorder_SpriteSheet_512_77: -1655169209191474366
+      QuixelBorder_SpriteSheet_512_78: 9082711747407774639
+      QuixelBorder_SpriteSheet_512_79: -4967988827168284451
+      QuixelBorder_SpriteSheet_512_8: -101280178905437823
+      QuixelBorder_SpriteSheet_512_80: 1455660696650020684
+      QuixelBorder_SpriteSheet_512_81: 3759095039137664254
+      QuixelBorder_SpriteSheet_512_82: -8164510472640770837
+      QuixelBorder_SpriteSheet_512_83: -3272304486459097976
+      QuixelBorder_SpriteSheet_512_84: -3838658376601606877
+      QuixelBorder_SpriteSheet_512_85: -4831714272064556867
+      QuixelBorder_SpriteSheet_512_86: 211067692853964419
+      QuixelBorder_SpriteSheet_512_87: 489511779915435550
+      QuixelBorder_SpriteSheet_512_88: 7427046798694933326
+      QuixelBorder_SpriteSheet_512_89: 617503748241418033
+      QuixelBorder_SpriteSheet_512_9: 6150834557567238233
+      QuixelBorder_SpriteSheet_512_90: 4547737946458555763
+      QuixelBorder_SpriteSheet_512_91: -2156384577426991775
+      QuixelBorder_SpriteSheet_512_92: 8781915922278819588
+      QuixelBorder_SpriteSheet_512_93: -9145982334352361157
+      QuixelBorder_SpriteSheet_512_94: -9035686423348754586
+      QuixelBorder_SpriteSheet_512_95: 6932756938164361868
+      QuixelBorder_SpriteSheet_512_96: -6482954555605743667
+      QuixelBorder_SpriteSheet_512_97: 4417734455358441515
+      QuixelBorder_SpriteSheet_512_98: -6499819639125897445
+      QuixelBorder_SpriteSheet_512_99: 5926511749246509569
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

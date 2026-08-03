@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Quixel
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterData
   displayName: Quixel
-  portrait: {fileID: -4317765012634617379, guid: 99c160bb05880744fbfa55e71e83055b, type: 3}
-  defaultBorder: {fileID: 8803301233112118933, guid: 839729afad7eb024ebc8f1991fca6afa, type: 3}
+  portrait: {fileID: 21300000, guid: 99c160bb05880744fbfa55e71e83055b, type: 3}
+  defaultBorder: {fileID: 21300000, guid: 839729afad7eb024ebc8f1991fca6afa, type: 3}
   specialAbilityName: Bombs Away
-  specialDescription: Drop four bombs down different columns at once. Each bomb detonates when it hits a set unit or the bottom of the board.
+  specialDescription: Drop four bombs down different columns at once. Each bomb detonates
+    when it hits a set unit or the bottom of the board.
   startsLocked: 1
   unlockCost: 100
   ability: 6
