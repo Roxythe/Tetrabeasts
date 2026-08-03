@@ -387,7 +387,11 @@ public sealed class SteamCloudSaveService : MonoBehaviour
         }
 
         foreach (var characterName in GetCharacterAssetNames())
+        {
             ints.Add($"unlock_char_{characterName}");
+            ints.Add(CommanderBorderFrameStore.GetUnlockKey(characterName));
+            ints.Add(CommanderBorderFrameStore.GetActiveKey(characterName));
+        }
 
         foreach (var modifierName in GetRunModifierAssetNames())
             ints.Add($"codex_run_modifier_{modifierName}");

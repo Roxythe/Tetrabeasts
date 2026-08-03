@@ -140,6 +140,9 @@ public sealed class LoadingScreenPreview : MonoBehaviour
 
         StretchToParent(rect);
         vignetteGraphic = rect.GetComponent<LoadingScreenVignetteGraphic>();
+        if (!vignetteGraphic)
+            vignetteGraphic = rect.gameObject.AddComponent<LoadingScreenVignetteGraphic>();
+
         vignetteGraphic.raycastTarget = false;
         rect.SetSiblingIndex(2);
     }

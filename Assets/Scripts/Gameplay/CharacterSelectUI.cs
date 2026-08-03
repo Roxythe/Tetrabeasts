@@ -17,6 +17,8 @@ public class CharacterSelectUI : MonoBehaviour
     public TMP_Text selectedSpecialDescription;
     public CurrencyUI currencyUI;
     [SerializeField] ScrollRect listScrollRect;
+    [SerializeField] Button frameSwapButton;
+    [SerializeField] TMP_Text frameSwapButtonText;
 
     [Header("Audio")]
     public AudioClip selectSFX;
@@ -36,6 +38,8 @@ public class CharacterSelectUI : MonoBehaviour
     void Awake()
     {
         ConfigureScrollInput();
+        ResolveFrameSwapButton();
+        WireFrameSwapButton();
         BuildList();
 
         var saved = SelectedCharacterStore.ResolveFromRoster(roster);
@@ -64,6 +68,9 @@ public class CharacterSelectUI : MonoBehaviour
     void OnEnable()
     {
         ConfigureScrollInput();
+        ResolveFrameSwapButton();
+        WireFrameSwapButton();
+        RefreshPreview();
         RefreshButtonAlphas();
     }
 
@@ -274,7 +281,8 @@ public class CharacterSelectUI : MonoBehaviour
 
         if (selectedName) selectedName.text = TetrabeastsLocalization.LocalizeText(cur.displayName);
         if (selectedPortrait && cur.portrait) selectedPortrait.sprite = cur.portrait;
-        if (selectedBorder && cur.defaultBorder) selectedBorder.sprite = cur.defaultBorder;
+        if (selectedBorder)
+            CommanderBorderFrameStore.ApplyToImage(selectedBorder, cur);
 
         if (selectedSpecialAbilityName)
         {
@@ -285,6 +293,81 @@ public class CharacterSelectUI : MonoBehaviour
 
         if (selectedSpecialDescription)
             selectedSpecialDescription.text = TetrabeastsLocalization.LocalizeText(cur.specialDescription);
+
+        RefreshFrameSwapButton();
+    }
+
+    void ResolveFrameSwapButton()
+    {
+        if (!frameSwapButton)
+        {
+            var buttonTransform = FindDeep(transform, "FrameSwap_Button");
+            if (buttonTransform)
+                frameSwapButton = buttonTransform.GetComponent<Button>();
+        }
+
+        if (!frameSwapButtonText && frameSwapButton)
+            frameSwapButtonText = frameSwapButton.GetComponentInChildren<TMP_Text>(true);
+    }
+
+    void WireFrameSwapButton()
+    {
+        if (!frameSwapButton)
+            return;
+
+        frameSwapButton.onClick.RemoveAllListeners();
+        frameSwapButton.onClick.AddListener(OnFrameSwapClicked);
+        UIButtonTargetVisual.Ensure(frameSwapButton.gameObject)?.Configure(hoverSFX, false, frameSwapButton.transform);
+        RefreshFrameSwapButton();
+    }
+
+    void RefreshFrameSwapButton()
+    {
+        if (!frameSwapButton)
+            return;
+
+        var cur = previewCharacter ? previewCharacter : SelectedCharacterStore.Current;
+        if (cur)
+            CommanderBorderFrameStore.EnsureUnlockedFromExistingProgress(cur);
+
+        bool available = cur &&
+                         UnlockStore.IsUnlocked(cur) &&
+                         CommanderBorderFrameStore.HasAnimatedBorder(cur) &&
+                         CommanderBorderFrameStore.IsUnlocked(cur);
+
+        frameSwapButton.interactable = available;
+
+        if (frameSwapButtonText)
+        {
+            if (!cur || !CommanderBorderFrameStore.HasAnimatedBorder(cur))
+                frameSwapButtonText.text = "Frame";
+            else if (!CommanderBorderFrameStore.IsUnlocked(cur))
+                frameSwapButtonText.text = "Locked";
+            else
+                frameSwapButtonText.text = CommanderBorderFrameStore.IsActive(cur) ? "Frame On" : "Frame Off";
+        }
+    }
+
+    void OnFrameSwapClicked()
+    {
+        var cur = previewCharacter ? previewCharacter : SelectedCharacterStore.Current;
+        bool available = cur &&
+                         UnlockStore.IsUnlocked(cur) &&
+                         CommanderBorderFrameStore.HasAnimatedBorder(cur) &&
+                         CommanderBorderFrameStore.IsUnlocked(cur);
+
+        if (!available)
+        {
+            if (AudioManager.I && errorSFX)
+                AudioManager.I.PlaySFX(errorSFX);
+            RefreshFrameSwapButton();
+            return;
+        }
+
+        CommanderBorderFrameStore.ToggleActive(cur);
+        RefreshPreview();
+        RefreshButtonAlphas();
+        RefreshTitleMenuLoadoutUI();
     }
 
     void RefreshTitleMenuLoadoutUI()

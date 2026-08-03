@@ -19,6 +19,7 @@ public class PlayerCharacterData : ScriptableObject
     public string displayName = "Alyx";
     public Sprite portrait;
     public Sprite defaultBorder;
+    public RuntimeAnimatorController animatedBorderController;
     public string specialAbilityName = "Ability Name";
     public string specialDescription;
 

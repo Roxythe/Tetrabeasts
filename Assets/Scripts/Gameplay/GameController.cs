@@ -587,6 +587,7 @@ public class GameController : MonoBehaviour
     int _starDifficulty = 0;
     StarDifficultyModifiers _starDifficultyModifiers = new StarDifficultyModifiers(0);
     bool _newDifficultyUnlockedThisRun;
+    bool _commanderAnimatedBorderUnlockedThisRun;
     bool _roundTransitionActive;
     string _claimedRoundWinOneLiner = string.Empty;
     string _claimedRoundLossOneLiner = string.Empty;
@@ -1091,8 +1092,8 @@ public class GameController : MonoBehaviour
         if (playerPortrait && selectedCharacter.portrait)
             playerPortrait.sprite = selectedCharacter.portrait;
 
-        if (playerBorder && selectedCharacter.defaultBorder)
-            playerBorder.sprite = selectedCharacter.defaultBorder;
+        if (playerBorder)
+            CommanderBorderFrameStore.ApplyToImage(playerBorder, selectedCharacter);
 
         if (playerName)
             playerName.text = TetrabeastsLocalization.LocalizeText(selectedCharacter.displayName);
@@ -1129,6 +1130,7 @@ public class GameController : MonoBehaviour
         _postFinalSurvivalActive = false;
         _pendingPostFinalSurvivalIntro = false;
         _newDifficultyUnlockedThisRun = false;
+        _commanderAnimatedBorderUnlockedThisRun = false;
         _firstFullRowTutorialShownThisRun = false;
         gameOver = false;
         levelWon = false;
@@ -1180,6 +1182,7 @@ public class GameController : MonoBehaviour
         _demoLimitRunEnding = false;
         _finalWinStateApplied = saveData.standardFinalWinApplied;
         _newDifficultyUnlockedThisRun = false;
+        _commanderAnimatedBorderUnlockedThisRun = false;
         _firstFullRowTutorialShownThisRun = false;
 
         ResetRunGridToBase();
@@ -3842,7 +3845,7 @@ public class GameController : MonoBehaviour
 
         bool doNotShowAgain = false;
         yield return CoShowRoundTransition(
-            PostFinalSurvivalIntroText,
+            BuildPostFinalSurvivalIntroText(),
             PostFinalSurvivalIntroOptOutText,
             false,
             value => doNotShowAgain = value);
@@ -3875,6 +3878,11 @@ public class GameController : MonoBehaviour
             PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunBeatFinalLevel, 1);
 
         _newDifficultyUnlockedThisRun = HandleStarDifficultyFinalWin();
+        if (selectedCharacter && CommanderBorderFrameStore.UnlockForSuccessfulRun(selectedCharacter))
+        {
+            _commanderAnimatedBorderUnlockedThisRun = true;
+            ApplySelectedCharacterUI();
+        }
 
         if (PlayerProgress.I != null)
         {
@@ -3900,6 +3908,20 @@ public class GameController : MonoBehaviour
         gameOver = true;
         ClearTempRunCheckpoint();
         PlayerProgress.I?.EndRun();
+    }
+
+    string BuildPostFinalSurvivalIntroText()
+    {
+        string text = PostFinalSurvivalIntroText;
+        if (_commanderAnimatedBorderUnlockedThisRun && selectedCharacter)
+        {
+            string commanderName = TetrabeastsLocalization.LocalizeText(selectedCharacter.displayName);
+            text += "\n\n" + TetrabeastsLocalization.LocalizeFormat(
+                "{0}'s animated commander border has been unlocked and equipped.",
+                commanderName);
+        }
+
+        return text;
     }
 
     void ShowRunEndCommitAfterFinalWin(List<MonsterData> roster, bool playIntermissionMusic)
@@ -4810,7 +4832,7 @@ public class GameController : MonoBehaviour
                 playerPortrait.sprite = selectedCharacter.portrait;
 
             if (playerBorder)
-                playerBorder.sprite = selectedCharacter.defaultBorder;
+                CommanderBorderFrameStore.ApplyToImage(playerBorder, selectedCharacter);
 
             if (playerName)
                 playerName.text = TetrabeastsLocalization.LocalizeText(selectedCharacter.displayName);
@@ -6002,6 +6024,7 @@ public class GameController : MonoBehaviour
 
         RunSummaryStats.BeginRun();
         _finalWinStateApplied = false;
+        _commanderAnimatedBorderUnlockedThisRun = false;
         _demoLimitRunEnding = false;
 
         // Reset bag and preview

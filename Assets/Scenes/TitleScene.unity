@@ -420,6 +420,8 @@ MonoBehaviour:
   selectedSpecialDescription: {fileID: 1452008330}
   currencyUI: {fileID: 540683043}
   listScrollRect: {fileID: 0}
+  frameSwapButton: {fileID: 1717749241}
+  frameSwapButtonText: {fileID: 559467733}
   selectSFX: {fileID: 8300000, guid: c342e5149fa03324bb3a1217c252b079, type: 3}
   hoverSFX: {fileID: 8300000, guid: dae9f1364bb247044be20a7795e60123, type: 3}
   unlockSFX: {fileID: 8300000, guid: 7b4ae982ff5c30d408535a4bebfac709, type: 3}
@@ -15118,19 +15120,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1717749242}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 665172192}
-        m_TargetAssemblyTypeName: TitleMenuUI, Assembly-CSharp
-        m_MethodName: OnToggleSelectCharacter
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1717749242
 MonoBehaviour:
   m_ObjectHideFlags: 0

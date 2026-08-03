@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: Crono
   portrait: {fileID: -7226037058745236332, guid: 382a2b7182ea7e743983e78f076fb525, type: 3}
   defaultBorder: {fileID: -4735880192303008778, guid: 6257d831b03235041a323b1d538682f5, type: 3}
+  animatedBorderController: {fileID: 9100000, guid: 684378be5e349034ab4d1e8ee09f88e7, type: 2}
   specialAbilityName: Time Shift
   specialDescription: Reduce gravity significantly for 20 seconds.
   startsLocked: 1

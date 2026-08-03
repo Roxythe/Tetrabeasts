@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 // ============== Store data for selected character ==============
 
@@ -172,5 +173,119 @@ public static class SettingsStore
         PlayerPrefs.SetInt(KeySkipIntro, enabled ? 1 : 0);
         PlayerPrefs.Save();
         SteamCloudSaveService.QueueUpload();
+    }
+}
+
+public static class CommanderBorderFrameStore
+{
+    const string UnlockPrefix = "unlock_commander_border_anim_";
+    const string ActivePrefix = "active_commander_border_anim_";
+    const string FinalWinCharacterPrefix = "lt_final_win_char_";
+
+    public static bool HasAnimatedBorder(PlayerCharacterData character)
+    {
+        return character && character.animatedBorderController;
+    }
+
+    public static string GetUnlockKey(string characterAssetName) => UnlockPrefix + characterAssetName;
+    public static string GetActiveKey(string characterAssetName) => ActivePrefix + characterAssetName;
+
+    public static bool IsUnlocked(PlayerCharacterData character)
+    {
+        if (!HasAnimatedBorder(character))
+            return false;
+
+        return HasExplicitUnlock(character) || HasCompletionUnlock(character);
+    }
+
+    public static bool IsActive(PlayerCharacterData character)
+    {
+        if (!IsUnlocked(character))
+            return false;
+
+        return PlayerPrefs.GetInt(GetActiveKey(character.name), 1) == 1;
+    }
+
+    public static void SetActive(PlayerCharacterData character, bool active)
+    {
+        if (!HasAnimatedBorder(character))
+            return;
+
+        if (active && !IsUnlocked(character))
+            return;
+
+        PlayerPrefs.SetInt(GetActiveKey(character.name), active ? 1 : 0);
+        PlayerPrefs.Save();
+        SteamCloudSaveService.QueueUpload();
+    }
+
+    public static bool ToggleActive(PlayerCharacterData character)
+    {
+        bool next = !IsActive(character);
+        SetActive(character, next);
+        return next;
+    }
+
+    public static bool UnlockForSuccessfulRun(PlayerCharacterData character)
+    {
+        if (!HasAnimatedBorder(character) || HasExplicitUnlock(character))
+            return false;
+
+        PlayerPrefs.SetInt(GetUnlockKey(character.name), 1);
+        PlayerPrefs.SetInt(GetActiveKey(character.name), 1);
+        PlayerPrefs.Save();
+        SteamCloudSaveService.QueueUpload();
+        return true;
+    }
+
+    public static bool EnsureUnlockedFromExistingProgress(PlayerCharacterData character)
+    {
+        if (!HasAnimatedBorder(character) || HasExplicitUnlock(character) || !HasCompletionUnlock(character))
+            return false;
+
+        return UnlockForSuccessfulRun(character);
+    }
+
+    public static void ApplyToImage(Image borderImage, PlayerCharacterData character)
+    {
+        if (!borderImage)
+            return;
+
+        bool useAnimated = IsActive(character);
+        Animator animator = borderImage.GetComponent<Animator>();
+
+        if (useAnimated)
+        {
+            if (!animator)
+                animator = borderImage.gameObject.AddComponent<Animator>();
+
+            borderImage.sprite = character.defaultBorder;
+            animator.runtimeAnimatorController = character.animatedBorderController;
+            animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+            animator.enabled = true;
+            animator.Rebind();
+            return;
+        }
+
+        if (animator)
+        {
+            animator.enabled = false;
+            animator.runtimeAnimatorController = null;
+        }
+
+        if (character && character.defaultBorder)
+            borderImage.sprite = character.defaultBorder;
+    }
+
+    static bool HasExplicitUnlock(PlayerCharacterData character)
+    {
+        return character && PlayerPrefs.GetInt(GetUnlockKey(character.name), 0) == 1;
+    }
+
+    static bool HasCompletionUnlock(PlayerCharacterData character)
+    {
+        return character &&
+               PlayerProgress.I != null &&
+               PlayerProgress.I.GetLifetimeInt(FinalWinCharacterPrefix + character.name) > 0;
     }
 }

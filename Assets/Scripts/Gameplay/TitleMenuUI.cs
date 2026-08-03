@@ -1341,7 +1341,7 @@ public class TitleMenuUI : MonoBehaviour
             refs.iconImage.sprite = current.portrait;
 
         if (refs.borderImage)
-            refs.borderImage.sprite = current.defaultBorder;
+            CommanderBorderFrameStore.ApplyToImage(refs.borderImage, current);
     }
 
     void RefreshSelectedMonstersUI()
