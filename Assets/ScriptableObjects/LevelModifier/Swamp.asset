@@ -18,6 +18,7 @@ MonoBehaviour:
     drifts across the terrain.
   icon: {fileID: 21300000, guid: 1b6de224c3b659b43b3255501e7ea6be, type: 3}
   backgroundOverrideSprite: {fileID: 0}
+  backgroundOverrideVideoClip: {fileID: 32900000, guid: d89d78def4a51d9439ee8d7dd5f98ab4, type: 3}
   enableRainOverlay: 0
   rainDrops: 44
   rainSpeed: 140
@@ -71,7 +72,29 @@ MonoBehaviour:
   autoShiftEdgePauseSeconds: 0.6
   comboThreshold: 3
   comboBelowThresholdDamageMultiplier: 0.2
+  comboAtOrAboveThresholdDamageMultiplier: 1.5
   comboShieldThreshold: 4
   comboShieldCount: 3
   comboShieldBlockedDamageMultiplier: 0.1
   startingHealthFraction: 0.5
+  piercingProjectileSprite: {fileID: 0}
+  disarrayTriminoChance: 0.15
+  disarrayPentaminoChance: 0.15
+  outFlankedProjectileSprite: {fileID: 0}
+  outFlankedIntervalMin: 6
+  outFlankedIntervalMax: 10
+  outFlankedRowsPerWave: 1
+  outFlankedWarningSeconds: 2
+  outFlankedProjectileSideOffsetCells: 3.25
+  outFlankedProjectileSpeedMultiplier: 0.75
+  outFlankedProjectileSizeMultiplier: 1
+  volcanicEruptionIntervalMin: 12
+  volcanicEruptionIntervalMax: 20
+  volcanicEruptionTargetCount: 4
+  volcanicEruptionExcludedTopRows: 4
+  volcanicEruptionWarningSeconds: 2
+  volcanicEruptionMonsterTargetChance: 0.5
+  volcanicEruptionWarningSprite: {fileID: 0}
+  volcanicEruptionWarningTint: {r: 1, g: 0.08, b: 0, a: 0.45}
+  hardenedLavaObstacleSprite: {fileID: 0}
+  roulettePreviewInterval: 1

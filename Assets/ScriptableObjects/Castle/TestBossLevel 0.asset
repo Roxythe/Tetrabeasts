@@ -19,6 +19,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 6d8d1d85685aba5468a423fcd77d7108, type: 3}
   - {fileID: 21300000, guid: 7a16889b28523e447a10bd7361cd380a, type: 3}
   levelBackgroundSprite: {fileID: 3131462820028859008, guid: 17ec95ff0f36e1b43bb3655ea629c63e, type: 3}
+  levelBackgroundVideoClip: {fileID: 32900000, guid: 2efa0b1467e36cf4c8f14fd51d1477a1, type: 3}
   maxHP: 300
   infiniteHealth: 0
   projectileSprite: {fileID: 21300000, guid: ca7186951d5077d419fe7998de074c6d, type: 3}
