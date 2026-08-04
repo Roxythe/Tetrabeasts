@@ -48,6 +48,8 @@ public class LevelModifierSO : ScriptableObject
     public Sprite backgroundOverrideSprite;
     [Tooltip("Optional animated background video override shown while this modifier is active. Static sprites remain the fallback.")]
     public VideoClip backgroundOverrideVideoClip;
+    [Tooltip("If true, the animated background video override plays forward, then backward, in a continuous ping-pong loop.")]
+    public bool backgroundOverrideVideoPingPongLoop = false;
     public bool enableRainOverlay = false;
     [Range(8, 128)] public int rainDrops = 44;
     [Range(40f, 280f)] public float rainSpeed = 140f;
