@@ -20,6 +20,9 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 6d37fec01126a8841888331787b7d73a, type: 3}
   backgroundOverrideSprite: {fileID: 21300000, guid: 6c1344058a7856243a4ce141a642f4b1, type: 3}
   backgroundOverrideVideoClip: {fileID: 32900000, guid: cfcf18e1102dbd94e85c62745aa62d9f, type: 3}
+  backgroundOverrideVideoPingPongLoop: 0
+  boardBackgroundOverrideSprite: {fileID: 21300000, guid: 3f19c3cb8295c9348bb8f3cdd06008c6, type: 3}
+  boardBorderOverrideSprite: {fileID: 0}
   enableRainOverlay: 0
   rainDrops: 44
   rainSpeed: 140

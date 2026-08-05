@@ -1,0 +1,4253 @@
+fileFormatVersion: 2
+guid: 394fc85159f4a0340b1d4ca45d81c7a4
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8878336363500681919
+    second: KinghtTaunt_Spritesheet_256_0
+  - first:
+      213: 3171330201400781477
+    second: KinghtTaunt_Spritesheet_256_1
+  - first:
+      213: -5543138409785162204
+    second: KinghtTaunt_Spritesheet_256_2
+  - first:
+      213: -6577162627270725291
+    second: KinghtTaunt_Spritesheet_256_3
+  - first:
+      213: 3281688559382043726
+    second: KinghtTaunt_Spritesheet_256_4
+  - first:
+      213: 2699968549351493694
+    second: KinghtTaunt_Spritesheet_256_5
+  - first:
+      213: 5932990490613615768
+    second: KinghtTaunt_Spritesheet_256_6
+  - first:
+      213: 8468025889852561373
+    second: KinghtTaunt_Spritesheet_256_7
+  - first:
+      213: 2606118517784037284
+    second: KinghtTaunt_Spritesheet_256_8
+  - first:
+      213: -2453748700773353232
+    second: KinghtTaunt_Spritesheet_256_9
+  - first:
+      213: -530962755828558255
+    second: KinghtTaunt_Spritesheet_256_10
+  - first:
+      213: -778147175212366045
+    second: KinghtTaunt_Spritesheet_256_11
+  - first:
+      213: -3916168221839846321
+    second: KinghtTaunt_Spritesheet_256_12
+  - first:
+      213: 3024871800248849813
+    second: KinghtTaunt_Spritesheet_256_13
+  - first:
+      213: -688510853291991747
+    second: KinghtTaunt_Spritesheet_256_14
+  - first:
+      213: 5900988698516815789
+    second: KinghtTaunt_Spritesheet_256_15
+  - first:
+      213: -4567647245511945192
+    second: KinghtTaunt_Spritesheet_256_16
+  - first:
+      213: 4452186965640310199
+    second: KinghtTaunt_Spritesheet_256_17
+  - first:
+      213: -4616732503981015773
+    second: KinghtTaunt_Spritesheet_256_18
+  - first:
+      213: -455642435961611286
+    second: KinghtTaunt_Spritesheet_256_19
+  - first:
+      213: -5145038604187790074
+    second: KinghtTaunt_Spritesheet_256_20
+  - first:
+      213: 2888993626048889644
+    second: KinghtTaunt_Spritesheet_256_21
+  - first:
+      213: -801295598076536657
+    second: KinghtTaunt_Spritesheet_256_22
+  - first:
+      213: -4987802969531475903
+    second: KinghtTaunt_Spritesheet_256_23
+  - first:
+      213: 7307667575649484150
+    second: KinghtTaunt_Spritesheet_256_24
+  - first:
+      213: -1811855975888572397
+    second: KinghtTaunt_Spritesheet_256_25
+  - first:
+      213: -614539454645870722
+    second: KinghtTaunt_Spritesheet_256_26
+  - first:
+      213: -1608648865541503285
+    second: KinghtTaunt_Spritesheet_256_27
+  - first:
+      213: -1464265699505656734
+    second: KinghtTaunt_Spritesheet_256_28
+  - first:
+      213: 5931858865139817825
+    second: KinghtTaunt_Spritesheet_256_29
+  - first:
+      213: 3215458458704921087
+    second: KinghtTaunt_Spritesheet_256_30
+  - first:
+      213: 1432065808717216351
+    second: KinghtTaunt_Spritesheet_256_31
+  - first:
+      213: -8926169952185757005
+    second: KinghtTaunt_Spritesheet_256_32
+  - first:
+      213: -8761919258189496625
+    second: KinghtTaunt_Spritesheet_256_33
+  - first:
+      213: -1178337836908948005
+    second: KinghtTaunt_Spritesheet_256_34
+  - first:
+      213: 4450448052085564472
+    second: KinghtTaunt_Spritesheet_256_35
+  - first:
+      213: -7219858862982644460
+    second: KinghtTaunt_Spritesheet_256_36
+  - first:
+      213: 3927480644477276884
+    second: KinghtTaunt_Spritesheet_256_37
+  - first:
+      213: -8038372455878244121
+    second: KinghtTaunt_Spritesheet_256_38
+  - first:
+      213: -7387222667561376223
+    second: KinghtTaunt_Spritesheet_256_39
+  - first:
+      213: -2027246586207177859
+    second: KinghtTaunt_Spritesheet_256_40
+  - first:
+      213: -7321311897797304266
+    second: KinghtTaunt_Spritesheet_256_41
+  - first:
+      213: -8138642316233518151
+    second: KinghtTaunt_Spritesheet_256_42
+  - first:
+      213: 5938486691414685013
+    second: KinghtTaunt_Spritesheet_256_43
+  - first:
+      213: 8675817745490875208
+    second: KinghtTaunt_Spritesheet_256_44
+  - first:
+      213: -5434771574532842109
+    second: KinghtTaunt_Spritesheet_256_45
+  - first:
+      213: 2839647571330747839
+    second: KinghtTaunt_Spritesheet_256_46
+  - first:
+      213: -4658518542072664493
+    second: KinghtTaunt_Spritesheet_256_47
+  - first:
+      213: -4067135866092662038
+    second: KinghtTaunt_Spritesheet_256_48
+  - first:
+      213: -1688781076042726987
+    second: KinghtTaunt_Spritesheet_256_49
+  - first:
+      213: 7593253512794526541
+    second: KinghtTaunt_Spritesheet_256_50
+  - first:
+      213: 6042021602034390413
+    second: KinghtTaunt_Spritesheet_256_51
+  - first:
+      213: -2334731567697250225
+    second: KinghtTaunt_Spritesheet_256_52
+  - first:
+      213: -7365211118754457105
+    second: KinghtTaunt_Spritesheet_256_53
+  - first:
+      213: -362080401298711794
+    second: KinghtTaunt_Spritesheet_256_54
+  - first:
+      213: -3264623679244844916
+    second: KinghtTaunt_Spritesheet_256_55
+  - first:
+      213: -1989477542687635394
+    second: KinghtTaunt_Spritesheet_256_56
+  - first:
+      213: -1723543941872956280
+    second: KinghtTaunt_Spritesheet_256_57
+  - first:
+      213: 4805676003114961638
+    second: KinghtTaunt_Spritesheet_256_58
+  - first:
+      213: 8487514807181905922
+    second: KinghtTaunt_Spritesheet_256_59
+  - first:
+      213: -7083382182265744413
+    second: KinghtTaunt_Spritesheet_256_60
+  - first:
+      213: 2678457606978534719
+    second: KinghtTaunt_Spritesheet_256_61
+  - first:
+      213: 5048438375137868190
+    second: KinghtTaunt_Spritesheet_256_62
+  - first:
+      213: -5596960658046505132
+    second: KinghtTaunt_Spritesheet_256_63
+  - first:
+      213: -109413183266921728
+    second: KinghtTaunt_Spritesheet_256_64
+  - first:
+      213: -3145909925992295490
+    second: KinghtTaunt_Spritesheet_256_65
+  - first:
+      213: -948875087773370183
+    second: KinghtTaunt_Spritesheet_256_66
+  - first:
+      213: 7825831952454545065
+    second: KinghtTaunt_Spritesheet_256_67
+  - first:
+      213: 600273066299203915
+    second: KinghtTaunt_Spritesheet_256_68
+  - first:
+      213: 8766566555502108805
+    second: KinghtTaunt_Spritesheet_256_69
+  - first:
+      213: 2204277913216104590
+    second: KinghtTaunt_Spritesheet_256_70
+  - first:
+      213: 6116357883729524865
+    second: KinghtTaunt_Spritesheet_256_71
+  - first:
+      213: 2625348521537725261
+    second: KinghtTaunt_Spritesheet_256_72
+  - first:
+      213: 7163446995304546402
+    second: KinghtTaunt_Spritesheet_256_73
+  - first:
+      213: -656682622339465634
+    second: KinghtTaunt_Spritesheet_256_74
+  - first:
+      213: -4679066482166078550
+    second: KinghtTaunt_Spritesheet_256_75
+  - first:
+      213: 539370496082197437
+    second: KinghtTaunt_Spritesheet_256_76
+  - first:
+      213: 1932920413495967276
+    second: KinghtTaunt_Spritesheet_256_77
+  - first:
+      213: -2296300152721241617
+    second: KinghtTaunt_Spritesheet_256_78
+  - first:
+      213: -3382690871957688563
+    second: KinghtTaunt_Spritesheet_256_79
+  - first:
+      213: 8792342575589553149
+    second: KinghtTaunt_Spritesheet_256_80
+  - first:
+      213: 6698848872493319188
+    second: KinghtTaunt_Spritesheet_256_81
+  - first:
+      213: -911263565644783122
+    second: KinghtTaunt_Spritesheet_256_82
+  - first:
+      213: -6101694744957258067
+    second: KinghtTaunt_Spritesheet_256_83
+  - first:
+      213: 5578488061425278170
+    second: KinghtTaunt_Spritesheet_256_84
+  - first:
+      213: -4396867072012372433
+    second: KinghtTaunt_Spritesheet_256_85
+  - first:
+      213: -1341918021996023645
+    second: KinghtTaunt_Spritesheet_256_86
+  - first:
+      213: 2873870783223929473
+    second: KinghtTaunt_Spritesheet_256_87
+  - first:
+      213: -854746178941208069
+    second: KinghtTaunt_Spritesheet_256_88
+  - first:
+      213: -6676350163131122123
+    second: KinghtTaunt_Spritesheet_256_89
+  - first:
+      213: -2730061311046820776
+    second: KinghtTaunt_Spritesheet_256_90
+  - first:
+      213: 36995113137992061
+    second: KinghtTaunt_Spritesheet_256_91
+  - first:
+      213: -8065889116575432986
+    second: KinghtTaunt_Spritesheet_256_92
+  - first:
+      213: 8234198970059353678
+    second: KinghtTaunt_Spritesheet_256_93
+  - first:
+      213: 6773292437683037895
+    second: KinghtTaunt_Spritesheet_256_94
+  - first:
+      213: 4330082459181323881
+    second: KinghtTaunt_Spritesheet_256_95
+  - first:
+      213: 3886056227278722274
+    second: KinghtTaunt_Spritesheet_256_96
+  - first:
+      213: -6694047706353628829
+    second: KinghtTaunt_Spritesheet_256_97
+  - first:
+      213: 1407440760109933564
+    second: KinghtTaunt_Spritesheet_256_98
+  - first:
+      213: -6666281577175468389
+    second: KinghtTaunt_Spritesheet_256_99
+  - first:
+      213: -5775547216681074769
+    second: KinghtTaunt_Spritesheet_256_100
+  - first:
+      213: 3097358953744561649
+    second: KinghtTaunt_Spritesheet_256_101
+  - first:
+      213: 92353020949298602
+    second: KinghtTaunt_Spritesheet_256_102
+  - first:
+      213: 7146168426205563349
+    second: KinghtTaunt_Spritesheet_256_103
+  - first:
+      213: -4317451514048463986
+    second: KinghtTaunt_Spritesheet_256_104
+  - first:
+      213: 6606795338397229983
+    second: KinghtTaunt_Spritesheet_256_105
+  - first:
+      213: 8162715859088777157
+    second: KinghtTaunt_Spritesheet_256_106
+  - first:
+      213: -592580898424335634
+    second: KinghtTaunt_Spritesheet_256_107
+  - first:
+      213: 1085409516525614461
+    second: KinghtTaunt_Spritesheet_256_108
+  - first:
+      213: 2324565281456137028
+    second: KinghtTaunt_Spritesheet_256_109
+  - first:
+      213: 5460758645756930898
+    second: KinghtTaunt_Spritesheet_256_110
+  - first:
+      213: 4346472809693336077
+    second: KinghtTaunt_Spritesheet_256_111
+  - first:
+      213: 3088676997166322868
+    second: KinghtTaunt_Spritesheet_256_112
+  - first:
+      213: -643787989969455908
+    second: KinghtTaunt_Spritesheet_256_113
+  - first:
+      213: 5338286432285115676
+    second: KinghtTaunt_Spritesheet_256_114
+  - first:
+      213: 3929810905888159070
+    second: KinghtTaunt_Spritesheet_256_115
+  - first:
+      213: -1328696160712305917
+    second: KinghtTaunt_Spritesheet_256_116
+  - first:
+      213: -1996136105959531472
+    second: KinghtTaunt_Spritesheet_256_117
+  - first:
+      213: -8684010835556605897
+    second: KinghtTaunt_Spritesheet_256_118
+  - first:
+      213: -2003345483033844183
+    second: KinghtTaunt_Spritesheet_256_119
+  - first:
+      213: -7275925758275076038
+    second: KinghtTaunt_Spritesheet_256_120
+  - first:
+      213: -6111112957620284933
+    second: KinghtTaunt_Spritesheet_256_121
+  - first:
+      213: -3216166945008822897
+    second: KinghtTaunt_Spritesheet_256_122
+  - first:
+      213: -3748666394164020432
+    second: KinghtTaunt_Spritesheet_256_123
+  - first:
+      213: 3267391640463649329
+    second: KinghtTaunt_Spritesheet_256_124
+  - first:
+      213: 7514028754361408925
+    second: KinghtTaunt_Spritesheet_256_125
+  - first:
+      213: -3655215558830362118
+    second: KinghtTaunt_Spritesheet_256_126
+  - first:
+      213: -4744933742799245951
+    second: KinghtTaunt_Spritesheet_256_127
+  - first:
+      213: -105900310582487328
+    second: KinghtTaunt_Spritesheet_256_128
+  - first:
+      213: -8171114701853364257
+    second: KinghtTaunt_Spritesheet_256_129
+  - first:
+      213: -8601706967026465767
+    second: KinghtTaunt_Spritesheet_256_130
+  - first:
+      213: 3313654467108263856
+    second: KinghtTaunt_Spritesheet_256_131
+  - first:
+      213: -5566833583912602008
+    second: KinghtTaunt_Spritesheet_256_132
+  - first:
+      213: -3806588218258487264
+    second: KinghtTaunt_Spritesheet_256_133
+  - first:
+      213: 1384424555822858233
+    second: KinghtTaunt_Spritesheet_256_134
+  - first:
+      213: 8043999682266307538
+    second: KinghtTaunt_Spritesheet_256_135
+  - first:
+      213: -5843447337085978478
+    second: KinghtTaunt_Spritesheet_256_136
+  - first:
+      213: -4869530325103819224
+    second: KinghtTaunt_Spritesheet_256_137
+  - first:
+      213: -4237455592929770289
+    second: KinghtTaunt_Spritesheet_256_138
+  - first:
+      213: -4637942030985151859
+    second: KinghtTaunt_Spritesheet_256_139
+  - first:
+      213: 2538317278744768155
+    second: KinghtTaunt_Spritesheet_256_140
+  - first:
+      213: 4337735265436811198
+    second: KinghtTaunt_Spritesheet_256_141
+  - first:
+      213: 7395914694691061528
+    second: KinghtTaunt_Spritesheet_256_142
+  - first:
+      213: 1121341380546300847
+    second: KinghtTaunt_Spritesheet_256_143
+  - first:
+      213: 2661773280991172823
+    second: KinghtTaunt_Spritesheet_256_144
+  - first:
+      213: 5105064432057037005
+    second: KinghtTaunt_Spritesheet_256_145
+  - first:
+      213: -2787352076843712076
+    second: KinghtTaunt_Spritesheet_256_146
+  - first:
+      213: 6242697988031287471
+    second: KinghtTaunt_Spritesheet_256_147
+  - first:
+      213: -436645581722517657
+    second: KinghtTaunt_Spritesheet_256_148
+  - first:
+      213: -4944467732647290274
+    second: KinghtTaunt_Spritesheet_256_149
+  - first:
+      213: -913551120152721588
+    second: KinghtTaunt_Spritesheet_256_150
+  - first:
+      213: 5939525181109835785
+    second: KinghtTaunt_Spritesheet_256_151
+  - first:
+      213: 7913532873309744700
+    second: KinghtTaunt_Spritesheet_256_152
+  - first:
+      213: 686977838664519478
+    second: KinghtTaunt_Spritesheet_256_153
+  - first:
+      213: -2955441922204451413
+    second: KinghtTaunt_Spritesheet_256_154
+  - first:
+      213: -8386877404457513026
+    second: KinghtTaunt_Spritesheet_256_155
+  - first:
+      213: 412645154830892109
+    second: KinghtTaunt_Spritesheet_256_156
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fba34e612ef263b70800000000000000
+      internalID: 8878336363500681919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_1
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5aa26f70404d20c20800000000000000
+      internalID: 3171330201400781477
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_2
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4268eef2cf0d213b0800000000000000
+      internalID: -5543138409785162204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_3
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 551bd83107939b4a0800000000000000
+      internalID: -6577162627270725291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_4
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4c1e6d8b56ea8d20800000000000000
+      internalID: 3281688559382043726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_5
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3092d03717387520800000000000000
+      internalID: 2699968549351493694
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_6
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89c8bc8ba67365250800000000000000
+      internalID: 5932990490613615768
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_7
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd719796ea8748570800000000000000
+      internalID: 8468025889852561373
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_8
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a7c51febfaca2420800000000000000
+      internalID: 2606118517784037284
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_9
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f8f352ae8882fdd0800000000000000
+      internalID: -2453748700773353232
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_10
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15650edcf24a1a8f0800000000000000
+      internalID: -530962755828558255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_11
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3274e7654477335f0800000000000000
+      internalID: -778147175212366045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_12
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 3072
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f44109040c9f6a9c0800000000000000
+      internalID: -3916168221839846321
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_13
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 595dde830e08af920800000000000000
+      internalID: 3024871800248849813
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_14
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3d978dd60be176f0800000000000000
+      internalID: -688510853291991747
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_15
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: daf70bed4f584e150800000000000000
+      internalID: 5900988698516815789
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_16
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81418f7d7057c90c0800000000000000
+      internalID: -4567647245511945192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_17
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7bd6d90e47859cd30800000000000000
+      internalID: 4452186965640310199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_18
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32d36358f321eefb0800000000000000
+      internalID: -4616732503981015773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_19
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aeb1aeb5e9b3da9f0800000000000000
+      internalID: -455642435961611286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_20
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60517b926a62998b0800000000000000
+      internalID: -5145038604187790074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_21
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2303077564c71820800000000000000
+      internalID: 2888993626048889644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_22
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa8509426e931e4f0800000000000000
+      internalID: -801295598076536657
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_23
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 148107f20a3c7cab0800000000000000
+      internalID: -4987802969531475903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_24
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67d3a3f31fc0a6560800000000000000
+      internalID: 7307667575649484150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_25
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3103efce69efad6e0800000000000000
+      internalID: -1811855975888572397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_26
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7fde593f97b877f0800000000000000
+      internalID: -614539454645870722
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_27
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc64019316eeca9e0800000000000000
+      internalID: -1608648865541503285
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_28
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26c2d24ba12edabe0800000000000000
+      internalID: -1464265699505656734
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_29
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16d1962a532325250800000000000000
+      internalID: 5931858865139817825
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_30
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff1c1259e6a9f9c20800000000000000
+      internalID: 3215458458704921087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_31
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5a729ff348bfd310800000000000000
+      internalID: 1432065808717216351
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_32
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b2d33ba8bfdf1480800000000000000
+      internalID: -8926169952185757005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_33
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fcef5f87bd8676680800000000000000
+      internalID: -8761919258189496625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_34
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd5d3adfaf3b5afe0800000000000000
+      internalID: -1178337836908948005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_35
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 834a3e38cea23cd30800000000000000
+      internalID: 4450448052085564472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_36
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41db677dd98edcb90800000000000000
+      internalID: -7219858862982644460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_37
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d25a4466d6318630800000000000000
+      internalID: 3927480644477276884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_38
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2560
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e8c71b27d6f17090800000000000000
+      internalID: -8038372455878244121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_39
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1266a4f7f105b7990800000000000000
+      internalID: -7387222667561376223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_40
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d737ffc78f5cdd3e0800000000000000
+      internalID: -2027246586207177859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_41
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63063f17e99756a90800000000000000
+      internalID: -7321311897797304266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_42
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b350fa0febbd0f80800000000000000
+      internalID: -8138642316233518151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_43
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5553821be2eb96250800000000000000
+      internalID: 5938486691414685013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_44
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8439308e542b66870800000000000000
+      internalID: 8675817745490875208
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_45
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38d54903c00d394b0800000000000000
+      internalID: -5434771574532842109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_46
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fbd4878cb64786720800000000000000
+      internalID: 2839647571330747839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_47
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35e2030611e995fb0800000000000000
+      internalID: -4658518542072664493
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_48
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae2db487a71ae87c0800000000000000
+      internalID: -4067135866092662038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_49
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b142131f8e3098e0800000000000000
+      internalID: -1688781076042726987
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_50
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d43da9fc6d7a06960800000000000000
+      internalID: 7593253512794526541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_51
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2304
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d851f7292a299d350800000000000000
+      internalID: 6042021602034390413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_52
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f48b385520e599fd0800000000000000
+      internalID: -2334731567697250225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_53
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe912e2928389c990800000000000000
+      internalID: -7365211118754457105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_54
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0b957c1bc1a9faf0800000000000000
+      internalID: -362080401298711794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_55
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8048497f0ab1b2d0800000000000000
+      internalID: -3264623679244844916
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_56
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e388c7337b4f364e0800000000000000
+      internalID: -1989477542687635394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_57
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88cc2e5aaedb418e0800000000000000
+      internalID: -1723543941872956280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_58
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ea494ffcd031b240800000000000000
+      internalID: 4805676003114961638
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_59
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20012f39fb5b9c570800000000000000
+      internalID: 8487514807181905922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_60
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e318b14f65c2bd90800000000000000
+      internalID: -7083382182265744413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_61
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3df5e1a00bcb2520800000000000000
+      internalID: 2678457606978534719
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_62
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e99fa8454f7af0640800000000000000
+      internalID: 5048438375137868190
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_63
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45f2d4b7fe99352b0800000000000000
+      internalID: -5596960658046505132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_64
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2048
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00361ad1a494b7ef0800000000000000
+      internalID: -109413183266921728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_65
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb39add079b7754d0800000000000000
+      internalID: -3145909925992295490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_66
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b8fc01922be4d2f0800000000000000
+      internalID: -948875087773370183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_67
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ae64fd92b0fa9c60800000000000000
+      internalID: 7825831952454545065
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_68
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b41aff46c29945800800000000000000
+      internalID: 600273066299203915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_69
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 580e580c5d919a970800000000000000
+      internalID: 8766566555502108805
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_70
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e883c73551b279e10800000000000000
+      internalID: 2204277913216104590
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_71
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 188bbd2e61ba1e450800000000000000
+      internalID: 6116357883729524865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_72
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d436ad5129c1f6420800000000000000
+      internalID: 2625348521537725261
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_73
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2608772b61da96360800000000000000
+      internalID: 7163446995304546402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_74
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5eb84d52aef2e6f0800000000000000
+      internalID: -656682622339465634
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_75
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa3ed0243dd901fb0800000000000000
+      internalID: -4679066482166078550
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_76
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dbb3e45cb9a3c7700800000000000000
+      internalID: 539370496082197437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_77
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1792
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2e378100ec13da10800000000000000
+      internalID: 1932920413495967276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_78
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe9006b6d27e120e0800000000000000
+      internalID: -2296300152721241617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_79
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0f610003944e01d0800000000000000
+      internalID: -3382690871957688563
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_80
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df3fe891dfca40a70800000000000000
+      internalID: 8792342575589553149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_81
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4148df8be8717fc50800000000000000
+      internalID: 6698848872493319188
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_82
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee1acf87d9a8a53f0800000000000000
+      internalID: -911263565644783122
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_83
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da674f625fc625ba0800000000000000
+      internalID: -6101694744957258067
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_84
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: adcd205f555ca6d40800000000000000
+      internalID: 5578488061425278170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_85
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f26371091b03bf2c0800000000000000
+      internalID: -4396867072012372433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_86
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a07b353bac806de0800000000000000
+      internalID: -1341918021996023645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_87
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18a9f6c304a02e720800000000000000
+      internalID: 2873870783223929473
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_88
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf9361ff0e45324f0800000000000000
+      internalID: -854746178941208069
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_89
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53eb27246e6d853a0800000000000000
+      internalID: -6676350163131122123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_90
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1536
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85c540cb3bfdc1ad0800000000000000
+      internalID: -2730061311046820776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_91
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d71f3010cde638000800000000000000
+      internalID: 36995113137992061
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_92
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6eef4d85594301090800000000000000
+      internalID: -8065889116575432986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_93
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4e664c2650c54270800000000000000
+      internalID: 8234198970059353678
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_94
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c6efebe5919ffd50800000000000000
+      internalID: 6773292437683037895
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_95
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96617ab0e0b871c30800000000000000
+      internalID: 4330082459181323881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_96
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e4942cac8b0ee530800000000000000
+      internalID: 3886056227278722274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_97
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3690641e317f913a0800000000000000
+      internalID: -6694047706353628829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_98
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf322c41aeb388310800000000000000
+      internalID: 1407440760109933564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_99
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b96b9bb993c9c73a0800000000000000
+      internalID: -6666281577175468389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_100
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: faf7a36186229dfa0800000000000000
+      internalID: -5775547216681074769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_101
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f5f1d3de870cfa20800000000000000
+      internalID: 3097358953744561649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_102
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aadfd9f459a184100800000000000000
+      internalID: 92353020949298602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_103
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d94815525a4c2360800000000000000
+      internalID: 7146168426205563349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_104
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8b3b2a09b45514c0800000000000000
+      internalID: -4317451514048463986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_105
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f93afd02b5d00bb50800000000000000
+      internalID: 6606795338397229983
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_106
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5cf1f6f63dac74170800000000000000
+      internalID: 8162715859088777157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_107
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee25cb000dab6c7f0800000000000000
+      internalID: -592580898424335634
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_108
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d75765c5436201f00800000000000000
+      internalID: 1085409516525614461
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_109
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4432662bec3824020800000000000000
+      internalID: 2324565281456137028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_110
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25b2c745e0388cb40800000000000000
+      internalID: 5460758645756930898
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_111
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d025aa7edf5c15c30800000000000000
+      internalID: 4346472809693336077
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_112
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b4d40a4d5f2dda20800000000000000
+      internalID: 3088676997166322868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_113
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd4353beb3ec017f0800000000000000
+      internalID: -643787989969455908
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_114
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1544a90a37651a40800000000000000
+      internalID: 5338286432285115676
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_115
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e557be7a23e798630800000000000000
+      internalID: 3929810905888159070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_116
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1024
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 303515ea1e58f8de0800000000000000
+      internalID: -1328696160712305917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_117
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03c53f0a9cc4c44e0800000000000000
+      internalID: -1996136105959531472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_118
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7306109a7223c7780800000000000000
+      internalID: -8684010835556605897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_119
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9266269b5efa234e0800000000000000
+      internalID: -2003345483033844183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_120
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3046e58218b60b90800000000000000
+      internalID: -7275925758275076038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_121
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf191c2a427f03ba0800000000000000
+      internalID: -6111112957620284933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_122
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8555681431ed53d0800000000000000
+      internalID: -3216166945008822897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_123
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03bb86a96cf0afbc0800000000000000
+      internalID: -3748666394164020432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_124
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13aaae7b26b185d20800000000000000
+      internalID: 3267391640463649329
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_125
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9d58cf4751374860800000000000000
+      internalID: 7514028754361408925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_126
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af17f6eb0d0164dc0800000000000000
+      internalID: -3655215558830362118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_127
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18dafa196eb962eb0800000000000000
+      internalID: -4744933742799245951
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_128
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e690268a34c78ef0800000000000000
+      internalID: -105900310582487328
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_129
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdfee09987e5a9e80800000000000000
+      internalID: -8171114701853364257
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_130
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9148268561990a880800000000000000
+      internalID: -8601706967026465767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_131
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b7df5c6e277cfd20800000000000000
+      internalID: 3313654467108263856
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_132
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 866bc2b8952aeb2b0800000000000000
+      internalID: -5566833583912602008
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_133
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02804840f284c2bc0800000000000000
+      internalID: -3806588218258487264
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_134
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ff362c6cc6763310800000000000000
+      internalID: 1384424555822858233
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_135
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2db96d2971702af60800000000000000
+      internalID: 8043999682266307538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_136
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 298b9495b97e7eea0800000000000000
+      internalID: -5843447337085978478
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_137
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 826c13d18f3fb6cb0800000000000000
+      internalID: -4869530325103819224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_138
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc4cde7d6988135c0800000000000000
+      internalID: -4237455592929770289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_139
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d8ab642bb48b2afb0800000000000000
+      internalID: -4637942030985151859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_140
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9e61decd1ae93320800000000000000
+      internalID: 2538317278744768155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_141
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ebfbb0add3bb23c30800000000000000
+      internalID: 4337735265436811198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_142
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 512
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81ff626ca3193a660800000000000000
+      internalID: 7395914694691061528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_143
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fab88636b0ecf8f00800000000000000
+      internalID: 1121341380546300847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_144
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d8da1642b480f420800000000000000
+      internalID: 2661773280991172823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_145
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc0bd3c9d05d8d640800000000000000
+      internalID: 5105064432057037005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_146
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b188cbdd065159d0800000000000000
+      internalID: -2787352076843712076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_147
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa096a0beb482a650800000000000000
+      internalID: 6242697988031287471
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_148
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76f7fa82829b0f9f0800000000000000
+      internalID: -436645581722517657
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_149
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5a5d284bc8b16bb0800000000000000
+      internalID: -4944467732647290274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_150
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c47032fa81a6253f0800000000000000
+      internalID: -913551120152721588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_151
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9081a8aeeae6d6250800000000000000
+      internalID: 5939525181109835785
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_152
+      rect:
+        serializedVersion: 2
+        x: 2304
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c3ee008783482dd60800000000000000
+      internalID: 7913532873309744700
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_153
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63f0a2a54b2a88900800000000000000
+      internalID: 686977838664519478
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_154
+      rect:
+        serializedVersion: 2
+        x: 2816
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: badb4b8fa392cf6d0800000000000000
+      internalID: -2955441922204451413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_155
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ebf4f8caf63db9b80800000000000000
+      internalID: -8386877404457513026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KinghtTaunt_Spritesheet_256_156
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4c3bfff4920ab500800000000000000
+      internalID: 412645154830892109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: c501c797de6fd0b4e8a998a02e1471ef
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":10.0,"y":10.0},"gridSpriteSize":{"x":256.0,"y":256.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      KinghtTaunt_Spritesheet_256_0: 8878336363500681919
+      KinghtTaunt_Spritesheet_256_1: 3171330201400781477
+      KinghtTaunt_Spritesheet_256_10: -530962755828558255
+      KinghtTaunt_Spritesheet_256_100: -5775547216681074769
+      KinghtTaunt_Spritesheet_256_101: 3097358953744561649
+      KinghtTaunt_Spritesheet_256_102: 92353020949298602
+      KinghtTaunt_Spritesheet_256_103: 7146168426205563349
+      KinghtTaunt_Spritesheet_256_104: -4317451514048463986
+      KinghtTaunt_Spritesheet_256_105: 6606795338397229983
+      KinghtTaunt_Spritesheet_256_106: 8162715859088777157
+      KinghtTaunt_Spritesheet_256_107: -592580898424335634
+      KinghtTaunt_Spritesheet_256_108: 1085409516525614461
+      KinghtTaunt_Spritesheet_256_109: 2324565281456137028
+      KinghtTaunt_Spritesheet_256_11: -778147175212366045
+      KinghtTaunt_Spritesheet_256_110: 5460758645756930898
+      KinghtTaunt_Spritesheet_256_111: 4346472809693336077
+      KinghtTaunt_Spritesheet_256_112: 3088676997166322868
+      KinghtTaunt_Spritesheet_256_113: -643787989969455908
+      KinghtTaunt_Spritesheet_256_114: 5338286432285115676
+      KinghtTaunt_Spritesheet_256_115: 3929810905888159070
+      KinghtTaunt_Spritesheet_256_116: -1328696160712305917
+      KinghtTaunt_Spritesheet_256_117: -1996136105959531472
+      KinghtTaunt_Spritesheet_256_118: -8684010835556605897
+      KinghtTaunt_Spritesheet_256_119: -2003345483033844183
+      KinghtTaunt_Spritesheet_256_12: -3916168221839846321
+      KinghtTaunt_Spritesheet_256_120: -7275925758275076038
+      KinghtTaunt_Spritesheet_256_121: -6111112957620284933
+      KinghtTaunt_Spritesheet_256_122: -3216166945008822897
+      KinghtTaunt_Spritesheet_256_123: -3748666394164020432
+      KinghtTaunt_Spritesheet_256_124: 3267391640463649329
+      KinghtTaunt_Spritesheet_256_125: 7514028754361408925
+      KinghtTaunt_Spritesheet_256_126: -3655215558830362118
+      KinghtTaunt_Spritesheet_256_127: -4744933742799245951
+      KinghtTaunt_Spritesheet_256_128: -105900310582487328
+      KinghtTaunt_Spritesheet_256_129: -8171114701853364257
+      KinghtTaunt_Spritesheet_256_13: 3024871800248849813
+      KinghtTaunt_Spritesheet_256_130: -8601706967026465767
+      KinghtTaunt_Spritesheet_256_131: 3313654467108263856
+      KinghtTaunt_Spritesheet_256_132: -5566833583912602008
+      KinghtTaunt_Spritesheet_256_133: -3806588218258487264
+      KinghtTaunt_Spritesheet_256_134: 1384424555822858233
+      KinghtTaunt_Spritesheet_256_135: 8043999682266307538
+      KinghtTaunt_Spritesheet_256_136: -5843447337085978478
+      KinghtTaunt_Spritesheet_256_137: -4869530325103819224
+      KinghtTaunt_Spritesheet_256_138: -4237455592929770289
+      KinghtTaunt_Spritesheet_256_139: -4637942030985151859
+      KinghtTaunt_Spritesheet_256_14: -688510853291991747
+      KinghtTaunt_Spritesheet_256_140: 2538317278744768155
+      KinghtTaunt_Spritesheet_256_141: 4337735265436811198
+      KinghtTaunt_Spritesheet_256_142: 7395914694691061528
+      KinghtTaunt_Spritesheet_256_143: 1121341380546300847
+      KinghtTaunt_Spritesheet_256_144: 2661773280991172823
+      KinghtTaunt_Spritesheet_256_145: 5105064432057037005
+      KinghtTaunt_Spritesheet_256_146: -2787352076843712076
+      KinghtTaunt_Spritesheet_256_147: 6242697988031287471
+      KinghtTaunt_Spritesheet_256_148: -436645581722517657
+      KinghtTaunt_Spritesheet_256_149: -4944467732647290274
+      KinghtTaunt_Spritesheet_256_15: 5900988698516815789
+      KinghtTaunt_Spritesheet_256_150: -913551120152721588
+      KinghtTaunt_Spritesheet_256_151: 5939525181109835785
+      KinghtTaunt_Spritesheet_256_152: 7913532873309744700
+      KinghtTaunt_Spritesheet_256_153: 686977838664519478
+      KinghtTaunt_Spritesheet_256_154: -2955441922204451413
+      KinghtTaunt_Spritesheet_256_155: -8386877404457513026
+      KinghtTaunt_Spritesheet_256_156: 412645154830892109
+      KinghtTaunt_Spritesheet_256_16: -4567647245511945192
+      KinghtTaunt_Spritesheet_256_17: 4452186965640310199
+      KinghtTaunt_Spritesheet_256_18: -4616732503981015773
+      KinghtTaunt_Spritesheet_256_19: -455642435961611286
+      KinghtTaunt_Spritesheet_256_2: -5543138409785162204
+      KinghtTaunt_Spritesheet_256_20: -5145038604187790074
+      KinghtTaunt_Spritesheet_256_21: 2888993626048889644
+      KinghtTaunt_Spritesheet_256_22: -801295598076536657
+      KinghtTaunt_Spritesheet_256_23: -4987802969531475903
+      KinghtTaunt_Spritesheet_256_24: 7307667575649484150
+      KinghtTaunt_Spritesheet_256_25: -1811855975888572397
+      KinghtTaunt_Spritesheet_256_26: -614539454645870722
+      KinghtTaunt_Spritesheet_256_27: -1608648865541503285
+      KinghtTaunt_Spritesheet_256_28: -1464265699505656734
+      KinghtTaunt_Spritesheet_256_29: 5931858865139817825
+      KinghtTaunt_Spritesheet_256_3: -6577162627270725291
+      KinghtTaunt_Spritesheet_256_30: 3215458458704921087
+      KinghtTaunt_Spritesheet_256_31: 1432065808717216351
+      KinghtTaunt_Spritesheet_256_32: -8926169952185757005
+      KinghtTaunt_Spritesheet_256_33: -8761919258189496625
+      KinghtTaunt_Spritesheet_256_34: -1178337836908948005
+      KinghtTaunt_Spritesheet_256_35: 4450448052085564472
+      KinghtTaunt_Spritesheet_256_36: -7219858862982644460
+      KinghtTaunt_Spritesheet_256_37: 3927480644477276884
+      KinghtTaunt_Spritesheet_256_38: -8038372455878244121
+      KinghtTaunt_Spritesheet_256_39: -7387222667561376223
+      KinghtTaunt_Spritesheet_256_4: 3281688559382043726
+      KinghtTaunt_Spritesheet_256_40: -2027246586207177859
+      KinghtTaunt_Spritesheet_256_41: -7321311897797304266
+      KinghtTaunt_Spritesheet_256_42: -8138642316233518151
+      KinghtTaunt_Spritesheet_256_43: 5938486691414685013
+      KinghtTaunt_Spritesheet_256_44: 8675817745490875208
+      KinghtTaunt_Spritesheet_256_45: -5434771574532842109
+      KinghtTaunt_Spritesheet_256_46: 2839647571330747839
+      KinghtTaunt_Spritesheet_256_47: -4658518542072664493
+      KinghtTaunt_Spritesheet_256_48: -4067135866092662038
+      KinghtTaunt_Spritesheet_256_49: -1688781076042726987
+      KinghtTaunt_Spritesheet_256_5: 2699968549351493694
+      KinghtTaunt_Spritesheet_256_50: 7593253512794526541
+      KinghtTaunt_Spritesheet_256_51: 6042021602034390413
+      KinghtTaunt_Spritesheet_256_52: -2334731567697250225
+      KinghtTaunt_Spritesheet_256_53: -7365211118754457105
+      KinghtTaunt_Spritesheet_256_54: -362080401298711794
+      KinghtTaunt_Spritesheet_256_55: -3264623679244844916
+      KinghtTaunt_Spritesheet_256_56: -1989477542687635394
+      KinghtTaunt_Spritesheet_256_57: -1723543941872956280
+      KinghtTaunt_Spritesheet_256_58: 4805676003114961638
+      KinghtTaunt_Spritesheet_256_59: 8487514807181905922
+      KinghtTaunt_Spritesheet_256_6: 5932990490613615768
+      KinghtTaunt_Spritesheet_256_60: -7083382182265744413
+      KinghtTaunt_Spritesheet_256_61: 2678457606978534719
+      KinghtTaunt_Spritesheet_256_62: 5048438375137868190
+      KinghtTaunt_Spritesheet_256_63: -5596960658046505132
+      KinghtTaunt_Spritesheet_256_64: -109413183266921728
+      KinghtTaunt_Spritesheet_256_65: -3145909925992295490
+      KinghtTaunt_Spritesheet_256_66: -948875087773370183
+      KinghtTaunt_Spritesheet_256_67: 7825831952454545065
+      KinghtTaunt_Spritesheet_256_68: 600273066299203915
+      KinghtTaunt_Spritesheet_256_69: 8766566555502108805
+      KinghtTaunt_Spritesheet_256_7: 8468025889852561373
+      KinghtTaunt_Spritesheet_256_70: 2204277913216104590
+      KinghtTaunt_Spritesheet_256_71: 6116357883729524865
+      KinghtTaunt_Spritesheet_256_72: 2625348521537725261
+      KinghtTaunt_Spritesheet_256_73: 7163446995304546402
+      KinghtTaunt_Spritesheet_256_74: -656682622339465634
+      KinghtTaunt_Spritesheet_256_75: -4679066482166078550
+      KinghtTaunt_Spritesheet_256_76: 539370496082197437
+      KinghtTaunt_Spritesheet_256_77: 1932920413495967276
+      KinghtTaunt_Spritesheet_256_78: -2296300152721241617
+      KinghtTaunt_Spritesheet_256_79: -3382690871957688563
+      KinghtTaunt_Spritesheet_256_8: 2606118517784037284
+      KinghtTaunt_Spritesheet_256_80: 8792342575589553149
+      KinghtTaunt_Spritesheet_256_81: 6698848872493319188
+      KinghtTaunt_Spritesheet_256_82: -911263565644783122
+      KinghtTaunt_Spritesheet_256_83: -6101694744957258067
+      KinghtTaunt_Spritesheet_256_84: 5578488061425278170
+      KinghtTaunt_Spritesheet_256_85: -4396867072012372433
+      KinghtTaunt_Spritesheet_256_86: -1341918021996023645
+      KinghtTaunt_Spritesheet_256_87: 2873870783223929473
+      KinghtTaunt_Spritesheet_256_88: -854746178941208069
+      KinghtTaunt_Spritesheet_256_89: -6676350163131122123
+      KinghtTaunt_Spritesheet_256_9: -2453748700773353232
+      KinghtTaunt_Spritesheet_256_90: -2730061311046820776
+      KinghtTaunt_Spritesheet_256_91: 36995113137992061
+      KinghtTaunt_Spritesheet_256_92: -8065889116575432986
+      KinghtTaunt_Spritesheet_256_93: 8234198970059353678
+      KinghtTaunt_Spritesheet_256_94: 6773292437683037895
+      KinghtTaunt_Spritesheet_256_95: 4330082459181323881
+      KinghtTaunt_Spritesheet_256_96: 3886056227278722274
+      KinghtTaunt_Spritesheet_256_97: -6694047706353628829
+      KinghtTaunt_Spritesheet_256_98: 1407440760109933564
+      KinghtTaunt_Spritesheet_256_99: -6666281577175468389
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

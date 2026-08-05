@@ -17,8 +17,11 @@ MonoBehaviour:
   description: The battlefield has shifted to the nearby marshes where deadly miasma
     drifts across the terrain.
   icon: {fileID: 21300000, guid: 1b6de224c3b659b43b3255501e7ea6be, type: 3}
-  backgroundOverrideSprite: {fileID: 0}
+  backgroundOverrideSprite: {fileID: 21300000, guid: 2831104fb12877e4a9478c1c1877311f, type: 3}
   backgroundOverrideVideoClip: {fileID: 32900000, guid: d89d78def4a51d9439ee8d7dd5f98ab4, type: 3}
+  backgroundOverrideVideoPingPongLoop: 0
+  boardBackgroundOverrideSprite: {fileID: 21300000, guid: 20fbbf9b1a492be4897d3fb97fc3a981, type: 3}
+  boardBorderOverrideSprite: {fileID: 0}
   enableRainOverlay: 0
   rainDrops: 44
   rainSpeed: 140

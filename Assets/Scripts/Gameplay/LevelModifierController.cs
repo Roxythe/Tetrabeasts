@@ -25,6 +25,9 @@ public class LevelModifierController : MonoBehaviour
     [SerializeField] Sprite defaultBackgroundSprite;
     [SerializeField] GameObject volcanicEruptionAnimsRoot;
     [SerializeField] GameObject defaultBoardBordersRoot;
+    [SerializeField] Image boardBackgroundImage;
+    [SerializeField] Image[] boardBorderImages;
+    [SerializeField] bool disableBoardBorderAnimationsWhileOverridden = true;
 
     [Header("Modifier UI")]
     [SerializeField] GameObject specialGaugeRoot;
@@ -64,6 +67,8 @@ public class LevelModifierController : MonoBehaviour
     Sprite _currentLevelBackgroundSprite;
     VideoClip _currentLevelBackgroundVideoClip;
     bool _currentLevelBackgroundVideoPingPongLoop;
+    Sprite _currentLevelBoardBackgroundSprite;
+    Sprite _currentLevelBoardBorderSprite;
     VideoClip _pendingAnimatedBackgroundClip;
     VideoPlayer _hookedAnimatedBackgroundPlayer;
     bool _animatedBackgroundPingPongRequested;
@@ -71,6 +76,11 @@ public class LevelModifierController : MonoBehaviour
     bool _animatedBackgroundReverse;
     float _animatedBackgroundReverseGuardUntil;
     bool _loggedAnimatedBackgroundReverseUnsupported;
+    bool _boardBackgroundDefaultCaptured;
+    Sprite _defaultBoardBackgroundSprite;
+    Sprite[] _defaultBoardBorderSprites;
+    RandomIntervalClipPlayer[] _boardBorderAnimationDrivers;
+    bool[] _boardBorderAnimationDriverInitialEnabled;
 
     float _overgrowthSpawnTimer;
     float _stormCountdown;
@@ -218,6 +228,7 @@ public class LevelModifierController : MonoBehaviour
     public void ResetRunState()
     {
         _availableRerolls = 0;
+        CacheLevelBackground(null);
         ResetLevelState();
     }
 
@@ -1649,6 +1660,7 @@ public class LevelModifierController : MonoBehaviour
 
         EnsureAnimatedBackgroundRefs();
         EnsureVolcanicBoardAnimationRefs();
+        EnsureBoardPresentationRefs();
 
         if (!backgroundOverrideImage)
         {
@@ -1670,6 +1682,7 @@ public class LevelModifierController : MonoBehaviour
         }
 
         ApplyResolvedBackgroundSprite();
+        ApplyBoardPresentation();
         SyncVolcanicBoardAnimationRoots();
 
         if (ActiveModifier && ActiveModifier.enableRainOverlay)
@@ -1743,8 +1756,7 @@ public class LevelModifierController : MonoBehaviour
         ClearVisualDictionary(_infectionVisuals);
         ClearOutFlankedProjectiles();
 
-        ApplyResolvedBackgroundSprite();
-        SyncVolcanicBoardAnimationRoots();
+        EnsureBoardPresentation();
 
         if (_rainOverlay)
             _rainOverlay.gameObject.SetActive(false);
@@ -1759,6 +1771,8 @@ public class LevelModifierController : MonoBehaviour
         _currentLevelBackgroundSprite = castleData ? castleData.levelBackgroundSprite : null;
         _currentLevelBackgroundVideoClip = castleData ? castleData.levelBackgroundVideoClip : null;
         _currentLevelBackgroundVideoPingPongLoop = castleData && castleData.levelBackgroundVideoPingPongLoop;
+        _currentLevelBoardBackgroundSprite = castleData ? castleData.boardBackgroundSprite : null;
+        _currentLevelBoardBorderSprite = castleData ? castleData.boardBorderSprite : null;
     }
 
     void CacheLevelBackgroundFromCurrentLevel()
@@ -1793,6 +1807,22 @@ public class LevelModifierController : MonoBehaviour
         return _currentLevelBackgroundVideoClip;
     }
 
+    Sprite ResolveBoardBackgroundSprite()
+    {
+        if (ActiveModifier && ActiveModifier.boardBackgroundOverrideSprite)
+            return ActiveModifier.boardBackgroundOverrideSprite;
+
+        return _currentLevelBoardBackgroundSprite ? _currentLevelBoardBackgroundSprite : _defaultBoardBackgroundSprite;
+    }
+
+    Sprite ResolveBoardBorderSprite()
+    {
+        if (ActiveModifier && ActiveModifier.boardBorderOverrideSprite)
+            return ActiveModifier.boardBorderOverrideSprite;
+
+        return _currentLevelBoardBorderSprite;
+    }
+
     bool ResolveBackgroundVideoPingPongLoop(VideoClip clip)
     {
         if (!clip)
@@ -1812,11 +1842,11 @@ public class LevelModifierController : MonoBehaviour
 
     void ApplyResolvedBackgroundSprite()
     {
-        if (!backgroundOverrideImage)
-            return;
-
         VideoClip videoClip = ResolveBackgroundVideoClip();
         ApplyAnimatedBackground(videoClip);
+
+        if (!backgroundOverrideImage)
+            return;
 
         Sprite bg = ResolveBackgroundSprite();
         if (bg)
@@ -1825,6 +1855,54 @@ public class LevelModifierController : MonoBehaviour
         backgroundOverrideImage.color = Color.white;
         backgroundOverrideImage.gameObject.SetActive(true);
         backgroundOverrideImage.enabled = true;
+    }
+
+    void ApplyBoardPresentation()
+    {
+        EnsureBoardPresentationRefs();
+        ApplyBoardBackgroundSprite();
+        ApplyBoardBorderSprites();
+    }
+
+    void ApplyBoardBackgroundSprite()
+    {
+        if (!boardBackgroundImage)
+            return;
+
+        Sprite sprite = ResolveBoardBackgroundSprite();
+        boardBackgroundImage.sprite = sprite;
+        boardBackgroundImage.enabled = sprite != null;
+        boardBackgroundImage.gameObject.SetActive(true);
+    }
+
+    void ApplyBoardBorderSprites()
+    {
+        if (boardBorderImages == null || boardBorderImages.Length == 0)
+            return;
+
+        Sprite borderSprite = ResolveBoardBorderSprite();
+        bool hasBorderOverride = borderSprite != null;
+
+        if (hasBorderOverride)
+            SetBoardBorderAnimationDriversEnabled(false);
+
+        for (int i = 0; i < boardBorderImages.Length; i++)
+        {
+            Image img = boardBorderImages[i];
+            if (!img)
+                continue;
+
+            Sprite sprite = hasBorderOverride
+                ? borderSprite
+                : GetDefaultBoardBorderSprite(i);
+
+            img.sprite = sprite;
+            img.enabled = sprite != null;
+            img.gameObject.SetActive(true);
+        }
+
+        if (!hasBorderOverride)
+            SetBoardBorderAnimationDriversEnabled(true);
     }
 
     bool ApplyAnimatedBackground(VideoClip clip)
@@ -1857,7 +1935,7 @@ public class LevelModifierController : MonoBehaviour
 
         bool pingPongLoop = ResolveBackgroundVideoPingPongLoop(clip);
 
-        animatedBackgroundDisplay.rectTransform.SetAsFirstSibling();
+        PlaceAnimatedBackgroundDisplay();
         animatedBackgroundPlayer.playOnAwake = false;
         animatedBackgroundPlayer.isLooping = !pingPongLoop;
         animatedBackgroundPlayer.renderMode = VideoRenderMode.RenderTexture;
@@ -1922,10 +2000,160 @@ public class LevelModifierController : MonoBehaviour
         RenderTexture.active = previous;
     }
 
+    void PlaceAnimatedBackgroundDisplay()
+    {
+        if (!animatedBackgroundDisplay)
+            return;
+
+        RectTransform displayTransform = animatedBackgroundDisplay.rectTransform;
+        if (!displayTransform)
+            return;
+
+        if (backgroundOverrideImage && backgroundOverrideImage.transform.parent == displayTransform.parent)
+        {
+            int siblingIndex = Mathf.Min(
+                backgroundOverrideImage.rectTransform.GetSiblingIndex() + 1,
+                displayTransform.parent.childCount - 1);
+
+            displayTransform.SetSiblingIndex(siblingIndex);
+            return;
+        }
+
+        displayTransform.SetAsFirstSibling();
+    }
+
+    void EnsureBoardPresentationRefs()
+    {
+        if (!boardBackgroundImage)
+            boardBackgroundImage = FindComponentByGameObjectName<Image>("Board_Background");
+
+        EnsureVolcanicBoardAnimationRefs();
+
+        boardBorderImages = CompactImageArray(boardBorderImages);
+        if (boardBorderImages == null || boardBorderImages.Length == 0)
+            boardBorderImages = FindDefaultBoardBorderImages();
+
+        CaptureBoardPresentationDefaults();
+    }
+
+    Image[] FindDefaultBoardBorderImages()
+    {
+        var result = new List<Image>(6);
+        AddBoardBorderSideImages("Board Border Left", result);
+        AddBoardBorderSideImages("Board Border Right", result);
+        return result.ToArray();
+    }
+
+    void AddBoardBorderSideImages(string sideName, List<Image> result)
+    {
+        GameObject side = FindChildGameObjectByName(sideName);
+        if (!side)
+            return;
+
+        var images = side.GetComponentsInChildren<Image>(true);
+        for (int i = 0; i < images.Length; i++)
+            AddUniqueImage(result, images[i]);
+    }
+
+    static void AddUniqueImage(List<Image> result, Image image)
+    {
+        if (!image)
+            return;
+
+        for (int i = 0; i < result.Count; i++)
+        {
+            if (result[i] == image)
+                return;
+        }
+
+        result.Add(image);
+    }
+
+    static Image[] CompactImageArray(Image[] source)
+    {
+        if (source == null || source.Length == 0)
+            return source;
+
+        var result = new List<Image>(source.Length);
+        for (int i = 0; i < source.Length; i++)
+            AddUniqueImage(result, source[i]);
+
+        return result.ToArray();
+    }
+
+    void CaptureBoardPresentationDefaults()
+    {
+        if (boardBackgroundImage && !_boardBackgroundDefaultCaptured)
+        {
+            _defaultBoardBackgroundSprite = boardBackgroundImage.sprite;
+            _boardBackgroundDefaultCaptured = true;
+        }
+
+        if (boardBorderImages == null)
+            return;
+
+        if (_defaultBoardBorderSprites != null &&
+            _defaultBoardBorderSprites.Length == boardBorderImages.Length)
+        {
+            return;
+        }
+
+        _defaultBoardBorderSprites = new Sprite[boardBorderImages.Length];
+        _boardBorderAnimationDrivers = new RandomIntervalClipPlayer[boardBorderImages.Length];
+        _boardBorderAnimationDriverInitialEnabled = new bool[boardBorderImages.Length];
+
+        for (int i = 0; i < boardBorderImages.Length; i++)
+        {
+            Image img = boardBorderImages[i];
+            if (!img)
+                continue;
+
+            _defaultBoardBorderSprites[i] = img.sprite;
+
+            RandomIntervalClipPlayer driver = img.GetComponent<RandomIntervalClipPlayer>();
+            _boardBorderAnimationDrivers[i] = driver;
+            _boardBorderAnimationDriverInitialEnabled[i] = driver && driver.enabled;
+        }
+    }
+
+    Sprite GetDefaultBoardBorderSprite(int index)
+    {
+        if (_defaultBoardBorderSprites == null ||
+            index < 0 ||
+            index >= _defaultBoardBorderSprites.Length)
+        {
+            return null;
+        }
+
+        return _defaultBoardBorderSprites[index];
+    }
+
+    void SetBoardBorderAnimationDriversEnabled(bool enabled)
+    {
+        if (!disableBoardBorderAnimationsWhileOverridden ||
+            _boardBorderAnimationDrivers == null ||
+            _boardBorderAnimationDriverInitialEnabled == null)
+        {
+            return;
+        }
+
+        int count = Mathf.Min(_boardBorderAnimationDrivers.Length, _boardBorderAnimationDriverInitialEnabled.Length);
+        for (int i = 0; i < count; i++)
+        {
+            RandomIntervalClipPlayer driver = _boardBorderAnimationDrivers[i];
+            if (!driver)
+                continue;
+
+            bool targetEnabled = enabled && _boardBorderAnimationDriverInitialEnabled[i];
+            if (driver.enabled != targetEnabled)
+                driver.enabled = targetEnabled;
+        }
+    }
+
     void EnsureAnimatedBackgroundRefs()
     {
         if (!board)
-            return;
+            board = FindFirstObjectByType<Board>(FindObjectsInactive.Include);
 
         if (!animatedBackgroundDisplay)
             animatedBackgroundDisplay = FindComponentByGameObjectName<RawImage>("AnimatedBG_VideoDisplay_RawImage");
@@ -2146,14 +2374,33 @@ public class LevelModifierController : MonoBehaviour
 
     T FindComponentByGameObjectName<T>(string objectName) where T : Component
     {
-        if (!board || string.IsNullOrWhiteSpace(objectName))
+        if (string.IsNullOrWhiteSpace(objectName))
             return null;
 
-        var components = board.GetComponentsInChildren<T>(true);
-        for (int i = 0; i < components.Length; i++)
+        if (board)
         {
-            if (components[i] && components[i].gameObject.name == objectName)
-                return components[i];
+            var components = board.GetComponentsInChildren<T>(true);
+            for (int i = 0; i < components.Length; i++)
+            {
+                if (components[i] && components[i].gameObject.name == objectName)
+                    return components[i];
+            }
+        }
+
+        var sceneTransforms = FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        for (int i = 0; i < sceneTransforms.Length; i++)
+        {
+            Transform sceneTransform = sceneTransforms[i];
+            if (!sceneTransform ||
+                !sceneTransform.gameObject.scene.IsValid() ||
+                sceneTransform.name != objectName)
+            {
+                continue;
+            }
+
+            T component = sceneTransform.GetComponent<T>();
+            if (component)
+                return component;
         }
 
         return null;

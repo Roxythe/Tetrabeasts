@@ -1,0 +1,1601 @@
+fileFormatVersion: 2
+guid: cf97ad56bd49c9f4699c7f7441c41cbd
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7192662625305684800
+    second: DesertBoarder1_SpriteSheet_9x16_Reduced_0
+  - first:
+      213: -838343488066195168
+    second: DesertBoarder1_SpriteSheet_9x16_Reduced_1
+  - first:
+      213: -882174405687129599
+    second: DesertBoarder1_SpriteSheet_9x16_Reduced_2
+  - first:
+      213: 6072496293180586956
+    second: DesertBoarder1_SpriteSheet_9x16_Reduced_3
+  - first:
+      213: -4495354834689240835
+    second: DesertBoarder1_SpriteSheet_9x16_Reduced_4
+  - first:
+      213: 2584431810405345073
+    second: DesertBoarder1_SpriteSheet_9x16_Reduced_5
+  - first:
+      213: -524672888818951650
+    second: DesertBoarder1_SpriteSheet_9x16_Reduced_6
+  - first:
+      213: 4890266230698673003
+    second: DesertBoarder1_SpriteSheet_9x16_Reduced_7
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c41d6d53778e2c90800000000000000
+      internalID: -7192662625305684800
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_1
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0217d021a0b9d54f0800000000000000
+      internalID: -838343488066195168
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_2
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10ac31f4d03e1c3f0800000000000000
+      internalID: -882174405687129599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_3
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ccbb7e68437d54450800000000000000
+      internalID: 6072496293180586956
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_4
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df05303689a4d91c0800000000000000
+      internalID: -4495354834689240835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_5
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1372e65e90fbdd320800000000000000
+      internalID: 2584431810405345073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_6
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1a1ba699ccf7b8f0800000000000000
+      internalID: -524672888818951650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_7
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 4480
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6302e12a37bdd340800000000000000
+      internalID: 4890266230698673003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7cd5f343e2d3cff45b7ce0a22470324f
+      internalID: -1724731786
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_9
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c9420d6a9e3b62449875e927fd281c2
+      internalID: -2128161608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_10
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 749023bd391abb9439b0491f7deaee1b
+      internalID: 9246568
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_11
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c8a09bdfdde5da84e9ad0af5050229d1
+      internalID: 1483154791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_12
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e438be06e1ed06c40b6808f6bb507baa
+      internalID: -325336669
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_13
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c3e570a03b372f44e8b8d82e59ca3f53
+      internalID: -545517428
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_14
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f5a15848520a49c4d9d362ee39e9417c
+      internalID: -398195436
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_15
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 3840
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8bbf69a527ff82143bf7c83cbcee6696
+      internalID: 757892374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_16
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 813c8f922eae5e949bd3066e5868833f
+      internalID: 13411498
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_17
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f53170c1e516b504990a16ee1bacb58c
+      internalID: 2085690689
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_18
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bfc32c7732aec374792c5ab9d30e7003
+      internalID: 825060610
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_19
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b63f811eb9d1d9f42ab6bd797a9e8e97
+      internalID: -1103867351
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_20
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3933e8ec38b7b6c4c90c741eae5c3660
+      internalID: 220626930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_21
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ebdaaab897fcd2941bfdd195ee0ae8ad
+      internalID: -927554284
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_22
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 009e1646ee8b17640a7b784beee46af4
+      internalID: -1663906352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_23
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 3200
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d2e37af4f6b9bd24097156efb34644f7
+      internalID: -1614277667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_24
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7407f0f051e86994aab9faaa719bc42c
+      internalID: -1359501189
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_25
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b5d5383f96e80645b5eb5268d23e960
+      internalID: 1342118241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_26
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7164fdcd45ddf664b9ca0f82b1eabdf4
+      internalID: 971258067
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_27
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 10b77b47675e1de40aeefbc4c9b4b6fc
+      internalID: 1365054735
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_28
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8f865e09edff1214eaa19f133358fc2d
+      internalID: 1258684307
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_29
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c58c171fa99f774a90205f114895d29
+      internalID: 1734624359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_30
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a4ae907d9b2e9e04f94ef112234f41f9
+      internalID: 308387218
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_31
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 2560
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b71de71f496a2d54fb18cc7436f76660
+      internalID: 2120914355
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_32
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 642806f8c2fc7524ea65af984adb57e9
+      internalID: 1327574560
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_33
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a574d539661a6e54589f1dd464b4a258
+      internalID: -513911893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_34
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1c931d481d62f674eb332e41dba1f077
+      internalID: -1907691113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_35
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4f8929f229dd36c4f891aee939531f1b
+      internalID: 139652910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_36
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 125a6fb6ab7c2d5458aa28eeb8fb7eb1
+      internalID: -1723784355
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_37
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a84f901ce6d0a54408c1a4ebc73f8602
+      internalID: -614240336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_38
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6192d79da60417644a28bf80c9508115
+      internalID: 634940124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_39
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 1920
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 78862b8a331bf6c419ceedbf87b4a5d1
+      internalID: -1805214979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_40
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 55cba568b5e0b02468eed8b957812bc8
+      internalID: 2076929473
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_41
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7098c0ac8ca1fa648ac445809205affd
+      internalID: 1041101818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_42
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 40af9cff875eec84591231dc1bf72a7d
+      internalID: -680178812
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_43
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b283491ec06a6c1478c7a38eb0750fab
+      internalID: -1677356981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_44
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e75b7388321768f4896651582ba88d59
+      internalID: -448387593
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_45
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c4533d0e6889d3d4ab08ff9f31f904f2
+      internalID: -1874090981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_46
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 307af1072a8ba574a9b26c42f89196bc
+      internalID: 2050005904
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_47
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 1280
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: acd06b07241ee154b92ddc037ceb7d34
+      internalID: -780771432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_48
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6a1dfa615ea787b4eadaf3c62a9258f5
+      internalID: 1492510863
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_49
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d36092a803705614b90bf8c4a65382a1
+      internalID: 1878337628
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_50
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4d8e92569cc1ca8479665dda28e17fe4
+      internalID: -2125129180
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_51
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 90bd09ec4623d074791cffbb68d2b474
+      internalID: -1481916348
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_52
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 56ef8ac32ac11f044947950cd3d644f8
+      internalID: 1306581034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_53
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 85bb6bcb51479dd4292b4d5d458f1852
+      internalID: 1691451915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_54
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0619ab646efdc0d449e90edb2b206ac3
+      internalID: 1631591840
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_55
+      rect:
+        serializedVersion: 2
+        x: 2520
+        y: 640
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 97168714ae885a14e9e9417685bc11e8
+      internalID: -1047680095
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_56
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 18d0103f7f6144c4fbfdbf5f56b1835d
+      internalID: 2127927884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_57
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 0
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6d0f275657ed2f1489cad2cc97b64325
+      internalID: -1772764494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_58
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 0
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c653278abbd5874aa0f145f8f6109b2
+      internalID: -1911784535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_59
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 0
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3c84ea06d8b78554db693fe2a29dd9e2
+      internalID: 1803824505
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DesertBoarder1_SpriteSheet_9x16_Reduced_60
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 0
+        width: 360
+        height: 640
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 61d518bbad347754fbd29f0980bcb681
+      internalID: -1621361337
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 467a1ed110d5e9d4aaad077f1ff52d41
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":8.0,"y":8.0},"gridSpriteSize":{"x":360.0,"y":640.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      DesertBoarder1_SpriteSheet_9x16_Reduced_0: -7192662625305684800
+      DesertBoarder1_SpriteSheet_9x16_Reduced_1: -838343488066195168
+      DesertBoarder1_SpriteSheet_9x16_Reduced_10: 9246568
+      DesertBoarder1_SpriteSheet_9x16_Reduced_11: 1483154791
+      DesertBoarder1_SpriteSheet_9x16_Reduced_12: -325336669
+      DesertBoarder1_SpriteSheet_9x16_Reduced_13: -545517428
+      DesertBoarder1_SpriteSheet_9x16_Reduced_14: -398195436
+      DesertBoarder1_SpriteSheet_9x16_Reduced_15: 757892374
+      DesertBoarder1_SpriteSheet_9x16_Reduced_16: 13411498
+      DesertBoarder1_SpriteSheet_9x16_Reduced_17: 2085690689
+      DesertBoarder1_SpriteSheet_9x16_Reduced_18: 825060610
+      DesertBoarder1_SpriteSheet_9x16_Reduced_19: -1103867351
+      DesertBoarder1_SpriteSheet_9x16_Reduced_2: -882174405687129599
+      DesertBoarder1_SpriteSheet_9x16_Reduced_20: 220626930
+      DesertBoarder1_SpriteSheet_9x16_Reduced_21: -927554284
+      DesertBoarder1_SpriteSheet_9x16_Reduced_22: -1663906352
+      DesertBoarder1_SpriteSheet_9x16_Reduced_23: -1614277667
+      DesertBoarder1_SpriteSheet_9x16_Reduced_24: -1359501189
+      DesertBoarder1_SpriteSheet_9x16_Reduced_25: 1342118241
+      DesertBoarder1_SpriteSheet_9x16_Reduced_26: 971258067
+      DesertBoarder1_SpriteSheet_9x16_Reduced_27: 1365054735
+      DesertBoarder1_SpriteSheet_9x16_Reduced_28: 1258684307
+      DesertBoarder1_SpriteSheet_9x16_Reduced_29: 1734624359
+      DesertBoarder1_SpriteSheet_9x16_Reduced_3: 6072496293180586956
+      DesertBoarder1_SpriteSheet_9x16_Reduced_30: 308387218
+      DesertBoarder1_SpriteSheet_9x16_Reduced_31: 2120914355
+      DesertBoarder1_SpriteSheet_9x16_Reduced_32: 1327574560
+      DesertBoarder1_SpriteSheet_9x16_Reduced_33: -513911893
+      DesertBoarder1_SpriteSheet_9x16_Reduced_34: -1907691113
+      DesertBoarder1_SpriteSheet_9x16_Reduced_35: 139652910
+      DesertBoarder1_SpriteSheet_9x16_Reduced_36: -1723784355
+      DesertBoarder1_SpriteSheet_9x16_Reduced_37: -614240336
+      DesertBoarder1_SpriteSheet_9x16_Reduced_38: 634940124
+      DesertBoarder1_SpriteSheet_9x16_Reduced_39: -1805214979
+      DesertBoarder1_SpriteSheet_9x16_Reduced_4: -4495354834689240835
+      DesertBoarder1_SpriteSheet_9x16_Reduced_40: 2076929473
+      DesertBoarder1_SpriteSheet_9x16_Reduced_41: 1041101818
+      DesertBoarder1_SpriteSheet_9x16_Reduced_42: -680178812
+      DesertBoarder1_SpriteSheet_9x16_Reduced_43: -1677356981
+      DesertBoarder1_SpriteSheet_9x16_Reduced_44: -448387593
+      DesertBoarder1_SpriteSheet_9x16_Reduced_45: -1874090981
+      DesertBoarder1_SpriteSheet_9x16_Reduced_46: 2050005904
+      DesertBoarder1_SpriteSheet_9x16_Reduced_47: -780771432
+      DesertBoarder1_SpriteSheet_9x16_Reduced_48: 1492510863
+      DesertBoarder1_SpriteSheet_9x16_Reduced_49: 1878337628
+      DesertBoarder1_SpriteSheet_9x16_Reduced_5: 2584431810405345073
+      DesertBoarder1_SpriteSheet_9x16_Reduced_50: -2125129180
+      DesertBoarder1_SpriteSheet_9x16_Reduced_51: -1481916348
+      DesertBoarder1_SpriteSheet_9x16_Reduced_52: 1306581034
+      DesertBoarder1_SpriteSheet_9x16_Reduced_53: 1691451915
+      DesertBoarder1_SpriteSheet_9x16_Reduced_54: 1631591840
+      DesertBoarder1_SpriteSheet_9x16_Reduced_55: -1047680095
+      DesertBoarder1_SpriteSheet_9x16_Reduced_56: 2127927884
+      DesertBoarder1_SpriteSheet_9x16_Reduced_57: -1772764494
+      DesertBoarder1_SpriteSheet_9x16_Reduced_58: -1911784535
+      DesertBoarder1_SpriteSheet_9x16_Reduced_59: 1803824505
+      DesertBoarder1_SpriteSheet_9x16_Reduced_6: -524672888818951650
+      DesertBoarder1_SpriteSheet_9x16_Reduced_60: -1621361337
+      DesertBoarder1_SpriteSheet_9x16_Reduced_61: -1388535194
+      DesertBoarder1_SpriteSheet_9x16_Reduced_62: -42049215
+      DesertBoarder1_SpriteSheet_9x16_Reduced_63: -941767654
+      DesertBoarder1_SpriteSheet_9x16_Reduced_7: 4890266230698673003
+      DesertBoarder1_SpriteSheet_9x16_Reduced_8: -1724731786
+      DesertBoarder1_SpriteSheet_9x16_Reduced_9: -2128161608
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

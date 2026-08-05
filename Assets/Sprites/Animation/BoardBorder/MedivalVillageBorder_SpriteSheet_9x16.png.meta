@@ -1,0 +1,1946 @@
+fileFormatVersion: 2
+guid: f73ca13a4e6d9d44bb3bc7a46ed047a1
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5620375026429165688
+    second: MedivalVillageBorder_SpriteSheet_9x16_0
+  - first:
+      213: -7565116725714290394
+    second: MedivalVillageBorder_SpriteSheet_9x16_1
+  - first:
+      213: -7235046689294122123
+    second: MedivalVillageBorder_SpriteSheet_9x16_2
+  - first:
+      213: 3424325214191117768
+    second: MedivalVillageBorder_SpriteSheet_9x16_3
+  - first:
+      213: 5837201558123086669
+    second: MedivalVillageBorder_SpriteSheet_9x16_4
+  - first:
+      213: -3377539207860332864
+    second: MedivalVillageBorder_SpriteSheet_9x16_5
+  - first:
+      213: -6785377204906724833
+    second: MedivalVillageBorder_SpriteSheet_9x16_6
+  - first:
+      213: 1228410037202216833
+    second: MedivalVillageBorder_SpriteSheet_9x16_7
+  - first:
+      213: -758136971459549441
+    second: MedivalVillageBorder_SpriteSheet_9x16_8
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 10240
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87089cafe459ffd40800000000000000
+      internalID: 5620375026429165688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_1
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 10240
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 629fe6f6b6e430790800000000000000
+      internalID: -7565116725714290394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_2
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 10240
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57302477e53f79b90800000000000000
+      internalID: -7235046689294122123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_3
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 10240
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c56643b3a5a58f20800000000000000
+      internalID: 3424325214191117768
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_4
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 10240
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d43884ae3e7e10150800000000000000
+      internalID: 5837201558123086669
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_5
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 10240
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c6d7844cf19021d0800000000000000
+      internalID: -3377539207860332864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_6
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 10240
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f127082f16f75d1a0800000000000000
+      internalID: -6785377204906724833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_7
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 10240
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18766f1ab603c0110800000000000000
+      internalID: 1228410037202216833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_8
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 10240
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff62015f07e8a75f0800000000000000
+      internalID: -758136971459549441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_9
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 8960
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a2e936211609e0645b480db80c00aa84
+      internalID: 1485495786
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_10
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 8960
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3516915c42d0d1c4c9ef28828b99b699
+      internalID: -1375328425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_11
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 8960
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aa3e3b9e888906c41a296ccb846c3376
+      internalID: 1519776367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_12
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 8960
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f7378ee7133217f49836abec9f4f2745
+      internalID: 1811074894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_13
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 8960
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b4d15af455a408d43b4256b6de074537
+      internalID: -97925376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_14
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 8960
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c986a084d0fe25488d62a290ec243f5
+      internalID: 2082573029
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_15
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 8960
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc320279914f2274db431b8cc8c9e076
+      internalID: 2130648331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_16
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 8960
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c83fbc60f21cac64794cd854c793537a
+      internalID: 273766396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_17
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 8960
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3cc8cbe54e342744d9e4e0dfa0b54329
+      internalID: 108858744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_18
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 7680
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6fe1758f663a09e41a93be9cddc813c5
+      internalID: 1745663384
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_19
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 7680
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 783d521349323554c9f3338a6820e033
+      internalID: 1715600149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_20
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 7680
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9267a18c047692846bba358436a34d4a
+      internalID: 1551420248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_21
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 7680
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8bb80fbc13a486643ab2c0ef7e739153
+      internalID: 1391280665
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_22
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 7680
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b6c94c433a4809a42a569d5a4c0a48d1
+      internalID: 1982655138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_23
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 7680
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c3c0431853acc254faa6ac5141f3b18e
+      internalID: 510444886
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_24
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 7680
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bf2b3ec3279126c4e98617bf1cdbe10f
+      internalID: 318236106
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_25
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 7680
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1613ef27abf30d741a9ed524a112b282
+      internalID: -254756776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_26
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 7680
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6ed334c7367df0a47b5aca097b9baf96
+      internalID: -1713767823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_27
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 6400
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 221f91315dc0a884c84bf5d4ea1d0cbc
+      internalID: 1740725709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_28
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 6400
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c9bcd5c671af794aaa0b7312a41c123
+      internalID: 1227361253
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_29
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 6400
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6edefa73f5e5f654ba24e24c02d39696
+      internalID: 407577918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_30
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 6400
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b9ed3470d89afae4f8e11408a47c3656
+      internalID: -1598980053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_31
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 6400
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fa1e70d1029ba7d479b27457476e3492
+      internalID: -1606323516
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_32
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 6400
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ce7cb813c1fda914d8393160d2065c2f
+      internalID: 1749688484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_33
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 6400
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9e4f9d35f953df94c8b9fd1ba1366a22
+      internalID: 43213420
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_34
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 6400
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7e6ffcc963262354d8c5756a9b661a19
+      internalID: -2054831379
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_35
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 6400
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ed90404005022104291020936c1f8c03
+      internalID: -293795110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_36
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 5120
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 991f702e0e8ab9a49ba56cade0ad7a59
+      internalID: -598755978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_37
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 5120
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a9b6e170276748b4480fe5c4c469298a
+      internalID: -348586216
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_38
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 5120
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1b9dddb2ffa906146bb064c875b582b9
+      internalID: 1792684651
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_39
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 5120
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 91f3eddb0790ba04f83b2c227dd7cd63
+      internalID: -2113977615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_40
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 5120
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ffe0e0eff74cd4a4d85aff9e56d3264d
+      internalID: -2003262152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_41
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 5120
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 255a7877d43607740b84bc662c061aef
+      internalID: -240539699
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_42
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 5120
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e688792bcce04bf47a6e384f9913ed92
+      internalID: 233971368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_43
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 5120
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 681a3d59e6ebadc4d8e92e1408e082ae
+      internalID: 485811913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_44
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 5120
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bd68d74a562341142b5ab730f9d6f8eb
+      internalID: -1404485985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_45
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3840
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f5bfcf21140780c4da0e82cbf4889139
+      internalID: -80177324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_46
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 3840
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 866056dc99b3933479f806515f6c18eb
+      internalID: 1602156535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_47
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 3840
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6c173cb95f3e38f49b94a69d9674a732
+      internalID: -981448793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_48
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 3840
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0d58149bc5f34f54f8fe91d82abd5b36
+      internalID: -1642391147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_49
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 3840
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1c0f9334b5e92f944a0cf1b3aad47f40
+      internalID: 2055203544
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_50
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 3840
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ded086b93cafa5e418bb275981179210
+      internalID: -2014075905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_51
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 3840
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cba54b94e983faa438f20348db16dffe
+      internalID: -438603672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_52
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 3840
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6090abff0354da84791397178067031d
+      internalID: 1327184565
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_53
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 3840
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d3c642a3392f1d648b9c4050189074e9
+      internalID: -1364486541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_54
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2560
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 884c68332a17e6248ad4bcc64cb02953
+      internalID: 2033934246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_55
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 2560
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 62d6e472168b9124fb2dc831ef08155a
+      internalID: 426358450
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_56
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 2560
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f35cad113297eb740be581c09fe8f610
+      internalID: 917484953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_57
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 2560
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4f1bce77fb3f04a4e99fd809905e319a
+      internalID: 344818308
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_58
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 2560
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 65a969ad034e35b48854535e88c52b38
+      internalID: -580305394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_59
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 2560
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 546aea4f547b60949afd7935a2759cfe
+      internalID: 596353427
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_60
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 2560
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8f15e79b328ed3e44a06646a621a8bc1
+      internalID: -613353927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_61
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 2560
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b2b4f693f20230c4f8edfcaa798eaf60
+      internalID: 1016166612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_62
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 2560
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 55efa44900908c843bb7e63d79c44b23
+      internalID: -52679615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_63
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1280
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5bec81eea81d7114180041f601377086
+      internalID: -1236390666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_64
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 1280
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eba9cf7cff934514baea90299fabbdc2
+      internalID: 1368131631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_65
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 1280
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5e5f6bef8ec32c046b72f1fb92f80021
+      internalID: 1426125710
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_66
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 1280
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d686e61fa732a4647a3ae4257bdc7848
+      internalID: 1252928135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_67
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 1280
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 33b414a02a1325b4db8d8425d49a1b1b
+      internalID: -1739689775
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_68
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 1280
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: abfc9b0a1c29534498aaa8ac15a362f6
+      internalID: -440124201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_69
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 1280
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dcde186c48f213543b191e0d5350bab8
+      internalID: 2007647815
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_70
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 1280
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aa6b9f652acdcba47a8a7dbbf79d0603
+      internalID: -446279036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_71
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 1280
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a92da753084eabf4bb8152d7b3d45eaf
+      internalID: 1671322342
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_72
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 99bb2d1d21a88854a826518ebc9f642a
+      internalID: 1583451558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_73
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 0
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 11b394fb8e7262f4b9e46f86e93ca596
+      internalID: 909226684
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_74
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 0
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 36dcca08ae5bd0d4695b9819c7adf647
+      internalID: -1579869713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MedivalVillageBorder_SpriteSheet_9x16_75
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 0
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 194f3b2c678eeb4498ff8dcc2aea037f
+      internalID: 391994828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: bff4c6eabc2899e4780b89423f6caf1c
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":9.0,"y":9.0},"gridSpriteSize":{"x":720.0,"y":1280.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      MedivalVillageBorder_SpriteSheet_9x16_0: 5620375026429165688
+      MedivalVillageBorder_SpriteSheet_9x16_1: -7565116725714290394
+      MedivalVillageBorder_SpriteSheet_9x16_10: -1375328425
+      MedivalVillageBorder_SpriteSheet_9x16_11: 1519776367
+      MedivalVillageBorder_SpriteSheet_9x16_12: 1811074894
+      MedivalVillageBorder_SpriteSheet_9x16_13: -97925376
+      MedivalVillageBorder_SpriteSheet_9x16_14: 2082573029
+      MedivalVillageBorder_SpriteSheet_9x16_15: 2130648331
+      MedivalVillageBorder_SpriteSheet_9x16_16: 273766396
+      MedivalVillageBorder_SpriteSheet_9x16_17: 108858744
+      MedivalVillageBorder_SpriteSheet_9x16_18: 1745663384
+      MedivalVillageBorder_SpriteSheet_9x16_19: 1715600149
+      MedivalVillageBorder_SpriteSheet_9x16_2: -7235046689294122123
+      MedivalVillageBorder_SpriteSheet_9x16_20: 1551420248
+      MedivalVillageBorder_SpriteSheet_9x16_21: 1391280665
+      MedivalVillageBorder_SpriteSheet_9x16_22: 1982655138
+      MedivalVillageBorder_SpriteSheet_9x16_23: 510444886
+      MedivalVillageBorder_SpriteSheet_9x16_24: 318236106
+      MedivalVillageBorder_SpriteSheet_9x16_25: -254756776
+      MedivalVillageBorder_SpriteSheet_9x16_26: -1713767823
+      MedivalVillageBorder_SpriteSheet_9x16_27: 1740725709
+      MedivalVillageBorder_SpriteSheet_9x16_28: 1227361253
+      MedivalVillageBorder_SpriteSheet_9x16_29: 407577918
+      MedivalVillageBorder_SpriteSheet_9x16_3: 3424325214191117768
+      MedivalVillageBorder_SpriteSheet_9x16_30: -1598980053
+      MedivalVillageBorder_SpriteSheet_9x16_31: -1606323516
+      MedivalVillageBorder_SpriteSheet_9x16_32: 1749688484
+      MedivalVillageBorder_SpriteSheet_9x16_33: 43213420
+      MedivalVillageBorder_SpriteSheet_9x16_34: -2054831379
+      MedivalVillageBorder_SpriteSheet_9x16_35: -293795110
+      MedivalVillageBorder_SpriteSheet_9x16_36: -598755978
+      MedivalVillageBorder_SpriteSheet_9x16_37: -348586216
+      MedivalVillageBorder_SpriteSheet_9x16_38: 1792684651
+      MedivalVillageBorder_SpriteSheet_9x16_39: -2113977615
+      MedivalVillageBorder_SpriteSheet_9x16_4: 5837201558123086669
+      MedivalVillageBorder_SpriteSheet_9x16_40: -2003262152
+      MedivalVillageBorder_SpriteSheet_9x16_41: -240539699
+      MedivalVillageBorder_SpriteSheet_9x16_42: 233971368
+      MedivalVillageBorder_SpriteSheet_9x16_43: 485811913
+      MedivalVillageBorder_SpriteSheet_9x16_44: -1404485985
+      MedivalVillageBorder_SpriteSheet_9x16_45: -80177324
+      MedivalVillageBorder_SpriteSheet_9x16_46: 1602156535
+      MedivalVillageBorder_SpriteSheet_9x16_47: -981448793
+      MedivalVillageBorder_SpriteSheet_9x16_48: -1642391147
+      MedivalVillageBorder_SpriteSheet_9x16_49: 2055203544
+      MedivalVillageBorder_SpriteSheet_9x16_5: -3377539207860332864
+      MedivalVillageBorder_SpriteSheet_9x16_50: -2014075905
+      MedivalVillageBorder_SpriteSheet_9x16_51: -438603672
+      MedivalVillageBorder_SpriteSheet_9x16_52: 1327184565
+      MedivalVillageBorder_SpriteSheet_9x16_53: -1364486541
+      MedivalVillageBorder_SpriteSheet_9x16_54: 2033934246
+      MedivalVillageBorder_SpriteSheet_9x16_55: 426358450
+      MedivalVillageBorder_SpriteSheet_9x16_56: 917484953
+      MedivalVillageBorder_SpriteSheet_9x16_57: 344818308
+      MedivalVillageBorder_SpriteSheet_9x16_58: -580305394
+      MedivalVillageBorder_SpriteSheet_9x16_59: 596353427
+      MedivalVillageBorder_SpriteSheet_9x16_6: -6785377204906724833
+      MedivalVillageBorder_SpriteSheet_9x16_60: -613353927
+      MedivalVillageBorder_SpriteSheet_9x16_61: 1016166612
+      MedivalVillageBorder_SpriteSheet_9x16_62: -52679615
+      MedivalVillageBorder_SpriteSheet_9x16_63: -1236390666
+      MedivalVillageBorder_SpriteSheet_9x16_64: 1368131631
+      MedivalVillageBorder_SpriteSheet_9x16_65: 1426125710
+      MedivalVillageBorder_SpriteSheet_9x16_66: 1252928135
+      MedivalVillageBorder_SpriteSheet_9x16_67: -1739689775
+      MedivalVillageBorder_SpriteSheet_9x16_68: -440124201
+      MedivalVillageBorder_SpriteSheet_9x16_69: 2007647815
+      MedivalVillageBorder_SpriteSheet_9x16_7: 1228410037202216833
+      MedivalVillageBorder_SpriteSheet_9x16_70: -446279036
+      MedivalVillageBorder_SpriteSheet_9x16_71: 1671322342
+      MedivalVillageBorder_SpriteSheet_9x16_72: 1583451558
+      MedivalVillageBorder_SpriteSheet_9x16_73: 909226684
+      MedivalVillageBorder_SpriteSheet_9x16_74: -1579869713
+      MedivalVillageBorder_SpriteSheet_9x16_75: 391994828
+      MedivalVillageBorder_SpriteSheet_9x16_8: -758136971459549441
+      MedivalVillageBorder_SpriteSheet_9x16_9: 1485495786
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

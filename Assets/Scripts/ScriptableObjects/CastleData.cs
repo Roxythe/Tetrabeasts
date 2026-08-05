@@ -17,6 +17,12 @@ public class CastleData : ScriptableObject
     [Tooltip("If true, the animated background video plays forward, then backward, in a continuous ping-pong loop.")]
     public bool levelBackgroundVideoPingPongLoop = false;
 
+    [Header("Board Presentation")]
+    [Tooltip("Optional sprite shown on Board_Background for this level. If empty, the scene default is kept.")]
+    public Sprite boardBackgroundSprite;
+    [Tooltip("Optional sprite applied to the Board Border Left / Board Border Right child Images for this level. If empty, the scene defaults are kept.")]
+    public Sprite boardBorderSprite;
+
     [Header("Stats")]
     public int maxHP = 100;
 

@@ -20,6 +20,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 7fd351226c924d14592f73c78f621f53, type: 3}
   levelBackgroundSprite: {fileID: 7177447691466052707, guid: 7fe717733100399409473e8864f22b1f, type: 3}
   levelBackgroundVideoClip: {fileID: 32900000, guid: 1933bbb9a32a3734d86dfd8995a8122b, type: 3}
+  levelBackgroundVideoPingPongLoop: 0
+  boardBackgroundSprite: {fileID: 21300000, guid: 0d4706ef26248a949a75a33ccde6ab91, type: 3}
+  boardBorderSprite: {fileID: 0}
   maxHP: 3000
   infiniteHealth: 1
   projectileSprite: {fileID: 21300000, guid: ca7186951d5077d419fe7998de074c6d, type: 3}

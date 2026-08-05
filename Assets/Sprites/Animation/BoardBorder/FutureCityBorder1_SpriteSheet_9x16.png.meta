@@ -1,0 +1,2294 @@
+fileFormatVersion: 2
+guid: aca98a34c19d6564bbc6653d86f1dee2
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3701213462475414059
+    second: FutureCityBorder1_SpriteSheet_9x16_0
+  - first:
+      213: 345973780351101180
+    second: FutureCityBorder1_SpriteSheet_9x16_1
+  - first:
+      213: -5169992861776437579
+    second: FutureCityBorder1_SpriteSheet_9x16_2
+  - first:
+      213: 404792840138684813
+    second: FutureCityBorder1_SpriteSheet_9x16_3
+  - first:
+      213: 5413010569702023118
+    second: FutureCityBorder1_SpriteSheet_9x16_4
+  - first:
+      213: -1011785129960870874
+    second: FutureCityBorder1_SpriteSheet_9x16_5
+  - first:
+      213: 2856113278034932406
+    second: FutureCityBorder1_SpriteSheet_9x16_6
+  - first:
+      213: -4628412403418087498
+    second: FutureCityBorder1_SpriteSheet_9x16_7
+  - first:
+      213: -495145030656362269
+    second: FutureCityBorder1_SpriteSheet_9x16_8
+  - first:
+      213: -2839550781509268222
+    second: FutureCityBorder1_SpriteSheet_9x16_9
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 11520
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d5624b37f5a2acc0800000000000000
+      internalID: -3701213462475414059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_1
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 11520
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf82d67f1552dc400800000000000000
+      internalID: 345973780351101180
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_2
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 11520
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5be928e42ee7048b0800000000000000
+      internalID: -5169992861776437579
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_3
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 11520
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d89761481fc1e9500800000000000000
+      internalID: 404792840138684813
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_4
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 11520
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ecf168c0f60ee1b40800000000000000
+      internalID: 5413010569702023118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_5
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 11520
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62ce8a3f8ca65f1f0800000000000000
+      internalID: -1011785129960870874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_6
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 11520
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b27c8fd4e3f2a720800000000000000
+      internalID: 2856113278034932406
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_7
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 11520
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6bfb044017394cfb0800000000000000
+      internalID: -4628412403418087498
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_8
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 11520
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e87d6fc734e029f0800000000000000
+      internalID: -495145030656362269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_9
+      rect:
+        serializedVersion: 2
+        x: 6480
+        y: 11520
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20d057adb93e798d0800000000000000
+      internalID: -2839550781509268222
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 10240
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e477257fc2bce0c4aa1f23a705cae3b9
+      internalID: 924581896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_11
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 10240
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a1dfc943d97db324a968bbbd8edde29f
+      internalID: 1176465325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_12
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 10240
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0d3c9ffb7f62a1b4cb60b1e99da2c7bd
+      internalID: -958254078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_13
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 10240
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b75670ab61867ef4eb8cbc94ee1457d1
+      internalID: -136507455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_14
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 10240
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4ed8a71763306e6479a5ab23557fdce3
+      internalID: -1941350116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_15
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 10240
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef43f9fd9828bcc49afc53d8c69b26d6
+      internalID: -662491282
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_16
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 10240
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9c5819f92de35c0449eef350c0f7bb00
+      internalID: 498913519
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_17
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 10240
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 81905d0601090664d9b2081ae36f8069
+      internalID: -1751965649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_18
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 10240
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3d19b1a2ea2f9ed4a8b762638b6c710c
+      internalID: -1546913861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_19
+      rect:
+        serializedVersion: 2
+        x: 6480
+        y: 10240
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cac879a24363c1349bc19a5896976fbe
+      internalID: 356801268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_20
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 8960
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4cb6b64fd8ea5bd4597e1d1a0d4ec9cb
+      internalID: 393724576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_21
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 8960
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 03ef0b6049b99d54284f57ffe042f269
+      internalID: 1035997712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_22
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 8960
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fe9fccf85f1cc514884d1212721b29f1
+      internalID: -1603459079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_23
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 8960
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 904a2b25e13fdce4f8bd8bfadfa41e1d
+      internalID: -996094307
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_24
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 8960
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f0c38d948da0bb34ead1444325c16995
+      internalID: -1388236305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_25
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 8960
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c25bab372e66414cafbe34f81204ae4
+      internalID: -1980347159
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_26
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 8960
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d79c24141c862fe4caa366690c3a985a
+      internalID: -1700765372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_27
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 8960
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9784fb204a96cdb458e36b42577d1908
+      internalID: -1629949411
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_28
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 8960
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cc6da15a082e59249b60125d0768d4d2
+      internalID: -1620389791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_29
+      rect:
+        serializedVersion: 2
+        x: 6480
+        y: 8960
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d1238d08a183dde44aeeb2fb8f267865
+      internalID: -471435713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_30
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 7680
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5fafdda9da7009d49b51d3b08772ef97
+      internalID: 1708926697
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_31
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 7680
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef70a8e618ed27a4d8498d3b5e4679a0
+      internalID: -1880559525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_32
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 7680
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f61c27e9cf675b24eafdb2e5cfd43f39
+      internalID: -215980763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_33
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 7680
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7e1eeab042525ce46ba24ab06285031a
+      internalID: 1252486087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_34
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 7680
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e2402e2cfdd0db04aa5d2c8703943c60
+      internalID: 599096803
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_35
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 7680
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 868beee405d1fbe4ba414cd026b5d774
+      internalID: -410028139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_36
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 7680
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5d55b175aa099c3449b4a5652de50a57
+      internalID: 638321405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_37
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 7680
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e6676c475dbf64947b3cbea4361e75b9
+      internalID: -1821780877
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_38
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 7680
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8301e402bd878ff4fa6bf1772b88605d
+      internalID: -1193160486
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_39
+      rect:
+        serializedVersion: 2
+        x: 6480
+        y: 7680
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5761f7c3be34f0a47bf99022267b5f80
+      internalID: -158531901
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_40
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 6400
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 31013647e7629dd409ed27ccf6bb3966
+      internalID: 468061646
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_41
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 6400
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 28d4d315d48eef54186f8ef4b9b6e8ec
+      internalID: 335746169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_42
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 6400
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ba28ffab4dd866468ae5c50110d20ef
+      internalID: 721532255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_43
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 6400
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 65b2bf62f8dedaa40b5b3dcc36769644
+      internalID: -1449836758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_44
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 6400
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 90910e468d8ccff43a8b96c40bd7eb59
+      internalID: 970914514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_45
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 6400
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d653ae2f2b63a07438f668023ded6a21
+      internalID: -1081191265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_46
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 6400
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c9fb3fbd2b7cfd540a3ea0858314f9fa
+      internalID: 62594070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_47
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 6400
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 886117bbd3f6fef47b68cc25cdaf1d61
+      internalID: -370378382
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_48
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 6400
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c7bbbdc4897e1cb45b48137d281a9aa5
+      internalID: 1064010431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_49
+      rect:
+        serializedVersion: 2
+        x: 6480
+        y: 6400
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 89e694e3d373f704c89b028f154c9b35
+      internalID: -50976072
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_50
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 5120
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 243e98e32d8dc814caec4d85b53d2289
+      internalID: -2103770833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_51
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 5120
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7cc2411aeb0da5e4685cb7c1717b9c9a
+      internalID: -633412308
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_52
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 5120
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef79ace6f5f47444581da744f96c34e2
+      internalID: -1040157057
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_53
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 5120
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cdaa607a2769f3d4e9e552daa74ed023
+      internalID: 367217666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_54
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 5120
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8de5447ba57761047927b986bf052433
+      internalID: -1665962830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_55
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 5120
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 28168011d09eb724680457c76f940261
+      internalID: 1533553855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_56
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 5120
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f32612fdf4b4be43aad9a7c954cc10e
+      internalID: 78515168
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_57
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 5120
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d9cf5a9bbfc85c942b980f66584aa47b
+      internalID: 564246413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_58
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 5120
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4328a23ed08cbc6428ee59b0fc6c5b72
+      internalID: 2017298148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_59
+      rect:
+        serializedVersion: 2
+        x: 6480
+        y: 5120
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f87d5373afd0e0e4f904e24473935fa7
+      internalID: -201100923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_60
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3840
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ebc18a7f22f2d5349a367b614f31494c
+      internalID: -1976768243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_61
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 3840
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 66970e3a5edbfb540b120d99ff71232a
+      internalID: -659667444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_62
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 3840
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7879f28251faa84408e46c923bc4035e
+      internalID: -1894158515
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_63
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 3840
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f875013cc96ea194e87be8152b570677
+      internalID: 1322871051
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_64
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 3840
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 411d9a9d36c127c44bab64522483a2da
+      internalID: -740073471
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_65
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 3840
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef0f076a17a220e418d4d78698d812f7
+      internalID: 1592020523
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_66
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 3840
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: acee6befd93d35d4899d3ad3b8e9a71e
+      internalID: -158466364
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_67
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 3840
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 99b3660509bbb5441b3895c71003efd6
+      internalID: 18950497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_68
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 3840
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f9803c2dd022f3343a1c798a72fa38c0
+      internalID: 312594630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_69
+      rect:
+        serializedVersion: 2
+        x: 6480
+        y: 3840
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a5b5d04a9db49242b4a26082e829e38
+      internalID: 1295155490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_70
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2560
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e46f34512cf0ce942b6df4487aa123f2
+      internalID: -227544135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_71
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 2560
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3a3e93382459f804ea57d4f2894673fe
+      internalID: -1763159237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_72
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 2560
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2905b2eeef207df40a98812cdc265d3c
+      internalID: 1562525977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_73
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 2560
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3a9f161d86ee01e4a9f671a8364a7e7e
+      internalID: 714342214
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_74
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 2560
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d9ca929a065ba4a48bd950a080dd03a9
+      internalID: 1721122769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_75
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 2560
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96d2ac5d065514648bb7e1a76e63a6c2
+      internalID: 247019539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_76
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 2560
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5dda8e0ab39311a4ca0dc34587adaf56
+      internalID: -1789720818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_77
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 2560
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2d39d46f07428474cac8e896c65d396d
+      internalID: -265313846
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_78
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 2560
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 04928d517a57beb419e418fd1226e977
+      internalID: 289715843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_79
+      rect:
+        serializedVersion: 2
+        x: 6480
+        y: 2560
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 625115d38e8970c4f8f75f206908d206
+      internalID: -1674977573
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_80
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1280
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aacf0946f0045e648ade73d5fffc14c2
+      internalID: 1722531090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_81
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 1280
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a66368ca96df02e48ad25382fe06d6eb
+      internalID: 106632980
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_82
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 1280
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6003ed4d9a5699b4abdb64101b4df240
+      internalID: 1011367868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_83
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 1280
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f07e92754e36398419b24eafbfea32e4
+      internalID: 383436441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_84
+      rect:
+        serializedVersion: 2
+        x: 2880
+        y: 1280
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1bab8af60934ed746b16148e2cee0509
+      internalID: -76104079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_85
+      rect:
+        serializedVersion: 2
+        x: 3600
+        y: 1280
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 69a3066edbe9dfa488e62699903b9f9b
+      internalID: -1884912118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_86
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 1280
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 86587e9ae4e5e12478c5e534439a0986
+      internalID: -1122482815
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_87
+      rect:
+        serializedVersion: 2
+        x: 5040
+        y: 1280
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 21c25335aed1a3847a2284859885ff90
+      internalID: 814365298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_88
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 1280
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0ba25acfaaad1e6408380fa5ca19a4ea
+      internalID: -653903290
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_89
+      rect:
+        serializedVersion: 2
+        x: 6480
+        y: 1280
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5686cf76898f7a84e9018737ac8ce241
+      internalID: 1576370677
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FutureCityBorder1_SpriteSheet_9x16_90
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 720
+        height: 1280
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a6cf0ee266b7ef54184ef27787e648ea
+      internalID: -1088439351
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 1cf3043f2dbe0aa46b10bd685bc21deb
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":10.0,"y":10.0},"gridSpriteSize":{"x":720.0,"y":1280.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      FutureCityBorder1_SpriteSheet_9x16_0: -3701213462475414059
+      FutureCityBorder1_SpriteSheet_9x16_1: 345973780351101180
+      FutureCityBorder1_SpriteSheet_9x16_10: 924581896
+      FutureCityBorder1_SpriteSheet_9x16_11: 1176465325
+      FutureCityBorder1_SpriteSheet_9x16_12: -958254078
+      FutureCityBorder1_SpriteSheet_9x16_13: -136507455
+      FutureCityBorder1_SpriteSheet_9x16_14: -1941350116
+      FutureCityBorder1_SpriteSheet_9x16_15: -662491282
+      FutureCityBorder1_SpriteSheet_9x16_16: 498913519
+      FutureCityBorder1_SpriteSheet_9x16_17: -1751965649
+      FutureCityBorder1_SpriteSheet_9x16_18: -1546913861
+      FutureCityBorder1_SpriteSheet_9x16_19: 356801268
+      FutureCityBorder1_SpriteSheet_9x16_2: -5169992861776437579
+      FutureCityBorder1_SpriteSheet_9x16_20: 393724576
+      FutureCityBorder1_SpriteSheet_9x16_21: 1035997712
+      FutureCityBorder1_SpriteSheet_9x16_22: -1603459079
+      FutureCityBorder1_SpriteSheet_9x16_23: -996094307
+      FutureCityBorder1_SpriteSheet_9x16_24: -1388236305
+      FutureCityBorder1_SpriteSheet_9x16_25: -1980347159
+      FutureCityBorder1_SpriteSheet_9x16_26: -1700765372
+      FutureCityBorder1_SpriteSheet_9x16_27: -1629949411
+      FutureCityBorder1_SpriteSheet_9x16_28: -1620389791
+      FutureCityBorder1_SpriteSheet_9x16_29: -471435713
+      FutureCityBorder1_SpriteSheet_9x16_3: 404792840138684813
+      FutureCityBorder1_SpriteSheet_9x16_30: 1708926697
+      FutureCityBorder1_SpriteSheet_9x16_31: -1880559525
+      FutureCityBorder1_SpriteSheet_9x16_32: -215980763
+      FutureCityBorder1_SpriteSheet_9x16_33: 1252486087
+      FutureCityBorder1_SpriteSheet_9x16_34: 599096803
+      FutureCityBorder1_SpriteSheet_9x16_35: -410028139
+      FutureCityBorder1_SpriteSheet_9x16_36: 638321405
+      FutureCityBorder1_SpriteSheet_9x16_37: -1821780877
+      FutureCityBorder1_SpriteSheet_9x16_38: -1193160486
+      FutureCityBorder1_SpriteSheet_9x16_39: -158531901
+      FutureCityBorder1_SpriteSheet_9x16_4: 5413010569702023118
+      FutureCityBorder1_SpriteSheet_9x16_40: 468061646
+      FutureCityBorder1_SpriteSheet_9x16_41: 335746169
+      FutureCityBorder1_SpriteSheet_9x16_42: 721532255
+      FutureCityBorder1_SpriteSheet_9x16_43: -1449836758
+      FutureCityBorder1_SpriteSheet_9x16_44: 970914514
+      FutureCityBorder1_SpriteSheet_9x16_45: -1081191265
+      FutureCityBorder1_SpriteSheet_9x16_46: 62594070
+      FutureCityBorder1_SpriteSheet_9x16_47: -370378382
+      FutureCityBorder1_SpriteSheet_9x16_48: 1064010431
+      FutureCityBorder1_SpriteSheet_9x16_49: -50976072
+      FutureCityBorder1_SpriteSheet_9x16_5: -1011785129960870874
+      FutureCityBorder1_SpriteSheet_9x16_50: -2103770833
+      FutureCityBorder1_SpriteSheet_9x16_51: -633412308
+      FutureCityBorder1_SpriteSheet_9x16_52: -1040157057
+      FutureCityBorder1_SpriteSheet_9x16_53: 367217666
+      FutureCityBorder1_SpriteSheet_9x16_54: -1665962830
+      FutureCityBorder1_SpriteSheet_9x16_55: 1533553855
+      FutureCityBorder1_SpriteSheet_9x16_56: 78515168
+      FutureCityBorder1_SpriteSheet_9x16_57: 564246413
+      FutureCityBorder1_SpriteSheet_9x16_58: 2017298148
+      FutureCityBorder1_SpriteSheet_9x16_59: -201100923
+      FutureCityBorder1_SpriteSheet_9x16_6: 2856113278034932406
+      FutureCityBorder1_SpriteSheet_9x16_60: -1976768243
+      FutureCityBorder1_SpriteSheet_9x16_61: -659667444
+      FutureCityBorder1_SpriteSheet_9x16_62: -1894158515
+      FutureCityBorder1_SpriteSheet_9x16_63: 1322871051
+      FutureCityBorder1_SpriteSheet_9x16_64: -740073471
+      FutureCityBorder1_SpriteSheet_9x16_65: 1592020523
+      FutureCityBorder1_SpriteSheet_9x16_66: -158466364
+      FutureCityBorder1_SpriteSheet_9x16_67: 18950497
+      FutureCityBorder1_SpriteSheet_9x16_68: 312594630
+      FutureCityBorder1_SpriteSheet_9x16_69: 1295155490
+      FutureCityBorder1_SpriteSheet_9x16_7: -4628412403418087498
+      FutureCityBorder1_SpriteSheet_9x16_70: -227544135
+      FutureCityBorder1_SpriteSheet_9x16_71: -1763159237
+      FutureCityBorder1_SpriteSheet_9x16_72: 1562525977
+      FutureCityBorder1_SpriteSheet_9x16_73: 714342214
+      FutureCityBorder1_SpriteSheet_9x16_74: 1721122769
+      FutureCityBorder1_SpriteSheet_9x16_75: 247019539
+      FutureCityBorder1_SpriteSheet_9x16_76: -1789720818
+      FutureCityBorder1_SpriteSheet_9x16_77: -265313846
+      FutureCityBorder1_SpriteSheet_9x16_78: 289715843
+      FutureCityBorder1_SpriteSheet_9x16_79: -1674977573
+      FutureCityBorder1_SpriteSheet_9x16_8: -495145030656362269
+      FutureCityBorder1_SpriteSheet_9x16_80: 1722531090
+      FutureCityBorder1_SpriteSheet_9x16_81: 106632980
+      FutureCityBorder1_SpriteSheet_9x16_82: 1011367868
+      FutureCityBorder1_SpriteSheet_9x16_83: 383436441
+      FutureCityBorder1_SpriteSheet_9x16_84: -76104079
+      FutureCityBorder1_SpriteSheet_9x16_85: -1884912118
+      FutureCityBorder1_SpriteSheet_9x16_86: -1122482815
+      FutureCityBorder1_SpriteSheet_9x16_87: 814365298
+      FutureCityBorder1_SpriteSheet_9x16_88: -653903290
+      FutureCityBorder1_SpriteSheet_9x16_89: 1576370677
+      FutureCityBorder1_SpriteSheet_9x16_9: -2839550781509268222
+      FutureCityBorder1_SpriteSheet_9x16_90: -1088439351
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
