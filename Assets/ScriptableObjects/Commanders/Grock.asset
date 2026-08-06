@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterData
   displayName: Grock
   portrait: {fileID: -2342136667815696149, guid: 43c8bf5dd1b8f834e915a42b85e48681, type: 3}
-  defaultBorder: {fileID: 5534120206350630683, guid: e25362440f445c24882ab915496da119, type: 3}
+  defaultBorder: {fileID: 1213768103809294247, guid: 485d8bc1c65245d4b8826a6917056ef5, type: 3}
+  animatedBorderStaticFrame: {fileID: 1213768103809294247, guid: 485d8bc1c65245d4b8826a6917056ef5, type: 3}
   animatedBorderController: {fileID: 9100000, guid: 30265d33833cd4547a19c0c15f456597, type: 2}
   specialAbilityName: Grock SMASH!
   specialDescription: Let loose a war cry doubling all units on the boards health

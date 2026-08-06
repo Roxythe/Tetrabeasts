@@ -12,16 +12,18 @@ public class CastleData : ScriptableObject
 
     [Tooltip("Optional background sprite shown by the enemy castle UI for this level.")]
     public Sprite levelBackgroundSprite;
+    [Tooltip("Optional sprite assigned to BorderFrame_Image for this level's enemy HP gauge. If empty, the scene default is kept.")]
+    public Sprite hpGaugeFrameSprite;
     [Tooltip("Optional animated background video shown on the gameplay board for this level. Static sprites remain the fallback.")]
     public VideoClip levelBackgroundVideoClip;
+    [Tooltip("Playback speed for this level's animated background video. Set to 0 to use AnimatedBG_VideoPlayer's scene speed.")]
+    [Min(0f)] public float levelBackgroundVideoPlaybackSpeed = 0f;
     [Tooltip("If true, the animated background video plays forward, then backward, in a continuous ping-pong loop.")]
     public bool levelBackgroundVideoPingPongLoop = false;
 
     [Header("Board Presentation")]
     [Tooltip("Optional sprite shown on Board_Background for this level. If empty, the scene default is kept.")]
     public Sprite boardBackgroundSprite;
-    [Tooltip("Optional sprite applied to the Board Border Left / Board Border Right child Images for this level. If empty, the scene defaults are kept.")]
-    public Sprite boardBorderSprite;
 
     [Header("Stats")]
     public int maxHP = 100;

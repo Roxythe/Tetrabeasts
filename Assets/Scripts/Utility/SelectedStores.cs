@@ -187,6 +187,16 @@ public static class CommanderBorderFrameStore
         return character && character.animatedBorderController;
     }
 
+    public static Sprite GetStaticBorderSprite(PlayerCharacterData character)
+    {
+        if (!character)
+            return null;
+
+        return character.animatedBorderStaticFrame
+            ? character.animatedBorderStaticFrame
+            : character.defaultBorder;
+    }
+
     public static string GetUnlockKey(string characterAssetName) => UnlockPrefix + characterAssetName;
     public static string GetActiveKey(string characterAssetName) => ActivePrefix + characterAssetName;
 
@@ -253,13 +263,16 @@ public static class CommanderBorderFrameStore
 
         bool useAnimated = IsActive(character);
         Animator animator = borderImage.GetComponent<Animator>();
+        Sprite staticBorder = GetStaticBorderSprite(character);
 
         if (useAnimated)
         {
             if (!animator)
                 animator = borderImage.gameObject.AddComponent<Animator>();
 
-            borderImage.sprite = character.defaultBorder;
+            if (staticBorder)
+                borderImage.sprite = staticBorder;
+
             animator.runtimeAnimatorController = character.animatedBorderController;
             animator.updateMode = AnimatorUpdateMode.UnscaledTime;
             animator.enabled = true;
@@ -273,8 +286,8 @@ public static class CommanderBorderFrameStore
             animator.runtimeAnimatorController = null;
         }
 
-        if (character && character.defaultBorder)
-            borderImage.sprite = character.defaultBorder;
+        if (staticBorder)
+            borderImage.sprite = staticBorder;
     }
 
     static bool HasExplicitUnlock(PlayerCharacterData character)

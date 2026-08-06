@@ -89,6 +89,8 @@ public class RoundTransitionUI : MonoBehaviour
     [SerializeField, Min(0f)] float autoHoldSeconds = 3f;
     [SerializeField, Min(0.01f)] float autoFadeOutSeconds = 1.35f;
     [SerializeField, Range(0f, 1f)] float backgroundAlpha = 0.72f;
+    [Tooltip("When enabled, the dimmer fades evenly across the full screen instead of expanding through the circular reveal mask.")]
+    [SerializeField] bool useFullScreenDimmerFade = false;
     [SerializeField, Min(0f)] float circularRevealSeconds = 0.24f;
     [SerializeField, Min(1f)] float circularRevealStartDiameter = 48f;
     [SerializeField] RectTransform revealMaskRoot;
@@ -196,8 +198,6 @@ public class RoundTransitionUI : MonoBehaviour
             rootGroup.blocksRaycasts = true;
         }
 
-        SetBackgroundAlpha(0f);
-
         if (messageText)
         {
             messageText.text = TetrabeastsLocalization.LocalizeText(message);
@@ -205,7 +205,7 @@ public class RoundTransitionUI : MonoBehaviour
 
         SetOneLinersVisible(false);
         SetTextAlpha(0f);
-        PrepareCircularReveal();
+        PrepareDimmerFadeIn();
         SetActionControlsVisible(false);
         ConfigureOptOutToggle(string.Empty, false);
 
@@ -252,8 +252,7 @@ public class RoundTransitionUI : MonoBehaviour
             rootGroup.blocksRaycasts = true;
         }
 
-        SetCircularRevealProgress(1f);
-        SetBackgroundAlpha(backgroundAlpha);
+        PrepareDimmerForManualShow();
 
         if (messageText)
         {
@@ -380,11 +379,13 @@ public class RoundTransitionUI : MonoBehaviour
             float alpha = Mathf.SmoothStep(0f, 1f, t);
 
             SetTextAlpha(alpha);
+            if (useFullScreenDimmerFade)
+                SetBackgroundAlpha(backgroundAlpha * alpha);
 
             yield return null;
         }
 
-        SetCircularRevealProgress(1f);
+        SetFullDimmerCoverage();
         SetBackgroundAlpha(backgroundAlpha);
         SetTextAlpha(1f);
 
@@ -423,14 +424,18 @@ public class RoundTransitionUI : MonoBehaviour
             elapsed += Time.unscaledDeltaTime;
             float alpha = GetCircularRevealProgress(elapsed);
 
-            SetCircularRevealProgress(alpha);
+            if (useFullScreenDimmerFade)
+                SetFullDimmerCoverage();
+            else
+                SetCircularRevealProgress(alpha);
+
             SetTextAlpha(alpha);
             SetBackgroundAlpha(backgroundAlpha * alpha);
 
             yield return null;
         }
 
-        SetCircularRevealProgress(1f);
+        SetFullDimmerCoverage();
         SetTextAlpha(1f);
         SetBackgroundAlpha(backgroundAlpha);
 
@@ -1070,10 +1075,28 @@ public class RoundTransitionUI : MonoBehaviour
         animationTransform.SetSiblingIndex(insertIndex);
     }
 
-    void PrepareCircularReveal()
+    void PrepareDimmerFadeIn()
     {
         EnsureRevealMask();
-        SetCircularRevealProgress(0f);
+
+        if (useFullScreenDimmerFade)
+            SetFullDimmerCoverage();
+        else
+            SetCircularRevealProgress(0f);
+
+        SetBackgroundAlpha(0f);
+    }
+
+    void PrepareDimmerForManualShow()
+    {
+        EnsureRevealMask();
+        SetFullDimmerCoverage();
+        SetBackgroundAlpha(useFullScreenDimmerFade ? 0f : backgroundAlpha);
+    }
+
+    void SetFullDimmerCoverage()
+    {
+        SetCircularRevealProgress(1f);
     }
 
     void SetCircularRevealProgress(float progress)
@@ -1379,7 +1402,7 @@ public class RoundTransitionUI : MonoBehaviour
         if (backgroundImage)
         {
             var color = backgroundImage.color;
-            color.a = revealBackgroundImage ? 0f : clamped;
+            color.a = UseRevealBackgroundForDimmer() ? 0f : clamped;
             backgroundImage.color = color;
         }
 
@@ -1389,9 +1412,14 @@ public class RoundTransitionUI : MonoBehaviour
             color.r = 0f;
             color.g = 0f;
             color.b = 0f;
-            color.a = clamped;
+            color.a = UseRevealBackgroundForDimmer() ? clamped : 0f;
             revealBackgroundImage.color = color;
         }
+    }
+
+    bool UseRevealBackgroundForDimmer()
+    {
+        return revealBackgroundImage && !useFullScreenDimmerFade;
     }
 
     void SetActionControlsVisible(bool visible)

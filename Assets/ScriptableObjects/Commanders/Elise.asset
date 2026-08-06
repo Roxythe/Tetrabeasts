@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterData
   displayName: Elise
   portrait: {fileID: -6659777029691697549, guid: 0b6ed9acc06146e4bb0103810912d48b, type: 3}
-  defaultBorder: {fileID: -4219142061602393782, guid: 0612e3136a37f4c4b9ff584bbe075938, type: 3}
+  defaultBorder: {fileID: -7121223773132210447, guid: 3550d2a63c9d43b4f99a9643caa4d899, type: 3}
+  animatedBorderStaticFrame: {fileID: -7121223773132210447, guid: 3550d2a63c9d43b4f99a9643caa4d899, type: 3}
   animatedBorderController: {fileID: 9100000, guid: 134eb2b9968a34e4fb56493b9d376852, type: 2}
   specialAbilityName: Natures Embrace
   specialDescription: Heal all units on the board back to full health including those

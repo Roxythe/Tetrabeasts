@@ -19,6 +19,8 @@ public class PlayerCharacterData : ScriptableObject
     public string displayName = "Alyx";
     public Sprite portrait;
     public Sprite defaultBorder;
+    [Tooltip("Static border shown when the animated frame is disabled. Set this to frame 0 from the animated border sheet for visual consistency.")]
+    public Sprite animatedBorderStaticFrame;
     public RuntimeAnimatorController animatedBorderController;
     public string specialAbilityName = "Ability Name";
     public string specialDescription;

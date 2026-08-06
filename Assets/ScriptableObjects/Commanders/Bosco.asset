@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterData
   displayName: Bosco
   portrait: {fileID: -5746821224976465101, guid: a24c064514663e54fafc251fedbf5cb9, type: 3}
-  defaultBorder: {fileID: -8959656473859090931, guid: 986885f1f4df3a641bdf64e2c1cb2727, type: 3}
+  defaultBorder: {fileID: 792476802319144066, guid: 67e51f8bb3cfe1b4a9824cdecf19ee56, type: 3}
+  animatedBorderStaticFrame: {fileID: 792476802319144066, guid: 67e51f8bb3cfe1b4a9824cdecf19ee56, type: 3}
   animatedBorderController: {fileID: 9100000, guid: 1f85d80644c278c45ae6568110274065, type: 2}
   specialAbilityName: Charge!
   specialDescription: Send all units from the bottom 3 rows to attack immediatley,

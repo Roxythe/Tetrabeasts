@@ -2217,7 +2217,11 @@ public class GameController : MonoBehaviour
         if (roundTransitionUI)
             roundTransitionUI.Show(
                 TetrabeastsLocalization.LocalizeText(message),
-                () => continued = true,
+                () =>
+                {
+                    OnRoundTransitionConfirmed(variant);
+                    continued = true;
+                },
                 TetrabeastsLocalization.LocalizeText(optOutLabel),
                 optOutInitialValue,
                 onOptOutContinue,
@@ -2227,6 +2231,14 @@ public class GameController : MonoBehaviour
             continued = true;
 
         yield return new WaitUntil(() => continued);
+    }
+
+    void OnRoundTransitionConfirmed(RoundTransitionVariant variant)
+    {
+        if (variant != RoundTransitionVariant.Win && variant != RoundTransitionVariant.Loss)
+            return;
+
+        levelModifierController?.PauseAnimatedBackgroundForPostRound();
     }
 
     string ClaimRoundTransitionOneLiner(RoundTransitionVariant variant)

@@ -59,7 +59,7 @@ public class RainOverlayUI : MonoBehaviour
             if (!drop.rect)
                 continue;
 
-            drop.y -= dropSpeed * drop.speedScale * Time.deltaTime;
+            drop.y -= dropSpeed * drop.speedScale * Time.unscaledDeltaTime;
             if (drop.y < wrapBottom)
             {
                 drop.y = wrapTop + Random.Range(0f, dropLength * 2f);

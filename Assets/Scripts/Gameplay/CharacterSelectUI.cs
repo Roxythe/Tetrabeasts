@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -34,6 +35,7 @@ public class CharacterSelectUI : MonoBehaviour
     PlayerCharacterData previewCharacter;
     readonly System.Collections.Generic.Dictionary<PlayerCharacterData, Button> buttons = new();
     readonly System.Collections.Generic.Dictionary<PlayerCharacterData, UIButtonTargetVisual> buttonTargetVisuals = new();
+    Coroutine listLayoutRebuildRoutine;
 
     void Awake()
     {
@@ -63,6 +65,7 @@ public class CharacterSelectUI : MonoBehaviour
         previewCharacter = SelectedCharacterStore.Current;
         RefreshPreview();
         RefreshButtonAlphas();
+        ScheduleListLayoutRebuild();
     }
 
     void OnEnable()
@@ -72,6 +75,7 @@ public class CharacterSelectUI : MonoBehaviour
         WireFrameSwapButton();
         RefreshPreview();
         RefreshButtonAlphas();
+        ScheduleListLayoutRebuild();
     }
 
     void BuildList()
@@ -92,21 +96,28 @@ public class CharacterSelectUI : MonoBehaviour
         {
             var btn = Instantiate(characterButtonPrefab, listParent);
             var targetVisual = UIButtonTargetVisual.Ensure(btn.gameObject);
-            if (targetVisual)
-            {
-                targetVisual.Configure(hoverSFX, false, btn.transform);
-                buttonTargetVisuals[data] = targetVisual;
-            }
 
             buttons[data] = btn;
             var txt = btn.GetComponentInChildren<TMP_Text>();
-            var img = btn.GetComponentInChildren<Image>();
+            var portraitT = FindDeep(btn.transform, "CharacterPortrait_Image");
+            var img = portraitT ? portraitT.GetComponent<Image>() : btn.GetComponentInChildren<Image>();
             var borderT = FindDeep(btn.transform, "Border_Image");
             var borderImg = borderT ? borderT.GetComponent<Image>() : null;
+            var pulseTargets = GetCommanderButtonPulseTargets(portraitT, borderT);
+
+            if (targetVisual)
+            {
+                targetVisual.Configure(hoverSFX, false, btn.transform);
+                targetVisual.SetPulseTargets();
+                targetVisual.SetTargetPulseEnabled(false);
+                buttonTargetVisuals[data] = targetVisual;
+            }
+
+            ConfigureCommanderArtworkPulse(borderImg, borderT, pulseTargets);
 
             if (txt) txt.text = TetrabeastsLocalization.LocalizeText(data.displayName);
             if (img && data.portrait) img.sprite = data.portrait;
-            if (borderImg) borderImg.sprite = data.defaultBorder;
+            if (borderImg) borderImg.sprite = CommanderBorderFrameStore.GetStaticBorderSprite(data);
 
             bool unlocked = UnlockStore.IsUnlocked(data);
 
@@ -116,7 +127,15 @@ public class CharacterSelectUI : MonoBehaviour
             var unlockBtnT = FindDeep(btn.transform, "Unlock_Button");
             var unlockBtn = unlockBtnT ? unlockBtnT.GetComponent<Button>() : null;
             if (unlockBtnT) unlockBtnT.gameObject.SetActive(!unlocked);
-            if (unlockBtn) UIButtonTargetVisual.Ensure(unlockBtn.gameObject)?.Configure(null, false, btn.transform);
+            if (unlockBtn)
+            {
+                var unlockVisual = UIButtonTargetVisual.Ensure(unlockBtn.gameObject);
+                if (unlockVisual)
+                {
+                    unlockVisual.Configure(null, false, btn.transform);
+                    unlockVisual.SetTargetPulseEnabled(true);
+                }
+            }
 
             // Always preview on click
             btn.interactable = true;
@@ -181,6 +200,39 @@ public class CharacterSelectUI : MonoBehaviour
             }
 
         }
+
+        RebuildListLayout();
+        ScheduleListLayoutRebuild();
+    }
+
+    static void ConfigureCommanderArtworkPulse(Image borderImage, Transform border, Transform[] pulseTargets)
+    {
+        if (!border)
+            return;
+
+        if (borderImage)
+            borderImage.raycastTarget = true;
+
+        var artworkVisual = UIButtonTargetVisual.Ensure(border.gameObject);
+        if (!artworkVisual)
+            return;
+
+        artworkVisual.Configure(null, false, border);
+        artworkVisual.SetPulseTargets(pulseTargets);
+    }
+
+    static Transform[] GetCommanderButtonPulseTargets(Transform portrait, Transform border)
+    {
+        if (portrait && border)
+            return new[] { portrait, border };
+
+        if (portrait)
+            return new[] { portrait };
+
+        if (border)
+            return new[] { border };
+
+        return null;
     }
 
     void ConfigureScrollInput()
@@ -192,7 +244,9 @@ public class CharacterSelectUI : MonoBehaviour
         if (listParent is RectTransform content)
             scroll.content = content;
 
-        MenuScrollRectInput.Attach(scroll, gameObject);
+        scroll.horizontal = false;
+        scroll.vertical = true;
+        MenuScrollRectInput.Attach(scroll, gameObject, autoCenterSelected: true);
     }
 
     ScrollRect ResolveListScrollRect()
@@ -204,6 +258,147 @@ public class CharacterSelectUI : MonoBehaviour
             listScrollRect = listParent.GetComponentInParent<ScrollRect>(true);
 
         return listScrollRect;
+    }
+
+    void ScheduleListLayoutRebuild()
+    {
+        if (!isActiveAndEnabled)
+            return;
+
+        if (listLayoutRebuildRoutine != null)
+            StopCoroutine(listLayoutRebuildRoutine);
+
+        listLayoutRebuildRoutine = StartCoroutine(RebuildListLayoutNextFrame());
+    }
+
+    IEnumerator RebuildListLayoutNextFrame()
+    {
+        yield return null;
+        RebuildListLayout();
+        listLayoutRebuildRoutine = null;
+    }
+
+    void RebuildListLayout()
+    {
+        if (listParent is not RectTransform content)
+            return;
+
+        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(content);
+        ResizeGridContentToChildren(content);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(content);
+
+        var scroll = ResolveListScrollRect();
+        if (!scroll)
+            return;
+
+        scroll.content = content;
+        scroll.horizontal = false;
+        scroll.vertical = true;
+        MenuScrollRectInput.Attach(scroll, gameObject, autoCenterSelected: true);
+
+        if (scroll.transform is RectTransform scrollRectTransform)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRectTransform);
+
+        scroll.verticalNormalizedPosition = 1f;
+        scroll.velocity = Vector2.zero;
+        Canvas.ForceUpdateCanvases();
+    }
+
+    void ResizeGridContentToChildren(RectTransform content)
+    {
+        var grid = content.GetComponent<GridLayoutGroup>();
+        if (!grid)
+            return;
+
+        int childCount = GetActiveChildCount(content);
+        int columns = GetGridColumnCount(grid, content, childCount);
+        int rows = childCount > 0 ? Mathf.CeilToInt(childCount / (float)columns) : 0;
+
+        float contentHeight = grid.padding.top + grid.padding.bottom;
+        if (rows > 0)
+            contentHeight += (rows * grid.cellSize.y) + ((rows - 1) * grid.spacing.y);
+
+        if (TryGetContentVisualBounds(content, out var bounds))
+            contentHeight = Mathf.Max(contentHeight, -bounds.min.y + grid.padding.bottom);
+
+        var scroll = ResolveListScrollRect();
+        float viewportHeight = 0f;
+        if (scroll && scroll.viewport)
+            viewportHeight = scroll.viewport.rect.height;
+        else if (content.parent is RectTransform parent)
+            viewportHeight = parent.rect.height;
+
+        contentHeight = Mathf.Max(contentHeight, viewportHeight);
+        content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, contentHeight);
+    }
+
+    static bool TryGetContentVisualBounds(RectTransform content, out Bounds bounds)
+    {
+        bounds = default;
+        bool hasBounds = false;
+        var corners = new Vector3[4];
+        var children = content.GetComponentsInChildren<RectTransform>(false);
+
+        foreach (var child in children)
+        {
+            if (!child || child == content)
+                continue;
+
+            child.GetWorldCorners(corners);
+            for (int i = 0; i < corners.Length; i++)
+            {
+                Vector3 localCorner = content.InverseTransformPoint(corners[i]);
+                if (hasBounds)
+                    bounds.Encapsulate(localCorner);
+                else
+                {
+                    bounds = new Bounds(localCorner, Vector3.zero);
+                    hasBounds = true;
+                }
+            }
+        }
+
+        return hasBounds;
+    }
+
+    static int GetActiveChildCount(RectTransform content)
+    {
+        int count = 0;
+        for (int i = 0; i < content.childCount; i++)
+        {
+            if (content.GetChild(i).gameObject.activeSelf)
+                count++;
+        }
+
+        return count;
+    }
+
+    static int GetGridColumnCount(GridLayoutGroup grid, RectTransform content, int childCount)
+    {
+        if (childCount <= 0)
+            return 1;
+
+        if (grid.constraint == GridLayoutGroup.Constraint.FixedColumnCount)
+            return Mathf.Max(1, grid.constraintCount);
+
+        if (grid.constraint == GridLayoutGroup.Constraint.FixedRowCount)
+        {
+            int rows = Mathf.Max(1, grid.constraintCount);
+            return Mathf.Max(1, Mathf.CeilToInt(childCount / (float)rows));
+        }
+
+        float width = content.rect.width;
+        if (width <= 0f && content.parent is RectTransform parent)
+            width = parent.rect.width;
+
+        float stride = grid.cellSize.x + grid.spacing.x;
+        if (width <= 0f || stride <= 0f)
+            return Mathf.Max(1, grid.constraintCount);
+
+        float availableWidth = Mathf.Max(0f, width - grid.padding.left - grid.padding.right);
+        int columns = Mathf.FloorToInt((availableWidth + grid.spacing.x) / stride);
+        return Mathf.Clamp(columns, 1, childCount);
     }
 
     void RefreshButtonAlphas()

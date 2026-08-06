@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCharacterData
   displayName: Liktor
   portrait: {fileID: 1814156148375542206, guid: 0d85d386686c6454da2d9db0e01c5e49, type: 3}
-  defaultBorder: {fileID: -8134823479260487528, guid: 5c8bb2b486ca8ca4bb749ef4fad17337, type: 3}
+  defaultBorder: {fileID: -7781749581303207084, guid: 3fb68ab42c0b32e4b901513fc244c362, type: 3}
+  animatedBorderStaticFrame: {fileID: -7781749581303207084, guid: 3fb68ab42c0b32e4b901513fc244c362, type: 3}
   animatedBorderController: {fileID: 9100000, guid: 7304ec8149bb21747ab4720b028aa04d, type: 2}
   specialAbilityName: Immutable Bulwark
   specialDescription: All units become immune to damage for 12 seconds.

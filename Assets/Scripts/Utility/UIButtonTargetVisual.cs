@@ -24,6 +24,8 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
     [SerializeField] float controllerArrowSideOffset = 12f;
     [SerializeField, Min(1f)] float controllerArrowPulseScale = 1.12f;
     [SerializeField, Min(0f)] float controllerArrowPulseSpeed = 2.5f;
+    [SerializeField] bool targetPulseEnabled = true;
+    [SerializeField] Transform[] targetPulseTransforms;
     [SerializeField, Min(1f)] float targetPulseScale = 1.08f;
     [SerializeField, Min(0f)] float targetPulseSpeed = 5.75f;
     [SerializeField] Color persistentFireBorderTint = new Color(0.55f, 0.9f, 1f, 1f);
@@ -42,6 +44,7 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
     Color[] fireBorderSpriteBaseColors;
     Selectable selectable;
     Vector3 targetBaseScale = Vector3.one;
+    Vector3[] targetPulseBaseScales;
     bool targetBaseScaleCaptured;
     bool targetPulseActive;
     bool targetCurrentlyTargeted;
@@ -65,6 +68,26 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
         persistentFireBorder = active;
         persistentFireBorderTint = tint;
         RefreshVisuals();
+    }
+
+    public void SetTargetPulseEnabled(bool enabled)
+    {
+        if (targetPulseEnabled == enabled)
+            return;
+
+        RestoreTargetPulseScale();
+        targetPulseEnabled = enabled;
+        targetCurrentlyTargeted = false;
+        targetPulsePlaying = false;
+        RefreshVisuals();
+    }
+
+    public void SetPulseTargets(params Transform[] pulseTargets)
+    {
+        RestoreTargetPulseScale();
+        targetPulseTransforms = CopyValidTargets(pulseTargets);
+        targetBaseScaleCaptured = false;
+        CaptureTargetBaseScale();
     }
 
     public void Configure(AudioClip hoverClip, bool enableControllerArrow, Transform fireBorderSearchRoot = null)
@@ -234,12 +257,31 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
         if (targetBaseScaleCaptured)
             return;
 
-        targetBaseScale = transform.localScale;
+        if (HasCustomPulseTargets())
+        {
+            targetPulseBaseScales = new Vector3[targetPulseTransforms.Length];
+            for (int i = 0; i < targetPulseTransforms.Length; i++)
+                targetPulseBaseScales[i] = targetPulseTransforms[i] ? targetPulseTransforms[i].localScale : Vector3.one;
+        }
+        else
+        {
+            targetBaseScale = transform.localScale;
+            targetPulseBaseScales = null;
+        }
+
         targetBaseScaleCaptured = true;
     }
 
     void UpdateTargetPulse(bool active)
     {
+        if (!targetPulseEnabled)
+        {
+            targetCurrentlyTargeted = false;
+            targetPulsePlaying = false;
+            RestoreTargetPulseScale();
+            return;
+        }
+
         CaptureTargetBaseScale();
 
         if (!active)
@@ -280,7 +322,7 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
 
         float t = Mathf.Sin(Mathf.Clamp01(normalized) * Mathf.PI);
         float pulse = Mathf.Lerp(1f, targetPulseScale, t);
-        transform.localScale = targetBaseScale * pulse;
+        ApplyTargetPulseScale(pulse);
         targetPulseActive = true;
     }
 
@@ -289,8 +331,60 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
         if (!targetPulseActive || !targetBaseScaleCaptured)
             return;
 
-        transform.localScale = targetBaseScale;
+        if (HasCustomPulseTargets() && targetPulseBaseScales != null)
+        {
+            for (int i = 0; i < targetPulseTransforms.Length; i++)
+            {
+                if (targetPulseTransforms[i])
+                    targetPulseTransforms[i].localScale = targetPulseBaseScales[i];
+            }
+        }
+        else
+        {
+            transform.localScale = targetBaseScale;
+        }
+
         targetPulseActive = false;
+    }
+
+    void ApplyTargetPulseScale(float pulse)
+    {
+        if (HasCustomPulseTargets() && targetPulseBaseScales != null)
+        {
+            for (int i = 0; i < targetPulseTransforms.Length; i++)
+            {
+                if (targetPulseTransforms[i])
+                    targetPulseTransforms[i].localScale = targetPulseBaseScales[i] * pulse;
+            }
+
+            return;
+        }
+
+        transform.localScale = targetBaseScale * pulse;
+    }
+
+    bool HasCustomPulseTargets()
+    {
+        return targetPulseTransforms != null && targetPulseTransforms.Length > 0;
+    }
+
+    static Transform[] CopyValidTargets(Transform[] targets)
+    {
+        if (targets == null || targets.Length == 0)
+            return null;
+
+        List<Transform> valid = null;
+        for (int i = 0; i < targets.Length; i++)
+        {
+            if (!targets[i])
+                continue;
+
+            valid ??= new List<Transform>();
+            if (!valid.Contains(targets[i]))
+                valid.Add(targets[i]);
+        }
+
+        return valid != null && valid.Count > 0 ? valid.ToArray() : null;
     }
 
     void ResolveFireBorderAnimation()

@@ -88,6 +88,11 @@ public sealed class RandomIntervalClipPlayer : MonoBehaviour
         RebuildSpriteFrameSetsFromClipsInEditor();
     }
 
+    public void SetUseUnscaledTime(bool value)
+    {
+        useUnscaledTime = value;
+    }
+
     IEnumerator PlayLoop()
     {
         yield return null;

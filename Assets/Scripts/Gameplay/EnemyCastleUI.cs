@@ -13,6 +13,7 @@ public class EnemyCastleUI : MonoBehaviour
     public TMP_Text healthBarText;  
     public TMP_Text levelNameText; 
     public Image levelBackgroundImage;
+    public Image hpGaugeFrameImage;
 
     [Header("Damage Shake")]
     [SerializeField] bool shakeOnDamage = true;
@@ -53,6 +54,8 @@ public class EnemyCastleUI : MonoBehaviour
     Coroutine _invulnCR;
     Color _normalHealthBarColor = Color.white;
     bool _capturedHealthBarColor = false;
+    Sprite _defaultHpGaugeFrameSprite;
+    bool _capturedHpGaugeFrameSprite = false;
 
     bool _magicShield = false;
     Coroutine _magicShieldCR;
@@ -91,6 +94,7 @@ public class EnemyCastleUI : MonoBehaviour
         {
             Debug.LogError("EnemyCastleUI.InitCastle called with null data");
             ApplyLevelBackground(null);
+            ApplyHpGaugeFrame(null);
             return;
         }
 
@@ -113,6 +117,7 @@ public class EnemyCastleUI : MonoBehaviour
         if (castleNameText) castleNameText.text = TetrabeastsLocalization.LocalizeText(castleName);
         if (levelNameText) levelNameText.text = TetrabeastsLocalization.LocalizeFormat("Level: {0}", this.levelNumber);
         ApplyLevelBackground(data);
+        ApplyHpGaugeFrame(data);
 
         if (healthBarSlider)
         {
@@ -144,6 +149,25 @@ public class EnemyCastleUI : MonoBehaviour
         Sprite backgroundSprite = data ? data.levelBackgroundSprite : null;
         levelBackgroundImage.sprite = backgroundSprite;
         levelBackgroundImage.enabled = backgroundSprite != null;
+    }
+
+    void ApplyHpGaugeFrame(CastleData data)
+    {
+        Image frameImage = GetHpGaugeFrameImage();
+        if (!frameImage)
+            return;
+
+        CacheDefaultHpGaugeFrameSpriteIfNeeded();
+
+        Sprite frameSprite = data && data.hpGaugeFrameSprite
+            ? data.hpGaugeFrameSprite
+            : _defaultHpGaugeFrameSprite;
+
+        if (!frameSprite)
+            return;
+
+        frameImage.sprite = frameSprite;
+        frameImage.enabled = true;
     }
 
     // Call this whenever damage to the castle occurs
@@ -528,6 +552,33 @@ public class EnemyCastleUI : MonoBehaviour
 
 
     // ================= Invulnerability UI VFX =================
+
+    Image GetHpGaugeFrameImage()
+    {
+        if (hpGaugeFrameImage) return hpGaugeFrameImage;
+
+        Transform searchRoot = healthBarSlider ? healthBarSlider.transform : transform;
+        var images = searchRoot.GetComponentsInChildren<Image>(true);
+        for (int i = 0; i < images.Length; i++)
+        {
+            if (images[i] && images[i].name == "BorderFrame_Image")
+            {
+                hpGaugeFrameImage = images[i];
+                return hpGaugeFrameImage;
+            }
+        }
+
+        return null;
+    }
+
+    void CacheDefaultHpGaugeFrameSpriteIfNeeded()
+    {
+        if (_capturedHpGaugeFrameSprite) return;
+
+        var frameImage = GetHpGaugeFrameImage();
+        _defaultHpGaugeFrameSprite = frameImage ? frameImage.sprite : null;
+        _capturedHpGaugeFrameSprite = true;
+    }
 
     Image GetHealthFillImage()
     {
