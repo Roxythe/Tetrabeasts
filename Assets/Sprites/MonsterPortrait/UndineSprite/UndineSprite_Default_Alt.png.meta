@@ -5,6 +5,9 @@ TextureImporter:
   - first:
       213: -5049411481271038763
     second: UndineSprite_Default_Alt_0
+  - first:
+      213: 7698775536876357510
+    second: UndineSprite_Default_Alt_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -155,10 +158,10 @@ TextureImporter:
       name: UndineSprite_Default_Alt_0
       rect:
         serializedVersion: 2
-        x: 86
-        y: 14
-        width: 849
-        height: 986
+        x: 38
+        y: 773
+        width: 13
+        height: 17
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -169,6 +172,28 @@ TextureImporter:
       bones: []
       spriteID: 5dc8f0eb203ece9b0800000000000000
       internalID: -5049411481271038763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_Default_Alt_1
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 54
+        width: 936
+        height: 917
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6878bf89f8b87da60800000000000000
+      internalID: 7698775536876357510
       vertices: []
       indices: 
       edges: []
@@ -188,6 +213,7 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       UndineSprite_Default_Alt_0: -5049411481271038763
+      UndineSprite_Default_Alt_1: 7698775536876357510
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

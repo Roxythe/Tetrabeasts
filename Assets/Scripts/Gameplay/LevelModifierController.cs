@@ -117,6 +117,7 @@ public class LevelModifierController : MonoBehaviour
     int _pendingComboShieldBreaks;
     int _rearAmbushRowsSpawnedThisLevel;
     Coroutine _comboShieldPulseCR;
+    Coroutine _volcanicEruptionRoutine;
 
     static Sprite _onePx;
 
@@ -145,6 +146,7 @@ public class LevelModifierController : MonoBehaviour
 
     void OnDestroy()
     {
+        StopVolcanicEruptionRoutine();
         UnhookAnimatedBackgroundEvents();
     }
 
@@ -1139,10 +1141,22 @@ public class LevelModifierController : MonoBehaviour
         if (!board || !ActiveModifier)
             return;
 
+        if (_volcanicEruptionRoutine != null)
+            return;
+
         if (!PickVolcanicTargets(_volcanicTargetList))
             return;
 
-        StartCoroutine(VolcanicEruptionRoutine(new List<Vector2Int>(_volcanicTargetList), ActiveModifier));
+        _volcanicEruptionRoutine = StartCoroutine(VolcanicEruptionRoutine(new List<Vector2Int>(_volcanicTargetList), ActiveModifier));
+    }
+
+    void StopVolcanicEruptionRoutine()
+    {
+        if (_volcanicEruptionRoutine != null)
+        {
+            StopCoroutine(_volcanicEruptionRoutine);
+            _volcanicEruptionRoutine = null;
+        }
     }
 
     bool PickVolcanicTargets(List<Vector2Int> targets)
@@ -1202,41 +1216,51 @@ public class LevelModifierController : MonoBehaviour
 
     IEnumerator VolcanicEruptionRoutine(List<Vector2Int> targets, LevelModifierSO modifier)
     {
-        if (targets == null || targets.Count == 0 || !board || !modifier)
-            yield break;
-
-        float warningSeconds = Mathf.Max(0.1f, modifier.volcanicEruptionWarningSeconds);
-        Sprite warningSprite = modifier.volcanicEruptionWarningSprite ? modifier.volcanicEruptionWarningSprite : modifier.icon;
-        Color warningTint = modifier.volcanicEruptionWarningTint;
-
-        for (int i = 0; i < targets.Count; i++)
+        try
         {
-            Vector2Int cell = targets[i];
-            board.FlashTintAtCell(cell, warningTint, warningSeconds, 0.08f);
-            board.FlashWarningAtCell(cell, warningSprite, warningSeconds, 0.08f, 1f);
-        }
+            if (targets == null || targets.Count == 0 || !board || !modifier || ActiveModifier != modifier || (_gc && !_gc.IsRoundActive))
+                yield break;
 
-        yield return new WaitForSeconds(warningSeconds);
+            float warningSeconds = Mathf.Max(0.1f, modifier.volcanicEruptionWarningSeconds);
+            Sprite warningSprite = modifier.volcanicEruptionWarningSprite ? modifier.volcanicEruptionWarningSprite : modifier.icon;
+            Color warningTint = modifier.volcanicEruptionWarningTint;
 
-        if (ActiveModifier != modifier || !board)
-            yield break;
-
-        float damage = _gc ? _gc.CastleProjectileDamageForStats : 1f;
-        for (int i = 0; i < targets.Count; i++)
-        {
-            Vector2Int cell = targets[i];
-            if (!board.InBounds(cell) || board.HasObstacle(cell))
-                continue;
-
-            if (board.TryGetMonster(cell, out var inst) && inst.data && inst.hp > 0f)
+            for (int i = 0; i < targets.Count; i++)
             {
-                board.DamageTile(cell, damage, Board.DamageSource.VolcanicEruption);
-                continue;
+                if (ActiveModifier != modifier || !board || (_gc && !_gc.IsRoundActive))
+                    yield break;
+
+                Vector2Int cell = targets[i];
+                board.FlashTintAtCell(cell, warningTint, warningSeconds, 0.08f);
+                board.FlashWarningAtCell(cell, warningSprite, warningSeconds, 0.08f, 1f);
             }
 
-            if (board.IsFree(cell))
-                board.TrySpawnCustomObstacle(cell, Board.ObstacleType.HardenedLava,
-                    modifier.hardenedLavaObstacleSprite, 1, false, warningSprite);
+            yield return new WaitForSeconds(warningSeconds);
+
+            if (ActiveModifier != modifier || !board || (_gc && !_gc.IsRoundActive))
+                yield break;
+
+            float damage = _gc ? _gc.CastleProjectileDamageForStats : 1f;
+            for (int i = 0; i < targets.Count; i++)
+            {
+                Vector2Int cell = targets[i];
+                if (!board.InBounds(cell) || board.HasObstacle(cell))
+                    continue;
+
+                if (board.TryGetMonster(cell, out var inst) && inst.data && inst.hp > 0f)
+                {
+                    board.DamageTile(cell, damage, Board.DamageSource.VolcanicEruption);
+                    continue;
+                }
+
+                if (board.IsFree(cell))
+                    board.TrySpawnCustomObstacle(cell, Board.ObstacleType.HardenedLava,
+                        modifier.hardenedLavaObstacleSprite, 1, false, warningSprite);
+            }
+        }
+        finally
+        {
+            _volcanicEruptionRoutine = null;
         }
     }
 
@@ -1746,6 +1770,10 @@ public class LevelModifierController : MonoBehaviour
 
     void ResetLevelState()
     {
+        StopVolcanicEruptionRoutine();
+        if (board)
+            board.ClearRoundTransientEffects();
+
         ActiveModifier = null;
         IsSelectionRunning = false;
         SetSelectionCursorState(false);
@@ -1968,13 +1996,8 @@ public class LevelModifierController : MonoBehaviour
         _animatedBackgroundPlaybackPaused = false;
         ConfigureAnimatedBackgroundAudio();
 
-        if (animatedBackgroundPlayer.clip == clip &&
-            _animatedBackgroundPingPongRequested == pingPongLoop &&
-            animatedBackgroundPlayer.isPlaying)
-        {
-            ApplyAnimatedBackgroundPlaybackSpeed();
+        if (TryReuseAnimatedBackgroundClip(clip, pingPongLoop))
             return true;
-        }
 
         ClearAnimatedBackgroundRenderTexture();
 
@@ -1987,6 +2010,45 @@ public class LevelModifierController : MonoBehaviour
         animatedBackgroundPlayer.playbackSpeed = GetAnimatedBackgroundPlaybackSpeed();
         animatedBackgroundPlayer.isLooping = !pingPongLoop;
         animatedBackgroundPlayer.Prepare();
+        return true;
+    }
+
+    bool TryReuseAnimatedBackgroundClip(VideoClip clip, bool pingPongLoop)
+    {
+        if (!animatedBackgroundPlayer || animatedBackgroundPlayer.clip != clip)
+            return false;
+
+        if (!animatedBackgroundPlayer.isPrepared && !animatedBackgroundPlayer.isPlaying)
+            return false;
+
+        _pendingAnimatedBackgroundClip = null;
+        _animatedBackgroundPlaybackPaused = false;
+        _animatedBackgroundPingPongRequested = pingPongLoop;
+
+        bool canPingPong = pingPongLoop && animatedBackgroundPlayer.canSetPlaybackSpeed;
+        if (_animatedBackgroundPingPongActive != canPingPong)
+            _animatedBackgroundReverse = false;
+
+        _animatedBackgroundPingPongActive = canPingPong;
+        if (pingPongLoop && !canPingPong)
+        {
+            if (!_loggedAnimatedBackgroundReverseUnsupported)
+            {
+                Debug.LogWarning("Animated background ping-pong loop requested, but this VideoPlayer cannot change playback speed. Falling back to normal looping.");
+                _loggedAnimatedBackgroundReverseUnsupported = true;
+            }
+
+            animatedBackgroundPlayer.isLooping = true;
+        }
+        else
+        {
+            animatedBackgroundPlayer.isLooping = !canPingPong;
+        }
+
+        ApplyAnimatedBackgroundPlaybackSpeed();
+        if (!animatedBackgroundPlayer.isPlaying)
+            animatedBackgroundPlayer.Play();
+
         return true;
     }
 

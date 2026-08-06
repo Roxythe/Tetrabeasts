@@ -1012,8 +1012,14 @@ public class LevelModifierSelectionUI : MonoBehaviour
         if (!_navigator)
             _navigator = ScopedMenuNavigator.Attach(root.gameObject, navigationRoot);
 
-        _navigator.SetNavigationRoot(navigationRoot, selectFirst);
+        _navigator.SetNavigationRoot(navigationRoot, selectFirst && ShouldAutoSelectFirstControl());
         _navigator.enabled = true;
+    }
+
+    static bool ShouldAutoSelectFirstControl()
+    {
+        TetrabeastsControls.RefreshActiveInputProfile();
+        return TetrabeastsControls.ActiveInputProfile != TetrabeastsControlProfile.KeyboardMouse;
     }
 
     GameObject GetMenuNavigationRoot()

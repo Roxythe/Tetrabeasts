@@ -26,13 +26,17 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 2aaaf0a5d827cba49b21cfa0dab7942d, type: 3}
   - {fileID: 21300000, guid: 14c1fcc62085fec4595005d947ba04fc, type: 3}
   - {fileID: 21300000, guid: 438fb9ea65b54ac4cb9290632d7aec20, type: 3}
+  - {fileID: 21300000, guid: 0fd591c83c1e4eb43999117739e1b781, type: 3}
+  - {fileID: 0}
   skinAltPortraits:
   - {fileID: 21300000, guid: 0b055ae588557fd4db55b6557a0b936a, type: 3}
   - {fileID: 21300000, guid: d1460d278e8392849bd4ddd0a318a55e, type: 3}
   - {fileID: 21300000, guid: 6bb82fb811ac2154eafc944e2fa566d5, type: 3}
   - {fileID: 21300000, guid: cd73ba1d9fec4cf42947e5f1069fdc00, type: 3}
   - {fileID: 21300000, guid: de08cfb2e9e7ae44bab228319bf3be13, type: 3}
-  skinCosts: 0000000064000000640000006400000064000000
+  - {fileID: 21300000, guid: d941d2e1ff9685745990be8046395198, type: 3}
+  - {fileID: 0}
+  skinCosts: 00000000640000006400000064000000640000000000000000000000
   maxHealth: 15
   minHealth: 0
   currentHealth: 15
@@ -51,12 +55,16 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c08ae9ba382cca341983d73ab9f83c47, type: 3}
   - {fileID: 21300000, guid: d603c3042c97b3f49a538c7e78405fc1, type: 3}
   - {fileID: 21300000, guid: 0f76fe2e51c4d634a97bbe2720a5ec2b, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
   skinAttackSpritesAlt:
   - {fileID: 21300000, guid: 95584465e08b0674396624d0f5b1d603, type: 3}
   - {fileID: 21300000, guid: 287265aa894c2f342b7bdbdf8f49b0a9, type: 3}
   - {fileID: 21300000, guid: 3408f498ad4058545b6f4684c8ad9803, type: 3}
   - {fileID: 21300000, guid: efe8662b74af5354b8fce412fb7117a5, type: 3}
   - {fileID: 21300000, guid: cae1f62c4917d9049b28756e9189e26e, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
   healSprite: {fileID: 0}
   attackToggleInterval: 0.08
   spinDegreesPerSecond: 720

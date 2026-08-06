@@ -86,7 +86,7 @@ public class GameController : MonoBehaviour
 
     [Header("Run Grid Growth")]
     public bool enableRunGridGrowth = true;
-    public int growVerticalEveryNRounds = 3;   // +1 height every 3rd round
+    public int growVerticalEveryNRounds = 4;   // +1 height every 4th round
     public int growHorizontalEveryNRounds = 4; // +1 width every 4th round
 
     int _baseBoardWidth = -1;
@@ -588,6 +588,7 @@ public class GameController : MonoBehaviour
     StarDifficultyModifiers _starDifficultyModifiers = new StarDifficultyModifiers(0);
     bool _newDifficultyUnlockedThisRun;
     bool _commanderAnimatedBorderUnlockedThisRun;
+    readonly List<MonsterData> _eliteSkinsUnlockedThisRun = new();
     bool _roundTransitionActive;
     string _claimedRoundWinOneLiner = string.Empty;
     string _claimedRoundLossOneLiner = string.Empty;
@@ -1131,6 +1132,7 @@ public class GameController : MonoBehaviour
         _pendingPostFinalSurvivalIntro = false;
         _newDifficultyUnlockedThisRun = false;
         _commanderAnimatedBorderUnlockedThisRun = false;
+        _eliteSkinsUnlockedThisRun.Clear();
         _firstFullRowTutorialShownThisRun = false;
         gameOver = false;
         levelWon = false;
@@ -1183,6 +1185,7 @@ public class GameController : MonoBehaviour
         _finalWinStateApplied = saveData.standardFinalWinApplied;
         _newDifficultyUnlockedThisRun = false;
         _commanderAnimatedBorderUnlockedThisRun = false;
+        _eliteSkinsUnlockedThisRun.Clear();
         _firstFullRowTutorialShownThisRun = false;
 
         ResetRunGridToBase();
@@ -3896,6 +3899,8 @@ public class GameController : MonoBehaviour
             ApplySelectedCharacterUI();
         }
 
+        UnlockEliteMonsterSkinsForFinalWin();
+
         if (PlayerProgress.I != null)
         {
             string charId = selectedCharacter ? selectedCharacter.name : "";
@@ -3907,6 +3912,30 @@ public class GameController : MonoBehaviour
             }
 
             TryMarkFinalWinAllCharacters();
+        }
+    }
+
+    void UnlockEliteMonsterSkinsForFinalWin()
+    {
+        _eliteSkinsUnlockedThisRun.Clear();
+
+        var roster = GetActiveMonsterRoster();
+        if (roster == null)
+            return;
+
+        var seen = new HashSet<MonsterData>();
+        for (int i = 0; i < roster.Count; i++)
+        {
+            MonsterData monster = roster[i];
+            if (!monster || !seen.Add(monster))
+                continue;
+
+            if (MonsterSkinStore.UnlockEliteForSuccessfulRun(monster))
+            {
+                _eliteSkinsUnlockedThisRun.Add(monster);
+                if (PlayerProgress.I)
+                    PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.SkinsUnlocked, 1);
+            }
         }
     }
 
@@ -3933,7 +3962,41 @@ public class GameController : MonoBehaviour
                 commanderName);
         }
 
+        string eliteSkinText = BuildEliteSkinUnlockText();
+        if (!string.IsNullOrWhiteSpace(eliteSkinText))
+            text += "\n\n" + eliteSkinText;
+
         return text;
+    }
+
+    string BuildEliteSkinUnlockText()
+    {
+        if (_eliteSkinsUnlockedThisRun == null || _eliteSkinsUnlockedThisRun.Count == 0)
+            return string.Empty;
+
+        var names = new List<string>();
+        for (int i = 0; i < _eliteSkinsUnlockedThisRun.Count; i++)
+        {
+            MonsterData monster = _eliteSkinsUnlockedThisRun[i];
+            if (!monster)
+                continue;
+
+            names.Add(TetrabeastsLocalization.LocalizeText(monster.monsterName));
+        }
+
+        if (names.Count == 0)
+            return string.Empty;
+
+        if (names.Count == 1)
+        {
+            return TetrabeastsLocalization.LocalizeFormat(
+                "{0}'s elite skin has been unlocked.",
+                names[0]);
+        }
+
+        return TetrabeastsLocalization.LocalizeFormat(
+            "Elite skins have been unlocked for: {0}.",
+            string.Join(", ", names));
     }
 
     void ShowRunEndCommitAfterFinalWin(List<MonsterData> roster, bool playIntermissionMusic)
@@ -4620,7 +4683,7 @@ public class GameController : MonoBehaviour
                     PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.EarthquakeRowClears, rowsCleared);
 
                 var emptyCols = new Dictionary<int, List<int>>();
-                OnPieceLocked(rowsCleared, removedCells, damageFromMonsters, specialChargeFromMonsters, rowDamage, rowDominantMonster, emptyCols);
+                OnPieceLocked(rowsCleared, removedCells, damageFromMonsters, 0f, rowDamage, rowDominantMonster, emptyCols);
                 clearComplete = true;
             }, overrideCascadeDelay: 0f);
 
@@ -6037,6 +6100,7 @@ public class GameController : MonoBehaviour
         RunSummaryStats.BeginRun();
         _finalWinStateApplied = false;
         _commanderAnimatedBorderUnlockedThisRun = false;
+        _eliteSkinsUnlockedThisRun.Clear();
         _demoLimitRunEnding = false;
 
         // Reset bag and preview

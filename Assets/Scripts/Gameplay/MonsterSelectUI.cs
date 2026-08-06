@@ -54,6 +54,7 @@ public class MonsterSelectUI : MonoBehaviour
     public Button previewUnlockButton;
     public TMP_Text previewUnlockCostText;
     public GameObject previewLockedImage;
+    public TMP_Text eliteSkinText;
 
     readonly Dictionary<MonsterData, Button> buttons = new();
     readonly HashSet<MonsterData> selected = new();
@@ -71,6 +72,8 @@ public class MonsterSelectUI : MonoBehaviour
     void Awake()
     {
         ConfigureListScrollInput();
+        ResolveEliteSkinText();
+        SetEliteSkinTextVisible(false);
 
         if (previewToggleButton)
         {
@@ -103,6 +106,7 @@ public class MonsterSelectUI : MonoBehaviour
     void OnEnable()
     {
         ConfigureListScrollInput();
+        ResolveEliteSkinText();
         SyncFromStore();
         RefreshAllUI();
         ScheduleListLayoutRebuild();
@@ -714,6 +718,7 @@ public class MonsterSelectUI : MonoBehaviour
         if (previewNameText) previewNameText.text = "";
         if (previewDescriptionText) previewDescriptionText.text = "";
         if (previewStatsText) previewStatsText.text = "";
+        SetEliteSkinTextVisible(false);
         ApplyPreviewTextVisibility();
     }
 
@@ -860,24 +865,36 @@ public class MonsterSelectUI : MonoBehaviour
 
     void SetupPreviewUnlockUI(MonsterData md, int skinIdx)
     {
+        ResolveEliteSkinText();
+
         if (!UnlockStore.IsUnlocked(md))
         {
             if (previewUnlockButton) previewUnlockButton.gameObject.SetActive(false);
             if (previewLockedImage) previewLockedImage.SetActive(true);
             if (previewUnlockCostText) previewUnlockCostText.text = "";
+            SetEliteSkinTextVisible(false);
             return;
         }
 
-        if (!previewUnlockButton) return;
+        if (previewUnlockButton)
+            previewUnlockButton.onClick.RemoveAllListeners();
 
         bool available = MonsterSkinStore.IsSkinAvailable(md, skinIdx);
         bool unlocked = available && MonsterSkinStore.IsUnlocked(md, skinIdx);
-        bool showUnlock = available && !unlocked && skinIdx > 0;
+        bool lockedSkin = available && !unlocked && skinIdx > 0;
+        bool lockedEliteSkin = lockedSkin && MonsterSkinStore.IsEliteSkin(md, skinIdx);
+        bool showUnlock = lockedSkin && MonsterSkinStore.IsPurchasableSkin(md, skinIdx);
 
-        previewUnlockButton.gameObject.SetActive(showUnlock);
-        if (previewLockedImage) previewLockedImage.SetActive(showUnlock);
+        if (previewUnlockButton)
+            previewUnlockButton.gameObject.SetActive(showUnlock);
 
-        if (!showUnlock) return;
+        if (previewLockedImage) previewLockedImage.SetActive(lockedSkin);
+        SetEliteSkinTextVisible(lockedEliteSkin);
+
+        if (previewUnlockCostText)
+            previewUnlockCostText.text = "";
+
+        if (!showUnlock || !previewUnlockButton) return;
 
         int cost = MonsterSkinStore.GetCost(md, skinIdx);
         if (previewUnlockCostText) previewUnlockCostText.text = TetrabeastsLocalization.LocalizeFormat("x{0}", cost);
@@ -912,6 +929,22 @@ public class MonsterSelectUI : MonoBehaviour
             RefreshAllUI();
             ShowPreview(md, skinIdx);
         });
+    }
+
+    void ResolveEliteSkinText()
+    {
+        if (eliteSkinText)
+            return;
+
+        Transform eliteTextTransform = FindDeep(transform, "EliteSkin_Text");
+        if (eliteTextTransform)
+            eliteSkinText = eliteTextTransform.GetComponent<TMP_Text>();
+    }
+
+    void SetEliteSkinTextVisible(bool visible)
+    {
+        if (eliteSkinText)
+            eliteSkinText.gameObject.SetActive(visible);
     }
 
     void ApplyVariantLockVisuals(Button monsterBtn, MonsterData md)

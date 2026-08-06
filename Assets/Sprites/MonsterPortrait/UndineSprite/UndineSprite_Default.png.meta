@@ -5,33 +5,6 @@ TextureImporter:
   - first:
       213: -1700857360818541206
     second: UndineSprite_Default_0
-  - first:
-      213: -5196855922265242213
-    second: UndineSprite_Default_1
-  - first:
-      213: -2854990437190480877
-    second: UndineSprite_Default_2
-  - first:
-      213: 4530598641808982271
-    second: UndineSprite_Default_3
-  - first:
-      213: -3841998171017620554
-    second: UndineSprite_Default_4
-  - first:
-      213: 7589048896082035600
-    second: UndineSprite_Default_5
-  - first:
-      213: -4533089847096213033
-    second: UndineSprite_Default_6
-  - first:
-      213: 220469680833850686
-    second: UndineSprite_Default_7
-  - first:
-      213: 7047806400865677289
-    second: UndineSprite_Default_8
-  - first:
-      213: 6759649832904843775
-    second: UndineSprite_Default_9
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -182,10 +155,10 @@ TextureImporter:
       name: UndineSprite_Default_0
       rect:
         serializedVersion: 2
-        x: 17
-        y: 0
-        width: 934
-        height: 1001
+        x: 86
+        y: 18
+        width: 848
+        height: 980
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -196,204 +169,6 @@ TextureImporter:
       bones: []
       spriteID: a6d6dcaed375568e0800000000000000
       internalID: -1700857360818541206
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UndineSprite_Default_1
-      rect:
-        serializedVersion: 2
-        x: 951
-        y: 915
-        width: 10
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b95ce74a21f01e7b0800000000000000
-      internalID: -5196855922265242213
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UndineSprite_Default_2
-      rect:
-        serializedVersion: 2
-        x: 937
-        y: 882
-        width: 9
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 31ccf12e2590168d0800000000000000
-      internalID: -2854990437190480877
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UndineSprite_Default_3
-      rect:
-        serializedVersion: 2
-        x: 968
-        y: 886
-        width: 10
-        height: 10
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ff044e8e57befde30800000000000000
-      internalID: 4530598641808982271
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UndineSprite_Default_4
-      rect:
-        serializedVersion: 2
-        x: 949
-        y: 854
-        width: 29
-        height: 19
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6b35bcce40b7eaac0800000000000000
-      internalID: -3841998171017620554
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UndineSprite_Default_5
-      rect:
-        serializedVersion: 2
-        x: 957
-        y: 830
-        width: 37
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0934a0233c7b15960800000000000000
-      internalID: 7589048896082035600
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UndineSprite_Default_6
-      rect:
-        serializedVersion: 2
-        x: 957
-        y: 807
-        width: 12
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 7d186e82dca3711c0800000000000000
-      internalID: -4533089847096213033
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UndineSprite_Default_7
-      rect:
-        serializedVersion: 2
-        x: 935
-        y: 744
-        width: 19
-        height: 23
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e3d68d1b1044f0300800000000000000
-      internalID: 220469680833850686
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UndineSprite_Default_8
-      rect:
-        serializedVersion: 2
-        x: 961
-        y: 751
-        width: 10
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 9efa259a496dec160800000000000000
-      internalID: 7047806400865677289
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UndineSprite_Default_9
-      rect:
-        serializedVersion: 2
-        x: 695
-        y: 9
-        width: 8
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ff1625875b91fcd50800000000000000
-      internalID: 6759649832904843775
       vertices: []
       indices: 
       edges: []
@@ -413,15 +188,6 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       UndineSprite_Default_0: -1700857360818541206
-      UndineSprite_Default_1: -5196855922265242213
-      UndineSprite_Default_2: -2854990437190480877
-      UndineSprite_Default_3: 4530598641808982271
-      UndineSprite_Default_4: -3841998171017620554
-      UndineSprite_Default_5: 7589048896082035600
-      UndineSprite_Default_6: -4533089847096213033
-      UndineSprite_Default_7: 220469680833850686
-      UndineSprite_Default_8: 7047806400865677289
-      UndineSprite_Default_9: 6759649832904843775
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

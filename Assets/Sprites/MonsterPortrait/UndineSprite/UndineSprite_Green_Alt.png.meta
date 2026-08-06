@@ -8,6 +8,42 @@ TextureImporter:
   - first:
       213: 6841790380391574402
     second: UndineSprite_Green_Alt_1
+  - first:
+      213: -6538991720170278262
+    second: UndineSprite_Green_Alt_2
+  - first:
+      213: -2582890472355545981
+    second: UndineSprite_Green_Alt_3
+  - first:
+      213: 7836997153617459032
+    second: UndineSprite_Green_Alt_4
+  - first:
+      213: -768799239184200773
+    second: UndineSprite_Green_Alt_5
+  - first:
+      213: -8926922238546317398
+    second: UndineSprite_Green_Alt_6
+  - first:
+      213: 5588560379854568118
+    second: UndineSprite_Green_Alt_7
+  - first:
+      213: -3970783026324675655
+    second: UndineSprite_Green_Alt_8
+  - first:
+      213: 7512088882029985063
+    second: UndineSprite_Green_Alt_9
+  - first:
+      213: 5552479792510418312
+    second: UndineSprite_Green_Alt_10
+  - first:
+      213: 8090002726707270536
+    second: UndineSprite_Green_Alt_11
+  - first:
+      213: -1632112805773759533
+    second: UndineSprite_Green_Alt_12
+  - first:
+      213: -89025506475756647
+    second: UndineSprite_Green_Alt_13
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -158,10 +194,10 @@ TextureImporter:
       name: UndineSprite_Green_Alt_0
       rect:
         serializedVersion: 2
-        x: 23
-        y: 27
-        width: 968
-        height: 966
+        x: 793
+        y: 920
+        width: 14
+        height: 12
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -180,10 +216,10 @@ TextureImporter:
       name: UndineSprite_Green_Alt_1
       rect:
         serializedVersion: 2
-        x: 937
-        y: 584
-        width: 62
-        height: 64
+        x: 831
+        y: 917
+        width: 15
+        height: 17
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -194,6 +230,270 @@ TextureImporter:
       bones: []
       spriteID: 28bace20a1ce2fe50800000000000000
       internalID: 6841790380391574402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_Green_Alt_2
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 125
+        width: 962
+        height: 772
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a82b702fca5d045a0800000000000000
+      internalID: -6538991720170278262
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_Green_Alt_3
+      rect:
+        serializedVersion: 2
+        x: 748
+        y: 886
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38cb185dccab72cd0800000000000000
+      internalID: -2582890472355545981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_Green_Alt_4
+      rect:
+        serializedVersion: 2
+        x: 834
+        y: 894
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 857bd17936b92cc60800000000000000
+      internalID: 7836997153617459032
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_Green_Alt_5
+      rect:
+        serializedVersion: 2
+        x: 913
+        y: 845
+        width: 58
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbbc5dc4a2da455f0800000000000000
+      internalID: -768799239184200773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_Green_Alt_6
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 113
+        width: 19
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aaf69e955833d1480800000000000000
+      internalID: -8926922238546317398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_Green_Alt_7
+      rect:
+        serializedVersion: 2
+        x: 547
+        y: 119
+        width: 13
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6babd075e0e8e8d40800000000000000
+      internalID: 5588560379854568118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_Green_Alt_8
+      rect:
+        serializedVersion: 2
+        x: 611
+        y: 117
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b364cb20e1f4e8c0800000000000000
+      internalID: -3970783026324675655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_Green_Alt_9
+      rect:
+        serializedVersion: 2
+        x: 782
+        y: 113
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72dfe86990d404860800000000000000
+      internalID: 7512088882029985063
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_Green_Alt_10
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 100
+        width: 13
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88d3e17f3fe5e0d40800000000000000
+      internalID: 5552479792510418312
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_Green_Alt_11
+      rect:
+        serializedVersion: 2
+        x: 667
+        y: 101
+        width: 15
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88314550e96754070800000000000000
+      internalID: 8090002726707270536
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_Green_Alt_12
+      rect:
+        serializedVersion: 2
+        x: 507
+        y: 83
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3db2d7aec029959e0800000000000000
+      internalID: -1632112805773759533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UndineSprite_Green_Alt_13
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 52
+        width: 28
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 993309606c7b3cef0800000000000000
+      internalID: -89025506475756647
       vertices: []
       indices: 
       edges: []
@@ -214,6 +514,18 @@ TextureImporter:
     nameFileIdTable:
       UndineSprite_Green_Alt_0: -3040050870908345579
       UndineSprite_Green_Alt_1: 6841790380391574402
+      UndineSprite_Green_Alt_10: 5552479792510418312
+      UndineSprite_Green_Alt_11: 8090002726707270536
+      UndineSprite_Green_Alt_12: -1632112805773759533
+      UndineSprite_Green_Alt_13: -89025506475756647
+      UndineSprite_Green_Alt_2: -6538991720170278262
+      UndineSprite_Green_Alt_3: -2582890472355545981
+      UndineSprite_Green_Alt_4: 7836997153617459032
+      UndineSprite_Green_Alt_5: -768799239184200773
+      UndineSprite_Green_Alt_6: -8926922238546317398
+      UndineSprite_Green_Alt_7: 5588560379854568118
+      UndineSprite_Green_Alt_8: -3970783026324675655
+      UndineSprite_Green_Alt_9: 7512088882029985063
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

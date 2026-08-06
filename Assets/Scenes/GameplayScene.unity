@@ -35906,7 +35906,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c8534b131dd23814685cdc5649e32bc2, type: 2}
   - {fileID: 11400000, guid: 566620e6b96c69243942a7dda7484a09, type: 2}
   enableRunGridGrowth: 1
-  growVerticalEveryNRounds: 3
+  growVerticalEveryNRounds: 4
   growHorizontalEveryNRounds: 4
   roundWinClip: {fileID: 8300000, guid: 6efb33eb677e285438a67905542f871f, type: 3}
   victorySequenceDelaySeconds: 0.1

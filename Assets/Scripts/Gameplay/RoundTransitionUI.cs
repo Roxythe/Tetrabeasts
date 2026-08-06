@@ -112,6 +112,10 @@ public class RoundTransitionUI : MonoBehaviour
     string _activeLossOneLinerText = string.Empty;
     const float RuntimeActionGap = 22f;
     const float RuntimeContentHeightWithOneLiner = 660f;
+    const float RuntimeContentMaxHeight = 860f;
+    const float RuntimeMessageTextWidth = 920f;
+    const float RuntimeMessageTextBaseHeight = 230f;
+    const float RuntimeMessageTextMaxHeight = 560f;
     const float RuntimeLossOneLinerSpacerHeight = 170f;
     const float RuntimeContentLayoutSpacing = 16f;
     const int RuntimeContentVerticalPadding = 8;
@@ -198,12 +202,10 @@ public class RoundTransitionUI : MonoBehaviour
             rootGroup.blocksRaycasts = true;
         }
 
-        if (messageText)
-        {
-            messageText.text = TetrabeastsLocalization.LocalizeText(message);
-        }
+        SetMessageText(message);
 
         SetOneLinersVisible(false);
+        ConfigureMessageLayoutForCurrentText();
         SetTextAlpha(0f);
         PrepareDimmerFadeIn();
         SetActionControlsVisible(false);
@@ -254,12 +256,10 @@ public class RoundTransitionUI : MonoBehaviour
 
         PrepareDimmerForManualShow();
 
-        if (messageText)
-        {
-            messageText.text = TetrabeastsLocalization.LocalizeText(message);
-        }
+        SetMessageText(message);
 
         ConfigureOneLiners(variant, claimedOneLiner);
+        ConfigureMessageLayoutForCurrentText();
         SetTextAlpha(0f);
 
         if (continueButtonGroup)
@@ -568,12 +568,12 @@ public class RoundTransitionUI : MonoBehaviour
         messageGo.transform.SetParent(contentGo.transform, false);
 
         var messageRect = messageGo.GetComponent<RectTransform>();
-        messageRect.sizeDelta = new Vector2(920f, 230f);
+        messageRect.sizeDelta = new Vector2(RuntimeMessageTextWidth, RuntimeMessageTextBaseHeight);
 
         messageText = messageGo.GetComponent<TextMeshProUGUI>();
         messageText.alignment = TextAlignmentOptions.Center;
         messageText.enableAutoSizing = true;
-        messageText.fontSizeMin = 32f;
+        messageText.fontSizeMin = 24f;
         messageText.fontSizeMax = 66f;
         messageText.fontStyle = FontStyles.Bold;
         messageText.raycastTarget = false;
@@ -607,6 +607,75 @@ public class RoundTransitionUI : MonoBehaviour
 
         layout.spacing = RuntimeContentLayoutSpacing;
         layout.padding = new RectOffset(0, 0, RuntimeContentVerticalPadding, RuntimeContentVerticalPadding);
+    }
+
+    void SetMessageText(string message)
+    {
+        if (!messageText)
+            return;
+
+        messageText.text = TetrabeastsLocalization.LocalizeText(message);
+        ConfigureMessageLayoutForCurrentText();
+    }
+
+    void ConfigureMessageLayoutForCurrentText()
+    {
+        if (!messageText)
+            return;
+
+        RectTransform messageRect = messageText.rectTransform;
+        float width = Mathf.Max(RuntimeMessageTextWidth, messageRect ? messageRect.sizeDelta.x : RuntimeMessageTextWidth);
+        float preferredHeight = RuntimeMessageTextBaseHeight;
+
+        messageText.textWrappingMode = TextWrappingModes.Normal;
+        messageText.overflowMode = TextOverflowModes.Overflow;
+        messageText.fontSizeMin = Mathf.Min(messageText.fontSizeMin, 24f);
+
+        if (!string.IsNullOrWhiteSpace(messageText.text))
+        {
+            Vector2 preferred = messageText.GetPreferredValues(messageText.text, width, 0f);
+            preferredHeight = Mathf.Max(RuntimeMessageTextBaseHeight, preferred.y + 24f);
+        }
+
+        float messageHeight = Mathf.Clamp(preferredHeight, RuntimeMessageTextBaseHeight, RuntimeMessageTextMaxHeight);
+        if (messageRect)
+            messageRect.sizeDelta = new Vector2(width, messageHeight);
+
+        if (!contentRoot)
+            return;
+
+        float contentHeight = messageHeight + (RuntimeContentVerticalPadding * 2);
+        int activeLayoutItems = 1;
+
+        if (winOneLinerText && winOneLinerText.gameObject.activeSelf)
+        {
+            contentHeight += winOneLinerText.rectTransform.sizeDelta.y;
+            activeLayoutItems++;
+        }
+
+        if (lossOneLinerSpacer && lossOneLinerSpacer.gameObject.activeSelf)
+        {
+            contentHeight += lossOneLinerSpacer.sizeDelta.y;
+            activeLayoutItems++;
+        }
+
+        if (lossOneLinerText && lossOneLinerText.gameObject.activeSelf)
+        {
+            contentHeight += lossOneLinerText.rectTransform.sizeDelta.y;
+            activeLayoutItems++;
+        }
+
+        if (actionRoot && actionRoot.gameObject.activeSelf)
+        {
+            contentHeight += actionRoot.sizeDelta.y;
+            activeLayoutItems++;
+        }
+
+        contentHeight += Mathf.Max(0, activeLayoutItems - 1) * RuntimeContentLayoutSpacing;
+        Vector2 size = contentRoot.sizeDelta;
+        size.y = Mathf.Clamp(Mathf.Max(RuntimeContentHeightWithOneLiner, contentHeight), RuntimeContentHeightWithOneLiner, RuntimeContentMaxHeight);
+        contentRoot.sizeDelta = size;
+        LayoutRebuilder.ForceRebuildLayoutImmediate(contentRoot);
     }
 
     void EnsureWinOneLinerText()

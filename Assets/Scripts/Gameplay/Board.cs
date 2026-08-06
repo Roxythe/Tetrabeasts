@@ -1425,6 +1425,7 @@ public class Board : MonoBehaviour
     {
         StopAllBoardVFX();
         StopAllPortraitAltSwaps(restoreNormal: false);
+        ClearRoundTransientEffects();
 
         placed.Clear();
         monsters.Clear();
@@ -1473,6 +1474,7 @@ public class Board : MonoBehaviour
     {
         magicExplosives.Clear();
         DestroyOverlayChildrenNamed("BossWarning");
+        DestroyOverlayChildrenNamed("CellWarningTint");
         DestroyOverlayChildrenNamed("CellVFX");
     }
 
@@ -3995,14 +3997,18 @@ public class Board : MonoBehaviour
         float tog = 0f;
         bool on = true;
 
-        while (t < seconds)
+        while (img && t < seconds)
         {
-            t += Time.deltaTime;
-            tog += Time.deltaTime;
+            float dt = Time.deltaTime;
+            t += dt;
+            tog += dt;
             if (tog >= toggleInterval)
             {
                 tog = 0f;
                 on = !on;
+                if (!img)
+                    yield break;
+
                 img.enabled = on;
             }
             yield return null;
@@ -4036,14 +4042,18 @@ public class Board : MonoBehaviour
         float tog = 0f;
         bool on = true;
 
-        while (t < seconds)
+        while (img && t < seconds)
         {
-            t += Time.deltaTime;
-            tog += Time.deltaTime;
+            float dt = Time.deltaTime;
+            t += dt;
+            tog += dt;
             if (tog >= toggleInterval)
             {
                 tog = 0f;
                 on = !on;
+                if (!img)
+                    yield break;
+
                 img.enabled = on;
             }
             yield return null;
@@ -4241,8 +4251,9 @@ public class Board : MonoBehaviour
 
         while (rootRT && t < dur)
         {
-            t += Time.deltaTime;
-            flashT += Time.deltaTime;
+            float dt = Time.unscaledDeltaTime;
+            t += dt;
+            flashT += dt;
 
             float p = Mathf.Clamp01(t / dur);
 

@@ -382,7 +382,7 @@ public sealed class SteamCloudSaveService : MonoBehaviour
             ints.Add($"unlock_mon_{monsterName.assetName}");
             ints.Add($"skin_sel_{monsterName.assetName}");
             ints.Add($"skin_last_{monsterName.assetName}");
-            for (int i = 1; i <= 4; i++)
+            for (int i = 1; i <= MonsterSkinStore.MaxSkinIndex; i++)
                 ints.Add($"skin_unl_{monsterName.assetName}_{i}");
         }
 
