@@ -12,8 +12,7 @@ public static class ShopBuffStore
     public static void SetLevel(ShopBuffType type, int level)
     {
         PlayerPrefs.SetInt(Prefix + type, Mathf.Max(0, level));
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
     }
 
     public static void AddLevel(ShopBuffType type, int amount = 1)
@@ -24,8 +23,7 @@ public static class ShopBuffStore
     public static void Increment(ShopBuffType type)
     {
         PlayerPrefs.SetInt(Prefix + type, GetLevel(type) + 1);
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
     }
 
     public static int GetNextCost(ShopBuffType type)

@@ -294,6 +294,10 @@ public class GameController : MonoBehaviour
     public GameObject[] attackExplosionPrefabs;
     public float attackExplosionSizeMultiplier = 2f;
     public Vector2 attackExplosionOffsetCells = new Vector2(0f, 0.5f);
+    readonly Dictionary<string, List<RectTransform>> _runtimeVfxPools = new();
+    readonly HashSet<RectTransform> _pooledRuntimeVfx = new();
+    readonly Dictionary<GameObject, List<GameObject>> _attackExplosionPools = new();
+    readonly Dictionary<GameObject, GameObject> _attackExplosionPrefabByInstance = new();
 
     [Header("Bag Settings")]
     public int minBagPieces = 2;
@@ -1554,6 +1558,8 @@ public class GameController : MonoBehaviour
     {
         ClearPrewarmedSpecialAbilityPopup();
         ClearGeneratedDisarrayPieces();
+        DestroyRuntimeVfxPools();
+        DestroyAttackExplosionPools();
 
         SteamInputService.ControllerDisconnected -= HandleControllerDisconnected;
         SteamPlatformService.OverlayActiveChanged -= HandleSteamOverlayActiveChanged;
@@ -1972,7 +1978,7 @@ public class GameController : MonoBehaviour
     {
         _cachedTempRunCheckpoint = BuildTempRunCheckpointData();
         TempRunSaveStore.Save(_cachedTempRunCheckpoint);
-        PlayerPrefs.Save();
+        PlayerPrefsSaveScheduler.Flush();
     }
 
     TempRunSaveStore.SaveData BuildTempRunCheckpointData()
@@ -2090,7 +2096,7 @@ public class GameController : MonoBehaviour
             return false;
 
         TempRunSaveStore.Save(_cachedTempRunCheckpoint);
-        PlayerPrefs.Save();
+        PlayerPrefsSaveScheduler.Flush(uploadNow: true);
         PlayerProgress.I?.EndRun();
         return TempRunSaveStore.HasValidSave();
     }
@@ -3271,6 +3277,9 @@ public class GameController : MonoBehaviour
         for (int i = root.childCount - 1; i >= 0; i--)
         {
             Transform child = root.GetChild(i);
+            if (child && !child.gameObject.activeSelf)
+                continue;
+
             if (IsProjectileRootTransient(child))
                 Destroy(child.gameObject);
         }
@@ -3868,8 +3877,7 @@ public class GameController : MonoBehaviour
         if (doNotShowAgain)
         {
             PlayerPrefs.SetInt(PostFinalSurvivalIntroPrefsKey, 1);
-            PlayerPrefs.Save();
-            SteamCloudSaveService.QueueUpload();
+            PlayerPrefsSaveScheduler.QueueSave();
         }
 
         _levelStartBlocked = false;
@@ -4758,7 +4766,7 @@ public class GameController : MonoBehaviour
 
             for (int i = 0; i < visuals.Count; i++)
                 if (visuals[i])
-                    Destroy(visuals[i].gameObject);
+                    gameBoard.ReleaseTransientTileUI(visuals[i]);
 
             if (AudioManager.I && bombData && bombData.specialSFX)
                 AudioManager.I.PlaySFX(bombData.specialSFX);
@@ -4997,6 +5005,258 @@ public class GameController : MonoBehaviour
             AudioManager.I.PlaySFX(specialGaugeFullSFX, specialGaugeFullSFXVolume);
     }
 
+    RectTransform GetRuntimeVfxRoot(string poolKey, string objectName, RectTransform parent, bool withImage = false)
+    {
+        if (!parent)
+            return null;
+
+        if (!_runtimeVfxPools.TryGetValue(poolKey, out var pool))
+        {
+            pool = new List<RectTransform>();
+            _runtimeVfxPools[poolKey] = pool;
+        }
+
+        RectTransform rt = null;
+        while (pool.Count > 0 && !rt)
+        {
+            int last = pool.Count - 1;
+            rt = pool[last];
+            pool.RemoveAt(last);
+            _pooledRuntimeVfx.Remove(rt);
+        }
+
+        if (!rt)
+        {
+            rt = withImage
+                ? new GameObject(objectName, typeof(Image)).GetComponent<RectTransform>()
+                : new GameObject(objectName, typeof(RectTransform)).GetComponent<RectTransform>();
+        }
+        else if (withImage && !rt.GetComponent<Image>())
+        {
+            rt.gameObject.AddComponent<Image>();
+        }
+
+        rt.name = objectName;
+        rt.SetParent(parent, false);
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.localScale = Vector3.one;
+        rt.localRotation = Quaternion.identity;
+        rt.anchoredPosition = Vector2.zero;
+        rt.gameObject.SetActive(true);
+        return rt;
+    }
+
+    Image GetRuntimeVfxChildImage(RectTransform parent, string childName)
+    {
+        var child = parent ? parent.Find(childName) : null;
+        Image img;
+        if (child)
+        {
+            img = child.GetComponent<Image>();
+            if (!img)
+                img = child.gameObject.AddComponent<Image>();
+        }
+        else
+        {
+            var go = new GameObject(childName, typeof(Image));
+            go.transform.SetParent(parent, false);
+            img = go.GetComponent<Image>();
+        }
+
+        img.name = childName;
+        img.enabled = true;
+        img.sprite = null;
+        img.color = Color.white;
+        img.preserveAspect = true;
+        img.raycastTarget = false;
+        img.gameObject.SetActive(true);
+
+        var rt = img.rectTransform;
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.localScale = Vector3.one;
+        rt.localRotation = Quaternion.identity;
+        rt.anchoredPosition = Vector2.zero;
+
+        return img;
+    }
+
+    TMPro.TextMeshProUGUI GetRuntimeVfxChildText(RectTransform parent, string childName)
+    {
+        var child = parent ? parent.Find(childName) : null;
+        TMPro.TextMeshProUGUI tmp;
+        if (child)
+        {
+            tmp = child.GetComponent<TMPro.TextMeshProUGUI>();
+            if (!tmp)
+                tmp = child.gameObject.AddComponent<TMPro.TextMeshProUGUI>();
+        }
+        else
+        {
+            var go = new GameObject(childName, typeof(TMPro.TextMeshProUGUI));
+            go.transform.SetParent(parent, false);
+            tmp = go.GetComponent<TMPro.TextMeshProUGUI>();
+        }
+
+        tmp.name = childName;
+        tmp.enabled = true;
+        tmp.raycastTarget = false;
+        tmp.gameObject.SetActive(true);
+
+        var rt = tmp.rectTransform;
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.localScale = Vector3.one;
+        rt.localRotation = Quaternion.identity;
+        rt.anchoredPosition = Vector2.zero;
+
+        return tmp;
+    }
+
+    void HideRuntimeVfxChild(RectTransform parent, string childName)
+    {
+        var child = parent ? parent.Find(childName) : null;
+        if (!child)
+            return;
+
+        if (child.TryGetComponent(out Image img))
+        {
+            img.sprite = null;
+            img.color = Color.white;
+            img.enabled = true;
+        }
+
+        if (child.TryGetComponent(out TMPro.TMP_Text text))
+        {
+            text.text = string.Empty;
+            text.color = Color.white;
+            text.enabled = true;
+        }
+
+        child.gameObject.SetActive(false);
+    }
+
+    void ReleaseRuntimeVfxRoot(RectTransform rt, string poolKey)
+    {
+        if (!rt || _pooledRuntimeVfx.Contains(rt))
+            return;
+
+        HideRuntimeVfxChild(rt, "Bot");
+        HideRuntimeVfxChild(rt, "Top");
+        HideRuntimeVfxChild(rt, "Img");
+        HideRuntimeVfxChild(rt, "Icon");
+        HideRuntimeVfxChild(rt, "Text");
+
+        if (rt.TryGetComponent(out Image image))
+        {
+            image.sprite = null;
+            image.color = Color.white;
+            image.enabled = true;
+            image.raycastTarget = false;
+        }
+
+        rt.gameObject.SetActive(false);
+
+        if (!_runtimeVfxPools.TryGetValue(poolKey, out var pool))
+        {
+            pool = new List<RectTransform>();
+            _runtimeVfxPools[poolKey] = pool;
+        }
+
+        _pooledRuntimeVfx.Add(rt);
+        pool.Add(rt);
+    }
+
+    void DestroyRuntimeVfxPools()
+    {
+        foreach (var pool in _runtimeVfxPools.Values)
+        {
+            for (int i = pool.Count - 1; i >= 0; i--)
+            {
+                if (pool[i])
+                    Destroy(pool[i].gameObject);
+            }
+        }
+
+        _runtimeVfxPools.Clear();
+        _pooledRuntimeVfx.Clear();
+    }
+
+    GameObject GetAttackExplosionInstance(GameObject prefab, RectTransform parent)
+    {
+        if (!prefab || !parent)
+            return null;
+
+        if (!_attackExplosionPools.TryGetValue(prefab, out var pool))
+        {
+            pool = new List<GameObject>();
+            _attackExplosionPools[prefab] = pool;
+        }
+
+        GameObject instance = null;
+        while (pool.Count > 0 && !instance)
+        {
+            int last = pool.Count - 1;
+            instance = pool[last];
+            pool.RemoveAt(last);
+        }
+
+        if (!instance)
+        {
+            instance = Instantiate(prefab, parent, false);
+            _attackExplosionPrefabByInstance[instance] = prefab;
+
+            foreach (var graphic in instance.GetComponentsInChildren<Graphic>(true))
+                graphic.raycastTarget = false;
+        }
+        else
+        {
+            instance.transform.SetParent(parent, false);
+        }
+
+        instance.name = "AttackExplosion";
+        instance.SetActive(true);
+        return instance;
+    }
+
+    void ReleaseAttackExplosionInstance(GameObject instance)
+    {
+        if (!instance)
+            return;
+
+        instance.SetActive(false);
+
+        if (!_attackExplosionPrefabByInstance.TryGetValue(instance, out var prefab) || !prefab)
+        {
+            Destroy(instance);
+            return;
+        }
+
+        if (!_attackExplosionPools.TryGetValue(prefab, out var pool))
+        {
+            pool = new List<GameObject>();
+            _attackExplosionPools[prefab] = pool;
+        }
+
+        pool.Add(instance);
+    }
+
+    void DestroyAttackExplosionPools()
+    {
+        foreach (var pool in _attackExplosionPools.Values)
+        {
+            for (int i = pool.Count - 1; i >= 0; i--)
+            {
+                if (pool[i])
+                    Destroy(pool[i]);
+            }
+        }
+
+        _attackExplosionPools.Clear();
+        _attackExplosionPrefabByInstance.Clear();
+    }
+
     void SpawnAttackProjectile(Sprite sprite, Sprite altSprite, AttackAnimType animType,
                                Vector2 startAnchored, Vector2 targetAnchored, int damage, MonsterData attackerMD)
     {
@@ -5013,10 +5273,13 @@ public class GameController : MonoBehaviour
 
         Vector2 cellSize = gameBoard.GetCellSize();
 
-        var go = new GameObject("AttackProjectile", typeof(RectTransform));
-        var rt = go.GetComponent<RectTransform>();
-        rt.SetParent(projectileRoot, false);
-        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        var rt = GetRuntimeVfxRoot("AttackProjectile", "AttackProjectile", projectileRoot);
+        if (!rt)
+            return;
+
+        HideRuntimeVfxChild(rt, "Bot");
+        HideRuntimeVfxChild(rt, "Top");
+        HideRuntimeVfxChild(rt, "Img");
         rt.sizeDelta = cellSize;
         rt.anchoredPosition = startAnchored;
 
@@ -5025,41 +5288,35 @@ public class GameController : MonoBehaviour
 
         if (animType == AttackAnimType.MirrorToggle)
         {
-            var bot = new GameObject("Bot", typeof(UnityEngine.UI.Image));
-            botImg = bot.GetComponent<UnityEngine.UI.Image>();
+            botImg = GetRuntimeVfxChildImage(rt, "Bot");
             botImg.sprite = sprite;
             botImg.preserveAspect = true;
             botImg.raycastTarget = false;
 
             var brt = botImg.rectTransform;
-            brt.SetParent(rt, false);
             brt.anchorMin = brt.anchorMax = new Vector2(0.5f, 0.5f);
             brt.sizeDelta = cellSize;
             brt.anchoredPosition = Vector2.zero;
             brt.localScale = Vector3.one;
 
-            var top = new GameObject("Top", typeof(UnityEngine.UI.Image));
-            topImg = top.GetComponent<UnityEngine.UI.Image>();
+            topImg = GetRuntimeVfxChildImage(rt, "Top");
             topImg.sprite = altSprite ? altSprite : sprite;
             topImg.preserveAspect = true;
             topImg.raycastTarget = false;
 
             var trt = topImg.rectTransform;
-            trt.SetParent(rt, false);
             trt.anchorMin = trt.anchorMax = new Vector2(0.5f, 0.5f);
             trt.sizeDelta = cellSize;
             trt.anchoredPosition = Vector2.zero;
         }
         else
         {
-            var imgGO = new GameObject("Img", typeof(UnityEngine.UI.Image));
-            var img = imgGO.GetComponent<UnityEngine.UI.Image>();
+            var img = GetRuntimeVfxChildImage(rt, "Img");
             img.sprite = sprite;
             img.preserveAspect = true;
             img.raycastTarget = false;
 
             var irt = img.rectTransform;
-            irt.SetParent(rt, false);
             irt.anchorMin = irt.anchorMax = new Vector2(0.5f, 0.5f);
             irt.sizeDelta = cellSize;
             irt.anchoredPosition = Vector2.zero;
@@ -5107,7 +5364,7 @@ public class GameController : MonoBehaviour
                 if (AudioManager.I && impactClip)
                     AudioManager.I.PlaySFX(impactClip);
 
-                Destroy(rt.gameObject);
+                ReleaseRuntimeVfxRoot(rt, "AttackProjectile");
                 SpawnAttackExplosion(lavaImpactRoot, lavaImpactPosition);
                 yield break;
             }
@@ -5144,7 +5401,7 @@ public class GameController : MonoBehaviour
 
         bool impactEndedLevel = ApplyCastleAttackDamage(damage, attackerMD, impactClip, impactRoot, impactPosition);
 
-        Destroy(rt.gameObject);
+        ReleaseRuntimeVfxRoot(rt, "AttackProjectile");
 
         SpawnAttackExplosion(impactRoot, impactPosition);
 
@@ -5205,11 +5462,9 @@ public class GameController : MonoBehaviour
         if (!prefab)
             return;
 
-        GameObject go = Instantiate(prefab, parent, false);
-        go.name = "AttackExplosion";
-
-        foreach (var graphic in go.GetComponentsInChildren<Graphic>(true))
-            graphic.raycastTarget = false;
+        GameObject go = GetAttackExplosionInstance(prefab, parent);
+        if (!go)
+            return;
 
         Vector2 visualPosition = anchoredPosition + GetAttackExplosionOffset();
 
@@ -5284,8 +5539,7 @@ public class GameController : MonoBehaviour
             yield return null;
         }
 
-        if (instance)
-            Destroy(instance);
+        ReleaseAttackExplosionInstance(instance);
     }
 
     float GetAttackExplosionCleanupTimeout(Animator animator)
@@ -5315,8 +5569,7 @@ public class GameController : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(Mathf.Max(0f, delaySeconds));
 
-        if (instance)
-            Destroy(instance);
+        ReleaseAttackExplosionInstance(instance);
     }
 
     bool ApplyCastleAttackDamage(int damage, MonsterData attackerMD, AudioClip impactClip,
@@ -5576,13 +5829,15 @@ public class GameController : MonoBehaviour
     void SpawnCastleDownProjectile(Sprite sprite, Vector2 start, Vector2 end, int column)
     {
         var root = projectileRoot ? projectileRoot : gameBoard.gridRoot;
-        var go = new GameObject("CastleDownshot", typeof(UnityEngine.UI.Image));
-        var img = go.GetComponent<UnityEngine.UI.Image>();
+        var rt = GetRuntimeVfxRoot("CastleDownshot", "CastleDownshot", root, withImage: true);
+        if (!rt)
+            return;
+
+        var img = rt.GetComponent<UnityEngine.UI.Image>();
         img.sprite = sprite;
         img.preserveAspect = true;
         img.raycastTarget = false;
-        var rt = img.rectTransform;
-        rt.SetParent(root, false);
+        img.color = Color.white;
         rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
         rt.sizeDelta = gameBoard.GetCellSize() * Mathf.Max(0.1f, castleProjectileVisualScale);
         rt.anchoredPosition = start;
@@ -5608,7 +5863,7 @@ public class GameController : MonoBehaviour
             if (TryGetCastleDownshotImpactCell(column, previous, rt.anchoredPosition, out var hitCell, out bool damageMonster))
             {
                 rt.anchoredPosition = BoardLocalToProjectileRoot(gameBoard.CellToAnchoredPos(hitCell));
-                Destroy(rt.gameObject);
+                ReleaseRuntimeVfxRoot(rt, "CastleDownshot");
 
                 ResolveCastleDownshotImpact(hitCell, damageMonster);
                 yield break;
@@ -5617,7 +5872,7 @@ public class GameController : MonoBehaviour
             yield return null;
         }
 
-        if (rt) Destroy(rt.gameObject);
+        ReleaseRuntimeVfxRoot(rt, "CastleDownshot");
     }
 
     System.Collections.IEnumerator CastlePiercingDownshotCo(RectTransform rt, Vector2 end, int column, float speed)
@@ -5642,7 +5897,7 @@ public class GameController : MonoBehaviour
                         if (gameBoard)
                             rt.anchoredPosition = BoardLocalToProjectileRoot(gameBoard.CellToAnchoredPos(hitCell));
 
-                        Destroy(rt.gameObject);
+                        ReleaseRuntimeVfxRoot(rt, "CastleDownshot");
                     }
 
                     yield break;
@@ -5652,7 +5907,7 @@ public class GameController : MonoBehaviour
             yield return null;
         }
 
-        if (rt) Destroy(rt.gameObject);
+        ReleaseRuntimeVfxRoot(rt, "CastleDownshot");
     }
 
     bool TryGetCastleDownshotImpactCell(int column, Vector2 previousRootPos, Vector2 currentRootPos,
@@ -6411,29 +6666,30 @@ public class GameController : MonoBehaviour
         if (!parent) return; // Nothing to parent to
 
         // container
-        var go = new GameObject("Currency+1", typeof(RectTransform));
-        var rt = go.GetComponent<RectTransform>();
-        rt.SetParent(parent, false);
+        var rt = GetRuntimeVfxRoot("CurrencyPopup", "Currency+1", parent);
+        if (!rt)
+            return;
+
+        HideRuntimeVfxChild(rt, "Icon");
+        HideRuntimeVfxChild(rt, "Text");
         rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
         rt.anchoredPosition = anchoredStart;
 
         // Icon component
-        var iconGO = new GameObject("Icon", typeof(UnityEngine.UI.Image));
-        var icon = iconGO.GetComponent<UnityEngine.UI.Image>();
+        var icon = GetRuntimeVfxChildImage(rt, "Icon");
         if (currencyPopupSprite) icon.sprite = currencyPopupSprite; // Sprite optional
         icon.preserveAspect = true;
         icon.raycastTarget = false;
+        icon.color = Color.white;
 
         var cell = gameBoard.GetCellSize();
         var irt = icon.rectTransform;
-        irt.SetParent(rt, false);
         irt.anchorMin = irt.anchorMax = new Vector2(0.5f, 0.5f);
         irt.sizeDelta = cell * 0.5f;
         irt.anchoredPosition = Vector2.left * (irt.sizeDelta.x * 0.6f);
 
         // Text component
-        var textGO = new GameObject("Text", typeof(TMPro.TextMeshProUGUI));
-        var tmp = textGO.GetComponent<TMPro.TextMeshProUGUI>();
+        var tmp = GetRuntimeVfxChildText(rt, "Text");
         tmp.text = $"+{amount}";
         tmp.fontSize = 24f;
         tmp.alignment = TMPro.TextAlignmentOptions.MidlineLeft;
@@ -6441,7 +6697,6 @@ public class GameController : MonoBehaviour
         tmp.color = new Color(1f, 1f, 1f, 1f);
 
         var trt = tmp.rectTransform;
-        trt.SetParent(rt, false);
         trt.anchorMin = trt.anchorMax = new Vector2(0.5f, 0.5f);
         trt.anchoredPosition = Vector2.right * (irt.sizeDelta.x * 0.6f);
 
@@ -6466,7 +6721,7 @@ public class GameController : MonoBehaviour
             if (icon) icon.color = new Color(icon.color.r, icon.color.g, icon.color.b, a);
             yield return null;
         }
-        if (rt) Destroy(rt.gameObject);
+        ReleaseRuntimeVfxRoot(rt, "CurrencyPopup");
     }
 
     int GetRoundWinCurrency()

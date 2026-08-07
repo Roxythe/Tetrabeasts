@@ -76,8 +76,21 @@ public class LevelModifierController : MonoBehaviour
     readonly List<Vector2Int> _soulLinkScratchCells = new();
     readonly List<int> _outFlankedRows = new();
     readonly List<RectTransform> _outFlankedProjectiles = new();
+    readonly List<RectTransform> _outFlankedProjectilePool = new();
+    readonly HashSet<RectTransform> _pooledOutFlankedProjectiles = new();
     readonly HashSet<Vector2Int> _volcanicTargetSet = new();
     readonly List<Vector2Int> _volcanicTargetList = new();
+    readonly List<Vector2Int> _modifierMonsterCellsScratch = new();
+    readonly List<Vector2Int> _growingOvergrowthKeysScratch = new();
+    readonly HashSet<Vector2Int> _stormUsedCellsScratch = new();
+    readonly List<Vector2Int> _contagionFloorKeysScratch = new();
+    readonly List<int> _outFlankedAliveRowsScratch = new();
+    readonly HashSet<int> _outFlankedSeenRowsScratch = new();
+    readonly List<Vector2Int> _overgrowthVisualKeysScratch = new();
+    readonly List<Vector2Int> _contagionFloorVisualKeysScratch = new();
+    readonly HashSet<Vector2Int> _infectedCellsScratch = new();
+    readonly List<Vector2Int> _infectionVisualKeysScratch = new();
+    readonly List<Vector2Int> _visualDictionaryKeysScratch = new();
 
     GameController _gc;
     LevelModifierSelectionUI _selectionUI;
@@ -147,6 +160,8 @@ public class LevelModifierController : MonoBehaviour
     void OnDestroy()
     {
         StopVolcanicEruptionRoutine();
+        ClearOutFlankedProjectiles();
+        DestroyOutFlankedProjectilePool();
         UnhookAnimatedBackgroundEvents();
     }
 
@@ -675,10 +690,13 @@ public class LevelModifierController : MonoBehaviour
             TryStartOvergrowthCell();
         }
 
-        var keys = new List<Vector2Int>(_growingOvergrowth.Keys);
-        for (int i = 0; i < keys.Count; i++)
+        _growingOvergrowthKeysScratch.Clear();
+        foreach (var key in _growingOvergrowth.Keys)
+            _growingOvergrowthKeysScratch.Add(key);
+
+        for (int i = 0; i < _growingOvergrowthKeysScratch.Count; i++)
         {
-            Vector2Int cell = keys[i];
+            Vector2Int cell = _growingOvergrowthKeysScratch[i];
             OvergrowthState state = _growingOvergrowth[cell];
             state.elapsed += dt;
 
@@ -712,13 +730,13 @@ public class LevelModifierController : MonoBehaviour
             Mathf.Max(1, ActiveModifier.stormTargetsMin),
             Mathf.Max(ActiveModifier.stormTargetsMin, ActiveModifier.stormTargetsMax) + 1);
 
-        var used = new HashSet<Vector2Int>();
+        _stormUsedCellsScratch.Clear();
         for (int i = 0; i < targetCount; i++)
         {
-            if (!TryPickStormCell(out var cell, used))
+            if (!TryPickStormCell(out var cell, _stormUsedCellsScratch))
                 break;
 
-            used.Add(cell);
+            _stormUsedCellsScratch.Add(cell);
             bool cross = Random.value <= Mathf.Clamp01(ActiveModifier.stormCrossChance);
             StartCoroutine(StormStrikeRoutine(cell, cross));
         }
@@ -807,17 +825,17 @@ public class LevelModifierController : MonoBehaviour
                 Mathf.Clamp01((reserve - ActiveModifier.lowRationsNegligibleReserveThreshold) /
                               Mathf.Max(1f, maxReserve - ActiveModifier.lowRationsNegligibleReserveThreshold)));
 
-        var cells = board.GetMonsterCells(includeDead: false);
-        for (int i = 0; i < cells.Count; i++)
-            board.DamageTile(cells[i], damage, Board.DamageSource.Rations);
+        board.GetMonsterCellsNonAlloc(_modifierMonsterCellsScratch, includeDead: false);
+        for (int i = 0; i < _modifierMonsterCellsScratch.Count; i++)
+            board.DamageTile(_modifierMonsterCellsScratch[i], damage, Board.DamageSource.Rations);
     }
 
     void UpdateContagion(float dt)
     {
-        var cells = board.GetMonsterCells(includeDead: false);
-        for (int i = 0; i < cells.Count; i++)
+        board.GetMonsterCellsNonAlloc(_modifierMonsterCellsScratch, includeDead: false);
+        for (int i = 0; i < _modifierMonsterCellsScratch.Count; i++)
         {
-            Vector2Int cell = cells[i];
+            Vector2Int cell = _modifierMonsterCellsScratch[i];
             if (!board.TryGetMonster(cell, out var inst) || !inst.contagionInfected || inst.hp <= 0f)
                 continue;
 
@@ -858,10 +876,13 @@ public class LevelModifierController : MonoBehaviour
                 SpreadContagionToAdjacent(cell, Mathf.Clamp01(ActiveModifier.contagionSpreadChance));
         }
 
-        var floorKeys = new List<Vector2Int>(_contagionFloorSpreadTimers.Keys);
-        for (int i = 0; i < floorKeys.Count; i++)
+        _contagionFloorKeysScratch.Clear();
+        foreach (var key in _contagionFloorSpreadTimers.Keys)
+            _contagionFloorKeysScratch.Add(key);
+
+        for (int i = 0; i < _contagionFloorKeysScratch.Count; i++)
         {
-            Vector2Int cell = floorKeys[i];
+            Vector2Int cell = _contagionFloorKeysScratch[i];
             float timer = _contagionFloorSpreadTimers[cell] + dt;
             if (timer >= Mathf.Max(0.1f, ActiveModifier.contagionSpreadInterval))
             {
@@ -918,21 +939,21 @@ public class LevelModifierController : MonoBehaviour
         if (!board || board.height <= 0 || count <= 0)
             return;
 
-        var aliveRows = new List<int>();
-        var seen = new HashSet<int>();
-        var monsterCells = board.GetMonsterCells(includeDead: false);
-        for (int i = 0; i < monsterCells.Count; i++)
+        _outFlankedAliveRowsScratch.Clear();
+        _outFlankedSeenRowsScratch.Clear();
+        board.GetMonsterCellsNonAlloc(_modifierMonsterCellsScratch, includeDead: false);
+        for (int i = 0; i < _modifierMonsterCellsScratch.Count; i++)
         {
-            int row = monsterCells[i].y;
-            if (row >= 0 && row < board.height && seen.Add(row))
-                aliveRows.Add(row);
+            int row = _modifierMonsterCellsScratch[i].y;
+            if (row >= 0 && row < board.height && _outFlankedSeenRowsScratch.Add(row))
+                _outFlankedAliveRowsScratch.Add(row);
         }
 
-        while (rows.Count < count && aliveRows.Count > 0)
+        while (rows.Count < count && _outFlankedAliveRowsScratch.Count > 0)
         {
-            int index = Random.Range(0, aliveRows.Count);
-            rows.Add(aliveRows[index]);
-            aliveRows.RemoveAt(index);
+            int index = Random.Range(0, _outFlankedAliveRowsScratch.Count);
+            rows.Add(_outFlankedAliveRowsScratch[index]);
+            _outFlankedAliveRowsScratch.RemoveAt(index);
         }
 
         int maxRows = Mathf.Min(count, board.height);
@@ -955,17 +976,18 @@ public class LevelModifierController : MonoBehaviour
             return;
 
         Sprite sprite = modifier.outFlankedProjectileSprite ? modifier.outFlankedProjectileSprite : modifier.icon;
-        var go = new GameObject(fromLeft ? "OutFlankedArrow_Left" : "OutFlankedArrow_Right", typeof(Image));
-        go.transform.SetParent(root, false);
+        var rt = GetOrCreateOutFlankedProjectile(root, fromLeft ? "OutFlankedArrow_Left" : "OutFlankedArrow_Right");
 
-        var img = go.GetComponent<Image>();
+        var img = rt.GetComponent<Image>();
         img.sprite = sprite ? sprite : OnePx();
         img.preserveAspect = true;
         img.raycastTarget = false;
+        img.color = Color.white;
+        img.enabled = true;
 
         Vector2 cellSize = board.GetCellSize();
         float visualScale = _gc ? _gc.CurrentEnemyProjectileVisualScaleForModifiers : 1f;
-        img.rectTransform.sizeDelta = cellSize *
+        rt.sizeDelta = cellSize *
             Mathf.Max(0.1f, visualScale) *
             Mathf.Max(0.1f, modifier.outFlankedProjectileSizeMultiplier);
 
@@ -973,12 +995,12 @@ public class LevelModifierController : MonoBehaviour
         Vector2 left = board.CellToAnchoredPos(new Vector2Int(0, row)) - new Vector2(sideOffset, 0f);
         Vector2 right = board.CellToAnchoredPos(new Vector2Int(board.width - 1, row)) + new Vector2(sideOffset, 0f);
 
-        img.rectTransform.anchorMin = img.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        img.rectTransform.anchoredPosition = BoardLocalToRoot(root, fromLeft ? left : right);
-        img.rectTransform.localEulerAngles = new Vector3(0f, 0f, fromLeft ? 0f : 180f);
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.anchoredPosition = BoardLocalToRoot(root, fromLeft ? left : right);
+        rt.localEulerAngles = new Vector3(0f, 0f, fromLeft ? 0f : 180f);
 
-        _outFlankedProjectiles.Add(img.rectTransform);
-        StartCoroutine(OutFlankedProjectileRoutine(img.rectTransform, row, fromLeft, modifier));
+        _outFlankedProjectiles.Add(rt);
+        StartCoroutine(OutFlankedProjectileRoutine(rt, row, fromLeft, modifier));
     }
 
     IEnumerator OutFlankedProjectileRoutine(RectTransform projectile, int row, bool movingRight, LevelModifierSO modifier)
@@ -1284,12 +1306,49 @@ public class LevelModifierController : MonoBehaviour
         return new Vector2(local.x, local.y);
     }
 
+    RectTransform GetOrCreateOutFlankedProjectile(RectTransform root, string objectName)
+    {
+        RectTransform projectile = null;
+        while (_outFlankedProjectilePool.Count > 0 && !projectile)
+        {
+            int last = _outFlankedProjectilePool.Count - 1;
+            projectile = _outFlankedProjectilePool[last];
+            _outFlankedProjectilePool.RemoveAt(last);
+            _pooledOutFlankedProjectiles.Remove(projectile);
+        }
+
+        if (!projectile)
+            projectile = new GameObject(objectName, typeof(Image)).GetComponent<RectTransform>();
+
+        projectile.name = objectName;
+        projectile.SetParent(root, false);
+        projectile.anchorMin = projectile.anchorMax = new Vector2(0.5f, 0.5f);
+        projectile.pivot = new Vector2(0.5f, 0.5f);
+        projectile.localScale = Vector3.one;
+        projectile.localRotation = Quaternion.identity;
+        projectile.anchoredPosition = Vector2.zero;
+        projectile.gameObject.SetActive(true);
+        return projectile;
+    }
+
     void DestroyOutFlankedProjectile(RectTransform projectile)
     {
         if (projectile)
         {
             _outFlankedProjectiles.Remove(projectile);
-            Destroy(projectile.gameObject);
+            if (!_pooledOutFlankedProjectiles.Contains(projectile))
+            {
+                if (projectile.TryGetComponent(out Image img))
+                {
+                    img.sprite = null;
+                    img.color = Color.white;
+                    img.enabled = true;
+                }
+
+                projectile.gameObject.SetActive(false);
+                _pooledOutFlankedProjectiles.Add(projectile);
+                _outFlankedProjectilePool.Add(projectile);
+            }
             return;
         }
 
@@ -1301,10 +1360,22 @@ public class LevelModifierController : MonoBehaviour
         for (int i = _outFlankedProjectiles.Count - 1; i >= 0; i--)
         {
             if (_outFlankedProjectiles[i])
-                Destroy(_outFlankedProjectiles[i].gameObject);
+                DestroyOutFlankedProjectile(_outFlankedProjectiles[i]);
         }
 
         _outFlankedProjectiles.Clear();
+    }
+
+    void DestroyOutFlankedProjectilePool()
+    {
+        for (int i = _outFlankedProjectilePool.Count - 1; i >= 0; i--)
+        {
+            if (_outFlankedProjectilePool[i])
+                Destroy(_outFlankedProjectilePool[i].gameObject);
+        }
+
+        _outFlankedProjectilePool.Clear();
+        _pooledOutFlankedProjectiles.Clear();
     }
 
     void SpreadContagionFromFloor(Vector2Int cell)
@@ -1526,11 +1597,14 @@ public class LevelModifierController : MonoBehaviour
 
     void ClearGrowingOvergrowthInRows(HashSet<int> rows)
     {
-        var keys = new List<Vector2Int>(_growingOvergrowth.Keys);
-        for (int i = 0; i < keys.Count; i++)
+        _growingOvergrowthKeysScratch.Clear();
+        foreach (var key in _growingOvergrowth.Keys)
+            _growingOvergrowthKeysScratch.Add(key);
+
+        for (int i = 0; i < _growingOvergrowthKeysScratch.Count; i++)
         {
-            if (rows.Contains(keys[i].y))
-                RemoveGrowingOvergrowth(keys[i]);
+            if (rows.Contains(_growingOvergrowthKeysScratch[i].y))
+                RemoveGrowingOvergrowth(_growingOvergrowthKeysScratch[i]);
         }
     }
 
@@ -1553,28 +1627,35 @@ public class LevelModifierController : MonoBehaviour
 
     void SyncOvergrowthVisuals()
     {
-        var keys = new List<Vector2Int>(_overgrowthVisuals.Keys);
-        for (int i = 0; i < keys.Count; i++)
+        _overgrowthVisualKeysScratch.Clear();
+        foreach (var key in _overgrowthVisuals.Keys)
+            _overgrowthVisualKeysScratch.Add(key);
+
+        for (int i = 0; i < _overgrowthVisualKeysScratch.Count; i++)
         {
-            if (!_growingOvergrowth.ContainsKey(keys[i]))
+            Vector2Int cell = _overgrowthVisualKeysScratch[i];
+            if (!_growingOvergrowth.ContainsKey(cell))
             {
-                if (_overgrowthVisuals[keys[i]])
-                    Destroy(_overgrowthVisuals[keys[i]].gameObject);
-                _overgrowthVisuals.Remove(keys[i]);
+                if (_overgrowthVisuals[cell])
+                    Destroy(_overgrowthVisuals[cell].gameObject);
+                _overgrowthVisuals.Remove(cell);
                 continue;
             }
 
-            if (_overgrowthVisuals[keys[i]])
-                _overgrowthVisuals[keys[i]].rectTransform.anchoredPosition = board.CellToAnchoredPos(keys[i]);
+            if (_overgrowthVisuals[cell])
+                _overgrowthVisuals[cell].rectTransform.anchoredPosition = board.CellToAnchoredPos(cell);
         }
     }
 
     void SyncContagionFloorVisuals()
     {
-        var keys = new List<Vector2Int>(_contagionFloorVisuals.Keys);
-        for (int i = 0; i < keys.Count; i++)
+        _contagionFloorVisualKeysScratch.Clear();
+        foreach (var key in _contagionFloorVisuals.Keys)
+            _contagionFloorVisualKeysScratch.Add(key);
+
+        for (int i = 0; i < _contagionFloorVisualKeysScratch.Count; i++)
         {
-            Vector2Int cell = keys[i];
+            Vector2Int cell = _contagionFloorVisualKeysScratch[i];
             if (!_contagionFloorSpreadTimers.ContainsKey(cell))
             {
                 if (_contagionFloorVisuals[cell])
@@ -1592,29 +1673,33 @@ public class LevelModifierController : MonoBehaviour
 
     void SyncInfectionVisuals()
     {
-        var infectedCells = new HashSet<Vector2Int>();
-        var cells = board.GetMonsterCells(includeDead: false);
-        for (int i = 0; i < cells.Count; i++)
+        _infectedCellsScratch.Clear();
+        board.GetMonsterCellsNonAlloc(_modifierMonsterCellsScratch, includeDead: false);
+        for (int i = 0; i < _modifierMonsterCellsScratch.Count; i++)
         {
-            Vector2Int cell = cells[i];
+            Vector2Int cell = _modifierMonsterCellsScratch[i];
             if (!board.TryGetMonster(cell, out var inst) || !inst.contagionInfected || inst.hp <= 0f)
                 continue;
 
-            infectedCells.Add(cell);
+            _infectedCellsScratch.Add(cell);
             EnsureInfectionVisual(cell);
             if (_infectionVisuals.TryGetValue(cell, out var visual) && visual)
                 visual.rectTransform.anchoredPosition = board.CellToAnchoredPos(cell);
         }
 
-        var existing = new List<Vector2Int>(_infectionVisuals.Keys);
-        for (int i = 0; i < existing.Count; i++)
+        _infectionVisualKeysScratch.Clear();
+        foreach (var key in _infectionVisuals.Keys)
+            _infectionVisualKeysScratch.Add(key);
+
+        for (int i = 0; i < _infectionVisualKeysScratch.Count; i++)
         {
-            if (infectedCells.Contains(existing[i]))
+            Vector2Int cell = _infectionVisualKeysScratch[i];
+            if (_infectedCellsScratch.Contains(cell))
                 continue;
 
-            if (_infectionVisuals[existing[i]])
-                Destroy(_infectionVisuals[existing[i]].gameObject);
-            _infectionVisuals.Remove(existing[i]);
+            if (_infectionVisuals[cell])
+                Destroy(_infectionVisuals[cell].gameObject);
+            _infectionVisuals.Remove(cell);
         }
     }
 
@@ -2550,11 +2635,14 @@ public class LevelModifierController : MonoBehaviour
 
     void ClearVisualDictionary(Dictionary<Vector2Int, Image> dict)
     {
-        var keys = new List<Vector2Int>(dict.Keys);
-        for (int i = 0; i < keys.Count; i++)
+        _visualDictionaryKeysScratch.Clear();
+        foreach (var key in dict.Keys)
+            _visualDictionaryKeysScratch.Add(key);
+
+        for (int i = 0; i < _visualDictionaryKeysScratch.Count; i++)
         {
-            if (dict[keys[i]])
-                Destroy(dict[keys[i]].gameObject);
+            if (dict[_visualDictionaryKeysScratch[i]])
+                Destroy(dict[_visualDictionaryKeysScratch[i]].gameObject);
         }
 
         dict.Clear();

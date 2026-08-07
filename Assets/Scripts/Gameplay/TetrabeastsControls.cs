@@ -185,8 +185,7 @@ public static class TetrabeastsControls
             return;
 
         PlayerPrefs.SetInt(KeyControlProfile, (int)profile);
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
         ProfileChanged?.Invoke(profile);
     }
 
@@ -381,8 +380,7 @@ public static class TetrabeastsControls
         {
             PlayerPrefs.DeleteKey(GetBindingsPrefsKey(editableProfile));
             state.Dirty = false;
-            PlayerPrefs.Save();
-            SteamCloudSaveService.QueueUpload();
+            PlayerPrefsSaveScheduler.QueueSave();
             return;
         }
 
@@ -408,8 +406,7 @@ public static class TetrabeastsControls
         }
 
         PlayerPrefs.SetString(GetBindingsPrefsKey(profile), JsonUtility.ToJson(data));
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
         state.Dirty = false;
     }
 
@@ -418,8 +415,7 @@ public static class TetrabeastsControls
         TetrabeastsControlProfile editableProfile = GetEditableProfile(profile);
         PlayerPrefs.DeleteKey(GetBindingsPrefsKey(editableProfile));
         BindingProfiles[editableProfile] = CreateDefaultBindingState(editableProfile, hasCustom: false);
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
         BindingsChanged?.Invoke(editableProfile);
     }
 

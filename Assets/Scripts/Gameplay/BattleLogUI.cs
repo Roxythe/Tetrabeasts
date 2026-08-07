@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -36,7 +37,10 @@ public sealed class BattleLogUI : MonoBehaviour
     private string LF(string englishFormat, params object[] args) => TetrabeastsLocalization.LocalizeFormat(englishFormat, args);
 
     private readonly Queue<TMP_Text> _active = new();
+    private readonly Queue<TMP_Text> _pool = new();
     private readonly Queue<string> _buffer = new();
+    private Coroutine _layoutRefreshCoroutine;
+    private bool _layoutRefreshQueued;
     private static readonly Dictionary<string, string> BossAbilitySpellTitles = new(System.StringComparer.Ordinal)
     {
         { "RowBlast", "Skybreaker Edict" },
@@ -147,31 +151,27 @@ public sealed class BattleLogUI : MonoBehaviour
 
     private void AddLineVisualOnly(string richText)
     {
-        var t = Instantiate(linePrefab, contentRoot);
+        var t = GetLineFromPool();
+        t.transform.SetParent(contentRoot, false);
+        t.transform.SetAsLastSibling();
         t.gameObject.SetActive(true);
         t.richText = true;
         t.text = richText;
-
-        Canvas.ForceUpdateCanvases();
 
         float availableWidth = GetLineAvailableWidth();
 
         var fitter = t.GetComponent<BattleLogAutoFitLine>();
         if (fitter) fitter.Fit(availableWidth);
 
-        LayoutRebuilder.ForceRebuildLayoutImmediate(contentRoot);
-        Canvas.ForceUpdateCanvases();
-
         _active.Enqueue(t);
 
         while (_active.Count > maxLines)
         {
             var old = _active.Dequeue();
-            if (old) Destroy(old.gameObject);
+            ReleaseLine(old);
         }
 
-        if (autoScroll && scrollRect)
-            scrollRect.verticalNormalizedPosition = 0f;
+        QueueLayoutRefresh();
     }
 
     private static string E(string s)
@@ -199,11 +199,13 @@ public sealed class BattleLogUI : MonoBehaviour
         while (_active.Count > 0)
         {
             var t = _active.Dequeue();
-            if (t) Destroy(t.gameObject);
+            ReleaseLine(t);
         }
 
         if (scrollRect)
             scrollRect.verticalNormalizedPosition = 0f;
+
+        QueueLayoutRefresh();
     }
 
     private static string HumanizePascal(string s)
@@ -273,11 +275,11 @@ public sealed class BattleLogUI : MonoBehaviour
 
     private void RebuildVisualFromBuffer()
     {
-        // Destroy existing visible lines
+        // Reuse existing visible lines when the log is rebuilt after being hidden.
         while (_active.Count > 0)
         {
             var t = _active.Dequeue();
-            if (t) Destroy(t.gameObject);
+            ReleaseLine(t);
         }
 
         if (!visualRoot || !visualRoot.activeInHierarchy) return;
@@ -287,5 +289,61 @@ public sealed class BattleLogUI : MonoBehaviour
 
         if (autoScroll && scrollRect)
             scrollRect.verticalNormalizedPosition = 0f;
+    }
+
+    private TMP_Text GetLineFromPool()
+    {
+        while (_pool.Count > 0)
+        {
+            var pooled = _pool.Dequeue();
+            if (pooled)
+                return pooled;
+        }
+
+        return Instantiate(linePrefab, contentRoot);
+    }
+
+    private void ReleaseLine(TMP_Text line)
+    {
+        if (!line)
+            return;
+
+        line.text = string.Empty;
+        line.gameObject.SetActive(false);
+        _pool.Enqueue(line);
+    }
+
+    private void QueueLayoutRefresh()
+    {
+        if (_layoutRefreshQueued || !isActiveAndEnabled)
+            return;
+
+        _layoutRefreshQueued = true;
+        _layoutRefreshCoroutine = StartCoroutine(RefreshLayoutNextFrame());
+    }
+
+    private IEnumerator RefreshLayoutNextFrame()
+    {
+        yield return null;
+
+        _layoutRefreshQueued = false;
+        _layoutRefreshCoroutine = null;
+
+        if (!contentRoot)
+            yield break;
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(contentRoot);
+
+        if (autoScroll && scrollRect)
+            scrollRect.verticalNormalizedPosition = 0f;
+    }
+
+    private void OnDisable()
+    {
+        if (_layoutRefreshCoroutine != null)
+            StopCoroutine(_layoutRefreshCoroutine);
+
+        _layoutRefreshCoroutine = null;
+        _layoutRefreshQueued = false;
     }
 }

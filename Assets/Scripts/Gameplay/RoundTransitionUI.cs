@@ -1004,7 +1004,7 @@ public class RoundTransitionUI : MonoBehaviour
 
         s_sessionLastOneLinerIndex[prefsKey] = lastPickedIndex;
         PlayerPrefs.SetInt(GetLastOneLinerPrefsKey(prefsKey), lastPickedIndex);
-        PlayerPrefs.Save();
+        PlayerPrefsSaveScheduler.QueueSave(queueCloudUpload: false);
     }
 
     static string GetLastOneLinerPrefsKey(string prefsKey)

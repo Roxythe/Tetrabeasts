@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -5,26 +6,35 @@ using UnityEngine.UI;
 
 public sealed class TetrabeastsLocalizedTextScanner : MonoBehaviour
 {
-    const float ScanInterval = 0.75f;
-
     static TetrabeastsLocalizedTextScanner instance;
-    float nextScanTime;
+    Coroutine scanRoutine;
+    bool scanQueued;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     static void Bootstrap()
     {
-        EnsureInstance();
-        instance.ScanAllText();
+        EnsureInstance().QueueScan();
     }
 
-    static void EnsureInstance()
+    public static void RequestScan()
+    {
+        EnsureInstance().QueueScan();
+    }
+
+    public static void ScanNow()
+    {
+        EnsureInstance().ScanAllText();
+    }
+
+    static TetrabeastsLocalizedTextScanner EnsureInstance()
     {
         if (instance)
-            return;
+            return instance;
 
         var go = new GameObject(nameof(TetrabeastsLocalizedTextScanner));
         DontDestroyOnLoad(go);
         instance = go.AddComponent<TetrabeastsLocalizedTextScanner>();
+        return instance;
     }
 
     void OnEnable()
@@ -37,19 +47,40 @@ public sealed class TetrabeastsLocalizedTextScanner : MonoBehaviour
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
         TetrabeastsLocalization.LanguageChanged -= ScanAllText;
-    }
 
-    void Update()
-    {
-        if (Time.unscaledTime < nextScanTime)
-            return;
+        if (scanRoutine != null)
+            StopCoroutine(scanRoutine);
 
-        nextScanTime = Time.unscaledTime + ScanInterval;
-        ScanAllText();
+        scanRoutine = null;
+        scanQueued = false;
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        QueueScan();
+    }
+
+    void QueueScan()
+    {
+        if (scanQueued)
+            return;
+
+        if (!isActiveAndEnabled)
+        {
+            ScanAllText();
+            return;
+        }
+
+        scanQueued = true;
+        scanRoutine = StartCoroutine(ScanNextFrame());
+    }
+
+    IEnumerator ScanNextFrame()
+    {
+        yield return null;
+
+        scanRoutine = null;
+        scanQueued = false;
         ScanAllText();
     }
 

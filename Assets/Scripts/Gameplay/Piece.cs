@@ -25,13 +25,22 @@ public class Piece : MonoBehaviour
     Vector2Int origin; // Rotation/translation origin
     readonly List<Vector2Int> cells = new();
     readonly List<RectTransform> visuals = new();
+    readonly List<RectTransform> activeVisualPool = new();
+    readonly HashSet<RectTransform> pooledActiveVisuals = new();
     readonly List<MonsterData> monstersForCells = new();
     readonly List<RectTransform> hintOverlays = new();
+    readonly List<RectTransform> hintPool = new();
+    readonly List<Vector2Int> hintCells = new();
+    readonly List<Vector2Int> scratchHintCells = new();
     readonly List<Vector2Int> candidateCells = new();
     readonly List<Vector2Int> landingCells = new();
     readonly List<Vector2Int> landingTestCells = new();
+    readonly List<Vector2> visualStartPositions = new();
+    readonly List<Vector2> visualTargetPositions = new();
     readonly HashSet<Vector2Int> activeCellSet = new();
     readonly HashSet<Vector2Int> hardDropPreviewCells = new();
+    readonly HashSet<Vector2Int> specialHintCells = new();
+    static readonly Comparison<Vector2Int> HintCellComparison = CompareHintCells;
     static readonly Color hintColor = new Color(1f, 0f, 0f, 0.5f); // Light red
     GameController gameController;
 
@@ -62,10 +71,29 @@ public class Piece : MonoBehaviour
     void OnEnable()
     {
         fallTimer = 0f; lockTimer = 0f;
-        visuals.Clear(); cells.Clear();
+        ReleaseActiveVisuals();
+        cells.Clear();
+        ClearHints();
         hardDropVisualLockPending = false;
         visualTransitionCoroutine = null;
         completingVisualTransition = false;
+    }
+
+    void OnDisable()
+    {
+        ClearHints();
+    }
+
+    void OnDestroy()
+    {
+        DestroyActiveVisuals(visuals);
+        DestroyActiveVisuals(activeVisualPool);
+        pooledActiveVisuals.Clear();
+        DestroyHints(hintOverlays);
+        DestroyHints(hintPool);
+        hintCells.Clear();
+        scratchHintCells.Clear();
+        specialHintCells.Clear();
     }
 
     public void SpawnAtTop()
@@ -237,12 +265,127 @@ public class Piece : MonoBehaviour
         return visuals;
     }
 
+    RectTransform GetOrCreateActiveVisual()
+    {
+        RectTransform rt = null;
+        while (activeVisualPool.Count > 0 && !rt)
+        {
+            int last = activeVisualPool.Count - 1;
+            rt = activeVisualPool[last];
+            activeVisualPool.RemoveAt(last);
+            pooledActiveVisuals.Remove(rt);
+        }
+
+        if (!rt)
+            rt = Instantiate(activeTilePrefab, board.gridRoot).rectTransform;
+        else
+            rt.SetParent(board.gridRoot, false);
+
+        rt.gameObject.SetActive(true);
+        var img = rt.GetComponent<Image>();
+        if (img)
+        {
+            img.enabled = true;
+            img.sprite = null;
+            img.raycastTarget = false;
+            img.color = new Color(0f, 0f, 0f, 0f);
+        }
+
+        var anyOutline = rt.GetComponent<UnityEngine.UI.Outline>();
+        if (anyOutline) Destroy(anyOutline);
+
+        return rt;
+    }
+
+    Image GetOrCreateActiveChildImage(RectTransform parent, string childName)
+    {
+        var child = parent.Find(childName);
+        Image img;
+        if (child)
+        {
+            img = child.GetComponent<Image>();
+            if (!img)
+                img = child.gameObject.AddComponent<Image>();
+        }
+        else
+        {
+            var go = new GameObject(childName, typeof(Image));
+            go.transform.SetParent(parent, false);
+            img = go.GetComponent<Image>();
+        }
+
+        img.name = childName;
+        img.enabled = true;
+        img.raycastTarget = false;
+        img.color = Color.white;
+        img.gameObject.SetActive(true);
+        return img;
+    }
+
+    void HideActiveChild(RectTransform parent, string childName)
+    {
+        var child = parent ? parent.Find(childName) : null;
+        if (!child)
+            return;
+
+        if (child.TryGetComponent(out Image img))
+        {
+            img.sprite = null;
+            img.enabled = true;
+        }
+
+        child.gameObject.SetActive(false);
+    }
+
+    void ReleaseActiveVisual(RectTransform rt)
+    {
+        if (!rt || pooledActiveVisuals.Contains(rt))
+            return;
+
+        HideActiveChild(rt, "ActiveFill");
+        HideActiveChild(rt, "MonsterPortrait");
+        HideActiveChild(rt, "SpecialIcon");
+
+        var img = rt.GetComponent<Image>();
+        if (img)
+        {
+            img.sprite = null;
+            img.raycastTarget = false;
+            img.color = new Color(0f, 0f, 0f, 0f);
+        }
+
+        if (board && board.gridRoot)
+            rt.SetParent(board.gridRoot, false);
+
+        rt.gameObject.SetActive(false);
+        pooledActiveVisuals.Add(rt);
+        activeVisualPool.Add(rt);
+    }
+
+    void ReleaseActiveVisuals()
+    {
+        for (int i = 0; i < visuals.Count; i++)
+            ReleaseActiveVisual(visuals[i]);
+
+        visuals.Clear();
+    }
+
+    void DestroyActiveVisuals(List<RectTransform> targetVisuals)
+    {
+        for (int i = 0; i < targetVisuals.Count; i++)
+        {
+            if (targetVisuals[i])
+                Destroy(targetVisuals[i].gameObject);
+        }
+
+        targetVisuals.Clear();
+    }
+
     void BuildVisuals()
     {
         bool isSpecial = data.special != SpecialType.None;
 
-        foreach (var v in visuals) if (v) Destroy(v.gameObject);
-        visuals.Clear();
+        ReleaseActiveVisuals();
 
         if (board == null || board.gridRoot == null) return;
 
@@ -255,15 +398,9 @@ public class Piece : MonoBehaviour
             var c = cells[i];
 
             // Base tile
-            var img = Instantiate(activeTilePrefab, board.gridRoot);
-            var rt = img.rectTransform;
-
-            img.sprite = null;
-            img.raycastTarget = false;
-            img.color = new Color(0f, 0f, 0f, 0f);
-
-            var anyOutline = img.GetComponent<UnityEngine.UI.Outline>();
-            if (anyOutline) Destroy(anyOutline);
+            var rt = GetOrCreateActiveVisual();
+            HideActiveChild(rt, "MonsterPortrait");
+            HideActiveChild(rt, "SpecialIcon");
 
             // Size/position
             rt.sizeDelta = board.GetCellSize();
@@ -275,8 +412,7 @@ public class Piece : MonoBehaviour
             board.SetInlineBorderColor(rt, borderColor);
 
             // Build inner fill first so ApplySharedEdges can resize it correctly on shared edges
-            var fillGO = new GameObject("ActiveFill", typeof(UnityEngine.UI.Image));
-            var fill = fillGO.GetComponent<UnityEngine.UI.Image>();
+            var fill = GetOrCreateActiveChildImage(rt, "ActiveFill");
             fill.raycastTarget = false;
             fill.sprite = (data != null && data.backgroundImage != null) ? data.backgroundImage : OnePx();
             fill.type = UnityEngine.UI.Image.Type.Simple;
@@ -302,31 +438,32 @@ public class Piece : MonoBehaviour
             // Portrait/special icon
             if (isSpecial && data.specialSprite != null)
             {
-                var go = new GameObject("SpecialIcon", typeof(UnityEngine.UI.Image));
-                var p = go.GetComponent<UnityEngine.UI.Image>();
+                var p = GetOrCreateActiveChildImage(rt, "SpecialIcon");
                 p.sprite = data.specialSprite; p.preserveAspect = true;
                 p.raycastTarget = false;
 
-                var prt = p.rectTransform; prt.SetParent(rt, false);
+                var prt = p.rectTransform;
                 prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
                 prt.sizeDelta = frt.sizeDelta - new Vector2(2f, 2f);
                 prt.anchoredPosition = Vector2.zero;
+                prt.localScale = Vector3.one;
+                prt.SetAsLastSibling();
             }
             else if (!isSpecial && i < monstersForCells.Count && monstersForCells[i])
             {
                 var portrait = GetCurrentMonsterPortrait(monstersForCells[i]);
                 if (portrait)
                 {
-                    var go = new GameObject("MonsterPortrait", typeof(UnityEngine.UI.Image));
-                    var p = go.GetComponent<UnityEngine.UI.Image>();
+                    var p = GetOrCreateActiveChildImage(rt, "MonsterPortrait");
                     p.sprite = portrait; p.preserveAspect = true;
                     p.raycastTarget = false;
 
-                    var prt = p.rectTransform; prt.SetParent(rt, false);
+                    var prt = p.rectTransform;
                     prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
                     prt.sizeDelta = frt.sizeDelta - new Vector2(2f, 2f);
                     prt.localScale = Vector3.one * 0.9f;
                     prt.anchoredPosition = Vector2.zero;
+                    prt.SetAsLastSibling();
                 }
             }
 
@@ -340,7 +477,8 @@ public class Piece : MonoBehaviour
         if (!EnsureVisualsReady())
             return;
 
-        SetVisualsToTargetPositions(GetCellTargetPositions());
+        FillCellTargetPositions(visualTargetPositions);
+        SetVisualsToTargetPositions(visualTargetPositions);
         ApplyActiveVisualBorders();
     }
 
@@ -364,25 +502,23 @@ public class Piece : MonoBehaviour
         return true;
     }
 
-    Vector2[] GetCellTargetPositions()
+    void FillCellTargetPositions(List<Vector2> targets)
     {
-        var targets = new Vector2[cells.Count];
+        targets.Clear();
         for (int i = 0; i < cells.Count; i++)
-            targets[i] = board.CellToAnchoredPos(cells[i]);
-        return targets;
+            targets.Add(board.CellToAnchoredPos(cells[i]));
     }
 
-    Vector2[] CaptureVisualPositions()
+    void CaptureVisualPositions(List<Vector2> positions)
     {
-        var positions = new Vector2[visuals.Count];
+        positions.Clear();
         for (int i = 0; i < visuals.Count; i++)
-            positions[i] = visuals[i] ? visuals[i].anchoredPosition : Vector2.zero;
-        return positions;
+            positions.Add(visuals[i] ? visuals[i].anchoredPosition : Vector2.zero);
     }
 
-    void SetVisualsToTargetPositions(Vector2[] targets)
+    void SetVisualsToTargetPositions(IReadOnlyList<Vector2> targets)
     {
-        int count = Mathf.Min(visuals.Count, targets.Length);
+        int count = Mathf.Min(visuals.Count, targets.Count);
         for (int i = 0; i < count; i++)
             if (visuals[i])
                 visuals[i].anchoredPosition = targets[i];
@@ -538,16 +674,16 @@ public class Piece : MonoBehaviour
             return;
         }
 
-        Vector2[] starts = CaptureVisualPositions();
-        Vector2[] targets = GetCellTargetPositions();
+        CaptureVisualPositions(visualStartPositions);
+        FillCellTargetPositions(visualTargetPositions);
         CancelVisualTransition(false);
 
         if (previewSettledBorders)
             ApplyHardDropSettledBorderPreview();
 
         visualTransitionCoroutine = StartCoroutine(CoAnimateVisualTransition(
-            starts,
-            targets,
+            visualStartPositions,
+            visualTargetPositions,
             duration,
             rotateAroundPivot,
             pivot,
@@ -556,8 +692,8 @@ public class Piece : MonoBehaviour
     }
 
     IEnumerator CoAnimateVisualTransition(
-        Vector2[] starts,
-        Vector2[] targets,
+        IReadOnlyList<Vector2> starts,
+        IReadOnlyList<Vector2> targets,
         float duration,
         bool rotateAroundPivot,
         Vector2 pivot,
@@ -572,7 +708,7 @@ public class Piece : MonoBehaviour
             float t = Mathf.Clamp01(elapsed / duration);
             float eased = t * t * (3f - 2f * t);
 
-            for (int i = 0; i < visuals.Count && i < starts.Length && i < targets.Length; i++)
+            for (int i = 0; i < visuals.Count && i < starts.Count && i < targets.Count; i++)
             {
                 if (!visuals[i])
                     continue;
@@ -749,8 +885,7 @@ public class Piece : MonoBehaviour
             var topOutColsByRow = PlaceTopOutPieceTiles();
             gc?.PlayPieceLockSFX();
 
-            foreach (var v in visuals) if (v) Destroy(v.gameObject);
-            visuals.Clear();
+            ReleaseActiveVisuals();
             hardDropPreviewBorderCells.Clear();
 
             gc?.OnPieceLocked(0, new List<Vector2Int>(),
@@ -772,8 +907,7 @@ public class Piece : MonoBehaviour
 
             // Clean up active visuals + any hint overlays
             ClearHints();
-            foreach (var v in visuals) if (v) Destroy(v.gameObject);
-            visuals.Clear();
+            ReleaseActiveVisuals();
 
             // Landing/center cell (clamped)
             var center = cells[0];
@@ -966,16 +1100,13 @@ public class Piece : MonoBehaviour
 
         gc?.PlayPieceLockSFX();
 
-        foreach (var v in visuals)
-
-            // Recompute per-edge border thickness for the new blocks + neighbors
-            for (int i = 0; i < cells.Count; i++)
-                board.RefreshTileBordersAround(cells[i]);
+        // Recompute per-edge border thickness for the new blocks + neighbors
+        for (int i = 0; i < cells.Count; i++)
+            board.RefreshTileBordersAround(cells[i]);
 
         hardDropPreviewBorderCells.Clear();
 
-        foreach (var v in visuals) if (v) Destroy(v.gameObject);
-        visuals.Clear();
+        ReleaseActiveVisuals();
 
         var colsByRow = new Dictionary<int, List<int>>();
         for (int i = 0; i < cells.Count; i++)
@@ -1056,12 +1187,7 @@ public class Piece : MonoBehaviour
         ClearHints();
 
         // Remove only the active falling tile visuals spawned
-        for (int i = 0; i < visuals.Count; i++)
-        {
-            if (visuals[i] != null)
-                Destroy(visuals[i].gameObject);
-        }
-        visuals.Clear();
+        ReleaseActiveVisuals();
 
         cells.Clear();
         fallTimer = 0f;
@@ -1147,15 +1273,24 @@ public class Piece : MonoBehaviour
 
     void ClearHints()
     {
-        for (int i = 0; i < hintOverlays.Count; i++)
-            if (hintOverlays[i]) Destroy(hintOverlays[i].gameObject);
-        hintOverlays.Clear();
+        for (int i = hintOverlays.Count - 1; i >= 0; i--)
+            ReleaseHintAt(i);
+
+        hintCells.Clear();
+        scratchHintCells.Clear();
+        specialHintCells.Clear();
     }
 
     void UpdateSpecialHints()
     {
-        ClearHints();
-        if (data.special == SpecialType.None) return;
+        scratchHintCells.Clear();
+        specialHintCells.Clear();
+
+        if (data.special == SpecialType.None || board == null || board.gridRoot == null || cells.Count == 0)
+        {
+            SetActiveHints(scratchHintCells, "SpecialHint");
+            return;
+        }
 
         var center = cells[0]; // Compute the landing cell for the special center
         var dropY = center.y; // Drop until blocked (or bottom)
@@ -1164,9 +1299,6 @@ public class Piece : MonoBehaviour
         var landing = new Vector2Int(Mathf.Clamp(center.x, 0, board.width - 1),
                                      Mathf.Clamp(dropY, 0, board.height - 1));
 
-        // Build affected set based on the special behavior
-        var affected = new HashSet<Vector2Int>();
-
         switch (data.special)
         {
             case SpecialType.Bomb:
@@ -1174,7 +1306,7 @@ public class Piece : MonoBehaviour
                     for (int dx = -1; dx <= 1; dx++)
                     {
                         var c = new Vector2Int(landing.x + dx, landing.y + dy);
-                        if (board.InBounds(c)) affected.Add(c);
+                        if (board.InBounds(c)) AddSpecialHintCell(c);
                     }
                 break;
 
@@ -1182,7 +1314,7 @@ public class Piece : MonoBehaviour
                 for (int y = 0; y < board.height; y++)
                 {
                     var c = new Vector2Int(landing.x, y);
-                    if (board.InBounds(c)) affected.Add(c);
+                    if (board.InBounds(c)) AddSpecialHintCell(c);
                 }
                 break;
 
@@ -1204,7 +1336,7 @@ public class Piece : MonoBehaviour
                         {
                             var c = new Vector2Int(x, y);
                             if (board.TryGetMonster(c, out var inst) && inst.data == chosen)
-                                affected.Add(c);
+                                AddSpecialHintCell(c);
                         }
                 }
                 break;
@@ -1217,24 +1349,14 @@ public class Piece : MonoBehaviour
                         if (!board.IsFree(c))
                         {
                             var below = new Vector2Int(x, y - 1);
-                            if (y > 0 && board.IsFree(below)) affected.Add(c);
+                            if (y > 0 && board.IsFree(below)) AddSpecialHintCell(c);
                         }
                     }
                 break;
         }
 
-        // Draw the tinted overlays
-        foreach (var c in affected)
-        {
-            var img = new GameObject("SpecialHint", typeof(UnityEngine.UI.Image)).GetComponent<UnityEngine.UI.Image>();
-            img.color = hintColor;
-            var rt = img.rectTransform;
-            rt.SetParent(board.gridRoot, false);
-            rt.sizeDelta = board.GetCellSize();
-            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
-            rt.anchoredPosition = board.CellToAnchoredPos(c);
-            hintOverlays.Add(rt);
-        }
+        scratchHintCells.Sort(HintCellComparison);
+        SetActiveHints(scratchHintCells, "SpecialHint");
     }
 
     List<Vector2Int> ComputeLandingCells()
@@ -1274,30 +1396,127 @@ public class Piece : MonoBehaviour
     {
         var gc = GetGameController();
 
-        ClearHints();
+        scratchHintCells.Clear();
 
         if (gc != null && gc.disableLandingHint)
+        {
+            SetActiveHints(scratchHintCells, "GhostHint");
             return; // Skip if disabled by run mods
+        }
 
         var landing = ComputeLandingCells();
-        if (landing.Count == 0) return;
+        for (int i = 0; i < landing.Count; i++)
+            scratchHintCells.Add(landing[i]);
 
-        foreach (var c in landing)
+        SetActiveHints(scratchHintCells, "GhostHint");
+    }
+
+    static int CompareHintCells(Vector2Int a, Vector2Int b)
+    {
+        int y = a.y.CompareTo(b.y);
+        return y != 0 ? y : a.x.CompareTo(b.x);
+    }
+
+    void AddSpecialHintCell(Vector2Int cell)
+    {
+        if (specialHintCells.Add(cell))
+            scratchHintCells.Add(cell);
+    }
+
+    void SetActiveHints(List<Vector2Int> desiredCells, string objectName)
+    {
+        if (board == null || board.gridRoot == null)
         {
-            var img = new GameObject("GhostHint", typeof(Image)).GetComponent<Image>();
-            img.sprite = OnePx();
-            img.type = Image.Type.Simple;
-            img.raycastTarget = false;
-            img.color = hintColor;
-
-            var rt = img.rectTransform;
-            rt.SetParent(board.gridRoot, false);
-            rt.sizeDelta = board.GetCellSize();
-            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
-            rt.anchoredPosition = board.CellToAnchoredPos(c);
-
-            hintOverlays.Add(rt);
+            ClearHints();
+            return;
         }
+
+        while (hintOverlays.Count > desiredCells.Count)
+            ReleaseHintAt(hintOverlays.Count - 1);
+
+        while (hintOverlays.Count < desiredCells.Count)
+        {
+            var rt = GetOrCreateHint(objectName);
+            hintOverlays.Add(rt);
+            hintCells.Add(default);
+        }
+
+        var cellSize = board.GetCellSize();
+        for (int i = 0; i < desiredCells.Count; i++)
+        {
+            var rt = hintOverlays[i];
+            if (!rt)
+                rt = hintOverlays[i] = GetOrCreateHint(objectName);
+
+            if (rt.parent != board.gridRoot)
+                rt.SetParent(board.gridRoot, false);
+
+            if (rt.name != objectName)
+                rt.name = objectName;
+
+            var img = rt.GetComponent<Image>();
+            if (img)
+            {
+                img.sprite = OnePx();
+                img.type = Image.Type.Simple;
+                img.raycastTarget = false;
+                img.color = hintColor;
+            }
+
+            rt.sizeDelta = cellSize;
+            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.localScale = Vector3.one;
+            rt.anchoredPosition = board.CellToAnchoredPos(desiredCells[i]);
+            rt.gameObject.SetActive(true);
+            rt.SetAsLastSibling();
+
+            hintCells[i] = desiredCells[i];
+        }
+    }
+
+    RectTransform GetOrCreateHint(string objectName)
+    {
+        RectTransform rt = null;
+        while (hintPool.Count > 0 && !rt)
+        {
+            int last = hintPool.Count - 1;
+            rt = hintPool[last];
+            hintPool.RemoveAt(last);
+        }
+
+        if (rt)
+            return rt;
+
+        var img = new GameObject(objectName, typeof(Image)).GetComponent<Image>();
+        img.sprite = OnePx();
+        img.type = Image.Type.Simple;
+        img.raycastTarget = false;
+        img.color = hintColor;
+        return img.rectTransform;
+    }
+
+    void ReleaseHintAt(int index)
+    {
+        var rt = hintOverlays[index];
+        hintOverlays.RemoveAt(index);
+        if (index < hintCells.Count)
+            hintCells.RemoveAt(index);
+
+        if (!rt)
+            return;
+
+        rt.gameObject.SetActive(false);
+        hintPool.Add(rt);
+    }
+
+    void DestroyHints(List<RectTransform> hints)
+    {
+        for (int i = hints.Count - 1; i >= 0; i--)
+            if (hints[i])
+                Destroy(hints[i].gameObject);
+
+        hints.Clear();
     }
 
     public void SetFallInterval(float seconds, bool resetAccumulator)

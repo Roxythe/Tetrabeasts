@@ -63,8 +63,7 @@ public static class MonsterSkinStore
         if (IsEliteSkin(md, idx)) return;
         if (idx <= 0 || !IsSkinAvailable(md, idx)) return;
         PlayerPrefs.SetInt(UnlockKey(md, idx), 1);
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
     }
 
     public static bool UnlockEliteForSuccessfulRun(MonsterData md)
@@ -84,8 +83,7 @@ public static class MonsterSkinStore
                 PlayerProgress.I.AddLifetimeInt(completionKey, 1);
         }
 
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
         return !alreadyUnlocked;
     }
 
@@ -116,8 +114,7 @@ public static class MonsterSkinStore
 
         PlayerPrefs.SetInt(SelKey(md), idx);
         PlayerPrefs.SetInt(LastValidKey(md), idx);
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
     }
 
     // Safety: if selected is locked, fallback to last valid, then default (0)

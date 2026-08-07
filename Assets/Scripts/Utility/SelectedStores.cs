@@ -14,8 +14,7 @@ public static class SelectedCharacterStore
     {
         Current = data;
         PlayerPrefs.SetString(Key, data ? data.displayName : "");
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
     }
 
     public static string LoadSavedName()
@@ -57,8 +56,7 @@ public static class SelectedMonstersStore
                 if (m) names.Add(m.monsterName);
 
         PlayerPrefs.SetString(Key, string.Join(",", names));
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
     }
 
     public static List<string> LoadSavedNames()
@@ -123,8 +121,7 @@ public static class SettingsStore
     public static void SaveCursorScale(float scale)
     {
         PlayerPrefs.SetFloat(KeyCursor, scale);
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
         CursorScaleChanged?.Invoke(scale);
     }
 
@@ -138,8 +135,7 @@ public static class SettingsStore
         PlayerPrefs.SetFloat(KeyMaster, master);
         PlayerPrefs.SetFloat(KeyMusic, music);
         PlayerPrefs.SetFloat(KeySFX, sfx);
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
         VolumesChanged?.Invoke(master, music, sfx);
     }
 
@@ -159,8 +155,7 @@ public static class SettingsStore
     public static void SaveCombatLogEnabled(bool enabled)
     {
         PlayerPrefs.SetInt(KeyCombatLog, enabled ? 1 : 0);
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
     }
 
     public const bool DefaultSkipIntro = false;
@@ -171,8 +166,7 @@ public static class SettingsStore
     public static void SaveSkipIntroEnabled(bool enabled)
     {
         PlayerPrefs.SetInt(KeySkipIntro, enabled ? 1 : 0);
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
     }
 }
 
@@ -225,8 +219,7 @@ public static class CommanderBorderFrameStore
             return;
 
         PlayerPrefs.SetInt(GetActiveKey(character.name), active ? 1 : 0);
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
     }
 
     public static bool ToggleActive(PlayerCharacterData character)
@@ -243,8 +236,7 @@ public static class CommanderBorderFrameStore
 
         PlayerPrefs.SetInt(GetUnlockKey(character.name), 1);
         PlayerPrefs.SetInt(GetActiveKey(character.name), 1);
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
         return true;
     }
 

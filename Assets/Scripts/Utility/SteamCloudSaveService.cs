@@ -25,11 +25,19 @@ public sealed class SteamCloudSaveService : MonoBehaviour
     [SerializeField] bool syncOnStart = true;
     [SerializeField] bool uploadOnChanges = true;
     [SerializeField, Min(0.25f)] float uploadDebounceSeconds = 2f;
+    [SerializeField] bool deferQueuedUploadsDuringGameplay = true;
     [SerializeField] bool logCloudStatus = true;
 
     Coroutine uploadCoroutine;
+    Coroutine prewarmAssetNameCacheCoroutine;
     bool uploadQueued;
     bool restoreAttempted;
+    GameController cachedGameController;
+    static readonly List<(string assetName, string displayName)> MonsterAssetNameCache = new();
+    static readonly List<string> CharacterAssetNameCache = new();
+    static readonly List<string> RunModifierAssetNameCache = new();
+    static readonly List<string> LevelModifierAssetNameCache = new();
+    static bool assetNameCachesReady;
 
     public string LastStatus { get; private set; } = "Steam Cloud is not initialized.";
 
@@ -97,6 +105,11 @@ public sealed class SteamCloudSaveService : MonoBehaviour
     {
         if (syncOnStart)
             TryRestoreFromCloud();
+
+#if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
+        if (prewarmAssetNameCacheCoroutine == null)
+            prewarmAssetNameCacheCoroutine = StartCoroutine(PrewarmAssetNameCaches());
+#endif
     }
 
     void OnApplicationPause(bool pause)
@@ -127,10 +140,43 @@ public sealed class SteamCloudSaveService : MonoBehaviour
         {
             uploadQueued = false;
             yield return new WaitForSecondsRealtime(uploadDebounceSeconds);
+            yield return WaitForSafeQueuedUploadMoment();
             TryUploadSnapshot();
         }
 
         uploadCoroutine = null;
+    }
+
+    IEnumerator WaitForSafeQueuedUploadMoment()
+    {
+        if (!deferQueuedUploadsDuringGameplay)
+            yield break;
+
+        while (ShouldDeferQueuedUpload())
+            yield return null;
+    }
+
+    bool ShouldDeferQueuedUpload()
+    {
+        if (LoadingScreen.IsVisible)
+            return true;
+
+        if (!cachedGameController)
+            cachedGameController = FindFirstObjectByType<GameController>(FindObjectsInactive.Exclude);
+
+        return cachedGameController && cachedGameController.IsRoundActive;
+    }
+
+    IEnumerator PrewarmAssetNameCaches()
+    {
+        yield return null;
+        yield return null;
+
+        while (LoadingScreen.IsVisible)
+            yield return null;
+
+        EnsureAssetNameCaches();
+        prewarmAssetNameCacheCoroutine = null;
     }
 
     public bool TryRestoreFromCloud()
@@ -556,6 +602,38 @@ public sealed class SteamCloudSaveService : MonoBehaviour
 
     static IEnumerable<(string assetName, string displayName)> GetMonsterAssetNames()
     {
+        EnsureAssetNameCaches();
+        return MonsterAssetNameCache;
+    }
+
+    static IEnumerable<string> GetCharacterAssetNames()
+    {
+        EnsureAssetNameCaches();
+        return CharacterAssetNameCache;
+    }
+
+    static IEnumerable<string> GetRunModifierAssetNames()
+    {
+        EnsureAssetNameCaches();
+        return RunModifierAssetNameCache;
+    }
+
+    static IEnumerable<string> GetLevelModifierAssetNames()
+    {
+        EnsureAssetNameCaches();
+        return LevelModifierAssetNameCache;
+    }
+
+    static void EnsureAssetNameCaches()
+    {
+        if (assetNameCachesReady)
+            return;
+
+        MonsterAssetNameCache.Clear();
+        CharacterAssetNameCache.Clear();
+        RunModifierAssetNameCache.Clear();
+        LevelModifierAssetNameCache.Clear();
+
         var seen = new HashSet<string>();
         foreach (var monster in FindAssets<MonsterData>())
         {
@@ -563,38 +641,31 @@ public sealed class SteamCloudSaveService : MonoBehaviour
                 continue;
 
             if (seen.Add(monster.name))
-                yield return (monster.name, string.IsNullOrWhiteSpace(monster.monsterName) ? monster.name : monster.monsterName);
+                MonsterAssetNameCache.Add((monster.name, string.IsNullOrWhiteSpace(monster.monsterName) ? monster.name : monster.monsterName));
         }
-    }
 
-    static IEnumerable<string> GetCharacterAssetNames()
-    {
-        var seen = new HashSet<string>();
+        seen.Clear();
         foreach (var character in FindAssets<PlayerCharacterData>())
         {
             if (character && !string.IsNullOrWhiteSpace(character.name) && seen.Add(character.name))
-                yield return character.name;
+                CharacterAssetNameCache.Add(character.name);
         }
-    }
 
-    static IEnumerable<string> GetRunModifierAssetNames()
-    {
-        var seen = new HashSet<string>();
+        seen.Clear();
         foreach (var modifier in FindAssets<RunModifierSO>())
         {
             if (modifier && !string.IsNullOrWhiteSpace(modifier.name) && seen.Add(modifier.name))
-                yield return modifier.name;
+                RunModifierAssetNameCache.Add(modifier.name);
         }
-    }
 
-    static IEnumerable<string> GetLevelModifierAssetNames()
-    {
-        var seen = new HashSet<string>();
+        seen.Clear();
         foreach (var modifier in FindAssets<LevelModifierSO>())
         {
             if (modifier && !string.IsNullOrWhiteSpace(modifier.name) && seen.Add(modifier.name))
-                yield return modifier.name;
+                LevelModifierAssetNameCache.Add(modifier.name);
         }
+
+        assetNameCachesReady = true;
     }
 
     static IEnumerable<T> FindAssets<T>() where T : UnityEngine.Object

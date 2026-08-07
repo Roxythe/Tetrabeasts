@@ -476,7 +476,7 @@ public class ShopPanelUI : MonoBehaviour
 
         s_sessionLastPromptTextIndex[prefsKey] = lastPickedIndex;
         PlayerPrefs.SetInt(GetLastPromptTextPrefsKey(prefsKey), lastPickedIndex);
-        PlayerPrefs.Save();
+        PlayerPrefsSaveScheduler.QueueSave(queueCloudUpload: false);
     }
 
     static string GetLastPromptTextPrefsKey(string prefsKey)

@@ -54,7 +54,7 @@ public sealed class LoadingScreen : MonoBehaviour
     static void Bootstrap()
     {
         if (Application.isPlaying)
-            Ensure();
+            Ensure()?.PrewarmInternal();
     }
 
     public static LoadingScreen Ensure()
@@ -93,6 +93,11 @@ public sealed class LoadingScreen : MonoBehaviour
             return;
 
         loadingScreen.HideAfterSettled();
+    }
+
+    public static void Prewarm()
+    {
+        Ensure()?.PrewarmInternal();
     }
 
     public static IEnumerator WaitUntilMinimumVisible()
@@ -171,11 +176,18 @@ public sealed class LoadingScreen : MonoBehaviour
     IEnumerator LoadSceneRoutine(string sceneName)
     {
         ShowInternal(restoreNormalTimeScaleOnHide: true);
+        Canvas.ForceUpdateCanvases();
+        yield return null;
 
         AsyncOperation operation = null;
+        ThreadPriority previousBackgroundPriority = Application.backgroundLoadingPriority;
+        Application.backgroundLoadingPriority = ThreadPriority.BelowNormal;
+
         try
         {
             operation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+            if (operation != null)
+                operation.allowSceneActivation = false;
         }
         catch (Exception e)
         {
@@ -184,18 +196,35 @@ public sealed class LoadingScreen : MonoBehaviour
 
         if (operation == null)
         {
+            Application.backgroundLoadingPriority = previousBackgroundPriority;
             _sceneLoadCoroutine = null;
             HideAfterSettled();
             yield break;
         }
 
+        while (operation.progress < 0.9f)
+            yield return null;
+
+        yield return WaitForMinimumVisible();
+
+        operation.allowSceneActivation = true;
+
         while (!operation.isDone)
             yield return null;
 
+        Application.backgroundLoadingPriority = previousBackgroundPriority;
         yield return WaitForSceneSettle();
 
         _sceneLoadCoroutine = null;
         HideInternal();
+    }
+
+    void PrewarmInternal()
+    {
+        _ = Settings;
+        EnsureCanvas();
+        CacheLoadingTexts();
+        RefreshVignetteGraphic();
     }
 
     void ShowInternal(bool restoreNormalTimeScaleOnHide = false)

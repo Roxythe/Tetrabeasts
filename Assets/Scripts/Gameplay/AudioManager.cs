@@ -188,7 +188,7 @@ public class AudioManager : MonoBehaviour
         if (!PlayerPrefs.HasKey(K_Master)) PlayerPrefs.SetFloat(K_Master, 0.5f);
         if (!PlayerPrefs.HasKey(K_Music)) PlayerPrefs.SetFloat(K_Music, 1.0f);
         if (!PlayerPrefs.HasKey(K_SFX)) PlayerPrefs.SetFloat(K_SFX, 1.0f);
-        PlayerPrefs.Save();
+        PlayerPrefsSaveScheduler.QueueSave(queueCloudUpload: false);
 
         // Load volumes
         masterVolume = PlayerPrefs.GetFloat(K_Master, 0.5f);
@@ -883,8 +883,7 @@ public class AudioManager : MonoBehaviour
     {
         musicMode = mode;
         PlayerPrefs.SetInt(K_MusicMode, (int)musicMode);
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
 
         if (AudioListener.pause)
         {

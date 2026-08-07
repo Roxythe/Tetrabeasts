@@ -10,8 +10,7 @@ public static class CurrencyStore
         set
         {
             PlayerPrefs.SetInt(KEY, Mathf.Max(0, value));
-            PlayerPrefs.Save();
-            SteamCloudSaveService.QueueUpload();
+            PlayerPrefsSaveScheduler.QueueSave();
         }
     }
 

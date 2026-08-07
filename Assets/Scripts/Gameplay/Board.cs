@@ -92,6 +92,16 @@ public class Board : MonoBehaviour
     readonly Dictionary<Vector2Int, float> healTimers = new();
     readonly Dictionary<Vector2Int, float> attackPortraitIdleTimers = new();
     readonly Dictionary<int, float> attackPiecePortraitIdleTimers = new();
+    readonly List<RectTransform> boardTilePool = new();
+    readonly HashSet<RectTransform> pooledBoardTiles = new();
+    readonly Dictionary<string, List<Image>> overlayImagePools = new();
+    readonly HashSet<Image> pooledOverlayImages = new();
+    readonly List<Vector2Int> healTimerKeysScratch = new();
+    readonly List<Vector2Int> attackPortraitStaleCellsScratch = new();
+    readonly HashSet<int> attackPortraitLiveGroupsScratch = new();
+    readonly List<int> attackPortraitStaleGroupsScratch = new();
+    readonly Dictionary<int, List<Vector2Int>> attackPortraitCellsByGroupScratch = new();
+    readonly List<int> attackPortraitEmptyGroupsScratch = new();
     readonly HashSet<RectTransform> cleanOrphanLiveScratch = new();
     int nextPieceGroupId = 1;
 
@@ -260,6 +270,7 @@ public class Board : MonoBehaviour
     }
 
     readonly Dictionary<Vector2Int, FloorEffectState> floorEffects = new();
+    readonly List<Vector2Int> floorEffectKeysScratch = new();
 
     // visuals
     readonly Dictionary<Vector2Int, Image> poisonBorders = new();
@@ -629,8 +640,11 @@ public class Board : MonoBehaviour
         float healMult = (_gc != null) ? _gc.healPowerMult : 1f;
         int rangeAdd = (_gc != null) ? _gc.healRangeAdd : 0;
 
-        var toKeys = new List<Vector2Int>(healTimers.Keys);
-        foreach (var k in toKeys)
+        healTimerKeysScratch.Clear();
+        foreach (var key in healTimers.Keys)
+            healTimerKeysScratch.Add(key);
+
+        foreach (var k in healTimerKeysScratch)
         {
             if (!monsters.TryGetValue(k, out var inst) || inst.data == null)
             { healTimers.Remove(k); continue; }
@@ -732,16 +746,15 @@ public class Board : MonoBehaviour
 
     RectTransform InstantiateTileUIBase(Color color, Sprite backgroundImage)
     {
-        // Root rect (1 tile)
-        var rt = new GameObject($"Tile_{GetInstanceID()}",
-            typeof(RectTransform), typeof(CanvasRenderer),
-            typeof(UnityEngine.UI.Image), typeof(BoardOwned))
-            .GetComponent<RectTransform>();
+        var rt = GetOrCreateBoardTile();
 
         rt.SetParent(gridRoot, false);
+        rt.gameObject.SetActive(true);
+        rt.name = $"Tile_{GetInstanceID()}";
         rt.sizeDelta = cellSize;
         rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
         rt.localScale = Vector3.one;
+        rt.localRotation = Quaternion.identity;
 
         var baseImg = rt.GetComponent<UnityEngine.UI.Image>();
         baseImg.sprite = null;
@@ -751,23 +764,26 @@ public class Board : MonoBehaviour
         SetInlineBorderColor(rt, TilesDamageImmune ? immuneBorderColor : normalBorderColor);
 
         // Back (gray)
-        var back = new GameObject("BackFill", typeof(UnityEngine.UI.Image)).GetComponent<UnityEngine.UI.Image>();
-        back.transform.SetParent(rt, false);
+        var back = GetOrCreateTileChildImage(rt, "BackFill");
+        back.gameObject.SetActive(true);
         var backRT = back.rectTransform;
         backRT.anchorMin = backRT.anchorMax = new Vector2(0.5f, 0.5f);
         backRT.sizeDelta = rt.sizeDelta;   // Fill the whole tile
         backRT.anchoredPosition = Vector2.zero;
+        backRT.localScale = Vector3.one;
         back.sprite = OnePx(); // Simple 1x1 white pixel
         back.type = UnityEngine.UI.Image.Type.Simple;
         back.color = new Color(0.6f, 0.6f, 0.6f, 1f);
+        back.raycastTarget = false;
 
         // HealthFill
-        var fill = new GameObject("HealthFill", typeof(UnityEngine.UI.Image)).GetComponent<UnityEngine.UI.Image>();
-        fill.transform.SetParent(rt, false);
+        var fill = GetOrCreateTileChildImage(rt, "HealthFill");
+        fill.gameObject.SetActive(true);
         var frt = fill.rectTransform;
         frt.anchorMin = frt.anchorMax = new Vector2(0.5f, 0.5f);
         frt.sizeDelta = rt.sizeDelta;      // Fill the whole tile
         frt.anchoredPosition = Vector2.zero;
+        frt.localScale = Vector3.one;
         fill.sprite = backgroundImage ? backgroundImage : OnePx();
         fill.preserveAspect = false;
         fill.type = UnityEngine.UI.Image.Type.Filled;
@@ -775,7 +791,11 @@ public class Board : MonoBehaviour
         fill.fillOrigin = (int)UnityEngine.UI.Image.OriginVertical.Bottom;
         fill.fillAmount = 1f;
         fill.color = color;
+        fill.raycastTarget = false;
         ConfigureTetrominoBackgroundPulse(fill, color, backgroundImage);
+
+        HideTileChild(rt, "MonsterPortrait");
+        ResetDeadOverlay(rt, frt.sizeDelta);
 
         ApplySharedEdges(rt, false, false, false, false, DEFAULT_BORDER);
         SetInlineBorderColor(rt, TilesDamageImmune ? immuneBorderColor : normalBorderColor);
@@ -840,14 +860,13 @@ public class Board : MonoBehaviour
         var rt = InstantiateTileUIBase(color, backgroundImage);
         if (portrait)
         {
-            var go = new GameObject("MonsterPortrait", typeof(UnityEngine.UI.Image));
-            var img = go.GetComponent<UnityEngine.UI.Image>();
+            var img = GetOrCreateTileChildImage(rt, "MonsterPortrait");
+            img.gameObject.SetActive(true);
             img.sprite = portrait;
             img.preserveAspect = true;
             img.raycastTarget = false;
 
             var prt = img.rectTransform;
-            prt.SetParent(rt, false);
             prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
 
             // Slight inset so it sits inside the inline border
@@ -862,27 +881,157 @@ public class Board : MonoBehaviour
             // Add a DeadOverlay layer 
             var fillRT = (RectTransform)rt.Find("HealthFill");
             if (fillRT)
-            {
-                var deadGO = new GameObject("DeadOverlay", typeof(UnityEngine.UI.Image));
-                var deadImg = deadGO.GetComponent<UnityEngine.UI.Image>();
-                deadImg.raycastTarget = false;
-                deadImg.sprite = defaultDeadOverlaySprite; 
-                deadImg.color = deadOverlayTint; 
-                deadImg.preserveAspect = deadOverlayPreserveAspect;
-                deadImg.type = UnityEngine.UI.Image.Type.Simple; 
-
-                var drt = deadImg.rectTransform;
-                drt.SetParent(rt, false);
-                drt.anchorMin = drt.anchorMax = new Vector2(0.5f, 0.5f);
-                drt.sizeDelta = fillRT.sizeDelta;     // Cover the inner area
-                drt.anchoredPosition = Vector2.zero;
-
-                deadGO.SetActive(false);              // Hidden until HP == 0
-                drt.SetAsLastSibling();               // Above portrait/fill
-            }
+                ResetDeadOverlay(rt, fillRT.sizeDelta);
         }
 
         return rt;
+    }
+
+    public void ReleaseTransientTileUI(RectTransform rt)
+    {
+        ReleaseBoardTile(rt);
+    }
+
+    RectTransform GetOrCreateBoardTile()
+    {
+        RectTransform rt = null;
+        while (boardTilePool.Count > 0 && !rt)
+        {
+            int last = boardTilePool.Count - 1;
+            rt = boardTilePool[last];
+            boardTilePool.RemoveAt(last);
+            pooledBoardTiles.Remove(rt);
+        }
+
+        if (rt)
+            return rt;
+
+        rt = new GameObject($"Tile_{GetInstanceID()}",
+            typeof(RectTransform), typeof(CanvasRenderer),
+            typeof(UnityEngine.UI.Image), typeof(BoardOwned))
+            .GetComponent<RectTransform>();
+
+        return rt;
+    }
+
+    Image GetOrCreateTileChildImage(RectTransform parent, string childName)
+    {
+        var child = parent.Find(childName);
+        if (child && child.TryGetComponent(out Image existing))
+            return existing;
+
+        var go = new GameObject(childName, typeof(Image));
+        go.transform.SetParent(parent, false);
+
+        var img = go.GetComponent<Image>();
+        img.raycastTarget = false;
+        return img;
+    }
+
+    void HideTileChild(RectTransform parent, string childName)
+    {
+        var child = parent ? parent.Find(childName) : null;
+        if (!child)
+            return;
+
+        if (child.TryGetComponent(out Image img))
+            img.sprite = null;
+
+        child.gameObject.SetActive(false);
+    }
+
+    Image GetOrCreateOverlayImage(string objectName, RectTransform parent)
+    {
+        if (!overlayImagePools.TryGetValue(objectName, out var pool))
+        {
+            pool = new List<Image>();
+            overlayImagePools[objectName] = pool;
+        }
+
+        Image img = null;
+        while (pool.Count > 0 && !img)
+        {
+            int last = pool.Count - 1;
+            img = pool[last];
+            pool.RemoveAt(last);
+            pooledOverlayImages.Remove(img);
+        }
+
+        if (!img)
+        {
+            img = new GameObject(objectName, typeof(Image)).GetComponent<Image>();
+            img.raycastTarget = false;
+        }
+
+        img.name = objectName;
+        img.enabled = true;
+        img.raycastTarget = false;
+        img.sprite = null;
+        img.type = Image.Type.Simple;
+        img.preserveAspect = false;
+        img.color = Color.white;
+        img.transform.SetParent(parent, false);
+        img.gameObject.SetActive(true);
+
+        var rt = img.rectTransform;
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.localScale = Vector3.one;
+        rt.anchoredPosition = Vector2.zero;
+        rt.SetAsLastSibling();
+
+        return img;
+    }
+
+    void ReleaseOverlayImage(Image img)
+    {
+        if (!img || pooledOverlayImages.Contains(img))
+            return;
+
+        string objectName = img.name;
+        img.sprite = null;
+        img.enabled = true;
+        img.color = Color.white;
+        img.gameObject.SetActive(false);
+
+        if (!overlayImagePools.TryGetValue(objectName, out var pool))
+        {
+            pool = new List<Image>();
+            overlayImagePools[objectName] = pool;
+        }
+
+        pooledOverlayImages.Add(img);
+        pool.Add(img);
+    }
+
+    void ResetDeadOverlay(RectTransform parent, Vector2 size)
+    {
+        var deadImg = GetOrCreateTileChildImage(parent, "DeadOverlay");
+        deadImg.raycastTarget = false;
+        deadImg.sprite = defaultDeadOverlaySprite;
+        deadImg.color = deadOverlayTint;
+        deadImg.preserveAspect = deadOverlayPreserveAspect;
+        deadImg.type = Image.Type.Simple;
+
+        var drt = deadImg.rectTransform;
+        drt.anchorMin = drt.anchorMax = new Vector2(0.5f, 0.5f);
+        drt.sizeDelta = size;
+        drt.anchoredPosition = Vector2.zero;
+        drt.localScale = Vector3.one;
+        drt.gameObject.SetActive(false);
+        drt.SetAsLastSibling();
+    }
+
+    void ReleaseBoardTile(RectTransform rt)
+    {
+        if (!rt || pooledBoardTiles.Contains(rt))
+            return;
+
+        rt.gameObject.SetActive(false);
+        rt.SetParent(gridRoot, false);
+        HideTileChild(rt, "MonsterPortrait");
+        HideTileChild(rt, "DeadOverlay");
+        pooledBoardTiles.Add(rt);
+        boardTilePool.Add(rt);
     }
 
     void UpdateTileHPVisual(Vector2Int cell, float current, float max)
@@ -1102,10 +1251,13 @@ public class Board : MonoBehaviour
 
     void PruneAttackPortraitIdleTimers()
     {
-        var staleCells = new List<Vector2Int>(attackPortraitIdleTimers.Keys);
-        for (int i = 0; i < staleCells.Count; i++)
+        attackPortraitStaleCellsScratch.Clear();
+        foreach (var key in attackPortraitIdleTimers.Keys)
+            attackPortraitStaleCellsScratch.Add(key);
+
+        for (int i = 0; i < attackPortraitStaleCellsScratch.Count; i++)
         {
-            var cell = staleCells[i];
+            var cell = attackPortraitStaleCellsScratch[i];
             if (!IsAttackPortraitIdleEligible(cell, out _))
                 attackPortraitIdleTimers.Remove(cell);
         }
@@ -1113,18 +1265,21 @@ public class Board : MonoBehaviour
         if (attackPiecePortraitIdleTimers.Count == 0)
             return;
 
-        var liveGroups = new HashSet<int>();
+        attackPortraitLiveGroupsScratch.Clear();
         foreach (var pair in monsters)
         {
             if (IsAttackPortraitIdleEligible(pair.Key, out _, out var inst) && inst.pieceGroupId > 0)
-                liveGroups.Add(inst.pieceGroupId);
+                attackPortraitLiveGroupsScratch.Add(inst.pieceGroupId);
         }
 
-        var staleGroups = new List<int>(attackPiecePortraitIdleTimers.Keys);
-        for (int i = 0; i < staleGroups.Count; i++)
+        attackPortraitStaleGroupsScratch.Clear();
+        foreach (var key in attackPiecePortraitIdleTimers.Keys)
+            attackPortraitStaleGroupsScratch.Add(key);
+
+        for (int i = 0; i < attackPortraitStaleGroupsScratch.Count; i++)
         {
-            if (!liveGroups.Contains(staleGroups[i]))
-                attackPiecePortraitIdleTimers.Remove(staleGroups[i]);
+            if (!attackPortraitLiveGroupsScratch.Contains(attackPortraitStaleGroupsScratch[i]))
+                attackPiecePortraitIdleTimers.Remove(attackPortraitStaleGroupsScratch[i]);
         }
     }
 
@@ -1142,7 +1297,12 @@ public class Board : MonoBehaviour
 
     void TickSyncedAttackPortraitIdleSwaps()
     {
-        var cellsByGroup = new Dictionary<int, List<Vector2Int>>();
+        attackPortraitEmptyGroupsScratch.Clear();
+        foreach (var group in attackPortraitCellsByGroupScratch)
+        {
+            group.Value.Clear();
+            attackPortraitEmptyGroupsScratch.Add(group.Key);
+        }
 
         foreach (var pair in monsters)
         {
@@ -1156,16 +1316,23 @@ public class Board : MonoBehaviour
                 continue;
             }
 
-            if (!cellsByGroup.TryGetValue(inst.pieceGroupId, out var groupCells))
+            if (!attackPortraitCellsByGroupScratch.TryGetValue(inst.pieceGroupId, out var groupCells))
             {
                 groupCells = new List<Vector2Int>();
-                cellsByGroup[inst.pieceGroupId] = groupCells;
+                attackPortraitCellsByGroupScratch[inst.pieceGroupId] = groupCells;
             }
 
             groupCells.Add(cell);
         }
 
-        foreach (var group in cellsByGroup)
+        for (int i = 0; i < attackPortraitEmptyGroupsScratch.Count; i++)
+        {
+            int groupId = attackPortraitEmptyGroupsScratch[i];
+            if (attackPortraitCellsByGroupScratch.TryGetValue(groupId, out var groupCells) && groupCells.Count == 0)
+                attackPortraitCellsByGroupScratch.Remove(groupId);
+        }
+
+        foreach (var group in attackPortraitCellsByGroupScratch)
         {
             if (!attackPiecePortraitIdleTimers.TryGetValue(group.Key, out float timer))
                 timer = RandomAttackPortraitIdleSeconds();
@@ -1260,15 +1427,13 @@ public class Board : MonoBehaviour
     {
         if (!placed.TryGetValue(cell, out var rt)) return;
 
-        var go = new GameObject("HealVFX", typeof(Image));
-        var img = go.GetComponent<Image>();
+        var img = GetOrCreateOverlayImage("HealVFX", rt);
         img.sprite = sprite;
         img.preserveAspect = true;
         img.raycastTarget = false;
         img.color = new Color(1f, 1f, 1f, 0.95f);
 
         var vfx = img.rectTransform;
-        vfx.SetParent(rt, false);
         vfx.anchorMin = vfx.anchorMax = new Vector2(0.5f, 0.5f);
         vfx.sizeDelta = rt.sizeDelta * 0.9f;
 
@@ -1286,7 +1451,7 @@ public class Board : MonoBehaviour
             img.color = c;
             yield return null;
         }
-        if (img) Destroy(img.gameObject);
+        ReleaseOverlayImage(img);
     }
 
     public bool DamageTile(Vector2Int cell, float amount, DamageSource src = DamageSource.Generic,
@@ -1427,6 +1592,9 @@ public class Board : MonoBehaviour
         StopAllPortraitAltSwaps(restoreNormal: false);
         ClearRoundTransientEffects();
 
+        foreach (var tile in placed.Values)
+            ReleaseBoardTile(tile);
+
         placed.Clear();
         monsters.Clear();
         obstacles.Clear();
@@ -1442,7 +1610,13 @@ public class Board : MonoBehaviour
         {
             var owned = gridRoot.GetComponentsInChildren<BoardOwned>(true);
             for (int i = owned.Length - 1; i >= 0; i--)
+            {
+                var rt = owned[i].transform as RectTransform;
+                if (rt && pooledBoardTiles.Contains(rt))
+                    continue;
+
                 Destroy(owned[i].gameObject);
+            }
         }
 
         // Clear overlays (fire/poison/lightning borders)
@@ -1486,7 +1660,12 @@ public class Board : MonoBehaviour
         for (int i = overlayRoot.childCount - 1; i >= 0; i--)
         {
             Transform child = overlayRoot.GetChild(i);
-            if (child && child.name == childName)
+            if (!child || child.name != childName)
+                continue;
+
+            if (child.TryGetComponent(out Image img))
+                ReleaseOverlayImage(img);
+            else
                 Destroy(child.gameObject);
         }
     }
@@ -1655,7 +1834,7 @@ public class Board : MonoBehaviour
 
                     if (placed.TryGetValue(key, out var rt))
                     {
-                        UnityEngine.Object.Destroy(rt.gameObject);
+                        ReleaseBoardTile(rt);
                         placed.Remove(key);
                         removedCells.Add(key);
                     }
@@ -1825,7 +2004,7 @@ public class Board : MonoBehaviour
 
                     if (placed.TryGetValue(key, out var rt))
                     {
-                        UnityEngine.Object.Destroy(rt.gameObject);
+                        ReleaseBoardTile(rt);
                         placed.Remove(key);
                         removedCells.Add(key);
                     }
@@ -1967,7 +2146,7 @@ public class Board : MonoBehaviour
             }
 
             if (placed.TryGetValue(key, out var rt))
-                Destroy(rt.gameObject);
+                ReleaseBoardTile(rt);
 
             StopPortraitAltSwap(key, restoreNormal: false);
             placed.Remove(key);
@@ -2009,7 +2188,7 @@ public class Board : MonoBehaviour
             }
 
             if (placed.TryGetValue(key, out var rt))
-                Destroy(rt.gameObject);
+                ReleaseBoardTile(rt);
 
             StopPortraitAltSwap(key, restoreNormal: false);
             placed.Remove(key);
@@ -2180,7 +2359,7 @@ public class Board : MonoBehaviour
             if (placed.TryGetValue(key, out var rt))
             {
                 StopPortraitAltSwap(key, restoreNormal: false);
-                Destroy(rt.gameObject);
+                ReleaseBoardTile(rt);
                 placed.Remove(key);
                 removedCells.Add(key);
             }
@@ -2447,7 +2626,7 @@ public class Board : MonoBehaviour
 
         if (slowGravityBoardVfxImage)
         {
-            Destroy(slowGravityBoardVfxImage.gameObject);
+            ReleaseOverlayImage(slowGravityBoardVfxImage);
             slowGravityBoardVfxImage = null;
         }
     }
@@ -2468,7 +2647,13 @@ public class Board : MonoBehaviour
             return;
 
         for (int i = boardVfxRoot.childCount - 1; i >= 0; i--)
-            Destroy(boardVfxRoot.GetChild(i).gameObject);
+        {
+            var child = boardVfxRoot.GetChild(i);
+            if (child && child.TryGetComponent(out Image img))
+                ReleaseOverlayImage(img);
+            else if (child)
+                Destroy(child.gameObject);
+        }
     }
 
     Sprite GetBoardVfxSprite(SpecialType special)
@@ -2512,8 +2697,7 @@ public class Board : MonoBehaviour
         if (img)
             yield return AnimateBoardVfxAlpha(img, maxAlpha, 0f, boardVfxFadeOutSeconds);
 
-        if (img)
-            Destroy(img.gameObject);
+        ReleaseOverlayImage(img);
 
         boardVfxImages.Remove(special);
         boardVfxRoutines.Remove(special);
@@ -2541,8 +2725,7 @@ public class Board : MonoBehaviour
         if (img)
             yield return AnimateBoardVfxAlpha(img, maxAlpha, 0f, boardVfxFadeOutSeconds);
 
-        if (img)
-            Destroy(img.gameObject);
+        ReleaseOverlayImage(img);
 
         boardVfxImages.Remove(special);
         boardVfxRoutines.Remove(special);
@@ -2585,8 +2768,7 @@ public class Board : MonoBehaviour
             yield return null;
         }
 
-        if (img)
-            Destroy(img.gameObject);
+        ReleaseOverlayImage(img);
 
         if (slowGravityBoardVfxImage == img)
             slowGravityBoardVfxImage = null;
@@ -2604,8 +2786,7 @@ public class Board : MonoBehaviour
         if (!boardVfxRoot)
             return null;
 
-        var img = new GameObject(objectName, typeof(Image)).GetComponent<Image>();
-        img.transform.SetParent(boardVfxRoot, false);
+        var img = GetOrCreateOverlayImage(objectName, boardVfxRoot);
         img.sprite = sprite;
         img.preserveAspect = true;
         img.raycastTarget = false;
@@ -2722,8 +2903,7 @@ public class Board : MonoBehaviour
         if (!boardVfxImages.TryGetValue(special, out var img))
             return;
 
-        if (img)
-            Destroy(img.gameObject);
+        ReleaseOverlayImage(img);
 
         boardVfxImages.Remove(special);
     }
@@ -2815,12 +2995,11 @@ public class Board : MonoBehaviour
         {
             if (onlyOccupied && !placed.ContainsKey(c)) continue;
 
-            var img = new GameObject("SpecialFlash", typeof(UnityEngine.UI.Image)).GetComponent<UnityEngine.UI.Image>();
+            var img = GetOrCreateOverlayImage("SpecialFlash", gridRoot);
             img.sprite = sprite;
             img.preserveAspect = true;
             img.color = new Color(1, 1, 1, 0.9f);
             var rt = img.rectTransform;
-            rt.SetParent(gridRoot, false);
             rt.sizeDelta = GetCellSize();
             rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
             rt.anchoredPosition = CellToAnchoredPos(c);
@@ -2830,7 +3009,7 @@ public class Board : MonoBehaviour
         yield return new WaitForSeconds(0.15f);
 
         for (int i = 0; i < made.Count; i++)
-            if (made[i]) Destroy(made[i].gameObject);
+            ReleaseOverlayImage(made[i]);
     }
 
     // Handle resizing at runtime
@@ -2922,8 +3101,11 @@ public class Board : MonoBehaviour
             if (!t.name.StartsWith("Tile_")) // Grid line exception
                 continue;
 
+            if (pooledBoardTiles.Contains(t))
+                continue;
+
             if (!cleanOrphanLiveScratch.Contains(t))
-                Destroy(t.gameObject);
+                ReleaseBoardTile(t);
         }
 
         cleanOrphanLiveScratch.Clear();
@@ -2970,7 +3152,7 @@ public class Board : MonoBehaviour
         }
 
         if (placed.TryGetValue(cell, out var rt) && rt)
-            Destroy(rt.gameObject);
+            ReleaseBoardTile(rt);
 
         StopPortraitAltSwap(cell, restoreNormal: false);
         placed.Remove(cell);
@@ -3011,13 +3193,12 @@ public class Board : MonoBehaviour
     {
         if (!InBounds(cell)) yield break;
 
-        var img = new GameObject("HealVFX", typeof(UnityEngine.UI.Image)).GetComponent<UnityEngine.UI.Image>();
+        var img = GetOrCreateOverlayImage("HealVFX", gridRoot);
         img.sprite = sprite;
         img.preserveAspect = true;
         img.raycastTarget = false;
 
         var rt = img.rectTransform;
-        rt.SetParent(gridRoot, false);
         rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
         rt.sizeDelta = GetCellSize() - new Vector2(6f, 6f);  // Slight inset
         rt.anchoredPosition = CellToAnchoredPos(cell);
@@ -3032,7 +3213,7 @@ public class Board : MonoBehaviour
             img.color = new Color(1f, 1f, 1f, 0.35f + 0.65f * a);
             yield return null;
         }
-        if (img) Destroy(img.gameObject);
+        ReleaseOverlayImage(img);
     }
 
     // ================= Public API for ObstacleManager / Piece =================
@@ -3205,10 +3386,7 @@ public class Board : MonoBehaviour
 
         if (!overlayRoot) overlayRoot = gridRoot;
 
-        var go = new GameObject("CellVFX", typeof(Image));
-        go.transform.SetParent(overlayRoot, false);
-
-        var img = go.GetComponent<Image>();
+        var img = GetOrCreateOverlayImage("CellVFX", overlayRoot);
         img.sprite = sprite;
         img.preserveAspect = true;
         img.raycastTarget = false;
@@ -3645,9 +3823,12 @@ public class Board : MonoBehaviour
 
         float now = Time.time;
 
-        // Snapshot keys to allow mutation
-        var keys = new List<Vector2Int>(floorEffects.Keys);
-        foreach (var cell in keys)
+        // Snapshot keys to allow mutation without allocating each frame.
+        floorEffectKeysScratch.Clear();
+        foreach (var key in floorEffects.Keys)
+            floorEffectKeysScratch.Add(key);
+
+        foreach (var cell in floorEffectKeysScratch)
         {
             if (!floorEffects.TryGetValue(cell, out var fx)) continue;
 
@@ -3788,7 +3969,7 @@ public class Board : MonoBehaviour
             type = obs.type;
 
         if (placed.TryGetValue(cell, out var rt) && rt)
-            Destroy(rt.gameObject);
+            ReleaseBoardTile(rt);
 
         StopPortraitAltSwap(cell, restoreNormal: false);
         placed.Remove(cell);
@@ -3978,9 +4159,7 @@ public class Board : MonoBehaviour
 
         if (!overlayRoot) overlayRoot = gridRoot;
 
-        var go = new GameObject("BossWarning");
-        go.transform.SetParent(overlayRoot, false);
-        var img = go.AddComponent<Image>();
+        var img = GetOrCreateOverlayImage("BossWarning", overlayRoot);
         img.sprite = warningSprite;
         img.preserveAspect = true;
         img.raycastTarget = false;
@@ -4014,7 +4193,7 @@ public class Board : MonoBehaviour
             yield return null;
         }
 
-        if (img) Destroy(img.gameObject);
+        ReleaseOverlayImage(img);
     }
 
     IEnumerator FlashTintRoutine(Vector2Int cell, Color tint, float seconds, float toggleInterval)
@@ -4023,10 +4202,7 @@ public class Board : MonoBehaviour
 
         if (!overlayRoot) overlayRoot = gridRoot;
 
-        var go = new GameObject("CellWarningTint", typeof(Image));
-        go.transform.SetParent(overlayRoot, false);
-
-        var img = go.GetComponent<Image>();
+        var img = GetOrCreateOverlayImage("CellWarningTint", overlayRoot);
         img.sprite = OnePx();
         img.type = Image.Type.Simple;
         img.preserveAspect = false;
@@ -4059,7 +4235,7 @@ public class Board : MonoBehaviour
             yield return null;
         }
 
-        if (img) Destroy(img.gameObject);
+        ReleaseOverlayImage(img);
     }
 
     // ================= Floor Tint Underlays =================

@@ -7,6 +7,12 @@ public class NextPreviewUI : MonoBehaviour
     public RectTransform root;
     public Image tilePrefab;
     readonly List<RectTransform> tiles = new();
+    readonly List<RectTransform> tilePool = new();
+    readonly HashSet<Vector2Int> previewCells = new();
+    Board cachedBoard;
+    GameController cachedGameController;
+
+    static readonly string[] EdgeNames = { "Edge_L", "Edge_R", "Edge_T", "Edge_B" };
 
     static Sprite _onePx; // Single-pixel white sprite for edge drawing
 
@@ -78,7 +84,7 @@ public class NextPreviewUI : MonoBehaviour
     void SetEdgeColor(RectTransform rt, Color c)
     {
         EnsureEdges(rt);
-        foreach (var n in new[] { "Edge_L", "Edge_R", "Edge_T", "Edge_B" })
+        foreach (var n in EdgeNames)
         {
             var img = rt.Find(n)?.GetComponent<Image>();
             if (img) img.color = c;
@@ -110,9 +116,7 @@ public class NextPreviewUI : MonoBehaviour
 
         bool isSpecial = data.special != SpecialType.None;
 
-        // Clear old
-        foreach (var t in tiles) if (t) Destroy(t.gameObject);
-        tiles.Clear();
+        ReleaseActiveTiles();
 
         // Calculate bounds
         int minX = int.MaxValue, minY = int.MaxValue, maxX = int.MinValue, maxY = int.MinValue;
@@ -133,13 +137,15 @@ public class NextPreviewUI : MonoBehaviour
         float contentW = w * s, contentH = h * s;
         Vector2 origin = new(-contentW * 0.5f, -contentH * 0.5f);
 
-        var previewSet = new HashSet<Vector2Int>(data.cells);
+        previewCells.Clear();
+        foreach (var cell in data.cells)
+            previewCells.Add(cell);
 
         // Match board outline color when immune
-        var gc = GetComponent<GameController>();
-        var boardCmp = GetComponent<Board>();
+        var gc = cachedGameController ? cachedGameController : (cachedGameController = GetComponent<GameController>());
+        var boardCmp = cachedBoard ? cachedBoard : (cachedBoard = GetComponent<Board>());
         if (!boardCmp)
-            boardCmp = FindFirstObjectByType<Board>();
+            boardCmp = cachedBoard = FindFirstObjectByType<Board>();
 
         Color borderColor = Color.black;
         if (boardCmp)
@@ -149,14 +155,17 @@ public class NextPreviewUI : MonoBehaviour
         {
             var cell = data.cells[i];
 
-            var tileImg = Instantiate(tilePrefab, root);
+            var rt = GetOrCreateTile();
+            var tileImg = rt.GetComponent<Image>();
             tileImg.sprite = null;
             tileImg.raycastTarget = false;
+            tileImg.gameObject.SetActive(true);
 
             var outline = tileImg.GetComponent<Outline>();
             if (outline) Destroy(outline);
 
-            var rt = tileImg.rectTransform;
+            rt.SetParent(root, false);
+            rt.SetAsLastSibling();
             rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
             rt.sizeDelta = tileSize;
             rt.anchoredPosition = new Vector2(
@@ -169,8 +178,7 @@ public class NextPreviewUI : MonoBehaviour
             SetEdgeColor(rt, borderColor);
 
             // Inner fill
-            var fillGO = new GameObject("PreviewFill", typeof(Image));
-            var fill = fillGO.GetComponent<Image>();
+            var fill = GetOrCreateChildImage(rt, "PreviewFill");
             fill.sprite = data.backgroundImage ? data.backgroundImage : OnePx();
             fill.type = Image.Type.Simple;
             fill.preserveAspect = false;
@@ -178,34 +186,36 @@ public class NextPreviewUI : MonoBehaviour
             fill.color = color;
 
             var frt = fill.rectTransform;
-            frt.SetParent(rt, false);
             frt.anchorMin = frt.anchorMax = new Vector2(0.5f, 0.5f);
             frt.sizeDelta = rt.sizeDelta;
             frt.anchoredPosition = Vector2.zero;
+            frt.localScale = Vector3.one;
             frt.SetAsFirstSibling();
             if (boardCmp)
                 boardCmp.ConfigureTetrominoBackgroundPulse(fill, color, data.backgroundImage);
 
             // Shared-edge halving
-            bool Ls = previewSet.Contains(cell + Vector2Int.left);
-            bool Rs = previewSet.Contains(cell + Vector2Int.right);
-            bool Us = previewSet.Contains(cell + Vector2Int.up);
-            bool Ds = previewSet.Contains(cell + Vector2Int.down);
+            bool Ls = previewCells.Contains(cell + Vector2Int.left);
+            bool Rs = previewCells.Contains(cell + Vector2Int.right);
+            bool Us = previewCells.Contains(cell + Vector2Int.up);
+            bool Ds = previewCells.Contains(cell + Vector2Int.down);
 
             float border = Mathf.Max(2f, Mathf.Round(s * 0.08f));
             ApplySharedEdges(rt, Ls, Rs, Us, Ds, border);
 
+            var content = GetOrCreateChildImage(rt, "PreviewContent");
+            content.gameObject.SetActive(false);
+
             // Special icon or monster portrait
             if (isSpecial && data.specialSprite != null)
             {
-                var go = new GameObject("SpecialIcon", typeof(Image));
-                var iconImg = go.GetComponent<Image>();
-                iconImg.sprite = data.specialSprite;
-                iconImg.preserveAspect = true;
-                iconImg.raycastTarget = false;
+                content.gameObject.SetActive(true);
+                content.name = "PreviewContent";
+                content.sprite = data.specialSprite;
+                content.preserveAspect = true;
+                content.raycastTarget = false;
 
-                var prt = iconImg.rectTransform;
-                prt.SetParent(rt, false);
+                var prt = content.rectTransform;
                 prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
                 prt.sizeDelta = frt.sizeDelta - new Vector2(2f, 2f);
                 prt.localScale = Vector3.one * 0.9f;
@@ -213,19 +223,18 @@ public class NextPreviewUI : MonoBehaviour
             }
             else if (monsters != null && i < monsters.Length && monsters[i])
             {
-                var go = new GameObject("MonsterPortrait", typeof(Image));
-                var portraitImg = go.GetComponent<Image>();
+                content.gameObject.SetActive(true);
+                content.name = "PreviewContent";
 
                 // Use selected skin variant 
                 var portrait = GetCurrentMonsterPortrait(monsters[i]);
                 if (!portrait) portrait = monsters[i].portrait; // Fallback
-                portraitImg.sprite = portrait;
+                content.sprite = portrait;
 
-                portraitImg.preserveAspect = true;
-                portraitImg.raycastTarget = false;
+                content.preserveAspect = true;
+                content.raycastTarget = false;
 
-                var prt = portraitImg.rectTransform;
-                prt.SetParent(rt, false);
+                var prt = content.rectTransform;
                 prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.5f);
                 prt.sizeDelta = frt.sizeDelta - new Vector2(2f, 2f);
                 prt.localScale = Vector3.one * 0.9f;
@@ -247,8 +256,84 @@ public class NextPreviewUI : MonoBehaviour
 
     public void ClearPreview()
     {
-        foreach (Transform c in root) Destroy(c.gameObject);
+        ReleaseActiveTiles();
+    }
+
+    RectTransform GetOrCreateTile()
+    {
+        RectTransform rt = null;
+        while (tilePool.Count > 0 && !rt)
+        {
+            int last = tilePool.Count - 1;
+            rt = tilePool[last];
+            tilePool.RemoveAt(last);
+        }
+
+        if (rt)
+            return rt;
+
+        return Instantiate(tilePrefab, root).rectTransform;
+    }
+
+    Image GetOrCreateChildImage(RectTransform rt, string childName)
+    {
+        var child = rt.Find(childName);
+        if (child && child.TryGetComponent(out Image existing))
+        {
+            existing.gameObject.SetActive(true);
+            return existing;
+        }
+
+        var go = new GameObject(childName, typeof(Image));
+        go.transform.SetParent(rt, false);
+
+        var img = go.GetComponent<Image>();
+        img.sprite = OnePx();
+        img.type = Image.Type.Simple;
+        img.raycastTarget = false;
+        return img;
+    }
+
+    void ReleaseActiveTiles()
+    {
+        for (int i = tiles.Count - 1; i >= 0; i--)
+            ReleaseTile(tiles[i]);
+
         tiles.Clear();
+        previewCells.Clear();
+    }
+
+    void ReleaseTile(RectTransform rt)
+    {
+        if (!rt)
+            return;
+
+        var content = rt.Find("PreviewContent");
+        if (content)
+        {
+            var img = content.GetComponent<Image>();
+            if (img) img.sprite = null;
+            content.gameObject.SetActive(false);
+        }
+
+        rt.gameObject.SetActive(false);
+        tilePool.Add(rt);
+    }
+
+    void OnDestroy()
+    {
+        DestroyTiles(tiles);
+        DestroyTiles(tilePool);
+        previewCells.Clear();
+    }
+
+    void DestroyTiles(List<RectTransform> list)
+    {
+        for (int i = list.Count - 1; i >= 0; i--)
+            if (list[i])
+                Destroy(list[i].gameObject);
+
+        list.Clear();
     }
 
     Sprite GetCurrentMonsterPortrait(MonsterData md)

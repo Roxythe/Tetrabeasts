@@ -404,8 +404,7 @@ public static class TetrabeastsLocalization
         if (persist)
         {
             PlayerPrefs.SetString(KeySelectedLanguage, supportedCode);
-            PlayerPrefs.Save();
-            SteamCloudSaveService.QueueUpload();
+            PlayerPrefsSaveScheduler.QueueSave();
             LastSelectionSource = SelectionSource.User;
         }
 

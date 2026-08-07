@@ -550,8 +550,7 @@ public class TitleMenuUI : MonoBehaviour
     {
         // Wipe PlayerPrefs
         PlayerPrefs.DeleteAll();
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
 
         DEV_ClearAchievementProgress(); // Wipe achievement/stat file 
 

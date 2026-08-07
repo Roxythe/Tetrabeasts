@@ -23,15 +23,13 @@ public static class UnlockStore
     {
         if (md == null) return;
         PlayerPrefs.SetInt(MonsterKey(md), 1);
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
     }
 
     public static void Unlock(PlayerCharacterData cd)
     {
         if (cd == null) return;
         PlayerPrefs.SetInt(CharacterKey(cd), 1);
-        PlayerPrefs.Save();
-        SteamCloudSaveService.QueueUpload();
+        PlayerPrefsSaveScheduler.QueueSave();
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -50,6 +51,10 @@ public class PlayerProgress : MonoBehaviour
     }
 
     SaveData _data = new SaveData();
+    [SerializeField, Min(0f)] float saveDebounceSeconds = 0.25f;
+    Coroutine saveCoroutine;
+    bool saveQueued;
+    float lastSaveQueueTime;
 
     public event Action<string> AchievementUnlocked;
     public event Action<string, double> StatChanged;
@@ -101,6 +106,27 @@ public class PlayerProgress : MonoBehaviour
 
         if (!DemoBuildGuardRails.IsDemoBuild)
             SteamAchievementService.Ensure();
+    }
+
+    void OnApplicationPause(bool pause)
+    {
+        if (pause)
+            FlushQueuedSave();
+    }
+
+    void OnApplicationQuit()
+    {
+        FlushQueuedSave();
+        SteamCloudSaveService.TryUploadNow();
+    }
+
+    void OnDestroy()
+    {
+        if (I != this)
+            return;
+
+        FlushQueuedSave();
+        I = null;
     }
 
     // ---------------- Run lifecycle ----------------
@@ -371,6 +397,7 @@ public class PlayerProgress : MonoBehaviour
         if (_data.completedTutorials.Add(tutorialId))
         {
             Save();
+            FlushQueuedSave();
             SteamCloudSaveService.TryUploadNow();
         }
     }
@@ -449,6 +476,44 @@ public class PlayerProgress : MonoBehaviour
     }
 
     void Save()
+    {
+        saveQueued = true;
+        lastSaveQueueTime = Time.unscaledTime;
+
+        if (!Application.isPlaying || !isActiveAndEnabled || saveDebounceSeconds <= 0f)
+        {
+            FlushQueuedSave();
+            return;
+        }
+
+        if (saveCoroutine == null)
+            saveCoroutine = StartCoroutine(SaveAfterDebounce());
+    }
+
+    IEnumerator SaveAfterDebounce()
+    {
+        while (Time.unscaledTime < lastSaveQueueTime + saveDebounceSeconds)
+            yield return null;
+
+        saveCoroutine = null;
+        FlushQueuedSave();
+    }
+
+    void FlushQueuedSave()
+    {
+        if (saveCoroutine != null)
+            StopCoroutine(saveCoroutine);
+
+        saveCoroutine = null;
+
+        if (!saveQueued)
+            return;
+
+        saveQueued = false;
+        SaveImmediate();
+    }
+
+    void SaveImmediate()
     {
         try
         {
@@ -582,6 +647,7 @@ public class PlayerProgress : MonoBehaviour
         catch { }
 
         Save();
+        FlushQueuedSave();
     }
 
     public void ReloadFromDiskAfterCloudImport()
