@@ -1762,7 +1762,7 @@ public class RoundTransitionUI : MonoBehaviour
         string triggerName = GetShowAnimationTriggerName(animator);
 
         if (!string.IsNullOrWhiteSpace(stateName))
-            animator.Play(stateName, 0, 0f);
+            TryPlayAnimatorState(animator, stateName);
 
         if (!string.IsNullOrWhiteSpace(triggerName) && HasAnimatorTrigger(animator, triggerName))
         {
@@ -1939,7 +1939,34 @@ public class RoundTransitionUI : MonoBehaviour
 
         animator.enabled = true;
         animator.Rebind();
-        animator.Update(0f);
+        if (animator.isActiveAndEnabled && animator.gameObject.activeInHierarchy)
+            animator.Update(0f);
+    }
+
+    bool TryPlayAnimatorState(Animator animator, string stateName)
+    {
+        if (!animator || string.IsNullOrWhiteSpace(stateName) || animator.layerCount <= 0)
+            return false;
+
+        int directHash = Animator.StringToHash(stateName);
+        if (animator.HasState(0, directHash))
+        {
+            animator.Play(directHash, 0, 0f);
+            return true;
+        }
+
+        string layerName = animator.GetLayerName(0);
+        if (!string.IsNullOrWhiteSpace(layerName))
+        {
+            int layeredHash = Animator.StringToHash(layerName + "." + stateName);
+            if (animator.HasState(0, layeredHash))
+            {
+                animator.Play(layeredHash, 0, 0f);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     bool AnimatorHasClip(Animator animator, AnimationClip clip)

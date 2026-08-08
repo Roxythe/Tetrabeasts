@@ -147,6 +147,7 @@ public class Board : MonoBehaviour
     public Sprite spikeSpriteLow;            // Spike frame A (lower)
     public Sprite spikeSpriteHigh;           // Spike frame B (raised)
     public float spikeAnimInterval = 0.35f;  // Seconds per toggle
+    [Range(0.1f, 1f)] public float spikeTrapVisualScale = 0.9f;
 
     [Header("Layer Roots (auto-created if empty)")]
     public RectTransform underlayRoot; // Traps under blocks (spikes)
@@ -179,6 +180,10 @@ public class Board : MonoBehaviour
     public Color fireUnderlayTint = new Color(1f, 0.55f, 0.15f, 1f);         // orange
     public Color lightningUnderlayTint = new Color(0.25f, 0.95f, 1f, 1f);    // cyan
     public Color contagionSecondaryUnderlayTint = new Color(1f, 0.10f, 0.65f, 1f); // hot pink
+
+    [Header("Poison Floor Damage Ramp")]
+    [SerializeField, Range(0f, 0.5f)] float poisonDamageRampPerTick = 0.05f;
+    [SerializeField, Range(1f, 4f)] float poisonMaxDamageMultiplier = 2f;
 
     readonly Dictionary<Vector2Int, Coroutine> _monsterFlashCo = new();
     readonly Dictionary<Vector2Int, Coroutine> _portraitAltSwapCo = new();
@@ -218,6 +223,9 @@ public class Board : MonoBehaviour
         public float interval;      // poison/burn tick interval
         public int ticksRemaining;  // -1 = infinite
         public float nextTickTime;
+        public int poisonTargetDataId;
+        public int poisonTargetPieceGroupId;
+        public int poisonTicksAppliedToTarget;
 
         public static FloorEffectState Poison(float dmg, float interval, int ticks)
         {
@@ -227,7 +235,10 @@ public class Board : MonoBehaviour
                 damage = Mathf.Max(0f, dmg),
                 interval = Mathf.Max(0.05f, interval),
                 ticksRemaining = ticks,
-                nextTickTime = Time.time + Mathf.Max(0.05f, interval)
+                nextTickTime = Time.time + Mathf.Max(0.05f, interval),
+                poisonTargetDataId = 0,
+                poisonTargetPieceGroupId = 0,
+                poisonTicksAppliedToTarget = 0
             };
         }
 
@@ -3750,18 +3761,23 @@ public class Board : MonoBehaviour
     {
         if (!underlayRoot) return;
 
+        Vector2 cellSize = GetCellSize();
+        Vector2 spikeSize = GetSpikeVisualSize(cellSize);
+
         if (spikeVisuals.TryGetValue(cell, out var existing) && existing != null && existing.root)
         {
             // Update sizing/pos
-            existing.root.sizeDelta = GetCellSize();
+            existing.root.sizeDelta = cellSize;
             existing.root.anchoredPosition = CellToAnchoredPos(cell);
+            if (existing.low) existing.low.rectTransform.sizeDelta = spikeSize;
+            if (existing.high) existing.high.rectTransform.sizeDelta = spikeSize;
             return;
         }
 
         var root = new GameObject($"Spike_{cell.x}_{cell.y}", typeof(RectTransform)).GetComponent<RectTransform>();
         root.SetParent(underlayRoot, false);
         root.anchorMin = root.anchorMax = new Vector2(0.5f, 0.5f);
-        root.sizeDelta = GetCellSize();
+        root.sizeDelta = cellSize;
         root.anchoredPosition = CellToAnchoredPos(cell);
 
         Image MakeFrame(string name, Sprite s, bool enabled)
@@ -3775,7 +3791,7 @@ public class Board : MonoBehaviour
 
             var rt = img.rectTransform;
             rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
-            rt.sizeDelta = GetCellSize();
+            rt.sizeDelta = spikeSize;
             rt.anchoredPosition = Vector2.zero;
 
             img.enabled = enabled;
@@ -3793,6 +3809,11 @@ public class Board : MonoBehaviour
             highOn = false,
             nextToggleTime = Time.time + spikeAnimInterval
         };
+    }
+
+    Vector2 GetSpikeVisualSize(Vector2 cellSize)
+    {
+        return cellSize * Mathf.Clamp(spikeTrapVisualScale, 0.1f, 1f);
     }
 
     void AnimateSpikes()
@@ -3846,8 +3867,15 @@ public class Board : MonoBehaviour
             if (now < fx.nextTickTime)
                 continue;
 
-            // Tick damage only if there's a living monster in this cell
-            TryDamageMonsterFromFloorEffect(cell, fx.type, fx.damage);
+            float tickDamage = fx.damage;
+            bool poisonHadTarget = false;
+            if (fx.type == FloorEffectType.Poison)
+                tickDamage = GetPoisonTickDamage(cell, ref fx, out poisonHadTarget);
+
+            TryDamageMonsterFromFloorEffect(cell, fx.type, tickDamage);
+
+            if (poisonHadTarget)
+                AdvancePoisonDamageRamp(ref fx);
 
             if (fx.ticksRemaining > 0)
                 fx.ticksRemaining--;
@@ -3861,6 +3889,48 @@ public class Board : MonoBehaviour
             fx.nextTickTime = now + fx.interval;
             floorEffects[cell] = fx;
         }
+    }
+
+    float GetPoisonTickDamage(Vector2Int cell, ref FloorEffectState fx, out bool hadTarget)
+    {
+        hadTarget = false;
+
+        if (!monsters.TryGetValue(cell, out var inst) || inst.data == null || inst.hp <= 0f)
+        {
+            ResetPoisonDamageRamp(ref fx);
+            return fx.damage;
+        }
+
+        hadTarget = true;
+        int targetDataId = inst.data.GetInstanceID();
+        if (fx.poisonTargetDataId != targetDataId || fx.poisonTargetPieceGroupId != inst.pieceGroupId)
+        {
+            fx.poisonTargetDataId = targetDataId;
+            fx.poisonTargetPieceGroupId = inst.pieceGroupId;
+            fx.poisonTicksAppliedToTarget = 0;
+        }
+
+        float maxMultiplier = Mathf.Max(1f, poisonMaxDamageMultiplier);
+        float multiplier = 1f + Mathf.Max(0, fx.poisonTicksAppliedToTarget) * Mathf.Max(0f, poisonDamageRampPerTick);
+        return fx.damage * Mathf.Min(maxMultiplier, multiplier);
+    }
+
+    void AdvancePoisonDamageRamp(ref FloorEffectState fx)
+    {
+        float maxMultiplier = Mathf.Max(1f, poisonMaxDamageMultiplier);
+        float rampPerTick = Mathf.Max(0f, poisonDamageRampPerTick);
+        if (rampPerTick <= 0f || maxMultiplier <= 1f)
+            return;
+
+        int maxRampTicks = Mathf.CeilToInt((maxMultiplier - 1f) / rampPerTick);
+        fx.poisonTicksAppliedToTarget = Mathf.Min(maxRampTicks, fx.poisonTicksAppliedToTarget + 1);
+    }
+
+    void ResetPoisonDamageRamp(ref FloorEffectState fx)
+    {
+        fx.poisonTargetDataId = 0;
+        fx.poisonTargetPieceGroupId = 0;
+        fx.poisonTicksAppliedToTarget = 0;
     }
 
     public void FlashMonsterTick(Vector2Int cell, Color tint)
@@ -4337,10 +4407,12 @@ public class Board : MonoBehaviour
         foreach (var kv in spikeVisuals)
             if (kv.Value != null && kv.Value.root)
             {
-                kv.Value.root.sizeDelta = GetCellSize();
+                Vector2 cellSize = GetCellSize();
+                Vector2 spikeSize = GetSpikeVisualSize(cellSize);
+                kv.Value.root.sizeDelta = cellSize;
                 kv.Value.root.anchoredPosition = CellToAnchoredPos(kv.Key);
-                if (kv.Value.low) kv.Value.low.rectTransform.sizeDelta = GetCellSize();
-                if (kv.Value.high) kv.Value.high.rectTransform.sizeDelta = GetCellSize();
+                if (kv.Value.low) kv.Value.low.rectTransform.sizeDelta = spikeSize;
+                if (kv.Value.high) kv.Value.high.rectTransform.sizeDelta = spikeSize;
             }
     }
 

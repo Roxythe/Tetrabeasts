@@ -68,6 +68,10 @@ public class AudioManager : MonoBehaviour
 
     [Header("Music Transitions")]
     [SerializeField, Range(0.05f, 8f)] float levelMusicCrossfadeSeconds = 2f;
+    [SerializeField, Range(0.05f, 8f)] float musicCrossfadeSeconds = 1.25f;
+    [SerializeField, Range(0.05f, 8f)] float musicFadeOutSeconds = 1f;
+    [SerializeField, Range(0.05f, 4f)] float pauseMusicFadeSeconds = 0.45f;
+    [SerializeField, Range(0.05f, 4f)] float specialAbilityMusicFadeSeconds = 0.35f;
 
     [Header("Special Ability SFX Tuning")]
     [SerializeField, Min(0f)] float specialAbilityLoopVolumeBoost = 4f;
@@ -88,6 +92,10 @@ public class AudioManager : MonoBehaviour
     public MusicMode musicMode { get; private set; } = MusicMode.EDM;
 
     Coroutine musicChainCo;
+    Coroutine mainMusicFadeCo;
+    Coroutine pauseMusicFadeCo;
+    Coroutine pauseMainMusicFadeCo;
+    Coroutine specialAbilityMusicFadeCo;
     Coroutine rainFadeCo;
     Coroutine specialAbilityLoopFadeCo;
     AudioClip[] currentPool;
@@ -98,6 +106,12 @@ public class AudioManager : MonoBehaviour
     AudioSource activeMusicSrc;
     float musicSrcVolumeScale = 1f;
     float musicTransitionSrcVolumeScale = 0f;
+    float pauseMusicVolumeScale = 1f;
+    float specialAbilityMusicSrcResumeScale = 1f;
+    float specialAbilityMusicTransitionResumeScale = 0f;
+    bool pauseFadedMainMusic;
+    float pauseMusicSrcResumeScale = 1f;
+    float pauseMusicTransitionResumeScale = 0f;
     bool applicationHasFocus = true;
     bool applicationPaused;
     bool holdMusicChainForFocusResume;
@@ -247,7 +261,7 @@ public class AudioManager : MonoBehaviour
     {
         if (!source) return;
 
-        source.ignoreListenerPause = false;
+        source.ignoreListenerPause = true;
         source.playOnAwake = false;
         source.loop = false;
         source.spatialBlend = 0f;
@@ -331,7 +345,7 @@ public class AudioManager : MonoBehaviour
         source.loop = false;
         source.playOnAwake = false;
         source.spatialBlend = 0f;
-        source.ignoreListenerPause = false;
+        source.ignoreListenerPause = true;
 
         if (musicGroup)
             source.outputAudioMixerGroup = musicGroup;
@@ -341,20 +355,16 @@ public class AudioManager : MonoBehaviour
     {
         if (!clip) return;
 
-        ResetMainMusicRouting();
-        activeMusicSrc.clip = clip;
-        activeMusicSrc.loop = loop;
-        activeMusicSrc.time = 0f;
-        SetMainMusicSourceVolumeScale(activeMusicSrc, Mathf.Clamp01(vol));
-        activeMusicSrc.Play();
+        CrossfadeMainMusicTo(clip, loop, Mathf.Clamp01(vol), GetGeneralMusicCrossfadeDuration(null, clip));
     }
 
     public void StopMusic()
     {
-        StopMainMusicSource(musicSrc);
-        StopMainMusicSource(musicTransitionSrc);
-        ResetMainMusicRouting();
+        StopPauseMainMusicFadeCoroutine();
+        StopSpecialAbilityMusicFadeCoroutine();
+        pauseFadedMainMusic = false;
         specialAbilityPausedMainMusic = false;
+        FadeOutMainMusic(musicFadeOutSeconds);
     }
 
     public void PauseMainMusicForSpecialAbilityPopup()
@@ -365,20 +375,16 @@ public class AudioManager : MonoBehaviour
         specialAbilityPausedMainMusic = IsMainMusicPlaying();
         if (specialAbilityPausedMainMusic)
         {
-            PauseMainMusicSource(musicSrc);
-            PauseMainMusicSource(musicTransitionSrc);
+            specialAbilityMusicSrcResumeScale = GetMainMusicSourceVolumeScale(musicSrc);
+            specialAbilityMusicTransitionResumeScale = GetMainMusicSourceVolumeScale(musicTransitionSrc);
+            StartSpecialAbilityMainMusicFade(pausing: true);
         }
     }
 
     public void ResumeMainMusicAfterSpecialAbilityPopup()
     {
         if (specialAbilityPausedMainMusic)
-        {
-            UnPauseMainMusicSource(musicSrc);
-            UnPauseMainMusicSource(musicTransitionSrc);
-        }
-
-        specialAbilityPausedMainMusic = false;
+            StartSpecialAbilityMainMusicFade(pausing: false);
     }
 
     void ResetMainMusicRouting()
@@ -461,6 +467,336 @@ public class AudioManager : MonoBehaviour
             musicTransitionSrc.volume = MainMusicFullVolume * musicTransitionSrcVolumeScale;
     }
 
+    void SetPauseMusicVolumeScale(float scale)
+    {
+        pauseMusicVolumeScale = Mathf.Clamp01(scale);
+        ApplyPauseMusicVolume();
+    }
+
+    void ApplyPauseMusicVolume()
+    {
+        if (pauseMusicSrc)
+            pauseMusicSrc.volume = masterVolume * musicVolume * pauseMusicVolumeScale;
+    }
+
+    void StopMainMusicFadeCoroutine()
+    {
+        if (mainMusicFadeCo == null)
+            return;
+
+        StopCoroutine(mainMusicFadeCo);
+        mainMusicFadeCo = null;
+    }
+
+    void StopPauseMainMusicFadeCoroutine()
+    {
+        if (pauseMainMusicFadeCo == null)
+            return;
+
+        StopCoroutine(pauseMainMusicFadeCo);
+        pauseMainMusicFadeCo = null;
+    }
+
+    void StopSpecialAbilityMusicFadeCoroutine()
+    {
+        if (specialAbilityMusicFadeCo == null)
+            return;
+
+        StopCoroutine(specialAbilityMusicFadeCo);
+        specialAbilityMusicFadeCo = null;
+    }
+
+    void PrepareMainMusicTransition()
+    {
+        StopMainMusicFadeCoroutine();
+        StopPauseMainMusicFadeCoroutine();
+        StopSpecialAbilityMusicFadeCoroutine();
+        pauseFadedMainMusic = false;
+        specialAbilityPausedMainMusic = false;
+    }
+
+    void CrossfadeMainMusicTo(AudioClip clip, bool loop, float targetScale, float duration)
+    {
+        if (!clip)
+            return;
+
+        PrepareMainMusicTransition();
+        mainMusicFadeCo = StartCoroutine(CoCrossfadeMainMusicTo(clip, loop, Mathf.Clamp01(targetScale), duration));
+    }
+
+    IEnumerator CoCrossfadeMainMusicTo(AudioClip clip, bool loop, float targetScale, float duration)
+    {
+        AudioSource from = ResolveActiveMusicSource();
+        if (from && from.clip == clip)
+        {
+            activeMusicSrc = from;
+            from.loop = loop;
+
+            if (!from.isPlaying)
+                from.Play();
+
+            yield return CoFadeMainMusicSourceScale(from, targetScale, duration);
+            mainMusicFadeCo = null;
+            yield break;
+        }
+
+        AudioSource to = from == musicSrc ? musicTransitionSrc : musicSrc;
+        if (!to)
+            to = musicSrc ? musicSrc : musicTransitionSrc;
+
+        if (!to)
+        {
+            mainMusicFadeCo = null;
+            yield break;
+        }
+
+        to.Stop();
+        to.clip = clip;
+        to.loop = loop;
+        to.time = 0f;
+        SetMainMusicSourceVolumeScale(to, 0f);
+        to.Play();
+        activeMusicSrc = to;
+
+        float fadeDuration = GetGeneralMusicCrossfadeDuration(from ? from.clip : null, clip, duration);
+        float fromStartScale = from ? GetMainMusicSourceVolumeScale(from) : 0f;
+        float t = 0f;
+
+        while (t < fadeDuration && to && to.clip == clip)
+        {
+            t += Time.unscaledDeltaTime;
+            float k = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / fadeDuration));
+
+            if (from)
+                SetMainMusicSourceVolumeScale(from, Mathf.Lerp(fromStartScale, 0f, k));
+
+            SetMainMusicSourceVolumeScale(to, Mathf.Lerp(0f, targetScale, k));
+            yield return null;
+        }
+
+        if (to && to.clip == clip)
+            SetMainMusicSourceVolumeScale(to, targetScale);
+
+        if (from && from != to)
+        {
+            StopMainMusicSource(from);
+            SetMainMusicSourceVolumeScale(from, 0f);
+        }
+
+        mainMusicFadeCo = null;
+    }
+
+    IEnumerator CoFadeMainMusicSourceScale(AudioSource source, float targetScale, float duration)
+    {
+        if (!source)
+            yield break;
+
+        float fadeDuration = Mathf.Max(0.01f, duration);
+        float startScale = GetMainMusicSourceVolumeScale(source);
+        float endScale = Mathf.Clamp01(targetScale);
+        float t = 0f;
+
+        while (t < fadeDuration && source)
+        {
+            t += Time.unscaledDeltaTime;
+            float k = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / fadeDuration));
+            SetMainMusicSourceVolumeScale(source, Mathf.Lerp(startScale, endScale, k));
+            yield return null;
+        }
+
+        if (source)
+            SetMainMusicSourceVolumeScale(source, endScale);
+    }
+
+    void FadeOutMainMusic(float duration)
+    {
+        PrepareMainMusicTransition();
+        mainMusicFadeCo = StartCoroutine(CoFadeOutMainMusic(duration));
+    }
+
+    IEnumerator CoFadeOutMainMusic(float duration)
+    {
+        float fadeDuration = Mathf.Max(0.01f, duration);
+        float musicStart = GetMainMusicSourceVolumeScale(musicSrc);
+        float transitionStart = GetMainMusicSourceVolumeScale(musicTransitionSrc);
+        float t = 0f;
+
+        while (t < fadeDuration)
+        {
+            t += Time.unscaledDeltaTime;
+            float k = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / fadeDuration));
+            SetMainMusicSourceVolumeScale(musicSrc, Mathf.Lerp(musicStart, 0f, k));
+            SetMainMusicSourceVolumeScale(musicTransitionSrc, Mathf.Lerp(transitionStart, 0f, k));
+            yield return null;
+        }
+
+        StopMainMusicSource(musicSrc);
+        StopMainMusicSource(musicTransitionSrc);
+        activeMusicSrc = musicSrc;
+        SetMainMusicSourceVolumeScale(musicSrc, 1f);
+        SetMainMusicSourceVolumeScale(musicTransitionSrc, 0f);
+        mainMusicFadeCo = null;
+    }
+
+    void StartSpecialAbilityMainMusicFade(bool pausing)
+    {
+        StopSpecialAbilityMusicFadeCoroutine();
+        StopMainMusicFadeCoroutine();
+        StopPauseMainMusicFadeCoroutine();
+        pauseFadedMainMusic = false;
+        specialAbilityMusicFadeCo = StartCoroutine(CoSpecialAbilityMainMusicFade(pausing));
+    }
+
+    IEnumerator CoSpecialAbilityMainMusicFade(bool pausing)
+    {
+        if (pausing)
+        {
+            float fadeDuration = Mathf.Max(0.01f, specialAbilityMusicFadeSeconds);
+            float musicStart = GetMainMusicSourceVolumeScale(musicSrc);
+            float transitionStart = GetMainMusicSourceVolumeScale(musicTransitionSrc);
+            float t = 0f;
+
+            while (t < fadeDuration)
+            {
+                t += Time.unscaledDeltaTime;
+                float k = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / fadeDuration));
+                SetMainMusicSourceVolumeScale(musicSrc, Mathf.Lerp(musicStart, 0f, k));
+                SetMainMusicSourceVolumeScale(musicTransitionSrc, Mathf.Lerp(transitionStart, 0f, k));
+                yield return null;
+            }
+
+            PauseMainMusicSource(musicSrc);
+            PauseMainMusicSource(musicTransitionSrc);
+        }
+        else
+        {
+            UnPauseMainMusicSource(musicSrc);
+            UnPauseMainMusicSource(musicTransitionSrc);
+
+            float fadeDuration = Mathf.Max(0.01f, specialAbilityMusicFadeSeconds);
+            float musicStart = GetMainMusicSourceVolumeScale(musicSrc);
+            float transitionStart = GetMainMusicSourceVolumeScale(musicTransitionSrc);
+            float t = 0f;
+
+            while (t < fadeDuration)
+            {
+                t += Time.unscaledDeltaTime;
+                float k = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / fadeDuration));
+                SetMainMusicSourceVolumeScale(musicSrc, Mathf.Lerp(musicStart, specialAbilityMusicSrcResumeScale, k));
+                SetMainMusicSourceVolumeScale(musicTransitionSrc, Mathf.Lerp(transitionStart, specialAbilityMusicTransitionResumeScale, k));
+                yield return null;
+            }
+
+            SetMainMusicSourceVolumeScale(musicSrc, specialAbilityMusicSrcResumeScale);
+            SetMainMusicSourceVolumeScale(musicTransitionSrc, specialAbilityMusicTransitionResumeScale);
+            specialAbilityPausedMainMusic = false;
+        }
+
+        specialAbilityMusicFadeCo = null;
+    }
+
+    void FadeMainMusicForPause(bool fadeOut)
+    {
+        if (fadeOut && pauseFadedMainMusic)
+            return;
+
+        if (!fadeOut && !pauseFadedMainMusic)
+            return;
+
+        if (pauseMainMusicFadeCo != null)
+        {
+            StopCoroutine(pauseMainMusicFadeCo);
+            pauseMainMusicFadeCo = null;
+        }
+
+        StopMainMusicFadeCoroutine();
+
+        if (fadeOut)
+        {
+            pauseFadedMainMusic = IsMainMusicPlaying();
+            pauseMusicSrcResumeScale = GetMainMusicSourceVolumeScale(musicSrc);
+            pauseMusicTransitionResumeScale = GetMainMusicSourceVolumeScale(musicTransitionSrc);
+            pauseMainMusicFadeCo = StartCoroutine(CoFadeMainMusicForPause(0f, 0f));
+            return;
+        }
+
+        pauseFadedMainMusic = false;
+        pauseMainMusicFadeCo = StartCoroutine(CoFadeMainMusicForPause(pauseMusicSrcResumeScale, pauseMusicTransitionResumeScale));
+    }
+
+    IEnumerator CoFadeMainMusicForPause(float musicTargetScale, float transitionTargetScale)
+    {
+        bool fadingOut = musicTargetScale <= 0f && transitionTargetScale <= 0f;
+        if (!fadingOut)
+        {
+            UnPauseMainMusicSource(musicSrc);
+            UnPauseMainMusicSource(musicTransitionSrc);
+        }
+
+        float fadeDuration = Mathf.Max(0.01f, pauseMusicFadeSeconds);
+        float musicStart = GetMainMusicSourceVolumeScale(musicSrc);
+        float transitionStart = GetMainMusicSourceVolumeScale(musicTransitionSrc);
+        float t = 0f;
+
+        while (t < fadeDuration)
+        {
+            t += Time.unscaledDeltaTime;
+            float k = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / fadeDuration));
+            SetMainMusicSourceVolumeScale(musicSrc, Mathf.Lerp(musicStart, musicTargetScale, k));
+            SetMainMusicSourceVolumeScale(musicTransitionSrc, Mathf.Lerp(transitionStart, transitionTargetScale, k));
+            yield return null;
+        }
+
+        SetMainMusicSourceVolumeScale(musicSrc, musicTargetScale);
+        SetMainMusicSourceVolumeScale(musicTransitionSrc, transitionTargetScale);
+
+        if (fadingOut)
+        {
+            PauseMainMusicSource(musicSrc);
+            PauseMainMusicSource(musicTransitionSrc);
+        }
+
+        pauseMainMusicFadeCo = null;
+    }
+
+    void FadePauseMusicTo(float targetScale, bool stopAtEnd)
+    {
+        if (!pauseMusicSrc)
+            return;
+
+        if (pauseMusicFadeCo != null)
+            StopCoroutine(pauseMusicFadeCo);
+
+        pauseMusicFadeCo = StartCoroutine(CoFadePauseMusicTo(targetScale, stopAtEnd));
+    }
+
+    IEnumerator CoFadePauseMusicTo(float targetScale, bool stopAtEnd)
+    {
+        float fadeDuration = Mathf.Max(0.01f, pauseMusicFadeSeconds);
+        float startScale = pauseMusicVolumeScale;
+        float endScale = Mathf.Clamp01(targetScale);
+        float t = 0f;
+
+        while (t < fadeDuration && pauseMusicSrc)
+        {
+            t += Time.unscaledDeltaTime;
+            float k = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / fadeDuration));
+            SetPauseMusicVolumeScale(Mathf.Lerp(startScale, endScale, k));
+            yield return null;
+        }
+
+        SetPauseMusicVolumeScale(endScale);
+
+        if (stopAtEnd && pauseMusicSrc)
+        {
+            pauseMusicSrc.Stop();
+            pauseMusicSrc.clip = null;
+            SetPauseMusicVolumeScale(1f);
+        }
+
+        pauseMusicFadeCo = null;
+    }
+
     public void PlaySFX(AudioClip clip, float vol = 1f, float pitch = 1f, bool jitter = true)
     {
         if (!clip) return;
@@ -508,7 +844,7 @@ public class AudioManager : MonoBehaviour
         if (specialAbilityOneShotSrc) specialAbilityOneShotSrc.volume = masterVolume * sfxVolume;
         ApplySpecialAbilityLoopSfxVolume();
         ambienceLoopSrc.volume = masterVolume * sfxVolume;
-        pauseMusicSrc.volume = masterVolume * musicVolume;
+        ApplyPauseMusicVolume();
 
         if (save) SettingsStore.SaveVolumes(masterVolume, musicVolume, sfxVolume);
     }
@@ -521,7 +857,7 @@ public class AudioManager : MonoBehaviour
             mixer.SetFloat("MusicVolume", Mathf.Log10(Mathf.Max(0.0001f, musicVolume)) * 20f);
 
         ApplyMainMusicSourceVolumes();
-        pauseMusicSrc.volume = masterVolume * musicVolume;
+        ApplyPauseMusicVolume();
 
         if (save) SettingsStore.SaveVolumes(masterVolume, musicVolume, sfxVolume);
     }
@@ -890,10 +1226,7 @@ public class AudioManager : MonoBehaviour
             restartContextOnUnpause = true;
 
             if (pauseMusicSrc)
-            {
-                pauseMusicSrc.Stop();
                 PlayPauseMusic();
-            }
 
             return;
         }
@@ -901,10 +1234,7 @@ public class AudioManager : MonoBehaviour
         RestartContextMusic();
 
         if (pauseMusicSrc && pauseMusicSrc.isPlaying)
-        {
-            pauseMusicSrc.Stop();
             PlayPauseMusic();
-        }
     }
 
     public void ApplyPendingMusicModeAfterUnpause()
@@ -919,7 +1249,7 @@ public class AudioManager : MonoBehaviour
     {
         context = MusicContext.Title;
         levelMusicActive = false;
-        StopLevelMusicInternal();
+        StopLevelMusicInternal(fadeOutMusic: false);
 
         var clip = PickTitleClipByMode();
         if (!clip && bgmLoop) clip = bgmLoop;
@@ -935,7 +1265,7 @@ public class AudioManager : MonoBehaviour
         levelIsBoss = isBoss;
         levelMusicActive = true;
 
-        StopLevelMusicInternal();
+        StopLevelMusicInternal(fadeOutMusic: false);
 
         currentPool = BuildPool(isBoss);
         if (currentPool == null || currentPool.Length == 0)
@@ -956,26 +1286,44 @@ public class AudioManager : MonoBehaviour
 
     void StopLevelMusicInternal()
     {
+        StopLevelMusicInternal(fadeOutMusic: true);
+    }
+
+    void StopLevelMusicInternal(bool fadeOutMusic)
+    {
         if (musicChainCo != null) { StopCoroutine(musicChainCo); musicChainCo = null; }
         currentPool = null;
-        StopMusic();
+        if (fadeOutMusic)
+            StopMusic();
     }
 
     public void PlayPauseMusic()
     {
         // Pick EDM/Metal/both clip
         var clip = PickPauseClipByMode();
+        FadeMainMusicForPause(fadeOut: true);
         if (!clip) return;
 
+        if (pauseMusicSrc.isPlaying && pauseMusicSrc.clip == clip)
+        {
+            FadePauseMusicTo(1f, stopAtEnd: false);
+            return;
+        }
+
         pauseMusicSrc.clip = clip;
-        pauseMusicSrc.volume = masterVolume * musicVolume;
         pauseMusicSrc.loop = true;
+        pauseMusicSrc.time = 0f;
+        SetPauseMusicVolumeScale(0f);
         pauseMusicSrc.Play();
+        FadePauseMusicTo(1f, stopAtEnd: false);
     }
 
     public void StopPauseMusic()
     {
-        if (pauseMusicSrc) pauseMusicSrc.Stop();
+        FadeMainMusicForPause(fadeOut: false);
+
+        if (pauseMusicSrc && pauseMusicSrc.isPlaying)
+            FadePauseMusicTo(0f, stopAtEnd: true);
     }
 
     void RestartContextMusic()
@@ -1081,7 +1429,7 @@ public class AudioManager : MonoBehaviour
         levelMusicActive = false;
 
         StopPauseMusic();
-        StopLevelMusicInternal();
+        StopLevelMusicInternal(fadeOutMusic: false);
         StopRainAmbience();
 
         PlayMusic(clip, loop: true, vol: 1f);
@@ -1146,6 +1494,8 @@ public class AudioManager : MonoBehaviour
     {
         if (!clip) return;
 
+        PrepareMainMusicTransition();
+
         AudioSource source = activeMusicSrc ? activeMusicSrc : musicSrc;
         AudioSource other = source == musicSrc ? musicTransitionSrc : musicSrc;
 
@@ -1156,10 +1506,11 @@ public class AudioManager : MonoBehaviour
         source.clip = clip;
         source.loop = false;
         source.time = 0f;
-        SetMainMusicSourceVolumeScale(source, 1f);
+        SetMainMusicSourceVolumeScale(source, 0f);
         source.Play();
 
         activeMusicSrc = source;
+        mainMusicFadeCo = StartCoroutine(CoFadeMainMusicSourceScale(source, 1f, GetLevelMusicCrossfadeDuration(null, clip)));
     }
 
     IEnumerator CrossfadeToLevelMusicClip(AudioClip next)
@@ -1167,18 +1518,20 @@ public class AudioManager : MonoBehaviour
         if (!next)
             yield break;
 
+        while (levelMusicActive && ShouldHoldLevelMusicChain())
+            yield return null;
+
+        if (!levelMusicActive)
+            yield break;
+
+        PrepareMainMusicTransition();
+
         AudioSource from = ResolveActiveMusicSource();
         if (!from || !from.clip)
         {
             PlayLevelMusicClipImmediate(next);
             yield break;
         }
-
-        while (levelMusicActive && ShouldHoldLevelMusicChain())
-            yield return null;
-
-        if (!levelMusicActive)
-            yield break;
 
         AudioSource to = from == musicSrc ? musicTransitionSrc : musicSrc;
         if (!to || to == from)
@@ -1251,7 +1604,13 @@ public class AudioManager : MonoBehaviour
 
         while (levelMusicActive && source && source.clip == clip && source.time < transitionTime)
         {
-            if (!source.isPlaying && !ShouldHoldLevelMusicChain())
+            if (ShouldHoldLevelMusicChain())
+            {
+                yield return null;
+                continue;
+            }
+
+            if (!source.isPlaying)
                 yield break;
 
             yield return null;
@@ -1287,6 +1646,21 @@ public class AudioManager : MonoBehaviour
     float GetLevelMusicCrossfadeDuration(AudioClip fromClip, AudioClip toClip)
     {
         float duration = Mathf.Max(0.05f, levelMusicCrossfadeSeconds);
+
+        if (fromClip)
+            duration = Mathf.Min(duration, Mathf.Max(0.05f, fromClip.length * 0.5f));
+
+        if (toClip)
+            duration = Mathf.Min(duration, Mathf.Max(0.05f, toClip.length * 0.5f));
+
+        return duration;
+    }
+
+    float GetGeneralMusicCrossfadeDuration(AudioClip fromClip, AudioClip toClip, float requestedDuration = -1f)
+    {
+        float duration = requestedDuration > 0f
+            ? requestedDuration
+            : Mathf.Max(0.05f, musicCrossfadeSeconds);
 
         if (fromClip)
             duration = Mathf.Min(duration, Mathf.Max(0.05f, fromClip.length * 0.5f));

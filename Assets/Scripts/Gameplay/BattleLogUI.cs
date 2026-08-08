@@ -60,6 +60,8 @@ public sealed class BattleLogUI : MonoBehaviour
         { "Boss_PylonShield", "Ward of the Arcane Pylons" },
         { "MagicExplosive", "Rune of Ruin" },
         { "Boss_MagicExplosive", "Rune of Ruin" },
+        { "ForcedDuplication", "Forced Duplication" },
+        { "Boss_ForcedDuplication", "Forced Duplication" },
     };
 
     private void Awake()

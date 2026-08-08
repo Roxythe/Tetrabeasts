@@ -95,6 +95,7 @@ public class CastleData : ScriptableObject
     public bool bossEnableGravityBoost = true;
     public bool bossEnablePylonShield = true;
     public bool bossEnableMagicExplosive = true;
+    public bool bossEnableForcedDuplication = true;
 
     [Header("Boss Abilities - Global Timing")]
     [Min(0.25f)] public float bossAbilityIntervalMin = 4f;
@@ -147,7 +148,8 @@ public class CastleData : ScriptableObject
         Invulnerability,
         GravityBoost,
         PylonShield,
-        MagicExplosive
+        MagicExplosive,
+        ForcedDuplication
     }
 
     [System.Serializable]
@@ -170,6 +172,10 @@ public class CastleData : ScriptableObject
     [Header("Boss - Gravity Boost")]
     [Min(0.1f)] public float bossGravityBonusMult = 2f;
     [Min(0.25f)] public float bossGravityDuration = 10f;
+
+    [Header("Boss - Forced Duplication")]
+    [Min(1)] public int bossForcedDuplicationMinPieces = 5;
+    [Min(1)] public int bossForcedDuplicationMaxPieces = 9;
 
     [Header("Boss Ability Warnings")]
     [Min(0f)] public float bossAbilityWarningSeconds = 3f;

@@ -15,7 +15,7 @@ MonoBehaviour:
   category: Floor Effects
   title: Lightning
   description: Any monster unit set in a cell with the lightning floor effect will
-    take constant damage. The damage is moderate but the floor effect will disappears
+    take constant damage. The damage is moderate, but the floor effect will disappears
     after a period of time.
   image: {fileID: -4774492201383427687, guid: 860ad36f38971b241b3613006f023743, type: 3}
   videoClip: {fileID: 32900000, guid: 3fe16dd0933907f48ae91b081525418b, type: 3}

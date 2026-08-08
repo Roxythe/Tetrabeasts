@@ -5,15 +5,6 @@ TextureImporter:
   - first:
       213: 3614708433049816069
     second: DesertCastle_HPFrame_0
-  - first:
-      213: -5407410077519650747
-    second: DesertCastle_HPFrame_1
-  - first:
-      213: -2594326086672894963
-    second: DesertCastle_HPFrame_2
-  - first:
-      213: -2457058998342459524
-    second: DesertCastle_HPFrame_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -164,10 +155,10 @@ TextureImporter:
       name: DesertCastle_HPFrame_0
       rect:
         serializedVersion: 2
-        x: 15
-        y: 62
-        width: 1255
-        height: 605
+        x: 0
+        y: 35
+        width: 1280
+        height: 656
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -178,72 +169,6 @@ TextureImporter:
       bones: []
       spriteID: 50c0b861b260a2230800000000000000
       internalID: 3614708433049816069
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: DesertCastle_HPFrame_1
-      rect:
-        serializedVersion: 2
-        x: 150
-        y: 57
-        width: 26
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 540e2962f2505f4b0800000000000000
-      internalID: -5407410077519650747
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: DesertCastle_HPFrame_2
-      rect:
-        serializedVersion: 2
-        x: 194
-        y: 55
-        width: 13
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d0435546b2a1ffbd0800000000000000
-      internalID: -2594326086672894963
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: DesertCastle_HPFrame_3
-      rect:
-        serializedVersion: 2
-        x: 1079
-        y: 54
-        width: 35
-        height: 18
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c7fde9bebd5c6edd0800000000000000
-      internalID: -2457058998342459524
       vertices: []
       indices: 
       edges: []
@@ -263,9 +188,6 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       DesertCastle_HPFrame_0: 3614708433049816069
-      DesertCastle_HPFrame_1: -5407410077519650747
-      DesertCastle_HPFrame_2: -2594326086672894963
-      DesertCastle_HPFrame_3: -2457058998342459524
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

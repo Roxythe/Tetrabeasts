@@ -25,6 +25,13 @@ public class GameController : MonoBehaviour
         Pentamino
     }
 
+    enum BossAbilityEffectOwner
+    {
+        None,
+        GravityBoost,
+        ForcedDuplication
+    }
+
     public Board gameBoard;
     public Piece piece;
     public Button restartButton;
@@ -138,13 +145,31 @@ public class GameController : MonoBehaviour
 
     [Header("Boss Gravity Visuals")]
     [SerializeField] Image bossGravityIncreasedImage; // Toggle/flash when boss gravity is active
+    [SerializeField] Sprite bossGravityIncreasedSprite;
     [SerializeField] Color gravityTextDefaultColor = Color.white;
     [SerializeField] Color gravityTextBossColor = new Color(0.80f, 0.25f, 1.0f, 1f); // Bright purple
     [SerializeField] float bossGravityBlinkLeadSeconds = 3f;     // Start blinking this long before the effect ends
     [SerializeField] float bossGravityBlinkIntervalSeconds = 0.25f;
 
+    [Header("Boss Forced Duplication")]
+    [SerializeField] Sprite bossForcedDuplicationSprite;
+    [SerializeField] TMP_Text duplicateCountText;
+    [SerializeField] AudioClip duplicationSFX;
+    [SerializeField, Range(0f, 2f)] float duplicationSFXVolume = 1f;
+    [SerializeField, Min(0.05f)] float duplicatePulseSeconds = 0.45f;
+    [SerializeField, Min(1f)] float duplicatePulseScale = 1.35f;
+
     Coroutine _bossGravityBlinkCR;
     bool _bossGravityVisualActive;
+    Sprite _bossAbilityEffectDefaultSprite;
+    Color _bossAbilityEffectDefaultColor = Color.white;
+    Vector3 _bossAbilityEffectDefaultScale = Vector3.one;
+    Color _duplicateCountDefaultColor = Color.white;
+    Vector3 _duplicateCountDefaultScale = Vector3.one;
+    BossAbilityEffectOwner _bossAbilityEffectOwner = BossAbilityEffectOwner.None;
+    int _bossForcedDuplicationRemaining;
+    TetrominoData _bossForcedDuplicationPiece;
+    Coroutine _bossForcedDuplicationPulseCR;
 
     [Header("Run Mods")]
     public RunModifierSO[] buffPool;
@@ -781,6 +806,7 @@ public class GameController : MonoBehaviour
 
     void Awake()
     {
+        CacheBossAbilityEffectDefaults();
         CacheBaseGameplayStatsForPanel();
         ApplyDemoBuildGuardRailsSetting();
     }
@@ -806,6 +832,8 @@ public class GameController : MonoBehaviour
     {
         ApplyDemoBuildGuardRailsSetting();
         SetGravityTimerVisible(false);
+        SetDuplicateCountVisible(false);
+        RefreshBossAbilityEffectVisual();
         SteamInputService.Ensure();
         SteamPlatformService.Ensure();
         SteamInputService.ControllerDisconnected -= HandleControllerDisconnected;
@@ -1148,6 +1176,7 @@ public class GameController : MonoBehaviour
 
         ResetCombo();
         ResetBossGravityVisuals();
+        ResetForcedDuplicationEffect();
 
         StartCoroutine(BeginCurrentLevelSequence());
     }
@@ -1212,6 +1241,7 @@ public class GameController : MonoBehaviour
         SetSpecialGaugeImmediate(saveData.specialGauge);
         ResetCombo();
         ResetBossGravityVisuals();
+        ResetForcedDuplicationEffect();
 
         var restoredLevelModifier = ResolveSavedLevelModifier(saveData);
         int restoredRerolls = (saveData.levelModifier != null) ? saveData.levelModifier.availableRerolls : 0;
@@ -1557,6 +1587,7 @@ public class GameController : MonoBehaviour
     void OnDestroy()
     {
         ClearPrewarmedSpecialAbilityPopup();
+        ResetForcedDuplicationEffect();
         ClearGeneratedDisarrayPieces();
         DestroyRuntimeVfxPools();
         DestroyAttackExplosionPools();
@@ -1861,6 +1892,7 @@ public class GameController : MonoBehaviour
         // Dequeue the aligned pair
         var data = bag.Dequeue();
         var mons = monstersBag.Count > 0 ? monstersBag.Dequeue() : null;
+        bool consumedForcedDuplicate = _bossForcedDuplicationRemaining > 0;
 
         // Heal monster array for normal pieces
         if (data.special == SpecialType.None)
@@ -1885,6 +1917,10 @@ public class GameController : MonoBehaviour
         piece.enabled = true;
         piece.SpawnAtTop();
         piece.SetFallInterval(GetCurrentFallInterval(), resetAccumulator: true);
+
+        if (consumedForcedDuplicate)
+            OnForcedDuplicatePiecePulled();
+
         QueueSpecialBlockTutorialIfNeeded(data);
 
         // Keep bags topped and refresh preview after consuming one
@@ -1899,6 +1935,7 @@ public class GameController : MonoBehaviour
     {
         _levelStartBlocked = true;
 
+        ResetForcedDuplicationEffect();
         bag.Clear();
         monstersBag.Clear();
         _roulettePreviewTimer = 0f;
@@ -2545,6 +2582,12 @@ public class GameController : MonoBehaviour
 
     void HandleRoulettePreview(float dt)
     {
+        if (IsForcedDuplicationActive)
+        {
+            _roulettePreviewTimer = 0f;
+            return;
+        }
+
         if (!IsRouletteModifierActive())
         {
             _roulettePreviewTimer = 0f;
@@ -2577,6 +2620,9 @@ public class GameController : MonoBehaviour
 
     bool ReplaceRoulettePreviewHead()
     {
+        if (IsForcedDuplicationActive)
+            return false;
+
         EnsureMinBag(3);
         if (bag.Count == 0)
             return false;
@@ -2705,6 +2751,127 @@ public class GameController : MonoBehaviour
             arr[i] = chosen;
 
         return arr;
+    }
+
+    bool IsForcedDuplicationActive => _bossForcedDuplicationRemaining > 0 && _bossForcedDuplicationPiece;
+
+    bool TryStartForcedDuplication(int duplicateCount)
+    {
+        duplicateCount = Mathf.Max(1, duplicateCount);
+
+        if (!TryCaptureForcedDuplicationSource(out var duplicateSource))
+            return false;
+
+        _bossForcedDuplicationPiece = duplicateSource;
+        _bossForcedDuplicationRemaining = duplicateCount;
+
+        EnsureMinBag(_bossForcedDuplicationRemaining);
+        ApplyForcedDuplicationToQueuedPieces();
+        ShowNextPreview();
+
+        ShowForcedDuplicationCountPulse();
+        return true;
+    }
+
+    bool TryCaptureForcedDuplicationSource(out TetrominoData duplicateSource)
+    {
+        duplicateSource = null;
+
+        EnsureMinBag(1);
+        if (bag.Count == 0)
+            return false;
+
+        var pieces = new List<TetrominoData>(bag);
+        var monsterSets = new List<MonsterData[]>(monstersBag);
+
+        while (monsterSets.Count < pieces.Count)
+            monsterSets.Add(BuildMonsterArrayForQueuedPiece(pieces[monsterSets.Count]));
+
+        while (monsterSets.Count > pieces.Count)
+            monsterSets.RemoveAt(monsterSets.Count - 1);
+
+        TetrominoData head = pieces.Count > 0 ? pieces[0] : null;
+        if (!head || head.special != SpecialType.None)
+        {
+            head = PickRandomNormalTetromino();
+            if (!head)
+                return false;
+
+            head = CreateDisarrayVariantIfNeeded(head);
+            pieces[0] = head;
+            monsterSets[0] = BuildMonsterArrayForQueuedPiece(head);
+        }
+
+        duplicateSource = head;
+
+        bag.Clear();
+        for (int i = 0; i < pieces.Count; i++)
+            bag.Enqueue(pieces[i]);
+
+        monstersBag.Clear();
+        for (int i = 0; i < monsterSets.Count; i++)
+            monstersBag.Enqueue(monsterSets[i]);
+
+        return duplicateSource != null;
+    }
+
+    void ApplyForcedDuplicationToQueuedPieces()
+    {
+        if (!IsForcedDuplicationActive || bag.Count == 0)
+            return;
+
+        var pieces = new List<TetrominoData>(bag);
+        var monsterSets = new List<MonsterData[]>(monstersBag);
+
+        while (monsterSets.Count < pieces.Count)
+            monsterSets.Add(null);
+
+        while (monsterSets.Count > pieces.Count)
+            monsterSets.RemoveAt(monsterSets.Count - 1);
+
+        int replaceCount = Mathf.Min(_bossForcedDuplicationRemaining, pieces.Count);
+        for (int i = 0; i < replaceCount; i++)
+        {
+            pieces[i] = _bossForcedDuplicationPiece;
+            monsterSets[i] = BuildForcedDuplicationMonsterArray(_bossForcedDuplicationPiece, monsterSets[i]);
+        }
+
+        bag.Clear();
+        for (int i = 0; i < pieces.Count; i++)
+            bag.Enqueue(pieces[i]);
+
+        monstersBag.Clear();
+        for (int i = 0; i < monsterSets.Count; i++)
+            monstersBag.Enqueue(monsterSets[i]);
+    }
+
+    MonsterData[] BuildForcedDuplicationMonsterArray(TetrominoData data, MonsterData[] existing)
+    {
+        if (!data || data.special != SpecialType.None)
+            return System.Array.Empty<MonsterData>();
+
+        int cellsCount = Mathf.Max(1, data.cells != null ? data.cells.Length : 1);
+        if (existing != null && existing.Length == cellsCount)
+            return existing;
+
+        return BuildMonsterArrayForQueuedPiece(data);
+    }
+
+    void OnForcedDuplicatePiecePulled()
+    {
+        if (_bossForcedDuplicationRemaining <= 0)
+            return;
+
+        _bossForcedDuplicationRemaining = Mathf.Max(0, _bossForcedDuplicationRemaining - 1);
+
+        if (_bossForcedDuplicationRemaining > 0)
+        {
+            ApplyForcedDuplicationToQueuedPieces();
+            ShowForcedDuplicationCountPulse();
+            return;
+        }
+
+        ClearForcedDuplicationEffect();
     }
 
     TetrominoData CreateDisarrayVariantIfNeeded(TetrominoData source)
@@ -3257,6 +3424,7 @@ public class GameController : MonoBehaviour
 
         _bossGravityBonusActive = 0f;
         ResetBossGravityVisuals();
+        ResetForcedDuplicationEffect();
 
         if (enemyCastleUI)
         {
@@ -3302,6 +3470,7 @@ public class GameController : MonoBehaviour
         winQueued = false;
         _currentRoundWinStatsRecorded = false;
         ResetBossGravityVisuals();
+        ResetForcedDuplicationEffect();
 
         ResetCombo();
 
@@ -3826,6 +3995,7 @@ public class GameController : MonoBehaviour
 
         ResetCombo();
         ResetBossGravityVisuals();
+        ResetForcedDuplicationEffect();
 
         if (battleLog)
             battleLog.Clear();
@@ -5637,6 +5807,8 @@ public class GameController : MonoBehaviour
     void EnsureMinBag(int min = -1)
     {
         if (min <= 0) min = Mathf.Max(1, minBagPieces);
+        if (IsForcedDuplicationActive)
+            min = Mathf.Max(min, _bossForcedDuplicationRemaining);
 
         // Trim any leading nulls & keep queues aligned
         while (bag.Count > 0 && bag.Peek() == null)
@@ -5659,6 +5831,8 @@ public class GameController : MonoBehaviour
             bag.Dequeue();
             if (monstersBag.Count > 0) monstersBag.Dequeue();
         }
+
+        ApplyForcedDuplicationToQueuedPieces();
     }
 
     TetrominoData PeekSafeHead()
@@ -6319,6 +6493,7 @@ public class GameController : MonoBehaviour
         if (_bossGravityCR != null) { StopCoroutine(_bossGravityCR); _bossGravityCR = null; }
         _bossGravityBonusActive = 0f;
         ResetBossGravityVisuals();
+        ResetForcedDuplicationEffect();
 
         // Reset run state
         levelModifierController?.ResetRunState();
@@ -8207,6 +8382,7 @@ public class GameController : MonoBehaviour
         if (_castleData.bossEnableGravityBoost) picks.Add(CastleData.BossAbilityKind.GravityBoost);
         if (_castleData.bossEnablePylonShield) picks.Add(CastleData.BossAbilityKind.PylonShield);
         if (_castleData.bossEnableMagicExplosive) picks.Add(CastleData.BossAbilityKind.MagicExplosive);
+        if (_castleData.bossEnableForcedDuplication) picks.Add(CastleData.BossAbilityKind.ForcedDuplication);
 
         if (picks.Count == 0) return;
 
@@ -8233,6 +8409,7 @@ public class GameController : MonoBehaviour
             case CastleData.BossAbilityKind.GravityBoost: Boss_GravityBoost(); break;
             case CastleData.BossAbilityKind.PylonShield: Boss_PylonShield(); break;
             case CastleData.BossAbilityKind.MagicExplosive: Boss_MagicExplosive(); break;
+            case CastleData.BossAbilityKind.ForcedDuplication: Boss_ForcedDuplication(); break;
         }
     }
 
@@ -8296,6 +8473,7 @@ public class GameController : MonoBehaviour
             case CastleData.BossAbilityKind.GravityBoost: return cd.bossEnableGravityBoost;
             case CastleData.BossAbilityKind.PylonShield: return cd.bossEnablePylonShield;
             case CastleData.BossAbilityKind.MagicExplosive: return cd.bossEnableMagicExplosive;
+            case CastleData.BossAbilityKind.ForcedDuplication: return cd.bossEnableForcedDuplication;
             default: return false;
         }
     }
@@ -8899,6 +9077,244 @@ public class GameController : MonoBehaviour
         enemyCastleUI.StartInvulnerability(_castleData.bossInvulnDuration);
     }
 
+    void Boss_ForcedDuplication()
+    {
+        if (_castleData == null) return;
+
+        int minPieces = Mathf.Max(1, _castleData.bossForcedDuplicationMinPieces);
+        int maxPieces = Mathf.Max(minPieces, _castleData.bossForcedDuplicationMaxPieces);
+        int duplicateCount = Random.Range(minPieces, maxPieces + 1);
+
+        if (!TryStartForcedDuplication(duplicateCount))
+            return;
+
+        PlayForcedDuplicationSFX();
+    }
+
+    void PlayForcedDuplicationSFX()
+    {
+        if (AudioManager.I && duplicationSFX)
+        {
+            AudioManager.I.PlaySFX(duplicationSFX, duplicationSFXVolume, pitch: 1f, jitter: false);
+            return;
+        }
+
+        PlayBossAbilityWarningSFX();
+    }
+
+    void CacheBossAbilityEffectDefaults()
+    {
+        if (bossGravityIncreasedImage)
+        {
+            _bossAbilityEffectDefaultSprite = bossGravityIncreasedImage.sprite;
+            _bossAbilityEffectDefaultColor = bossGravityIncreasedImage.color;
+            _bossAbilityEffectDefaultScale = bossGravityIncreasedImage.transform.localScale;
+
+            if (!bossForcedDuplicationSprite)
+                bossForcedDuplicationSprite = _bossAbilityEffectDefaultSprite;
+        }
+
+        if (duplicateCountText)
+        {
+            _duplicateCountDefaultColor = duplicateCountText.color;
+            _duplicateCountDefaultScale = duplicateCountText.transform.localScale;
+        }
+    }
+
+    Sprite GetBossGravityEffectSprite()
+    {
+        if (bossGravityIncreasedSprite)
+            return bossGravityIncreasedSprite;
+
+        return _bossAbilityEffectDefaultSprite;
+    }
+
+    Sprite GetForcedDuplicationEffectSprite()
+    {
+        if (bossForcedDuplicationSprite)
+            return bossForcedDuplicationSprite;
+
+        return _bossAbilityEffectDefaultSprite;
+    }
+
+    void RefreshBossAbilityEffectVisual()
+    {
+        if (!bossGravityIncreasedImage)
+        {
+            _bossAbilityEffectOwner = BossAbilityEffectOwner.None;
+            return;
+        }
+
+        BossAbilityEffectOwner owner = BossAbilityEffectOwner.None;
+        Sprite sprite = null;
+
+        if (IsForcedDuplicationActive)
+        {
+            owner = BossAbilityEffectOwner.ForcedDuplication;
+            sprite = GetForcedDuplicationEffectSprite();
+        }
+        else if (_bossGravityVisualActive)
+        {
+            owner = BossAbilityEffectOwner.GravityBoost;
+            sprite = GetBossGravityEffectSprite();
+        }
+
+        _bossAbilityEffectOwner = owner;
+
+        if (owner == BossAbilityEffectOwner.None)
+        {
+            bossGravityIncreasedImage.enabled = true;
+            bossGravityIncreasedImage.transform.localScale = _bossAbilityEffectDefaultScale;
+            SetBossAbilityEffectAlpha(1f);
+            bossGravityIncreasedImage.gameObject.SetActive(false);
+            return;
+        }
+
+        if (sprite)
+            bossGravityIncreasedImage.sprite = sprite;
+
+        bossGravityIncreasedImage.enabled = true;
+        bossGravityIncreasedImage.gameObject.SetActive(true);
+
+        if (owner == BossAbilityEffectOwner.GravityBoost)
+        {
+            bossGravityIncreasedImage.transform.localScale = _bossAbilityEffectDefaultScale;
+            SetBossAbilityEffectAlpha(1f);
+        }
+    }
+
+    void ShowForcedDuplicationCountPulse()
+    {
+        if (_bossForcedDuplicationRemaining <= 0)
+        {
+            ClearForcedDuplicationEffect();
+            return;
+        }
+
+        RefreshBossAbilityEffectVisual();
+        SetDuplicateCountVisible(true);
+
+        if (duplicateCountText)
+            duplicateCountText.text = _bossForcedDuplicationRemaining.ToString();
+
+        if (_bossForcedDuplicationPulseCR != null)
+            StopCoroutine(_bossForcedDuplicationPulseCR);
+
+        _bossForcedDuplicationPulseCR = StartCoroutine(ForcedDuplicationPulseCo());
+    }
+
+    IEnumerator ForcedDuplicationPulseCo()
+    {
+        float duration = Mathf.Max(0.05f, duplicatePulseSeconds);
+        float scaleTarget = Mathf.Max(1f, duplicatePulseScale);
+        float t = 0f;
+
+        if (bossGravityIncreasedImage && _bossAbilityEffectOwner == BossAbilityEffectOwner.ForcedDuplication)
+        {
+            bossGravityIncreasedImage.enabled = true;
+            bossGravityIncreasedImage.gameObject.SetActive(true);
+            bossGravityIncreasedImage.transform.localScale = _bossAbilityEffectDefaultScale;
+            SetBossAbilityEffectAlpha(1f);
+        }
+
+        if (duplicateCountText)
+        {
+            duplicateCountText.gameObject.SetActive(true);
+            duplicateCountText.transform.localScale = _duplicateCountDefaultScale;
+            SetDuplicateCountAlpha(1f);
+        }
+
+        while (t < duration)
+        {
+            float k = Mathf.Clamp01(t / duration);
+            float eased = Mathf.SmoothStep(0f, 1f, k);
+            float alpha = Mathf.Lerp(1f, 0f, eased);
+            Vector3 imageScale = _bossAbilityEffectDefaultScale * Mathf.Lerp(1f, scaleTarget, eased);
+            Vector3 textScale = _duplicateCountDefaultScale * Mathf.Lerp(1f, scaleTarget, eased);
+
+            if (bossGravityIncreasedImage && _bossAbilityEffectOwner == BossAbilityEffectOwner.ForcedDuplication)
+            {
+                bossGravityIncreasedImage.transform.localScale = imageScale;
+                SetBossAbilityEffectAlpha(alpha);
+            }
+
+            if (duplicateCountText)
+            {
+                duplicateCountText.transform.localScale = textScale;
+                SetDuplicateCountAlpha(alpha);
+            }
+
+            t += Time.deltaTime;
+            yield return null;
+        }
+
+        if (bossGravityIncreasedImage && _bossAbilityEffectOwner == BossAbilityEffectOwner.ForcedDuplication)
+        {
+            bossGravityIncreasedImage.transform.localScale = _bossAbilityEffectDefaultScale;
+            SetBossAbilityEffectAlpha(0f);
+        }
+
+        if (duplicateCountText)
+        {
+            duplicateCountText.transform.localScale = _duplicateCountDefaultScale;
+            SetDuplicateCountAlpha(0f);
+            if (_bossForcedDuplicationRemaining <= 0)
+                duplicateCountText.gameObject.SetActive(false);
+        }
+
+        _bossForcedDuplicationPulseCR = null;
+    }
+
+    void ClearForcedDuplicationEffect()
+    {
+        _bossForcedDuplicationRemaining = 0;
+        _bossForcedDuplicationPiece = null;
+
+        if (_bossForcedDuplicationPulseCR != null)
+        {
+            StopCoroutine(_bossForcedDuplicationPulseCR);
+            _bossForcedDuplicationPulseCR = null;
+        }
+
+        SetDuplicateCountVisible(false);
+        RefreshBossAbilityEffectVisual();
+    }
+
+    void ResetForcedDuplicationEffect()
+    {
+        ClearForcedDuplicationEffect();
+    }
+
+    void SetDuplicateCountVisible(bool visible)
+    {
+        if (!duplicateCountText)
+            return;
+
+        duplicateCountText.gameObject.SetActive(visible);
+        duplicateCountText.transform.localScale = _duplicateCountDefaultScale;
+        SetDuplicateCountAlpha(visible ? 1f : 0f);
+    }
+
+    void SetBossAbilityEffectAlpha(float alpha)
+    {
+        if (!bossGravityIncreasedImage)
+            return;
+
+        var color = _bossAbilityEffectDefaultColor;
+        color.a *= Mathf.Clamp01(alpha);
+        bossGravityIncreasedImage.color = color;
+    }
+
+    void SetDuplicateCountAlpha(float alpha)
+    {
+        if (!duplicateCountText)
+            return;
+
+        var color = _duplicateCountDefaultColor;
+        color.a *= Mathf.Clamp01(alpha);
+        duplicateCountText.color = color;
+    }
+
     void Boss_GravityBoost()
     {
         if (_castleData == null) return;
@@ -8942,11 +9358,7 @@ public class GameController : MonoBehaviour
             _bossGravityBlinkCR = null;
         }
 
-        if (bossGravityIncreasedImage)
-        {
-            bossGravityIncreasedImage.enabled = true;
-            bossGravityIncreasedImage.gameObject.SetActive(false);
-        }
+        RefreshBossAbilityEffectVisual();
 
         RefreshGravityTextColor();
     }
@@ -8957,11 +9369,7 @@ public class GameController : MonoBehaviour
         {
             _bossGravityVisualActive = true;
 
-            if (bossGravityIncreasedImage)
-            {
-                bossGravityIncreasedImage.enabled = true;
-                bossGravityIncreasedImage.gameObject.SetActive(true);
-            }
+            RefreshBossAbilityEffectVisual();
         }
         else
         {
@@ -8985,7 +9393,7 @@ public class GameController : MonoBehaviour
         float t = 0f;
         while (t < lead)
         {
-            if (bossGravityIncreasedImage)
+            if (bossGravityIncreasedImage && _bossAbilityEffectOwner == BossAbilityEffectOwner.GravityBoost)
                 bossGravityIncreasedImage.enabled = !bossGravityIncreasedImage.enabled;
 
             yield return new WaitForSeconds(Mathf.Max(0.05f, bossGravityBlinkIntervalSeconds));
@@ -8993,7 +9401,7 @@ public class GameController : MonoBehaviour
         }
 
         // Ensure it's on right up until the routine ends
-        if (bossGravityIncreasedImage)
+        if (bossGravityIncreasedImage && _bossAbilityEffectOwner == BossAbilityEffectOwner.GravityBoost)
         {
             bossGravityIncreasedImage.enabled = true;
             bossGravityIncreasedImage.gameObject.SetActive(true);

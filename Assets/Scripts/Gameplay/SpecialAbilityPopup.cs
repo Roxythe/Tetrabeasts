@@ -171,7 +171,7 @@ public sealed class SpecialAbilityPopup : MonoBehaviour
             if (animator.runtimeAnimatorController)
             {
                 animator.Rebind();
-                animator.Update(0f);
+                SampleAnimatorIfActive(animator);
             }
         }
     }
@@ -455,8 +455,16 @@ public sealed class SpecialAbilityPopup : MonoBehaviour
         if (animator.runtimeAnimatorController)
         {
             animator.Rebind();
-            animator.Update(0f);
+            SampleAnimatorIfActive(animator);
         }
+    }
+
+    static void SampleAnimatorIfActive(Animator animator)
+    {
+        if (!animator || !animator.isActiveAndEnabled || !animator.gameObject.activeInHierarchy)
+            return;
+
+        animator.Update(0f);
     }
 
     bool IsCharacterAnimator(Animator animator)
@@ -505,7 +513,7 @@ public sealed class SpecialAbilityPopup : MonoBehaviour
             {
                 characterAnimator.speed = 1f;
                 characterAnimator.Play(state.fullPathHash, 0, 0.999f);
-                characterAnimator.Update(0f);
+                SampleAnimatorIfActive(characterAnimator);
             }
         }
 

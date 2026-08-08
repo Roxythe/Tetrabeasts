@@ -15,6 +15,7 @@ MonoBehaviour:
   category: Floor Effects
   title: Poison
   description: Any monster unit set in a cell with the poison floor effect will take
-    continuous damage. The damage is realtivley low but occurs often.
+    continuous damage. Poison damage slowly increases each tick while the same unit
+    is affected, up to double its original damage.
   image: {fileID: -2150452836756340232, guid: dc0f4bc7092c40a40aecd2a1406b4a25, type: 3}
   videoClip: {fileID: 32900000, guid: 306aa6ca85f7d66448f244b640f01710, type: 3}
