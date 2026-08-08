@@ -96,6 +96,7 @@ public class CastleData : ScriptableObject
     public bool bossEnablePylonShield = true;
     public bool bossEnableMagicExplosive = true;
     public bool bossEnableForcedDuplication = true;
+    public bool bossEnableSpecialSiphon = true;
 
     [Header("Boss Abilities - Global Timing")]
     [Min(0.25f)] public float bossAbilityIntervalMin = 4f;
@@ -149,7 +150,8 @@ public class CastleData : ScriptableObject
         GravityBoost,
         PylonShield,
         MagicExplosive,
-        ForcedDuplication
+        ForcedDuplication,
+        SpecialSiphon
     }
 
     [System.Serializable]
@@ -176,6 +178,9 @@ public class CastleData : ScriptableObject
     [Header("Boss - Forced Duplication")]
     [Min(1)] public int bossForcedDuplicationMinPieces = 5;
     [Min(1)] public int bossForcedDuplicationMaxPieces = 9;
+
+    [Header("Boss - Special Siphon")]
+    [Range(0f, 1f)] public float bossSpecialSiphonGaugeDrainPercentPerSecond = 0.03f;
 
     [Header("Boss Ability Warnings")]
     [Min(0f)] public float bossAbilityWarningSeconds = 3f;

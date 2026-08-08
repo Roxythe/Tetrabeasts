@@ -62,6 +62,8 @@ public sealed class BattleLogUI : MonoBehaviour
         { "Boss_MagicExplosive", "Rune of Ruin" },
         { "ForcedDuplication", "Forced Duplication" },
         { "Boss_ForcedDuplication", "Forced Duplication" },
+        { "SpecialSiphon", "Special Siphon" },
+        { "Boss_SpecialSiphon", "Special Siphon" },
     };
 
     private void Awake()

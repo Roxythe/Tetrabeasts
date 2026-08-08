@@ -36080,10 +36080,17 @@ MonoBehaviour:
   bossGravityBlinkIntervalSeconds: 0.25
   bossForcedDuplicationSprite: {fileID: 21300000, guid: 95f8d8664f7c373459f6a558bcb2e4cf, type: 3}
   duplicateCountText: {fileID: 1545941741}
-  duplicationSFX: {fileID: 0}
+  duplicationSFX: {fileID: 8300000, guid: 7c9ca7bbb55a23f45a44a386347d0e54, type: 3}
   duplicationSFXVolume: 1
   duplicatePulseSeconds: 0.45
   duplicatePulseScale: 1.35
+  specialSiphonParticlePrefab: {fileID: 1717801695604134146, guid: f0c4f2773f6589345876bf4c52841175, type: 3}
+  specialSiphonLoopSFX: {fileID: 8300000, guid: 7800ea2874160604db1b4e40c2dd3185, type: 3}
+  specialSiphonLoopSFXVolume: 1
+  specialSiphonParticleSpeed: 12
+  specialSiphonParticleArrivalRadius: 0.15
+  specialSiphonParticleWorldScale: 0.02
+  specialSiphonParticleSortingOrder: 1000
   buffPool:
   - {fileID: 11400000, guid: 2af8b7c6475e96340b85f805d39c67a1, type: 2}
   - {fileID: 11400000, guid: e1c6cf79b5dd5614bb4c4145112ede58, type: 2}

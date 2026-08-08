@@ -159,6 +159,15 @@ public class GameController : MonoBehaviour
     [SerializeField, Min(0.05f)] float duplicatePulseSeconds = 0.45f;
     [SerializeField, Min(1f)] float duplicatePulseScale = 1.35f;
 
+    [Header("Boss Special Siphon")]
+    [SerializeField] GameObject specialSiphonParticlePrefab;
+    [SerializeField] AudioClip specialSiphonLoopSFX;
+    [SerializeField, Range(0f, 1f)] float specialSiphonLoopSFXVolume = 1f;
+    [SerializeField, Min(0.1f)] float specialSiphonParticleSpeed = 12f;
+    [SerializeField, Min(0.01f)] float specialSiphonParticleArrivalRadius = 0.15f;
+    [SerializeField, Min(0.001f)] float specialSiphonParticleWorldScale = 0.02f;
+    [SerializeField] int specialSiphonParticleSortingOrder = 1000;
+
     Coroutine _bossGravityBlinkCR;
     bool _bossGravityVisualActive;
     Sprite _bossAbilityEffectDefaultSprite;
@@ -170,6 +179,11 @@ public class GameController : MonoBehaviour
     int _bossForcedDuplicationRemaining;
     TetrominoData _bossForcedDuplicationPiece;
     Coroutine _bossForcedDuplicationPulseCR;
+    bool _specialSiphonActive;
+    Coroutine _specialSiphonCR;
+    AudioSource _specialSiphonAudioSource;
+    GameObject _specialSiphonParticleInstance;
+    SpecialSiphonParticleController _specialSiphonParticles;
 
     [Header("Run Mods")]
     public RunModifierSO[] buffPool;
@@ -1516,12 +1530,15 @@ public class GameController : MonoBehaviour
         // Boss abilities loop
         if (IsRoundActive && gameBoard && _castleData != null && IsCastleBossForCurrentMode(_castleData))
         {
-            _bossAbilityTimer += Time.deltaTime;
-            if (_bossAbilityTimer >= _bossNextAbilityAt)
+            if (!_specialSiphonActive)
             {
-                _bossAbilityTimer = 0f;
-                _bossNextAbilityAt = Random.Range(_castleData.bossAbilityIntervalMin, _castleData.bossAbilityIntervalMax);
-                TryCastRandomBossAbility();
+                _bossAbilityTimer += Time.deltaTime;
+                if (_bossAbilityTimer >= _bossNextAbilityAt)
+                {
+                    _bossAbilityTimer = 0f;
+                    _bossNextAbilityAt = Random.Range(_castleData.bossAbilityIntervalMin, _castleData.bossAbilityIntervalMax);
+                    TryCastRandomBossAbility();
+                }
             }
         }
 
@@ -1587,6 +1604,7 @@ public class GameController : MonoBehaviour
     void OnDestroy()
     {
         ClearPrewarmedSpecialAbilityPopup();
+        StopSpecialSiphonChannel(forceDestroyParticles: true);
         ResetForcedDuplicationEffect();
         ClearGeneratedDisarrayPieces();
         DestroyRuntimeVfxPools();
@@ -1935,6 +1953,7 @@ public class GameController : MonoBehaviour
     {
         _levelStartBlocked = true;
 
+        StopSpecialSiphonChannel(forceDestroyParticles: true);
         ResetForcedDuplicationEffect();
         bag.Clear();
         monstersBag.Clear();
@@ -2328,6 +2347,7 @@ public class GameController : MonoBehaviour
             return;
 
         gameOver = true;
+        StopSpecialSiphonChannel(forceDestroyParticles: true);
         _claimedRoundLossOneLiner = ClaimRoundTransitionOneLiner(RoundTransitionVariant.Loss);
         ClearTempRunCheckpoint();
         Debug.Log("Game Over");
@@ -3425,6 +3445,7 @@ public class GameController : MonoBehaviour
         _bossGravityBonusActive = 0f;
         ResetBossGravityVisuals();
         ResetForcedDuplicationEffect();
+        StopSpecialSiphonChannel(forceDestroyParticles: true);
 
         if (enemyCastleUI)
         {
@@ -5773,6 +5794,7 @@ public class GameController : MonoBehaviour
         int appliedDamage = enemyCastleUI.ApplyDamage(damage);
         if (appliedDamage > 0)
         {
+            StopSpecialSiphonChannel(forceDestroyParticles: false);
             RunSummaryStats.RecordDamageDealt(appliedDamage);
             ShowCastleFloatingDamageText(appliedDamage,
                 !enemyCastleUI.InfiniteHealth && enemyCastleUI.currentHP <= 0,
@@ -6494,6 +6516,7 @@ public class GameController : MonoBehaviour
         _bossGravityBonusActive = 0f;
         ResetBossGravityVisuals();
         ResetForcedDuplicationEffect();
+        StopSpecialSiphonChannel(forceDestroyParticles: true);
 
         // Reset run state
         levelModifierController?.ResetRunState();
@@ -8364,9 +8387,8 @@ public class GameController : MonoBehaviour
             _castleData.bossAbilityOptions != null &&
             _castleData.bossAbilityOptions.Length > 0)
         {
-            var pickedKind = PickBossAbilityKindFromPool(_castleData);
-
-            LogAndExecuteBossAbility(pickedKind);
+            if (TryPickBossAbilityKindFromPool(_castleData, out var pickedKind))
+                LogAndExecuteBossAbility(pickedKind);
 
             return;
         }
@@ -8383,6 +8405,13 @@ public class GameController : MonoBehaviour
         if (_castleData.bossEnablePylonShield) picks.Add(CastleData.BossAbilityKind.PylonShield);
         if (_castleData.bossEnableMagicExplosive) picks.Add(CastleData.BossAbilityKind.MagicExplosive);
         if (_castleData.bossEnableForcedDuplication) picks.Add(CastleData.BossAbilityKind.ForcedDuplication);
+        if (_castleData.bossEnableSpecialSiphon) picks.Add(CastleData.BossAbilityKind.SpecialSiphon);
+
+        for (int i = picks.Count - 1; i >= 0; i--)
+        {
+            if (!CanBossAbilityCurrentlyResolve(picks[i]))
+                picks.RemoveAt(i);
+        }
 
         if (picks.Count == 0) return;
 
@@ -8396,8 +8425,8 @@ public class GameController : MonoBehaviour
         if (battleLog && pickedKind != CastleData.BossAbilityKind.SpawnTraps)
             battleLog.LogBossAbility(pickedKind.ToString());
 
-        // Play attack for any boss special cast
-        if (enemyCastleUI) enemyCastleUI.PlayBossAttackSprite();
+        if (enemyCastleUI && pickedKind != CastleData.BossAbilityKind.SpecialSiphon)
+            enemyCastleUI.PlayBossAttackSprite();
 
         switch (pickedKind)
         {
@@ -8410,11 +8439,14 @@ public class GameController : MonoBehaviour
             case CastleData.BossAbilityKind.PylonShield: Boss_PylonShield(); break;
             case CastleData.BossAbilityKind.MagicExplosive: Boss_MagicExplosive(); break;
             case CastleData.BossAbilityKind.ForcedDuplication: Boss_ForcedDuplication(); break;
+            case CastleData.BossAbilityKind.SpecialSiphon: Boss_SpecialSiphon(); break;
         }
     }
 
-    CastleData.BossAbilityKind PickBossAbilityKindFromPool(CastleData cd)
+    bool TryPickBossAbilityKindFromPool(CastleData cd, out CastleData.BossAbilityKind pickedKind)
     {
+        pickedKind = default;
+
         // Build filtered active options
         var active = new List<CastleData.BossAbilityOption>(cd.bossAbilityOptions.Length);
 
@@ -8424,6 +8456,9 @@ public class GameController : MonoBehaviour
 
             // Respect existing toggles
             if (!IsBossAbilityEnabled(cd, opt.kind))
+                continue;
+
+            if (!CanBossAbilityCurrentlyResolve(opt.kind))
                 continue;
 
             // Cooldown gate
@@ -8443,13 +8478,13 @@ public class GameController : MonoBehaviour
             for (int i = 0; i < cd.bossAbilityOptions.Length; i++)
             {
                 var opt = cd.bossAbilityOptions[i];
-                if (IsBossAbilityEnabled(cd, opt.kind))
+                if (IsBossAbilityEnabled(cd, opt.kind) && CanBossAbilityCurrentlyResolve(opt.kind))
                     active.Add(opt);
             }
         }
 
         if (active.Count == 0)
-            return CastleData.BossAbilityKind.RowBlast;
+            return false;
 
         var picked = PickWeightedBossAbilityOption(active);
 
@@ -8458,7 +8493,8 @@ public class GameController : MonoBehaviour
             _bossNextReadyTime[picked.kind] = Time.time + picked.cooldown;
 
         _bossLastAbility = picked.kind;
-        return picked.kind;
+        pickedKind = picked.kind;
+        return true;
     }
 
     bool IsBossAbilityEnabled(CastleData cd, CastleData.BossAbilityKind kind)
@@ -8474,7 +8510,26 @@ public class GameController : MonoBehaviour
             case CastleData.BossAbilityKind.PylonShield: return cd.bossEnablePylonShield;
             case CastleData.BossAbilityKind.MagicExplosive: return cd.bossEnableMagicExplosive;
             case CastleData.BossAbilityKind.ForcedDuplication: return cd.bossEnableForcedDuplication;
+            case CastleData.BossAbilityKind.SpecialSiphon: return cd.bossEnableSpecialSiphon;
             default: return false;
+        }
+    }
+
+    bool CanBossAbilityCurrentlyResolve(CastleData.BossAbilityKind kind)
+    {
+        switch (kind)
+        {
+            case CastleData.BossAbilityKind.SpecialSiphon:
+                if (_specialSiphonActive)
+                    return false;
+
+                if (levelModifierController && levelModifierController.BlocksSpecialUsage)
+                    return false;
+
+                return specialGaugeMax > 0f && specialGauge > 0.001f;
+
+            default:
+                return true;
         }
     }
 
@@ -9100,6 +9155,205 @@ public class GameController : MonoBehaviour
         }
 
         PlayBossAbilityWarningSFX();
+    }
+
+    void Boss_SpecialSiphon()
+    {
+        if (_castleData == null) return;
+        if (!CanBossAbilityCurrentlyResolve(CastleData.BossAbilityKind.SpecialSiphon)) return;
+
+        StopSpecialSiphonChannel(forceDestroyParticles: false);
+        _specialSiphonCR = StartCoroutine(SpecialSiphonRoutine(_roundLifecycleToken));
+    }
+
+    IEnumerator SpecialSiphonRoutine(int roundToken)
+    {
+        _specialSiphonActive = true;
+        if (enemyCastleUI)
+            enemyCastleUI.StartBossChannelAttackSprite();
+        PlaySpecialSiphonLoopSFX();
+        StartSpecialSiphonParticles();
+
+        while (IsRoundActionTokenCurrent(roundToken) && specialGauge > 0.001f)
+        {
+            float drainPerSecond = GetSpecialSiphonGaugeDrainPerSecond();
+            if (drainPerSecond > 0f)
+            {
+                float nextGauge = Mathf.Max(0f, specialGauge - drainPerSecond * Time.deltaTime);
+                if (Mathf.Abs(nextGauge - specialGauge) > 0.0001f)
+                    SetSpecialGaugeImmediate(nextGauge, playGaugeFullSFX: false);
+            }
+
+            UpdateSpecialSiphonLoopSFXVolume();
+            yield return null;
+        }
+
+        _specialSiphonCR = null;
+        StopSpecialSiphonChannel(
+            forceDestroyParticles: !IsRoundActionTokenCurrent(roundToken),
+            stopRoutine: false);
+    }
+
+    float GetSpecialSiphonGaugeDrainPerSecond()
+    {
+        float percent = _castleData
+            ? Mathf.Clamp01(_castleData.bossSpecialSiphonGaugeDrainPercentPerSecond)
+            : 0.03f;
+
+        return Mathf.Max(0f, specialGaugeMax * percent);
+    }
+
+    void StopSpecialSiphonChannel(bool forceDestroyParticles, bool stopRoutine = true)
+    {
+        if (stopRoutine && _specialSiphonCR != null)
+        {
+            StopCoroutine(_specialSiphonCR);
+            _specialSiphonCR = null;
+        }
+
+        _specialSiphonActive = false;
+        StopSpecialSiphonLoopSFX();
+        if (enemyCastleUI)
+            enemyCastleUI.StopBossChannelAttackSprite();
+        StopSpecialSiphonParticles(forceDestroyParticles);
+    }
+
+    void PlaySpecialSiphonLoopSFX()
+    {
+        if (!specialSiphonLoopSFX)
+        {
+            PlayBossAbilityWarningSFX();
+            return;
+        }
+
+        AudioSource source = EnsureSpecialSiphonAudioSource();
+        if (!source) return;
+
+        if (source.isPlaying && source.clip == specialSiphonLoopSFX)
+            return;
+
+        source.Stop();
+        source.clip = specialSiphonLoopSFX;
+        source.loop = true;
+        source.pitch = 1f;
+        source.spatialBlend = 0f;
+        UpdateSpecialSiphonLoopSFXVolume();
+        source.Play();
+    }
+
+    AudioSource EnsureSpecialSiphonAudioSource()
+    {
+        if (_specialSiphonAudioSource)
+            return _specialSiphonAudioSource;
+
+        _specialSiphonAudioSource = gameObject.AddComponent<AudioSource>();
+        _specialSiphonAudioSource.playOnAwake = false;
+        _specialSiphonAudioSource.loop = true;
+        _specialSiphonAudioSource.spatialBlend = 0f;
+
+        if (AudioManager.I && AudioManager.I.sfxGroup)
+            _specialSiphonAudioSource.outputAudioMixerGroup = AudioManager.I.sfxGroup;
+
+        return _specialSiphonAudioSource;
+    }
+
+    void UpdateSpecialSiphonLoopSFXVolume()
+    {
+        if (!_specialSiphonAudioSource)
+            return;
+
+        float volume = Mathf.Clamp01(specialSiphonLoopSFXVolume);
+        if (AudioManager.I)
+            volume *= AudioManager.I.masterVolume * AudioManager.I.sfxVolume;
+
+        _specialSiphonAudioSource.volume = volume;
+    }
+
+    void StopSpecialSiphonLoopSFX()
+    {
+        if (!_specialSiphonAudioSource)
+            return;
+
+        _specialSiphonAudioSource.Stop();
+        _specialSiphonAudioSource.clip = null;
+        _specialSiphonAudioSource.pitch = 1f;
+    }
+
+    void StartSpecialSiphonParticles()
+    {
+        if (!specialSiphonParticlePrefab)
+            return;
+
+        RectTransform targetRect = GetSpecialSiphonParticleTargetRect();
+        Slider sourceSlider = specialGaugeSlider ? specialGaugeSlider : specialSlider;
+        RectTransform sourceFallbackRect = specialGaugeFillImage
+            ? specialGaugeFillImage.rectTransform
+            : (sourceSlider ? sourceSlider.transform as RectTransform : null);
+
+        if (!targetRect || (!sourceSlider && !sourceFallbackRect))
+            return;
+
+        if (!_specialSiphonParticleInstance)
+        {
+            _specialSiphonParticleInstance = Instantiate(specialSiphonParticlePrefab);
+            _specialSiphonParticleInstance.name = "SpecialSiphon_ParticleSystem_Runtime";
+            _specialSiphonParticleInstance.transform.localScale *= Mathf.Max(0.001f, specialSiphonParticleWorldScale);
+            _specialSiphonParticles = _specialSiphonParticleInstance.GetComponent<SpecialSiphonParticleController>();
+            if (!_specialSiphonParticles)
+                _specialSiphonParticles = _specialSiphonParticleInstance.AddComponent<SpecialSiphonParticleController>();
+        }
+        else if (!_specialSiphonParticles)
+        {
+            _specialSiphonParticles = _specialSiphonParticleInstance.GetComponent<SpecialSiphonParticleController>();
+            if (!_specialSiphonParticles)
+                _specialSiphonParticles = _specialSiphonParticleInstance.AddComponent<SpecialSiphonParticleController>();
+        }
+
+        if (!_specialSiphonParticles)
+            return;
+
+        _specialSiphonParticles.Configure(
+            sourceSlider,
+            sourceFallbackRect,
+            targetRect,
+            Camera.main,
+            specialSiphonParticleSpeed,
+            specialSiphonParticleArrivalRadius,
+            specialSiphonParticleSortingOrder);
+
+        _specialSiphonParticles.Begin();
+    }
+
+    void StopSpecialSiphonParticles(bool forceDestroy)
+    {
+        if (!_specialSiphonParticleInstance)
+            return;
+
+        if (forceDestroy)
+        {
+            if (_specialSiphonParticles)
+                _specialSiphonParticles.ForceDestroy();
+            else
+                Destroy(_specialSiphonParticleInstance);
+
+            _specialSiphonParticles = null;
+            _specialSiphonParticleInstance = null;
+            return;
+        }
+
+        if (_specialSiphonParticles)
+            _specialSiphonParticles.StopEmittingAndDrain();
+    }
+
+    RectTransform GetSpecialSiphonParticleTargetRect()
+    {
+        if (!enemyCastleUI)
+            return null;
+
+        if (enemyCastleUI.bossOverlayImage && enemyCastleUI.bossOverlayImage.enabled)
+            return enemyCastleUI.bossOverlayImage.rectTransform;
+
+        return enemyCastleUI.castleImage ? enemyCastleUI.castleImage.rectTransform : null;
     }
 
     void CacheBossAbilityEffectDefaults()

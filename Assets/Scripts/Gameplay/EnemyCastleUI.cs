@@ -68,6 +68,8 @@ public class EnemyCastleUI : MonoBehaviour
     Coroutine _bossSpriteCR;
     Vector2 _bossOverlayBaseAnchoredPos;
     bool _bossOverlayBaseCaptured = false;
+    bool _bossChannelAttackActive = false;
+    Vector2 _bossChannelAttackBaseAnchoredPos;
 
     Coroutine _damageShakeCR;
     List<DamageShakeTarget> _damageShakeTargets;
@@ -137,6 +139,8 @@ public class EnemyCastleUI : MonoBehaviour
 
     void OnDisable()
     {
+        StopBossSpriteRoutineIfAny();
+        ClearBossChannelAttackSprite(restoreIdle: false);
         StopDamageShake();
         ClearDamageShakeHistory();
     }
@@ -486,9 +490,13 @@ public class EnemyCastleUI : MonoBehaviour
         if (!on)
         {
             StopBossSpriteRoutineIfAny();
+            ClearBossChannelAttackSprite(restoreIdle: false);
             SetBossIdleMotionPaused(true);
             return;
         }
+
+        StopBossSpriteRoutineIfAny();
+        ClearBossChannelAttackSprite(restoreIdle: false);
 
         var brt = bossOverlayImage.rectTransform;
 
@@ -714,9 +722,58 @@ public class EnemyCastleUI : MonoBehaviour
         var sprite = GetBossAttackSprite();
         if (sprite == null) return;
 
+        ClearBossChannelAttackSprite(restoreIdle: false);
         StopBossSpriteRoutineIfAny();
         SetBossIdleMotionPaused(true);
         _bossSpriteCR = StartCoroutine(BossAttackRoutine(sprite));
+    }
+
+    public void StartBossChannelAttackSprite()
+    {
+        if (!IsBossLevelActive()) return;
+
+        var sprite = GetBossAttackSprite();
+        if (sprite == null) return;
+
+        StopBossSpriteRoutineIfAny();
+
+        var brt = bossOverlayImage.rectTransform;
+        if (!_bossChannelAttackActive)
+            _bossChannelAttackBaseAnchoredPos = brt.anchoredPosition;
+        else
+            brt.anchoredPosition = _bossChannelAttackBaseAnchoredPos;
+
+        SetBossIdleMotionPaused(true);
+        SetBossOverlaySprite(sprite);
+
+        float dir = (sourceData != null && sourceData.bossAttackShiftRight) ? 1f : -1f;
+        float dist = (sourceData != null) ? sourceData.bossAttackShiftDistance : 20f;
+
+        brt.anchoredPosition = _bossChannelAttackBaseAnchoredPos + new Vector2(dir * dist, 0f);
+        _bossChannelAttackActive = true;
+    }
+
+    public void StopBossChannelAttackSprite()
+    {
+        ClearBossChannelAttackSprite(restoreIdle: true);
+    }
+
+    void ClearBossChannelAttackSprite(bool restoreIdle)
+    {
+        if (!_bossChannelAttackActive)
+            return;
+
+        _bossChannelAttackActive = false;
+
+        if (bossOverlayImage)
+        {
+            bossOverlayImage.rectTransform.anchoredPosition = _bossChannelAttackBaseAnchoredPos;
+            if (restoreIdle)
+                SetBossOverlaySprite(GetBossIdleSprite());
+        }
+
+        if (restoreIdle)
+            SetBossIdleMotionPaused(false);
     }
 
     void TriggerBossDamageTakenSprite()
@@ -727,6 +784,7 @@ public class EnemyCastleUI : MonoBehaviour
         if (sprite == null) return;
 
         // Damage should interrupt attack 
+        ClearBossChannelAttackSprite(restoreIdle: false);
         StopBossSpriteRoutineIfAny();
         SetBossIdleMotionPaused(true);
         _bossSpriteCR = StartCoroutine(BossDamageRoutine(sprite));
