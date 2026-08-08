@@ -168,6 +168,11 @@ public class GameController : MonoBehaviour
     [SerializeField, Min(0.001f)] float specialSiphonParticleWorldScale = 0.02f;
     [SerializeField] int specialSiphonParticleSortingOrder = 1000;
 
+    [Header("Boss Teleport / Zip Pad")]
+    [SerializeField] AudioClip zipPadSpawnSFX;
+    [SerializeField, Range(0f, 2f)] float zipPadSpawnSFXVolume = 1f;
+    [SerializeField, Min(1f)] float bossTeleportWarningRotationDegreesPerSecond = 360f;
+
     Coroutine _bossGravityBlinkCR;
     bool _bossGravityVisualActive;
     Sprite _bossAbilityEffectDefaultSprite;
@@ -184,6 +189,7 @@ public class GameController : MonoBehaviour
     AudioSource _specialSiphonAudioSource;
     GameObject _specialSiphonParticleInstance;
     SpecialSiphonParticleController _specialSiphonParticles;
+    readonly List<Vector2Int> _bossTeleportTargetScratch = new();
 
     [Header("Run Mods")]
     public RunModifierSO[] buffPool;
@@ -8406,6 +8412,8 @@ public class GameController : MonoBehaviour
         if (_castleData.bossEnableMagicExplosive) picks.Add(CastleData.BossAbilityKind.MagicExplosive);
         if (_castleData.bossEnableForcedDuplication) picks.Add(CastleData.BossAbilityKind.ForcedDuplication);
         if (_castleData.bossEnableSpecialSiphon) picks.Add(CastleData.BossAbilityKind.SpecialSiphon);
+        if (_castleData.bossEnableTeleport) picks.Add(CastleData.BossAbilityKind.Teleport);
+        if (_castleData.bossEnableZipPad) picks.Add(CastleData.BossAbilityKind.ZipPad);
 
         for (int i = picks.Count - 1; i >= 0; i--)
         {
@@ -8440,6 +8448,8 @@ public class GameController : MonoBehaviour
             case CastleData.BossAbilityKind.MagicExplosive: Boss_MagicExplosive(); break;
             case CastleData.BossAbilityKind.ForcedDuplication: Boss_ForcedDuplication(); break;
             case CastleData.BossAbilityKind.SpecialSiphon: Boss_SpecialSiphon(); break;
+            case CastleData.BossAbilityKind.Teleport: Boss_Teleport(); break;
+            case CastleData.BossAbilityKind.ZipPad: Boss_ZipPad(); break;
         }
     }
 
@@ -8511,6 +8521,8 @@ public class GameController : MonoBehaviour
             case CastleData.BossAbilityKind.MagicExplosive: return cd.bossEnableMagicExplosive;
             case CastleData.BossAbilityKind.ForcedDuplication: return cd.bossEnableForcedDuplication;
             case CastleData.BossAbilityKind.SpecialSiphon: return cd.bossEnableSpecialSiphon;
+            case CastleData.BossAbilityKind.Teleport: return cd.bossEnableTeleport;
+            case CastleData.BossAbilityKind.ZipPad: return cd.bossEnableZipPad;
             default: return false;
         }
     }
@@ -8527,6 +8539,24 @@ public class GameController : MonoBehaviour
                     return false;
 
                 return specialGaugeMax > 0f && specialGauge > 0.001f;
+
+            case CastleData.BossAbilityKind.Teleport:
+                if (_castleData == null || !gameBoard)
+                    return false;
+
+                return gameBoard.HasTeleportableMonsterDestination(
+                    _castleData.bossTeleportDestinationExcludedTopRows,
+                    _castleData.bossTeleportDestinationExcludedBottomRows,
+                    requireNonCompletingDestination: true);
+
+            case CastleData.BossAbilityKind.ZipPad:
+                if (_castleData == null || !gameBoard)
+                    return false;
+
+                return gameBoard.HasAnyFloorEffectSpawnCell(
+                    _castleData.bossZipPadExcludedTopRows,
+                    _castleData.bossZipPadExcludedBottomRows,
+                    requireEmpty: true);
 
             default:
                 return true;
@@ -9155,6 +9185,129 @@ public class GameController : MonoBehaviour
         }
 
         PlayBossAbilityWarningSFX();
+    }
+
+    void Boss_Teleport()
+    {
+        if (_castleData == null || gameBoard == null) return;
+
+        int excludedTopRows = Mathf.Max(0, _castleData.bossTeleportDestinationExcludedTopRows);
+        int excludedBottomRows = Mathf.Max(0, _castleData.bossTeleportDestinationExcludedBottomRows);
+
+        gameBoard.GetMonsterCellsNonAlloc(_bossTeleportTargetScratch, includeDead: false);
+        for (int i = _bossTeleportTargetScratch.Count - 1; i >= 0; i--)
+        {
+            if (!gameBoard.HasTeleportDestinationForMonster(
+                _bossTeleportTargetScratch[i],
+                excludedTopRows,
+                excludedBottomRows,
+                requireNonCompletingDestination: true))
+            {
+                _bossTeleportTargetScratch.RemoveAt(i);
+            }
+        }
+
+        if (_bossTeleportTargetScratch.Count == 0)
+            return;
+
+        ShuffleVectorCells(_bossTeleportTargetScratch);
+
+        int minTargets = Mathf.Max(1, _castleData.bossTeleportTargetsMin);
+        int maxTargets = Mathf.Max(minTargets, _castleData.bossTeleportTargetsMax);
+        int targetCount = Mathf.Min(_bossTeleportTargetScratch.Count, Random.Range(minTargets, maxTargets + 1));
+
+        var targets = new List<Vector2Int>(targetCount);
+        for (int i = 0; i < targetCount; i++)
+            targets.Add(_bossTeleportTargetScratch[i]);
+
+        StartCoroutine(BossTeleportRoutine(targets, excludedTopRows, excludedBottomRows, _roundLifecycleToken));
+    }
+
+    IEnumerator BossTeleportRoutine(List<Vector2Int> targets, int excludedTopRows, int excludedBottomRows, int roundToken)
+    {
+        if (targets == null || targets.Count == 0 || !gameBoard || !IsRoundActionTokenCurrent(roundToken))
+            yield break;
+
+        float warningSeconds = Mathf.Max(0.1f, _castleData ? _castleData.bossTeleportWarningSeconds : 2f);
+        float toggle = (_castleData != null) ? Mathf.Max(0.02f, _castleData.bossWarningToggleInterval) : 0.16f;
+        Sprite warningSprite = gameBoard.teleportWarningSprite
+            ? gameBoard.teleportWarningSprite
+            : PickWarningSprite(null);
+
+        PlayBossAbilityWarningSFX();
+
+        if (warningSprite)
+        {
+            for (int i = 0; i < targets.Count; i++)
+            {
+                if (gameBoard.InBounds(targets[i]))
+                {
+                    gameBoard.FlashRotatingWarningAtCell(
+                        targets[i],
+                        warningSprite,
+                        warningSeconds,
+                        toggle,
+                        0.8f,
+                        bossTeleportWarningRotationDegreesPerSecond);
+                }
+            }
+        }
+
+        yield return new WaitForSeconds(warningSeconds);
+
+        if (!IsRoundActionTokenCurrent(roundToken) || !gameBoard)
+            yield break;
+
+        for (int i = 0; i < targets.Count; i++)
+        {
+            Vector2Int source = targets[i];
+            gameBoard.TryTeleportMonsterToRandomDestination(
+                source,
+                excludedTopRows,
+                excludedBottomRows,
+                requireNonCompletingDestination: true,
+                out _,
+                playSfx: true);
+        }
+    }
+
+    void Boss_ZipPad()
+    {
+        if (_castleData == null || gameBoard == null) return;
+
+        if (!gameBoard.TryGetRandomCellForFloorEffect(
+            _castleData.bossZipPadExcludedTopRows,
+            _castleData.bossZipPadExcludedBottomRows,
+            requireEmpty: true,
+            out var cell))
+            return;
+
+        if (!gameBoard.SetFloorEffect(cell, Board.FloorEffectType.ZipPad, 0f, 1f, -1))
+            return;
+
+        PlayZipPadSpawnSFX();
+    }
+
+    void PlayZipPadSpawnSFX()
+    {
+        if (AudioManager.I && zipPadSpawnSFX)
+        {
+            AudioManager.I.PlaySFX(zipPadSpawnSFX, zipPadSpawnSFXVolume, pitch: 1f, jitter: false);
+            return;
+        }
+
+        PlayBossAbilityWarningSFX();
+    }
+
+    void ShuffleVectorCells(List<Vector2Int> cells)
+    {
+        if (cells == null) return;
+
+        for (int i = cells.Count - 1; i > 0; i--)
+        {
+            int j = Random.Range(0, i + 1);
+            (cells[i], cells[j]) = (cells[j], cells[i]);
+        }
     }
 
     void Boss_SpecialSiphon()

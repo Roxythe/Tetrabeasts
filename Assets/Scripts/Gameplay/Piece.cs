@@ -48,6 +48,7 @@ public class Piece : MonoBehaviour
     Coroutine visualTransitionCoroutine;
     bool hardDropVisualLockPending;
     bool completingVisualTransition;
+    bool zipPadDropInProgress;
     readonly List<Vector2Int> hardDropPreviewBorderCells = new();
 
 
@@ -77,6 +78,7 @@ public class Piece : MonoBehaviour
         hardDropVisualLockPending = false;
         visualTransitionCoroutine = null;
         completingVisualTransition = false;
+        zipPadDropInProgress = false;
     }
 
     void OnDisable()
@@ -253,6 +255,9 @@ public class Piece : MonoBehaviour
             fallTimer = 0f;
             lockTimer = 0f;
         }
+
+        if (TryTriggerZipPadUnderActivePiece())
+            return;
 
         if (data.special != SpecialType.None)
             UpdateSpecialHints();
@@ -824,6 +829,29 @@ public class Piece : MonoBehaviour
         Lock();
     }
 
+    bool TryTriggerZipPadUnderActivePiece()
+    {
+        if (!enabled || zipPadDropInProgress || board == null || cells.Count == 0)
+            return false;
+
+        for (int i = 0; i < cells.Count; i++)
+        {
+            Vector2Int cell = cells[i];
+            if (!board.InBounds(cell))
+                continue;
+
+            if (!board.TryTriggerZipPadForActivePiece(cell))
+                continue;
+
+            zipPadDropInProgress = true;
+            ClearHints();
+            HardDrop(false);
+            return true;
+        }
+
+        return false;
+    }
+
     void RotateCW(bool notifyTutorial = false)
     {
         Vector2Int rotationOrigin = origin;
@@ -869,6 +897,7 @@ public class Piece : MonoBehaviour
 
         visualTransitionCoroutine = null;
         hardDropVisualLockPending = false;
+        zipPadDropInProgress = false;
 
         var gc = GetGameController();
         bool toppedOut = false;
@@ -1192,6 +1221,7 @@ public class Piece : MonoBehaviour
         cells.Clear();
         fallTimer = 0f;
         lockTimer = 0f;
+        zipPadDropInProgress = false;
     }
 
     public bool HasActiveCells => enabled && cells.Count > 0;

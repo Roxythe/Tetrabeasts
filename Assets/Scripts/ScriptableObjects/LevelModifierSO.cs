@@ -24,7 +24,9 @@ public enum LevelModifierKind
     Disarray,
     OutFlanked,
     VolcanicEruption,
-    Roulette
+    Roulette,
+    SoftSpace,
+    TurboBoosted
 }
 
 [System.Serializable]
@@ -169,4 +171,12 @@ public class LevelModifierSO : ScriptableObject
 
     [Header("Roulette")]
     [Min(0.1f)] public float roulettePreviewInterval = 1f;
+
+    [Header("Soft Space")]
+    [Min(0.1f)] public float softSpaceTeleportInterval = 6f;
+    [Min(0)] public int softSpaceTeleportDestinationExcludedTopRows = 4;
+    [Min(0)] public int softSpaceTeleportDestinationExcludedBottomRows = 0;
+
+    [Header("Turbo Boosted")]
+    [Min(1)] public int turboBoostedRowFromTop = 5;
 }

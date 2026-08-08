@@ -150,6 +150,14 @@ MonoBehaviour:
     weight: 3
     allowRepeat: 0
     cooldown: 10
+  - kind: 10
+    weight: 5
+    allowRepeat: 1
+    cooldown: 12
+  - kind: 11
+    weight: 5
+    allowRepeat: 1
+    cooldown: 12
   bossInvulnDuration: 10
   bossInvulnHitSFX: {fileID: 8300000, guid: 872123507b80dd64ab56ef9159446175, type: 3}
   bossGravityBonusMult: 2

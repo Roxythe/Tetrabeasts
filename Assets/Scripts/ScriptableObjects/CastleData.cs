@@ -77,6 +77,8 @@ public class CastleData : ScriptableObject
     public int overridePoisonCount = -1;
     public int overrideFireCount = -1;
     public int overrideSpikeCount = -1;
+    public int overrideTeleportCount = -1;
+    public int overrideZipPadCount = -1;
 
     [Header("Level Modifiers")]
     [Tooltip("If enabled on a normal level, the game will randomly select a single level modifier before gameplay starts.")]
@@ -97,6 +99,8 @@ public class CastleData : ScriptableObject
     public bool bossEnableMagicExplosive = true;
     public bool bossEnableForcedDuplication = true;
     public bool bossEnableSpecialSiphon = true;
+    public bool bossEnableTeleport = true;
+    public bool bossEnableZipPad = true;
 
     [Header("Boss Abilities - Global Timing")]
     [Min(0.25f)] public float bossAbilityIntervalMin = 4f;
@@ -151,7 +155,9 @@ public class CastleData : ScriptableObject
         PylonShield,
         MagicExplosive,
         ForcedDuplication,
-        SpecialSiphon
+        SpecialSiphon,
+        Teleport,
+        ZipPad
     }
 
     [System.Serializable]
@@ -181,6 +187,17 @@ public class CastleData : ScriptableObject
 
     [Header("Boss - Special Siphon")]
     [Range(0f, 1f)] public float bossSpecialSiphonGaugeDrainPercentPerSecond = 0.03f;
+
+    [Header("Boss - Teleport")]
+    [Min(1)] public int bossTeleportTargetsMin = 1;
+    [Min(1)] public int bossTeleportTargetsMax = 5;
+    [Min(0.1f)] public float bossTeleportWarningSeconds = 2f;
+    [Min(0)] public int bossTeleportDestinationExcludedTopRows = 4;
+    [Min(0)] public int bossTeleportDestinationExcludedBottomRows = 2;
+
+    [Header("Boss - Zip Pad")]
+    [Min(0)] public int bossZipPadExcludedTopRows = 4;
+    [Min(0)] public int bossZipPadExcludedBottomRows = 2;
 
     [Header("Boss Ability Warnings")]
     [Min(0f)] public float bossAbilityWarningSeconds = 3f;

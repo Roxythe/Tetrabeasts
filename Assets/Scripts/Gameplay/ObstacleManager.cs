@@ -41,6 +41,13 @@ public class ObstacleManager : MonoBehaviour
     public int spikePerLevel = 0;
     public float spikeOneShotDamage = 8f;
 
+    public int teleportBaseCount = 0;
+    public int teleportPerLevel = 0;
+    public int zipPadBaseCount = 0;
+    public int zipPadPerLevel = 0;
+    [Min(0)] public int specialFloorExcludedTopRows = 4;
+    [Min(0)] public int specialFloorExcludedBottomRows = 2;
+
     GameController _gc;
     Board _board;
     int _stoneSpawnRowGrowthBonus;
@@ -62,11 +69,15 @@ public class ObstacleManager : MonoBehaviour
         int poisons = Mathf.Max(0, poisonBaseCount + poisonPerLevel * Mathf.Max(0, levelIndex - 1));
         int fires = Mathf.Max(0, fireBaseCount + firePerLevel * Mathf.Max(0, levelIndex - 1));
         int spikes = Mathf.Max(0, spikeBaseCount + spikePerLevel * Mathf.Max(0, levelIndex - 1));
+        int teleports = Mathf.Max(0, teleportBaseCount + teleportPerLevel * Mathf.Max(0, levelIndex - 1));
+        int zipPads = Mathf.Max(0, zipPadBaseCount + zipPadPerLevel * Mathf.Max(0, levelIndex - 1));
 
         SpawnRandomStones(stones);
         SpawnRandomFloorEffect(Board.FloorEffectType.Poison, poisons);
         SpawnRandomFloorEffect(Board.FloorEffectType.Burn, fires);
         SpawnRandomFloorEffect(Board.FloorEffectType.Spike, spikes);
+        SpawnRandomFloorEffect(Board.FloorEffectType.Teleport, teleports);
+        SpawnRandomFloorEffect(Board.FloorEffectType.ZipPad, zipPads);
     }
 
     // Overload that accepts CastleData for optional per-level overrides
@@ -79,6 +90,8 @@ public class ObstacleManager : MonoBehaviour
         int poisons = Mathf.Max(0, poisonBaseCount + poisonPerLevel * Mathf.Max(0, levelIndex - 1));
         int fires = Mathf.Max(0, fireBaseCount + firePerLevel * Mathf.Max(0, levelIndex - 1));
         int spikes = Mathf.Max(0, spikeBaseCount + spikePerLevel * Mathf.Max(0, levelIndex - 1));
+        int teleports = Mathf.Max(0, teleportBaseCount + teleportPerLevel * Mathf.Max(0, levelIndex - 1));
+        int zipPads = Mathf.Max(0, zipPadBaseCount + zipPadPerLevel * Mathf.Max(0, levelIndex - 1));
 
         // Optional per-level overrides from CastleData
         if (castleData && castleData.overrideInitialObstacles)
@@ -92,6 +105,8 @@ public class ObstacleManager : MonoBehaviour
                 if (castleData.overridePoisonCount >= 0) poisons = castleData.overridePoisonCount;
                 if (castleData.overrideFireCount >= 0) fires = castleData.overrideFireCount;
                 if (castleData.overrideSpikeCount >= 0) spikes = castleData.overrideSpikeCount;
+                if (castleData.overrideTeleportCount >= 0) teleports = castleData.overrideTeleportCount;
+                if (castleData.overrideZipPadCount >= 0) zipPads = castleData.overrideZipPadCount;
             }
         }
 
@@ -99,6 +114,8 @@ public class ObstacleManager : MonoBehaviour
         SpawnRandomFloorEffect(Board.FloorEffectType.Poison, poisons);
         SpawnRandomFloorEffect(Board.FloorEffectType.Burn, fires);
         SpawnRandomFloorEffect(Board.FloorEffectType.Spike, spikes);
+        SpawnRandomFloorEffect(Board.FloorEffectType.Teleport, teleports);
+        SpawnRandomFloorEffect(Board.FloorEffectType.ZipPad, zipPads);
     }
 
     public bool SpawnStoneAt(Vector2Int cell)
@@ -121,16 +138,19 @@ public class ObstacleManager : MonoBehaviour
         switch (type)
         {
             case Board.FloorEffectType.Poison:
-                _board.SetFloorEffect(cell, type, GetScaledFloorEffectDamage(poisonTickDamage), poisonTickInterval, poisonTicks);
-                return true;
+                return _board.SetFloorEffect(cell, type, GetScaledFloorEffectDamage(poisonTickDamage), poisonTickInterval, poisonTicks);
 
             case Board.FloorEffectType.Burn:
-                _board.SetFloorEffect(cell, type, GetScaledFloorEffectDamage(fireTickDamage), fireTickInterval, fireTicks);
-                return true;
+                return _board.SetFloorEffect(cell, type, GetScaledFloorEffectDamage(fireTickDamage), fireTickInterval, fireTicks);
 
             case Board.FloorEffectType.Spike:
-                _board.SetFloorEffect(cell, type, GetScaledFloorEffectDamage(spikeOneShotDamage), 1f, 1);
-                return true;
+                return _board.SetFloorEffect(cell, type, GetScaledFloorEffectDamage(spikeOneShotDamage), 1f, 1);
+
+            case Board.FloorEffectType.Teleport:
+                return _board.SetFloorEffect(cell, type, 0f, 1f, -1);
+
+            case Board.FloorEffectType.ZipPad:
+                return _board.SetFloorEffect(cell, type, 0f, 1f, -1);
         }
 
         return false;
@@ -154,7 +174,7 @@ public class ObstacleManager : MonoBehaviour
     {
         for (int i = 0; i < count; i++)
         {
-            if (!TryGetRandomSpawnCellForEffect(out var cell)) break;
+            if (!TryGetRandomSpawnCellForEffect(type, out var cell)) break;
             SpawnFloorEffectAt(cell, type);
         }
     }
@@ -178,10 +198,19 @@ public class ObstacleManager : MonoBehaviour
         return false;
     }
 
-    bool TryGetRandomSpawnCellForEffect(out Vector2Int cell)
+    bool TryGetRandomSpawnCellForEffect(Board.FloorEffectType type, out Vector2Int cell)
     {
         cell = default;
         if (_board == null) return false;
+
+        if (type == Board.FloorEffectType.Teleport || type == Board.FloorEffectType.ZipPad)
+        {
+            return _board.TryGetRandomCellForFloorEffect(
+                Mathf.Max(0, specialFloorExcludedTopRows),
+                Mathf.Max(0, specialFloorExcludedBottomRows),
+                requireEmpty: type == Board.FloorEffectType.ZipPad,
+                out cell);
+        }
 
         for (int a = 0; a < maxAttemptsPerSpawn; a++)
         {

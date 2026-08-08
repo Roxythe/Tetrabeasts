@@ -64,6 +64,10 @@ public sealed class BattleLogUI : MonoBehaviour
         { "Boss_ForcedDuplication", "Forced Duplication" },
         { "SpecialSiphon", "Special Siphon" },
         { "Boss_SpecialSiphon", "Special Siphon" },
+        { "Teleport", "Teleport" },
+        { "Boss_Teleport", "Teleport" },
+        { "ZipPad", "Zip Pad" },
+        { "Boss_ZipPad", "Zip Pad" },
     };
 
     private void Awake()

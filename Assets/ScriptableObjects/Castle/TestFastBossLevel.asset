@@ -18,12 +18,21 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 9082ffe4cf1f7e146b700d31ac4725da, type: 3}
   - {fileID: 21300000, guid: 72665c402bca98948ac42bedf1620070, type: 3}
   - {fileID: 21300000, guid: 8ef84dac0848a8b4f81252dbc3fac646, type: 3}
-  maxHP: 2
+  levelBackgroundSprite: {fileID: 0}
+  hpGaugeFrameSprite: {fileID: 0}
+  levelBackgroundVideoClip: {fileID: 0}
+  levelBackgroundVideoPlaybackSpeed: 0
+  levelBackgroundVideoPingPongLoop: 0
+  boardBackgroundSprite: {fileID: 0}
+  maxHP: 100
   infiniteHealth: 0
   projectileSprite: {fileID: 21300000, guid: ca7186951d5077d419fe7998de074c6d, type: 3}
   projectileInterval: 3
   projectileSpeed: 800
+  projectileGravitySpeedExponent: 0.5
+  projectileVisualScale: 1
   projectileDamage: 10
+  baseEnemyProjectilesPerAttack: 1
   sfxProjectileHitTile: {fileID: 8300000, guid: 23223cee22f6a6c4caceff40d1bcd1e6, type: 3}
   sfxProjectileHitTileClips:
   - {fileID: 8300000, guid: fccb4318ede48ff4db14c0d040030810, type: 3}
@@ -59,18 +68,24 @@ MonoBehaviour:
   overridePoisonCount: 1
   overrideFireCount: 1
   overrideSpikeCount: 1
+  overrideTeleportCount: -1
+  overrideZipPadCount: -1
   enableLevelModifierSelection: 0
   levelModifierDatabase: {fileID: 0}
   allowedLevelModifierKinds: 
-  bossEnableRowBlast: 1
-  bossEnableFullBoardBlast: 1
-  bossEnableLightningStrike: 1
-  bossEnableSpawnTraps: 1
-  bossEnableInvulnerability: 1
-  bossEnableGravityBoost: 1
-  bossEnablePylonShield: 1
-  bossEnableMagicExplosive: 1
-  bossAbilityIntervalMin: 10
+  bossEnableRowBlast: 0
+  bossEnableFullBoardBlast: 0
+  bossEnableLightningStrike: 0
+  bossEnableSpawnTraps: 0
+  bossEnableInvulnerability: 0
+  bossEnableGravityBoost: 0
+  bossEnablePylonShield: 0
+  bossEnableMagicExplosive: 0
+  bossEnableForcedDuplication: 0
+  bossEnableSpecialSiphon: 0
+  bossEnableTeleport: 0
+  bossEnableZipPad: 1
+  bossAbilityIntervalMin: 8
   bossAbilityIntervalMax: 15
   bossRowBlastDamage: 5
   bossFullBoardDamage: 3
@@ -141,10 +156,36 @@ MonoBehaviour:
     weight: 5
     allowRepeat: 0
     cooldown: 10
+  - kind: 10
+    weight: 100
+    allowRepeat: 1
+    cooldown: 5
+  - kind: 9
+    weight: 100
+    allowRepeat: 1
+    cooldown: 5
+  - kind: 11
+    weight: 100
+    allowRepeat: 1
+    cooldown: 5
+  - kind: 11
+    weight: 100
+    allowRepeat: 1
+    cooldown: 5
   bossInvulnDuration: 10
   bossInvulnHitSFX: {fileID: 8300000, guid: 872123507b80dd64ab56ef9159446175, type: 3}
   bossGravityBonusMult: 2
   bossGravityDuration: 10
+  bossForcedDuplicationMinPieces: 5
+  bossForcedDuplicationMaxPieces: 9
+  bossSpecialSiphonGaugeDrainPercentPerSecond: 0.03
+  bossTeleportTargetsMin: 1
+  bossTeleportTargetsMax: 5
+  bossTeleportWarningSeconds: 2
+  bossTeleportDestinationExcludedTopRows: 4
+  bossTeleportDestinationExcludedBottomRows: 2
+  bossZipPadExcludedTopRows: 4
+  bossZipPadExcludedBottomRows: 2
   bossAbilityWarningSeconds: 3
   bossWarningToggleInterval: 0.16
   bossRowBlastWarningSprite: {fileID: -4364613411904784052, guid: d7609c71eb781fd4caca65888f6f03b4, type: 3}

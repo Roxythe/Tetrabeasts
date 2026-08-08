@@ -125,6 +125,7 @@ public class LevelModifierController : MonoBehaviour
     bool _autoShiftMovingRight = true;
     float _outFlankedCountdown;
     float _volcanicEruptionCountdown;
+    float _softSpaceCountdown;
     int _availableRerolls;
     int _comboShieldRemaining;
     int _pendingComboShieldBreaks;
@@ -199,6 +200,9 @@ public class LevelModifierController : MonoBehaviour
                 break;
             case LevelModifierKind.VolcanicEruption:
                 UpdateVolcanicEruption(dt);
+                break;
+            case LevelModifierKind.SoftSpace:
+                UpdateSoftSpace(dt);
                 break;
         }
 
@@ -617,6 +621,7 @@ public class LevelModifierController : MonoBehaviour
         _autoShiftMovingRight = true;
         _outFlankedCountdown = 0f;
         _volcanicEruptionCountdown = 0f;
+        _softSpaceCountdown = 0f;
 
         if (ActiveModifier.kind == LevelModifierKind.SpecialLock)
             _gc?.SetSpecialGaugeImmediate(0f);
@@ -647,6 +652,16 @@ public class LevelModifierController : MonoBehaviour
         if (ActiveModifier.kind == LevelModifierKind.VolcanicEruption)
         {
             ScheduleVolcanicEruption();
+            SyncVolcanicBoardAnimationRoots();
+        }
+        else if (ActiveModifier.kind == LevelModifierKind.TurboBoosted)
+        {
+            ApplyTurboBoostedZipPads();
+            SyncVolcanicBoardAnimationRoots();
+        }
+        else if (ActiveModifier.kind == LevelModifierKind.SoftSpace)
+        {
+            _softSpaceCountdown = Mathf.Max(0.1f, ActiveModifier.softSpaceTeleportInterval);
             SyncVolcanicBoardAnimationRoots();
         }
         else
@@ -1286,6 +1301,60 @@ public class LevelModifierController : MonoBehaviour
         }
     }
 
+    void UpdateSoftSpace(float dt)
+    {
+        if (!board || !ActiveModifier)
+            return;
+
+        _softSpaceCountdown -= dt;
+        if (_softSpaceCountdown > 0f)
+            return;
+
+        _softSpaceCountdown = Mathf.Max(0.1f, ActiveModifier.softSpaceTeleportInterval);
+        SpawnSoftSpaceTeleportFloor();
+    }
+
+    void SpawnSoftSpaceTeleportFloor()
+    {
+        if (!board || !ActiveModifier)
+            return;
+
+        if (!board.TryGetRandomCellForFloorEffect(
+            excludedTopRows: 0,
+            excludedBottomRows: 0,
+            requireEmpty: false,
+            out var cell))
+            return;
+
+        if (!board.SetFloorEffect(cell, Board.FloorEffectType.Teleport, 0f, 1f, -1))
+            return;
+
+        board.TryActivateTeleportFloorEffect(
+            cell,
+            ActiveModifier.softSpaceTeleportDestinationExcludedTopRows,
+            ActiveModifier.softSpaceTeleportDestinationExcludedBottomRows,
+            requireNonCompletingDestination: false,
+            clearAfterActivation: true);
+    }
+
+    void ApplyTurboBoostedZipPads()
+    {
+        if (!board || !ActiveModifier)
+            return;
+
+        int rowFromTop = Mathf.Max(1, ActiveModifier.turboBoostedRowFromTop);
+        int row = board.height - rowFromTop;
+        if (row < 0 || row >= board.height)
+            return;
+
+        for (int x = 0; x < board.width; x++)
+        {
+            Vector2Int cell = new Vector2Int(x, row);
+            board.ClearFloorEffect(cell);
+            board.SetFloorEffect(cell, Board.FloorEffectType.ZipPad, 0f, 1f, -1);
+        }
+    }
+
     Vector2 BoardLocalToRoot(RectTransform root, Vector2 anchored)
     {
         if (!board || !board.gridRoot || !root || root == board.gridRoot)
@@ -1873,6 +1942,7 @@ public class LevelModifierController : MonoBehaviour
         _autoShiftMovingRight = true;
         _outFlankedCountdown = 0f;
         _volcanicEruptionCountdown = 0f;
+        _softSpaceCountdown = 0f;
         _comboShieldRemaining = 0;
         _pendingComboShieldBreaks = 0;
         _rearAmbushRowsSpawnedThisLevel = 0;

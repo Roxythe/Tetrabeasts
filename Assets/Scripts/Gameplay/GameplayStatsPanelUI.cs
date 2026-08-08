@@ -623,6 +623,18 @@ public class GameplayStatsPanelUI : MonoBehaviour
                     FormatSignedSeconds, false, forceNegative: true, sources: levelModSource);
                 break;
 
+            case LevelModifierKind.SoftSpace:
+                AddComparedFloat(_statsContent, "Teleport Spawn Interval", modifier.softSpaceTeleportInterval, 0f, FormatSeconds,
+                    FormatSignedSeconds, false, forceNegative: true, sources: levelModSource);
+                AddComparedFloat(_statsContent, "Destination Top Rows Excluded", modifier.softSpaceTeleportDestinationExcludedTopRows, 0f,
+                    FormatWhole, FormatSignedWhole, true, sources: levelModSource);
+                break;
+
+            case LevelModifierKind.TurboBoosted:
+                AddComparedFloat(_statsContent, "Zip Pad Row From Top", modifier.turboBoostedRowFromTop, 0f,
+                    FormatWhole, FormatSignedWhole, false, forceNegative: true, sources: levelModSource);
+                break;
+
             default:
                 AddTextStat(_statsContent, "Effect", modifier.description, negativeColor, sources: levelModSource);
                 break;

@@ -143,6 +143,16 @@ public class Board : MonoBehaviour
     public Sprite poisonBorderSprite; 
     public Sprite fireBorderSprite;  
     public Sprite lightningBorderSprite;
+    public Sprite teleportWarningSprite;
+    public Sprite zipPadSprite;
+    public AudioClip teleportSFX;
+    public AudioClip[] zipPadSFXClips;
+    [SerializeField, Range(0.1f, 1f)] float teleportFloorVisualScale = 0.9f;
+    [SerializeField, Min(1f)] float teleportFloorRotationDegreesPerSecond = 180f;
+    [SerializeField, Min(0)] int teleportFloorDestinationExcludedTopRows = 4;
+    [SerializeField, Min(0)] int teleportFloorDestinationExcludedBottomRows = 0;
+    [SerializeField, Range(0.1f, 1f)] float zipPadVisualScale = 0.95f;
+    [SerializeField, Min(1f)] float zipPadScrollPixelsPerSecond = 140f;
 
     public Sprite spikeSpriteLow;            // Spike frame A (lower)
     public Sprite spikeSpriteHigh;           // Spike frame B (raised)
@@ -214,7 +224,7 @@ public class Board : MonoBehaviour
 
     public event Action<Vector2Int, ObstacleType> ObstacleDestroyed;
 
-    public enum FloorEffectType { Poison, Burn, Spike, Lightning }
+    public enum FloorEffectType { Poison, Burn, Spike, Lightning, Teleport, ZipPad }
 
     public struct FloorEffectState
     {
@@ -278,10 +288,37 @@ public class Board : MonoBehaviour
                 nextTickTime = Time.time + Mathf.Max(0.05f, interval)
             };
         }
+
+        public static FloorEffectState Teleport()
+        {
+            return new FloorEffectState
+            {
+                type = FloorEffectType.Teleport,
+                damage = 0f,
+                interval = 1f,
+                ticksRemaining = -1,
+                nextTickTime = 0f
+            };
+        }
+
+        public static FloorEffectState ZipPad()
+        {
+            return new FloorEffectState
+            {
+                type = FloorEffectType.ZipPad,
+                damage = 0f,
+                interval = 1f,
+                ticksRemaining = -1,
+                nextTickTime = 0f
+            };
+        }
     }
 
     readonly Dictionary<Vector2Int, FloorEffectState> floorEffects = new();
     readonly List<Vector2Int> floorEffectKeysScratch = new();
+    readonly List<Vector2Int> teleportDestinationScratch = new();
+    readonly List<Vector2Int> teleportSafeDestinationScratch = new();
+    readonly List<Vector2Int> floorEffectCellScratch = new();
 
     // visuals
     readonly Dictionary<Vector2Int, Image> poisonBorders = new();
@@ -305,7 +342,26 @@ public class Board : MonoBehaviour
 
     readonly Dictionary<Vector2Int, SpikeVisual> spikeVisuals = new();
 
+    class TeleportVisual
+    {
+        public RectTransform root;
+        public Image image;
+    }
+
+    readonly Dictionary<Vector2Int, TeleportVisual> teleportVisuals = new();
+
+    class ZipPadVisual
+    {
+        public RectTransform root;
+        public Image[] arrows;
+        public float offset;
+    }
+
+    readonly Dictionary<Vector2Int, ZipPadVisual> zipPadVisuals = new();
+
     public bool HasFloorEffect(Vector2Int cell) => floorEffects.ContainsKey(cell);
+    public bool HasFloorEffectOfType(Vector2Int cell, FloorEffectType type) =>
+        floorEffects.TryGetValue(cell, out var fx) && fx.type == type;
 
     // Events
     public event Action<Vector2Int, MonsterData> TileDied; // Event called when a tile's HP reaches 0
@@ -641,6 +697,8 @@ public class Board : MonoBehaviour
 
         TickFloorEffects();
         AnimateSpikes();
+        AnimateTeleportFloorEffects();
+        AnimateZipPads();
         TickMagicExplosives();
         RefreshAllTintUnderlays();
         TickAttackPortraitIdleSwaps();
@@ -987,6 +1045,7 @@ public class Board : MonoBehaviour
         var rt = img.rectTransform;
         rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
         rt.localScale = Vector3.one;
+        rt.localRotation = Quaternion.identity;
         rt.anchoredPosition = Vector2.zero;
         rt.SetAsLastSibling();
 
@@ -1002,6 +1061,8 @@ public class Board : MonoBehaviour
         img.sprite = null;
         img.enabled = true;
         img.color = Color.white;
+        img.rectTransform.localRotation = Quaternion.identity;
+        img.rectTransform.localScale = Vector3.one;
         img.gameObject.SetActive(false);
 
         if (!overlayImagePools.TryGetValue(objectName, out var pool))
@@ -1644,6 +1705,12 @@ public class Board : MonoBehaviour
         foreach (var kv in spikeVisuals) if (kv.Value != null && kv.Value.root) Destroy(kv.Value.root.gameObject);
         spikeVisuals.Clear();
 
+        foreach (var kv in teleportVisuals) if (kv.Value != null && kv.Value.root) Destroy(kv.Value.root.gameObject);
+        teleportVisuals.Clear();
+
+        foreach (var kv in zipPadVisuals) if (kv.Value != null && kv.Value.root) Destroy(kv.Value.root.gameObject);
+        zipPadVisuals.Clear();
+
         foreach (var kv in floorTintUnderlays) if (kv.Value) Destroy(kv.Value.gameObject);
         floorTintUnderlays.Clear();
 
@@ -1659,6 +1726,7 @@ public class Board : MonoBehaviour
     {
         magicExplosives.Clear();
         DestroyOverlayChildrenNamed("BossWarning");
+        DestroyOverlayChildrenNamed("BossRotatingWarning");
         DestroyOverlayChildrenNamed("CellWarningTint");
         DestroyOverlayChildrenNamed("CellVFX");
     }
@@ -3262,6 +3330,294 @@ public class Board : MonoBehaviour
         return filled >= (width - 1); // If all other cells are already filled
     }
 
+    public bool WouldCompleteRowIfMoved(Vector2Int from, Vector2Int to)
+    {
+        if (!InBounds(from) || !InBounds(to)) return false;
+        if (!IsFree(to)) return false;
+
+        int filled = 0;
+        for (int x = 0; x < width; x++)
+        {
+            var c = new Vector2Int(x, to.y);
+            if (c == from)
+                continue;
+
+            if (placed.ContainsKey(c))
+                filled++;
+        }
+
+        return filled >= (width - 1);
+    }
+
+    public bool TryGetRandomCellForFloorEffect(
+        int excludedTopRows,
+        int excludedBottomRows,
+        bool requireEmpty,
+        out Vector2Int cell)
+    {
+        cell = default;
+        floorEffectCellScratch.Clear();
+
+        if (!TryGetAllowedRowRange(excludedTopRows, excludedBottomRows, out int minY, out int maxY))
+            return false;
+
+        for (int y = minY; y <= maxY; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                Vector2Int c = new Vector2Int(x, y);
+                if (!InBounds(c)) continue;
+                if (HasFloorEffect(c)) continue;
+                if (HasObstacle(c)) continue;
+                if (requireEmpty && !IsFree(c)) continue;
+
+                floorEffectCellScratch.Add(c);
+            }
+        }
+
+        if (floorEffectCellScratch.Count == 0)
+            return false;
+
+        cell = floorEffectCellScratch[UnityEngine.Random.Range(0, floorEffectCellScratch.Count)];
+        return true;
+    }
+
+    public bool HasAnyFloorEffectSpawnCell(int excludedTopRows, int excludedBottomRows, bool requireEmpty)
+    {
+        if (!TryGetAllowedRowRange(excludedTopRows, excludedBottomRows, out int minY, out int maxY))
+            return false;
+
+        for (int y = minY; y <= maxY; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                Vector2Int c = new Vector2Int(x, y);
+                if (HasFloorEffect(c)) continue;
+                if (HasObstacle(c)) continue;
+                if (requireEmpty && !IsFree(c)) continue;
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool HasTeleportableMonsterDestination(
+        int excludedTopRows,
+        int excludedBottomRows,
+        bool requireNonCompletingDestination)
+    {
+        foreach (var kv in monsters)
+        {
+            if (kv.Value.data == null || kv.Value.hp <= 0f)
+                continue;
+
+            CollectTeleportDestinations(
+                kv.Key,
+                excludedTopRows,
+                excludedBottomRows,
+                requireNonCompletingDestination,
+                teleportSafeDestinationScratch,
+                teleportDestinationScratch);
+
+            if (teleportSafeDestinationScratch.Count > 0 ||
+                (!requireNonCompletingDestination && teleportDestinationScratch.Count > 0))
+                return true;
+        }
+
+        return false;
+    }
+
+    public bool HasTeleportDestinationForMonster(
+        Vector2Int from,
+        int excludedTopRows,
+        int excludedBottomRows,
+        bool requireNonCompletingDestination)
+    {
+        if (!monsters.TryGetValue(from, out var inst) || inst.data == null || inst.hp <= 0f)
+            return false;
+
+        CollectTeleportDestinations(
+            from,
+            excludedTopRows,
+            excludedBottomRows,
+            requireNonCompletingDestination,
+            teleportSafeDestinationScratch,
+            teleportDestinationScratch);
+
+        return teleportSafeDestinationScratch.Count > 0 ||
+               (!requireNonCompletingDestination && teleportDestinationScratch.Count > 0);
+    }
+
+    public bool TryTeleportMonsterToRandomDestination(
+        Vector2Int from,
+        int excludedTopRows,
+        int excludedBottomRows,
+        bool requireNonCompletingDestination,
+        out Vector2Int destination,
+        bool playSfx = true)
+    {
+        destination = default;
+
+        if (!InBounds(from)) return false;
+        if (!placed.TryGetValue(from, out var rect) || !rect) return false;
+        if (!monsters.TryGetValue(from, out var inst) || inst.data == null || inst.hp <= 0f) return false;
+
+        CollectTeleportDestinations(
+            from,
+            excludedTopRows,
+            excludedBottomRows,
+            requireNonCompletingDestination,
+            teleportSafeDestinationScratch,
+            teleportDestinationScratch);
+
+        List<Vector2Int> source = teleportSafeDestinationScratch.Count > 0
+            ? teleportSafeDestinationScratch
+            : teleportDestinationScratch;
+
+        if (source.Count == 0)
+            return false;
+
+        destination = source[UnityEngine.Random.Range(0, source.Count)];
+        MoveMonsterTile(from, destination, rect, inst);
+
+        if (playSfx)
+            PlayTeleportSFX();
+
+        return true;
+    }
+
+    public bool TryActivateTeleportFloorEffect(
+        Vector2Int cell,
+        int excludedTopRows,
+        int excludedBottomRows,
+        bool requireNonCompletingDestination,
+        bool clearAfterActivation = true)
+    {
+        if (!HasFloorEffectOfType(cell, FloorEffectType.Teleport))
+            return false;
+
+        if (!TryTeleportMonsterToRandomDestination(
+            cell,
+            excludedTopRows,
+            excludedBottomRows,
+            requireNonCompletingDestination,
+            out _,
+            playSfx: true))
+            return false;
+
+        if (clearAfterActivation)
+            ClearFloorEffect(cell);
+
+        return true;
+    }
+
+    public bool TryTriggerZipPadForActivePiece(Vector2Int cell)
+    {
+        if (!HasFloorEffectOfType(cell, FloorEffectType.ZipPad))
+            return false;
+
+        PlayRandomZipPadSFX();
+        return true;
+    }
+
+    void CollectTeleportDestinations(
+        Vector2Int from,
+        int excludedTopRows,
+        int excludedBottomRows,
+        bool requireNonCompletingDestination,
+        List<Vector2Int> safe,
+        List<Vector2Int> fallback)
+    {
+        safe.Clear();
+        fallback.Clear();
+
+        if (!TryGetAllowedRowRange(excludedTopRows, excludedBottomRows, out int minY, out int maxY))
+            return;
+
+        for (int y = minY; y <= maxY; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                Vector2Int to = new Vector2Int(x, y);
+                if (to == from) continue;
+                if (!InBounds(to)) continue;
+                if (!IsFree(to)) continue;
+                if (HasFloorEffect(to)) continue;
+                if (HasObstacle(to)) continue;
+
+                if (!WouldCompleteRowIfMoved(from, to))
+                    safe.Add(to);
+                else if (!requireNonCompletingDestination)
+                    fallback.Add(to);
+            }
+        }
+    }
+
+    bool TryGetAllowedRowRange(int excludedTopRows, int excludedBottomRows, out int minY, out int maxY)
+    {
+        minY = Mathf.Max(0, excludedBottomRows);
+        maxY = height - 1 - Mathf.Max(0, excludedTopRows);
+
+        if (height <= 0 || minY >= height || maxY < 0 || maxY < minY)
+            return false;
+
+        minY = Mathf.Clamp(minY, 0, height - 1);
+        maxY = Mathf.Clamp(maxY, 0, height - 1);
+        return maxY >= minY;
+    }
+
+    void MoveMonsterTile(Vector2Int from, Vector2Int to, RectTransform rect, MonsterInstance inst)
+    {
+        StopPortraitAltSwap(from, restoreNormal: true);
+
+        placed.Remove(from);
+        monsters.Remove(from);
+
+        placed[to] = rect;
+        monsters[to] = inst;
+        rect.anchoredPosition = CellToAnchoredPos(to);
+        rect.sizeDelta = cellSize;
+
+        if (healTimers.TryGetValue(from, out var healTimer))
+        {
+            healTimers.Remove(from);
+            healTimers[to] = healTimer;
+        }
+
+        if (attackPortraitIdleTimers.TryGetValue(from, out var attackTimer))
+        {
+            attackPortraitIdleTimers.Remove(from);
+            attackPortraitIdleTimers[to] = attackTimer;
+        }
+
+        RefreshTileBordersAround(from);
+        RefreshTileBordersAround(to);
+        RefreshAllTintUnderlays();
+    }
+
+    void PlayTeleportSFX()
+    {
+        if (AudioManager.I && teleportSFX)
+            AudioManager.I.PlaySFX(teleportSFX);
+    }
+
+    void PlayRandomZipPadSFX()
+    {
+        if (!AudioManager.I || zipPadSFXClips == null || zipPadSFXClips.Length == 0)
+            return;
+
+        for (int i = 0; i < 8; i++)
+        {
+            AudioClip clip = zipPadSFXClips[UnityEngine.Random.Range(0, zipPadSFXClips.Length)];
+            if (!clip) continue;
+
+            AudioManager.I.PlaySFX(clip);
+            return;
+        }
+    }
+
     public int CountObstaclesOfType(ObstacleType t)
     {
         int count = 0;
@@ -3646,6 +4002,16 @@ public class Board : MonoBehaviour
                 EnsureBorderOverlay(cell, lightningBorderSprite, lightningBorders);
                 EnsureTintUnderlay(cell, lightningUnderlayTint);
                 break;
+
+            case FloorEffectType.Teleport:
+                floorEffects[cell] = FloorEffectState.Teleport();
+                EnsureTeleportUnderlay(cell);
+                break;
+
+            case FloorEffectType.ZipPad:
+                floorEffects[cell] = FloorEffectState.ZipPad();
+                EnsureZipPadUnderlay(cell);
+                break;
         }
 
         return true;
@@ -3667,8 +4033,15 @@ public class Board : MonoBehaviour
         if (lightningBorders.TryGetValue(cell, out var l) && l) Destroy(l.gameObject);
         lightningBorders.Remove(cell);
 
+        if (teleportVisuals.TryGetValue(cell, out var tv) && tv != null && tv.root) Destroy(tv.root.gameObject);
+        teleportVisuals.Remove(cell);
+
+        if (zipPadVisuals.TryGetValue(cell, out var zv) && zv != null && zv.root) Destroy(zv.root.gameObject);
+        zipPadVisuals.Remove(cell);
+
         if (floorTintUnderlays.TryGetValue(cell, out var tint) && tint) Destroy(tint.gameObject);
         floorTintUnderlays.Remove(cell);
+        ClearSecondaryTintUnderlay(cell);
     }
 
     public void ApplyFloorEffectOnPlacement(Vector2Int cell)
@@ -3680,6 +4053,15 @@ public class Board : MonoBehaviour
             TryDamageMonsterFromFloorEffect(cell, fx.type, fx.damage);
 
             ClearFloorEffect(cell);
+        }
+        else if (fx.type == FloorEffectType.Teleport)
+        {
+            TryActivateTeleportFloorEffect(
+                cell,
+                teleportFloorDestinationExcludedTopRows,
+                teleportFloorDestinationExcludedBottomRows,
+                requireNonCompletingDestination: false,
+                clearAfterActivation: true);
         }
     }
 
@@ -3836,6 +4218,177 @@ public class Board : MonoBehaviour
         }
     }
 
+    void EnsureTeleportUnderlay(Vector2Int cell)
+    {
+        if (!underlayRoot) return;
+
+        if (!teleportWarningSprite)
+        {
+            if (teleportVisuals.TryGetValue(cell, out var old) && old != null && old.root)
+                Destroy(old.root.gameObject);
+            teleportVisuals.Remove(cell);
+            return;
+        }
+
+        Vector2 cellSize = GetCellSize();
+        Vector2 visualSize = cellSize * Mathf.Clamp(teleportFloorVisualScale, 0.1f, 1f);
+
+        if (teleportVisuals.TryGetValue(cell, out var existing) && existing != null && existing.root)
+        {
+            existing.root.sizeDelta = cellSize;
+            existing.root.anchoredPosition = CellToAnchoredPos(cell);
+            if (existing.image)
+            {
+                existing.image.sprite = teleportWarningSprite;
+                existing.image.rectTransform.sizeDelta = visualSize;
+            }
+            return;
+        }
+
+        var img = new GameObject($"TeleportFloor_{cell.x}_{cell.y}", typeof(Image)).GetComponent<Image>();
+        img.sprite = teleportWarningSprite;
+        img.type = Image.Type.Simple;
+        img.preserveAspect = true;
+        img.raycastTarget = false;
+        img.color = Color.white;
+
+        var rt = img.rectTransform;
+        rt.SetParent(underlayRoot, false);
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.sizeDelta = visualSize;
+        rt.anchoredPosition = CellToAnchoredPos(cell);
+        rt.localScale = Vector3.one;
+
+        teleportVisuals[cell] = new TeleportVisual { root = rt, image = img };
+    }
+
+    void AnimateTeleportFloorEffects()
+    {
+        if (teleportVisuals.Count == 0) return;
+
+        float degrees = Mathf.Abs(teleportFloorRotationDegreesPerSecond) * Time.deltaTime;
+        foreach (var kv in teleportVisuals)
+        {
+            var visual = kv.Value;
+            if (visual == null || !visual.root) continue;
+            visual.root.Rotate(0f, 0f, -degrees);
+        }
+    }
+
+    void EnsureZipPadUnderlay(Vector2Int cell)
+    {
+        if (!underlayRoot) return;
+
+        if (!zipPadSprite)
+        {
+            if (zipPadVisuals.TryGetValue(cell, out var old) && old != null && old.root)
+                Destroy(old.root.gameObject);
+            zipPadVisuals.Remove(cell);
+            return;
+        }
+
+        Vector2 cellSize = GetCellSize();
+
+        if (zipPadVisuals.TryGetValue(cell, out var existing) && existing != null && existing.root)
+        {
+            existing.root.sizeDelta = cellSize;
+            existing.root.anchoredPosition = CellToAnchoredPos(cell);
+            ResizeZipPadArrows(existing, cellSize);
+            PositionZipPadArrows(existing, cellSize);
+            return;
+        }
+
+        var root = new GameObject($"ZipPad_{cell.x}_{cell.y}", typeof(RectTransform), typeof(RectMask2D)).GetComponent<RectTransform>();
+        root.SetParent(underlayRoot, false);
+        root.anchorMin = root.anchorMax = new Vector2(0.5f, 0.5f);
+        root.sizeDelta = cellSize;
+        root.anchoredPosition = CellToAnchoredPos(cell);
+        root.localScale = Vector3.one;
+        root.localRotation = Quaternion.identity;
+
+        const int arrowCopies = 5;
+        var arrows = new Image[arrowCopies];
+        for (int i = 0; i < arrows.Length; i++)
+        {
+            var img = new GameObject($"ZipPadArrow_{i}", typeof(Image)).GetComponent<Image>();
+            img.transform.SetParent(root, false);
+            img.sprite = zipPadSprite;
+            img.type = Image.Type.Simple;
+            img.preserveAspect = true;
+            img.raycastTarget = false;
+            img.color = Color.white;
+
+            var rt = img.rectTransform;
+            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.localScale = Vector3.one;
+            rt.localRotation = Quaternion.identity;
+            arrows[i] = img;
+        }
+
+        var visual = new ZipPadVisual
+        {
+            root = root,
+            arrows = arrows,
+            offset = 0f
+        };
+
+        ResizeZipPadArrows(visual, cellSize);
+        PositionZipPadArrows(visual, cellSize);
+        zipPadVisuals[cell] = visual;
+    }
+
+    void ResizeZipPadArrows(ZipPadVisual visual, Vector2 cellSize)
+    {
+        if (visual == null || visual.arrows == null) return;
+
+        Vector2 arrowSize = cellSize * Mathf.Clamp(zipPadVisualScale, 0.1f, 1f);
+        for (int i = 0; i < visual.arrows.Length; i++)
+        {
+            if (!visual.arrows[i]) continue;
+            visual.arrows[i].sprite = zipPadSprite;
+            visual.arrows[i].rectTransform.sizeDelta = arrowSize;
+        }
+    }
+
+    void PositionZipPadArrows(ZipPadVisual visual, Vector2 cellSize)
+    {
+        if (visual == null || visual.arrows == null || visual.arrows.Length == 0) return;
+
+        float spacing = Mathf.Max(1f, cellSize.y / 3f);
+        float top = cellSize.y * 0.5f + spacing;
+        float wrap = spacing * visual.arrows.Length;
+        float offset = Mathf.Repeat(visual.offset, spacing);
+
+        for (int i = 0; i < visual.arrows.Length; i++)
+        {
+            if (!visual.arrows[i]) continue;
+
+            float y = top - (i * spacing) - offset;
+            while (y < -cellSize.y * 0.5f - spacing)
+                y += wrap;
+
+            visual.arrows[i].rectTransform.anchoredPosition = new Vector2(0f, y);
+        }
+    }
+
+    void AnimateZipPads()
+    {
+        if (zipPadVisuals.Count == 0) return;
+
+        Vector2 cellSize = GetCellSize();
+        float spacing = Mathf.Max(1f, cellSize.y / 3f);
+        float speed = Mathf.Max(1f, zipPadScrollPixelsPerSecond);
+
+        foreach (var kv in zipPadVisuals)
+        {
+            var visual = kv.Value;
+            if (visual == null || !visual.root) continue;
+
+            visual.offset = Mathf.Repeat(visual.offset + speed * Time.deltaTime, spacing);
+            PositionZipPadArrows(visual, cellSize);
+        }
+    }
+
     // ================= Floor Effect Ticking =================
 
     void TickFloorEffects()
@@ -3853,8 +4406,10 @@ public class Board : MonoBehaviour
         {
             if (!floorEffects.TryGetValue(cell, out var fx)) continue;
 
-            if (fx.type == FloorEffectType.Spike)
-                continue; // Spikes are handled on placement only
+            if (fx.type == FloorEffectType.Spike ||
+                fx.type == FloorEffectType.Teleport ||
+                fx.type == FloorEffectType.ZipPad)
+                continue; // These effects are handled by placement/activation logic only
 
             // Keep border overlays on top
             if (fx.type == FloorEffectType.Poison && poisonBorders.TryGetValue(cell, out var p) && p)
@@ -4218,6 +4773,23 @@ public class Board : MonoBehaviour
         return StartCoroutine(FlashWarningRoutine(cell, warningSprite, seconds, toggleInterval, alpha));
     }
 
+    public Coroutine FlashRotatingWarningAtCell(
+        Vector2Int cell,
+        Sprite warningSprite,
+        float seconds,
+        float toggleInterval = 0.08f,
+        float alpha = 0.65f,
+        float rotationDegreesPerSecond = 360f)
+    {
+        return StartCoroutine(FlashRotatingWarningRoutine(
+            cell,
+            warningSprite,
+            seconds,
+            toggleInterval,
+            alpha,
+            rotationDegreesPerSecond));
+    }
+
     public Coroutine FlashTintAtCell(Vector2Int cell, Color tint, float seconds, float toggleInterval = 0.08f)
     {
         return StartCoroutine(FlashTintRoutine(cell, tint, seconds, toggleInterval));
@@ -4251,6 +4823,57 @@ public class Board : MonoBehaviour
             float dt = Time.deltaTime;
             t += dt;
             tog += dt;
+            if (tog >= toggleInterval)
+            {
+                tog = 0f;
+                on = !on;
+                if (!img)
+                    yield break;
+
+                img.enabled = on;
+            }
+            yield return null;
+        }
+
+        ReleaseOverlayImage(img);
+    }
+
+    IEnumerator FlashRotatingWarningRoutine(
+        Vector2Int cell,
+        Sprite warningSprite,
+        float seconds,
+        float toggleInterval,
+        float alpha,
+        float rotationDegreesPerSecond)
+    {
+        if (!InBounds(cell) || warningSprite == null) yield break;
+
+        if (!overlayRoot) overlayRoot = gridRoot;
+
+        var img = GetOrCreateOverlayImage("BossRotatingWarning", overlayRoot);
+        img.sprite = warningSprite;
+        img.preserveAspect = true;
+        img.raycastTarget = false;
+        img.color = new Color(1f, 1f, 1f, Mathf.Clamp01(alpha));
+
+        var rt = img.rectTransform;
+        rt.sizeDelta = cellSize;
+        rt.anchoredPosition = CellToAnchoredPos(cell);
+        rt.localEulerAngles = Vector3.zero;
+
+        float t = 0f;
+        float tog = 0f;
+        bool on = true;
+        float degreesPerSecond = Mathf.Abs(rotationDegreesPerSecond);
+
+        while (img && t < seconds)
+        {
+            float dt = Time.deltaTime;
+            t += dt;
+            tog += dt;
+
+            rt.localEulerAngles = new Vector3(0f, 0f, -degreesPerSecond * t);
+
             if (tog >= toggleInterval)
             {
                 tog = 0f;
@@ -4404,6 +5027,9 @@ public class Board : MonoBehaviour
         foreach (var kv in fireBorders)
             if (kv.Value) { kv.Value.rectTransform.sizeDelta = GetCellSize(); kv.Value.rectTransform.anchoredPosition = CellToAnchoredPos(kv.Key); kv.Value.rectTransform.SetAsLastSibling(); }
 
+        foreach (var kv in lightningBorders)
+            if (kv.Value) { kv.Value.rectTransform.sizeDelta = GetCellSize(); kv.Value.rectTransform.anchoredPosition = CellToAnchoredPos(kv.Key); kv.Value.rectTransform.SetAsLastSibling(); }
+
         foreach (var kv in spikeVisuals)
             if (kv.Value != null && kv.Value.root)
             {
@@ -4414,6 +5040,30 @@ public class Board : MonoBehaviour
                 if (kv.Value.low) kv.Value.low.rectTransform.sizeDelta = spikeSize;
                 if (kv.Value.high) kv.Value.high.rectTransform.sizeDelta = spikeSize;
             }
+
+        foreach (var kv in teleportVisuals)
+            if (kv.Value != null && kv.Value.root)
+            {
+                Vector2 size = GetCellSize();
+                kv.Value.root.sizeDelta = size * Mathf.Clamp(teleportFloorVisualScale, 0.1f, 1f);
+                kv.Value.root.anchoredPosition = CellToAnchoredPos(kv.Key);
+            }
+
+        foreach (var kv in zipPadVisuals)
+            if (kv.Value != null && kv.Value.root)
+            {
+                Vector2 size = GetCellSize();
+                kv.Value.root.sizeDelta = size;
+                kv.Value.root.anchoredPosition = CellToAnchoredPos(kv.Key);
+                ResizeZipPadArrows(kv.Value, size);
+                PositionZipPadArrows(kv.Value, size);
+            }
+
+        foreach (var kv in floorTintUnderlays)
+            if (kv.Value) { kv.Value.rectTransform.sizeDelta = GetCellSize(); kv.Value.rectTransform.anchoredPosition = CellToAnchoredPos(kv.Key); }
+
+        foreach (var kv in floorSecondaryTintUnderlays)
+            if (kv.Value) { kv.Value.rectTransform.sizeDelta = GetCellSize(); kv.Value.rectTransform.anchoredPosition = CellToAnchoredPos(kv.Key); }
     }
 
     // ================= Buff Popup (Prefab-based) =================
