@@ -275,6 +275,37 @@ public static class TetrabeastsGermanTranslations
 
     static void AddRecentFixupText(Dictionary<string, string> text)
     {
+        Add(text, "Forced Duplication", "Erzwungene Duplizierung");
+        Add(text, "The boss forces the next several pieces to share the same normal shape. Special blocks are replaced with a normal piece before duplication begins.",
+            "Der Boss zwingt die nächsten mehreren Figuren, dieselbe normale Form zu teilen. Spezialblöcke werden vor Beginn der Duplizierung durch eine normale Figur ersetzt.");
+        Add(text, "Special Siphon", "Spezialentzug");
+        Add(text, "The boss channels a siphon that drains the player's special gauge over time. The channel ends when the gauge reaches 0% or when a player attack damages the enemy castle.",
+            "Der Boss kanalisiert einen Siphon, der die Spezialanzeige des Spielers mit der Zeit leert. Die Kanalisierung endet, wenn die Anzeige 0% erreicht oder wenn ein Spielerangriff der feindlichen Burg Schaden zufügt.");
+        Add(text, "Teleport", "Teleport");
+        Add(text, "The boss marks several monster units, then teleports them to random open cells after a short warning. Teleport destinations avoid rows that would immediately complete a full row when possible.",
+            "Der Boss markiert mehrere Monstereinheiten und teleportiert sie nach kurzer Warnung auf zufällige freie Zellen. Wenn möglich, vermeiden Ziele Reihen, die sofort eine vollständige Reihe ergeben würden.");
+        Add(text, "Zip Pad", "Zip-Pad");
+        Add(text, "The boss creates a Zip Pad floor effect in an empty cell. When the active piece overlaps it, the Zip Pad forces the piece to quick drop.",
+            "Der Boss erzeugt ein Zip-Pad auf einer leeren Zelle. Wenn die aktive Figur es überlappt, erzwingt das Zip-Pad einen Schnellfall.");
+        Add(text, "A monster unit set on a Teleport floor effect is warped to a random open cell, prioritizing destinations that will not complete a row. The effect disappears after it activates.",
+            "Eine auf einem Teleport-Bodeneffekt platzierte Monstereinheit wird auf eine zufällige freie Zelle versetzt, wobei Ziele bevorzugt werden, die keine Reihe vervollständigen. Der Effekt verschwindet nach der Aktivierung.");
+        Add(text, "When the active piece overlaps a Zip Pad, it immediately quick drops and sets in place. Zip Pads do not activate under pieces that are already set.",
+            "Wenn die aktive Figur ein Zip-Pad überlappt, fällt sie sofort schnell und rastet ein. Zip-Pads werden unter bereits gesetzten Figuren nicht aktiviert.");
+        Add(text, "Soft Space", "Weicher Raum");
+        Add(text, "Teleport floor effects periodically appear on the board. Units set on them are warped to open cells.",
+            "Teleport-Bodeneffekte erscheinen regelmäßig auf dem Spielfeld. Einheiten auf ihnen werden auf freie Zellen versetzt.");
+        Add(text, "Turbo Boosted", "Turbo-verstärkt");
+        Add(text, "The fifth row from the top of the board starts filled with Zip Pad floor effects.",
+            "Die fünfte Reihe von oben beginnt gefüllt mit Zip-Pad-Bodeneffekten.");
+        Add(text, "Teleport Spawn Interval", "Teleport-Spawnintervall");
+        Add(text, "Destination Top Rows Excluded", "Obere Zielreihen ausgeschlossen");
+        Add(text, "Zip Pad Row From Top", "Zip-Pad-Reihe von oben");
+        Add(text, "{0}'s animated commander border has been unlocked and equipped.",
+            "{0}s animierter Kommandantenrahmen wurde freigeschaltet und ausgerüstet.");
+        Add(text, "{0}'s elite skin has been unlocked.",
+            "{0}s Elite-Skin wurde freigeschaltet.");
+        Add(text, "Elite skins have been unlocked for: {0}.",
+            "Elite-Skins wurden freigeschaltet für: {0}.");
         Add(text, "Starting a new game will erase the saved run. Continue?", "Ein neues Spiel löscht den gespeicherten Lauf. Fortfahren?");
         Add(text, "Current Level: {0}", "Aktuelles Level: {0}");
         Add(text, "Current Level: 0", "Aktuelles Level: 0");

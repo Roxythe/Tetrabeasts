@@ -242,6 +242,37 @@ public static class TetrabeastsFrenchTranslations
         Add(text, "No GameController found.", "Aucun GameController trouvé.");
         Add(text, "No monsters in roster.", "Aucun monstre dans l'escouade.");
         Add(text, "Reinforcements", "Renforts");
+        Add(text, "Forced Duplication", "Duplication forcée");
+        Add(text, "The boss forces the next several pieces to share the same normal shape. Special blocks are replaced with a normal piece before duplication begins.",
+            "Le boss force les prochaines pièces à partager la même forme normale. Les blocs spéciaux sont remplacés par une pièce normale avant le début de la duplication.");
+        Add(text, "Special Siphon", "Siphon spécial");
+        Add(text, "The boss channels a siphon that drains the player's special gauge over time. The channel ends when the gauge reaches 0% or when a player attack damages the enemy castle.",
+            "Le boss canalise un siphon qui vide progressivement la jauge spéciale du joueur. La canalisation prend fin quand la jauge atteint 0 % ou quand une attaque du joueur blesse le château ennemi.");
+        Add(text, "Teleport", "Téléportation");
+        Add(text, "The boss marks several monster units, then teleports them to random open cells after a short warning. Teleport destinations avoid rows that would immediately complete a full row when possible.",
+            "Le boss marque plusieurs unités monstrueuses, puis les téléporte vers des cases libres aléatoires après un court avertissement. Quand possible, les destinations évitent les rangées qui compléteraient immédiatement une ligne.");
+        Add(text, "Zip Pad", "Plateforme Zip");
+        Add(text, "The boss creates a Zip Pad floor effect in an empty cell. When the active piece overlaps it, the Zip Pad forces the piece to quick drop.",
+            "Le boss crée une plateforme Zip sur une case vide. Quand la pièce active la chevauche, la plateforme force une chute rapide.");
+        Add(text, "A monster unit set on a Teleport floor effect is warped to a random open cell, prioritizing destinations that will not complete a row. The effect disappears after it activates.",
+            "Une unité monstrueuse placée sur un effet de sol de téléportation est envoyée vers une case libre aléatoire, avec priorité aux destinations qui ne complètent pas de ligne. L'effet disparaît après activation.");
+        Add(text, "When the active piece overlaps a Zip Pad, it immediately quick drops and sets in place. Zip Pads do not activate under pieces that are already set.",
+            "Quand la pièce active chevauche une plateforme Zip, elle effectue immédiatement une chute rapide et se place. Les plateformes Zip ne s'activent pas sous les pièces déjà placées.");
+        Add(text, "Soft Space", "Espace souple");
+        Add(text, "Teleport floor effects periodically appear on the board. Units set on them are warped to open cells.",
+            "Des effets de sol de téléportation apparaissent périodiquement sur le plateau. Les unités placées dessus sont envoyées vers des cases libres.");
+        Add(text, "Turbo Boosted", "Turbo activé");
+        Add(text, "The fifth row from the top of the board starts filled with Zip Pad floor effects.",
+            "La cinquième rangée depuis le haut du plateau commence remplie d'effets de sol de plateforme Zip.");
+        Add(text, "Teleport Spawn Interval", "Intervalle d'apparition de téléportation");
+        Add(text, "Destination Top Rows Excluded", "Rangées supérieures exclues de la destination");
+        Add(text, "Zip Pad Row From Top", "Rangée de plateforme Zip depuis le haut");
+        Add(text, "{0}'s animated commander border has been unlocked and equipped.",
+            "La bordure animée de commandant de {0} a été débloquée et équipée.");
+        Add(text, "{0}'s elite skin has been unlocked.",
+            "Le skin élite de {0} a été débloqué.");
+        Add(text, "Elite skins have been unlocked for: {0}.",
+            "Des skins élite ont été débloqués pour : {0}.");
         Add(text, "Active Squad", "Escouade active");
         Add(text, "Choose A Buff", "Choisir un bonus");
         Add(text, "Choose A Debuff", "Choisir un malus");

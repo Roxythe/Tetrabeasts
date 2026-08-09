@@ -275,6 +275,37 @@ public static class TetrabeastsPortugueseBrazilTranslations
 
     static void AddRecentFixupText(Dictionary<string, string> text)
     {
+        Add(text, "Forced Duplication", "Duplicação forçada");
+        Add(text, "The boss forces the next several pieces to share the same normal shape. Special blocks are replaced with a normal piece before duplication begins.",
+            "O chefe força as próximas peças a compartilhar a mesma forma normal. Blocos especiais são substituídos por uma peça normal antes do início da duplicação.");
+        Add(text, "Special Siphon", "Sifão especial");
+        Add(text, "The boss channels a siphon that drains the player's special gauge over time. The channel ends when the gauge reaches 0% or when a player attack damages the enemy castle.",
+            "O chefe canaliza um sifão que drena a energia especial do jogador ao longo do tempo. A canalização termina quando a energia chega a 0% ou quando um ataque do jogador causa dano ao castelo inimigo.");
+        Add(text, "Teleport", "Teletransporte");
+        Add(text, "The boss marks several monster units, then teleports them to random open cells after a short warning. Teleport destinations avoid rows that would immediately complete a full row when possible.",
+            "O chefe marca várias unidades de monstros e depois as teletransporta para células abertas aleatórias após um breve aviso. Quando possível, os destinos evitam linhas que completariam uma linha inteira imediatamente.");
+        Add(text, "Zip Pad", "Plataforma Zip");
+        Add(text, "The boss creates a Zip Pad floor effect in an empty cell. When the active piece overlaps it, the Zip Pad forces the piece to quick drop.",
+            "O chefe cria uma plataforma Zip em uma célula vazia. Quando a peça ativa sobrepõe essa célula, a plataforma força uma queda rápida.");
+        Add(text, "A monster unit set on a Teleport floor effect is warped to a random open cell, prioritizing destinations that will not complete a row. The effect disappears after it activates.",
+            "Uma unidade de monstro colocada em um efeito de piso de teletransporte é deslocada para uma célula aberta aleatória, priorizando destinos que não completem uma linha. O efeito desaparece após ativar.");
+        Add(text, "When the active piece overlaps a Zip Pad, it immediately quick drops and sets in place. Zip Pads do not activate under pieces that are already set.",
+            "Quando a peça ativa sobrepõe uma plataforma Zip, ela cai rapidamente e é fixada no lugar. Plataformas Zip não ativam sob peças já fixadas.");
+        Add(text, "Soft Space", "Espaço suave");
+        Add(text, "Teleport floor effects periodically appear on the board. Units set on them are warped to open cells.",
+            "Efeitos de piso de teletransporte aparecem periodicamente no tabuleiro. Unidades colocadas neles são deslocadas para células abertas.");
+        Add(text, "Turbo Boosted", "Turbo ativado");
+        Add(text, "The fifth row from the top of the board starts filled with Zip Pad floor effects.",
+            "A quinta linha a partir do topo do tabuleiro começa preenchida com efeitos de piso de plataforma Zip.");
+        Add(text, "Teleport Spawn Interval", "Intervalo de surgimento de teletransporte");
+        Add(text, "Destination Top Rows Excluded", "Linhas superiores excluídas do destino");
+        Add(text, "Zip Pad Row From Top", "Linha da plataforma Zip a partir do topo");
+        Add(text, "{0}'s animated commander border has been unlocked and equipped.",
+            "A borda animada de comandante de {0} foi desbloqueada e equipada.");
+        Add(text, "{0}'s elite skin has been unlocked.",
+            "A skin elite de {0} foi desbloqueada.");
+        Add(text, "Elite skins have been unlocked for: {0}.",
+            "Skins elite foram desbloqueadas para: {0}.");
         Add(text, "Starting a new game will erase the saved run. Continue?", "Começar um novo jogo apagará a partida salva. Continuar?");
         Add(text, "Current Level: {0}", "Nível atual: {0}");
         Add(text, "Current Level: 0", "Nível atual: 0");

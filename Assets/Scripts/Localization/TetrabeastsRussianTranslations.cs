@@ -275,6 +275,37 @@ public static class TetrabeastsRussianTranslations
 
     static void AddRecentFixupText(Dictionary<string, string> text)
     {
+        Add(text, "Forced Duplication", "Принудительное дублирование");
+        Add(text, "The boss forces the next several pieces to share the same normal shape. Special blocks are replaced with a normal piece before duplication begins.",
+            "Босс заставляет несколько следующих фигур иметь одну и ту же обычную форму. Особые блоки заменяются обычной фигурой до начала дублирования.");
+        Add(text, "Special Siphon", "Сифон особой энергии");
+        Add(text, "The boss channels a siphon that drains the player's special gauge over time. The channel ends when the gauge reaches 0% or when a player attack damages the enemy castle.",
+            "Босс поддерживает сифон, который со временем истощает особую шкалу игрока. Канал прерывается, когда шкала достигает 0% или когда атака игрока наносит урон вражескому замку.");
+        Add(text, "Teleport", "Телепорт");
+        Add(text, "The boss marks several monster units, then teleports them to random open cells after a short warning. Teleport destinations avoid rows that would immediately complete a full row when possible.",
+            "Босс отмечает несколько монстров, а затем после короткого предупреждения телепортирует их в случайные свободные клетки. По возможности цели избегают рядов, которые сразу завершили бы полную строку.");
+        Add(text, "Zip Pad", "Зип-платформа");
+        Add(text, "The boss creates a Zip Pad floor effect in an empty cell. When the active piece overlaps it, the Zip Pad forces the piece to quick drop.",
+            "Босс создает зип-платформу в пустой клетке. Когда активная фигура перекрывает ее, платформа принудительно выполняет быстрый сброс.");
+        Add(text, "A monster unit set on a Teleport floor effect is warped to a random open cell, prioritizing destinations that will not complete a row. The effect disappears after it activates.",
+            "Монстр, поставленный на эффект пола телепорта, переносится в случайную свободную клетку, с приоритетом мест, которые не завершают ряд. Эффект исчезает после срабатывания.");
+        Add(text, "When the active piece overlaps a Zip Pad, it immediately quick drops and sets in place. Zip Pads do not activate under pieces that are already set.",
+            "Когда активная фигура перекрывает зип-платформу, она сразу быстро падает и закрепляется. Зип-платформы не срабатывают под уже закрепленными фигурами.");
+        Add(text, "Soft Space", "Мягкое пространство");
+        Add(text, "Teleport floor effects periodically appear on the board. Units set on them are warped to open cells.",
+            "Эффекты пола телепорта периодически появляются на доске. Поставленные на них юниты переносятся в свободные клетки.");
+        Add(text, "Turbo Boosted", "Турбо-ускорение");
+        Add(text, "The fifth row from the top of the board starts filled with Zip Pad floor effects.",
+            "Пятая строка сверху в начале заполнена эффектами пола зип-платформ.");
+        Add(text, "Teleport Spawn Interval", "Интервал появления телепорта");
+        Add(text, "Destination Top Rows Excluded", "Верхние строки, исключенные для цели");
+        Add(text, "Zip Pad Row From Top", "Строка зип-платформы сверху");
+        Add(text, "{0}'s animated commander border has been unlocked and equipped.",
+            "Анимированная рамка командира {0} разблокирована и экипирована.");
+        Add(text, "{0}'s elite skin has been unlocked.",
+            "Элитный облик {0} разблокирован.");
+        Add(text, "Elite skins have been unlocked for: {0}.",
+            "Элитные облики разблокированы для: {0}.");
         Add(text, "Starting a new game will erase the saved run. Continue?", "Новая игра удалит сохраненный забег. Продолжить?");
         Add(text, "Current Level: {0}", "Текущий уровень: {0}");
         Add(text, "Current Level: 0", "Текущий уровень: 0");

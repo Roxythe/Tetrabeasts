@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda4cdb9ac28a5642b5aa73bc1b714a2, type: 3}
+  m_Name: Zip_Pad
+  m_EditorClassIdentifier: Assembly-CSharp::HelpTopicSO
+  category: Boss Abilities
+  title: Zip Pad
+  description: The boss creates a Zip Pad floor effect in an empty cell. When the active piece overlaps it, the Zip Pad forces the piece to quick drop.
+  image: {fileID: 2944590886679375940, guid: a385ac52fbe1460408aa10d725fdb239, type: 3}
+  videoClip: {fileID: 0}

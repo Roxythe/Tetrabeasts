@@ -142,6 +142,37 @@ public static class TetrabeastsChineseTranslations
 
     static void AddRecentFixupText(Dictionary<string, string> text)
     {
+        Add(text, "Forced Duplication", "强制复制");
+        Add(text, "The boss forces the next several pieces to share the same normal shape. Special blocks are replaced with a normal piece before duplication begins.",
+            "Boss 会强制接下来的数个方块使用同一个普通形状。特殊方块会在复制开始前被替换为普通方块。");
+        Add(text, "Special Siphon", "特殊能量虹吸");
+        Add(text, "The boss channels a siphon that drains the player's special gauge over time. The channel ends when the gauge reaches 0% or when a player attack damages the enemy castle.",
+            "Boss 会持续引导虹吸，随时间抽取玩家的特殊能量。能量降至 0% 或玩家攻击对敌方城堡造成伤害时，引导结束。");
+        Add(text, "Teleport", "传送");
+        Add(text, "The boss marks several monster units, then teleports them to random open cells after a short warning. Teleport destinations avoid rows that would immediately complete a full row when possible.",
+            "Boss 会标记多个怪物单位，并在短暂警告后将它们传送到随机空格。可能时，传送目标会避开会立刻完成整行的格子。");
+        Add(text, "Zip Pad", "加速垫");
+        Add(text, "The boss creates a Zip Pad floor effect in an empty cell. When the active piece overlaps it, the Zip Pad forces the piece to quick drop.",
+            "Boss 会在一个空格中生成加速垫地面效果。当活动方块重叠该格时，加速垫会强制快速下落。");
+        Add(text, "A monster unit set on a Teleport floor effect is warped to a random open cell, prioritizing destinations that will not complete a row. The effect disappears after it activates.",
+            "放置在传送地面效果上的怪物单位会被传送到随机空格，并优先选择不会完成整行的位置。效果触发后会消失。");
+        Add(text, "When the active piece overlaps a Zip Pad, it immediately quick drops and sets in place. Zip Pads do not activate under pieces that are already set.",
+            "当活动方块重叠加速垫时，它会立即快速下落并固定。加速垫不会在已经固定的方块下触发。");
+        Add(text, "Soft Space", "柔软空间");
+        Add(text, "Teleport floor effects periodically appear on the board. Units set on them are warped to open cells.",
+            "传送地面效果会周期性出现在棋盘上。放置在其上的单位会被传送到空格。");
+        Add(text, "Turbo Boosted", "涡轮加速");
+        Add(text, "The fifth row from the top of the board starts filled with Zip Pad floor effects.",
+            "棋盘从顶部数第五行开局时会填满加速垫地面效果。");
+        Add(text, "Teleport Spawn Interval", "传送生成间隔");
+        Add(text, "Destination Top Rows Excluded", "目标排除顶部行数");
+        Add(text, "Zip Pad Row From Top", "加速垫距顶部行数");
+        Add(text, "{0}'s animated commander border has been unlocked and equipped.",
+            "{0} 的动态指挥官边框已解锁并装备。");
+        Add(text, "{0}'s elite skin has been unlocked.",
+            "{0} 的精英皮肤已解锁。");
+        Add(text, "Elite skins have been unlocked for: {0}.",
+            "已为以下单位解锁精英皮肤：{0}。");
         Add(text, "Starting a new game will erase the saved run. Continue?", "开始新游戏将删除已保存的征战。继续？");
         Add(text, "Current Level: {0}", "当前等级：{0}");
         Add(text, "Current Level: 0", "当前等级：0");
