@@ -91,6 +91,7 @@ public class LevelModifierController : MonoBehaviour
     readonly HashSet<Vector2Int> _infectedCellsScratch = new();
     readonly List<Vector2Int> _infectionVisualKeysScratch = new();
     readonly List<Vector2Int> _visualDictionaryKeysScratch = new();
+    readonly List<Vector2Int> _softSpaceTeleportCandidateScratch = new();
 
     GameController _gc;
     LevelModifierSelectionUI _selectionUI;
@@ -132,6 +133,10 @@ public class LevelModifierController : MonoBehaviour
     int _rearAmbushRowsSpawnedThisLevel;
     Coroutine _comboShieldPulseCR;
     Coroutine _volcanicEruptionRoutine;
+    Coroutine _softSpaceRoutine;
+
+    const int SoftSpacePreferredBottomRows = 6;
+    const float SoftSpaceTeleportWarningSeconds = 2f;
 
     static Sprite _onePx;
 
@@ -161,6 +166,7 @@ public class LevelModifierController : MonoBehaviour
     void OnDestroy()
     {
         StopVolcanicEruptionRoutine();
+        StopSoftSpaceRoutine();
         ClearOutFlankedProjectiles();
         DestroyOutFlankedProjectilePool();
         UnhookAnimatedBackgroundEvents();
@@ -661,7 +667,7 @@ public class LevelModifierController : MonoBehaviour
         }
         else if (ActiveModifier.kind == LevelModifierKind.SoftSpace)
         {
-            _softSpaceCountdown = Mathf.Max(0.1f, ActiveModifier.softSpaceTeleportInterval);
+            _softSpaceCountdown = GetSoftSpacePreWarningDelay(ActiveModifier);
             SyncVolcanicBoardAnimationRoots();
         }
         else
@@ -1306,24 +1312,65 @@ public class LevelModifierController : MonoBehaviour
         if (!board || !ActiveModifier)
             return;
 
+        if (_softSpaceRoutine != null)
+            return;
+
         _softSpaceCountdown -= dt;
         if (_softSpaceCountdown > 0f)
             return;
 
-        _softSpaceCountdown = Mathf.Max(0.1f, ActiveModifier.softSpaceTeleportInterval);
-        SpawnSoftSpaceTeleportFloor();
+        _softSpaceCountdown = GetSoftSpacePreWarningDelay(ActiveModifier);
+        _softSpaceRoutine = StartCoroutine(SoftSpaceTeleportWarningRoutine(ActiveModifier));
     }
 
-    void SpawnSoftSpaceTeleportFloor()
+    IEnumerator SoftSpaceTeleportWarningRoutine(LevelModifierSO modifier)
     {
-        if (!board || !ActiveModifier)
+        if (!board || !modifier)
+        {
+            _softSpaceRoutine = null;
+            yield break;
+        }
+
+        if (!TryGetSoftSpaceTeleportSpawnCell(out var cell))
+        {
+            _softSpaceRoutine = null;
+            yield break;
+        }
+
+        float warningSeconds = GetSoftSpaceWarningSeconds(modifier);
+        Sprite warningSprite = board.teleportWarningSprite ? board.teleportWarningSprite : modifier.icon;
+        if (warningSeconds > 0f)
+        {
+            if (warningSprite)
+            {
+                board.FlashRotatingWarningAtCell(
+                    cell,
+                    warningSprite,
+                    warningSeconds,
+                    toggleInterval: 0.08f,
+                    alpha: 0.75f,
+                    rotationDegreesPerSecond: 180f);
+            }
+
+            yield return new WaitForSeconds(warningSeconds);
+        }
+
+        if (ActiveModifier != modifier || !_gc || !_gc.IsRoundActive || !board)
+        {
+            _softSpaceRoutine = null;
+            yield break;
+        }
+
+        SpawnSoftSpaceTeleportFloor(cell, modifier);
+        _softSpaceRoutine = null;
+    }
+
+    void SpawnSoftSpaceTeleportFloor(Vector2Int cell, LevelModifierSO modifier)
+    {
+        if (!board || !modifier)
             return;
 
-        if (!board.TryGetRandomCellForFloorEffect(
-            excludedTopRows: 0,
-            excludedBottomRows: 0,
-            requireEmpty: false,
-            out var cell))
+        if (!IsValidSoftSpaceTeleportSpawnCell(cell, requireEmpty: false))
             return;
 
         if (!board.SetFloorEffect(cell, Board.FloorEffectType.Teleport, 0f, 1f, -1))
@@ -1331,10 +1378,93 @@ public class LevelModifierController : MonoBehaviour
 
         board.TryActivateTeleportFloorEffect(
             cell,
-            ActiveModifier.softSpaceTeleportDestinationExcludedTopRows,
-            ActiveModifier.softSpaceTeleportDestinationExcludedBottomRows,
+            modifier.softSpaceTeleportDestinationExcludedTopRows,
+            modifier.softSpaceTeleportDestinationExcludedBottomRows,
             requireNonCompletingDestination: false,
             clearAfterActivation: true);
+    }
+
+    float GetSoftSpacePreWarningDelay(LevelModifierSO modifier)
+    {
+        float interval = Mathf.Max(0.1f, modifier ? modifier.softSpaceTeleportInterval : 6f);
+        return Mathf.Max(0.1f, interval - GetSoftSpaceWarningSeconds(modifier));
+    }
+
+    float GetSoftSpaceWarningSeconds(LevelModifierSO modifier)
+    {
+        return Mathf.Min(SoftSpaceTeleportWarningSeconds, Mathf.Max(0.1f, modifier ? modifier.softSpaceTeleportInterval : SoftSpaceTeleportWarningSeconds));
+    }
+
+    void StopSoftSpaceRoutine()
+    {
+        if (_softSpaceRoutine != null)
+        {
+            StopCoroutine(_softSpaceRoutine);
+            _softSpaceRoutine = null;
+        }
+    }
+
+    bool TryGetSoftSpaceTeleportSpawnCell(out Vector2Int cell)
+    {
+        cell = default;
+
+        if (!board || board.width <= 0 || board.height <= 0)
+            return false;
+
+        int preferredMaxY = Mathf.Min(board.height - 1, SoftSpacePreferredBottomRows - 1);
+        if (TryPickSoftSpaceTeleportCell(0, preferredMaxY, requireEmpty: true, bottomWeighted: true, out cell))
+            return true;
+
+        if (TryPickSoftSpaceTeleportCell(0, board.height - 1, requireEmpty: true, bottomWeighted: false, out cell))
+            return true;
+
+        if (TryPickSoftSpaceTeleportCell(0, preferredMaxY, requireEmpty: false, bottomWeighted: true, out cell))
+            return true;
+
+        return TryPickSoftSpaceTeleportCell(0, board.height - 1, requireEmpty: false, bottomWeighted: false, out cell);
+    }
+
+    bool TryPickSoftSpaceTeleportCell(int minY, int maxY, bool requireEmpty, bool bottomWeighted, out Vector2Int cell)
+    {
+        cell = default;
+        _softSpaceTeleportCandidateScratch.Clear();
+
+        if (!board)
+            return false;
+
+        minY = Mathf.Clamp(minY, 0, board.height - 1);
+        maxY = Mathf.Clamp(maxY, 0, board.height - 1);
+        if (maxY < minY)
+            return false;
+
+        for (int y = minY; y <= maxY; y++)
+        {
+            int rowWeight = bottomWeighted ? Mathf.Max(1, SoftSpacePreferredBottomRows - y) : 1;
+            for (int x = 0; x < board.width; x++)
+            {
+                Vector2Int candidate = new Vector2Int(x, y);
+                if (!IsValidSoftSpaceTeleportSpawnCell(candidate, requireEmpty))
+                    continue;
+
+                for (int i = 0; i < rowWeight; i++)
+                    _softSpaceTeleportCandidateScratch.Add(candidate);
+            }
+        }
+
+        if (_softSpaceTeleportCandidateScratch.Count == 0)
+            return false;
+
+        cell = _softSpaceTeleportCandidateScratch[Random.Range(0, _softSpaceTeleportCandidateScratch.Count)];
+        return true;
+    }
+
+    bool IsValidSoftSpaceTeleportSpawnCell(Vector2Int cell, bool requireEmpty)
+    {
+        if (!board || !board.InBounds(cell)) return false;
+        if (board.HasFloorEffect(cell)) return false;
+        if (board.HasObstacle(cell)) return false;
+        if (requireEmpty && !board.IsFree(cell)) return false;
+        return true;
     }
 
     void ApplyTurboBoostedZipPads()
@@ -1925,6 +2055,7 @@ public class LevelModifierController : MonoBehaviour
     void ResetLevelState()
     {
         StopVolcanicEruptionRoutine();
+        StopSoftSpaceRoutine();
         if (board)
             board.ClearRoundTransientEffects();
 

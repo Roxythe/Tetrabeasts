@@ -14,9 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelModifierSO
   kind: 23
   displayName: Turbo Boosted
-  description: The fifth row from the top of the board starts filled with Zip Pad floor effects.
-  icon: {fileID: -7071092829341919964, guid: 8bfda307620f7274d8674650e82063a5, type: 3}
+  description: The fifth row from the top of the board starts filled with Zip Pad
+    floor effects.
+  icon: {fileID: 21300000, guid: 8bfda307620f7274d8674650e82063a5, type: 3}
   backgroundOverrideSprite: {fileID: 0}
+  backgroundOverrideVideoClip: {fileID: 0}
+  backgroundOverrideVideoPlaybackSpeed: 0
+  backgroundOverrideVideoPingPongLoop: 0
+  boardBackgroundOverrideSprite: {fileID: 0}
   enableRainOverlay: 0
   rainDrops: 44
   rainSpeed: 140
@@ -24,6 +29,78 @@ MonoBehaviour:
   rainDropWidth: 2
   rainAngle: -18
   rainTint: {r: 0.85, g: 0.93, b: 1, a: 0.55}
+  dealtDamageMultiplier: 2
+  receivedDamageMultiplier: 2
+  overgrowthTargetInterval: 2.5
+  overgrowthInitialTargetRows: 3
+  overgrowthCellsPerExtraRow: 6
+  overgrowthPartialSeconds: 5
+  overgrowthFullSeconds: 10
+  overgrowthInitialSprite: {fileID: 0}
+  overgrowthPartialSprite: {fileID: 0}
+  overgrowthFullSprite: {fileID: 0}
+  overgrowthTint: {r: 1, g: 1, b: 1, a: 1}
+  stormStrikeIntervalMin: 5
+  stormStrikeIntervalMax: 8
+  stormTargetsMin: 1
+  stormTargetsMax: 2
+  stormCrossChance: 0.6
+  stormLowerRowsOnlyCount: 8
+  stormInitialStrikeDamage: 2
+  stormFloorTickDamage: 1
+  stormFloorTickInterval: 0.5
+  stormFloorDuration: 4
+  rearAmbushInterval: 10
+  rearAmbushSoldierSprite: {fileID: 0}
+  lowRationsTickInterval: 3
+  lowRationsNegligibleReserveThreshold: 5
+  lowRationsNegligibleDamage: 0.1
+  lowRationsDamageAtMaxReserve: 1.35
+  contagionInfectionChanceOnPieceSet: 0.3
+  contagionTickInterval: 3
+  contagionPercentDamagePerTick: 0.04
+  contagionPercentIncreasePerTick: 0.02
+  contagionSpreadInterval: 4
+  contagionSpreadChance: 0.15
+  contagionUnitOverlaySprite: {fileID: 0}
+  contagionFloorSprite: {fileID: 0}
+  contagionUnitTint: {r: 0.6, g: 1, b: 0.45, a: 0.85}
+  contagionFloorTint: {r: 0.45, g: 0.9, b: 0.35, a: 0.5}
+  deathExplosionMaxHpPercent: 0.3
+  swampPoisonDamage: 1
+  swampPoisonInterval: 1
+  swampPoisonTicks: -1
+  autoRotateInterval: 0.75
+  autoShiftInterval: 0.4
+  autoShiftEdgePauseSeconds: 0.6
+  comboThreshold: 3
+  comboBelowThresholdDamageMultiplier: 0.2
+  comboAtOrAboveThresholdDamageMultiplier: 1.5
+  comboShieldThreshold: 4
+  comboShieldCount: 3
+  comboShieldBlockedDamageMultiplier: 0.1
+  startingHealthFraction: 0.5
+  piercingProjectileSprite: {fileID: 0}
+  disarrayTriminoChance: 0.15
+  disarrayPentaminoChance: 0.15
+  outFlankedProjectileSprite: {fileID: 0}
+  outFlankedIntervalMin: 6
+  outFlankedIntervalMax: 10
+  outFlankedRowsPerWave: 1
+  outFlankedWarningSeconds: 2
+  outFlankedProjectileSideOffsetCells: 3.25
+  outFlankedProjectileSpeedMultiplier: 0.75
+  outFlankedProjectileSizeMultiplier: 1
+  volcanicEruptionIntervalMin: 12
+  volcanicEruptionIntervalMax: 20
+  volcanicEruptionTargetCount: 4
+  volcanicEruptionExcludedTopRows: 4
+  volcanicEruptionWarningSeconds: 2
+  volcanicEruptionMonsterTargetChance: 0.5
+  volcanicEruptionWarningSprite: {fileID: 0}
+  volcanicEruptionWarningTint: {r: 1, g: 0.08, b: 0, a: 0.45}
+  hardenedLavaObstacleSprite: {fileID: 0}
+  roulettePreviewInterval: 1
   softSpaceTeleportInterval: 6
   softSpaceTeleportDestinationExcludedTopRows: 4
   softSpaceTeleportDestinationExcludedBottomRows: 0

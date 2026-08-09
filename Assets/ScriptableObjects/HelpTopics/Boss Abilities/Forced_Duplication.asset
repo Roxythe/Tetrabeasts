@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HelpTopicSO
   category: Boss Abilities
   title: Forced Duplication
-  description: The boss forces the next several pieces to share the same normal shape. Special blocks are replaced with a normal piece before duplication begins.
-  image: {fileID: 3799672138815462542, guid: 95f8d8664f7c373459f6a558bcb2e4cf, type: 3}
+  description: The boss forces the next several pieces to share the same shape.
+  image: {fileID: 21300000, guid: 95f8d8664f7c373459f6a558bcb2e4cf, type: 3}
   videoClip: {fileID: 0}

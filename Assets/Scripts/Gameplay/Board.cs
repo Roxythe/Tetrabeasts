@@ -3382,6 +3382,70 @@ public class Board : MonoBehaviour
         return true;
     }
 
+    public bool TryGetPreferredZipPadBossSpawnCell(
+        int excludedTopRows,
+        int excludedBottomRows,
+        out Vector2Int cell)
+    {
+        cell = default;
+
+        if (!TryGetAllowedRowRange(excludedTopRows, excludedBottomRows, out int minY, out int maxY))
+            return false;
+
+        for (int pass = 0; pass < 2; pass++)
+        {
+            bool allowRowsWithZipPads = pass > 0;
+
+            for (int y = maxY; y >= minY; y--)
+            {
+                bool rowHasZipPad = RowHasFloorEffectOfType(y, FloorEffectType.ZipPad);
+                if (rowHasZipPad && !allowRowsWithZipPads)
+                    continue;
+
+                floorEffectCellScratch.Clear();
+                for (int x = 0; x < width; x++)
+                {
+                    Vector2Int c = new Vector2Int(x, y);
+                    if (!IsValidZipPadBossSpawnCell(c))
+                        continue;
+
+                    floorEffectCellScratch.Add(c);
+                }
+
+                if (floorEffectCellScratch.Count == 0)
+                    continue;
+
+                cell = floorEffectCellScratch[UnityEngine.Random.Range(0, floorEffectCellScratch.Count)];
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool IsValidZipPadBossSpawnCell(Vector2Int cell)
+    {
+        if (!InBounds(cell)) return false;
+        if (HasFloorEffect(cell)) return false;
+        if (HasObstacle(cell)) return false;
+        if (!IsFree(cell)) return false;
+        return true;
+    }
+
+    bool RowHasFloorEffectOfType(int y, FloorEffectType type)
+    {
+        if (y < 0 || y >= height)
+            return false;
+
+        for (int x = 0; x < width; x++)
+        {
+            if (HasFloorEffectOfType(new Vector2Int(x, y), type))
+                return true;
+        }
+
+        return false;
+    }
+
     public bool HasAnyFloorEffectSpawnCell(int excludedTopRows, int excludedBottomRows, bool requireEmpty)
     {
         if (!TryGetAllowedRowRange(excludedTopRows, excludedBottomRows, out int minY, out int maxY))

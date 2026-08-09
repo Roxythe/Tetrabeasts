@@ -158,6 +158,7 @@ public class GameController : MonoBehaviour
     [SerializeField, Range(0f, 2f)] float duplicationSFXVolume = 1f;
     [SerializeField, Min(0.05f)] float duplicatePulseSeconds = 0.45f;
     [SerializeField, Min(1f)] float duplicatePulseScale = 1.35f;
+    [SerializeField, Min(0f)] float duplicateEffectRotationDegreesPerSecond = 180f;
 
     [Header("Boss Special Siphon")]
     [SerializeField] GameObject specialSiphonParticlePrefab;
@@ -167,6 +168,8 @@ public class GameController : MonoBehaviour
     [SerializeField, Min(0.01f)] float specialSiphonParticleArrivalRadius = 0.15f;
     [SerializeField, Min(0.001f)] float specialSiphonParticleWorldScale = 0.02f;
     [SerializeField] int specialSiphonParticleSortingOrder = 1000;
+    [SerializeField] AudioClip[] specialSiphonParticlePopSFXClips;
+    [SerializeField, Range(0f, 1f)] float specialSiphonParticlePopSFXVolume = 0.22f;
 
     [Header("Boss Teleport / Zip Pad")]
     [SerializeField] AudioClip zipPadSpawnSFX;
@@ -178,6 +181,7 @@ public class GameController : MonoBehaviour
     Sprite _bossAbilityEffectDefaultSprite;
     Color _bossAbilityEffectDefaultColor = Color.white;
     Vector3 _bossAbilityEffectDefaultScale = Vector3.one;
+    Quaternion _bossAbilityEffectDefaultRotation = Quaternion.identity;
     Color _duplicateCountDefaultColor = Color.white;
     Vector3 _duplicateCountDefaultScale = Vector3.one;
     BossAbilityEffectOwner _bossAbilityEffectOwner = BossAbilityEffectOwner.None;
@@ -1405,6 +1409,7 @@ public class GameController : MonoBehaviour
         TetrabeastsControls.RefreshActiveInputProfile();
         RefreshGameplayControlTextsIfNeeded();
         UpdateTimedSlowGravityTimerUI();
+        UpdateForcedDuplicationEffectRotation(Time.deltaTime);
 
         if (LoadingScreen.IsVisible)
             return;
@@ -2764,6 +2769,44 @@ public class GameController : MonoBehaviour
         return normals[Random.Range(0, normals.Count)];
     }
 
+    TetrominoData PickRandomForcedDuplicationTetromino()
+    {
+        if (allTetrominoes == null || allTetrominoes.Length == 0)
+            return null;
+
+        var normals = new List<TetrominoData>();
+        for (int i = 0; i < allTetrominoes.Length; i++)
+        {
+            TetrominoData data = allTetrominoes[i];
+            if (IsAllowedForcedDuplicationSource(data))
+                normals.Add(data);
+        }
+
+        if (normals.Count == 0)
+            return null;
+
+        return normals[Random.Range(0, normals.Count)];
+    }
+
+    bool IsAllowedForcedDuplicationSource(TetrominoData data)
+    {
+        if (!data || data.special != SpecialType.None)
+            return false;
+
+        return !IsTetrominoShape(data, "O") && !IsTetrominoShape(data, "I");
+    }
+
+    bool IsTetrominoShape(TetrominoData data, string shapeId)
+    {
+        if (!data || string.IsNullOrWhiteSpace(shapeId))
+            return false;
+
+        if (string.Equals((data.id ?? "").Trim(), shapeId, System.StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return string.Equals(data.name, shapeId, System.StringComparison.OrdinalIgnoreCase);
+    }
+
     MonsterData[] BuildMonsterArrayForQueuedPiece(TetrominoData data)
     {
         if (!data || data.special != SpecialType.None)
@@ -2817,9 +2860,9 @@ public class GameController : MonoBehaviour
             monsterSets.RemoveAt(monsterSets.Count - 1);
 
         TetrominoData head = pieces.Count > 0 ? pieces[0] : null;
-        if (!head || head.special != SpecialType.None)
+        if (!IsAllowedForcedDuplicationSource(head))
         {
-            head = PickRandomNormalTetromino();
+            head = PickRandomForcedDuplicationTetromino();
             if (!head)
                 return false;
 
@@ -9275,10 +9318,9 @@ public class GameController : MonoBehaviour
     {
         if (_castleData == null || gameBoard == null) return;
 
-        if (!gameBoard.TryGetRandomCellForFloorEffect(
+        if (!gameBoard.TryGetPreferredZipPadBossSpawnCell(
             _castleData.bossZipPadExcludedTopRows,
             _castleData.bossZipPadExcludedBottomRows,
-            requireEmpty: true,
             out var cell))
             return;
 
@@ -9351,7 +9393,7 @@ public class GameController : MonoBehaviour
     {
         float percent = _castleData
             ? Mathf.Clamp01(_castleData.bossSpecialSiphonGaugeDrainPercentPerSecond)
-            : 0.03f;
+            : 0.01f;
 
         return Mathf.Max(0f, specialGaugeMax * percent);
     }
@@ -9472,9 +9514,17 @@ public class GameController : MonoBehaviour
             Camera.main,
             specialSiphonParticleSpeed,
             specialSiphonParticleArrivalRadius,
-            specialSiphonParticleSortingOrder);
+            specialSiphonParticleSortingOrder,
+            specialSiphonParticlePopSFXClips,
+            specialSiphonParticlePopSFXVolume,
+            GetSpecialSiphonOverlayVisibilityBlockers());
 
         _specialSiphonParticles.Begin();
+    }
+
+    GameObject[] GetSpecialSiphonOverlayVisibilityBlockers()
+    {
+        return pausePanel ? new[] { pausePanel } : null;
     }
 
     void StopSpecialSiphonParticles(bool forceDestroy)
@@ -9516,6 +9566,7 @@ public class GameController : MonoBehaviour
             _bossAbilityEffectDefaultSprite = bossGravityIncreasedImage.sprite;
             _bossAbilityEffectDefaultColor = bossGravityIncreasedImage.color;
             _bossAbilityEffectDefaultScale = bossGravityIncreasedImage.transform.localScale;
+            _bossAbilityEffectDefaultRotation = bossGravityIncreasedImage.transform.localRotation;
 
             if (!bossForcedDuplicationSprite)
                 bossForcedDuplicationSprite = _bossAbilityEffectDefaultSprite;
@@ -9566,28 +9617,58 @@ public class GameController : MonoBehaviour
             sprite = GetBossGravityEffectSprite();
         }
 
+        BossAbilityEffectOwner previousOwner = _bossAbilityEffectOwner;
         _bossAbilityEffectOwner = owner;
 
         if (owner == BossAbilityEffectOwner.None)
         {
             bossGravityIncreasedImage.enabled = true;
-            bossGravityIncreasedImage.transform.localScale = _bossAbilityEffectDefaultScale;
+            ResetBossAbilityEffectTransform();
             SetBossAbilityEffectAlpha(1f);
             bossGravityIncreasedImage.gameObject.SetActive(false);
             return;
         }
+
+        if (previousOwner != owner)
+            ResetBossAbilityEffectTransform();
 
         if (sprite)
             bossGravityIncreasedImage.sprite = sprite;
 
         bossGravityIncreasedImage.enabled = true;
         bossGravityIncreasedImage.gameObject.SetActive(true);
+        bossGravityIncreasedImage.transform.localScale = _bossAbilityEffectDefaultScale;
+        SetBossAbilityEffectAlpha(1f);
 
-        if (owner == BossAbilityEffectOwner.GravityBoost)
-        {
-            bossGravityIncreasedImage.transform.localScale = _bossAbilityEffectDefaultScale;
-            SetBossAbilityEffectAlpha(1f);
-        }
+        if (owner != BossAbilityEffectOwner.ForcedDuplication)
+            bossGravityIncreasedImage.transform.localRotation = _bossAbilityEffectDefaultRotation;
+    }
+
+    void ResetBossAbilityEffectTransform()
+    {
+        if (!bossGravityIncreasedImage)
+            return;
+
+        bossGravityIncreasedImage.transform.localScale = _bossAbilityEffectDefaultScale;
+        bossGravityIncreasedImage.transform.localRotation = _bossAbilityEffectDefaultRotation;
+    }
+
+    void UpdateForcedDuplicationEffectRotation(float deltaTime)
+    {
+        if (!bossGravityIncreasedImage || deltaTime <= 0f)
+            return;
+
+        if (_bossAbilityEffectOwner != BossAbilityEffectOwner.ForcedDuplication || !IsForcedDuplicationActive)
+            return;
+
+        if (!bossGravityIncreasedImage.gameObject.activeInHierarchy || !bossGravityIncreasedImage.enabled)
+            return;
+
+        float spin = Mathf.Max(0f, duplicateEffectRotationDegreesPerSecond);
+        if (spin <= 0f)
+            return;
+
+        bossGravityIncreasedImage.transform.Rotate(0f, 0f, -spin * deltaTime);
     }
 
     void ShowForcedDuplicationCountPulse()
@@ -9636,14 +9717,7 @@ public class GameController : MonoBehaviour
             float k = Mathf.Clamp01(t / duration);
             float eased = Mathf.SmoothStep(0f, 1f, k);
             float alpha = Mathf.Lerp(1f, 0f, eased);
-            Vector3 imageScale = _bossAbilityEffectDefaultScale * Mathf.Lerp(1f, scaleTarget, eased);
             Vector3 textScale = _duplicateCountDefaultScale * Mathf.Lerp(1f, scaleTarget, eased);
-
-            if (bossGravityIncreasedImage && _bossAbilityEffectOwner == BossAbilityEffectOwner.ForcedDuplication)
-            {
-                bossGravityIncreasedImage.transform.localScale = imageScale;
-                SetBossAbilityEffectAlpha(alpha);
-            }
 
             if (duplicateCountText)
             {
@@ -9653,12 +9727,6 @@ public class GameController : MonoBehaviour
 
             t += Time.deltaTime;
             yield return null;
-        }
-
-        if (bossGravityIncreasedImage && _bossAbilityEffectOwner == BossAbilityEffectOwner.ForcedDuplication)
-        {
-            bossGravityIncreasedImage.transform.localScale = _bossAbilityEffectDefaultScale;
-            SetBossAbilityEffectAlpha(0f);
         }
 
         if (duplicateCountText)

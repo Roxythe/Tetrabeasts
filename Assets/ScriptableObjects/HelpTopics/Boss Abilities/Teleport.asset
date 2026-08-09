@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HelpTopicSO
   category: Boss Abilities
   title: Teleport
-  description: The boss marks several monster units, then teleports them to random open cells after a short warning. Teleport destinations avoid rows that would immediately complete a full row when possible.
-  image: {fileID: -7112328520176820301, guid: b8b76259fcc46f548856a278ed851aa6, type: 3}
+  description: The boss marks several monster units, then teleports them to random
+    open cells after a short warning. Teleport destinations avoid rows that would
+    immediately complete a full row when possible.
+  image: {fileID: 21300000, guid: b8b76259fcc46f548856a278ed851aa6, type: 3}
   videoClip: {fileID: 0}

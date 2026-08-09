@@ -24990,8 +24990,8 @@ MonoBehaviour:
   poisonBorderSprite: {fileID: -2150452836756340232, guid: dc0f4bc7092c40a40aecd2a1406b4a25, type: 3}
   fireBorderSprite: {fileID: -2737431570772258390, guid: 3f2b08c7023ae6045a1a36eda95861fd, type: 3}
   lightningBorderSprite: {fileID: -4774492201383427687, guid: 860ad36f38971b241b3613006f023743, type: 3}
-  teleportWarningSprite: {fileID: -7112328520176820301, guid: b8b76259fcc46f548856a278ed851aa6, type: 3}
-  zipPadSprite: {fileID: 6441882929591494085, guid: a385ac52fbe1460408aa10d725fdb239, type: 3}
+  teleportWarningSprite: {fileID: 21300000, guid: b8b76259fcc46f548856a278ed851aa6, type: 3}
+  zipPadSprite: {fileID: 21300000, guid: a385ac52fbe1460408aa10d725fdb239, type: 3}
   teleportSFX: {fileID: 8300000, guid: 17806f323bfc3c740a6292560ccc6fce, type: 3}
   zipPadSFXClips:
   - {fileID: 8300000, guid: 186a33b4c3bab9b4eb3d02ac4c68ac05, type: 3}
@@ -25001,8 +25001,8 @@ MonoBehaviour:
   teleportFloorRotationDegreesPerSecond: 180
   teleportFloorDestinationExcludedTopRows: 4
   teleportFloorDestinationExcludedBottomRows: 0
-  zipPadVisualScale: 0.95
-  zipPadScrollPixelsPerSecond: 140
+  zipPadVisualScale: 0.9
+  zipPadScrollPixelsPerSecond: 40
   spikeSpriteLow: {fileID: -7474534166531757267, guid: 59afb05ab829e434785e507c432aaa87, type: 3}
   spikeSpriteHigh: {fileID: -332607259968299230, guid: d6e21328398368d47b3cb6a083dfb8f3, type: 3}
   spikeAnimInterval: 0.35
@@ -36051,7 +36051,7 @@ MonoBehaviour:
   floatingDamageText: {fileID: 1843446950}
   enemyCastleUI: {fileID: 841500717}
   castlesByLevel:
-  - {fileID: 11400000, guid: 6cd8a6a1393be964fb5b242e1c4c3650, type: 2}
+  - {fileID: 11400000, guid: 0fe7773f7fa437643bfd611ad3d33023, type: 2}
   - {fileID: 11400000, guid: 347f97c862e224641898291b159f0743, type: 2}
   - {fileID: 11400000, guid: 7c91d608d59934d41ae40968e5a6aff1, type: 2}
   - {fileID: 11400000, guid: e3344096f4bcc724c9a2efed9ccedc29, type: 2}
@@ -36104,6 +36104,7 @@ MonoBehaviour:
   duplicationSFXVolume: 1
   duplicatePulseSeconds: 0.45
   duplicatePulseScale: 1.35
+  duplicateEffectRotationDegreesPerSecond: 180
   specialSiphonParticlePrefab: {fileID: 1717801695604134146, guid: f0c4f2773f6589345876bf4c52841175, type: 3}
   specialSiphonLoopSFX: {fileID: 8300000, guid: 7800ea2874160604db1b4e40c2dd3185, type: 3}
   specialSiphonLoopSFXVolume: 1
@@ -36111,6 +36112,18 @@ MonoBehaviour:
   specialSiphonParticleArrivalRadius: 0.15
   specialSiphonParticleWorldScale: 0.02
   specialSiphonParticleSortingOrder: 1000
+  specialSiphonParticlePopSFXClips:
+  - {fileID: 8300000, guid: 44fe63797a69cd944bc07e74c40c7734, type: 3}
+  - {fileID: 8300000, guid: ede8df60bfc0ad8499257352bfc50b9c, type: 3}
+  - {fileID: 8300000, guid: a4a9b364b754b694da39547e7359e493, type: 3}
+  - {fileID: 8300000, guid: e6d6d73657311f748b32dca59e98784b, type: 3}
+  - {fileID: 8300000, guid: 2eb2f30b00147fe4dad1cec6641fec45, type: 3}
+  - {fileID: 8300000, guid: 103936d3b97392e469e6abc65deac83b, type: 3}
+  - {fileID: 8300000, guid: 26f59900c42ec1443b30d95b12fbf052, type: 3}
+  - {fileID: 8300000, guid: 294e4909eb1acfc4f9e89c6ce1656c8c, type: 3}
+  - {fileID: 8300000, guid: 2ce0dd27f5653564a9d1fed511a1cd8c, type: 3}
+  - {fileID: 8300000, guid: 10701f40e87ff1744b42a2c9963f1930, type: 3}
+  specialSiphonParticlePopSFXVolume: 0.22
   zipPadSpawnSFX: {fileID: 8300000, guid: 7f34fcb26221db744a333a4c1e6ab5a5, type: 3}
   zipPadSpawnSFXVolume: 1
   bossTeleportWarningRotationDegreesPerSecond: 360

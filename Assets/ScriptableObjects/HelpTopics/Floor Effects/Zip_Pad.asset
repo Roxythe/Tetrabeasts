@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HelpTopicSO
   category: Floor Effects
   title: Zip Pad
-  description: When the active piece overlaps a Zip Pad, it immediately quick drops and sets in place. Zip Pads do not activate under pieces that are already set.
-  image: {fileID: 2944590886679375940, guid: a385ac52fbe1460408aa10d725fdb239, type: 3}
+  description: When the active piece overlaps a Zip Pad, it immediately quick drops
+    and sets in place. Zip Pads do not activate under pieces that are already set.
+  image: {fileID: 21300000, guid: a385ac52fbe1460408aa10d725fdb239, type: 3}
   videoClip: {fileID: 0}

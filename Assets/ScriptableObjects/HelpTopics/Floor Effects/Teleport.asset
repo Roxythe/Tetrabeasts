@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HelpTopicSO
   category: Floor Effects
   title: Teleport
-  description: A monster unit set on a Teleport floor effect is warped to a random open cell, prioritizing destinations that will not complete a row. The effect disappears after it activates.
-  image: {fileID: -7112328520176820301, guid: b8b76259fcc46f548856a278ed851aa6, type: 3}
+  description: A monster unit set on a Teleport floor effect is warped to a random
+    open cell, prioritizing destinations that will not complete a row. The effect
+    disappears after it activates.
+  image: {fileID: 21300000, guid: b8b76259fcc46f548856a278ed851aa6, type: 3}
   videoClip: {fileID: 0}

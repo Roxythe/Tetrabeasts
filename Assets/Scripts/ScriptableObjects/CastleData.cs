@@ -186,7 +186,7 @@ public class CastleData : ScriptableObject
     [Min(1)] public int bossForcedDuplicationMaxPieces = 9;
 
     [Header("Boss - Special Siphon")]
-    [Range(0f, 1f)] public float bossSpecialSiphonGaugeDrainPercentPerSecond = 0.03f;
+    [Range(0f, 1f)] public float bossSpecialSiphonGaugeDrainPercentPerSecond = 0.01f;
 
     [Header("Boss - Teleport")]
     [Min(1)] public int bossTeleportTargetsMin = 1;

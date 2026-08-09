@@ -82,9 +82,9 @@ MonoBehaviour:
   bossEnablePylonShield: 0
   bossEnableMagicExplosive: 0
   bossEnableForcedDuplication: 0
-  bossEnableSpecialSiphon: 0
+  bossEnableSpecialSiphon: 1
   bossEnableTeleport: 0
-  bossEnableZipPad: 1
+  bossEnableZipPad: 0
   bossAbilityIntervalMin: 8
   bossAbilityIntervalMax: 15
   bossRowBlastDamage: 5
@@ -168,7 +168,7 @@ MonoBehaviour:
     weight: 100
     allowRepeat: 1
     cooldown: 5
-  - kind: 11
+  - kind: 8
     weight: 100
     allowRepeat: 1
     cooldown: 5
@@ -178,7 +178,7 @@ MonoBehaviour:
   bossGravityDuration: 10
   bossForcedDuplicationMinPieces: 5
   bossForcedDuplicationMaxPieces: 9
-  bossSpecialSiphonGaugeDrainPercentPerSecond: 0.03
+  bossSpecialSiphonGaugeDrainPercentPerSecond: 0.01
   bossTeleportTargetsMin: 1
   bossTeleportTargetsMax: 5
   bossTeleportWarningSeconds: 2

@@ -26,6 +26,12 @@ public class HelpMenuUI : MonoBehaviour
     public RawImage videoRawImage;
     public VideoPlayer videoPlayer;
     VideoClip _pendingClip;
+    Coroutine _infoImageVfxCR;
+    RectMask2D _zipPadPreviewMask;
+    readonly List<Image> _zipPadPreviewImages = new();
+    bool _infoImageDefaultsCached;
+    Vector3 _infoImageDefaultScale = Vector3.one;
+    Quaternion _infoImageDefaultRotation = Quaternion.identity;
 
     readonly Dictionary<string, HelpCategoryHeaderUI> _headers = new();
     readonly Dictionary<string, List<HelpTopicButtonUI>> _topicButtonsByCategory = new();
@@ -41,6 +47,7 @@ public class HelpMenuUI : MonoBehaviour
         TetrabeastsControls.PlatformDefaultProfileChanged += OnControlsChanged;
         HookVideoEvents();
         ResolveDescriptionBackgroundBox();
+        CacheInfoImageDefaults();
         RebuildSidebar();
         ShowDefault();
     }
@@ -52,6 +59,7 @@ public class HelpMenuUI : MonoBehaviour
         TetrabeastsControls.BindingsChanged -= OnControlsChanged;
         TetrabeastsControls.PlatformDefaultProfileChanged -= OnControlsChanged;
         UnhookVideoEvents();
+        StopInfoImageVfx();
         SetDescriptionBackgroundVisible(false);
     }
 
@@ -156,8 +164,10 @@ public class HelpMenuUI : MonoBehaviour
 
         if (infoImage)
         {
+            StopInfoImageVfx();
             infoImage.sprite = topic.image;
             infoImage.enabled = (topic.image != null);
+            StartInfoImageVfx(topic.image);
         }
 
         // Video
@@ -187,6 +197,7 @@ public class HelpMenuUI : MonoBehaviour
 
         if (infoImage)
         {
+            StopInfoImageVfx();
             infoImage.sprite = null;
             infoImage.enabled = false;
         }
@@ -338,5 +349,142 @@ public class HelpMenuUI : MonoBehaviour
         videoPlayer.clip = clip;
 
         videoPlayer.Prepare();
+    }
+
+    void CacheInfoImageDefaults()
+    {
+        if (_infoImageDefaultsCached || !infoImage)
+            return;
+
+        _infoImageDefaultScale = infoImage.rectTransform.localScale;
+        _infoImageDefaultRotation = infoImage.rectTransform.localRotation;
+        _infoImageDefaultsCached = true;
+    }
+
+    void StartInfoImageVfx(Sprite sprite)
+    {
+        if (!infoImage || !sprite)
+            return;
+
+        CacheInfoImageDefaults();
+
+        if (IsHelpVfxSprite(sprite, "Teleport_Warning") ||
+            IsHelpVfxSprite(sprite, "Duplication_Icon"))
+        {
+            _infoImageVfxCR = StartCoroutine(RotateInfoImageVfxCo());
+            return;
+        }
+
+        if (IsHelpVfxSprite(sprite, "ZipPad_FloorEffect"))
+            _infoImageVfxCR = StartCoroutine(ZipPadInfoImageVfxCo(sprite));
+    }
+
+    void StopInfoImageVfx()
+    {
+        if (_infoImageVfxCR != null)
+        {
+            StopCoroutine(_infoImageVfxCR);
+            _infoImageVfxCR = null;
+        }
+
+        ClearZipPadPreviewImages();
+
+        if (infoImage)
+        {
+            CacheInfoImageDefaults();
+            infoImage.rectTransform.localScale = _infoImageDefaultScale;
+            infoImage.rectTransform.localRotation = _infoImageDefaultRotation;
+            infoImage.enabled = infoImage.sprite != null;
+        }
+    }
+
+    System.Collections.IEnumerator RotateInfoImageVfxCo()
+    {
+        while (infoImage)
+        {
+            infoImage.rectTransform.Rotate(0f, 0f, -180f * Time.unscaledDeltaTime);
+            yield return null;
+        }
+    }
+
+    System.Collections.IEnumerator ZipPadInfoImageVfxCo(Sprite sprite)
+    {
+        if (!infoImage || !sprite)
+            yield break;
+
+        EnsureZipPadPreviewImages(sprite);
+        infoImage.enabled = false;
+
+        float offset = 0f;
+        while (infoImage)
+        {
+            RectTransform root = infoImage.rectTransform;
+            float height = Mathf.Max(1f, root.rect.height);
+            offset = Mathf.Repeat(offset + 80f * Time.unscaledDeltaTime, height);
+
+            for (int i = 0; i < _zipPadPreviewImages.Count; i++)
+            {
+                Image image = _zipPadPreviewImages[i];
+                if (!image) continue;
+
+                RectTransform rect = image.rectTransform;
+                rect.sizeDelta = root.rect.size;
+                rect.anchoredPosition = new Vector2(0f, height - offset - i * height);
+                image.sprite = sprite;
+            }
+
+            yield return null;
+        }
+    }
+
+    void EnsureZipPadPreviewImages(Sprite sprite)
+    {
+        if (!infoImage || !sprite)
+            return;
+
+        if (!_zipPadPreviewMask)
+            _zipPadPreviewMask = infoImage.GetComponent<RectMask2D>();
+        if (!_zipPadPreviewMask)
+            _zipPadPreviewMask = infoImage.gameObject.AddComponent<RectMask2D>();
+
+        RectTransform parent = infoImage.rectTransform;
+        for (int i = 0; i < 3; i++)
+        {
+            Image image = new GameObject($"ZipPadHelpPreview_{i}", typeof(RectTransform), typeof(Image)).GetComponent<Image>();
+            image.transform.SetParent(parent, false);
+            image.sprite = sprite;
+            image.type = Image.Type.Simple;
+            image.preserveAspect = false;
+            image.raycastTarget = false;
+            image.color = infoImage.color;
+
+            RectTransform rect = image.rectTransform;
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.localScale = Vector3.one;
+            rect.localRotation = Quaternion.identity;
+
+            _zipPadPreviewImages.Add(image);
+        }
+    }
+
+    void ClearZipPadPreviewImages()
+    {
+        for (int i = 0; i < _zipPadPreviewImages.Count; i++)
+        {
+            Image image = _zipPadPreviewImages[i];
+            if (image)
+                Destroy(image.gameObject);
+        }
+
+        _zipPadPreviewImages.Clear();
+    }
+
+    bool IsHelpVfxSprite(Sprite sprite, string expectedName)
+    {
+        return sprite &&
+               !string.IsNullOrEmpty(expectedName) &&
+               string.Equals(sprite.name, expectedName, System.StringComparison.OrdinalIgnoreCase);
     }
 }
