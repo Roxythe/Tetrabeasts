@@ -660,8 +660,8 @@ public class GameController : MonoBehaviour
     public int MaxReserveUnits => EffectiveMaxUnitLives;
     public int CurrentStarDifficulty => _starDifficulty;
     public float CurrentMisfortune => misfortune + _starDifficultyModifiers.misfortuneAdd;
-    public bool IsGameplaySuspended => gameOver || levelWon || isPaused || LoadingScreen.IsVisible || ConfirmationPopupUI.IsAnyShowing || tutorialSuspended || _roundTransitionActive || _specialAbilityCinematicActive || _levelStartBlocked || _environmentRowClearResolving || (levelModifierController && levelModifierController.IsSelectionRunning);
-    public bool IsRoundActive => !IsGameplaySuspended && !gameOver && !levelWon;
+    public bool IsGameplaySuspended => gameOver || levelWon || winQueued || isPaused || LoadingScreen.IsVisible || ConfirmationPopupUI.IsAnyShowing || tutorialSuspended || _roundTransitionActive || _specialAbilityCinematicActive || _levelStartBlocked || _environmentRowClearResolving || (levelModifierController && levelModifierController.IsSelectionRunning);
+    public bool IsRoundActive => !IsGameplaySuspended && !gameOver && !levelWon && !winQueued;
     public bool IsTutorialPieceInputBlocked => tutorialPieceInputBlocked;
     public bool IsTutorialHardDropInputGraceActive => Time.unscaledTime < _tutorialHardDropInputBlockedUntilRealtime;
     public int EffectiveMaxUnitLivesForStats => EffectiveMaxUnitLives;
@@ -1908,11 +1908,11 @@ public class GameController : MonoBehaviour
             nextPreview.SyncBorderToImmunity(immunityActive, gameBoard.immuneBorderColor, gameBoard.normalBorderColor);
     }
 
-    public bool CanSpawnNewPiece() => !gameOver && !levelWon && !_levelStartBlocked && !LoadingScreen.IsVisible;
+    public bool CanSpawnNewPiece() => !gameOver && !levelWon && !winQueued && !_levelStartBlocked && !LoadingScreen.IsVisible;
 
     public void SpawnNextPiece()
     {
-        if (gameOver || levelWon) return;
+        if (gameOver || levelWon || winQueued) return;
 
         // Make sure there is a valid, non-null head before dequeue
         var head = PeekSafeHead();
@@ -2314,6 +2314,7 @@ public class GameController : MonoBehaviour
         if (variant != RoundTransitionVariant.Win && variant != RoundTransitionVariant.Loss)
             return;
 
+        CleanupRoundTransientGameplayObjects();
         levelModifierController?.PauseAnimatedBackgroundForPostRound();
     }
 
@@ -3176,7 +3177,7 @@ public class GameController : MonoBehaviour
         }
 
         // Spawn one projectile per cleared row
-        if (rowsCleared > 0 && gameBoard && enemyCastleUI && enemyCastleUI.castleImage && rowDamage != null)
+        if (rowsCleared > 0 && gameBoard && enemyCastleUI && enemyCastleUI.castleImage && rowDamage != null && !levelWon && !winQueued)
         {
             // Sort by clearIndex so projectiles fire in the same order rows were cleared
             var ordered = new List<KeyValuePair<int, int>>(rowDamage);
@@ -3266,7 +3267,7 @@ public class GameController : MonoBehaviour
         if (!gameBoard || clearOriginColumnsByRow == null || clearOriginColumnsByRow.Count == 0)
             return false;
 
-        if (_environmentRowClearResolving || gameOver || levelWon)
+        if (_environmentRowClearResolving || gameOver || levelWon || winQueued)
             return false;
 
         bool hasClearableFullRow = false;
@@ -3476,7 +3477,7 @@ public class GameController : MonoBehaviour
 
     bool IsRoundActionTokenCurrent(int token)
     {
-        return token == _roundLifecycleToken && !gameOver && !levelWon && gameBoard;
+        return token == _roundLifecycleToken && !gameOver && !levelWon && !winQueued && gameBoard;
     }
 
     void CleanupRoundTransientGameplayObjects()
@@ -3614,7 +3615,6 @@ public class GameController : MonoBehaviour
         levelWon = true;
         TrackCurrentRoundWinStats();
         _claimedRoundWinOneLiner = ClaimRoundTransitionOneLiner(RoundTransitionVariant.Win);
-        CleanupRoundTransientGameplayObjects();
 
         StartCoroutine(CoHandleCastleDestroyedVictory());
     }
@@ -4703,7 +4703,7 @@ public class GameController : MonoBehaviour
                         RunSummaryStats.AddLinesCleared(rowDamage.Count);
 
                     // Spawn one projectile per cleared row, using the dominant monster for visuals
-                    if (rowDamage != null && rowDamage.Count > 0 && gameBoard && enemyCastleUI && enemyCastleUI.castleImage && !levelWon)
+                    if (rowDamage != null && rowDamage.Count > 0 && gameBoard && enemyCastleUI && enemyCastleUI.castleImage && !levelWon && !winQueued)
                     {
                         // Stable ordering
                         var ordered = new List<KeyValuePair<int, int>>(rowDamage);
@@ -5591,8 +5591,9 @@ public class GameController : MonoBehaviour
 
         while (rt && (rt.anchoredPosition - targetAnchored).sqrMagnitude > 9f)
         {
+            float dt = GetPlayerAttackProjectileDeltaTime();
             Vector2 previousPosition = rt.anchoredPosition;
-            rt.anchoredPosition = Vector2.MoveTowards(rt.anchoredPosition, targetAnchored, speed * Time.deltaTime);
+            rt.anchoredPosition = Vector2.MoveTowards(rt.anchoredPosition, targetAnchored, speed * dt);
 
             if (TryGetPlayerAttackHardenedLavaImpactCell(previousPosition, rt.anchoredPosition, out var lavaCell) &&
                 gameBoard.TryHandlePlayerAttackObstacleImpact(lavaCell))
@@ -5611,7 +5612,7 @@ public class GameController : MonoBehaviour
 
             if (animType == AttackAnimType.MirrorToggle && topImg)
             {
-                toggleT += Time.deltaTime;
+                toggleT += dt;
                 if (toggleT >= toggleInterval)
                 {
                     toggleT = 0f;
@@ -5624,7 +5625,7 @@ public class GameController : MonoBehaviour
             else if (animType == AttackAnimType.SpinClockwise)
             {
                 if (topImg)
-                    topImg.rectTransform.Rotate(0f, 0f, -spinDPS * Time.deltaTime);
+                    topImg.rectTransform.Rotate(0f, 0f, -spinDPS * dt);
             }
 
             yield return null;
@@ -5647,6 +5648,13 @@ public class GameController : MonoBehaviour
 
         if (impactEndedLevel)
             yield break;
+    }
+
+    float GetPlayerAttackProjectileDeltaTime()
+    {
+        return (winQueued || levelWon || _roundTransitionActive)
+            ? Time.unscaledDeltaTime
+            : Time.deltaTime;
     }
 
     bool TryGetPlayerAttackHardenedLavaImpactCell(Vector2 previousRootPos, Vector2 currentRootPos, out Vector2Int hitCell)
@@ -5724,6 +5732,7 @@ public class GameController : MonoBehaviour
         Animator animator = go.GetComponent<Animator>();
         if (animator)
         {
+            animator.updateMode = AnimatorUpdateMode.UnscaledTime;
             animator.Rebind();
             animator.Update(0f);
             StartCoroutine(DestroyAttackExplosionAfterAnimation(go, animator));
@@ -5815,8 +5824,14 @@ public class GameController : MonoBehaviour
     bool ApplyCastleAttackDamage(int damage, MonsterData attackerMD, AudioClip impactClip,
                                  RectTransform impactRoot = null, Vector2 impactAnchoredPosition = default)
     {
-        if (damage <= 0 || !enemyCastleUI || levelWon || gameOver)
+        if (damage <= 0 || !enemyCastleUI || gameOver)
             return false;
+
+        if (winQueued || levelWon)
+        {
+            PlayCastleAttackImpactFeedback(damage, attackerMD, impactClip);
+            return false;
+        }
 
         int originalDamage = damage;
 
@@ -5861,9 +5876,19 @@ public class GameController : MonoBehaviour
         return false;
     }
 
+    void PlayCastleAttackImpactFeedback(int damage, MonsterData attackerMD, AudioClip impactClip)
+    {
+        AudioClip resolvedImpactClip = impactClip ? impactClip : (attackerMD ? attackerMD.PickRandomAttackSFX() : null);
+        if (AudioManager.I && resolvedImpactClip)
+            AudioManager.I.PlaySFX(resolvedImpactClip);
+
+        if (enemyCastleUI)
+            enemyCastleUI.PlayDamageImpactFeedback(damage);
+    }
+
     IEnumerator CoWinAfterDelay(float delay)
     {
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSecondsRealtime(delay);
         OnCastleDestroyed();
     }
 
@@ -6223,7 +6248,7 @@ public class GameController : MonoBehaviour
 
     bool ResolveCastleDownshotImpact(Vector2Int hitCell, bool damageMonster, bool forceMonsterHitSfx = false)
     {
-        if (!gameBoard || levelWon || gameOver)
+        if (!gameBoard || levelWon || winQueued || gameOver)
             return true;
 
         AudioClip hitClip = null;
@@ -7503,9 +7528,9 @@ public class GameController : MonoBehaviour
         if (battleLog && data)
             battleLog.LogDeath(data.name);
 
-        levelModifierController?.OnTileDied(cell, data);
+        if (gameOver || levelWon || winQueued) return;
 
-        if (gameOver) return;
+        levelModifierController?.OnTileDied(cell, data);
 
         // Death SFX
         if (AudioManager.I)
@@ -9391,10 +9416,10 @@ public class GameController : MonoBehaviour
 
     float GetSpecialSiphonGaugeDrainPerSecond()
     {
-        float percent = _castleData
-            ? Mathf.Clamp01(_castleData.bossSpecialSiphonGaugeDrainPercentPerSecond)
-            : 0.01f;
+        if (!_castleData)
+            return 0f;
 
+        float percent = Mathf.Clamp01(_castleData.bossSpecialSiphonGaugeDrainPercentPerSecond);
         return Mathf.Max(0f, specialGaugeMax * percent);
     }
 
@@ -10800,6 +10825,9 @@ public class GameController : MonoBehaviour
     bool CanLaunchCastleProjectile()
     {
         return gameBoard &&
+               !gameOver &&
+               !levelWon &&
+               !winQueued &&
                gameBoard.HasPlacedTiles() &&
                !HasAnyTutorialPromptActive();
     }

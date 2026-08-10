@@ -186,6 +186,7 @@ public class CastleData : ScriptableObject
     [Min(1)] public int bossForcedDuplicationMaxPieces = 9;
 
     [Header("Boss - Special Siphon")]
+    [Tooltip("Fraction of the player's max special gauge drained per second while Special Siphon is channeled. 0.01 = 1% per second.")]
     [Range(0f, 1f)] public float bossSpecialSiphonGaugeDrainPercentPerSecond = 0.01f;
 
     [Header("Boss - Teleport")]

@@ -81,8 +81,8 @@ MonoBehaviour:
   bossEnableGravityBoost: 0
   bossEnablePylonShield: 0
   bossEnableMagicExplosive: 0
-  bossEnableForcedDuplication: 0
-  bossEnableSpecialSiphon: 1
+  bossEnableForcedDuplication: 1
+  bossEnableSpecialSiphon: 0
   bossEnableTeleport: 0
   bossEnableZipPad: 0
   bossAbilityIntervalMin: 8

@@ -319,6 +319,8 @@ public class Board : MonoBehaviour
     readonly List<Vector2Int> teleportDestinationScratch = new();
     readonly List<Vector2Int> teleportSafeDestinationScratch = new();
     readonly List<Vector2Int> floorEffectCellScratch = new();
+    readonly List<Vector2Int> settledTeleportFloorEffectScratch = new();
+    bool activatingSettledTeleportFloorEffects;
 
     // visuals
     readonly Dictionary<Vector2Int, Image> poisonBorders = new();
@@ -2522,6 +2524,7 @@ public class Board : MonoBehaviour
 
         RefreshAllTileBorders();
         CleanOrphanedTiles();
+        ActivateTeleportFloorEffectsForSettledMonsters();
     }
 
     public void ShiftBoardUpOneRowAndFillBottom(Sprite soldierSprite)
@@ -2585,6 +2588,7 @@ public class Board : MonoBehaviour
 
         RefreshAllTileBorders();
         CleanOrphanedTiles();
+        ActivateTeleportFloorEffectsForSettledMonsters();
     }
 
     // Variant of SettleAllColumns that only processes specified columns for efficiency
@@ -3575,6 +3579,55 @@ public class Board : MonoBehaviour
             ClearFloorEffect(cell);
 
         return true;
+    }
+
+    void ActivateTeleportFloorEffectsForSettledMonsters()
+    {
+        if (activatingSettledTeleportFloorEffects || floorEffects.Count == 0)
+            return;
+
+        settledTeleportFloorEffectScratch.Clear();
+
+        foreach (var kv in floorEffects)
+        {
+            if (kv.Value.type != FloorEffectType.Teleport)
+                continue;
+
+            if (!monsters.TryGetValue(kv.Key, out var inst) || inst.data == null || inst.hp <= 0f)
+                continue;
+
+            settledTeleportFloorEffectScratch.Add(kv.Key);
+        }
+
+        if (settledTeleportFloorEffectScratch.Count == 0)
+            return;
+
+        activatingSettledTeleportFloorEffects = true;
+        try
+        {
+            for (int i = 0; i < settledTeleportFloorEffectScratch.Count; i++)
+            {
+                Vector2Int cell = settledTeleportFloorEffectScratch[i];
+
+                if (!floorEffects.TryGetValue(cell, out var fx) || fx.type != FloorEffectType.Teleport)
+                    continue;
+
+                if (!monsters.TryGetValue(cell, out var inst) || inst.data == null || inst.hp <= 0f)
+                    continue;
+
+                TryActivateTeleportFloorEffect(
+                    cell,
+                    teleportFloorDestinationExcludedTopRows,
+                    teleportFloorDestinationExcludedBottomRows,
+                    requireNonCompletingDestination: false,
+                    clearAfterActivation: true);
+            }
+        }
+        finally
+        {
+            activatingSettledTeleportFloorEffects = false;
+            settledTeleportFloorEffectScratch.Clear();
+        }
     }
 
     public bool TryTriggerZipPadForActivePiece(Vector2Int cell)

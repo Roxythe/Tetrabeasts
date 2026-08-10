@@ -21619,10 +21619,10 @@ MonoBehaviour:
   - {fileID: 1989426522}
   - {fileID: 1303877485}
   - {fileID: 232924537}
-  baseScale: 1
+  baseScale: 0.7
   scalePerCombo: 0.1
   showAtCombo: 2
-  maxScale: 1.5
+  maxScale: 1.2
   baseColorFlickerSpeed: 2
   flickerSpeedPerComboAboveThreshold: 0.2
   colorFlickerSpeedCap: 5
@@ -36051,7 +36051,6 @@ MonoBehaviour:
   floatingDamageText: {fileID: 1843446950}
   enemyCastleUI: {fileID: 841500717}
   castlesByLevel:
-  - {fileID: 11400000, guid: 0fe7773f7fa437643bfd611ad3d33023, type: 2}
   - {fileID: 11400000, guid: 347f97c862e224641898291b159f0743, type: 2}
   - {fileID: 11400000, guid: 7c91d608d59934d41ae40968e5a6aff1, type: 2}
   - {fileID: 11400000, guid: e3344096f4bcc724c9a2efed9ccedc29, type: 2}

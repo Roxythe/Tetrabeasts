@@ -68,17 +68,23 @@ MonoBehaviour:
   overridePoisonCount: 5
   overrideFireCount: 4
   overrideSpikeCount: 3
+  overrideTeleportCount: -1
+  overrideZipPadCount: -1
   enableLevelModifierSelection: 0
   levelModifierDatabase: {fileID: 0}
   allowedLevelModifierKinds: 
-  bossEnableRowBlast: 1
-  bossEnableFullBoardBlast: 1
+  bossEnableRowBlast: 0
+  bossEnableFullBoardBlast: 0
   bossEnableLightningStrike: 1
-  bossEnableSpawnTraps: 1
-  bossEnableInvulnerability: 1
-  bossEnableGravityBoost: 1
-  bossEnablePylonShield: 1
+  bossEnableSpawnTraps: 0
+  bossEnableInvulnerability: 0
+  bossEnableGravityBoost: 0
+  bossEnablePylonShield: 0
   bossEnableMagicExplosive: 1
+  bossEnableForcedDuplication: 0
+  bossEnableSpecialSiphon: 1
+  bossEnableTeleport: 1
+  bossEnableZipPad: 0
   bossAbilityIntervalMin: 10
   bossAbilityIntervalMax: 15
   bossRowBlastDamage: 17
@@ -143,10 +149,22 @@ MonoBehaviour:
     allowRepeat: 0
     cooldown: 10
   - kind: 10
+    weight: 45
+    allowRepeat: 1
+    cooldown: 6
+  - kind: 11
     weight: 5
     allowRepeat: 1
     cooldown: 12
-  - kind: 11
+  - kind: 7
+    weight: 30
+    allowRepeat: 1
+    cooldown: 12
+  - kind: 9
+    weight: 30
+    allowRepeat: 0
+    cooldown: 20
+  - kind: 8
     weight: 5
     allowRepeat: 1
     cooldown: 12
@@ -154,6 +172,16 @@ MonoBehaviour:
   bossInvulnHitSFX: {fileID: 8300000, guid: 872123507b80dd64ab56ef9159446175, type: 3}
   bossGravityBonusMult: 2
   bossGravityDuration: 10
+  bossForcedDuplicationMinPieces: 5
+  bossForcedDuplicationMaxPieces: 9
+  bossSpecialSiphonGaugeDrainPercentPerSecond: 0.02
+  bossTeleportTargetsMin: 1
+  bossTeleportTargetsMax: 5
+  bossTeleportWarningSeconds: 2
+  bossTeleportDestinationExcludedTopRows: 4
+  bossTeleportDestinationExcludedBottomRows: 2
+  bossZipPadExcludedTopRows: 4
+  bossZipPadExcludedBottomRows: 2
   bossAbilityWarningSeconds: 3
   bossWarningToggleInterval: 0.16
   bossRowBlastWarningSprite: {fileID: -4364613411904784052, guid: d7609c71eb781fd4caca65888f6f03b4, type: 3}

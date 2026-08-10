@@ -216,6 +216,16 @@ public class EnemyCastleUI : MonoBehaviour
         return appliedDamage;
     }
 
+    public void PlayDamageImpactFeedback(int impactDamage)
+    {
+        if (sourceData == null)
+            return;
+
+        int feedbackDamage = Mathf.Max(1, impactDamage);
+        TriggerBossDamageTakenSprite();
+        TriggerDamageShake(feedbackDamage);
+    }
+
     void UpdateVisuals()
     {
         if (healthBarSlider)
