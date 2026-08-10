@@ -2098,7 +2098,10 @@ public class LevelModifierController : MonoBehaviour
         StopVolcanicEruptionRoutine();
         StopSoftSpaceRoutine();
         if (board)
+        {
             board.ClearRoundTransientEffects();
+            board.ClearLevelModifierResidualVisuals();
+        }
 
         ActiveModifier = null;
         IsSelectionRunning = false;

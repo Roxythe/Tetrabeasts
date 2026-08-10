@@ -73,6 +73,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField, Range(0.05f, 8f)] float musicFadeOutSeconds = 1f;
     [SerializeField, Range(0.05f, 4f)] float pauseMusicFadeSeconds = 0.45f;
     [SerializeField, Range(0.05f, 4f)] float specialAbilityMusicFadeSeconds = 0.35f;
+    [SerializeField, Range(0f, 1f)] float specialAbilityBackgroundMusicVolumeScale = 0.18f;
 
     [Header("Special Ability SFX Tuning")]
     [SerializeField, Min(0f)] float specialAbilityLoopVolumeBoost = 4f;
@@ -640,19 +641,21 @@ public class AudioManager : MonoBehaviour
             float fadeDuration = Mathf.Max(0.01f, specialAbilityMusicFadeSeconds);
             float musicStart = GetMainMusicSourceVolumeScale(musicSrc);
             float transitionStart = GetMainMusicSourceVolumeScale(musicTransitionSrc);
+            float musicTarget = musicStart * Mathf.Clamp01(specialAbilityBackgroundMusicVolumeScale);
+            float transitionTarget = transitionStart * Mathf.Clamp01(specialAbilityBackgroundMusicVolumeScale);
             float t = 0f;
 
             while (t < fadeDuration)
             {
                 t += Time.unscaledDeltaTime;
                 float k = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / fadeDuration));
-                SetMainMusicSourceVolumeScale(musicSrc, Mathf.Lerp(musicStart, 0f, k));
-                SetMainMusicSourceVolumeScale(musicTransitionSrc, Mathf.Lerp(transitionStart, 0f, k));
+                SetMainMusicSourceVolumeScale(musicSrc, Mathf.Lerp(musicStart, musicTarget, k));
+                SetMainMusicSourceVolumeScale(musicTransitionSrc, Mathf.Lerp(transitionStart, transitionTarget, k));
                 yield return null;
             }
 
-            PauseMainMusicSource(musicSrc);
-            PauseMainMusicSource(musicTransitionSrc);
+            SetMainMusicSourceVolumeScale(musicSrc, musicTarget);
+            SetMainMusicSourceVolumeScale(musicTransitionSrc, transitionTarget);
         }
         else
         {

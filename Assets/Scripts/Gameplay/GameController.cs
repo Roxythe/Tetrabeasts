@@ -7693,12 +7693,34 @@ public class GameController : MonoBehaviour
         if (amount > 0f)
             RunSummaryStats.AddHealingDone(amount);
 
-        if (!battleLog || !target || !source) return;
-
         int v = Mathf.RoundToInt(Mathf.Max(0f, amount));
         if (v <= 0) return;
 
+        ShowUnitFloatingHealText(cell, v);
+
+        if (!battleLog || !target || !source) return;
+
         battleLog.LogHealDetailed(source.name, v, target.name);
+    }
+
+    void ShowUnitFloatingHealText(Vector2Int cell, int amount)
+    {
+        if (amount <= 0 || !gameBoard)
+            return;
+
+        EnsureFloatingDamageText();
+        if (!floatingDamageText)
+            return;
+
+        if (gameBoard.TryGetTileRect(cell, out var tileRect) && tileRect)
+        {
+            floatingDamageText.Show(tileRect, amount, FloatingDamageText.DamageKind.Heal, killingBlow: false);
+            return;
+        }
+
+        if (gameBoard.gridRoot)
+            floatingDamageText.ShowAtLocalPosition(gameBoard.gridRoot, gameBoard.CellToAnchoredPos(cell),
+                gameBoard.GetCellSize(), amount, FloatingDamageText.DamageKind.Heal, killingBlow: false);
     }
 
     void GetDamageTextParts(Board.DamageSource src, out string damageTypeWord, out Color32? damageTypeColor, out string fromLabel)

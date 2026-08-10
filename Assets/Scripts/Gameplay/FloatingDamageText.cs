@@ -18,7 +18,8 @@ public class FloatingDamageText : MonoBehaviour
         BossAbility,
         MagicExplosive,
         Overgrowth,
-        RearAmbush
+        RearAmbush,
+        Heal
     }
 
     [Header("Refs")]
@@ -48,7 +49,7 @@ public class FloatingDamageText : MonoBehaviour
 
     [Header("Performance")]
     [SerializeField, Min(0)] int prewarmCount = 32;
-    [SerializeField, Min(1)] int maxActivePopups = 15;
+    [SerializeField, Min(1)] int maxActivePopups = 32;
     [SerializeField] bool aggregateBurstDamage = true;
     [SerializeField, Min(0f)] float burstAggregateSeconds = 0.04f;
     [SerializeField, Min(0f)] float burstAggregatePositionRadius = 28f;
@@ -66,6 +67,7 @@ public class FloatingDamageText : MonoBehaviour
     [SerializeField] Color magicExplosiveColor = new(0.35f, 0.75f, 1f, 1f);
     [SerializeField] Color overgrowthColor = new(0.45f, 0.9f, 0.35f, 1f);
     [SerializeField] Color rearAmbushColor = new(1f, 0.85f, 0.55f, 1f);
+    [SerializeField] Color healColor = new(0.25f, 1f, 0.35f, 1f);
     [SerializeField] Color killingBlowColor = new(1f, 0.05f, 0.05f, 1f);
 
     [Header("Outline")]
@@ -154,13 +156,22 @@ public class FloatingDamageText : MonoBehaviour
         if (!enabledText || amount <= 0)
             return;
 
-        if (aggregateBurstDamage && burstAggregateSeconds > 0f)
+        if (ShouldAggregateKind(kind))
         {
             QueuePendingPopup(worldPosition, amount, kind, killingBlow, sourceSize);
             return;
         }
 
         SpawnPopupAtWorldPosition(worldPosition, amount, kind, killingBlow, sourceSize);
+    }
+
+    bool ShouldAggregateKind(DamageKind kind)
+    {
+        if (!aggregateBurstDamage || burstAggregateSeconds <= 0f)
+            return false;
+
+        return kind != DamageKind.Contagion &&
+               kind != DamageKind.Heal;
     }
 
     void QueuePendingPopup(Vector3 worldPosition, int amount, DamageKind kind, bool killingBlow, Vector2 sourceSize)
@@ -281,8 +292,8 @@ public class FloatingDamageText : MonoBehaviour
         text.overflowMode = TextOverflowModes.Overflow;
         text.fontStyle = fontStyle;
         text.fontSize = fontSize;
-        text.text = showMinusSign ? "-" + amountText : amountText;
-        text.color = killingBlow ? killingBlowColor : ColorForKind(kind);
+        text.text = PrefixForKind(kind) + amountText;
+        text.color = (killingBlow && kind != DamageKind.Heal) ? killingBlowColor : ColorForKind(kind);
 
         if (fontAsset)
             text.font = fontAsset;
@@ -448,8 +459,17 @@ public class FloatingDamageText : MonoBehaviour
             DamageKind.MagicExplosive => magicExplosiveColor,
             DamageKind.Overgrowth => overgrowthColor,
             DamageKind.RearAmbush => rearAmbushColor,
+            DamageKind.Heal => healColor,
             _ => normalColor
         };
+    }
+
+    string PrefixForKind(DamageKind kind)
+    {
+        if (kind == DamageKind.Heal)
+            return "+";
+
+        return showMinusSign ? "-" : string.Empty;
     }
 
     IEnumerator AnimateAndRelease(PopupInstance popup)

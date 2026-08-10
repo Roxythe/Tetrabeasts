@@ -28,8 +28,8 @@ public class Board : MonoBehaviour
     [Header("Tetromino Background Pulse")]
     public bool animateTetrominoBackgrounds = true;
     public bool enablePassiveTetrominoBackgroundPulse = true;
-    [Tooltip("When disabled, tetromino backgrounds use a solid tinted fill instead of the assigned background sprite.")]
-    public bool useTetrominoBackgroundImageTextures = false;
+    [Tooltip("When enabled, tetromino backgrounds use the assigned background sprite instead of a solid tinted fill.")]
+    public bool useTetrominoBackgroundImageTextures = true;
     [Min(0.05f)] public float backgroundPassivePulseInterval = 3.25f;
     [Min(0.01f)] public float backgroundPassivePulseSeconds = 1.45f;
     [Range(0f, 1f)] public float backgroundPassivePeakAlpha = 0.24f;
@@ -65,6 +65,10 @@ public class Board : MonoBehaviour
     public float attackPassiveAltMaxSeconds = 6f;
     public float attackPassiveAltFlashSeconds = 0.18f;
     public bool syncAttackPassiveAltByPiece = false;
+
+    [Header("Healing Feedback")]
+    [SerializeField, Min(0.01f)] float healVfxDuration = 0.75f;
+    [SerializeField, Min(0f)] float healSfxMergeWindowSeconds = 0.08f;
 
     bool tilesImmune = false;
     public enum DamageSource
@@ -105,8 +109,20 @@ public class Board : MonoBehaviour
     readonly List<int> attackPortraitStaleGroupsScratch = new();
     readonly Dictionary<int, List<Vector2Int>> attackPortraitCellsByGroupScratch = new();
     readonly List<int> attackPortraitEmptyGroupsScratch = new();
+    readonly List<HealTickRequest> healTickRequestsScratch = new();
+    readonly Dictionary<int, HashSet<Vector2Int>> healTargetsByPieceScratch = new();
     readonly HashSet<RectTransform> cleanOrphanLiveScratch = new();
     int nextPieceGroupId = 1;
+    float lastHealSfxTime = -999f;
+
+    struct HealTickRequest
+    {
+        public Vector2Int healerCell;
+        public MonsterData source;
+        public int pieceGroupId;
+        public int amount;
+        public int range;
+    }
 
     // ================= Obstacles & Floor Effects =================
 
@@ -725,6 +741,8 @@ public class Board : MonoBehaviour
         foreach (var key in healTimers.Keys)
             healTimerKeysScratch.Add(key);
 
+        healTickRequestsScratch.Clear();
+
         foreach (var k in healTimerKeysScratch)
         {
             if (!monsters.TryGetValue(k, out var inst) || inst.data == null)
@@ -755,35 +773,137 @@ public class Board : MonoBehaviour
             FlashMonsterAltPortrait(k, MonsterRole.Healer);
 
             int range = Mathf.Clamp(Mathf.RoundToInt(inst.healRange + rangeAdd), 0, 99);
-            Vector2Int? best = null;
-            int bestDist = int.MaxValue;
-            float bestFrac = 1f; // Lower is better
 
-            for (int y = Mathf.Max(0, k.y - range); y <= Mathf.Min(height - 1, k.y + range); y++)
-                for (int x = Mathf.Max(0, k.x - range); x <= Mathf.Min(width - 1, k.x + range); x++)
+            healTickRequestsScratch.Add(new HealTickRequest
+            {
+                healerCell = k,
+                source = md,
+                pieceGroupId = inst.pieceGroupId,
+                amount = finalHeal,
+                range = range
+            });
+        }
+
+        if (healTickRequestsScratch.Count > 0)
+            ResolveReadyHealTicks();
+    }
+
+    void ResolveReadyHealTicks()
+    {
+        ResetHealTargetsByPieceScratch();
+        healTickRequestsScratch.Sort(CompareHealTickRequests);
+
+        for (int i = 0; i < healTickRequestsScratch.Count; i++)
+        {
+            var request = healTickRequestsScratch[i];
+            Vector2Int? target = FindBestHealTarget(request);
+            if (!target.HasValue)
+                continue;
+
+            if (HealTile(target.Value, request.amount, request.source))
+                RegisterHealTargetForPiece(request.pieceGroupId, target.Value);
+        }
+    }
+
+    static int CompareHealTickRequests(HealTickRequest a, HealTickRequest b)
+    {
+        int group = a.pieceGroupId.CompareTo(b.pieceGroupId);
+        if (group != 0) return group;
+        int y = a.healerCell.y.CompareTo(b.healerCell.y);
+        if (y != 0) return y;
+        return a.healerCell.x.CompareTo(b.healerCell.x);
+    }
+
+    Vector2Int? FindBestHealTarget(HealTickRequest request)
+    {
+        HashSet<Vector2Int> targetsInSamePiece = null;
+        if (request.pieceGroupId > 0)
+            healTargetsByPieceScratch.TryGetValue(request.pieceGroupId, out targetsInSamePiece);
+
+        bool hasBest = false;
+        Vector2Int best = default;
+        int bestDist = int.MaxValue;
+        float bestFrac = float.MaxValue;
+        bool bestAlreadyTargetedByPiece = false;
+        const float healthTieEpsilon = 0.0001f;
+
+        int minY = Mathf.Max(0, request.healerCell.y - request.range);
+        int maxY = Mathf.Min(height - 1, request.healerCell.y + request.range);
+        int minX = Mathf.Max(0, request.healerCell.x - request.range);
+        int maxX = Mathf.Min(width - 1, request.healerCell.x + request.range);
+
+        for (int y = minY; y <= maxY; y++)
+        {
+            for (int x = minX; x <= maxX; x++)
+            {
+                var c = new Vector2Int(x, y);
+                if (c == request.healerCell)
+                    continue;
+
+                if (!monsters.TryGetValue(c, out var ally) || ally.data == null)
+                    continue;
+                if (ally.hp <= 0f)
+                    continue;
+                if (ally.hp >= ally.maxHp)
+                    continue;
+
+                int dist = Mathf.Abs(c.x - request.healerCell.x) + Mathf.Abs(c.y - request.healerCell.y);
+                if (dist > request.range)
+                    continue;
+
+                float frac = ally.hp / Mathf.Max(1f, ally.maxHp);
+                bool alreadyTargetedByPiece = targetsInSamePiece != null && targetsInSamePiece.Contains(c);
+                bool take = !hasBest;
+
+                if (!take)
                 {
-                    var c = new Vector2Int(x, y);
-                    if (c == k) continue;
-
-                    if (!monsters.TryGetValue(c, out var ally) || ally.data == null) continue;
-                    if (ally.hp <= 0f) continue;                          // Cannot heal dead
-                    if (ally.hp >= ally.data.maxHealth) continue;         // Already full
-
-                    int d = Mathf.Abs(c.x - k.x) + Mathf.Abs(c.y - k.y);
-                    if (d > range) continue;
-
-                    float frac = ally.hp / Mathf.Max(1f, ally.data.maxHealth);
-
-                    // Pick nearest, then lowest hp fraction
-                    bool take = (d < bestDist) || (d == bestDist && frac < bestFrac);
-                    if (take) { best = c; bestDist = d; bestFrac = frac; }
+                    if (frac < bestFrac - healthTieEpsilon)
+                    {
+                        take = true;
+                    }
+                    else if (Mathf.Abs(frac - bestFrac) <= healthTieEpsilon)
+                    {
+                        if (bestAlreadyTargetedByPiece != alreadyTargetedByPiece)
+                            take = bestAlreadyTargetedByPiece && !alreadyTargetedByPiece;
+                        else if (dist < bestDist)
+                            take = true;
+                    }
                 }
 
-            if (best.HasValue)
-            {
-                HealTile(best.Value, finalHeal, md);
+                if (!take)
+                    continue;
+
+                hasBest = true;
+                best = c;
+                bestDist = dist;
+                bestFrac = frac;
+                bestAlreadyTargetedByPiece = alreadyTargetedByPiece;
             }
         }
+
+        return hasBest ? best : null;
+    }
+
+    void RegisterHealTargetForPiece(int pieceGroupId, Vector2Int target)
+    {
+        if (pieceGroupId <= 0)
+            return;
+
+        if (!healTargetsByPieceScratch.TryGetValue(pieceGroupId, out var targets))
+        {
+            targets = new HashSet<Vector2Int>();
+            healTargetsByPieceScratch[pieceGroupId] = targets;
+        }
+
+        targets.Add(target);
+    }
+
+    void ResetHealTargetsByPieceScratch()
+    {
+        foreach (var pair in healTargetsByPieceScratch)
+            pair.Value.Clear();
+
+        healTargetsByPieceScratch.Clear();
     }
 
     public void RecomputeCellMetrics()
@@ -835,7 +955,9 @@ public class Board : MonoBehaviour
 
         SetInlineBorderColor(rt, TilesDamageImmune ? immuneBorderColor : normalBorderColor);
 
-        // Back (gray)
+        Sprite fillSprite = ResolveTetrominoFillSprite(backgroundImage);
+
+        // Back (depleted health area)
         var back = GetOrCreateTileChildImage(rt, "BackFill");
         back.gameObject.SetActive(true);
         var backRT = back.rectTransform;
@@ -843,9 +965,9 @@ public class Board : MonoBehaviour
         backRT.sizeDelta = rt.sizeDelta;   // Fill the whole tile
         backRT.anchoredPosition = Vector2.zero;
         backRT.localScale = Vector3.one;
-        back.sprite = OnePx(); // Simple 1x1 white pixel
+        back.sprite = fillSprite;
         back.type = UnityEngine.UI.Image.Type.Simple;
-        back.color = new Color(0.6f, 0.6f, 0.6f, 1f);
+        back.color = backgroundImage ? Color.Lerp(color, Color.black, 0.45f) : new Color(0.6f, 0.6f, 0.6f, 1f);
         back.raycastTarget = false;
 
         // HealthFill
@@ -856,7 +978,7 @@ public class Board : MonoBehaviour
         frt.sizeDelta = rt.sizeDelta;      // Fill the whole tile
         frt.anchoredPosition = Vector2.zero;
         frt.localScale = Vector3.one;
-        fill.sprite = ResolveTetrominoFillSprite(backgroundImage);
+        fill.sprite = fillSprite;
         fill.preserveAspect = false;
         fill.type = UnityEngine.UI.Image.Type.Filled;
         fill.fillMethod = UnityEngine.UI.Image.FillMethod.Vertical;
@@ -935,6 +1057,10 @@ public class Board : MonoBehaviour
             var img = GetOrCreateTileChildImage(rt, "MonsterPortrait");
             img.gameObject.SetActive(true);
             img.sprite = portrait;
+            img.color = Color.white;
+            img.enabled = true;
+            img.type = Image.Type.Simple;
+            img.fillAmount = 1f;
             img.preserveAspect = true;
             img.raycastTarget = false;
 
@@ -990,13 +1116,16 @@ public class Board : MonoBehaviour
     {
         var child = parent.Find(childName);
         if (child && child.TryGetComponent(out Image existing))
+        {
+            ResetReusableImage(existing);
             return existing;
+        }
 
         var go = new GameObject(childName, typeof(Image));
         go.transform.SetParent(parent, false);
 
         var img = go.GetComponent<Image>();
-        img.raycastTarget = false;
+        ResetReusableImage(img);
         return img;
     }
 
@@ -1007,9 +1136,28 @@ public class Board : MonoBehaviour
             return;
 
         if (child.TryGetComponent(out Image img))
+        {
             img.sprite = null;
+            ResetReusableImage(img);
+        }
 
         child.gameObject.SetActive(false);
+    }
+
+    void ResetReusableImage(Image img)
+    {
+        if (!img)
+            return;
+
+        img.color = Color.white;
+        img.enabled = true;
+        img.raycastTarget = false;
+        img.maskable = true;
+        img.type = Image.Type.Simple;
+        img.fillAmount = 1f;
+        img.preserveAspect = false;
+        img.rectTransform.localScale = Vector3.one;
+        img.rectTransform.localRotation = Quaternion.identity;
     }
 
     Image GetOrCreateOverlayImage(string objectName, RectTransform parent)
@@ -1101,13 +1249,59 @@ public class Board : MonoBehaviour
         if (!rt || pooledBoardTiles.Contains(rt))
             return;
 
+        StopMonsterFlashForTile(rt);
+        ResetReusableTileImages(rt);
         rt.gameObject.SetActive(false);
         rt.SetParent(gridRoot, false);
         ResetTilePulseChild(rt, "HealthFill");
         HideTileChild(rt, "MonsterPortrait");
         HideTileChild(rt, "DeadOverlay");
+        HideTileChild(rt, "ExplosiveFuseFill");
+        HideTileChild(rt, "ExplosiveFlash");
         pooledBoardTiles.Add(rt);
         boardTilePool.Add(rt);
+    }
+
+    void ResetReusableTileImages(RectTransform rt)
+    {
+        if (!rt)
+            return;
+
+        var images = rt.GetComponentsInChildren<Image>(true);
+        for (int i = 0; i < images.Length; i++)
+            ResetReusableImage(images[i]);
+    }
+
+    void StopMonsterFlashForTile(RectTransform rt)
+    {
+        if (!rt || _monsterFlashCo.Count == 0)
+            return;
+
+        foreach (var kv in placed)
+        {
+            if (kv.Value != rt)
+                continue;
+
+            StopMonsterTickFlash(kv.Key);
+            return;
+        }
+    }
+
+    void StopMonsterTickFlash(Vector2Int cell)
+    {
+        if (_monsterFlashCo.TryGetValue(cell, out var running) && running != null)
+            StopCoroutine(running);
+
+        _monsterFlashCo.Remove(cell);
+    }
+
+    void StopAllMonsterTickFlashes()
+    {
+        foreach (var kv in _monsterFlashCo)
+            if (kv.Value != null)
+                StopCoroutine(kv.Value);
+
+        _monsterFlashCo.Clear();
     }
 
     void ResetTilePulseChild(RectTransform parent, string childName)
@@ -1624,14 +1818,20 @@ public class Board : MonoBehaviour
             return;
 
         if (source.healSprite)
-            PlayHealVFX(cell, source.healSprite, 0.5f);
+            PlayHealVFX(cell, source.healSprite, healVfxDuration);
 
         if (!AudioManager.I)
             return;
 
+        if (Time.unscaledTime < lastHealSfxTime + healSfxMergeWindowSeconds)
+            return;
+
         AudioClip clip = source.PickRandomHealSFX();
         if (clip)
+        {
             AudioManager.I.PlaySFX(clip);
+            lastHealSfxTime = Time.unscaledTime;
+        }
     }
 
     public bool InBounds(Vector2Int c) =>
@@ -1691,7 +1891,9 @@ public class Board : MonoBehaviour
     {
         StopAllBoardVFX();
         StopAllPortraitAltSwaps(restoreNormal: false);
+        StopAllMonsterTickFlashes();
         ClearRoundTransientEffects();
+        ClearLevelModifierResidualVisuals();
 
         foreach (var tile in placed.Values)
             ReleaseBoardTile(tile);
@@ -1740,11 +1942,8 @@ public class Board : MonoBehaviour
         foreach (var kv in zipPadVisuals) if (kv.Value != null && kv.Value.root) Destroy(kv.Value.root.gameObject);
         zipPadVisuals.Clear();
 
-        foreach (var kv in floorTintUnderlays) if (kv.Value) Destroy(kv.Value.gameObject);
-        floorTintUnderlays.Clear();
-
-        foreach (var kv in floorSecondaryTintUnderlays) if (kv.Value) Destroy(kv.Value.gameObject);
-        floorSecondaryTintUnderlays.Clear();
+        ClearTintUnderlayDictionary(floorTintUnderlays);
+        ClearTintUnderlayDictionary(floorSecondaryTintUnderlays);
 
         RecomputeCellMetrics();
         ConfigureBoardVfxRoot();
@@ -1758,6 +1957,16 @@ public class Board : MonoBehaviour
         DestroyOverlayChildrenNamed("BossRotatingWarning");
         DestroyOverlayChildrenNamed("CellWarningTint");
         DestroyOverlayChildrenNamed("CellVFX");
+    }
+
+    public void ClearLevelModifierResidualVisuals()
+    {
+        ClearTintUnderlayDictionary(floorTintUnderlays);
+        ClearTintUnderlayDictionary(floorSecondaryTintUnderlays);
+        DestroyChildrenWithPrefix(underlayRoot, "ContagionFloor_");
+        DestroyChildrenWithPrefix(overlayRoot, "Infection_");
+        DestroyChildrenWithPrefix(overlayRoot, "Overgrowth_");
+        ClearContagionStateFromMonsters();
     }
 
     void DestroyOverlayChildrenNamed(string childName)
@@ -1775,6 +1984,48 @@ public class Board : MonoBehaviour
                 ReleaseOverlayImage(img);
             else
                 Destroy(child.gameObject);
+        }
+    }
+
+    void DestroyChildrenWithPrefix(RectTransform root, string prefix)
+    {
+        if (!root || string.IsNullOrEmpty(prefix))
+            return;
+
+        for (int i = root.childCount - 1; i >= 0; i--)
+        {
+            Transform child = root.GetChild(i);
+            if (!child || !child.name.StartsWith(prefix, StringComparison.Ordinal))
+                continue;
+
+            Destroy(child.gameObject);
+        }
+    }
+
+    void ClearTintUnderlayDictionary(Dictionary<Vector2Int, Image> dict)
+    {
+        foreach (var kv in dict)
+            if (kv.Value)
+                Destroy(kv.Value.gameObject);
+
+        dict.Clear();
+    }
+
+    void ClearContagionStateFromMonsters()
+    {
+        if (monsters.Count == 0)
+            return;
+
+        var cells = new List<Vector2Int>(monsters.Keys);
+        for (int i = 0; i < cells.Count; i++)
+        {
+            Vector2Int cell = cells[i];
+            var inst = monsters[cell];
+            inst.contagionInfected = false;
+            inst.contagionPercentPerTick = 0f;
+            inst.contagionTickTimer = 0f;
+            inst.contagionSpreadTimer = 0f;
+            monsters[cell] = inst;
         }
     }
 
@@ -2376,7 +2627,7 @@ public class Board : MonoBehaviour
             }
         }
 
-        var col = new Color(1, 1, 1, 0.65f);
+        var col = new Color(1, 1, 1, 0.75f);
         for (int x = 0; x <= width; x++)
         {
             var img = new GameObject($"GridLine_V_{x}", typeof(Image)).GetComponent<Image>();
@@ -3293,7 +3544,7 @@ public class Board : MonoBehaviour
 
     // ======== Healing VFX ========
 
-    public void PlayHealVFX(Vector2Int cell, Sprite sprite, float duration = 0.5f)
+    public void PlayHealVFX(Vector2Int cell, Sprite sprite, float duration = 0.75f)
     {
         if (!sprite) return;
         StartCoroutine(PlayHealVFXCo(cell, sprite, duration));
@@ -3304,10 +3555,14 @@ public class Board : MonoBehaviour
         if (!InBounds(cell)) yield break;
 
         RectTransform parent = overlayRoot ? overlayRoot : gridRoot;
+        if (parent)
+            parent.SetAsLastSibling();
+
         var img = GetOrCreateOverlayImage("HealVFX", parent);
         img.sprite = sprite;
         img.preserveAspect = true;
         img.raycastTarget = false;
+        img.maskable = false;
         img.transform.SetAsLastSibling();
 
         var rt = img.rectTransform;
@@ -3319,6 +3574,10 @@ public class Board : MonoBehaviour
         float t = 0f;
         while (t < duration && img)
         {
+            if (parent)
+                parent.SetAsLastSibling();
+            img.transform.SetAsLastSibling();
+
             t += Time.deltaTime;
             float a = 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / duration));
             img.color = new Color(1f, 1f, 1f, 0.95f * a);
@@ -3435,17 +3694,53 @@ public class Board : MonoBehaviour
                     continue;
 
                 floorEffectCellScratch.Clear();
+                Vector2Int preferredColumnCell = default;
+                bool hasPreferredColumnCell = false;
+
                 for (int x = 0; x < width; x++)
                 {
                     Vector2Int c = new Vector2Int(x, y);
                     if (!IsValidZipPadBossSpawnCell(c))
                         continue;
 
+                    if (!hasPreferredColumnCell && !ColumnHasFloorEffectOfType(x, FloorEffectType.ZipPad))
+                    {
+                        preferredColumnCell = c;
+                        hasPreferredColumnCell = true;
+                    }
+
                     floorEffectCellScratch.Add(c);
                 }
 
                 if (floorEffectCellScratch.Count == 0)
                     continue;
+
+                if (hasPreferredColumnCell)
+                {
+                    int preferredCount = 0;
+                    for (int i = 0; i < floorEffectCellScratch.Count; i++)
+                    {
+                        if (!ColumnHasFloorEffectOfType(floorEffectCellScratch[i].x, FloorEffectType.ZipPad))
+                            preferredCount++;
+                    }
+
+                    int choice = UnityEngine.Random.Range(0, preferredCount);
+                    for (int i = 0; i < floorEffectCellScratch.Count; i++)
+                    {
+                        Vector2Int candidate = floorEffectCellScratch[i];
+                        if (ColumnHasFloorEffectOfType(candidate.x, FloorEffectType.ZipPad))
+                            continue;
+
+                        if (choice-- == 0)
+                        {
+                            cell = candidate;
+                            return true;
+                        }
+                    }
+
+                    cell = preferredColumnCell;
+                    return true;
+                }
 
                 cell = floorEffectCellScratch[UnityEngine.Random.Range(0, floorEffectCellScratch.Count)];
                 return true;
@@ -3470,6 +3765,20 @@ public class Board : MonoBehaviour
             return false;
 
         for (int x = 0; x < width; x++)
+        {
+            if (HasFloorEffectOfType(new Vector2Int(x, y), type))
+                return true;
+        }
+
+        return false;
+    }
+
+    bool ColumnHasFloorEffectOfType(int x, FloorEffectType type)
+    {
+        if (x < 0 || x >= width)
+            return false;
+
+        for (int y = 0; y < height; y++)
         {
             if (HasFloorEffectOfType(new Vector2Int(x, y), type))
                 return true;
@@ -3951,6 +4260,8 @@ public class Board : MonoBehaviour
         }
 
         fuse.sprite = hasTextureSprite ? textureSprite : OnePx();
+        fuse.gameObject.SetActive(true);
+        fuse.enabled = true;
         fuse.type = Image.Type.Filled;
         fuse.fillMethod = Image.FillMethod.Radial360;
         fuse.fillOrigin = (int)Image.Origin360.Top;
@@ -3985,6 +4296,8 @@ public class Board : MonoBehaviour
         }
 
         flash.color = new Color(explosiveFlashColor.r, explosiveFlashColor.g, explosiveFlashColor.b, 0f);
+        flash.gameObject.SetActive(true);
+        flash.enabled = true;
         flash.rectTransform.SetAsLastSibling();
     }
 
@@ -4454,7 +4767,6 @@ public class Board : MonoBehaviour
 
         var backdrop = new GameObject("ZipPadBackdrop", typeof(Image)).GetComponent<Image>();
         backdrop.transform.SetParent(root, false);
-        backdrop.sprite = OnePx();
         backdrop.type = Image.Type.Simple;
         backdrop.preserveAspect = false;
         backdrop.raycastTarget = false;
@@ -4503,7 +4815,8 @@ public class Board : MonoBehaviour
             visual.backdrop.transform.SetParent(visual.root, false);
         }
 
-        visual.backdrop.sprite = OnePx();
+        Sprite backdropSprite = GetBossObstacleBackgroundSprite();
+        visual.backdrop.sprite = backdropSprite ? backdropSprite : OnePx();
         visual.backdrop.type = Image.Type.Simple;
         visual.backdrop.preserveAspect = false;
         visual.backdrop.raycastTarget = false;
@@ -4929,6 +5242,9 @@ public class Board : MonoBehaviour
         else s = stoneCriticalSprite ? stoneCriticalSprite : (stoneDamagedSprite ? stoneDamagedSprite : stoneUndamagedSprite);
 
         img.sprite = s;
+        img.color = Color.white;
+        img.type = Image.Type.Simple;
+        img.fillAmount = 1f;
         img.enabled = (img.sprite != null);
     }
 
@@ -5538,11 +5854,12 @@ public class TetrominoBackgroundPulse : MonoBehaviour
         passiveInterval = Mathf.Max(0.05f, intervalSeconds);
         passiveDuration = Mathf.Clamp(durationSeconds, 0.01f, passiveInterval);
         passivePeakAlpha = Mathf.Clamp01(peakAlpha);
-        passiveStartScale = Mathf.Max(1f, startScale);
-        passiveEndScale = Mathf.Max(passiveStartScale, endScale, 1.12f);
+        passiveStartScale = Mathf.Max(0.001f, startScale);
+        passiveEndScale = Mathf.Max(passiveStartScale, endScale);
         this.rowClearGlowAlpha = Mathf.Clamp01(rowClearGlowAlpha);
         this.rowClearGlowScale = Mathf.Max(1f, rowClearGlowScale);
         this.useSiblingPulseLayers = useSiblingPulseLayers;
+        clearPulseActive = false;
 
         passivePulseColor = Color.Lerp(tileColor, Color.white, Mathf.Clamp01(whiteBlend));
         passivePulseColor.a = 1f;
@@ -5723,21 +6040,11 @@ public class TetrominoBackgroundPulse : MonoBehaviour
 
         if (useSiblingPulseLayers)
         {
-            if (clearPulseActive)
-            {
-                int targetIndex = targetRect.GetSiblingIndex();
-                if (glowRect)
-                    glowRect.SetSiblingIndex(Mathf.Min(targetIndex + 1, glowRect.parent.childCount - 1));
-                if (pulseRect)
-                    pulseRect.SetSiblingIndex(Mathf.Min((glowRect ? glowRect.GetSiblingIndex() : targetIndex) + 1, pulseRect.parent.childCount - 1));
-            }
-            else
-            {
-                if (glowRect)
-                    glowRect.SetAsFirstSibling();
-                if (pulseRect)
-                    pulseRect.SetSiblingIndex(glowRect ? glowRect.GetSiblingIndex() + 1 : 0);
-            }
+            int backgroundIndex = targetRect.GetSiblingIndex();
+            if (glowRect)
+                glowRect.SetSiblingIndex(backgroundIndex + 1);
+            if (pulseRect)
+                pulseRect.SetSiblingIndex(backgroundIndex + 2);
         }
         else
         {
