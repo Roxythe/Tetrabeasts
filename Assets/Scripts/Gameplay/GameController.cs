@@ -95,7 +95,7 @@ public class GameController : MonoBehaviour
     [Header("Run Grid Growth")]
     public bool enableRunGridGrowth = true;
     public int growVerticalEveryNRounds = 4;   // +1 height every 4th round
-    public int growHorizontalEveryNRounds = 4; // +1 width every 4th round
+    public int growHorizontalEveryNRounds = 5; // +1 width every 5th round
 
     int _baseBoardWidth = -1;
     int _baseBoardHeight = -1;

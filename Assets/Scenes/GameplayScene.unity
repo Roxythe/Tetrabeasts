@@ -24949,6 +24949,8 @@ MonoBehaviour:
   normalBorderColor: {r: 0, g: 0, b: 0, a: 1}
   immuneBorderColor: {r: 1, g: 0.84, b: 0, a: 1}
   animateTetrominoBackgrounds: 1
+  enablePassiveTetrominoBackgroundPulse: 1
+  useTetrominoBackgroundImageTextures: 0
   backgroundPassivePulseInterval: 2
   backgroundPassivePulseSeconds: 1.45
   backgroundPassivePeakAlpha: 0.365
@@ -25003,6 +25005,7 @@ MonoBehaviour:
   teleportFloorDestinationExcludedBottomRows: 0
   zipPadVisualScale: 0.9
   zipPadScrollPixelsPerSecond: 40
+  zipPadBackdropTint: {r: 1, g: 0.05, b: 0.05, a: 0.48}
   spikeSpriteLow: {fileID: -7474534166531757267, guid: 59afb05ab829e434785e507c432aaa87, type: 3}
   spikeSpriteHigh: {fileID: -332607259968299230, guid: d6e21328398368d47b3cb6a083dfb8f3, type: 3}
   spikeAnimInterval: 0.35
@@ -25051,7 +25054,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -115}
-  m_SizeDelta: {x: 800, y: 800}
+  m_SizeDelta: {x: 900, y: 800}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1488354587
 MonoBehaviour:
@@ -32131,7 +32134,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 800, y: 800}
+  m_SizeDelta: {x: 900, y: 800}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1904665168 stripped
 MonoBehaviour:
@@ -36042,6 +36045,7 @@ MonoBehaviour:
   overleveledXpMinimumMultiplier: 0.05
   overleveledXpGraceLevelsPerStar: 5
   rewardRerollsGrantedPerCompletedLevel: 1
+  roundRewardRerollCarryCap: 5
   cascadeSettlePauseSeconds: 0.18
   smoothPieceActionVisuals: 1
   pieceRotationVisualDuration: 0.08
@@ -36066,7 +36070,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c8534b131dd23814685cdc5649e32bc2, type: 2}
   - {fileID: 11400000, guid: 566620e6b96c69243942a7dda7484a09, type: 2}
   enableRunGridGrowth: 1
-  growVerticalEveryNRounds: 4
+  growVerticalEveryNRounds: 7
   growHorizontalEveryNRounds: 4
   roundWinClip: {fileID: 8300000, guid: 6efb33eb677e285438a67905542f871f, type: 3}
   victorySequenceDelaySeconds: 0.1
@@ -36688,10 +36692,14 @@ MonoBehaviour:
   backgroundOverrideImage: {fileID: 1021661073}
   animatedBackgroundDisplay: {fileID: 1020581276}
   animatedBackgroundPlayer: {fileID: 2043997965}
+  animatedBackgroundAudioSource: {fileID: 0}
   defaultBackgroundSprite: {fileID: 21300000, guid: 18650169a22c0b14b8b3cbc3b8e211c5, type: 3}
   volcanicEruptionAnimsRoot: {fileID: 1988055450}
   defaultBoardBordersRoot: {fileID: 348296253}
   boardBackgroundImage: {fileID: 223396871}
+  animatedBackgroundVideoAudioVolume: 0.35
+  stormyWeatherVideoAudioVolume: 0.3
+  animatedBackgroundPrepareTimeoutSeconds: 1.25
   castleBoardBorderBindings:
   - castleData: {fileID: 11400000, guid: 7c91d608d59934d41ae40968e5a6aff1, type: 2}
     boardBorderRoot: {fileID: 66538506}
@@ -37652,6 +37660,7 @@ MonoBehaviour:
   breakdownTickEndSeconds: 0.01
   breakdownAccelPower: 1.6
   breakdownTickJitterSeconds: 0.02
+  breakdownTickSfxVolume: 0.35
   breakdownSkipInputDelaySeconds: 0.5
 --- !u!1 &2113705592
 GameObject:

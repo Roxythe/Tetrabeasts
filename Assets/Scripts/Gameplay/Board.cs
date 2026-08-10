@@ -27,7 +27,9 @@ public class Board : MonoBehaviour
 
     [Header("Tetromino Background Pulse")]
     public bool animateTetrominoBackgrounds = true;
-    public bool enablePassiveTetrominoBackgroundPulse = false;
+    public bool enablePassiveTetrominoBackgroundPulse = true;
+    [Tooltip("When disabled, tetromino backgrounds use a solid tinted fill instead of the assigned background sprite.")]
+    public bool useTetrominoBackgroundImageTextures = false;
     [Min(0.05f)] public float backgroundPassivePulseInterval = 3.25f;
     [Min(0.01f)] public float backgroundPassivePulseSeconds = 1.45f;
     [Range(0f, 1f)] public float backgroundPassivePeakAlpha = 0.24f;
@@ -482,6 +484,11 @@ public class Board : MonoBehaviour
         return _onePx;
     }
 
+    public Sprite ResolveTetrominoFillSprite(Sprite backgroundImage)
+    {
+        return useTetrominoBackgroundImageTextures && backgroundImage ? backgroundImage : OnePx();
+    }
+
     // ================= Inline Border (per-edge thickness) =================
     const float DEFAULT_BORDER = 2f;
 
@@ -849,7 +856,7 @@ public class Board : MonoBehaviour
         frt.sizeDelta = rt.sizeDelta;      // Fill the whole tile
         frt.anchoredPosition = Vector2.zero;
         frt.localScale = Vector3.one;
-        fill.sprite = backgroundImage ? backgroundImage : OnePx();
+        fill.sprite = ResolveTetrominoFillSprite(backgroundImage);
         fill.preserveAspect = false;
         fill.type = UnityEngine.UI.Image.Type.Filled;
         fill.fillMethod = UnityEngine.UI.Image.FillMethod.Vertical;
@@ -2369,7 +2376,7 @@ public class Board : MonoBehaviour
             }
         }
 
-        var col = new Color(1, 1, 1, 0.5f);
+        var col = new Color(1, 1, 1, 0.65f);
         for (int x = 0; x <= width; x++)
         {
             var img = new GameObject($"GridLine_V_{x}", typeof(Image)).GetComponent<Image>();
@@ -5531,8 +5538,8 @@ public class TetrominoBackgroundPulse : MonoBehaviour
         passiveInterval = Mathf.Max(0.05f, intervalSeconds);
         passiveDuration = Mathf.Clamp(durationSeconds, 0.01f, passiveInterval);
         passivePeakAlpha = Mathf.Clamp01(peakAlpha);
-        passiveStartScale = Mathf.Max(0.001f, startScale);
-        passiveEndScale = Mathf.Max(passiveStartScale, endScale);
+        passiveStartScale = Mathf.Max(1f, startScale);
+        passiveEndScale = Mathf.Max(passiveStartScale, endScale, 1.12f);
         this.rowClearGlowAlpha = Mathf.Clamp01(rowClearGlowAlpha);
         this.rowClearGlowScale = Mathf.Max(1f, rowClearGlowScale);
         this.useSiblingPulseLayers = useSiblingPulseLayers;
@@ -5716,11 +5723,21 @@ public class TetrominoBackgroundPulse : MonoBehaviour
 
         if (useSiblingPulseLayers)
         {
-            int backgroundIndex = targetRect.GetSiblingIndex();
-            if (glowRect)
-                glowRect.SetSiblingIndex(backgroundIndex + 1);
-            if (pulseRect)
-                pulseRect.SetSiblingIndex(backgroundIndex + 2);
+            if (clearPulseActive)
+            {
+                int targetIndex = targetRect.GetSiblingIndex();
+                if (glowRect)
+                    glowRect.SetSiblingIndex(Mathf.Min(targetIndex + 1, glowRect.parent.childCount - 1));
+                if (pulseRect)
+                    pulseRect.SetSiblingIndex(Mathf.Min((glowRect ? glowRect.GetSiblingIndex() : targetIndex) + 1, pulseRect.parent.childCount - 1));
+            }
+            else
+            {
+                if (glowRect)
+                    glowRect.SetAsFirstSibling();
+                if (pulseRect)
+                    pulseRect.SetSiblingIndex(glowRect ? glowRect.GetSiblingIndex() + 1 : 0);
+            }
         }
         else
         {

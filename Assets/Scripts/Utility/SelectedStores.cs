@@ -144,9 +144,9 @@ public static class SettingsStore
     {
         if (!AudioManager.I) return;
 
-        AudioManager.I.SetMasterVolume(LoadMaster());
-        AudioManager.I.SetMusicVolume(LoadMusic());
-        AudioManager.I.SetSFXVolume(LoadSFX());
+        AudioManager.I.SetMasterVolume(LoadMaster(), save: false);
+        AudioManager.I.SetMusicVolume(LoadMusic(), save: false);
+        AudioManager.I.SetSFXVolume(LoadSFX(), save: false);
     }
 
     public static bool LoadCombatLogEnabled() =>

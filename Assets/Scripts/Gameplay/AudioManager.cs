@@ -125,9 +125,6 @@ public class AudioManager : MonoBehaviour
     bool levelIsBoss = false;
     bool restartContextOnUnpause = false;
 
-    const string K_Master = "vol_master";
-    const string K_Music = "vol_music";
-    const string K_SFX = "vol_sfx";
     const int SfxOneShotSourceCount = 12;
     const int SpecialAbilityLoopSfxLayerCount = 12;
 
@@ -195,23 +192,10 @@ public class AudioManager : MonoBehaviour
 
         ApplySfxOneShotSourceSettings();
 
-        // Use SettingsStore values
         masterVolume = SettingsStore.LoadMaster();
         musicVolume = SettingsStore.LoadMusic();
         sfxVolume = SettingsStore.LoadSFX();
 
-        // Ensure first-time defaults exist in prefs
-        if (!PlayerPrefs.HasKey(K_Master)) PlayerPrefs.SetFloat(K_Master, 0.5f);
-        if (!PlayerPrefs.HasKey(K_Music)) PlayerPrefs.SetFloat(K_Music, 1.0f);
-        if (!PlayerPrefs.HasKey(K_SFX)) PlayerPrefs.SetFloat(K_SFX, 1.0f);
-        PlayerPrefsSaveScheduler.QueueSave(queueCloudUpload: false);
-
-        // Load volumes
-        masterVolume = PlayerPrefs.GetFloat(K_Master, 0.5f);
-        musicVolume = PlayerPrefs.GetFloat(K_Music, 1.0f);
-        sfxVolume = PlayerPrefs.GetFloat(K_SFX, 1.0f);
-
-        // Apply without re-saving
         SetMasterVolume(masterVolume, save: false);
         SetMusicVolume(musicVolume, save: false);
         SetSFXVolume(sfxVolume, save: false);

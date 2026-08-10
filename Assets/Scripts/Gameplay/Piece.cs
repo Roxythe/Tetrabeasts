@@ -422,7 +422,7 @@ public class Piece : MonoBehaviour
             // Build inner fill first so ApplySharedEdges can resize it correctly on shared edges
             var fill = GetOrCreateActiveChildImage(rt, "ActiveFill");
             fill.raycastTarget = false;
-            fill.sprite = (data != null && data.backgroundImage != null) ? data.backgroundImage : OnePx();
+            fill.sprite = board.ResolveTetrominoFillSprite(data ? data.backgroundImage : null);
             fill.type = UnityEngine.UI.Image.Type.Simple;
             fill.preserveAspect = false;
             fill.color = color;
