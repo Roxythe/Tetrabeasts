@@ -38,10 +38,16 @@ public class LevelModifierController : MonoBehaviour
     [SerializeField] Image backgroundOverrideImage;
     [SerializeField] RawImage animatedBackgroundDisplay;
     [SerializeField] VideoPlayer animatedBackgroundPlayer;
+    [SerializeField] AudioSource animatedBackgroundAudioSource;
     [SerializeField] Sprite defaultBackgroundSprite;
     [SerializeField] GameObject volcanicEruptionAnimsRoot;
     [SerializeField] GameObject defaultBoardBordersRoot;
     [SerializeField] Image boardBackgroundImage;
+
+    [Header("Animated Background Audio")]
+    [SerializeField, Range(0f, 1f)] float animatedBackgroundVideoAudioVolume = 0.35f;
+    [SerializeField, Range(0f, 1f)] float stormyWeatherVideoAudioVolume = 0.3f;
+    [SerializeField, Min(0f)] float animatedBackgroundPrepareTimeoutSeconds = 1.25f;
 
     [Header("Board Border Bindings")]
     [SerializeField] CastleBoardBorderBinding[] castleBoardBorderBindings;
@@ -111,7 +117,10 @@ public class LevelModifierController : MonoBehaviour
     bool _animatedBackgroundVideoSettingsCaptured;
     float _defaultAnimatedBackgroundVideoPlaybackSpeed = 1f;
     float _animatedBackgroundVideoPlaybackSpeed = 1f;
+    float _animatedBackgroundAudioVolumeScale = 0.35f;
     float _animatedBackgroundReverseGuardUntil;
+    float _animatedBackgroundReverseStartedRealtime;
+    double _animatedBackgroundReverseStartTime;
     bool _loggedAnimatedBackgroundReverseUnsupported;
     bool _boardBackgroundDefaultCaptured;
     Sprite _defaultBoardBackgroundSprite;
@@ -134,6 +143,7 @@ public class LevelModifierController : MonoBehaviour
     Coroutine _comboShieldPulseCR;
     Coroutine _volcanicEruptionRoutine;
     Coroutine _softSpaceRoutine;
+    Coroutine _animatedBackgroundStartGuard;
 
     const int SoftSpacePreferredBottomRows = 6;
     const float SoftSpaceTeleportWarningSeconds = 2f;
@@ -167,6 +177,7 @@ public class LevelModifierController : MonoBehaviour
     {
         StopVolcanicEruptionRoutine();
         StopSoftSpaceRoutine();
+        StopAnimatedBackgroundStartGuard();
         ClearOutFlankedProjectiles();
         DestroyOutFlankedProjectilePool();
         UnhookAnimatedBackgroundEvents();
@@ -174,6 +185,8 @@ public class LevelModifierController : MonoBehaviour
 
     void Update()
     {
+        UpdateAnimatedBackgroundAudioVolume();
+        UpdateAnimatedBackgroundContinuousPlayback();
         UpdateAnimatedBackgroundPingPong();
 
         if (IsSelectionRunning)
@@ -220,6 +233,8 @@ public class LevelModifierController : MonoBehaviour
         CacheLevelBackground(castleData);
         ResetLevelState();
 
+        yield return WaitForAnimatedBackgroundReadyForCurrentPresentation();
+
         if (castleData == null)
             yield break;
 
@@ -243,6 +258,7 @@ public class LevelModifierController : MonoBehaviour
         SetSelectionCursorState(true);
 
         IsSelectionRunning = true;
+        bool modifierAppliedBeforePanelHidden = false;
         if (_selectionUI)
         {
             bool TryConsumeReroll(LevelModifierSO currentModifier, out LevelModifierSO nextModifier)
@@ -260,14 +276,39 @@ public class LevelModifierController : MonoBehaviour
                 return true;
             }
 
-            yield return _selectionUI.PlaySelection(pool, chosen, () => AvailableRerolls, TryConsumeReroll, onSelectionPanelFullyShown);
+            IEnumerator ApplyChosenModifierBeforePanelHide(LevelModifierSO selectedModifier)
+            {
+                if (!selectedModifier)
+                    yield break;
+
+                ActivateModifierForLevel(selectedModifier);
+                modifierAppliedBeforePanelHidden = true;
+                yield return WaitForAnimatedBackgroundReadyForCurrentPresentation();
+            }
+
+            yield return _selectionUI.PlaySelection(
+                pool,
+                chosen,
+                () => AvailableRerolls,
+                TryConsumeReroll,
+                onSelectionPanelFullyShown,
+                ApplyChosenModifierBeforePanelHide);
             chosen = _selectionUI.CurrentChosenModifier ? _selectionUI.CurrentChosenModifier : chosen;
         }
         IsSelectionRunning = false;
 
         SetSelectionCursorState(false);
 
-        ActiveModifier = chosen;
+        if (!modifierAppliedBeforePanelHidden)
+        {
+            ActivateModifierForLevel(chosen);
+            yield return WaitForAnimatedBackgroundReadyForCurrentPresentation();
+        }
+    }
+
+    void ActivateModifierForLevel(LevelModifierSO modifier)
+    {
+        ActiveModifier = modifier;
         CodexProgressStore.Unlock(ActiveModifier);
         ApplyModifierStartupEffects();
         LogModifierActivation();
@@ -2247,6 +2288,7 @@ public class LevelModifierController : MonoBehaviour
     {
         EnsureAnimatedBackgroundRefs();
         CaptureAnimatedBackgroundVideoSettings();
+        StopAnimatedBackgroundStartGuard();
         if (!clip || !animatedBackgroundDisplay || !animatedBackgroundPlayer)
         {
             StopAnimatedBackground(clearTexture: clip == null);
@@ -2265,6 +2307,7 @@ public class LevelModifierController : MonoBehaviour
 
         animatedBackgroundDisplay.enabled = true;
         animatedBackgroundDisplay.raycastTarget = false;
+        animatedBackgroundDisplay.color = Color.white;
 
         if (!animatedBackgroundPlayer.targetTexture && animatedBackgroundDisplay.texture is RenderTexture displayTexture)
             animatedBackgroundPlayer.targetTexture = displayTexture;
@@ -2274,6 +2317,7 @@ public class LevelModifierController : MonoBehaviour
 
         bool pingPongLoop = ResolveBackgroundVideoPingPongLoop(clip);
         _animatedBackgroundVideoPlaybackSpeed = ResolveBackgroundVideoPlaybackSpeed(clip);
+        _animatedBackgroundAudioVolumeScale = ResolveBackgroundVideoAudioVolume(clip);
 
         PlaceAnimatedBackgroundDisplay();
         animatedBackgroundPlayer.playOnAwake = false;
@@ -2296,6 +2340,7 @@ public class LevelModifierController : MonoBehaviour
         animatedBackgroundPlayer.playbackSpeed = GetAnimatedBackgroundPlaybackSpeed();
         animatedBackgroundPlayer.isLooping = !pingPongLoop;
         animatedBackgroundPlayer.Prepare();
+        StartAnimatedBackgroundStartGuard(clip);
         return true;
     }
 
@@ -2310,13 +2355,41 @@ public class LevelModifierController : MonoBehaviour
         _pendingAnimatedBackgroundClip = null;
         _animatedBackgroundPlaybackPaused = false;
         _animatedBackgroundPingPongRequested = pingPongLoop;
+        return TryStartAnimatedBackgroundPlayback(clip, restartFromBeginning: false, allowUnpreparedPlay: false);
+    }
 
-        bool canPingPong = pingPongLoop && animatedBackgroundPlayer.canSetPlaybackSpeed;
+    bool TryStartAnimatedBackgroundPlayback(VideoClip clip, bool restartFromBeginning, bool allowUnpreparedPlay)
+    {
+        if (!clip || !animatedBackgroundPlayer || animatedBackgroundPlayer.clip != clip || _animatedBackgroundPlaybackPaused)
+            return false;
+
+        if (!allowUnpreparedPlay && !animatedBackgroundPlayer.isPrepared && !animatedBackgroundPlayer.isPlaying)
+            return false;
+
+        ConfigureAnimatedBackgroundPlaybackMode(animatedBackgroundPlayer, restartFromBeginning);
+
+        if (!animatedBackgroundPlayer.isPlaying)
+            animatedBackgroundPlayer.Play();
+
+        _pendingAnimatedBackgroundClip = null;
+        UpdateAnimatedBackgroundAudioVolume();
+        return true;
+    }
+
+    void ConfigureAnimatedBackgroundPlaybackMode(VideoPlayer player, bool restartFromBeginning)
+    {
+        if (!player)
+            return;
+
+        if (restartFromBeginning)
+            _animatedBackgroundReverse = false;
+
+        bool canPingPong = _animatedBackgroundPingPongRequested && player.canSetPlaybackSpeed;
         if (_animatedBackgroundPingPongActive != canPingPong)
             _animatedBackgroundReverse = false;
 
         _animatedBackgroundPingPongActive = canPingPong;
-        if (pingPongLoop && !canPingPong)
+        if (_animatedBackgroundPingPongRequested && !canPingPong)
         {
             if (!_loggedAnimatedBackgroundReverseUnsupported)
             {
@@ -2324,24 +2397,24 @@ public class LevelModifierController : MonoBehaviour
                 _loggedAnimatedBackgroundReverseUnsupported = true;
             }
 
-            animatedBackgroundPlayer.isLooping = true;
+            player.isLooping = true;
         }
         else
         {
-            animatedBackgroundPlayer.isLooping = !canPingPong;
+            player.isLooping = !canPingPong;
         }
 
         ApplyAnimatedBackgroundPlaybackSpeed();
-        if (!animatedBackgroundPlayer.isPlaying)
-            animatedBackgroundPlayer.Play();
 
-        return true;
+        if (restartFromBeginning && _animatedBackgroundPingPongActive && player.canSetTime)
+            player.time = 0d;
     }
 
     void StopAnimatedBackground(bool clearTexture)
     {
         EnsureAnimatedBackgroundRefs();
         CaptureAnimatedBackgroundVideoSettings();
+        StopAnimatedBackgroundStartGuard();
         _pendingAnimatedBackgroundClip = null;
         _animatedBackgroundPingPongRequested = false;
         _animatedBackgroundPingPongActive = false;
@@ -2356,11 +2429,19 @@ public class LevelModifierController : MonoBehaviour
             animatedBackgroundPlayer.playbackSpeed = GetAnimatedBackgroundPlaybackSpeed();
             animatedBackgroundPlayer.isLooping = true;
             animatedBackgroundPlayer.SetDirectAudioMute(0, true);
+            animatedBackgroundPlayer.EnableAudioTrack(0, false);
 
             if (clearTexture)
                 ClearAnimatedBackgroundRenderTexture();
 
             animatedBackgroundPlayer.gameObject.SetActive(false);
+        }
+
+        if (animatedBackgroundAudioSource)
+        {
+            animatedBackgroundAudioSource.Stop();
+            animatedBackgroundAudioSource.clip = null;
+            animatedBackgroundAudioSource.mute = true;
         }
 
         if (animatedBackgroundDisplay)
@@ -2378,6 +2459,7 @@ public class LevelModifierController : MonoBehaviour
     public void PauseAnimatedBackground(bool muteAudio = true)
     {
         EnsureAnimatedBackgroundRefs();
+        StopAnimatedBackgroundStartGuard();
         _pendingAnimatedBackgroundClip = null;
         _animatedBackgroundPingPongActive = false;
         _animatedBackgroundReverse = false;
@@ -2387,10 +2469,89 @@ public class LevelModifierController : MonoBehaviour
             return;
 
         if (muteAudio)
+        {
             animatedBackgroundPlayer.SetDirectAudioMute(0, true);
+            if (animatedBackgroundAudioSource)
+                animatedBackgroundAudioSource.mute = true;
+        }
 
         if (animatedBackgroundPlayer.isPlaying)
             animatedBackgroundPlayer.Pause();
+    }
+
+    IEnumerator WaitForAnimatedBackgroundReadyForCurrentPresentation()
+    {
+        EnsureAnimatedBackgroundRefs();
+
+        VideoClip clip = ResolveBackgroundVideoClip();
+        if (!clip || !animatedBackgroundPlayer)
+            yield break;
+
+        float timeout = Mathf.Max(0f, animatedBackgroundPrepareTimeoutSeconds);
+        float deadline = Time.realtimeSinceStartup + timeout;
+
+        while (Time.realtimeSinceStartup <= deadline)
+        {
+            if (IsAnimatedBackgroundReady(clip))
+            {
+                if (TryStartAnimatedBackgroundPlayback(clip, restartFromBeginning: false, allowUnpreparedPlay: false))
+                    StopAnimatedBackgroundStartGuard();
+                yield break;
+            }
+
+            yield return null;
+        }
+
+        if (TryStartAnimatedBackgroundPlayback(clip, restartFromBeginning: false, allowUnpreparedPlay: true))
+            StopAnimatedBackgroundStartGuard();
+    }
+
+    bool IsAnimatedBackgroundReady(VideoClip clip)
+    {
+        return animatedBackgroundPlayer &&
+               animatedBackgroundPlayer.clip == clip &&
+               (animatedBackgroundPlayer.isPlaying || animatedBackgroundPlayer.isPrepared);
+    }
+
+    void StartAnimatedBackgroundStartGuard(VideoClip clip)
+    {
+        StopAnimatedBackgroundStartGuard();
+
+        if (!clip || !isActiveAndEnabled)
+            return;
+
+        _animatedBackgroundStartGuard = StartCoroutine(CoStartAnimatedBackgroundWhenReady(clip));
+    }
+
+    void StopAnimatedBackgroundStartGuard()
+    {
+        if (_animatedBackgroundStartGuard == null)
+            return;
+
+        StopCoroutine(_animatedBackgroundStartGuard);
+        _animatedBackgroundStartGuard = null;
+    }
+
+    IEnumerator CoStartAnimatedBackgroundWhenReady(VideoClip clip)
+    {
+        float timeout = Mathf.Max(0f, animatedBackgroundPrepareTimeoutSeconds);
+        float deadline = Time.realtimeSinceStartup + timeout;
+
+        while (animatedBackgroundPlayer && animatedBackgroundPlayer.clip == clip && !_animatedBackgroundPlaybackPaused)
+        {
+            if (TryStartAnimatedBackgroundPlayback(clip, restartFromBeginning: true, allowUnpreparedPlay: false))
+                break;
+
+            if (Time.realtimeSinceStartup > deadline)
+            {
+                TryStartAnimatedBackgroundPlayback(clip, restartFromBeginning: true, allowUnpreparedPlay: true);
+                break;
+            }
+
+            yield return null;
+        }
+
+        _animatedBackgroundStartGuard = null;
     }
 
     void ClearAnimatedBackgroundRenderTexture()
@@ -2405,13 +2566,69 @@ public class LevelModifierController : MonoBehaviour
         RenderTexture.active = previous;
     }
 
+    float ResolveBackgroundVideoAudioVolume(VideoClip clip)
+    {
+        if (!clip)
+            return 0f;
+
+        if (ActiveModifier &&
+            ActiveModifier.kind == LevelModifierKind.StormyWeather &&
+            ActiveModifier.backgroundOverrideVideoClip == clip)
+            return Mathf.Clamp01(stormyWeatherVideoAudioVolume);
+
+        return Mathf.Clamp01(animatedBackgroundVideoAudioVolume);
+    }
+
     void ConfigureAnimatedBackgroundAudio()
     {
         if (!animatedBackgroundPlayer)
             return;
 
-        animatedBackgroundPlayer.audioOutputMode = VideoAudioOutputMode.Direct;
-        animatedBackgroundPlayer.SetDirectAudioMute(0, false);
+        EnsureAnimatedBackgroundAudioSource();
+        if (!animatedBackgroundAudioSource)
+        {
+            animatedBackgroundPlayer.audioOutputMode = VideoAudioOutputMode.Direct;
+            animatedBackgroundPlayer.SetDirectAudioMute(0, true);
+            return;
+        }
+
+        animatedBackgroundPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
+        animatedBackgroundPlayer.controlledAudioTrackCount = 1;
+        animatedBackgroundPlayer.EnableAudioTrack(0, true);
+        animatedBackgroundPlayer.SetTargetAudioSource(0, animatedBackgroundAudioSource);
+        animatedBackgroundPlayer.SetDirectAudioMute(0, true);
+        UpdateAnimatedBackgroundAudioVolume();
+    }
+
+    void EnsureAnimatedBackgroundAudioSource()
+    {
+        if (animatedBackgroundAudioSource)
+            return;
+
+        if (animatedBackgroundPlayer)
+            animatedBackgroundAudioSource = animatedBackgroundPlayer.GetComponent<AudioSource>();
+
+        if (!animatedBackgroundAudioSource && animatedBackgroundPlayer)
+            animatedBackgroundAudioSource = animatedBackgroundPlayer.gameObject.AddComponent<AudioSource>();
+    }
+
+    void UpdateAnimatedBackgroundAudioVolume()
+    {
+        if (!animatedBackgroundAudioSource)
+            return;
+
+        if (_animatedBackgroundPlaybackPaused || !animatedBackgroundPlayer || !animatedBackgroundPlayer.clip)
+        {
+            animatedBackgroundAudioSource.mute = true;
+            return;
+        }
+
+        if (AudioManager.I)
+            AudioManager.I.ConfigureExternalMusicSource(animatedBackgroundAudioSource, _animatedBackgroundAudioVolumeScale);
+        else
+            animatedBackgroundAudioSource.volume = Mathf.Clamp01(_animatedBackgroundAudioVolumeScale);
+
+        animatedBackgroundAudioSource.mute = false;
     }
 
     void CaptureAnimatedBackgroundVideoSettings()
@@ -2462,6 +2679,8 @@ public class LevelModifierController : MonoBehaviour
 
         if (backgroundOverrideImage && backgroundOverrideImage.transform.parent == displayTransform.parent)
         {
+            MatchAnimatedBackgroundRect(displayTransform, backgroundOverrideImage.rectTransform);
+
             int siblingIndex = Mathf.Min(
                 backgroundOverrideImage.rectTransform.GetSiblingIndex() + 1,
                 displayTransform.parent.childCount - 1);
@@ -2470,7 +2689,28 @@ public class LevelModifierController : MonoBehaviour
             return;
         }
 
+        displayTransform.anchorMin = Vector2.zero;
+        displayTransform.anchorMax = Vector2.one;
+        displayTransform.offsetMin = Vector2.zero;
+        displayTransform.offsetMax = Vector2.zero;
+        displayTransform.anchoredPosition = Vector2.zero;
+        displayTransform.localScale = Vector3.one;
+        displayTransform.localRotation = Quaternion.identity;
         displayTransform.SetAsFirstSibling();
+    }
+
+    static void MatchAnimatedBackgroundRect(RectTransform target, RectTransform reference)
+    {
+        if (!target || !reference)
+            return;
+
+        target.anchorMin = reference.anchorMin;
+        target.anchorMax = reference.anchorMax;
+        target.pivot = reference.pivot;
+        target.anchoredPosition = reference.anchoredPosition;
+        target.sizeDelta = reference.sizeDelta;
+        target.localScale = Vector3.one;
+        target.localRotation = Quaternion.identity;
     }
 
     void EnsureBoardPresentationRefs()
@@ -2594,36 +2834,11 @@ public class LevelModifierController : MonoBehaviour
 
     void OnAnimatedBackgroundPrepared(VideoPlayer player)
     {
-        if (!player || (_pendingAnimatedBackgroundClip && player.clip != _pendingAnimatedBackgroundClip))
+        if (!player || player != animatedBackgroundPlayer || (_pendingAnimatedBackgroundClip && player.clip != _pendingAnimatedBackgroundClip))
             return;
 
-        if (_animatedBackgroundPlaybackPaused)
-            return;
-
-        _animatedBackgroundReverse = false;
-        _animatedBackgroundPingPongActive = _animatedBackgroundPingPongRequested && player.canSetPlaybackSpeed;
-
-        if (_animatedBackgroundPingPongRequested && !_animatedBackgroundPingPongActive)
-        {
-            if (!_loggedAnimatedBackgroundReverseUnsupported)
-            {
-                Debug.LogWarning("Animated background ping-pong loop requested, but this VideoPlayer cannot change playback speed. Falling back to normal looping.");
-                _loggedAnimatedBackgroundReverseUnsupported = true;
-            }
-
-            player.isLooping = true;
-        }
-        else
-        {
-            player.isLooping = !_animatedBackgroundPingPongActive;
-        }
-
-        player.playbackSpeed = GetAnimatedBackgroundPlaybackSpeed();
-
-        if (_animatedBackgroundPingPongActive && player.canSetTime)
-            player.time = 0d;
-
-        player.Play();
+        if (TryStartAnimatedBackgroundPlayback(player.clip, restartFromBeginning: true, allowUnpreparedPlay: true))
+            StopAnimatedBackgroundStartGuard();
     }
 
     void OnAnimatedBackgroundLoopPointReached(VideoPlayer player)
@@ -2637,6 +2852,41 @@ public class LevelModifierController : MonoBehaviour
             PlayAnimatedBackgroundReverseFromEnd();
     }
 
+    void UpdateAnimatedBackgroundContinuousPlayback()
+    {
+        if (!animatedBackgroundPlayer ||
+            !animatedBackgroundPlayer.clip ||
+            _animatedBackgroundPlaybackPaused ||
+            animatedBackgroundPlayer.isPlaying ||
+            !animatedBackgroundPlayer.isPrepared)
+            return;
+
+        if (_pendingAnimatedBackgroundClip && animatedBackgroundPlayer.clip == _pendingAnimatedBackgroundClip)
+        {
+            TryStartAnimatedBackgroundPlayback(animatedBackgroundPlayer.clip, restartFromBeginning: false, allowUnpreparedPlay: false);
+            return;
+        }
+
+        if (_animatedBackgroundPingPongActive)
+        {
+            if (_animatedBackgroundReverse)
+            {
+                if (Time.unscaledTime < _animatedBackgroundReverseGuardUntil)
+                    return;
+
+                PlayAnimatedBackgroundForwardFromStart();
+            }
+            else
+            {
+                PlayAnimatedBackgroundReverseFromEnd();
+            }
+
+            return;
+        }
+
+        PlayAnimatedBackgroundForwardFromStart();
+    }
+
     void UpdateAnimatedBackgroundPingPong()
     {
         if (!_animatedBackgroundPingPongActive || !_animatedBackgroundReverse || !animatedBackgroundPlayer)
@@ -2644,6 +2894,12 @@ public class LevelModifierController : MonoBehaviour
 
         if (Time.unscaledTime < _animatedBackgroundReverseGuardUntil)
             return;
+
+        if (IsAnimatedBackgroundReversePlaybackStalled())
+        {
+            FallbackAnimatedBackgroundToNormalLoop("Animated background ping-pong reverse playback did not progress. Falling back to normal looping.");
+            return;
+        }
 
         bool reachedStart = animatedBackgroundPlayer.frame >= 0 && animatedBackgroundPlayer.frame <= 1;
         reachedStart |= animatedBackgroundPlayer.time <= 0.05d;
@@ -2661,12 +2917,14 @@ public class LevelModifierController : MonoBehaviour
             return;
 
         _animatedBackgroundReverse = false;
+        animatedBackgroundPlayer.isLooping = !_animatedBackgroundPingPongActive;
         animatedBackgroundPlayer.playbackSpeed = GetAnimatedBackgroundPlaybackSpeed();
 
         if (animatedBackgroundPlayer.canSetTime)
             animatedBackgroundPlayer.time = 0d;
 
         animatedBackgroundPlayer.Play();
+        UpdateAnimatedBackgroundAudioVolume();
     }
 
     void PlayAnimatedBackgroundReverseFromEnd()
@@ -2695,8 +2953,44 @@ public class LevelModifierController : MonoBehaviour
 
         _animatedBackgroundReverse = true;
         _animatedBackgroundReverseGuardUntil = Time.unscaledTime + 0.15f;
+        _animatedBackgroundReverseStartedRealtime = Time.unscaledTime;
+        _animatedBackgroundReverseStartTime = animatedBackgroundPlayer.time;
+        animatedBackgroundPlayer.isLooping = false;
         animatedBackgroundPlayer.playbackSpeed = -GetAnimatedBackgroundPlaybackSpeed();
         animatedBackgroundPlayer.Play();
+        UpdateAnimatedBackgroundAudioVolume();
+    }
+
+    bool IsAnimatedBackgroundReversePlaybackStalled()
+    {
+        if (!_animatedBackgroundReverse || !animatedBackgroundPlayer || !animatedBackgroundPlayer.isPlaying)
+            return false;
+
+        if (Time.unscaledTime - _animatedBackgroundReverseStartedRealtime < 0.45f)
+            return false;
+
+        return animatedBackgroundPlayer.time >= _animatedBackgroundReverseStartTime - 0.03d;
+    }
+
+    void FallbackAnimatedBackgroundToNormalLoop(string warning)
+    {
+        if (!_loggedAnimatedBackgroundReverseUnsupported && !string.IsNullOrWhiteSpace(warning))
+        {
+            Debug.LogWarning(warning);
+            _loggedAnimatedBackgroundReverseUnsupported = true;
+        }
+
+        _animatedBackgroundPingPongActive = false;
+        _animatedBackgroundPingPongRequested = false;
+        _animatedBackgroundReverse = false;
+
+        if (!animatedBackgroundPlayer)
+            return;
+
+        animatedBackgroundPlayer.playbackSpeed = GetAnimatedBackgroundPlaybackSpeed();
+        animatedBackgroundPlayer.isLooping = true;
+
+        PlayAnimatedBackgroundForwardFromStart();
     }
 
     static void SeekAnimatedBackgroundToEnd(VideoPlayer player)

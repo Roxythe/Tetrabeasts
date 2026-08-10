@@ -68,6 +68,7 @@ public class GameController : MonoBehaviour
 
     [Header("Round Reward Rerolls")]
     [SerializeField, Min(0)] int rewardRerollsGrantedPerCompletedLevel = 1;
+    [SerializeField, Min(0)] int roundRewardRerollCarryCap = 5;
 
     [Header("Line Clear Visual Timing")]
     public float cascadeSettlePauseSeconds = 0.18f;
@@ -1227,7 +1228,7 @@ public class GameController : MonoBehaviour
         score = Mathf.Max(0, saveData.score);
         luck = (saveData.runMods != null) ? saveData.runMods.luck : 0f;
         misfortune = (saveData.runMods != null) ? saveData.runMods.misfortune : 0f;
-        _roundRewardRerollsAvailable = Mathf.Max(0, saveData.roundRewardRerollsAvailable);
+        _roundRewardRerollsAvailable = ClampRoundRewardRerolls(saveData.roundRewardRerollsAvailable);
 
         if (piece) piece.ResetPiece();
         if (gameBoard) gameBoard.ClearAll();
@@ -2061,7 +2062,7 @@ public class GameController : MonoBehaviour
             starDifficulty = _starDifficulty,
             selectedCharacterName = selectedCharacter ? selectedCharacter.displayName : string.Empty,
             currencyTotal = Mathf.Max(0, CurrencyStore.Total),
-            roundRewardRerollsAvailable = Mathf.Max(0, _roundRewardRerollsAvailable),
+            roundRewardRerollsAvailable = ClampRoundRewardRerolls(_roundRewardRerollsAvailable),
             runMods = new TempRunSaveStore.RunModsSnapshot
             {
                 enemyAttackIntervalMult = enemyAttackIntervalMult,
@@ -3840,7 +3841,8 @@ public class GameController : MonoBehaviour
 
         currentLevel++;
         levelModifierController?.GrantRerollForCompletedLevel(currentLevel);
-        _roundRewardRerollsAvailable += Mathf.Max(0, rewardRerollsGrantedPerCompletedLevel);
+        _roundRewardRerollsAvailable = ClampRoundRewardRerolls(
+            _roundRewardRerollsAvailable + Mathf.Max(0, rewardRerollsGrantedPerCompletedLevel));
 
         RefreshActiveMonsterPassives(applyStartingReserveDelta: true);
 
@@ -3877,7 +3879,7 @@ public class GameController : MonoBehaviour
                 OnRoundModsChosen,
                 gained,
                 actualReinforcements,
-                () => _roundRewardRerollsAvailable,
+                () => ClampRoundRewardRerolls(_roundRewardRerollsAvailable),
                 TrySpendRoundRewardReroll);
 
             if (closeXpAfterRewardOpen)
@@ -4323,11 +4325,18 @@ public class GameController : MonoBehaviour
 
     bool TrySpendRoundRewardReroll()
     {
+        _roundRewardRerollsAvailable = ClampRoundRewardRerolls(_roundRewardRerollsAvailable);
+
         if (_roundRewardRerollsAvailable <= 0)
             return false;
 
-        _roundRewardRerollsAvailable--;
+        _roundRewardRerollsAvailable = ClampRoundRewardRerolls(_roundRewardRerollsAvailable - 1);
         return true;
+    }
+
+    int ClampRoundRewardRerolls(int value)
+    {
+        return Mathf.Clamp(value, 0, Mathf.Max(0, roundRewardRerollCarryCap));
     }
 
     IEnumerator CoOpenHighScoreBeforeClosingFinalStats(System.Action showHighScore)

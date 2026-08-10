@@ -128,7 +128,8 @@ public class LevelModifierSelectionUI : MonoBehaviour
         LevelModifierSO chosen,
         Func<int> getAvailableRerolls = null,
         RerollHandler rerollHandler = null,
-        Action onPanelFullyShown = null)
+        Action onPanelFullyShown = null,
+        Func<LevelModifierSO, IEnumerator> onChosenBeforePanelHide = null)
     {
         if (!chosen)
             yield break;
@@ -276,6 +277,9 @@ public class LevelModifierSelectionUI : MonoBehaviour
 
         if (modifierInfoPanel)
             UIPanelTransition.Hide(modifierInfoPanel);
+
+        if (onChosenBeforePanelHide != null)
+            yield return onChosenBeforePanelHide(chosen);
 
         StopModNameAnimation();
 

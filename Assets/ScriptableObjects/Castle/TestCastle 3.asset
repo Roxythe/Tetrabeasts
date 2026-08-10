@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CastleData
   castleName: Industrial City
   damageStages:
-  - {fileID: 21300000, guid: c2a5bef9157d7fb4195ceba1d3cebc24, type: 3}
-  - {fileID: 21300000, guid: 36bbe24c547b17d4b8bb7b737224e2b1, type: 3}
-  - {fileID: 21300000, guid: d335913f22379f5488f15afe13a229d9, type: 3}
-  - {fileID: 21300000, guid: d349ea439403cd648bd2e9169949481f, type: 3}
+  - {fileID: 21300000, guid: b081466c86400cd488cab6d9a53db279, type: 3}
+  - {fileID: 21300000, guid: 188e455d1000ec24f97f3a195105d5b0, type: 3}
+  - {fileID: 21300000, guid: e96abffa233c5184d94fa8d42640c3a2, type: 3}
+  - {fileID: 21300000, guid: f590a3bd42c47614798d22dfadd6d8cc, type: 3}
   levelBackgroundSprite: {fileID: -7189407165661018413, guid: 3d9f43d24475d6d47be269b319ed00ad, type: 3}
   hpGaugeFrameSprite: {fileID: 21300000, guid: f03cd05459b1bbc4b873da6581bf16d1, type: 3}
   levelBackgroundVideoClip: {fileID: 32900000, guid: cd8064653c150e844a765b2d217f3d73, type: 3}
@@ -68,6 +68,8 @@ MonoBehaviour:
   overridePoisonCount: -1
   overrideFireCount: -1
   overrideSpikeCount: -1
+  overrideTeleportCount: -1
+  overrideZipPadCount: -1
   enableLevelModifierSelection: 1
   levelModifierDatabase: {fileID: 11400000, guid: cf975b393a28f7643ad5e410f648b770, type: 2}
   allowedLevelModifierKinds: 
@@ -79,6 +81,10 @@ MonoBehaviour:
   bossEnableGravityBoost: 1
   bossEnablePylonShield: 1
   bossEnableMagicExplosive: 1
+  bossEnableForcedDuplication: 1
+  bossEnableSpecialSiphon: 1
+  bossEnableTeleport: 1
+  bossEnableZipPad: 1
   bossAbilityIntervalMin: 3
   bossAbilityIntervalMax: 7
   bossRowBlastDamage: 25
@@ -104,6 +110,16 @@ MonoBehaviour:
   bossInvulnHitSFX: {fileID: 0}
   bossGravityBonusMult: 2
   bossGravityDuration: 10
+  bossForcedDuplicationMinPieces: 5
+  bossForcedDuplicationMaxPieces: 9
+  bossSpecialSiphonGaugeDrainPercentPerSecond: 0.03
+  bossTeleportTargetsMin: 1
+  bossTeleportTargetsMax: 5
+  bossTeleportWarningSeconds: 2
+  bossTeleportDestinationExcludedTopRows: 4
+  bossTeleportDestinationExcludedBottomRows: 2
+  bossZipPadExcludedTopRows: 4
+  bossZipPadExcludedBottomRows: 2
   bossAbilityWarningSeconds: 3
   bossWarningToggleInterval: 0.16
   bossRowBlastWarningSprite: {fileID: 0}

@@ -41,6 +41,7 @@ public class AudioManager : MonoBehaviour
     [Header("Weather Ambience")]
     public AudioClip sfxRainLoop;
     [Range(0.01f, 1f)] public float rainFadeOutSeconds = 0.3f;
+    [Range(0f, 1f)] public float rainAmbienceVolumeScale = 0.35f;
 
     [Header("Music Pools (Gameplay)")]
     public AudioClip[] EDMGameplayMusic;
@@ -103,6 +104,7 @@ public class AudioManager : MonoBehaviour
     AudioClip lastBossClip;
     bool specialAbilityPausedMainMusic;
     float specialAbilityLoopSfxVolumeScale = 1f;
+    float rainAmbienceRequestedVolume = 1f;
     AudioSource activeMusicSrc;
     float musicSrcVolumeScale = 1f;
     float musicTransitionSrcVolumeScale = 0f;
@@ -843,7 +845,7 @@ public class AudioManager : MonoBehaviour
         uiLoopSfxSrc.volume = masterVolume * sfxVolume;
         if (specialAbilityOneShotSrc) specialAbilityOneShotSrc.volume = masterVolume * sfxVolume;
         ApplySpecialAbilityLoopSfxVolume();
-        ambienceLoopSrc.volume = masterVolume * sfxVolume;
+        ApplyRainAmbienceVolume();
         ApplyPauseMusicVolume();
 
         if (save) SettingsStore.SaveVolumes(masterVolume, musicVolume, sfxVolume);
@@ -874,7 +876,7 @@ public class AudioManager : MonoBehaviour
         uiLoopSfxSrc.volume = masterVolume * sfxVolume;
         if (specialAbilityOneShotSrc) specialAbilityOneShotSrc.volume = masterVolume * sfxVolume;
         ApplySpecialAbilityLoopSfxVolume();
-        ambienceLoopSrc.volume = masterVolume * sfxVolume;
+        ApplyRainAmbienceVolume();
 
         if (save) SettingsStore.SaveVolumes(masterVolume, musicVolume, sfxVolume);
     }
@@ -932,7 +934,8 @@ public class AudioManager : MonoBehaviour
             rainFadeCo = null;
         }
 
-        float targetVol = GetRainTargetVolume(vol);
+        rainAmbienceRequestedVolume = Mathf.Clamp01(vol);
+        float targetVol = GetRainTargetVolume(rainAmbienceRequestedVolume);
         float clampedPitch = Mathf.Clamp(pitch, 0.5f, 2f);
 
         if (ambienceLoopSrc.clip == sfxRainLoop)
@@ -966,7 +969,7 @@ public class AudioManager : MonoBehaviour
         {
             ambienceLoopSrc.clip = null;
             ambienceLoopSrc.pitch = 1f;
-            ambienceLoopSrc.volume = masterVolume * sfxVolume;
+            ApplyRainAmbienceVolume();
             return;
         }
 
@@ -1001,7 +1004,7 @@ public class AudioManager : MonoBehaviour
             ambienceLoopSrc.Stop();
             ambienceLoopSrc.clip = null;
             ambienceLoopSrc.pitch = 1f;
-            ambienceLoopSrc.volume = GetRainTargetVolume();
+            ApplyRainAmbienceVolume();
         }
 
         rainFadeCo = null;
@@ -1705,7 +1708,13 @@ public class AudioManager : MonoBehaviour
 
     float GetRainTargetVolume(float vol = 1f)
     {
-        return masterVolume * sfxVolume * Mathf.Clamp01(vol);
+        return masterVolume * sfxVolume * Mathf.Clamp01(rainAmbienceVolumeScale) * Mathf.Clamp01(vol);
+    }
+
+    void ApplyRainAmbienceVolume()
+    {
+        if (!ambienceLoopSrc) return;
+        ambienceLoopSrc.volume = GetRainTargetVolume(rainAmbienceRequestedVolume);
     }
 
     public void ConfigureExternalMusicSource(AudioSource source, float vol = 1f)

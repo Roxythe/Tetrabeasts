@@ -120,6 +120,7 @@ public class XpAwardUI : MonoBehaviour
     public float breakdownTickEndSeconds = 0.01f;
     [Min(0.1f)] public float breakdownAccelPower = 1.6f;
     public float breakdownTickJitterSeconds = 0.05f;
+    [Range(0f, 1f)] public float breakdownTickSfxVolume = 0.35f;
 
     [Header("Breakdown Skip Cushion")]
     public float breakdownSkipInputDelaySeconds = 0.5f;
@@ -824,7 +825,7 @@ public class XpAwardUI : MonoBehaviour
             SetBreakdownTotal(current);
 
             if (AudioManager.I && AudioManager.I.sfxXpTick)
-                AudioManager.I.PlayUISFX(AudioManager.I.sfxXpTick);
+                AudioManager.I.PlayUISFX(AudioManager.I.sfxXpTick, vol: breakdownTickSfxVolume);
 
             float jitter = breakdownTickJitterSeconds > 0f
                 ? UnityEngine.Random.Range(0f, breakdownTickJitterSeconds)

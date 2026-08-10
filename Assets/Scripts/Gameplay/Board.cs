@@ -27,6 +27,7 @@ public class Board : MonoBehaviour
 
     [Header("Tetromino Background Pulse")]
     public bool animateTetrominoBackgrounds = true;
+    public bool enablePassiveTetrominoBackgroundPulse = false;
     [Min(0.05f)] public float backgroundPassivePulseInterval = 3.25f;
     [Min(0.01f)] public float backgroundPassivePulseSeconds = 1.45f;
     [Range(0f, 1f)] public float backgroundPassivePeakAlpha = 0.24f;
@@ -153,6 +154,7 @@ public class Board : MonoBehaviour
     [SerializeField, Min(0)] int teleportFloorDestinationExcludedBottomRows = 0;
     [SerializeField, Range(0.1f, 1f)] float zipPadVisualScale = 0.95f;
     [SerializeField, Min(1f)] float zipPadScrollPixelsPerSecond = 140f;
+    [SerializeField] Color zipPadBackdropTint = new Color(1f, 0.05f, 0.05f, 0.48f);
 
     public Sprite spikeSpriteLow;            // Spike frame A (lower)
     public Sprite spikeSpriteHigh;           // Spike frame B (raised)
@@ -355,6 +357,7 @@ public class Board : MonoBehaviour
     class ZipPadVisual
     {
         public RectTransform root;
+        public Image backdrop;
         public Image[] arrows;
         public float offset;
     }
@@ -771,16 +774,7 @@ public class Board : MonoBehaviour
 
             if (best.HasValue)
             {
-                if (HealTile(best.Value, finalHeal, md))
-                {
-                    PlayHealVFX(best.Value, md.healSprite, 0.5f);
-
-                    if (AudioManager.I && md)
-                    {
-                        var clip = md.PickRandomHealSFX();
-                        if (clip) AudioManager.I.PlaySFX(clip);
-                    }
-                }
+                HealTile(best.Value, finalHeal, md);
             }
         }
     }
@@ -895,7 +889,7 @@ public class Board : MonoBehaviour
         if (!shouldAnimate)
         {
             if (pulse)
-                pulse.SetPassiveEnabled(false);
+                pulse.ResetPulseVisuals();
             return;
         }
 
@@ -905,7 +899,7 @@ public class Board : MonoBehaviour
         float offset = Mathf.Repeat(offsetSeed * 0.371f, Mathf.Max(0.05f, backgroundPassivePulseInterval));
         pulse.Configure(
             tileColor,
-            true,
+            enablePassiveTetrominoBackgroundPulse,
             backgroundPassivePulseInterval,
             backgroundPassivePulseSeconds,
             backgroundPassivePeakAlpha,
@@ -1102,10 +1096,19 @@ public class Board : MonoBehaviour
 
         rt.gameObject.SetActive(false);
         rt.SetParent(gridRoot, false);
+        ResetTilePulseChild(rt, "HealthFill");
         HideTileChild(rt, "MonsterPortrait");
         HideTileChild(rt, "DeadOverlay");
         pooledBoardTiles.Add(rt);
         boardTilePool.Add(rt);
+    }
+
+    void ResetTilePulseChild(RectTransform parent, string childName)
+    {
+        var child = parent ? parent.Find(childName) : null;
+        var pulse = child ? child.GetComponent<TetrominoBackgroundPulse>() : null;
+        if (pulse)
+            pulse.ResetPulseVisuals();
     }
 
     void UpdateTileHPVisual(Vector2Int cell, float current, float max)
@@ -1120,7 +1123,7 @@ public class Board : MonoBehaviour
 
         var pulse = fill.GetComponent<TetrominoBackgroundPulse>();
         if (pulse)
-            pulse.SetPassiveEnabled(current > 0f && animateTetrominoBackgrounds);
+            pulse.SetPassiveEnabled(current > 0f && animateTetrominoBackgrounds && enablePassiveTetrominoBackgroundPulse);
 
         // Show/hide the dead overlay
         var dead = rt.Find("DeadOverlay");
@@ -1604,7 +1607,24 @@ public class Board : MonoBehaviour
         UpdateTileHPVisual(cell, inst.hp, inst.maxHp);
 
         TileHealed?.Invoke(cell, inst.data, source, applied);
+        PlayHealFeedback(cell, source);
         return true;
+    }
+
+    void PlayHealFeedback(Vector2Int cell, MonsterData source)
+    {
+        if (!source)
+            return;
+
+        if (source.healSprite)
+            PlayHealVFX(cell, source.healSprite, 0.5f);
+
+        if (!AudioManager.I)
+            return;
+
+        AudioClip clip = source.PickRandomHealSFX();
+        if (clip)
+            AudioManager.I.PlaySFX(clip);
     }
 
     public bool InBounds(Vector2Int c) =>
@@ -3276,24 +3296,25 @@ public class Board : MonoBehaviour
     {
         if (!InBounds(cell)) yield break;
 
-        var img = GetOrCreateOverlayImage("HealVFX", gridRoot);
+        RectTransform parent = overlayRoot ? overlayRoot : gridRoot;
+        var img = GetOrCreateOverlayImage("HealVFX", parent);
         img.sprite = sprite;
         img.preserveAspect = true;
         img.raycastTarget = false;
+        img.transform.SetAsLastSibling();
 
         var rt = img.rectTransform;
         rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
         rt.sizeDelta = GetCellSize() - new Vector2(6f, 6f);  // Slight inset
         rt.anchoredPosition = CellToAnchoredPos(cell);
 
+        duration = Mathf.Max(0.01f, duration);
         float t = 0f;
         while (t < duration && img)
         {
             t += Time.deltaTime;
-
-            // Quick pop-in/out 
-            float a = 1f - Mathf.Abs((t / duration) * 2f - 1f);
-            img.color = new Color(1f, 1f, 1f, 0.35f + 0.65f * a);
+            float a = 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / duration));
+            img.color = new Color(1f, 1f, 1f, 0.95f * a);
             yield return null;
         }
         ReleaseOverlayImage(img);
@@ -4410,6 +4431,7 @@ public class Board : MonoBehaviour
         {
             existing.root.sizeDelta = cellSize;
             existing.root.anchoredPosition = CellToAnchoredPos(cell);
+            ConfigureZipPadBackdrop(existing, cellSize);
             ResizeZipPadArrows(existing, cellSize);
             PositionZipPadArrows(existing, cellSize);
             return;
@@ -4422,6 +4444,13 @@ public class Board : MonoBehaviour
         root.anchoredPosition = CellToAnchoredPos(cell);
         root.localScale = Vector3.one;
         root.localRotation = Quaternion.identity;
+
+        var backdrop = new GameObject("ZipPadBackdrop", typeof(Image)).GetComponent<Image>();
+        backdrop.transform.SetParent(root, false);
+        backdrop.sprite = OnePx();
+        backdrop.type = Image.Type.Simple;
+        backdrop.preserveAspect = false;
+        backdrop.raycastTarget = false;
 
         const int arrowCopies = 5;
         var arrows = new Image[arrowCopies];
@@ -4445,13 +4474,41 @@ public class Board : MonoBehaviour
         var visual = new ZipPadVisual
         {
             root = root,
+            backdrop = backdrop,
             arrows = arrows,
             offset = 0f
         };
 
+        ConfigureZipPadBackdrop(visual, cellSize);
         ResizeZipPadArrows(visual, cellSize);
         PositionZipPadArrows(visual, cellSize);
         zipPadVisuals[cell] = visual;
+    }
+
+    void ConfigureZipPadBackdrop(ZipPadVisual visual, Vector2 cellSize)
+    {
+        if (visual == null || !visual.root)
+            return;
+
+        if (!visual.backdrop)
+        {
+            visual.backdrop = new GameObject("ZipPadBackdrop", typeof(Image)).GetComponent<Image>();
+            visual.backdrop.transform.SetParent(visual.root, false);
+        }
+
+        visual.backdrop.sprite = OnePx();
+        visual.backdrop.type = Image.Type.Simple;
+        visual.backdrop.preserveAspect = false;
+        visual.backdrop.raycastTarget = false;
+        visual.backdrop.color = zipPadBackdropTint;
+
+        RectTransform rt = visual.backdrop.rectTransform;
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.sizeDelta = cellSize;
+        rt.anchoredPosition = Vector2.zero;
+        rt.localScale = Vector3.one;
+        rt.localRotation = Quaternion.identity;
+        rt.SetAsFirstSibling();
     }
 
     void ResizeZipPadArrows(ZipPadVisual visual, Vector2 cellSize)
@@ -5172,6 +5229,7 @@ public class Board : MonoBehaviour
                 Vector2 size = GetCellSize();
                 kv.Value.root.sizeDelta = size;
                 kv.Value.root.anchoredPosition = CellToAnchoredPos(kv.Key);
+                ConfigureZipPadBackdrop(kv.Value, size);
                 ResizeZipPadArrows(kv.Value, size);
                 PositionZipPadArrows(kv.Value, size);
             }
@@ -5498,6 +5556,13 @@ public class TetrominoBackgroundPulse : MonoBehaviour
         passiveEnabled = enabled;
         if (!enabled && !clearPulseActive)
             SetPulseVisual(0f, passiveStartScale);
+    }
+
+    public void ResetPulseVisuals()
+    {
+        passiveEnabled = false;
+        clearPulseActive = false;
+        SetPulseVisual(0f, passiveStartScale);
     }
 
     public void PlayRowClearPulse(

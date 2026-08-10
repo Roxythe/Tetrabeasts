@@ -339,6 +339,9 @@ public class Piece : MonoBehaviour
             img.enabled = true;
         }
 
+        if (child.TryGetComponent(out TetrominoBackgroundPulse pulse))
+            pulse.ResetPulseVisuals();
+
         child.gameObject.SetActive(false);
     }
 
