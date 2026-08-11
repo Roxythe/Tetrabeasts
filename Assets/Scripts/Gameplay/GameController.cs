@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 #if ENABLE_INPUT_SYSTEM
@@ -111,11 +112,31 @@ public class GameController : MonoBehaviour
     [SerializeField] CastleData postFinalSurvivalCastle;
     [SerializeField] bool forcePostFinalSurvivalInfiniteHealth = true;
     [SerializeField] bool forcePostFinalSurvivalBossLevel = true;
-    [SerializeField, Min(0f)] float postFinalSurvivalDamageTakenIncreasePer60Seconds = 0.10f;
+    [FormerlySerializedAs("postFinalSurvivalDamageTakenIncreasePer60Seconds")]
+    [SerializeField, Min(0f)] float postFinalSurvivalDamageTakenIncreasePer30Seconds = 0.10f;
     [SerializeField, Min(0f)] float postFinalSurvivalBaseGravityBonus = 0.75f;
     [SerializeField, Min(0f)] float postFinalSurvivalGravityIncreasePerSecond = 0.04f;
     [SerializeField, Min(0f)] float postFinalSurvivalMinGravityRampRateMultiplier = 1f;
     [SerializeField, Range(0f, 1f)] float postFinalSurvivalCurrencyChancePerStar = 0.05f;
+    [SerializeField, Min(1f)] float postFinalSurvivalProjectileCountIncreaseIntervalSeconds = 30f;
+    [FormerlySerializedAs("postFinalSurvivalEnemyProjectileDamageIncreasePer60Seconds")]
+    [SerializeField, Min(0f)] float postFinalSurvivalEnemyProjectileDamageIncreasePer30Seconds = 0.05f;
+    [FormerlySerializedAs("postFinalSurvivalBossAbilityDamageIncreasePer60Seconds")]
+    [SerializeField, Min(0f)] float postFinalSurvivalBossAbilityDamageIncreasePer30Seconds = 0.05f;
+    [FormerlySerializedAs("postFinalSurvivalSpecialGaugeGainDampenPer60Seconds")]
+    [SerializeField, Range(0f, 1f)] float postFinalSurvivalSpecialGaugeGainDampenPer30Seconds = 0.08f;
+    [SerializeField, Range(0.05f, 1f)] float postFinalSurvivalMinSpecialGaugeGainMultiplier = 0.25f;
+    [FormerlySerializedAs("postFinalSurvivalScoreMultiplierIncreasePer60Seconds")]
+    [SerializeField, Min(0f)] float postFinalSurvivalScoreMultiplierIncreasePer30Seconds = 0.10f;
+    [SerializeField, Min(1f)] float postFinalSurvivalBaseScoreMultiplierCap = 2f;
+    [SerializeField, Min(0f)] float postFinalSurvivalScoreMultiplierCapPerStar = 0.5f;
+    [FormerlySerializedAs("postFinalSurvivalCurrencyChanceIncreasePer60Seconds")]
+    [SerializeField, Range(0f, 1f)] float postFinalSurvivalCurrencyChanceIncreasePer30Seconds = 0.005f;
+    [SerializeField, Range(0f, 1f)] float postFinalSurvivalBaseCurrencyChanceIncreaseCap = 0.05f;
+    [SerializeField, Range(0f, 1f)] float postFinalSurvivalCurrencyChanceIncreaseCapPerStar = 0.015f;
+    [FormerlySerializedAs("postFinalSurvivalCurrencyAmountIncreasePer60Seconds")]
+    [SerializeField, Min(0f)] float postFinalSurvivalCurrencyAmountIncreasePer30Seconds = 0.03f;
+    [SerializeField, Min(1f)] float postFinalSurvivalCurrencyAmountMultiplierCap = 1.75f;
 
     [Header("Gravity UI")]
     [SerializeField] TMP_Text levelTimerText;
@@ -337,6 +358,7 @@ public class GameController : MonoBehaviour
     public float minSpecialChance = 0.01f;
     [Range(0f, 1f)]
     public float maxSpecialChance = 0.33f; // Hard cap (33%)
+    [SerializeField, Min(0)] int minNormalPiecesBetweenSpecialBlocks = 3;
 
     [Header("Projectiles")]
     public RectTransform projectileRoot;
@@ -535,6 +557,8 @@ public class GameController : MonoBehaviour
         Mathf.Max(0f, 1f - _partyPassiveBonuses.allyMonsterDamageTakenReduction) *
         PostFinalSurvivalDamageTakenMultiplier;
     float CurrentCurrencyGainMultiplier => Mathf.Max(0f, 1f + _partyPassiveBonuses.currencyGainMultiplierAdd);
+    float CurrentLineClearCurrencyAmountMultiplier =>
+        lineClearCurrencyAmountMult * CurrentCurrencyGainMultiplier * PostFinalSurvivalCurrencyAmountMultiplier;
     float CurrentPartyExperienceGainMultiplier => Mathf.Max(0f, 1f + _partyPassiveBonuses.partyExperienceGainMultiplierAdd);
 
     float EffectivePieceGravityMult =>
@@ -548,11 +572,73 @@ public class GameController : MonoBehaviour
     float ActiveLevelModifierGravityMult => levelModifierController ? levelModifierController.ActiveGravityMultiplier : 1f;
     float EffectiveCurrencyChancePerClearedRow => // Gold Up: +2% chance per level
         Mathf.Clamp01(currencyChancePerClearedRow + lineClearCurrencyChanceAdd + ShopBuffEffects.GoldChanceBonus +
-                      PostFinalSurvivalStarCurrencyChanceBonus);
+                      PostFinalSurvivalStarCurrencyChanceBonus + PostFinalSurvivalTimedCurrencyChanceBonus);
     float PostFinalSurvivalStarCurrencyChanceBonus =>
         _postFinalSurvivalActive
             ? Mathf.Max(0, _starDifficulty) * Mathf.Clamp01(postFinalSurvivalCurrencyChancePerStar)
             : 0f;
+    float PostFinalSurvivalElapsedThirtySecondIntervals =>
+        _postFinalSurvivalActive ? Mathf.Max(0f, _levelTimer / 30f) : 0f;
+    float PostFinalSurvivalTimedCurrencyChanceBonus
+    {
+        get
+        {
+            if (!_postFinalSurvivalActive)
+                return 0f;
+
+            float cap = Mathf.Clamp01(postFinalSurvivalBaseCurrencyChanceIncreaseCap +
+                                      (Mathf.Max(0, _starDifficulty) * postFinalSurvivalCurrencyChanceIncreaseCapPerStar));
+            float bonus = PostFinalSurvivalElapsedThirtySecondIntervals * Mathf.Clamp01(postFinalSurvivalCurrencyChanceIncreasePer30Seconds);
+            return Mathf.Min(cap, bonus);
+        }
+    }
+
+    float PostFinalSurvivalCurrencyAmountMultiplier
+    {
+        get
+        {
+            if (!_postFinalSurvivalActive)
+                return 1f;
+
+            float multiplier = 1f + (PostFinalSurvivalElapsedThirtySecondIntervals * Mathf.Max(0f, postFinalSurvivalCurrencyAmountIncreasePer30Seconds));
+            return Mathf.Min(Mathf.Max(1f, postFinalSurvivalCurrencyAmountMultiplierCap), multiplier);
+        }
+    }
+
+    float PostFinalSurvivalScoreMultiplier
+    {
+        get
+        {
+            if (!_postFinalSurvivalActive)
+                return 1f;
+
+            float cap = Mathf.Max(1f, postFinalSurvivalBaseScoreMultiplierCap +
+                                      (Mathf.Max(0, _starDifficulty) * postFinalSurvivalScoreMultiplierCapPerStar));
+            float multiplier = 1f + (PostFinalSurvivalElapsedThirtySecondIntervals * Mathf.Max(0f, postFinalSurvivalScoreMultiplierIncreasePer30Seconds));
+            return Mathf.Min(cap, multiplier);
+        }
+    }
+
+    float PostFinalSurvivalSpecialGaugeGainMultiplier
+    {
+        get
+        {
+            if (!_postFinalSurvivalActive)
+                return 1f;
+
+            float multiplier = 1f - (PostFinalSurvivalElapsedThirtySecondIntervals * Mathf.Clamp01(postFinalSurvivalSpecialGaugeGainDampenPer30Seconds));
+            return Mathf.Clamp(multiplier, Mathf.Clamp(postFinalSurvivalMinSpecialGaugeGainMultiplier, 0.05f, 1f), 1f);
+        }
+    }
+
+    float PostFinalSurvivalEnemyProjectileDamageMultiplier =>
+        _postFinalSurvivalActive
+            ? 1f + (PostFinalSurvivalElapsedThirtySecondIntervals * Mathf.Max(0f, postFinalSurvivalEnemyProjectileDamageIncreasePer30Seconds))
+            : 1f;
+    float PostFinalSurvivalBossAbilityDamageMultiplier =>
+        _postFinalSurvivalActive
+            ? 1f + (PostFinalSurvivalElapsedThirtySecondIntervals * Mathf.Max(0f, postFinalSurvivalBossAbilityDamageIncreasePer30Seconds))
+            : 1f;
     float EffectiveLuck => luck + ShopBuffEffects.LuckBonus; // Luck Up: +10 per level 
     float CurrentGravityMinFallInterval
     {
@@ -573,8 +659,7 @@ public class GameController : MonoBehaviour
             if (!_postFinalSurvivalActive)
                 return 1f;
 
-            int stacks = Mathf.Max(0, Mathf.FloorToInt(_levelTimer / 60f));
-            return 1f + (stacks * Mathf.Max(0f, postFinalSurvivalDamageTakenIncreasePer60Seconds));
+            return 1f + (PostFinalSurvivalElapsedThirtySecondIntervals * Mathf.Max(0f, postFinalSurvivalDamageTakenIncreasePer30Seconds));
         }
     }
 
@@ -592,6 +677,7 @@ public class GameController : MonoBehaviour
     float _gravityCapAccumSeconds = 0f;
 
     readonly Queue<TetrominoData> bag = new();
+    int _normalPiecesPulledSinceLastSpecial = int.MaxValue / 4;
     public int score { get; private set; }
     bool gameOver = false;
     bool levelWon = false;
@@ -680,7 +766,7 @@ public class GameController : MonoBehaviour
     public float BaseStoneBuffDropChanceForStats => _baseGameplayStatsCached ? _baseStoneBuffDropChance : stoneBuffDropChance;
     public float CurrentCurrencyGainMultiplierForStats => CurrentCurrencyGainMultiplier;
     public float CurrentPartyExperienceGainMultiplierForStats => CurrentPartyExperienceGainMultiplier;
-    public float LineClearCurrencyAmountMultiplierForStats => lineClearCurrencyAmountMult * CurrentCurrencyGainMultiplier;
+    public float LineClearCurrencyAmountMultiplierForStats => CurrentLineClearCurrencyAmountMultiplier;
     public float EffectivePieceGravityMultForStats => EffectivePieceGravityMult * ActiveLevelModifierGravityMult;
     public float EffectiveFallRampRateMultForStats => GetCurrentFallRampRateMultiplier(_slowGravitySpecialRampRateMultActive) * ActiveLevelModifierGravityMult;
     public bool LevelModifierGravitySlowActiveForStats => levelModifierController && levelModifierController.AppliesAutoMovementGravitySlow;
@@ -688,7 +774,7 @@ public class GameController : MonoBehaviour
     public float EffectiveLuckForStats => EffectiveLuck;
     public MonsterPassiveBonuses PartyPassiveBonusesForStats => _partyPassiveBonuses;
     public CastleData CurrentCastleDataForStats => currentCastleData;
-    public int CastleProjectileDamageForStats => castleProjectileDamage;
+    public int CastleProjectileDamageForStats => GetCurrentCastleProjectileDamage();
     public float CurrentEnemyProjectileSpeedForModifiers => GetCurrentCastleProjectileSpeed();
     public float CurrentEnemyProjectileVisualScaleForModifiers => castleProjectileVisualScale;
     public bool SpecialUsageLockedForStats => levelModifierController && levelModifierController.BlocksSpecialUsage;
@@ -1753,7 +1839,9 @@ public class GameController : MonoBehaviour
 
     float GetEffectiveSpecialGaugeGainMultiplier()
     {
-        return Mathf.Max(0f, specialGainMult * _starDifficultyModifiers.specialGaugeGainMultiplier);
+        return Mathf.Max(0f, specialGainMult *
+                              _starDifficultyModifiers.specialGaugeGainMultiplier *
+                              PostFinalSurvivalSpecialGaugeGainMultiplier);
     }
 
     void TickPassiveSpecialGauge(float deltaTime)
@@ -1798,7 +1886,9 @@ public class GameController : MonoBehaviour
         if (clampedPoints <= 0)
             return 0;
 
-        return Mathf.Max(0, Mathf.RoundToInt(clampedPoints * _starDifficultyModifiers.scoreGainMultiplier));
+        return Mathf.Max(0, Mathf.RoundToInt(clampedPoints *
+                                             _starDifficultyModifiers.scoreGainMultiplier *
+                                             PostFinalSurvivalScoreMultiplier));
     }
 
     public float GetScaledEnemyDamage(float amount)
@@ -1806,10 +1896,20 @@ public class GameController : MonoBehaviour
         return Mathf.Max(0f, amount) * _starDifficultyModifiers.enemyDamageMultiplier;
     }
 
+    float GetScaledBossAbilityDamage(float amount)
+    {
+        return GetScaledEnemyDamage(amount) * PostFinalSurvivalBossAbilityDamageMultiplier;
+    }
+
     public float GetScaledFloorEffectDamage(float amount)
     {
         float levelMultiplier = 1f + (Mathf.Max(0, currentLevel) * Mathf.Max(0f, floorEffectDamageIncreasePerLevel));
         return GetScaledEnemyDamage(amount) * levelMultiplier;
+    }
+
+    float GetScaledBossFloorEffectDamage(float amount)
+    {
+        return GetScaledFloorEffectDamage(amount) * PostFinalSurvivalBossAbilityDamageMultiplier;
     }
 
     float GetCurrentCastleAttackInterval()
@@ -1923,6 +2023,7 @@ public class GameController : MonoBehaviour
         var data = bag.Dequeue();
         var mons = monstersBag.Count > 0 ? monstersBag.Dequeue() : null;
         bool consumedForcedDuplicate = _bossForcedDuplicationRemaining > 0;
+        RecordPulledPieceForSpecialSpacing(data);
 
         // Heal monster array for normal pieces
         if (data.special == SpecialType.None)
@@ -1969,6 +2070,7 @@ public class GameController : MonoBehaviour
         ResetForcedDuplicationEffect();
         bag.Clear();
         monstersBag.Clear();
+        ResetSpecialBlockSpacing();
         _roulettePreviewTimer = 0f;
         ClearGeneratedDisarrayPieces();
 
@@ -1987,7 +2089,8 @@ public class GameController : MonoBehaviour
         {
             if (useSavedLevelModifier)
             {
-                levelModifierController.RestoreCheckpointState(restoredLevelModifier, restoredRerolls);
+                levelModifierController.RestoreCheckpointState(currentCastleData, restoredLevelModifier, restoredRerolls);
+                yield return levelModifierController.WaitForCurrentPresentationReady();
             }
             else
             {
@@ -2541,6 +2644,7 @@ public class GameController : MonoBehaviour
         float chanceCap = Mathf.Max(0f, maxSpecialChance);
         float chanceFloor = Mathf.Min(Mathf.Clamp01(minSpecialChance), chanceCap);
         float chance = Mathf.Clamp(specialChancePerEnqueue + specialBlockChanceAdd, chanceFloor, chanceCap);
+        int virtualNormalPiecesSinceLastSpecial = GetQueuedNormalPiecesSinceLastSpecial();
 
         foreach (var d in normals)
         {
@@ -2550,6 +2654,7 @@ public class GameController : MonoBehaviour
             if (!isFirstBagEntry &&
                 specialsAvailable &&
                 !(levelModifierController && levelModifierController.BlocksSpecialPieceSpawns) &&
+                CanQueueSpecialBlockAfterNormals(virtualNormalPiecesSinceLastSpecial) &&
                 Random.value < chance)
             {
                 float r = Random.Range(0f, specialTotal);
@@ -2571,6 +2676,7 @@ public class GameController : MonoBehaviour
                 use = CreateDisarrayVariantIfNeeded(use);
 
             bag.Enqueue(use); // Enqueue selected piece
+            virtualNormalPiecesSinceLastSpecial = UpdateNormalSpacingCounter(virtualNormalPiecesSinceLastSpecial, use);
 
             // Enqueue monsters array in parallel
             int cellsCount = Mathf.Max(1, use.cells != null ? use.cells.Length : 1);
@@ -2593,7 +2699,8 @@ public class GameController : MonoBehaviour
         if (forceOneSpecialPerRefill &&
             specialsAvailable &&
             specialsAddedThisRefill == 0 &&
-            !(levelModifierController && levelModifierController.BlocksSpecialPieceSpawns))
+            !(levelModifierController && levelModifierController.BlocksSpecialPieceSpawns) &&
+            CanQueueSpecialBlockAfterNormals(virtualNormalPiecesSinceLastSpecial))
         {
             // Append one extra special at end of queues
             float r = Random.Range(0f, specialTotal);
@@ -2611,6 +2718,68 @@ public class GameController : MonoBehaviour
                 monstersBag.Enqueue(System.Array.Empty<MonsterData>());
             }
         }
+    }
+
+    bool IsSpecialBlock(TetrominoData data)
+    {
+        return data && data.special != SpecialType.None;
+    }
+
+    bool CanQueueSpecialBlockAfterNormals(int normalPiecesSinceLastSpecial)
+    {
+        return normalPiecesSinceLastSpecial >= Mathf.Max(0, minNormalPiecesBetweenSpecialBlocks);
+    }
+
+    int UpdateNormalSpacingCounter(int normalPiecesSinceLastSpecial, TetrominoData data)
+    {
+        if (IsSpecialBlock(data))
+            return 0;
+
+        return Mathf.Min(int.MaxValue / 4, Mathf.Max(0, normalPiecesSinceLastSpecial) + 1);
+    }
+
+    int GetQueuedNormalPiecesSinceLastSpecial()
+    {
+        int normalPiecesSinceLastSpecial = _normalPiecesPulledSinceLastSpecial;
+
+        foreach (var queued in bag)
+            normalPiecesSinceLastSpecial = UpdateNormalSpacingCounter(normalPiecesSinceLastSpecial, queued);
+
+        return normalPiecesSinceLastSpecial;
+    }
+
+    void ResetSpecialBlockSpacing()
+    {
+        _normalPiecesPulledSinceLastSpecial = int.MaxValue / 4;
+    }
+
+    void RecordPulledPieceForSpecialSpacing(TetrominoData data)
+    {
+        _normalPiecesPulledSinceLastSpecial = UpdateNormalSpacingCounter(_normalPiecesPulledSinceLastSpecial, data);
+    }
+
+    bool CanReplaceQueueHeadWithSpecial()
+    {
+        if (!CanQueueSpecialBlockAfterNormals(_normalPiecesPulledSinceLastSpecial))
+            return false;
+
+        bool skippedHead = false;
+        int normalPiecesUntilNextSpecial = 0;
+        foreach (var queued in bag)
+        {
+            if (!skippedHead)
+            {
+                skippedHead = true;
+                continue;
+            }
+
+            if (IsSpecialBlock(queued))
+                return normalPiecesUntilNextSpecial >= Mathf.Max(0, minNormalPiecesBetweenSpecialBlocks);
+
+            normalPiecesUntilNextSpecial++;
+        }
+
+        return true;
     }
 
     void HandleRoulettePreview(float dt)
@@ -2693,6 +2862,7 @@ public class GameController : MonoBehaviour
         TetrominoData use = null;
         bool canSpawnSpecial =
             !(levelModifierController && levelModifierController.BlocksSpecialPieceSpawns) &&
+            CanReplaceQueueHeadWithSpecial() &&
             Random.value < GetEffectiveSpecialBlockChanceForQueue();
 
         if (canSpawnSpecial && TryPickWeightedSpecialBlock(out var specialPick))
@@ -3145,7 +3315,7 @@ public class GameController : MonoBehaviour
 
                 if (Random.value <= chance)
                 {
-                    int amount = Mathf.Max(1, Mathf.RoundToInt(1f * lineClearCurrencyAmountMult * CurrentCurrencyGainMultiplier));
+                    int amount = Mathf.Max(1, Mathf.RoundToInt(CurrentLineClearCurrencyAmountMultiplier));
                     CurrencyStore.Add(amount);
 
                     if (PlayerProgress.I && amount > 0) // Track total gold earned for achievements
@@ -6010,8 +6180,21 @@ public class GameController : MonoBehaviour
         int baseCount = currentCastleData
             ? Mathf.Max(1, currentCastleData.baseEnemyProjectilesPerAttack)
             : 1;
-        int timedBonus = Mathf.Max(0, Mathf.FloorToInt(_levelTimer / 60f));
+        float increaseInterval = _postFinalSurvivalActive
+            ? Mathf.Max(1f, postFinalSurvivalProjectileCountIncreaseIntervalSeconds)
+            : 60f;
+        int timedBonus = Mathf.Max(0, Mathf.FloorToInt(_levelTimer / increaseInterval));
         return Mathf.Clamp(baseCount + timedBonus, 1, gameBoard.width);
+    }
+
+    int GetCurrentCastleProjectileDamage()
+    {
+        if (!currentCastleData)
+            return Mathf.Max(1, castleProjectileDamage);
+
+        float baseDamage = currentCastleData.projectileDamage * enemyProjectileDamageMult;
+        float scaled = GetScaledEnemyDamage(baseDamage) * PostFinalSurvivalEnemyProjectileDamageMultiplier;
+        return Mathf.Max(1, Mathf.RoundToInt(scaled));
     }
 
     List<int> PickCastleProjectileColumns(List<int> aliveCols, List<int> deadOnlyCols, int maxCount)
@@ -6272,7 +6455,7 @@ public class GameController : MonoBehaviour
                 hitDefensiveMonster = beforeHit.data.role == MonsterRole.Defense;
 
             AudioClip damageTileSfx = forceMonsterHitSfx ? null : hitClip;
-            bool aliveAfter = gameBoard.DamageTile(hitCell, castleProjectileDamage,
+            bool aliveAfter = gameBoard.DamageTile(hitCell, GetCurrentCastleProjectileDamage(),
                                                    Board.DamageSource.CastleProjectile, damageTileSfx);
 
             if (forceMonsterHitSfx && AudioManager.I && hitClip)
@@ -6729,8 +6912,7 @@ public class GameController : MonoBehaviour
 
         if (AudioManager.I)
         {
-            AudioManager.I.StopPauseMusic();
-            AudioManager.I.StopLevelMusic();
+            AudioManager.I.TransitionToTitleMusic();
         }
 
         AudioListener.pause = false;
@@ -8731,7 +8913,7 @@ public class GameController : MonoBehaviour
         int y1 = Mathf.Clamp(yTop - 1, 0, gameBoard.height - 1);
         int y2 = Mathf.Clamp(yTop - 2, 0, gameBoard.height - 1);
 
-        float dmg = GetScaledEnemyDamage(Mathf.Max(0f, _castleData.bossRowBlastDamage));
+        float dmg = GetScaledBossAbilityDamage(Mathf.Max(0f, _castleData.bossRowBlastDamage));
 
         var targets = new List<Vector2Int>();
         for (int x = 0; x < gameBoard.width; x++)
@@ -8753,7 +8935,7 @@ public class GameController : MonoBehaviour
     {
         if (_castleData == null || gameBoard == null) return;
 
-        float dmg = GetScaledEnemyDamage(Mathf.Max(0f, _castleData.bossFullBoardDamage));
+        float dmg = GetScaledBossAbilityDamage(Mathf.Max(0f, _castleData.bossFullBoardDamage));
         float warn = BossWarnSeconds();
 
         // Collect only occupied monster cells (hp > 0)
@@ -8918,12 +9100,12 @@ public class GameController : MonoBehaviour
         if (AudioManager.I) AudioManager.I.PlayBossLightningStrike();
 
         // Initial impact damage if a monster is there now (even if it was empty when chosen)
-        float initial = GetScaledEnemyDamage(Mathf.Max(0f, _castleData.bossLightningInitialDamage));
+        float initial = GetScaledBossAbilityDamage(Mathf.Max(0f, _castleData.bossLightningInitialDamage));
 
         if (initial > 0f) gameBoard.DamageTile(cell, initial, Board.DamageSource.FloorLightning);
 
         // Spawn temporary hazard (ticks) without destroying monsters
-        float tickDmg = GetScaledFloorEffectDamage(Mathf.Max(0f, _castleData.bossLightningTickDamage));
+        float tickDmg = GetScaledBossFloorEffectDamage(Mathf.Max(0f, _castleData.bossLightningTickDamage));
         float interval = Mathf.Max(0.05f, _castleData.bossLightningTickInterval);
         float duration = Mathf.Max(0.05f, _castleData.bossLightningHazardDuration);
 
@@ -9197,17 +9379,17 @@ public class GameController : MonoBehaviour
 
                 case CastleData.BossTrapKind.Spike:
                     gameBoard.SetFloorEffect(c, Board.FloorEffectType.Spike,
-                        GetScaledFloorEffectDamage(obstacleManager.spikeOneShotDamage), 1f, 1);
+                        GetScaledBossFloorEffectDamage(obstacleManager.spikeOneShotDamage), 1f, 1);
                     break;
 
                 case CastleData.BossTrapKind.Poison:
                     gameBoard.SetFloorEffect(c, Board.FloorEffectType.Poison,
-                        GetScaledFloorEffectDamage(obstacleManager.poisonTickDamage), obstacleManager.poisonTickInterval, obstacleManager.poisonTicks);
+                        GetScaledBossFloorEffectDamage(obstacleManager.poisonTickDamage), obstacleManager.poisonTickInterval, obstacleManager.poisonTicks);
                     break;
 
                 case CastleData.BossTrapKind.Fire:
                     gameBoard.SetFloorEffect(c, Board.FloorEffectType.Burn,
-                        GetScaledFloorEffectDamage(obstacleManager.fireTickDamage), obstacleManager.fireTickInterval, obstacleManager.fireTicks);
+                        GetScaledBossFloorEffectDamage(obstacleManager.fireTickDamage), obstacleManager.fireTickInterval, obstacleManager.fireTicks);
                     break;
             }
         }

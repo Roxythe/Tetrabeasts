@@ -895,9 +895,9 @@ public static class TetrabeastsGermanTranslations
         Add(text, "Spawn Obstacles", "Hindernisse erzeugen");
         Add(text, "The boss will spawn multiple obstacles on the board. They can be spawned individually scattered across the board or in patterns of 2x2, 1x4, or 4x1. This ability only spawns stone obstacles.",
             "Der Boss erzeugt mehrere Hindernisse auf dem Spielfeld. Sie können einzeln verstreut oder in Mustern von 2x2, 1x4 oder 4x1 erscheinen. Diese Fähigkeit erzeugt nur Steinhindernisse.");
-        Add(text, "Spawn Traps", "Fallen erzeugen");
-        Add(text, "The boss will spawn multiple traps on the board. They can be spawned individually scattered across the board or in patterns of 2x2, 1x4, or 4x1. This ability only spawns spike traps.",
-            "Der Boss erzeugt mehrere Fallen auf dem Spielfeld. Sie können einzeln verstreut oder in Mustern von 2x2, 1x4 oder 4x1 erscheinen. Diese Fähigkeit erzeugt nur Stachelfallen.");
+        Add(text, "Spawn Spike Effects", "Stachel-Bodeneffekte erzeugen");
+        Add(text, "The boss will spawn multiple spike floor effects on the board. They can be spawned individually scattered across the board or in patterns of 2x2, 1x4, or 4x1.",
+            "Der Boss erzeugt mehrere Stachel-Bodeneffekte auf dem Spielfeld. Sie können einzeln verstreut oder in Mustern von 2x2, 1x4 oder 4x1 erscheinen.");
         Add(text, "Row Blast", "Reihenexplosion");
         Add(text, "The boss will target the top three rows the player has set monster units. All monster units in the selected rows will recieve moderate damage from this attack.",
             "Der Boss zielt auf die obersten drei Reihen, in denen der Spieler Monstereinheiten platziert hat. Alle Monstereinheiten in diesen Reihen erleiden moderaten Schaden.");
@@ -953,8 +953,8 @@ public static class TetrabeastsGermanTranslations
         Add(text, "Each Commander has their own unquie special ability that can be used in battle. New Commanders can be unlocked and set from the main menu.",
             "Jeder Kommandant hat eine einzigartige Spezialfähigkeit für den Kampf. Neue Kommandanten können im Hauptmenü freigeschaltet und gewählt werden.");
         Add(text, "Row Clear", "Reihe löschen");
-        Add(text, "Fill each grid cell in a row to launch an attack. Monster Units and Obstacles count as a filled cell. Floor effects and traps do not count as a filled cell. Monster units in the cleared row contribute their attack stats for damage calculation and partially fill the player's special gauge.",
-            "Fülle jede Zelle einer Reihe, um einen Angriff auszulösen. Monstereinheiten und Hindernisse zählen als gefüllte Zellen. Bodeneffekte und Fallen nicht. Monster in der gelöschten Reihe tragen ihre Angriffswerte zur Schadensberechnung bei und füllen die Spezialanzeige teilweise.");
+        Add(text, "Fill each grid cell in a row to launch an attack. Monster Units and Obstacles count as a filled cell. Floor effects do not count as a filled cell. Monster units in the cleared row contribute their attack stats for damage calculation and partially fill the player's special gauge.",
+            "Fülle jede Zelle einer Reihe, um einen Angriff auszulösen. Monstereinheiten und Hindernisse zählen als gefüllte Zellen. Bodeneffekte zählen nicht als gefüllte Zellen. Monster in der gelöschten Reihe tragen ihre Angriffswerte zur Schadensberechnung bei und füllen die Spezialanzeige teilweise.");
         Add(text, "Run Buffs", "Lauf-Buffs");
         Add(text, "After succesfully completing a level you will be given three random buffs to choose from to enhance your current run. All buff modifiers will be reset when the run ends.",
             "Nach erfolgreichem Abschluss eines Levels erhältst du drei zufällige Buffs zur Auswahl, um deinen aktuellen Lauf zu stärken. Alle Buff-Modifikatoren werden am Ende des Laufs zurückgesetzt.");
@@ -1000,14 +1000,14 @@ public static class TetrabeastsGermanTranslations
         Add(text, "The Earthquake special will activate immediatley when set. All blocks on the board will be dropped if not being supported by another tile beneath them. This effects obstacles as well that may otherwise not be able to be moved by other means.",
             "Das Erdbeben-Spezial aktiviert sich sofort beim Platzieren. Alle Blöcke auf dem Spielfeld fallen, wenn sie nicht von einem Feld darunter gestützt werden. Das betrifft auch Hindernisse, die sonst nicht bewegt werden könnten.");
         Add(text, "Lightning Bolt", "Blitzschlag");
-        Add(text, "The Lightning Bolt special will activate immediatley when set. All monster units and traps will be destroyed in that column. Stone obstacles will take partial damage if they are in the affected area.",
-            "Der Blitzschlag-Spezialblock aktiviert sich sofort beim Platzieren. Alle Monstereinheiten und Fallen in dieser Spalte werden zerstört. Steinhindernisse in der betroffenen Zone erleiden Teilschaden.");
+        Add(text, "The Lightning Bolt special will activate immediatley when set. All monster units and destructible floor effects will be destroyed in that column. Stone obstacles will take partial damage if they are in the affected area.",
+            "Der Blitzschlag-Spezialblock aktiviert sich sofort beim Platzieren. Alle Monstereinheiten und zerstörbaren Bodeneffekte in dieser Spalte werden zerstört. Steinhindernisse in der betroffenen Zone erleiden Teilschaden.");
         Add(text, "Slow Gravity", "Langsame Schwerkraft");
         Add(text, "The Slow Gravity special block will activate immedialtey upon being set. It will significantly reduce the speed at which pieces fall and the how quickly gravity increases over time.",
             "Der Spezialblock Langsame Schwerkraft aktiviert sich sofort beim Platzieren. Er verringert deutlich, wie schnell Figuren fallen und wie schnell die Schwerkraft mit der Zeit zunimmt.");
-        Add(text, "Spike Trap", "Stachelfalle");
-        Add(text, "Spike traps will deal a high amount of damage to any monster unit that is set on the trapped cell when they are placed. The only way to destroyed spike traps are with the lightning special block.",
-            "Stachelfallen verursachen hohen Schaden an jeder Monstereinheit, die auf eine Fallen-Zelle gesetzt wird. Zerstören lassen sie sich nur mit dem Blitz-Spezialblock.");
+        Add(text, "Spike Floor Effect", "Stachel-Bodeneffekt");
+        Add(text, "Spike floor effects deal a high amount of damage to any monster unit placed on their cell. They can be destroyed with the lightning special block.",
+            "Stachel-Bodeneffekte verursachen hohen Schaden an jeder Monstereinheit, die auf ihrer Zelle platziert wird. Sie können mit dem Blitz-Spezialblock zerstört werden.");
     }
 
     static void AddLevelModifierText(Dictionary<string, string> text)

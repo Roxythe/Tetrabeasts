@@ -1,6 +1,6 @@
 
 
-
+- change spawn system for for flooreffects and obstacles for each level to spawn a random assortment of toggled on floor effects/obstacles. Set X number of items to spawn for each castle data.
 
 
 - New boss ability 'Forced Duplication'. When the boss uses this abilty play the Duplication_SFX, change the next 6-10 pieces to be pulled to be the exact same piece shape as the current next piece. If the next piece would be a special block replace it with a random normal piece and duplicate that. When the ability is cast, set the Duplication sprite for the BossAbilityEffect_Image and set the DuplicateCount_Text to the number of current duplicates left, have it pulse scale increase in size and fade out, update the count text and repeat the animation after the current active piece is set (pulling a new piece) and toggle off count text when the count reaches 0 (duplicates end). When the last of the duplicate pieces is pulled, toggle off the BossAbilityEffect_Image if it is not being used by another effect. If the next piece hud is toggled off due to a run/level modifier then do whatever is done for the gravity increase sprite boss effect (I can't remember if it still toggles on or not).

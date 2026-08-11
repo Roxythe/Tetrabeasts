@@ -172,7 +172,7 @@ public class Board : MonoBehaviour
     [SerializeField, Min(0)] int teleportFloorDestinationExcludedBottomRows = 0;
     [SerializeField, Range(0.1f, 1f)] float zipPadVisualScale = 0.95f;
     [SerializeField, Min(1f)] float zipPadScrollPixelsPerSecond = 140f;
-    [SerializeField] Color zipPadBackdropTint = new Color(1f, 0.05f, 0.05f, 0.48f);
+    [SerializeField] Color zipPadBackdropTint = new Color(1f, 0.05f, 0.05f, 1f);
 
     public Sprite spikeSpriteLow;            // Spike frame A (lower)
     public Sprite spikeSpriteHigh;           // Spike frame B (raised)
@@ -4544,7 +4544,8 @@ public class Board : MonoBehaviour
             foreach (var c in affectedCells)
             {
                 if (!InBounds(c)) continue;
-                if (floorEffects.TryGetValue(c, out var fx) && fx.type == FloorEffectType.Spike)
+                if (floorEffects.TryGetValue(c, out var fx) &&
+                    (fx.type == FloorEffectType.Spike || fx.type == FloorEffectType.ZipPad))
                 {
                     ClearFloorEffect(c);
                 }
@@ -4820,7 +4821,9 @@ public class Board : MonoBehaviour
         visual.backdrop.type = Image.Type.Simple;
         visual.backdrop.preserveAspect = false;
         visual.backdrop.raycastTarget = false;
-        visual.backdrop.color = zipPadBackdropTint;
+        Color tint = zipPadBackdropTint;
+        tint.a = 1f;
+        visual.backdrop.color = tint;
 
         RectTransform rt = visual.backdrop.rectTransform;
         rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);

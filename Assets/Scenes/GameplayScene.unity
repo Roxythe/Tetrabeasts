@@ -25007,7 +25007,7 @@ MonoBehaviour:
   teleportFloorDestinationExcludedBottomRows: 0
   zipPadVisualScale: 0.9
   zipPadScrollPixelsPerSecond: 40
-  zipPadBackdropTint: {r: 1, g: 0.05, b: 0.05, a: 0.48}
+  zipPadBackdropTint: {r: 1, g: 0.05, b: 0.05, a: 1}
   spikeSpriteLow: {fileID: -7474534166531757267, guid: 59afb05ab829e434785e507c432aaa87, type: 3}
   spikeSpriteHigh: {fileID: -332607259968299230, guid: d6e21328398368d47b3cb6a083dfb8f3, type: 3}
   spikeAnimInterval: 0.35
@@ -36080,11 +36080,24 @@ MonoBehaviour:
   postFinalSurvivalCastle: {fileID: 11400000, guid: 1c8175aca3c9cb24895435db667c2245, type: 2}
   forcePostFinalSurvivalInfiniteHealth: 1
   forcePostFinalSurvivalBossLevel: 1
-  postFinalSurvivalDamageTakenIncreasePer60Seconds: 0.1
+  postFinalSurvivalDamageTakenIncreasePer30Seconds: 0.1
   postFinalSurvivalBaseGravityBonus: 0.75
   postFinalSurvivalGravityIncreasePerSecond: 0.04
   postFinalSurvivalMinGravityRampRateMultiplier: 1
   postFinalSurvivalCurrencyChancePerStar: 0.05
+  postFinalSurvivalProjectileCountIncreaseIntervalSeconds: 30
+  postFinalSurvivalEnemyProjectileDamageIncreasePer30Seconds: 0.05
+  postFinalSurvivalBossAbilityDamageIncreasePer30Seconds: 0.05
+  postFinalSurvivalSpecialGaugeGainDampenPer30Seconds: 0.08
+  postFinalSurvivalMinSpecialGaugeGainMultiplier: 0.25
+  postFinalSurvivalScoreMultiplierIncreasePer30Seconds: 0.1
+  postFinalSurvivalBaseScoreMultiplierCap: 2
+  postFinalSurvivalScoreMultiplierCapPerStar: 0.5
+  postFinalSurvivalCurrencyChanceIncreasePer30Seconds: 0.005
+  postFinalSurvivalBaseCurrencyChanceIncreaseCap: 0.05
+  postFinalSurvivalCurrencyChanceIncreaseCapPerStar: 0.015
+  postFinalSurvivalCurrencyAmountIncreasePer30Seconds: 0.03
+  postFinalSurvivalCurrencyAmountMultiplierCap: 1.75
   levelTimerText: {fileID: 754422045}
   gravityText: {fileID: 1021869456}
   gravityTextFormat: 'Gravity: {0:0.00}'
@@ -36381,6 +36394,7 @@ MonoBehaviour:
   specialChancePerEnqueue: 0.05
   minSpecialChance: 0.01
   maxSpecialChance: 0.2
+  minNormalPiecesBetweenSpecialBlocks: 3
   projectileRoot: {fileID: 304730603}
   projectileSpeed: 700
   attackExplosionPrefabs:

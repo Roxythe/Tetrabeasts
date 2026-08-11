@@ -124,6 +124,8 @@ public class LevelModifierController : MonoBehaviour
     bool _loggedAnimatedBackgroundReverseUnsupported;
     bool _boardBackgroundDefaultCaptured;
     Sprite _defaultBoardBackgroundSprite;
+    bool _defaultBoardBorderRootCaptured;
+    GameObject _defaultBoardBorderRoot;
 
     float _overgrowthSpawnTimer;
     float _stormCountdown;
@@ -346,6 +348,27 @@ public class LevelModifierController : MonoBehaviour
             RefreshModifierUI();
     }
 
+    public void RestoreCheckpointState(CastleData castleData, LevelModifierSO modifier, int availableRerolls)
+    {
+        CacheLevelBackground(castleData ? castleData : ResolveCurrentCastleData());
+        ResetLevelState();
+        _availableRerolls = Mathf.Max(0, availableRerolls);
+        ActiveModifier = modifier;
+
+        if (ActiveModifier)
+        {
+            CodexProgressStore.Unlock(ActiveModifier);
+            ApplyModifierStartupEffects();
+        }
+        else
+            RefreshModifierUI();
+    }
+
+    public IEnumerator WaitForCurrentPresentationReady()
+    {
+        yield return WaitForAnimatedBackgroundReadyForCurrentPresentation();
+    }
+
     public LevelModifierSO ResolveModifierFromCurrentCastle(string modifierName, string modifierDisplayName)
     {
         if (string.IsNullOrWhiteSpace(modifierName) && string.IsNullOrWhiteSpace(modifierDisplayName))
@@ -354,14 +377,10 @@ public class LevelModifierController : MonoBehaviour
         if (!_gc)
             _gc = GetComponent<GameController>();
 
-        if (_gc == null || _gc.castlesByLevel == null)
+        if (_gc == null)
             return null;
 
-        int levelIndex = _gc.CurrentLevel;
-        if (levelIndex < 0 || levelIndex >= _gc.castlesByLevel.Length)
-            return null;
-
-        var castleData = _gc.castlesByLevel[levelIndex];
+        var castleData = ResolveCurrentCastleData();
         if (!castleData || !castleData.levelModifierDatabase)
             return null;
 
@@ -2157,18 +2176,29 @@ public class LevelModifierController : MonoBehaviour
 
     void CacheLevelBackgroundFromCurrentLevel()
     {
+        CacheLevelBackground(ResolveCurrentCastleData());
+    }
+
+    CastleData ResolveCurrentCastleData()
+    {
         if (!_gc)
             _gc = GetComponent<GameController>();
 
-        CastleData castleData = null;
-        if (_gc && _gc.castlesByLevel != null)
+        if (_gc)
         {
-            int levelIndex = _gc.CurrentLevel;
-            if (levelIndex >= 0 && levelIndex < _gc.castlesByLevel.Length)
-                castleData = _gc.castlesByLevel[levelIndex];
+            CastleData current = _gc.CurrentCastleDataForStats;
+            if (current)
+                return current;
+
+            if (_gc.castlesByLevel != null)
+            {
+                int levelIndex = _gc.CurrentLevel;
+                if (levelIndex >= 0 && levelIndex < _gc.castlesByLevel.Length)
+                    return _gc.castlesByLevel[levelIndex];
+            }
         }
 
-        CacheLevelBackground(castleData);
+        return null;
     }
 
     Sprite ResolveBackgroundSprite()
@@ -2736,7 +2766,7 @@ public class LevelModifierController : MonoBehaviour
                 return modifierBorderRoot;
         }
 
-        return _currentLevelBoardBorderRoot;
+        return _currentLevelBoardBorderRoot ? _currentLevelBoardBorderRoot : _defaultBoardBorderRoot;
     }
 
     GameObject ResolveCastleBoardBorderRoot(CastleData castleData)
@@ -2792,6 +2822,30 @@ public class LevelModifierController : MonoBehaviour
             _defaultBoardBackgroundSprite = boardBackgroundImage.sprite;
             _boardBackgroundDefaultCaptured = true;
         }
+
+        if (defaultBoardBordersRoot && !_defaultBoardBorderRootCaptured)
+        {
+            _defaultBoardBorderRoot = ResolveInitialDefaultBoardBorderRoot();
+            _defaultBoardBorderRootCaptured = true;
+        }
+    }
+
+    GameObject ResolveInitialDefaultBoardBorderRoot()
+    {
+        if (!defaultBoardBordersRoot)
+            return null;
+
+        Transform root = defaultBoardBordersRoot.transform;
+        for (int i = 0; i < root.childCount; i++)
+        {
+            Transform child = root.GetChild(i);
+            if (child && child.gameObject.activeSelf)
+                return child.gameObject;
+        }
+
+        return root.childCount > 0 && root.GetChild(0)
+            ? root.GetChild(0).gameObject
+            : null;
     }
 
     void EnsureAnimatedBackgroundRefs()

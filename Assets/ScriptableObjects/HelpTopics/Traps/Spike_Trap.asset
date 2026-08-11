@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bda4cdb9ac28a5642b5aa73bc1b714a2, type: 3}
   m_Name: Spike_Trap
   m_EditorClassIdentifier: Assembly-CSharp::HelpTopicSO
-  category: Traps
-  title: Spike Trap
-  description: Spike traps will deal a high amount of damage to any monster unit
-    that is set on the trapped cell when they are placed. The only way to destroyed
-    spike traps are with the lightning special block.
+  category: Floor Effects
+  title: Spike Floor Effect
+  description: Spike floor effects deal a high amount of damage to any monster unit
+    placed on their cell. They can be destroyed with the lightning special block.
   image: {fileID: -332607259968299230, guid: d6e21328398368d47b3cb6a083dfb8f3, type: 3}
   videoClip: {fileID: 32900000, guid: 5e8cbb94fe0c10443a2f049786bbc624, type: 3}

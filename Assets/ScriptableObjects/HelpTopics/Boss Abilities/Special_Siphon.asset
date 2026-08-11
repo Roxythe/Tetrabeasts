@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HelpTopicSO
   category: Boss Abilities
   title: Special Siphon
-  description: The boss channels a siphon that drains the player's special gauge over time. The channel ends when the gauge reaches 0% or when a player attack damages the enemy castle.
+  description: The boss channels a siphon that drains the player's special gauge
+    over time. The channel ends when the special gauge reaches 0% or when a player
+    attack damages the enemy castle.
   image: {fileID: 7371703827755198475, guid: 29e16b7b265afe74a8a66ea7d602d25d, type: 3}
   videoClip: {fileID: 0}

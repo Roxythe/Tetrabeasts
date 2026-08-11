@@ -15,7 +15,7 @@ MonoBehaviour:
   category: Special Blocks
   title: Lightning Bolt
   description: The Lightning Bolt special will activate immediatley when set. All
-    monster units and traps will be destroyed in that column. Stone obstacles will
-    take partial damage if they are in the affected area.
+    monster units and destructible floor effects will be destroyed in that column.
+    Stone obstacles will take partial damage if they are in the affected area.
   image: {fileID: -7430558899833497709, guid: fc848ad20e1533246a7e5adedce199b7, type: 3}
   videoClip: {fileID: 32900000, guid: 885f8f1a75c401849bf83d1c45ec4a77, type: 3}

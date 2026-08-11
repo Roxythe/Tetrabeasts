@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Spawn_Traps
   m_EditorClassIdentifier: Assembly-CSharp::HelpTopicSO
   category: Boss Abilities
-  title: Spawn Traps
-  description: The boss will spawn multiple traps on the board. They can be spawned
-    individually scattered across the board or in patterns of 2x2, 1x4, or 4x1. This
-    ability only spawns spike traps.
+  title: Spawn Spike Effects
+  description: The boss will spawn multiple spike floor effects on the board. They
+    can be spawned individually scattered across the board or in patterns of 2x2,
+    1x4, or 4x1.
   image: {fileID: -7474534166531757267, guid: 59afb05ab829e434785e507c432aaa87, type: 3}
   videoClip: {fileID: 32900000, guid: 33c9196db74d675459e2ac0b77c1b67b, type: 3}

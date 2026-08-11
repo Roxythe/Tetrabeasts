@@ -15,8 +15,8 @@ MonoBehaviour:
   category: Game Mechanics
   title: Row Clear
   description: Fill each grid cell in a row to launch an attack. Monster Units and
-    Obstacles count as a filled cell. Floor effects and traps do not count as a filled
-    cell. Monster units in the cleared row contribute their attack stats for damage
-    calculation and partially fill the player's special gauge.
+    Obstacles count as a filled cell. Floor effects do not count as a filled cell.
+    Monster units in the cleared row contribute their attack stats for damage calculation
+    and partially fill the player's special gauge.
   image: {fileID: 0}
   videoClip: {fileID: 32900000, guid: a1bccd3ff6a893e4d9d6323c394d4957, type: 3}

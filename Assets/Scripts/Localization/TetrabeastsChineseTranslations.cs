@@ -827,8 +827,8 @@ public static class TetrabeastsChineseTranslations
         Add(text, "The boss will spawn multiple floor effects on the board. They can be spawned individually scattered across the board or in patterns of 2x2, 1x4, or 4x1. Possible floor effect types are posion, fire, and lightning.", "Boss 会在棋盘上生成多个地面效果。它们可能零散出现，也可能以 2x2、1x4 或 4x1 图案出现。可能的地面效果包括毒、火和雷电。");
         Add(text, "Spawn Obstacles", "生成障碍");
         Add(text, "The boss will spawn multiple obstacles on the board. They can be spawned individually scattered across the board or in patterns of 2x2, 1x4, or 4x1. This ability only spawns stone obstacles.", "Boss 会在棋盘上生成多个障碍。它们可能零散出现，也可能以 2x2、1x4 或 4x1 图案出现。此能力只会生成石块障碍。");
-        Add(text, "Spawn Traps", "生成陷阱");
-        Add(text, "The boss will spawn multiple traps on the board. They can be spawned individually scattered across the board or in patterns of 2x2, 1x4, or 4x1. This ability only spawns spike traps.", "Boss 会在棋盘上生成多个陷阱。它们可能零散出现，也可能以 2x2、1x4 或 4x1 图案出现。此能力只会生成尖刺陷阱。");
+        Add(text, "Spawn Spike Effects", "生成尖刺地面效果");
+        Add(text, "The boss will spawn multiple spike floor effects on the board. They can be spawned individually scattered across the board or in patterns of 2x2, 1x4, or 4x1.", "Boss 会在棋盘上生成多个尖刺地面效果。它们可能零散出现，也可能以 2x2、1x4 或 4x1 图案出现。");
         Add(text, "Row Blast", "行轰击");
         Add(text, "The boss will target the top three rows the player has set monster units. All monster units in the selected rows will recieve moderate damage from this attack.", "Boss 会瞄准玩家已放置怪物单位的最上方三行。选中行中的所有怪物单位都会受到中等伤害。");
         Add(text, "Activate Special", "激活特殊能力");
@@ -866,7 +866,7 @@ public static class TetrabeastsChineseTranslations
         Add(text, "Commander", "指挥官");
         Add(text, "Each Commander has their own unquie special ability that can be used in battle. New Commanders can be unlocked and set from the main menu.", "每位指挥官都有可在战斗中使用的独特特殊能力。新的指挥官可在主菜单中解锁并设置。");
         Add(text, "Row Clear", "消行");
-        Add(text, "Fill each grid cell in a row to launch an attack. Monster Units and Obstacles count as a filled cell. Floor effects and traps do not count as a filled cell. Monster units in the cleared row contribute their attack stats for damage calculation and partially fill the player's special gauge.", "填满一行中的每个网格即可发动攻击。怪物单位和障碍算作已填充格；地面效果和陷阱不算。被消除行中的怪物单位会将其攻击属性计入伤害计算，并为玩家特殊能量充能。");
+        Add(text, "Fill each grid cell in a row to launch an attack. Monster Units and Obstacles count as a filled cell. Floor effects do not count as a filled cell. Monster units in the cleared row contribute their attack stats for damage calculation and partially fill the player's special gauge.", "填满一行中的每个网格即可发动攻击。怪物单位和障碍算作已填充格；地面效果不算已填充格。被消除行中的怪物单位会将其攻击属性计入伤害计算，并为玩家特殊能量充能。");
         Add(text, "Run Buffs", "征战增益");
         Add(text, "After succesfully completing a level you will be given three random buffs to choose from to enhance your current run. All buff modifiers will be reset when the run ends.", "成功完成关卡后，你将从三个随机增益中选择一个来强化当前征战。所有增益修改器会在征战结束时重置。");
         Add(text, "Run Debuffs", "征战减益");
@@ -896,11 +896,11 @@ public static class TetrabeastsChineseTranslations
         Add(text, "Earthquake", "地震");
         Add(text, "The Earthquake special will activate immediatley when set. All blocks on the board will be dropped if not being supported by another tile beneath them. This effects obstacles as well that may otherwise not be able to be moved by other means.", "地震特殊方块放置后会立即激活。棋盘上所有下方没有其他格子支撑的方块都会下落。这也会影响原本无法用其他方式移动的障碍。");
         Add(text, "Lightning Bolt", "闪电箭");
-        Add(text, "The Lightning Bolt special will activate immediatley when set. All monster units and traps will be destroyed in that column. Stone obstacles will take partial damage if they are in the affected area.", "闪电箭特殊方块放置后会立即激活。该列中的所有怪物单位和陷阱都会被摧毁。范围内的石块障碍会受到部分伤害。");
+        Add(text, "The Lightning Bolt special will activate immediatley when set. All monster units and destructible floor effects will be destroyed in that column. Stone obstacles will take partial damage if they are in the affected area.", "闪电箭特殊方块放置后会立即激活。该列中的所有怪物单位和可摧毁地面效果都会被摧毁。范围内的石块障碍会受到部分伤害。");
         Add(text, "Slow Gravity", "缓慢重力");
         Add(text, "The Slow Gravity special block will activate immedialtey upon being set. It will significantly reduce the speed at which pieces fall and the how quickly gravity increases over time.", "缓慢重力特殊方块放置后会立即激活。它会显著降低方块下落速度，以及重力随时间增强的速度。");
-        Add(text, "Spike Trap", "尖刺陷阱");
-        Add(text, "Spike traps will deal a high amount of damage to any monster unit that is set on the trapped cell when they are placed. The only way to destroyed spike traps are with the lightning special block.", "尖刺陷阱会对放置在陷阱格上的怪物单位造成大量伤害。摧毁尖刺陷阱的唯一方式是使用雷电特殊方块。");
+        Add(text, "Spike Floor Effect", "尖刺地面效果");
+        Add(text, "Spike floor effects deal a high amount of damage to any monster unit placed on their cell. They can be destroyed with the lightning special block.", "尖刺地面效果会对放置在其格子上的怪物单位造成大量伤害。可使用雷电特殊方块摧毁它们。");
     }
 
     static void AddLevelModifierText(Dictionary<string, string> text)

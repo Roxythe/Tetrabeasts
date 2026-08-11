@@ -73,7 +73,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField, Range(0.05f, 8f)] float musicFadeOutSeconds = 1f;
     [SerializeField, Range(0.05f, 4f)] float pauseMusicFadeSeconds = 0.45f;
     [SerializeField, Range(0.05f, 4f)] float specialAbilityMusicFadeSeconds = 0.35f;
-    [SerializeField, Range(0f, 1f)] float specialAbilityBackgroundMusicVolumeScale = 0.18f;
+    [SerializeField, Range(0f, 1f)] float specialAbilityBackgroundMusicVolumeScale = 0.3f;
 
     [Header("Special Ability SFX Tuning")]
     [SerializeField, Min(0f)] float specialAbilityLoopVolumeBoost = 4f;
@@ -1245,6 +1245,27 @@ public class AudioManager : MonoBehaviour
         if (!clip && bgmLoop) clip = bgmLoop;
 
         PlayMusic(clip, loop: true, vol: 1f);
+    }
+
+    public void TransitionToTitleMusic()
+    {
+        context = MusicContext.Title;
+        levelMusicActive = false;
+
+        if (musicChainCo != null) { StopCoroutine(musicChainCo); musicChainCo = null; }
+        currentPool = null;
+        StopRainAmbience();
+
+        if (pauseMusicSrc && pauseMusicSrc.isPlaying)
+            FadePauseMusicTo(0f, stopAtEnd: true);
+
+        var clip = PickTitleClipByMode();
+        if (!clip && bgmLoop) clip = bgmLoop;
+
+        if (clip)
+            CrossfadeMainMusicTo(clip, loop: true, targetScale: 1f, duration: musicCrossfadeSeconds);
+        else
+            StopMusic();
     }
 
     public void PlayLevelMusic(bool isBoss)

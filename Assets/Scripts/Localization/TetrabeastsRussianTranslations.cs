@@ -894,9 +894,9 @@ public static class TetrabeastsRussianTranslations
         Add(text, "Spawn Obstacles", "Создать препятствия");
         Add(text, "The boss will spawn multiple obstacles on the board. They can be spawned individually scattered across the board or in patterns of 2x2, 1x4, or 4x1. This ability only spawns stone obstacles.",
             "Босс создает на доске несколько препятствий. Они могут появляться отдельно в случайных местах или шаблонами 2x2, 1x4 или 4x1. Эта способность создает только каменные препятствия.");
-        Add(text, "Spawn Traps", "Создать ловушки");
-        Add(text, "The boss will spawn multiple traps on the board. They can be spawned individually scattered across the board or in patterns of 2x2, 1x4, or 4x1. This ability only spawns spike traps.",
-            "Босс создает на доске несколько ловушек. Они могут появляться отдельно в случайных местах или шаблонами 2x2, 1x4 или 4x1. Эта способность создает только шипованные ловушки.");
+        Add(text, "Spawn Spike Effects", "Создать эффекты шипов");
+        Add(text, "The boss will spawn multiple spike floor effects on the board. They can be spawned individually scattered across the board or in patterns of 2x2, 1x4, or 4x1.",
+            "Босс создает на доске несколько эффектов пола с шипами. Они могут появляться отдельно в случайных местах или шаблонами 2x2, 1x4 или 4x1.");
         Add(text, "Row Blast", "Взрыв рядов");
         Add(text, "The boss will target the top three rows the player has set monster units. All monster units in the selected rows will recieve moderate damage from this attack.",
             "Босс выбирает три верхних ряда, где игрок поставил монстров. Все монстры в выбранных рядах получают умеренный урон.");
@@ -952,8 +952,8 @@ public static class TetrabeastsRussianTranslations
         Add(text, "Each Commander has their own unquie special ability that can be used in battle. New Commanders can be unlocked and set from the main menu.",
             "У каждого командира есть уникальная особая способность для боя. Новых командиров можно разблокировать и выбрать в главном меню.");
         Add(text, "Row Clear", "Очистка строки");
-        Add(text, "Fill each grid cell in a row to launch an attack. Monster Units and Obstacles count as a filled cell. Floor effects and traps do not count as a filled cell. Monster units in the cleared row contribute their attack stats for damage calculation and partially fill the player's special gauge.",
-            "Заполните все клетки строки, чтобы начать атаку. Монстры и препятствия считаются заполненными клетками. Эффекты пола и ловушки не считаются. Монстры в очищенной строке добавляют свою атаку к расчету урона и частично заполняют особую шкалу игрока.");
+        Add(text, "Fill each grid cell in a row to launch an attack. Monster Units and Obstacles count as a filled cell. Floor effects do not count as a filled cell. Monster units in the cleared row contribute their attack stats for damage calculation and partially fill the player's special gauge.",
+            "Заполните все клетки строки, чтобы начать атаку. Монстры и препятствия считаются заполненными клетками. Эффекты пола не считаются заполненными клетками. Монстры в очищенной строке добавляют свою атаку к расчету урона и частично заполняют особую шкалу игрока.");
         Add(text, "Run Buffs", "Усиления забега");
         Add(text, "After succesfully completing a level you will be given three random buffs to choose from to enhance your current run. All buff modifiers will be reset when the run ends.",
             "После успешного завершения уровня вы получите три случайных усиления на выбор для текущего забега. Все модификаторы усилений сбросятся в конце забега.");
@@ -999,14 +999,14 @@ public static class TetrabeastsRussianTranslations
         Add(text, "The Earthquake special will activate immediatley when set. All blocks on the board will be dropped if not being supported by another tile beneath them. This effects obstacles as well that may otherwise not be able to be moved by other means.",
             "Особое землетрясение активируется сразу после установки. Все блоки на доске упадут, если под ними нет опоры. Это влияет и на препятствия, которые иначе нельзя сдвинуть.");
         Add(text, "Lightning Bolt", "Молния");
-        Add(text, "The Lightning Bolt special will activate immediatley when set. All monster units and traps will be destroyed in that column. Stone obstacles will take partial damage if they are in the affected area.",
-            "Особая молния активируется сразу после установки. Все монстры и ловушки в этом столбце будут уничтожены. Каменные препятствия в зоне действия получат частичный урон.");
+        Add(text, "The Lightning Bolt special will activate immediatley when set. All monster units and destructible floor effects will be destroyed in that column. Stone obstacles will take partial damage if they are in the affected area.",
+            "Особая молния активируется сразу после установки. Все монстры и разрушаемые эффекты пола в этом столбце будут уничтожены. Каменные препятствия в зоне действия получат частичный урон.");
         Add(text, "Slow Gravity", "Медленная гравитация");
         Add(text, "The Slow Gravity special block will activate immedialtey upon being set. It will significantly reduce the speed at which pieces fall and the how quickly gravity increases over time.",
             "Особый блок медленной гравитации активируется сразу после установки. Он значительно снижает скорость падения фигур и скорость роста гравитации со временем.");
-        Add(text, "Spike Trap", "Шипованная ловушка");
-        Add(text, "Spike traps will deal a high amount of damage to any monster unit that is set on the trapped cell when they are placed. The only way to destroyed spike traps are with the lightning special block.",
-            "Шипованные ловушки наносят большой урон любому монстру, поставленному на клетку с ловушкой. Уничтожить такие ловушки можно только особым блоком молнии.");
+        Add(text, "Spike Floor Effect", "Эффект пола с шипами");
+        Add(text, "Spike floor effects deal a high amount of damage to any monster unit placed on their cell. They can be destroyed with the lightning special block.",
+            "Эффекты пола с шипами наносят большой урон любому монстру, размещенному на их клетке. Их можно уничтожить особым блоком молнии.");
     }
 
     static void AddLevelModifierText(Dictionary<string, string> text)

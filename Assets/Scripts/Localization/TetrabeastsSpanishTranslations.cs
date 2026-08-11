@@ -869,9 +869,9 @@ public static class TetrabeastsSpanishTranslations
         Add(text, "Spawn Obstacles", "Generar obstáculos");
         Add(text, "The boss will spawn multiple obstacles on the board. They can be spawned individually scattered across the board or in patterns of 2x2, 1x4, or 4x1. This ability only spawns stone obstacles.",
             "El jefe hará aparecer múltiples obstáculos en el tablero. Pueden aparecer dispersos de forma individual o en patrones de 2x2, 1x4 o 4x1. Esta habilidad solo genera obstáculos de piedra.");
-        Add(text, "Spawn Traps", "Generar trampas");
-        Add(text, "The boss will spawn multiple traps on the board. They can be spawned individually scattered across the board or in patterns of 2x2, 1x4, or 4x1. This ability only spawns spike traps.",
-            "El jefe hará aparecer múltiples trampas en el tablero. Pueden aparecer dispersas de forma individual o en patrones de 2x2, 1x4 o 4x1. Esta habilidad solo genera trampas de pinchos.");
+        Add(text, "Spawn Spike Effects", "Generar efectos de pinchos");
+        Add(text, "The boss will spawn multiple spike floor effects on the board. They can be spawned individually scattered across the board or in patterns of 2x2, 1x4, or 4x1.",
+            "El jefe hará aparecer múltiples efectos de suelo de pinchos en el tablero. Pueden aparecer dispersos de forma individual o en patrones de 2x2, 1x4 o 4x1.");
         Add(text, "Row Blast", "Explosión de filas");
         Add(text, "The boss will target the top three rows the player has set monster units. All monster units in the selected rows will recieve moderate damage from this attack.",
             "El jefe apuntará a las tres filas superiores donde el jugador haya colocado unidades monstruo. Todas las unidades monstruo en las filas seleccionadas recibirán daño moderado.");
@@ -927,8 +927,8 @@ public static class TetrabeastsSpanishTranslations
         Add(text, "Each Commander has their own unquie special ability that can be used in battle. New Commanders can be unlocked and set from the main menu.",
             "Cada comandante tiene una habilidad especial única que puede usarse en batalla. Puedes desbloquear y elegir nuevos comandantes desde el menú principal.");
         Add(text, "Row Clear", "Limpieza de fila");
-        Add(text, "Fill each grid cell in a row to launch an attack. Monster Units and Obstacles count as a filled cell. Floor effects and traps do not count as a filled cell. Monster units in the cleared row contribute their attack stats for damage calculation and partially fill the player's special gauge.",
-            "Llena cada celda de una fila para lanzar un ataque. Las unidades monstruo y los obstáculos cuentan como celdas llenas. Los efectos de suelo y las trampas no cuentan. Las unidades monstruo de la fila limpiada aportan su ataque al cálculo de daño y llenan parcialmente el medidor especial del jugador.");
+        Add(text, "Fill each grid cell in a row to launch an attack. Monster Units and Obstacles count as a filled cell. Floor effects do not count as a filled cell. Monster units in the cleared row contribute their attack stats for damage calculation and partially fill the player's special gauge.",
+            "Llena cada celda de una fila para lanzar un ataque. Las unidades monstruo y los obstáculos cuentan como celdas llenas. Los efectos de suelo no cuentan como celdas llenas. Las unidades monstruo de la fila limpiada aportan su ataque al cálculo de daño y llenan parcialmente el medidor especial del jugador.");
         Add(text, "Run Buffs", "Mejoras de partida");
         Add(text, "After succesfully completing a level you will be given three random buffs to choose from to enhance your current run. All buff modifiers will be reset when the run ends.",
             "Después de completar un nivel, recibirás tres mejoras aleatorias para potenciar tu partida actual. Todas las mejoras se reiniciarán cuando termine la partida.");
@@ -975,14 +975,14 @@ public static class TetrabeastsSpanishTranslations
         Add(text, "The Earthquake special will activate immediatley when set. All blocks on the board will be dropped if not being supported by another tile beneath them. This effects obstacles as well that may otherwise not be able to be moved by other means.",
             "El especial de Terremoto se activará inmediatamente al colocarse. Todos los bloques del tablero caerán si no están sostenidos por otra casilla debajo. Esto también afecta a obstáculos que quizá no podrían moverse por otros medios.");
         Add(text, "Lightning Bolt", "Rayo");
-        Add(text, "The Lightning Bolt special will activate immediatley when set. All monster units and traps will be destroyed in that column. Stone obstacles will take partial damage if they are in the affected area.",
-            "El especial de Rayo se activará inmediatamente al colocarse. Todas las unidades monstruo y trampas de esa columna serán destruidas. Los obstáculos de piedra recibirán daño parcial si están en el área afectada.");
+        Add(text, "The Lightning Bolt special will activate immediatley when set. All monster units and destructible floor effects will be destroyed in that column. Stone obstacles will take partial damage if they are in the affected area.",
+            "El especial de Rayo se activará inmediatamente al colocarse. Todas las unidades monstruo y los efectos de suelo destructibles de esa columna serán destruidos. Los obstáculos de piedra recibirán daño parcial si están en el área afectada.");
         Add(text, "Slow Gravity", "Gravedad lenta");
         Add(text, "The Slow Gravity special block will activate immedialtey upon being set. It will significantly reduce the speed at which pieces fall and the how quickly gravity increases over time.",
             "El bloque especial de Gravedad lenta se activará inmediatamente al colocarse. Reducirá significativamente la velocidad a la que caen las piezas y la rapidez con la que aumenta la gravedad con el tiempo.");
-        Add(text, "Spike Trap", "Trampa de pinchos");
-        Add(text, "Spike traps will deal a high amount of damage to any monster unit that is set on the trapped cell when they are placed. The only way to destroyed spike traps are with the lightning special block.",
-            "Las trampas de pinchos infligen mucho daño a cualquier unidad monstruo que se coloque en la celda atrapada. La única forma de destruirlas es con el bloque especial de relámpago.");
+        Add(text, "Spike Floor Effect", "Efecto de suelo de pinchos");
+        Add(text, "Spike floor effects deal a high amount of damage to any monster unit placed on their cell. They can be destroyed with the lightning special block.",
+            "Los efectos de suelo de pinchos infligen mucho daño a cualquier unidad monstruo colocada en su celda. Se pueden destruir con el bloque especial de relámpago.");
     }
 
     static void AddLevelModifierText(Dictionary<string, string> text)
