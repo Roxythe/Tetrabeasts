@@ -24948,6 +24948,7 @@ MonoBehaviour:
   tilePrefab: {fileID: 1946968788498790587, guid: 1c9906466f5f60b41a8d6e70f0f7b5bd, type: 3}
   normalBorderColor: {r: 0, g: 0, b: 0, a: 1}
   immuneBorderColor: {r: 1, g: 0.84, b: 0, a: 1}
+  depletedMonsterHealthFillColor: {r: 0.86, g: 0.88, b: 0.9, a: 1}
   animateTetrominoBackgrounds: 1
   enablePassiveTetrominoBackgroundPulse: 1
   useTetrominoBackgroundImageTextures: 1
@@ -32075,6 +32076,7 @@ MonoBehaviour:
   spinCyclesPerSecond: 7.5
   settleDuration: 0.4
   stopEaseExponent: 6
+  reelStopSfxLeadSeconds: 0.1
   leverPressAngle: 25
   leverPressDuration: 0.14
   leverReturnDuration: 0.14
@@ -36106,6 +36108,7 @@ MonoBehaviour:
   finalSurvivalMinFallInterval: 0.05
   gravityIncreasePerSecond: 0.01
   levelBaseGravityIncrease: 0.2
+  gravityRampRateIncreasePerLevel: 0.015
   slowGravitySpecialDurationSeconds: 20
   minSlowGravitySpecialMultiplier: 0.1
   slowGravityImage: {fileID: 1879110006}
@@ -36374,6 +36377,7 @@ MonoBehaviour:
   activateSpecialGaugeText: {fileID: 226153486}
   specialGaugeFullSFX: {fileID: 8300000, guid: 486a368031111fa438596c90fb332d33, type: 3}
   specialGaugeFullSFXVolume: 1
+  rowClearSpecialGaugeGainMultiplier: 0.75
   specialUseFieryGradient: 1
   specialPulseScale: 1.15
   specialPulseSpeed: 2.25
