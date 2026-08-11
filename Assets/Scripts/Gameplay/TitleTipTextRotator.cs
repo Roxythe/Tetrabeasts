@@ -9,6 +9,7 @@ public class TitleTipTextRotator : MonoBehaviour
 
     [SerializeField] TMP_Text tipText;
     [SerializeField] RectTransform backgroundRect;
+    [SerializeField] RectTransform backgroundFrameRect;
     [SerializeField] Vector2 backgroundPadding = new Vector2(24f, 18f);
     [SerializeField, Min(0f)] float minimumBackgroundHeight = 44f;
     [SerializeField, Min(0f)] float maximumBackgroundHeight;
@@ -40,6 +41,8 @@ public class TitleTipTextRotator : MonoBehaviour
         EnsureBackgroundReference();
         if (backgroundRect)
             _initialBackgroundHeight = backgroundRect.rect.height;
+        else if (backgroundFrameRect)
+            _initialBackgroundHeight = backgroundFrameRect.rect.height;
     }
 
     void OnEnable()
@@ -99,7 +102,7 @@ public class TitleTipTextRotator : MonoBehaviour
             return;
 
         EnsureBackgroundReference();
-        if (!backgroundRect)
+        if (!backgroundRect && !backgroundFrameRect)
             return;
 
         RectTransform textRect = tipText.rectTransform;
@@ -122,8 +125,27 @@ public class TitleTipTextRotator : MonoBehaviour
         if (maxHeight > 0f)
             targetHeight = Mathf.Min(targetHeight, maxHeight);
 
-        backgroundRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, targetHeight);
+        ResizeBackgrounds(targetHeight);
         CenterTextInBackground(targetHeight);
+    }
+
+    void ResizeBackgrounds(float targetHeight)
+    {
+        if (backgroundRect)
+            backgroundRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, targetHeight);
+
+        if (!backgroundFrameRect)
+            return;
+
+        if (backgroundRect)
+        {
+            backgroundFrameRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, backgroundRect.rect.width);
+            backgroundFrameRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, backgroundRect.rect.height);
+        }
+        else
+        {
+            backgroundFrameRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, targetHeight);
+        }
     }
 
     void CenterTextInBackground(float backgroundHeight)
@@ -141,15 +163,24 @@ public class TitleTipTextRotator : MonoBehaviour
 
     void EnsureBackgroundReference()
     {
-        if (backgroundRect)
+        if (backgroundRect && backgroundFrameRect)
             return;
 
         Transform parent = tipText ? tipText.transform.parent : transform.parent;
         if (!parent || parent.name != RequiredParentName)
             return;
 
-        Transform found = FindDirectChild(parent, "BG_Image");
-        backgroundRect = found as RectTransform;
+        if (!backgroundRect)
+        {
+            Transform found = FindDirectChild(parent, "BG_Image");
+            backgroundRect = found as RectTransform;
+        }
+
+        if (!backgroundFrameRect)
+        {
+            Transform foundFrame = FindDirectChild(parent, "BGFrame_Image");
+            backgroundFrameRect = foundFrame as RectTransform;
+        }
     }
 
     bool IsActiveTipTarget()

@@ -3008,23 +3008,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.98039216}
+  m_Color: {r: 0.81960785, g: 0.81960785, b: 0.81960785, a: 0.98039216}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 7450785776065540064, guid: cf4040c227fcb1746b7a83f935245be4, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
+  m_Sprite: {fileID: -5767168481505170132, guid: 0fd21ec26db371c4e83fd3a26c4903d8, type: 3}
+  m_Type: 2
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 0.01
+  m_PixelsPerUnitMultiplier: 6
 --- !u!222 &367230267
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3679,7 +3679,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.94509804, g: 0.94509804, b: 0.94509804, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -8134,7 +8134,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &781148771
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8146,14 +8146,13 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1359164592}
+  m_Children: []
   m_Father: {fileID: 925872198}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 7, y: -29.49913}
-  m_SizeDelta: {x: 494, y: 366.15}
+  m_AnchoredPosition: {x: 23.375, y: -29.49913}
+  m_SizeDelta: {x: 534.75, y: 366.15}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &781148772
 MonoBehaviour:
@@ -9601,6 +9600,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TitleTipTextRotator
   tipText: {fileID: 714147408}
   backgroundRect: {fileID: 0}
+  backgroundFrameRect: {fileID: 0}
   backgroundPadding: {x: 24, y: 18}
   minimumBackgroundHeight: 44
   maximumBackgroundHeight: 0
@@ -9617,13 +9617,13 @@ MonoBehaviour:
   - 'Tip: Level modifiers stack with your run buffs and debuffs.'
   - 'Tip: Level modifiers only last for a single level.'
   - 'Tip: Each monster unit has it''s own special passive and they will become stronger
-    when the unit reaches level 10, 20 and 30.'
+    when the unit reaches level 10, 25 and 50.'
   - 'Tip: Don''t know what a special block or floor effect does? Check the help menu
-    for a more tailed breakdown! '
+    for a more detailed breakdown! '
   - 'Tip: Struggling to survive? Check out the shop to purchase permanent stackable
     buffs to make your run easier. '
   - 'Tip: Don''t like the music? Open the settings menu and try out a different genre.
-    Still don''t like it? Turn the Music volume in settings down to 0!'
+    Still don''t like it? Change the Music volume in settings down to 0!'
   - 'Tip: The lighting special block will destroy all monster units in a column as
     well as any spike traps.'
   - 'Tip: The bomb special block will force unsupported units in the effected columns
@@ -9634,7 +9634,9 @@ MonoBehaviour:
   - 'Tip: The final level is endless, but will grow more difficult to survive over
     time.'
   - 'Tip: There is an increased chance to find gold after clearing a row in the endless
-    level based on your star difficulty (+5% chance per star).'
+    level based on your star difficulty and how long you have survived.'
+  - 'Tip: Enjoying the game? Leave a review and let your friends know!'
+  - 'Tip: Your combo size will also increase the damage your units deal.'
 --- !u!1001 &920613064
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9752,6 +9754,81 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &925117570
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 925117571}
+  - component: {fileID: 925117573}
+  - component: {fileID: 925117572}
+  m_Layer: 5
+  m_Name: BGFrame_Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &925117571
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 925117570}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1082357805}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 7.5, y: 0}
+  m_SizeDelta: {x: 481.87, y: 124.15}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &925117572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 925117570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: f9c8adfe22b683c40adda028132730a9, type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 18
+--- !u!222 &925117573
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 925117570}
+  m_CullTransparentMesh: 1
 --- !u!1 &925872197
 GameObject:
   m_ObjectHideFlags: 0
@@ -9780,6 +9857,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1359164592}
   - {fileID: 781148771}
   - {fileID: 1910106861}
   - {fileID: 1750355880}
@@ -11098,6 +11176,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1626277493}
+  - {fileID: 925117571}
   - {fileID: 714147407}
   m_Father: {fileID: 665172191}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -12524,12 +12603,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 781148771}
+  m_Father: {fileID: 925872198}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.000045776367}
-  m_SizeDelta: {x: 494, y: 362.15}
+  m_AnchoredPosition: {x: 15.387573, y: -29.4991}
+  m_SizeDelta: {x: 518.78, y: 362.15}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1359164593
 MonoBehaviour:
@@ -12544,23 +12623,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.60784316}
+  m_Color: {r: 0.8207547, g: 0.8207547, b: 0.8207547, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 4097194154108683856, guid: b2e2a03a92000fa48b3bba0d293a62a6, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
+  m_Sprite: {fileID: 3632908452261977912, guid: 292181008ac972a49b4c88c6a0e73017, type: 3}
+  m_Type: 2
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 3
 --- !u!222 &1359164594
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -14896,15 +14975,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.6862745}
+  m_Color: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: -5767168481505170132, guid: 0fd21ec26db371c4e83fd3a26c4903d8, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -16833,7 +16912,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1910106861
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16850,8 +16929,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1, y: -27.499512}
-  m_SizeDelta: {x: 482, y: 370.1499}
+  m_AnchoredPosition: {x: 4.1400146, y: -18.428894}
+  m_SizeDelta: {x: 510.2998, y: 352.01}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1910106862
 MonoBehaviour:
@@ -16866,14 +16945,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.18867922, g: 0.18867922, b: 0.18867922, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 7942309029893860191, guid: 2e09008fa12becd4aa16675a985fe089, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f9c8adfe22b683c40adda028132730a9, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -16882,7 +16961,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 2
+  m_PixelsPerUnitMultiplier: 12
 --- !u!222 &1910106863
 CanvasRenderer:
   m_ObjectHideFlags: 0
