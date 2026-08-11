@@ -3,6 +3,16 @@ using UnityEngine;
 
 public class ObstacleManager : MonoBehaviour
 {
+    enum InitialSpawnKind
+    {
+        Stone,
+        Poison,
+        Fire,
+        Spike,
+        Teleport,
+        ZipPad
+    }
+
     [Header("Auto Spawn")]
     public bool enableAutoSpawns = true;
 
@@ -51,6 +61,7 @@ public class ObstacleManager : MonoBehaviour
     GameController _gc;
     Board _board;
     int _stoneSpawnRowGrowthBonus;
+    readonly List<InitialSpawnKind> _initialSpawnKindPool = new();
 
     public void Initialize(GameController gc, Board board)
     {
@@ -64,20 +75,6 @@ public class ObstacleManager : MonoBehaviour
         if (_board == null) return;
 
         OnLevelStart(levelIndex, null);
-
-        int stones = Mathf.Max(0, stoneBaseCount + stonePerLevel * Mathf.Max(0, levelIndex - 1));
-        int poisons = Mathf.Max(0, poisonBaseCount + poisonPerLevel * Mathf.Max(0, levelIndex - 1));
-        int fires = Mathf.Max(0, fireBaseCount + firePerLevel * Mathf.Max(0, levelIndex - 1));
-        int spikes = Mathf.Max(0, spikeBaseCount + spikePerLevel * Mathf.Max(0, levelIndex - 1));
-        int teleports = Mathf.Max(0, teleportBaseCount + teleportPerLevel * Mathf.Max(0, levelIndex - 1));
-        int zipPads = Mathf.Max(0, zipPadBaseCount + zipPadPerLevel * Mathf.Max(0, levelIndex - 1));
-
-        SpawnRandomStones(stones);
-        SpawnRandomFloorEffect(Board.FloorEffectType.Poison, poisons);
-        SpawnRandomFloorEffect(Board.FloorEffectType.Burn, fires);
-        SpawnRandomFloorEffect(Board.FloorEffectType.Spike, spikes);
-        SpawnRandomFloorEffect(Board.FloorEffectType.Teleport, teleports);
-        SpawnRandomFloorEffect(Board.FloorEffectType.ZipPad, zipPads);
     }
 
     // Overload that accepts CastleData for optional per-level overrides
@@ -107,6 +104,16 @@ public class ObstacleManager : MonoBehaviour
                 if (castleData.overrideSpikeCount >= 0) spikes = castleData.overrideSpikeCount;
                 if (castleData.overrideTeleportCount >= 0) teleports = castleData.overrideTeleportCount;
                 if (castleData.overrideZipPadCount >= 0) zipPads = castleData.overrideZipPadCount;
+
+                if (castleData.useRandomInitialObstacleAssortment)
+                {
+                    int total = castleData.randomInitialObstacleSpawnCount >= 0
+                        ? castleData.randomInitialObstacleSpawnCount
+                        : stones + poisons + fires + spikes + teleports + zipPads;
+
+                    SpawnRandomInitialAssortment(castleData, total);
+                    return;
+                }
             }
         }
 
@@ -116,6 +123,77 @@ public class ObstacleManager : MonoBehaviour
         SpawnRandomFloorEffect(Board.FloorEffectType.Spike, spikes);
         SpawnRandomFloorEffect(Board.FloorEffectType.Teleport, teleports);
         SpawnRandomFloorEffect(Board.FloorEffectType.ZipPad, zipPads);
+    }
+
+    void SpawnRandomInitialAssortment(CastleData castleData, int count)
+    {
+        if (!castleData || count <= 0)
+            return;
+
+        BuildInitialSpawnKindPool(castleData);
+        if (_initialSpawnKindPool.Count == 0)
+            return;
+
+        for (int i = 0; i < count; i++)
+        {
+            bool spawned = false;
+            for (int attempt = 0; attempt < maxAttemptsPerSpawn; attempt++)
+            {
+                InitialSpawnKind kind = _initialSpawnKindPool[Random.Range(0, _initialSpawnKindPool.Count)];
+                if (TrySpawnRandomInitialKind(kind))
+                {
+                    spawned = true;
+                    break;
+                }
+            }
+
+            if (!spawned)
+                break;
+        }
+    }
+
+    void BuildInitialSpawnKindPool(CastleData castleData)
+    {
+        _initialSpawnKindPool.Clear();
+
+        if (!castleData)
+            return;
+
+        if (castleData.randomSpawnStones) _initialSpawnKindPool.Add(InitialSpawnKind.Stone);
+        if (castleData.randomSpawnPoison) _initialSpawnKindPool.Add(InitialSpawnKind.Poison);
+        if (castleData.randomSpawnFire) _initialSpawnKindPool.Add(InitialSpawnKind.Fire);
+        if (castleData.randomSpawnSpikes) _initialSpawnKindPool.Add(InitialSpawnKind.Spike);
+        if (castleData.randomSpawnTeleports) _initialSpawnKindPool.Add(InitialSpawnKind.Teleport);
+        if (castleData.randomSpawnZipPads) _initialSpawnKindPool.Add(InitialSpawnKind.ZipPad);
+    }
+
+    bool TrySpawnRandomInitialKind(InitialSpawnKind kind)
+    {
+        switch (kind)
+        {
+            case InitialSpawnKind.Stone:
+                if (!TryGetRandomEmptyCell(out var stoneCell))
+                    return false;
+
+                return _board.TrySpawnStoneObstacle(stoneCell, stoneHitsToBreak);
+
+            case InitialSpawnKind.Poison:
+                return TrySpawnRandomFloorEffect(Board.FloorEffectType.Poison);
+
+            case InitialSpawnKind.Fire:
+                return TrySpawnRandomFloorEffect(Board.FloorEffectType.Burn);
+
+            case InitialSpawnKind.Spike:
+                return TrySpawnRandomFloorEffect(Board.FloorEffectType.Spike);
+
+            case InitialSpawnKind.Teleport:
+                return TrySpawnRandomFloorEffect(Board.FloorEffectType.Teleport);
+
+            case InitialSpawnKind.ZipPad:
+                return TrySpawnRandomFloorEffect(Board.FloorEffectType.ZipPad);
+        }
+
+        return false;
     }
 
     public bool SpawnStoneAt(Vector2Int cell)
@@ -174,9 +252,16 @@ public class ObstacleManager : MonoBehaviour
     {
         for (int i = 0; i < count; i++)
         {
-            if (!TryGetRandomSpawnCellForEffect(type, out var cell)) break;
-            SpawnFloorEffectAt(cell, type);
+            if (!TrySpawnRandomFloorEffect(type)) break;
         }
+    }
+
+    bool TrySpawnRandomFloorEffect(Board.FloorEffectType type)
+    {
+        if (!TryGetRandomSpawnCellForEffect(type, out var cell))
+            return false;
+
+        return SpawnFloorEffectAt(cell, type);
     }
 
     bool TryGetRandomEmptyCell(out Vector2Int cell)

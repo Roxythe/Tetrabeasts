@@ -25,6 +25,9 @@ public class Board : MonoBehaviour
     public Color normalBorderColor = Color.black;
     public Color immuneBorderColor = new Color(1f, 0.84f, 0f, 1f); // Gold
 
+    [Header("Monster Health Visuals")]
+    [SerializeField] Color depletedMonsterHealthFillColor = new Color(0.86f, 0.88f, 0.90f, 1f);
+
     [Header("Tetromino Background Pulse")]
     public bool animateTetrominoBackgrounds = true;
     public bool enablePassiveTetrominoBackgroundPulse = true;
@@ -967,7 +970,7 @@ public class Board : MonoBehaviour
         backRT.localScale = Vector3.one;
         back.sprite = fillSprite;
         back.type = UnityEngine.UI.Image.Type.Simple;
-        back.color = backgroundImage ? Color.Lerp(color, Color.black, 0.45f) : new Color(0.6f, 0.6f, 0.6f, 1f);
+        back.color = depletedMonsterHealthFillColor;
         back.raycastTarget = false;
 
         // HealthFill

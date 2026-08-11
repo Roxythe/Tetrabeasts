@@ -73,6 +73,19 @@ public class CastleData : ScriptableObject
     public bool overrideInitialObstacles = false;
     public bool overridesOnlyForLevel1 = true;
 
+    [Header("Random Obstacle / Floor Assortment")]
+    [Tooltip("If enabled, this castle spawns a random mix from the toggled-on obstacle/floor types instead of fixed per-type counts.")]
+    public bool useRandomInitialObstacleAssortment = true;
+    [Tooltip("-1 uses the total from the legacy per-type counts below. 0+ sets the exact number of random obstacle/floor items to spawn.")]
+    [Min(-1)] public int randomInitialObstacleSpawnCount = -1;
+    public bool randomSpawnStones = true;
+    public bool randomSpawnPoison = true;
+    public bool randomSpawnFire = true;
+    public bool randomSpawnSpikes = true;
+    public bool randomSpawnTeleports = false;
+    public bool randomSpawnZipPads = false;
+
+    [Header("Legacy Fixed Counts")]
     public int overrideStoneCount = -1;
     public int overridePoisonCount = -1;
     public int overrideFireCount = -1;

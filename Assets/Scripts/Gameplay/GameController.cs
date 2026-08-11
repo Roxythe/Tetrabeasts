@@ -150,6 +150,7 @@ public class GameController : MonoBehaviour
     [Header("Gravity Progression")]
     [SerializeField] float gravityIncreasePerSecond = 0.01f;
     [SerializeField] float levelBaseGravityIncrease = 0.20f;
+    [SerializeField, Range(0f, 0.10f)] float gravityRampRateIncreasePerLevel = 0.015f;
 
     [Header("Slow Gravity Special Block")]
     [SerializeField, Min(0.1f)] float slowGravitySpecialDurationSeconds = 20f;
@@ -305,6 +306,7 @@ public class GameController : MonoBehaviour
     public TMP_Text activateSpecialGaugeText;
     [SerializeField] AudioClip specialGaugeFullSFX;
     [SerializeField, Range(0f, 1f)] float specialGaugeFullSFXVolume = 1f;
+    [SerializeField, Range(0f, 1f)] float rowClearSpecialGaugeGainMultiplier = 0.75f;
 
     [SerializeField] bool specialUseFieryGradient = true;
     [SerializeField] float specialPulseScale = 1.15f;
@@ -568,7 +570,7 @@ public class GameController : MonoBehaviour
     _slowGravitySpecialMultActive *
     (1f + _bossGravityBonusActive); // Slows falling (mult < 1 => slower because interval /= mult)
 
-    float EffectiveFallRampRateMult => Mathf.Max(0f, fallRampRateMult) * ShopBuffEffects.VelocityMultiplier * _slowGravitySpecialRampRateMultActive; // Velocity Down: slows ramping (mult < 1 => slower ramp)
+    float EffectiveFallRampRateMult => GetCurrentFallRampRateMultiplier(_slowGravitySpecialRampRateMultActive); // Velocity Down: slows ramping (mult < 1 => slower ramp)
     float ActiveLevelModifierGravityMult => levelModifierController ? levelModifierController.ActiveGravityMultiplier : 1f;
     float EffectiveCurrencyChancePerClearedRow => // Gold Up: +2% chance per level
         Mathf.Clamp01(currencyChancePerClearedRow + lineClearCurrencyChanceAdd + ShopBuffEffects.GoldChanceBonus +
@@ -810,7 +812,9 @@ public class GameController : MonoBehaviour
     }
 
     public float MonsterSpecialGaugeGainMultiplierForStats =>
-        Mathf.Max(0f, monsterSpecialGainMult) * EffectiveSpecialGaugeGainMultiplierForStats;
+        Mathf.Max(0f, monsterSpecialGainMult) *
+        Mathf.Clamp01(rowClearSpecialGaugeGainMultiplier) *
+        EffectiveSpecialGaugeGainMultiplierForStats;
     public float SpecialGaugeGainPerSecondForStats =>
         Mathf.Max(0f, specialGaugeGainPerSecond) * EffectiveSpecialGaugeGainMultiplierForStats;
     public float SpecialGaugeDrainPerSecondForStats => GetActiveSpecialGaugeDrainPerSecond();
@@ -1842,6 +1846,11 @@ public class GameController : MonoBehaviour
         return Mathf.Max(0f, specialGainMult *
                               _starDifficultyModifiers.specialGaugeGainMultiplier *
                               PostFinalSurvivalSpecialGaugeGainMultiplier);
+    }
+
+    float GetEffectiveRowClearSpecialGaugeGainMultiplier()
+    {
+        return Mathf.Clamp01(rowClearSpecialGaugeGainMultiplier) * GetEffectiveSpecialGaugeGainMultiplier();
     }
 
     void TickPassiveSpecialGauge(float deltaTime)
@@ -3296,7 +3305,7 @@ public class GameController : MonoBehaviour
         if (levelModifierController)
             specialChargeFromMonsters = levelModifierController.ModifySpecialGaugeGain(specialChargeFromMonsters);
 
-        specialChargeFromMonsters *= GetEffectiveSpecialGaugeGainMultiplier();
+        specialChargeFromMonsters *= GetEffectiveRowClearSpecialGaugeGainMultiplier();
 
         if (specialChargeFromMonsters > 0f)
         {
@@ -7374,7 +7383,14 @@ public class GameController : MonoBehaviour
     {
         return Mathf.Max(0f, fallRampRateMult) *
             ShopBuffEffects.VelocityMultiplier *
+            Mathf.Max(0f, _starDifficultyModifiers.gravityRampRateMultiplier) *
+            GetLevelGravityRampRateMultiplier() *
             Mathf.Max(0f, slowGravitySpecialRampRateMult);
+    }
+
+    float GetLevelGravityRampRateMultiplier()
+    {
+        return 1f + (Mathf.Max(0, currentLevel) * Mathf.Max(0f, gravityRampRateIncreasePerLevel));
     }
 
     float GetCurrentGravityIncreasePerSecond()

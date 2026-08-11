@@ -73,7 +73,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField, Range(0.05f, 8f)] float musicFadeOutSeconds = 1f;
     [SerializeField, Range(0.05f, 4f)] float pauseMusicFadeSeconds = 0.45f;
     [SerializeField, Range(0.05f, 4f)] float specialAbilityMusicFadeSeconds = 0.35f;
-    [SerializeField, Range(0f, 1f)] float specialAbilityBackgroundMusicVolumeScale = 0.3f;
+    [SerializeField, Range(0f, 1f)] float specialAbilityBackgroundMusicVolumeScale = 0.55f;
 
     [Header("Special Ability SFX Tuning")]
     [SerializeField, Min(0f)] float specialAbilityLoopVolumeBoost = 4f;

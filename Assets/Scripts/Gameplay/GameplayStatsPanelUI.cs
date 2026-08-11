@@ -401,6 +401,7 @@ public class GameplayStatsPanelUI : MonoBehaviour
         AddComparedFloat(_statsContent, "Gravity Ramp Rate", gc.EffectiveFallRampRateMultForStats, 1f,
             FormatMultiplier, FormatSignedPercentDelta, higherIsBetter: false,
             sources: SourcesFor(shopBuff: !Approximately(ShopBuffEffects.VelocityMultiplier, 1f),
+                starDifficulty: gc.CurrentStarDifficulty > 0,
                 levelMod: gc.LevelModifierGravitySlowActiveForStats,
                 runModStats: new[] { RunModStat.FallRampRateMult }));
         AddComparedFloat(_statsContent, "Special Block Chance", gc.CurrentSpecialBlockChanceForStats,

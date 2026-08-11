@@ -74,6 +74,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
     [SerializeField] float spinCyclesPerSecond = 7f;
     [SerializeField] float settleDuration = 0.45f;
     [SerializeField, Range(2f, 8f)] float stopEaseExponent = 4f;
+    [SerializeField, Range(0f, 0.2f)] float reelStopSfxLeadSeconds = 0.06f;
     [SerializeField] float leverPressAngle = 18f;
     [SerializeField] float leverPressDuration = 0.10f;
     [SerializeField] float leverReturnDuration = 0.14f;
@@ -1196,13 +1197,16 @@ public class LevelModifierSelectionUI : MonoBehaviour
                     float unwrappedY = Mathf.Lerp(settleStartOffsets[i], settleEndOffsets[i], eased);
                     y = WrapOffset(unwrappedY, column.cycleHeight);
 
-                    bool finishesThisFrame = !stopSfxPlayed[i] && settleElapsed + Time.unscaledDeltaTime >= settleTime;
-                    if (finishesThisFrame)
+                    float stopSfxTime = Mathf.Max(0f, settleTime - reelStopSfxLeadSeconds);
+                    bool shouldPlayStopSfx = !stopSfxPlayed[i] && settleElapsed >= stopSfxTime;
+                    if (shouldPlayStopSfx)
                     {
                         stopSfxPlayed[i] = true;
-                        y = WrapOffset(column.targetY, column.cycleHeight);
                         AudioManager.I?.PlaySlotStop();
                     }
+
+                    if (settleElapsed >= settleTime)
+                        y = WrapOffset(column.targetY, column.cycleHeight);
                 }
 
                 column.content.anchoredPosition = new Vector2(0f, y);

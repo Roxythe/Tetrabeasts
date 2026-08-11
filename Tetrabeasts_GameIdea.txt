@@ -1,4 +1,9 @@
 
+- Level modifier 'Dr. Feel Good'. Healing monster units will have +1 to healing range and will heal more often. Monster units that are healed will start taking damage over time (starting out small) and increasing each time that monster unit is healed. Clearing/destroying a monster unit should clear away the stacking debuff so that it doesn't carry over if reused from the unit pool. All debuffs should be cleared when the level ends. Visually the debuff should be represented by changing the foreground color of the monster unit slightly darker. Color changes should not be permanently changed.
+
+-Level Modifier 'Watch Your Step'. Exclduing the top 5 rows randomly spawn floor effects / obstacles across 50% of the remaining cells. Do not add multiple obstacles or floor effects to the same cell.
+
+
 
 - change spawn system for for flooreffects and obstacles for each level to spawn a random assortment of toggled on floor effects/obstacles. Set X number of items to spawn for each castle data.
 

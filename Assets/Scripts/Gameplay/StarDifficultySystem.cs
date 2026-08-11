@@ -7,6 +7,7 @@ public struct StarDifficultyModifiers
     public float enemyHealthMultiplier;
     public float enemyDamageMultiplier;
     public float misfortuneAdd;
+    public float gravityRampRateMultiplier;
     public float specialGaugeGainMultiplier;
     public float expGainMultiplier;
     public float scoreGainMultiplier;
@@ -17,6 +18,7 @@ public struct StarDifficultyModifiers
         enemyHealthMultiplier = 1f + (this.stars * 0.50f);
         enemyDamageMultiplier = 1f + (this.stars * 0.50f);
         misfortuneAdd = this.stars * 20f;
+        gravityRampRateMultiplier = 1f + (this.stars * 0.05f);
         specialGaugeGainMultiplier = Mathf.Max(0.01f, 1f - (this.stars * 0.10f));
         expGainMultiplier = 1f + (this.stars * 0.30f);
         scoreGainMultiplier = 1f + (this.stars * 0.50f);
@@ -24,6 +26,7 @@ public struct StarDifficultyModifiers
 
     public int EnemyHealthPercentIncrease => Mathf.RoundToInt((enemyHealthMultiplier - 1f) * 100f);
     public int EnemyDamagePercentIncrease => Mathf.RoundToInt((enemyDamageMultiplier - 1f) * 100f);
+    public int GravityRampRatePercentIncrease => Mathf.RoundToInt((gravityRampRateMultiplier - 1f) * 100f);
     public int SpecialGaugePercentDecrease => Mathf.RoundToInt((1f - specialGaugeGainMultiplier) * 100f);
     public int ExpPercentIncrease => Mathf.RoundToInt((expGainMultiplier - 1f) * 100f);
     public int ScorePercentIncrease => Mathf.RoundToInt((scoreGainMultiplier - 1f) * 100f);
@@ -87,6 +90,7 @@ public static class StarDifficultySystem
         sb.Append('\n').Append("Enemy HP +").Append(modifiers.EnemyHealthPercentIncrease).Append('%');
         sb.Append('\n').Append("Enemy Damage +").Append(modifiers.EnemyDamagePercentIncrease).Append('%');
         sb.Append('\n').Append("Misfortune +").Append(Mathf.RoundToInt(modifiers.misfortuneAdd));
+        sb.Append('\n').Append("Gravity Ramp Rate +").Append(modifiers.GravityRampRatePercentIncrease).Append('%');
         sb.Append('\n').Append("Special Gauge Gain -").Append(modifiers.SpecialGaugePercentDecrease).Append('%');
         sb.Append('\n').Append("EXP Gain +").Append(modifiers.ExpPercentIncrease).Append('%');
         sb.Append('\n').Append("Score Gain +").Append(modifiers.ScorePercentIncrease).Append('%');
