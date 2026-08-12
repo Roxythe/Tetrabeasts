@@ -116,6 +116,7 @@ public class Board : MonoBehaviour
     readonly Dictionary<int, HashSet<Vector2Int>> healTargetsByPieceScratch = new();
     readonly HashSet<RectTransform> cleanOrphanLiveScratch = new();
     int nextPieceGroupId = 1;
+    int healVfxGeneration;
     float lastHealSfxTime = -999f;
 
     struct HealTickRequest
@@ -1253,6 +1254,7 @@ public class Board : MonoBehaviour
             return;
 
         StopMonsterFlashForTile(rt);
+        ReleaseOverlayChildrenNamed(rt, "HealVFX");
         ResetReusableTileImages(rt);
         rt.gameObject.SetActive(false);
         rt.SetParent(gridRoot, false);
@@ -1718,7 +1720,7 @@ public class Board : MonoBehaviour
         vfx.anchorMin = vfx.anchorMax = new Vector2(0.5f, 0.5f);
         vfx.sizeDelta = rt.sizeDelta * 0.9f;
 
-        StartCoroutine(FadeAndDestroy(img, seconds));
+        StartCoroutine(FadeHealVfxAndRelease(img, seconds, healVfxGeneration));
     }
 
     IEnumerator FadeAndDestroy(Image img, float seconds)
@@ -1733,6 +1735,24 @@ public class Board : MonoBehaviour
             yield return null;
         }
         ReleaseOverlayImage(img);
+    }
+
+    IEnumerator FadeHealVfxAndRelease(Image img, float seconds, int generation)
+    {
+        float t = 0f;
+        var c = img ? img.color : Color.white;
+        seconds = Mathf.Max(0.01f, seconds);
+
+        while (img && generation == healVfxGeneration && t < seconds)
+        {
+            t += Time.deltaTime;
+            c.a = Mathf.Lerp(0.95f, 0f, Mathf.Clamp01(t / seconds));
+            img.color = c;
+            yield return null;
+        }
+
+        if (img && generation == healVfxGeneration)
+            ReleaseOverlayImage(img);
     }
 
     public bool DamageTile(Vector2Int cell, float amount, DamageSource src = DamageSource.Generic,
@@ -1777,7 +1797,6 @@ public class Board : MonoBehaviour
         if (inst.hp <= 0f)
         {
             StopPortraitAltSwap(cell, restoreNormal: true);
-            Debug.Log($"Tile at {cell} ({inst.data.name}) died.");
             TileDied?.Invoke(cell, inst.data);
         }
 
@@ -1955,11 +1974,14 @@ public class Board : MonoBehaviour
 
     public void ClearRoundTransientEffects()
     {
+        healVfxGeneration++;
         magicExplosives.Clear();
         DestroyOverlayChildrenNamed("BossWarning");
         DestroyOverlayChildrenNamed("BossRotatingWarning");
         DestroyOverlayChildrenNamed("CellWarningTint");
         DestroyOverlayChildrenNamed("CellVFX");
+        DestroyOverlayChildrenNamed("HealVFX");
+        ReleasePlacedTileChildrenNamed("HealVFX");
     }
 
     public void ClearLevelModifierResidualVisuals()
@@ -1977,9 +1999,26 @@ public class Board : MonoBehaviour
         if (!overlayRoot || string.IsNullOrEmpty(childName))
             return;
 
-        for (int i = overlayRoot.childCount - 1; i >= 0; i--)
+        ReleaseOverlayChildrenNamed(overlayRoot, childName);
+    }
+
+    void ReleasePlacedTileChildrenNamed(string childName)
+    {
+        if (string.IsNullOrEmpty(childName))
+            return;
+
+        foreach (var tile in placed.Values)
+            ReleaseOverlayChildrenNamed(tile, childName);
+    }
+
+    void ReleaseOverlayChildrenNamed(RectTransform parent, string childName)
+    {
+        if (!parent || string.IsNullOrEmpty(childName))
+            return;
+
+        for (int i = parent.childCount - 1; i >= 0; i--)
         {
-            Transform child = overlayRoot.GetChild(i);
+            Transform child = parent.GetChild(i);
             if (!child || child.name != childName)
                 continue;
 
@@ -3550,10 +3589,10 @@ public class Board : MonoBehaviour
     public void PlayHealVFX(Vector2Int cell, Sprite sprite, float duration = 0.75f)
     {
         if (!sprite) return;
-        StartCoroutine(PlayHealVFXCo(cell, sprite, duration));
+        StartCoroutine(PlayHealVFXCo(cell, sprite, duration, healVfxGeneration));
     }
 
-    private System.Collections.IEnumerator PlayHealVFXCo(Vector2Int cell, Sprite sprite, float duration)
+    private System.Collections.IEnumerator PlayHealVFXCo(Vector2Int cell, Sprite sprite, float duration, int generation)
     {
         if (!InBounds(cell)) yield break;
 
@@ -3575,7 +3614,7 @@ public class Board : MonoBehaviour
 
         duration = Mathf.Max(0.01f, duration);
         float t = 0f;
-        while (t < duration && img)
+        while (t < duration && img && generation == healVfxGeneration)
         {
             if (parent)
                 parent.SetAsLastSibling();
@@ -3586,7 +3625,9 @@ public class Board : MonoBehaviour
             img.color = new Color(1f, 1f, 1f, 0.95f * a);
             yield return null;
         }
-        ReleaseOverlayImage(img);
+
+        if (img && generation == healVfxGeneration)
+            ReleaseOverlayImage(img);
     }
 
     // ================= Public API for ObstacleManager / Piece =================

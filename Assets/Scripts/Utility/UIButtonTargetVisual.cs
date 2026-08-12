@@ -244,6 +244,31 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
         RestoreTargetPulseScale();
     }
 
+    public void PrewarmTransientVisuals()
+    {
+        if (!selectable)
+            selectable = GetComponent<Selectable>();
+
+        if (!visualSearchRoot)
+            visualSearchRoot = transform;
+
+        CaptureTargetBaseScale();
+        ResolveFireBorderAnimation();
+
+        if (fireBorderAnimation)
+        {
+            CacheFireBorderColors();
+            if (!fireBorderClaimed && !persistentFireBorder)
+                fireBorderAnimation.SetActive(false);
+        }
+
+        if (controllerArrowPlacement != ControllerArrowPlacement.None)
+        {
+            EnsureControllerArrow();
+            SetControllerArrowVisible(false);
+        }
+    }
+
     bool IsTargetInteractable()
     {
         if (!selectable)

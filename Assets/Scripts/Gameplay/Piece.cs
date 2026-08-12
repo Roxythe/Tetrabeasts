@@ -19,6 +19,9 @@ public class Piece : MonoBehaviour
     [SerializeField, Min(0.01f)] float rotateRepeatDelay = 0.22f;
     [SerializeField, Min(0.01f)] float rotateRepeatInterval = 0.12f;
 
+    [Header("Hint Refresh")]
+    [SerializeField, Min(0.01f)] float hintSafetyRefreshSeconds = 0.12f;
+
     [HideInInspector] public TetrominoData data; // Assigned by controller
     [HideInInspector] public Color color = Color.cyan;
 
@@ -49,6 +52,8 @@ public class Piece : MonoBehaviour
     bool hardDropVisualLockPending;
     bool completingVisualTransition;
     bool zipPadDropInProgress;
+    bool hintsDirty = true;
+    float nextHintSafetyRefreshRealtime;
     readonly List<Vector2Int> hardDropPreviewBorderCells = new();
 
 
@@ -79,6 +84,8 @@ public class Piece : MonoBehaviour
         visualTransitionCoroutine = null;
         completingVisualTransition = false;
         zipPadDropInProgress = false;
+        MarkHintsDirty();
+        nextHintSafetyRefreshRealtime = 0f;
     }
 
     void OnDisable()
@@ -113,6 +120,8 @@ public class Piece : MonoBehaviour
             if (!board.Valid(cells)) { enabled = false; return; }
         }
         BuildVisuals();
+        MarkHintsDirty();
+        RefreshHintsIfNeeded(force: true);
     }
 
     private void Start()
@@ -259,10 +268,10 @@ public class Piece : MonoBehaviour
         if (TryTriggerZipPadUnderActivePiece())
             return;
 
-        if (data.special != SpecialType.None)
-            UpdateSpecialHints();
-        else
-            UpdateNormalHints();
+        if (!enabled || cells.Count == 0 || board == null)
+            return;
+
+        RefreshHintsIfNeeded();
     }
 
     public System.Collections.Generic.IReadOnlyList<RectTransform> GetTutorialHighlightTargets()
@@ -488,6 +497,7 @@ public class Piece : MonoBehaviour
         FillCellTargetPositions(visualTargetPositions);
         SetVisualsToTargetPositions(visualTargetPositions);
         ApplyActiveVisualBorders();
+        MarkHintsDirty();
     }
 
     bool EnsureVisualsReady()
@@ -797,6 +807,7 @@ public class Piece : MonoBehaviour
         origin += delta;
         if (syncVisuals)
             SyncVisuals();
+        MarkHintsDirty();
         return true;
     }
 
@@ -804,6 +815,7 @@ public class Piece : MonoBehaviour
     {
         for (int i = 0; i < cells.Count; i++) cells[i] += delta;
         origin += delta;
+        MarkHintsDirty();
     }
 
     void SoftDrop(bool notifyTutorial = false)
@@ -869,6 +881,7 @@ public class Piece : MonoBehaviour
         {
             for (int i = 0; i < cells.Count; i++) cells[i] = candidateCells[i];
             AnimateVisualsForRotation(rotationOrigin, -90f);
+            MarkHintsDirty();
             if (notifyTutorial)
                 NotifyTutorialEvent(TutorialGameplayEvent.RotateClockwise);
         }
@@ -888,6 +901,7 @@ public class Piece : MonoBehaviour
         {
             for (int i = 0; i < cells.Count; i++) cells[i] = candidateCells[i];
             AnimateVisualsForRotation(rotationOrigin, 90f);
+            MarkHintsDirty();
             if (notifyTutorial)
                 NotifyTutorialEvent(TutorialGameplayEvent.RotateCounterClockwise);
         }
@@ -1312,16 +1326,40 @@ public class Piece : MonoBehaviour
         hintCells.Clear();
         scratchHintCells.Clear();
         specialHintCells.Clear();
+        MarkHintsDirty();
     }
 
-    void UpdateSpecialHints()
+    void MarkHintsDirty()
+    {
+        hintsDirty = true;
+    }
+
+    void RefreshHintsIfNeeded(bool force = false)
+    {
+        if (!force && !hintsDirty && Time.unscaledTime < nextHintSafetyRefreshRealtime)
+            return;
+
+        RefreshHintsNow(forceLayout: force);
+        hintsDirty = false;
+        nextHintSafetyRefreshRealtime = Time.unscaledTime + Mathf.Max(0.01f, hintSafetyRefreshSeconds);
+    }
+
+    void RefreshHintsNow(bool forceLayout = false)
+    {
+        if (data != null && data.special != SpecialType.None)
+            UpdateSpecialHints(forceLayout);
+        else
+            UpdateNormalHints(forceLayout);
+    }
+
+    void UpdateSpecialHints(bool forceLayout = false)
     {
         scratchHintCells.Clear();
         specialHintCells.Clear();
 
-        if (data.special == SpecialType.None || board == null || board.gridRoot == null || cells.Count == 0)
+        if (data == null || data.special == SpecialType.None || board == null || board.gridRoot == null || cells.Count == 0)
         {
-            SetActiveHints(scratchHintCells, "SpecialHint");
+            SetActiveHints(scratchHintCells, "SpecialHint", forceLayout);
             return;
         }
 
@@ -1389,7 +1427,7 @@ public class Piece : MonoBehaviour
         }
 
         scratchHintCells.Sort(HintCellComparison);
-        SetActiveHints(scratchHintCells, "SpecialHint");
+        SetActiveHints(scratchHintCells, "SpecialHint", forceLayout);
     }
 
     List<Vector2Int> ComputeLandingCells()
@@ -1425,7 +1463,7 @@ public class Piece : MonoBehaviour
         return landingCells;
     }
 
-    void UpdateNormalHints()
+    void UpdateNormalHints(bool forceLayout = false)
     {
         var gc = GetGameController();
 
@@ -1433,7 +1471,7 @@ public class Piece : MonoBehaviour
 
         if (gc != null && gc.disableLandingHint)
         {
-            SetActiveHints(scratchHintCells, "GhostHint");
+            SetActiveHints(scratchHintCells, "GhostHint", forceLayout);
             return; // Skip if disabled by run mods
         }
 
@@ -1441,7 +1479,7 @@ public class Piece : MonoBehaviour
         for (int i = 0; i < landing.Count; i++)
             scratchHintCells.Add(landing[i]);
 
-        SetActiveHints(scratchHintCells, "GhostHint");
+        SetActiveHints(scratchHintCells, "GhostHint", forceLayout);
     }
 
     static int CompareHintCells(Vector2Int a, Vector2Int b)
@@ -1456,13 +1494,16 @@ public class Piece : MonoBehaviour
             scratchHintCells.Add(cell);
     }
 
-    void SetActiveHints(List<Vector2Int> desiredCells, string objectName)
+    void SetActiveHints(List<Vector2Int> desiredCells, string objectName, bool forceLayout = false)
     {
         if (board == null || board.gridRoot == null)
         {
             ClearHints();
             return;
         }
+
+        if (!forceLayout && HintsMatch(desiredCells, objectName))
+            return;
 
         while (hintOverlays.Count > desiredCells.Count)
             ReleaseHintAt(hintOverlays.Count - 1);
@@ -1506,6 +1547,27 @@ public class Piece : MonoBehaviour
 
             hintCells[i] = desiredCells[i];
         }
+    }
+
+    bool HintsMatch(List<Vector2Int> desiredCells, string objectName)
+    {
+        if (desiredCells == null)
+            return hintOverlays.Count == 0;
+
+        if (hintOverlays.Count != desiredCells.Count || hintCells.Count != desiredCells.Count)
+            return false;
+
+        for (int i = 0; i < desiredCells.Count; i++)
+        {
+            var rt = hintOverlays[i];
+            if (!rt || !rt.gameObject.activeSelf || rt.parent != board.gridRoot)
+                return false;
+
+            if (rt.name != objectName || hintCells[i] != desiredCells[i])
+                return false;
+        }
+
+        return true;
     }
 
     RectTransform GetOrCreateHint(string objectName)
@@ -1631,10 +1693,7 @@ public class Piece : MonoBehaviour
         if (cells.Count == 0 || board == null)
             return;
 
-        if (data != null && data.special != SpecialType.None)
-            UpdateSpecialHints();
-        else
-            UpdateNormalHints();
+        RefreshHintsIfNeeded(force: true);
     }
 
     void NotifyTutorialEvent(TutorialGameplayEvent gameplayEvent)

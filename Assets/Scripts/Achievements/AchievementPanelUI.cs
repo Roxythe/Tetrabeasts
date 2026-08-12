@@ -64,8 +64,6 @@ public class AchievementPanelUI : MonoBehaviour
 
     public void Rebuild()
     {
-        Debug.Log($"[AchievementPanelUI] defs={database?.achievements?.Count ?? 0} contentChildren={contentParent.childCount}");
-
         if (!database || !contentParent || !rowPrefab)
             return;
 

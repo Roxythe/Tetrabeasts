@@ -296,7 +296,7 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject specialAbilityPopupPrefab;
     [SerializeField] RectTransform specialAbilityPopupRoot;
     [SerializeField] AudioClip specialAbilityPopupLoopSFX;
-    [SerializeField, Range(0f, 1f)] float specialAbilityPopupLoopSFXVolume = 0.55f;
+    [SerializeField, Range(0f, 1f)] float specialAbilityPopupLoopSFXVolume = 0.75f;
     [SerializeField] AudioClip specialAbilityPopupLockInSFX;
     [SerializeField, Range(0f, 1f)] float specialAbilityPopupLockInSFXVolume = 0.65f;
 
@@ -706,9 +706,6 @@ public class GameController : MonoBehaviour
     [SerializeField, Range(0f, 1f)] float starDifficultyRunEndXpBonusPerStar = 0.05f;
     [SerializeField, Range(0f, 1f)] float finalLevelWinXpConversionBonus = 0.10f;
 
-    [Header("Debug")]
-    public bool logRowDamageBreakdown = true;
-
     public ScoreUI scoreUI;
     public HighScoreUI highScoreUI;
     [SerializeField] XpAwardUI xpAwardUI;
@@ -986,7 +983,6 @@ public class GameController : MonoBehaviour
             highScoreUI = FindFirstObjectByType<HighScoreUI>(FindObjectsInactive.Include);
 
         if (!highScoreUI) Debug.LogError("HighScoreUI not found in scene.");
-        else Debug.Log("HighScoreUI bound to: " + highScoreUI.gameObject.name);
 
         ResolveVictoryPanelUi();
         if (victoryPanelUI) victoryPanelUI.Hide();
@@ -2475,8 +2471,6 @@ public class GameController : MonoBehaviour
         StopSpecialSiphonChannel(forceDestroyParticles: true);
         _claimedRoundLossOneLiner = ClaimRoundTransitionOneLiner(RoundTransitionVariant.Loss);
         ClearTempRunCheckpoint();
-        Debug.Log("Game Over");
-
         if (AudioManager.I)
         {
             AudioManager.I.StopPauseMusic();
@@ -3425,16 +3419,6 @@ public class GameController : MonoBehaviour
                 Vector2 castleBottomInRoot = root.InverseTransformPoint(castleBottomWorld);
                 Vector2 target = new Vector2(start.x, castleBottomInRoot.y);
 
-                // Debug output for attack damage and source monster
-                if (logRowDamageBreakdown)
-                {
-                    int clearIndex = rowKey / 1000;
-                    Debug.Log(
-                        $"[CastleAttack Spawn] clearIndex={clearIndex} rowY={rowY} " +
-                        $"dmg={dmg} attacker={(attackerMD ? attackerMD.name : "None")}"
-                    );
-                }
-
                 SpawnAttackProjectile(attackSprite, attackSpriteAlt, animType, start, target, dmg, attackerMD);
             }
         }
@@ -3528,18 +3512,6 @@ public class GameController : MonoBehaviour
 
         if (baseRow > 0f)
             finalDamage = Mathf.Max(MinimumFinalMonsterDamage, finalDamage);
-
-        if (logRowDamageBreakdown)
-        {
-            float buffBonus = afterBuffs - baseRow;
-            int comboBonus = finalDamage - afterBuffs;
-
-            Debug.Log(
-                $"[RowClearDamage] Combo={combo} Monsters={monstersClearedInRow} " +
-                $"Base={baseRow:0.###} BuffMult={buffMult:0.###} (+{buffBonus:0.###}) " +
-                $"ComboMult={comboMult:0.###} (+{comboBonus}) Final={finalDamage}"
-            );
-        }
 
         // Score 1 point per monster, multiplied by current combo count
         int gained = Mathf.Max(0, monstersClearedInRow) * combo;
@@ -6470,9 +6442,6 @@ public class GameController : MonoBehaviour
             if (forceMonsterHitSfx && AudioManager.I && hitClip)
                 AudioManager.I.PlaySFX(hitClip);
 
-            if (gameBoard.TryGetMonster(hitCell, out var inst) && inst.data)
-                Debug.Log($"Hit {inst.data.name} at {hitCell}: {inst.hp}/{inst.data.maxHealth}"
-                          + (aliveAfter ? "" : " (DEAD)"));
         }
         else if (AudioManager.I && hitClip)
         {

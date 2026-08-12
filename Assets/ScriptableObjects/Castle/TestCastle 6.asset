@@ -64,10 +64,20 @@ MonoBehaviour:
   bossDamageSpriteSeconds: 0.18
   overrideInitialObstacles: 0
   overridesOnlyForLevel1: 1
+  useRandomInitialObstacleAssortment: 1
+  randomInitialObstacleSpawnCount: 14
+  randomSpawnStones: 1
+  randomSpawnPoison: 1
+  randomSpawnFire: 1
+  randomSpawnSpikes: 1
+  randomSpawnTeleports: 1
+  randomSpawnZipPads: 1
   overrideStoneCount: -1
   overridePoisonCount: -1
   overrideFireCount: -1
   overrideSpikeCount: -1
+  overrideTeleportCount: -1
+  overrideZipPadCount: 1
   enableLevelModifierSelection: 1
   levelModifierDatabase: {fileID: 11400000, guid: cf975b393a28f7643ad5e410f648b770, type: 2}
   allowedLevelModifierKinds: 
@@ -79,6 +89,10 @@ MonoBehaviour:
   bossEnableGravityBoost: 1
   bossEnablePylonShield: 1
   bossEnableMagicExplosive: 1
+  bossEnableForcedDuplication: 1
+  bossEnableSpecialSiphon: 1
+  bossEnableTeleport: 1
+  bossEnableZipPad: 1
   bossAbilityIntervalMin: 3
   bossAbilityIntervalMax: 5
   bossRowBlastDamage: 40
@@ -104,6 +118,16 @@ MonoBehaviour:
   bossInvulnHitSFX: {fileID: 0}
   bossGravityBonusMult: 2
   bossGravityDuration: 10
+  bossForcedDuplicationMinPieces: 5
+  bossForcedDuplicationMaxPieces: 9
+  bossSpecialSiphonGaugeDrainPercentPerSecond: 0.01
+  bossTeleportTargetsMin: 1
+  bossTeleportTargetsMax: 5
+  bossTeleportWarningSeconds: 2
+  bossTeleportDestinationExcludedTopRows: 4
+  bossTeleportDestinationExcludedBottomRows: 2
+  bossZipPadExcludedTopRows: 4
+  bossZipPadExcludedBottomRows: 2
   bossAbilityWarningSeconds: 3
   bossWarningToggleInterval: 0.16
   bossRowBlastWarningSprite: {fileID: 0}

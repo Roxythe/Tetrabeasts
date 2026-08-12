@@ -353,9 +353,6 @@ public sealed class SteamInputService : MonoBehaviour
             lastStatus = connectedControllerCount > 0
                 ? $"Steam Input initialized with {connectedControllerCount} controller(s)."
                 : "Steam Input initialized; no Steam Input controller is connected yet.";
-
-            if (logSteamInputStatus)
-                Debug.Log(lastStatus);
         }
         catch (Exception ex)
         {

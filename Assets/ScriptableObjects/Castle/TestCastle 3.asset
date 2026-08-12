@@ -64,6 +64,14 @@ MonoBehaviour:
   bossDamageSpriteSeconds: 0.18
   overrideInitialObstacles: 0
   overridesOnlyForLevel1: 1
+  useRandomInitialObstacleAssortment: 1
+  randomInitialObstacleSpawnCount: 8
+  randomSpawnStones: 1
+  randomSpawnPoison: 1
+  randomSpawnFire: 1
+  randomSpawnSpikes: 1
+  randomSpawnTeleports: 0
+  randomSpawnZipPads: 0
   overrideStoneCount: -1
   overridePoisonCount: -1
   overrideFireCount: -1

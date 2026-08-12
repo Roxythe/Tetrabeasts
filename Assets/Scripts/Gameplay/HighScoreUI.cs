@@ -55,10 +55,6 @@ public class HighScoreUI : MonoBehaviour
 
         SetCloseButtonActive(false);
         EnableNavigation(selectFirst: true);
-
-        Debug.Log($"[HS] TryShow: score={score}, qualifies={qualifies}, " +
-                  $"panelActiveSelf={panel.activeSelf}, compGOActiveSelf={gameObject.activeSelf}, " +
-                  $"panelID={panel.GetInstanceID()}, compGOID={gameObject.GetInstanceID()}");
     }
 
     void ForceActivate()

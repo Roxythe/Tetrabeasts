@@ -64,12 +64,20 @@ MonoBehaviour:
   bossDamageSpriteSeconds: 0.5
   overrideInitialObstacles: 1
   overridesOnlyForLevel1: 0
-  overrideStoneCount: 10
+  useRandomInitialObstacleAssortment: 1
+  randomInitialObstacleSpawnCount: -1
+  randomSpawnStones: 1
+  randomSpawnPoison: 1
+  randomSpawnFire: 1
+  randomSpawnSpikes: 1
+  randomSpawnTeleports: 1
+  randomSpawnZipPads: 1
+  overrideStoneCount: 8
   overridePoisonCount: 5
   overrideFireCount: 5
   overrideSpikeCount: 5
-  overrideTeleportCount: -1
-  overrideZipPadCount: -1
+  overrideTeleportCount: 3
+  overrideZipPadCount: 1
   enableLevelModifierSelection: 0
   levelModifierDatabase: {fileID: 0}
   allowedLevelModifierKinds: 

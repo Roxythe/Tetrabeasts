@@ -73,9 +73,12 @@ public class AudioManager : MonoBehaviour
     [SerializeField, Range(0.05f, 8f)] float musicFadeOutSeconds = 1f;
     [SerializeField, Range(0.05f, 4f)] float pauseMusicFadeSeconds = 0.45f;
     [SerializeField, Range(0.05f, 4f)] float specialAbilityMusicFadeSeconds = 0.35f;
-    [SerializeField, Range(0f, 1f)] float specialAbilityBackgroundMusicVolumeScale = 0.55f;
+    [Tooltip("Gameplay music volume multiplier while the special ability popup audio plays. 0.60 = 60% of normal.")]
+    [SerializeField, Range(0f, 1f)] float specialAbilityBackgroundMusicVolumeScale = 0.60f;
 
     [Header("Special Ability SFX Tuning")]
+    [SerializeField, Min(0f)] float specialAbilityOneShotVolumeBoost = 1.2f;
+    [SerializeField, Min(0f)] float specialAbilityOneShotMaxVolumeScale = 1.5f;
     [SerializeField, Min(0f)] float specialAbilityLoopVolumeBoost = 4f;
     [SerializeField, Min(0f)] float specialAbilityLoopMaxVolumeScale = 4f;
 
@@ -211,7 +214,9 @@ public class AudioManager : MonoBehaviour
         source.loop = true;
         source.spatialBlend = 0f;
 
-        if (sfxGroup)
+        if (musicGroup)
+            source.outputAudioMixerGroup = musicGroup;
+        else if (sfxGroup)
             source.outputAudioMixerGroup = sfxGroup;
     }
 
@@ -847,6 +852,7 @@ public class AudioManager : MonoBehaviour
 
         ApplyMainMusicSourceVolumes();
         ApplyPauseMusicVolume();
+        ApplySpecialAbilityLoopSfxVolume();
 
         if (save) SettingsStore.SaveVolumes(masterVolume, musicVolume, sfxVolume);
     }
@@ -1025,7 +1031,9 @@ public class AudioManager : MonoBehaviour
     {
         if (!clip) return;
 
-        float normalizedVolume = NormalizeSpecialAbilityVolume(vol);
+        float normalizedVolume = Mathf.Min(
+            NormalizeSpecialAbilityVolume(vol) * Mathf.Max(0f, specialAbilityOneShotVolumeBoost),
+            Mathf.Max(0f, specialAbilityOneShotMaxVolumeScale));
         if (!specialAbilityOneShotSrc)
         {
             PlaySFX(clip, normalizedVolume, pitch: 1f, jitter: false);
@@ -1133,7 +1141,7 @@ public class AudioManager : MonoBehaviour
         if (specialAbilityLoopSfxSources == null)
             return;
 
-        float remainingVolume = masterVolume * sfxVolume * specialAbilityLoopSfxVolumeScale;
+        float remainingVolume = masterVolume * musicVolume * specialAbilityLoopSfxVolumeScale;
         for (int i = 0; i < specialAbilityLoopSfxSources.Length; i++)
         {
             AudioSource source = specialAbilityLoopSfxSources[i];

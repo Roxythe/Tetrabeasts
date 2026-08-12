@@ -246,8 +246,6 @@ public sealed class SteamCloudSaveService : MonoBehaviour
             PlayerProgress.I?.ReloadFromDiskAfterCloudImport();
 
             LastStatus = "Steam Cloud save restored.";
-            if (logCloudStatus)
-                Debug.Log(LastStatus);
 
             return true;
         }
@@ -295,8 +293,6 @@ public sealed class SteamCloudSaveService : MonoBehaviour
             PlayerPrefs.Save();
 
             LastStatus = "Steam Cloud save uploaded.";
-            if (logCloudStatus)
-                Debug.Log(LastStatus);
 
             return true;
         }

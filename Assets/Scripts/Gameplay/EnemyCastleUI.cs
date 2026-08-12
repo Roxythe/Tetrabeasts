@@ -258,7 +258,6 @@ public class EnemyCastleUI : MonoBehaviour
 
     void OnCastleDestroyed()
     {
-        Debug.Log("Castle destroyed! Player wins level.");  // GameController decides what to do on win
     }
 
     void TriggerDamageShake(int appliedDamage)

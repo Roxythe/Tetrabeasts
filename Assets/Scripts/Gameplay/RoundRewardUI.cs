@@ -373,7 +373,20 @@ public class RoundRewardUI : MonoBehaviour
                     confirmDebuffButton.interactable = true;
                 }
             });
+
+            PrewarmOptionTargetVisuals(btn);
         }
+    }
+
+    static void PrewarmOptionTargetVisuals(RunModOptionButton option)
+    {
+        if (!option)
+            return;
+
+        var targetVisuals = option.GetComponentsInChildren<UIButtonTargetVisual>(true);
+        for (int i = 0; i < targetVisuals.Length; i++)
+            if (targetVisuals[i])
+                targetVisuals[i].PrewarmTransientVisuals();
     }
 
     static void ClearRewardOptions(Transform container)
