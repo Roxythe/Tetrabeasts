@@ -5140,11 +5140,17 @@ public class GameController : MonoBehaviour
                 visuals.Add(visual);
             }
 
+            var environmentTargets = PickBombsAwayEnvironmentTargets(4, landingCells);
+            var warningVisuals = CreateBombsAwayWarningVisuals(bombData, environmentTargets);
+
             if (AudioManager.I && bombData && bombData.specialSFX)
                 AudioManager.I.PlaySFX(bombData.specialSFX);
 
             float speed = Mathf.Max(1f, projectileSpeed);
             bool anyMoving = visuals.Count > 0;
+            const float warningToggleSeconds = 0.10f;
+            float warningToggleTimer = 0f;
+            bool warningVisible = true;
             while (anyMoving)
             {
                 anyMoving = false;
@@ -5161,18 +5167,32 @@ public class GameController : MonoBehaviour
                         anyMoving = true;
                 }
 
+                warningToggleTimer += Time.unscaledDeltaTime;
+                if (warningToggleTimer >= warningToggleSeconds)
+                {
+                    warningToggleTimer = 0f;
+                    warningVisible = !warningVisible;
+                    SetBombsAwayWarningVisualsVisible(warningVisuals, warningVisible);
+                }
+
                 yield return null;
             }
+
+            SetBombsAwayWarningVisualsVisible(warningVisuals, true);
 
             for (int i = 0; i < visuals.Count; i++)
                 if (visuals[i])
                     gameBoard.ReleaseTransientTileUI(visuals[i]);
 
+            for (int i = 0; i < warningVisuals.Count; i++)
+                if (warningVisuals[i])
+                    gameBoard.ReleaseTransientTileUI(warningVisuals[i]);
+
             if (AudioManager.I && bombData && bombData.specialSFX)
                 AudioManager.I.PlaySFX(bombData.specialSFX);
 
             gameBoard.PlaySpecialBoardVFX(SpecialType.Bomb);
-            yield return ResolveBombsAwayDetonationsCo(bombData, landingCells);
+            yield return ResolveBombsAwayDetonationsCo(bombData, landingCells, environmentTargets);
         }
         finally
         {
@@ -5218,6 +5238,57 @@ public class GameController : MonoBehaviour
         return columns;
     }
 
+    List<Vector2Int> PickBombsAwayEnvironmentTargets(int count, List<Vector2Int> landingCells)
+    {
+        var targets = new List<Vector2Int>();
+        if (!gameBoard)
+            return targets;
+
+        gameBoard.GetEnvironmentTargetCellsNonAlloc(targets);
+        if (targets.Count == 0)
+            return targets;
+
+        var landingSet = new HashSet<Vector2Int>();
+        if (landingCells != null)
+            for (int i = 0; i < landingCells.Count; i++)
+                landingSet.Add(landingCells[i]);
+
+        var preferred = new List<Vector2Int>();
+        var fallback = new List<Vector2Int>();
+        for (int i = 0; i < targets.Count; i++)
+        {
+            if (landingSet.Contains(targets[i]))
+                fallback.Add(targets[i]);
+            else
+                preferred.Add(targets[i]);
+        }
+
+        ShuffleCells(preferred);
+        ShuffleCells(fallback);
+
+        targets.Clear();
+        int keep = Mathf.Max(0, count);
+        for (int i = 0; i < preferred.Count && targets.Count < keep; i++)
+            targets.Add(preferred[i]);
+
+        for (int i = 0; i < fallback.Count && targets.Count < keep; i++)
+            targets.Add(fallback[i]);
+
+        return targets;
+    }
+
+    void ShuffleCells(List<Vector2Int> cells)
+    {
+        if (cells == null)
+            return;
+
+        for (int i = 0; i < cells.Count; i++)
+        {
+            int swap = UnityEngine.Random.Range(i, cells.Count);
+            (cells[i], cells[swap]) = (cells[swap], cells[i]);
+        }
+    }
+
     Vector2Int GetBombsAwayLandingCell(int column)
     {
         column = Mathf.Clamp(column, 0, gameBoard.width - 1);
@@ -5243,17 +5314,60 @@ public class GameController : MonoBehaviour
         return gameBoard.InstantiateTileUI(color, sprite, background, portraitScale: 0.9f);
     }
 
-    IEnumerator ResolveBombsAwayDetonationsCo(TetrominoData bombData, List<Vector2Int> landingCells)
+    List<RectTransform> CreateBombsAwayWarningVisuals(TetrominoData bombData, List<Vector2Int> targetCells)
     {
-        if (!gameBoard || landingCells == null || landingCells.Count == 0)
+        var warningVisuals = new List<RectTransform>();
+        if (!gameBoard || targetCells == null)
+            return warningVisuals;
+
+        for (int i = 0; i < targetCells.Count; i++)
+        {
+            RectTransform visual = CreateBombsAwayVisual(bombData);
+            if (visual)
+            {
+                visual.anchoredPosition = gameBoard.CellToAnchoredPos(targetCells[i]);
+                visual.SetAsLastSibling();
+            }
+
+            warningVisuals.Add(visual);
+        }
+
+        return warningVisuals;
+    }
+
+    void SetBombsAwayWarningVisualsVisible(List<RectTransform> warningVisuals, bool visible)
+    {
+        if (warningVisuals == null)
+            return;
+
+        for (int i = 0; i < warningVisuals.Count; i++)
+            if (warningVisuals[i])
+                warningVisuals[i].gameObject.SetActive(visible);
+    }
+
+    IEnumerator ResolveBombsAwayDetonationsCo(TetrominoData bombData, List<Vector2Int> landingCells, List<Vector2Int> environmentTargets)
+    {
+        if (!gameBoard)
             yield break;
 
         var affectedEnvironment = new HashSet<Vector2Int>();
         var toRemove = new HashSet<Vector2Int>();
+        var bombCenters = new List<Vector2Int>();
 
-        for (int i = 0; i < landingCells.Count; i++)
+        if (landingCells != null)
+            for (int i = 0; i < landingCells.Count; i++)
+                AddBombsAwayCenter(landingCells[i], bombCenters);
+
+        if (environmentTargets != null)
+            for (int i = 0; i < environmentTargets.Count; i++)
+                AddBombsAwayCenter(environmentTargets[i], bombCenters);
+
+        if (bombCenters.Count == 0)
+            yield break;
+
+        for (int i = 0; i < bombCenters.Count; i++)
         {
-            Vector2Int center = landingCells[i];
+            Vector2Int center = bombCenters[i];
             for (int dy = -1; dy <= 1; dy++)
                 for (int dx = -1; dx <= 1; dx++)
                 {
@@ -5268,10 +5382,15 @@ public class GameController : MonoBehaviour
         }
 
         gameBoard.ApplySpecialToEnvironment(affectedEnvironment, SpecialType.Bomb);
+
         if (bombData)
             gameBoard.FlashCells(toRemove, bombData.specialFlashSprite, bombData.flashOnlyOccupied);
 
         gameBoard.RemoveCellsAndFall(toRemove, out var removedA, out int dmgA, out float chargeA);
+
+        if (environmentTargets != null)
+            for (int i = 0; i < environmentTargets.Count; i++)
+                gameBoard.ForceClearEnvironmentTarget(environmentTargets[i]);
 
         bool clearComplete = false;
         gameBoard.ClearFullLinesAnimated((rowsAfter, removedB, dmgB, chargeB, rowDamageB, rowDomB) =>
@@ -5283,6 +5402,14 @@ public class GameController : MonoBehaviour
 
         while (!clearComplete)
             yield return null;
+    }
+
+    void AddBombsAwayCenter(Vector2Int cell, List<Vector2Int> centers)
+    {
+        if (centers == null || !gameBoard || !gameBoard.InBounds(cell) || centers.Contains(cell))
+            return;
+
+        centers.Add(cell);
     }
 
     void TryMarkSpecialsEachCharacter(int needed, string flagKey)

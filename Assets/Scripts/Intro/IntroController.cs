@@ -91,18 +91,7 @@ public class IntroController : MonoBehaviour
         if (blackOverlay) blackOverlay.SetActive(true);
         LoadingScreen.Show();
 
-        if (videoAudioSource)
-        {
-            if (AudioManager.I)
-                AudioManager.I.ConfigureExternalMusicSource(videoAudioSource, introVideoVolume);
-
-            _savedVideoVolume = videoAudioSource.volume;
-            videoAudioSource.volume = 0f;
-
-            videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
-            videoPlayer.EnableAudioTrack(0, true);
-            videoPlayer.SetTargetAudioSource(0, videoAudioSource);
-        }
+        ConfigureIntroVideoAudio();
 
         videoPlayer.prepareCompleted -= OnVideoPrepared;
         videoPlayer.prepareCompleted += OnVideoPrepared;
@@ -199,6 +188,12 @@ public class IntroController : MonoBehaviour
             videoPlayer.Stop();
         }
 
+        if (videoAudioSource)
+        {
+            videoAudioSource.Stop();
+            videoAudioSource.volume = _savedVideoVolume;
+        }
+
         if (_playPreparedVideoCR != null)
         {
             StopCoroutine(_playPreparedVideoCR);
@@ -262,10 +257,43 @@ public class IntroController : MonoBehaviour
         _playPreparedVideoCR = StartCoroutine(PlayPreparedVideoAfterLoadingMinimum(vp));
     }
 
+    void ConfigureIntroVideoAudio()
+    {
+        if (!videoPlayer) return;
+
+        if (!videoAudioSource)
+            videoAudioSource = videoPlayer.GetComponent<AudioSource>();
+
+        if (!videoAudioSource)
+            videoAudioSource = videoPlayer.gameObject.AddComponent<AudioSource>();
+
+        videoAudioSource.playOnAwake = false;
+        videoAudioSource.loop = false;
+        videoAudioSource.spatialBlend = 0f;
+        videoAudioSource.Stop();
+
+        if (AudioManager.I)
+            AudioManager.I.ConfigureExternalMusicSource(videoAudioSource, introVideoVolume);
+        else
+            videoAudioSource.volume = Mathf.Clamp01(introVideoVolume);
+
+        _savedVideoVolume = videoAudioSource.volume;
+        videoAudioSource.volume = 0f;
+
+        videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
+        videoPlayer.controlledAudioTrackCount = 1;
+        videoPlayer.EnableAudioTrack(0, true);
+        videoPlayer.SetTargetAudioSource(0, videoAudioSource);
+    }
+
     System.Collections.IEnumerator PlayPreparedVideoAfterLoadingMinimum(VideoPlayer vp)
     {
         if (vp)
+        {
             vp.Pause();
+            vp.skipOnDrop = false;
+            ResetVideoToStart(vp);
+        }
 
         LoadingScreen.RestartMinimumVisibleTimer();
         yield return LoadingScreen.HideAndWaitUntilInactive();
@@ -275,6 +303,8 @@ public class IntroController : MonoBehaviour
         if (_loadingTitle || !vp)
             yield break;
 
+        ResetVideoToStart(vp);
+        vp.skipOnDrop = false;
         vp.frameReady -= OnFrameReady;
         vp.frameReady += OnFrameReady;
         vp.sendFrameReadyEvents = true;
@@ -297,6 +327,12 @@ public class IntroController : MonoBehaviour
 
         vp.frameReady -= OnFrameReady;
         vp.sendFrameReadyEvents = false;
+    }
+
+    static void ResetVideoToStart(VideoPlayer vp)
+    {
+        if (vp && vp.canSetTime)
+            vp.time = 0d;
     }
 
     System.Collections.IEnumerator PrepareTimeout()
@@ -329,7 +365,8 @@ public class IntroController : MonoBehaviour
 
         videoPlayer.playOnAwake = false;
         videoPlayer.waitForFirstFrame = true;
-        videoPlayer.skipOnDrop = true;
+        // Cold decoder startup can otherwise drop the opening frames before the overlay/audio gate opens.
+        videoPlayer.skipOnDrop = false;
         videoPlayer.sendFrameReadyEvents = false;
 
         videoPlayer.Stop();

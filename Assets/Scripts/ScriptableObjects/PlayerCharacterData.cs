@@ -39,6 +39,7 @@ public class PlayerCharacterData : ScriptableObject
     public GameObject specialAbilityAnimationPrefab;
     public AudioClip specialAbilityAnimationSFX;
     [Range(0f, 1f)] public float specialAbilityAnimationSFXVolume = 0.65f;
+    [Min(0f)] public float specialAbilityAnimationEndEarlySeconds = 0f;
 
     [Header("Restore All To Full (Revive + Heal)")]
     public Sprite reviveAllVFXSprite;

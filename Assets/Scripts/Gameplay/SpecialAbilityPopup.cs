@@ -27,6 +27,7 @@ public sealed class SpecialAbilityPopup : MonoBehaviour
     Transform characterAnimationRoot;
     Transform dimmerTransform;
     RectTransform slideContentRoot;
+    float characterAnimationEndEarlySeconds;
     readonly List<GraphicFadeTarget> dimmerFadeTargets = new();
     readonly List<RectTransform> slideRects = new();
     readonly List<Vector2> slideEndPositions = new();
@@ -85,6 +86,9 @@ public sealed class SpecialAbilityPopup : MonoBehaviour
         popupAnimators = null;
         characterAnimationRoot = null;
         dimmerTransform = null;
+        characterAnimationEndEarlySeconds = characterData
+            ? Mathf.Max(0f, characterData.specialAbilityAnimationEndEarlySeconds)
+            : 0f;
         dimmerFadeTargets.Clear();
         slideRects.Clear();
         slideEndPositions.Clear();
@@ -490,6 +494,16 @@ public sealed class SpecialAbilityPopup : MonoBehaviour
 
         AnimationClip characterClip = GetCharacterAnimationClip(characterAnimator);
         float duration = Mathf.Min(characterClip ? characterClip.length : fallbackDurationSeconds, maxDurationSeconds);
+
+        if (characterAnimationEndEarlySeconds > 0f)
+        {
+            float playUntilOutro = Mathf.Max(0f, duration - characterAnimationEndEarlySeconds - GetOutroDuration());
+            if (playUntilOutro > 0f)
+                yield return new WaitForSecondsRealtime(playUntilOutro);
+
+            yield break;
+        }
+
         float playDuration = Mathf.Max(0f, duration - characterAnimationLastFrameHoldOffsetSeconds);
 
         if (playDuration > 0f)
@@ -499,6 +513,15 @@ public sealed class SpecialAbilityPopup : MonoBehaviour
 
         if (completionBufferSeconds > 0f)
             yield return new WaitForSecondsRealtime(completionBufferSeconds);
+    }
+
+    float GetOutroDuration()
+    {
+        float fadeDuration = Mathf.Max(0f, loopSfxFadeOutLeadSeconds);
+        if (slideRects.Count == 0)
+            return fadeDuration;
+
+        return Mathf.Max(fadeDuration, Mathf.Max(0f, slideOutSeconds));
     }
 
     void HoldCharacterAnimationOnLastFrame(AnimationClip clip)

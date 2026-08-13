@@ -3,6 +3,8 @@
 
 -Level Modifier 'Watch Your Step'. Exclduing the top 5 rows randomly spawn floor effects / obstacles across 50% of the remaining cells. Do not add multiple obstacles or floor effects to the same cell.
 
+----------------------------------------------------------------------------------------------------
+
 
 
 - change spawn system for for flooreffects and obstacles for each level to spawn a random assortment of toggled on floor effects/obstacles. Set X number of items to spawn for each castle data.
@@ -30,9 +32,6 @@
 
 - New Level modifier 'Turbo Boosted' The 5th row from the top of the board should have each cell in that row filled with a Zip Pad floor effect.
 
-
-
-------------------------------------------------------
 
 - The spike trap sprites are a bit too big right now, could you scale them down so they are only at 90% size so they still fill most of a cell on the board but still leave a bit of room around the edges.
 
@@ -68,10 +67,9 @@
 - Each monster needs a new alternate sprite for the new skin as well.
 
 
-- Add more board borders for each level
-- Add more board backgrounds for each level
-- Add more castle HP gauge sprites for each level
-- Reformat in higher resolution current castle HP gauge
+- Add board borders for all 7 levels
+- Add more board backgrounds for all 7 levels
+- Add more castle HP gauge sprites for all 7 levels
 
 
 ****** TODO ******

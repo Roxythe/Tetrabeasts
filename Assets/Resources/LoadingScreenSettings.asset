@@ -14,20 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loadingIconPrefab: {fileID: 3049634458175589757, guid: c20f52bd49ab66749a35ed3d18581a94, type: 3}
   backgroundImages:
-  - {fileID: 5234511868603304439, guid: 68e9e34f2c7e9274ba5dec2c3e5b5bf9, type: 3}
-  - {fileID: 4754495682956534853, guid: 6e3f07a0f17bc77408e03b0c53b14774, type: 3}
-  - {fileID: 4909802203796110863, guid: 7e857df340f66db4ead52031e63864e9, type: 3}
-  - {fileID: 9006906523233308660, guid: 48baf4e39d163a840abfc1196e5b24db, type: 3}
-  - {fileID: 4365635246747746590, guid: 4e597a51a60149d4fbc609d8c23f4f09, type: 3}
-  - {fileID: -2139418448998771526, guid: 7ee931540bbe9b6428dd938d931e4ae0, type: 3}
-  - {fileID: 21300000, guid: 3a1ab391eded15c4cb51c84c655760ee, type: 3}
-  - {fileID: 21300000, guid: bf116e4bea104474aa94845792a6add6, type: 3}
-  - {fileID: 21300000, guid: 2bc761a19586f7b4b933d06289e813bc, type: 3}
-  - {fileID: 21300000, guid: 0062c5001aaeb824e9ec49ecd14c06ef, type: 3}
-  - {fileID: 21300000, guid: b14d92d809bed6e4db1b6564ed5520d1, type: 3}
-  - {fileID: 21300000, guid: c4af7b0994588fb4fa34617af9353a11, type: 3}
+  - {fileID: 21300000, guid: 35d6783f2c9a762409b7e3b0a64277ed, type: 3}
+  - {fileID: 21300000, guid: abdf8e6fb1fd61643890920e029f9494, type: 3}
+  - {fileID: 21300000, guid: a07218ed15ad5154ba21885018d780c6, type: 3}
+  - {fileID: 21300000, guid: 937f6c5ad6bce13418d86f9905297e39, type: 3}
+  - {fileID: 21300000, guid: 93b70f4f675b1fc42a16d25924aa0736, type: 3}
+  - {fileID: 21300000, guid: cab127977daeec444b7638ff676a5bdb, type: 3}
+  - {fileID: 21300000, guid: 0a10dbfdb8040b54bbb94d76eae9bc33, type: 3}
+  - {fileID: 21300000, guid: 64ebedfb1d7727749b37446361ae2263, type: 3}
+  - {fileID: 21300000, guid: c650c6d58ad7fe14389475a17c188076, type: 3}
+  - {fileID: 21300000, guid: d84fe18328c791f4b87a9eddf6cdf42b, type: 3}
+  - {fileID: 21300000, guid: 1731943dde97ebf4080d4f350dd60176, type: 3}
+  - {fileID: 21300000, guid: 84e0d2743270ccb49a242127001ed678, type: 3}
+  - {fileID: 21300000, guid: 5daf5098a38de204f904c8ae1eca6ef5, type: 3}
   backgroundImageTint: {r: 1, g: 1, b: 1, a: 1}
-  minimumVisibleSeconds: 2
+  minimumVisibleSeconds: 1.5
   hideDelayFrames: 1
   iconMargin: {x: 48, y: 36}
   loadingTextMinAlpha: 0.15

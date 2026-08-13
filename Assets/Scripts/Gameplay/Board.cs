@@ -3634,6 +3634,43 @@ public class Board : MonoBehaviour
 
     public bool HasObstacle(Vector2Int cell) => obstacles.ContainsKey(cell);
 
+    public void GetEnvironmentTargetCellsNonAlloc(List<Vector2Int> result)
+    {
+        if (result == null)
+            return;
+
+        result.Clear();
+        foreach (var kv in floorEffects)
+            if (InBounds(kv.Key) && !result.Contains(kv.Key))
+                result.Add(kv.Key);
+
+        foreach (var kv in obstacles)
+            if (InBounds(kv.Key) && !result.Contains(kv.Key))
+                result.Add(kv.Key);
+    }
+
+    public bool ForceClearEnvironmentTarget(Vector2Int cell)
+    {
+        if (!InBounds(cell))
+            return false;
+
+        bool cleared = false;
+
+        if (floorEffects.ContainsKey(cell))
+        {
+            ClearFloorEffect(cell);
+            cleared = true;
+        }
+
+        if (obstacles.ContainsKey(cell))
+        {
+            DestroyObstacleImmediate(cell);
+            cleared = true;
+        }
+
+        return cleared;
+    }
+
     public bool IsFree(Vector2Int c) => InBounds(c) && !placed.ContainsKey(c);
 
     public int CountFreeCellsInRow(int y)

@@ -12,6 +12,8 @@ public sealed class LoadingScreen : MonoBehaviour
 {
     const string SettingsResourcePath = "LoadingScreenSettings";
     const int CanvasSortingOrder = 32767;
+    const float LoadingTextDotIntervalSeconds = 0.35f;
+    static readonly string[] LoadingTextDots = { string.Empty, ".", "..", "..." };
 
     static LoadingScreen _instance;
     static LoadingScreenSettings _settings;
@@ -28,13 +30,16 @@ public sealed class LoadingScreen : MonoBehaviour
     GameObject _iconInstance;
     TMP_Text[] _loadingTexts;
     Color[] _loadingTextBaseColors;
+    string[] _loadingTextBaseStrings;
     Coroutine _hideCoroutine;
     Coroutine _sceneLoadCoroutine;
-    Coroutine _textBlinkCoroutine;
     float _shownAtRealtime;
+    float _loadingTextVfxStartedAtRealtime;
     float _timeScaleBeforeShow = 1f;
     bool _timeScalePauseActive;
     bool _restoreNormalTimeScaleOnHide;
+    bool _loadingTextVfxActive;
+    int _lastLoadingTextDotCount = -1;
 
     public static bool IsVisible => _instance && _instance._canvas && _instance._canvas.gameObject.activeSelf;
     public static bool IsSceneLoadRunning => _instance && _instance._sceneLoadCoroutine != null;
@@ -171,6 +176,9 @@ public sealed class LoadingScreen : MonoBehaviour
     {
         if (_timeScalePauseActive && IsVisible && !Mathf.Approximately(Time.timeScale, 0f))
             Time.timeScale = 0f;
+
+        if (_canvas && _canvas.gameObject.activeSelf)
+            TickLoadingTextVFX();
     }
 
     IEnumerator LoadSceneRoutine(string sceneName)
@@ -433,6 +441,7 @@ public sealed class LoadingScreen : MonoBehaviour
 
         _iconInstance = Instantiate(iconPrefab, _canvasRect);
         _iconInstance.name = iconPrefab.name;
+        ConfigureLoadingIconAnimationsForLoadingPause(_iconInstance);
 
         var rect = _iconInstance.transform as RectTransform;
         if (!rect)
@@ -571,6 +580,7 @@ public sealed class LoadingScreen : MonoBehaviour
     {
         _loadingTexts = null;
         _loadingTextBaseColors = null;
+        _loadingTextBaseStrings = null;
 
         if (!_iconInstance)
             return;
@@ -589,8 +599,12 @@ public sealed class LoadingScreen : MonoBehaviour
 
         _loadingTexts = namedLoadingTexts.Count > 0 ? namedLoadingTexts.ToArray() : allTexts;
         _loadingTextBaseColors = new Color[_loadingTexts.Length];
+        _loadingTextBaseStrings = new string[_loadingTexts.Length];
         for (int i = 0; i < _loadingTexts.Length; i++)
+        {
             _loadingTextBaseColors[i] = _loadingTexts[i] ? _loadingTexts[i].color : Color.white;
+            _loadingTextBaseStrings[i] = _loadingTexts[i] ? _loadingTexts[i].text : string.Empty;
+        }
     }
 
     void StartLoadingTextBlink()
@@ -600,44 +614,65 @@ public sealed class LoadingScreen : MonoBehaviour
         if (_loadingTexts == null || _loadingTexts.Length == 0)
             return;
 
+        _loadingTextVfxActive = true;
+        _loadingTextVfxStartedAtRealtime = Time.realtimeSinceStartup;
+        _lastLoadingTextDotCount = -1;
         SetLoadingTextAlpha(1f);
-        _textBlinkCoroutine = StartCoroutine(LoadingTextBlinkRoutine());
+        SetLoadingTextDots(0);
     }
 
     void StopLoadingTextBlink()
     {
-        if (_textBlinkCoroutine != null)
-        {
-            StopCoroutine(_textBlinkCoroutine);
-            _textBlinkCoroutine = null;
-        }
-
+        _loadingTextVfxActive = false;
+        _lastLoadingTextDotCount = -1;
         SetLoadingTextAlpha(1f);
+        SetLoadingTextDots(0);
     }
 
-    IEnumerator LoadingTextBlinkRoutine()
+    void TickLoadingTextVFX()
     {
+        if (!_loadingTextVfxActive)
+            return;
+
+        if (_loadingTexts == null || _loadingTexts.Length == 0)
+        {
+            CacheLoadingTexts();
+            if (_loadingTexts == null || _loadingTexts.Length == 0)
+                return;
+        }
+
         float minAlpha = Mathf.Clamp01(Settings ? Settings.loadingTextMinAlpha : 0.15f);
         float fadeSeconds = Mathf.Max(0.01f, Settings ? Settings.loadingTextFadeSeconds : 1.1f);
+        float elapsed = Mathf.Max(0f, Time.realtimeSinceStartup - _loadingTextVfxStartedAtRealtime);
+        float alphaT = Mathf.SmoothStep(0f, 1f, Mathf.PingPong(elapsed / fadeSeconds, 1f));
 
-        while (true)
-        {
-            yield return FadeLoadingTextAlpha(1f, minAlpha, fadeSeconds);
-            yield return FadeLoadingTextAlpha(minAlpha, 1f, fadeSeconds);
-        }
+        SetLoadingTextAlpha(Mathf.Lerp(1f, minAlpha, alphaT));
+
+        int dotCount = Mathf.FloorToInt(elapsed / LoadingTextDotIntervalSeconds) % LoadingTextDots.Length;
+        SetLoadingTextDots(dotCount);
     }
 
-    IEnumerator FadeLoadingTextAlpha(float from, float to, float duration)
+    void SetLoadingTextDots(int dotCount)
     {
-        float t = 0f;
-        while (t < duration)
+        if (_loadingTexts == null || _loadingTextBaseStrings == null)
+            return;
+
+        dotCount = Mathf.Clamp(dotCount, 0, LoadingTextDots.Length - 1);
+        if (_lastLoadingTextDotCount == dotCount)
+            return;
+
+        string dots = LoadingTextDots[dotCount];
+        for (int i = 0; i < _loadingTexts.Length; i++)
         {
-            t += Time.unscaledDeltaTime;
-            SetLoadingTextAlpha(Mathf.Lerp(from, to, Mathf.Clamp01(t / duration)));
-            yield return null;
+            var text = _loadingTexts[i];
+            if (!text)
+                continue;
+
+            string baseText = i < _loadingTextBaseStrings.Length ? _loadingTextBaseStrings[i] : string.Empty;
+            text.text = baseText + dots;
         }
 
-        SetLoadingTextAlpha(to);
+        _lastLoadingTextDotCount = dotCount;
     }
 
     void SetLoadingTextAlpha(float alpha)
@@ -654,6 +689,27 @@ public sealed class LoadingScreen : MonoBehaviour
             Color color = i < _loadingTextBaseColors.Length ? _loadingTextBaseColors[i] : text.color;
             color.a = Mathf.Clamp01(alpha);
             text.color = color;
+        }
+    }
+
+    static void ConfigureLoadingIconAnimationsForLoadingPause(GameObject root)
+    {
+        if (!root)
+            return;
+
+        var animators = root.GetComponentsInChildren<Animator>(true);
+        for (int i = 0; i < animators.Length; i++)
+            if (animators[i])
+                animators[i].updateMode = AnimatorUpdateMode.UnscaledTime;
+
+        var particles = root.GetComponentsInChildren<ParticleSystem>(true);
+        for (int i = 0; i < particles.Length; i++)
+        {
+            if (!particles[i])
+                continue;
+
+            var main = particles[i].main;
+            main.useUnscaledTime = true;
         }
     }
 }

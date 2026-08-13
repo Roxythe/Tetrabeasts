@@ -18,8 +18,7 @@ MonoBehaviour:
   animatedBorderStaticFrame: {fileID: -3601276438209542214, guid: ccbb0e2af99022341a86e9e2be0b2dfb, type: 3}
   animatedBorderController: {fileID: 9100000, guid: e2fa5c7c9e1ac9842afe738bf8d105a3, type: 2}
   specialAbilityName: Bombs Away
-  specialDescription: Drop four bombs down different columns at once. Each bomb detonates
-    when it hits a set unit or the bottom of the board.
+  specialDescription: Drop four bombs down different columns and mark four obstacles or floor effects with extra bombs. All bombs detonate together.
   startsLocked: 1
   unlockCost: 100
   ability: 6
@@ -29,6 +28,7 @@ MonoBehaviour:
   specialAbilityAnimationPrefab: {fileID: 8527199040219002353, guid: da620725fad363640b3397bc5e3f1cee, type: 3}
   specialAbilityAnimationSFX: {fileID: 8300000, guid: cb528153c8275064bb517a88902c4454, type: 3}
   specialAbilityAnimationSFXVolume: 1
+  specialAbilityAnimationEndEarlySeconds: 0.35
   reviveAllVFXSprite: {fileID: 0}
   sfxRestoreAll: {fileID: 0}
   immunityDuration: 5

@@ -29,6 +29,7 @@ MonoBehaviour:
   specialAbilityAnimationPrefab: {fileID: 6232640274448338542, guid: 7be867271a485b24c90844f3f77bf0a4, type: 3}
   specialAbilityAnimationSFX: {fileID: 8300000, guid: cb528153c8275064bb517a88902c4454, type: 3}
   specialAbilityAnimationSFXVolume: 1
+  specialAbilityAnimationEndEarlySeconds: 0.35
   reviveAllVFXSprite: {fileID: 0}
   sfxRestoreAll: {fileID: 0}
   immunityDuration: 5
