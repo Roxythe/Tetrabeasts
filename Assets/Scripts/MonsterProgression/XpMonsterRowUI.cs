@@ -77,9 +77,11 @@ public class XpMonsterRowUI : MonoBehaviour
 
     public void SetXp(float xpInto, float xpPerLevel = 100f)
     {
+        xpPerLevel = Mathf.Max(0f, xpPerLevel);
         xpInto = Mathf.Clamp(xpInto, 0f, xpPerLevel);
-        if (xpSlider) xpSlider.value = xpPerLevel > 0 ? (xpInto / xpPerLevel) : 0f;
-        if (xpText) xpText.text = $"{xpInto:0.#}/{xpPerLevel:0}";
+
+        if (xpSlider) xpSlider.value = xpPerLevel > 0f ? (xpInto / xpPerLevel) : 0f;
+        if (xpText) xpText.text = $"{FormatXpIntoForBar(xpInto, xpPerLevel)}/{xpPerLevel:0}";
     }
 
     public void HideDeltaTexts()
@@ -300,6 +302,25 @@ public class XpMonsterRowUI : MonoBehaviour
         return xp.ToString("0.#");
     }
 
+    static string FormatXpIntoForBar(float xpInto, float xpPerLevel)
+    {
+        if (xpPerLevel <= 0f)
+            return "0";
+
+        xpInto = Mathf.Clamp(xpInto, 0f, xpPerLevel);
+
+        if (xpInto >= xpPerLevel)
+            return xpPerLevel.ToString("0");
+
+        float display = Mathf.Round(xpInto * 10f) / 10f;
+        if (display >= xpPerLevel)
+            display = Mathf.Max(0f, xpPerLevel - 0.1f);
+
+        return Mathf.Approximately(display, Mathf.Round(display))
+            ? display.ToString("0")
+            : display.ToString("0.#");
+    }
+
     public void InitXpState(int level, float xpInto, float xpPerLevel = 100f)
     {
         HideLevelUps(); // Reset level-up display 
@@ -347,44 +368,24 @@ public class XpMonsterRowUI : MonoBehaviour
 
     public int SubtractXpFromOrb(float deltaXp, float xpPerLevel = 100f)
     {
-        int steps = Mathf.Max(0, Mathf.FloorToInt(deltaXp));
-        if (steps <= 0) return 0;
+        xpPerLevel = Mathf.Max(0.0001f, xpPerLevel);
+        if (deltaXp <= 0f) return 0;
 
         int levelsLost = 0;
+        _uiXpInto -= deltaXp;
 
-        for (int s = 0; s < steps; s++)
+        while (_uiXpInto < 0f && _uiLevel > 1)
         {
-            // Already fully drained
-            if (_uiLevel <= 1 && _uiXpInto <= 0f)
-            {
-                _uiLevel = 1;
-                _uiXpInto = 0f;
-                break;
-            }
-
-            // Normal decrement within current level
-            if (_uiXpInto > 0f)
-            {
-                _uiXpInto -= 1f;
-                if (_uiXpInto < 0f) _uiXpInto = 0f;
-            }
-            else
-            {
-                // At 0/100 drop a level and set to 99/100
-                if (_uiLevel > 1)
-                {
-                    _uiLevel -= 1;
-                    levelsLost += 1;
-                    _uiXpInto = xpPerLevel - 1f; // 99 for 100-based XP
-                }
-                else
-                {
-                    _uiLevel = 1;
-                    _uiXpInto = 0f;
-                    break;
-                }
-            }
+            _uiLevel -= 1;
+            levelsLost += 1;
+            _uiXpInto += xpPerLevel;
         }
+
+        if (_uiLevel <= 1 && _uiXpInto < 0f)
+            _uiXpInto = 0f;
+
+        _uiLevel = Mathf.Max(1, _uiLevel);
+        _uiXpInto = Mathf.Clamp(_uiXpInto, 0f, xpPerLevel - 0.0001f);
 
         SetLevel(_uiLevel);
         SetXp(_uiXpInto, xpPerLevel);
