@@ -3,6 +3,12 @@
 
 -Level Modifier 'Watch Your Step'. Exclduing the top 5 rows randomly spawn floor effects / obstacles across 50% of the remaining cells. Do not add multiple obstacles or floor effects to the same cell.
 
+- Level Modifier 'Flip The Board'. Rotate the board 180 degrees. New pieces spawn at the bottom of the board and rise up instead of falling down. This swap should occur every 20-30 seconds. Flash a warning VFX on the side of the board for 2 seconds before the rotation occurs. After round completion make sure board position/rotation is reset back to it's default so it doesn't bleed into new games/levels.
+
+- New Castle sprites for volcanic level mod and Miasma swamp level mod.
+
+
+
 ----------------------------------------------------------------------------------------------------
 
 
