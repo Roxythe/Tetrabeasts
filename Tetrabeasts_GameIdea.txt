@@ -11,6 +11,14 @@
 
 - Level Modifier 'Hallucination'. Spawn one Hallucination sprite at the start of the round, then every 10 seconds Spawn a hallucination sprite at the top of the board (where active pieces spawn) and shoot it into the board at 'x' velocity at a random angle (between 195-345 degrees) to make sure it is angled into the board. The hallucination sprite should move around within the boundaries of the board bouncing off of the boundaries of the board bouncing in a logical and linear fashion. The hallucination sprite should be on top visually, only below the pause menu (if pause menu panel is active). If two hallucination sprites would collide with each other the bigger sprite should consume the smaller sprite and grow in size continuing on it's trajectory. If they are the same size pick one at random to consume the other. If a players attack projectile collides with the hallucination sprite it should play a sprite animation (scaled up to the same size as the destroyed hallucination sprite). When the hallucination is destroyed by player projectile immediately spawn a new hallucination, reset the spawn countdown, and increase the base size of the spawned hallucination sprites. It might work best if the hallucination game object holds an array of sprites and stays on the first sprite until it is collided with and then plays through the array for the death animation. I also want an alternate sprite that flashes on for 0.5 seconds when consuming another hallucination sprite and then back to the default sprite.
 
+New icons added to the LevelModifer folder for the new level mods. A Halluucination_Animation (0) has been added to be used as a placeholder for the hallucination sprite when the hallucination level modifier is active.
+
+Keep track of what has been finished and what still needs to be done if credits run out before all trequests have been finished.
+
+------------------------------------------------------------------------------------------------
+
+Not Started yet
+
 - New Castle/hp bar sprites for volcanic level mod, rain level mod, and Miasma swamp level mod.
 
 - Check if the 'Accumulate 15 buffs' achievement is tracking correctly and can be triggered when the player has at least 15 buffs (including stone block buffs and round end reward buffs)
