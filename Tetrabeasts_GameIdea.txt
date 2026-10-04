@@ -1,13 +1,23 @@
 
 - Level modifier 'Dr. Feel Good'. Healing monster units will have +1 to healing range and will heal more often. Monster units that are healed will start taking damage over time (starting out small) and increasing each time that monster unit is healed. Clearing/destroying a monster unit should clear away the stacking debuff so that it doesn't carry over if reused from the unit pool. All debuffs should be cleared when the level ends. Visually the debuff should be represented by changing the foreground color of the monster unit slightly darker. Color changes should not be permanently changed.
 
--Level Modifier 'Watch Your Step'. Exclduing the top 5 rows randomly spawn floor effects / obstacles across 50% of the remaining cells. Do not add multiple obstacles or floor effects to the same cell.
+-Level Modifier 'Watch Your Step'. Excluding the top 5 rows randomly spawn floor effects / obstacles across 33% of the remaining cells. Do not add multiple obstacles or floor effects to the same cell.
 
 - Level Modifier 'Flip The Board'. Rotate the board 180 degrees. New pieces spawn at the bottom of the board and rise up instead of falling down. This swap should occur every 20-30 seconds. Flash a warning VFX on the side of the board for 2 seconds before the rotation occurs. After round completion make sure board position/rotation is reset back to it's default so it doesn't bleed into new games/levels.
 
-- New Castle sprites for volcanic level mod and Miasma swamp level mod.
+- Level Modifier 'Inversion'. Swap invert controls so that left shift, shifts right and shift right, shifts left. Also invert controls for turning active pieces by making clockwise, turn counter clockwise and counterclockwise, now turns clockwise instead. Make sure controls are set back to normal after the level ends back to their previous controls (should not fully reset key bindings to default, but the key bindings that were active before the swap was made).
 
+- Level Modifier 'Bombardment'. Every 13 seconds select a 3x3 array of cells below the top 5 rows (do a warning sprite flash over the selected cells for 2 seconds) and at 15 seconds spawn a crater sprite on the board that covers the 9 selected cells. The sprite should be below the grid lines and the special block vfx sprites that appear on the aboard when a special block is used, but above the board background visually. Any monsters/traps/obstacles occupying those cells will be destroyed. The crater should be considered an immovable obstacle that doesn't shift in position from column settling from row clears or special blocks. The crater cells should be considered obstacles and stop the movement of active pieces. They should not be counted as cells occupied for a row clear. After 30 seconds the crate obstacle grid should be destroyed (this should make it so no more than 2 (3x3) crater obstacles are on the board at the same time. The bombardment obstacle should not block enemy or player projectiles.
 
+- Level Modifier 'Hallucination'. Spawn one Hallucination sprite at the start of the round, then every 10 seconds Spawn a hallucination sprite at the top of the board (where active pieces spawn) and shoot it into the board at 'x' velocity at a random angle (between 195-345 degrees) to make sure it is angled into the board. The hallucination sprite should move around within the boundaries of the board bouncing off of the boundaries of the board bouncing in a logical and linear fashion. The hallucination sprite should be on top visually, only below the pause menu (if pause menu panel is active). If two hallucination sprites would collide with each other the bigger sprite should consume the smaller sprite and grow in size continuing on it's trajectory. If they are the same size pick one at random to consume the other. If a players attack projectile collides with the hallucination sprite it should play a sprite animation (scaled up to the same size as the destroyed hallucination sprite). When the hallucination is destroyed by player projectile immediately spawn a new hallucination, reset the spawn countdown, and increase the base size of the spawned hallucination sprites. It might work best if the hallucination game object holds an array of sprites and stays on the first sprite until it is collided with and then plays through the array for the death animation. I also want an alternate sprite that flashes on for 0.5 seconds when consuming another hallucination sprite and then back to the default sprite.
+
+- New Castle/hp bar sprites for volcanic level mod, rain level mod, and Miasma swamp level mod.
+
+- Check if the 'Accumulate 15 buffs' achievement is tracking correctly and can be triggered when the player has at least 15 buffs (including stone block buffs and round end reward buffs)
+
+- Adjustable screen size (Not full screen only). Window screen mode with adjustable screen size.
+
+- Shorten the animation for mao and quixel, too long.
 
 ----------------------------------------------------------------------------------------------------
 
