@@ -37,6 +37,13 @@ public class UIImagePingPongAnimator : MonoBehaviour
 
     void Update()
     {
+        Advance(Time.unscaledDeltaTime);
+    }
+
+    // Gameplay-owned animations can disable automatic Update and supply their
+    // own delta time, so pauses and temporary sprite overrides stay in sync.
+    public void Advance(float deltaTime)
+    {
         if (!_isPlaying || !EnsureTargetImage() || frames == null || frames.Length == 0)
             return;
 
@@ -46,7 +53,7 @@ public class UIImagePingPongAnimator : MonoBehaviour
             return;
         }
 
-        _timer += Time.unscaledDeltaTime;
+        _timer += Mathf.Max(0f, deltaTime);
         float frameDuration = 1f / Mathf.Max(1f, framesPerSecond);
 
         while (_timer >= frameDuration)

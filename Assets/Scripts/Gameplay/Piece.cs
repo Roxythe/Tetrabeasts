@@ -198,6 +198,13 @@ public class Piece : MonoBehaviour
                                (gc == null || !gc.IsTutorialHardDropInputGraceActive) &&
                                TetrabeastsControls.WasPressed(TetrabeastsControlAction.HardDrop);
 
+        bool invertControls = gc && gc.levelModifierController && gc.levelModifierController.InvertsPieceControls;
+        bool flippedBoard = gc && gc.levelModifierController && gc.levelModifierController.BoardFlipped;
+        // Translate screen directions to the rotated grid; inversion swaps actions
+        // without modifying the player's keyboard, gamepad, or Steam bindings.
+        if (invertControls != flippedBoard)
+            (moveLeftPressed, moveRightPressed) = (moveRightPressed, moveLeftPressed);
+
         if (moveLeftPressed && TryMove(Vector2Int.left))
             NotifyTutorialEvent(TutorialGameplayEvent.MoveLeft);
 
@@ -219,6 +226,9 @@ public class Piece : MonoBehaviour
                 rotateCcwPressed = false;
             }
         }
+
+        if (invertControls)
+            (rotateCwPressed, rotateCcwPressed) = (rotateCcwPressed, rotateCwPressed);
 
         if (rotateCwPressed)
             RotateCW(true);
@@ -1284,6 +1294,8 @@ public class Piece : MonoBehaviour
     {
         if (board == null || cells.Count == 0)
             return true;
+
+        if (OverlapsPlacedCells()) CancelVisualTransition();
 
         bool moved = false;
         int maxAttempts = Mathf.Max(1, board.height + 4);

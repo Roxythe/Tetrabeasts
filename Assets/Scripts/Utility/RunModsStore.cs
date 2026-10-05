@@ -5,6 +5,23 @@ public static class RunModsStore
     public static readonly List<RunModifierSO> Buffs = new();
     public static readonly List<RunModifierSO> Debuffs = new();
 
+    public static void SyncBuffAchievementProgress()
+    {
+        var progress = PlayerProgress.I;
+        if (!progress) return;
+
+        // Both stone drops and round rewards are stored here. Count each stack,
+        // including repeated copies, but never debuffs or missing asset references.
+        int count = 0;
+        for (int i = 0; i < Buffs.Count; i++)
+            if (Buffs[i]) count++;
+
+        progress.SetRunBestInt(AchievementSystem.Stat.RunBuffModsChosen, count);
+        // Restored saves can already have the same count without having unlocked.
+        // SetRunBestInt does not evaluate achievements when its value is unchanged.
+        AchievementSystem.OnStatChanged(AchievementSystem.Stat.RunBuffModsChosen);
+    }
+
     // runtime multipliers/additives (defaults)
     public static float EnemyAttackIntervalMult = 1f;
     public static float EnemyProjectileDamageMult = 1f;

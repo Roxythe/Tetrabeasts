@@ -1343,6 +1343,7 @@ public class GameController : MonoBehaviour
         RunMonsterProgress.RestoreSnapshot(BuildRunMonsterSnapshot(saveData.runMonsterStates));
         RunSummaryStats.RestoreSerializableSnapshot(saveData.runSummary);
         PlayerProgress.I?.RestoreRunState(saveData.playerProgressRun);
+        RunModsStore.SyncBuffAchievementProgress();
 
         RunModsStore.Luck = EffectiveLuck;
         RunModsStore.Misfortune = CurrentMisfortune;
@@ -2468,6 +2469,7 @@ public class GameController : MonoBehaviour
             return;
 
         gameOver = true;
+        levelModifierController?.EndNewModifierEffects();
         StopSpecialSiphonChannel(forceDestroyParticles: true);
         _claimedRoundLossOneLiner = ClaimRoundTransitionOneLiner(RoundTransitionVariant.Loss);
         ClearTempRunCheckpoint();
@@ -3634,6 +3636,7 @@ public class GameController : MonoBehaviour
 
     void CleanupRoundTransientGameplayObjects()
     {
+        levelModifierController?.EndNewModifierEffects();
         InvalidateRoundTransientActions();
         ClearProjectileRootTransients();
         gameBoard?.ClearRoundTransientEffects();
@@ -3765,6 +3768,7 @@ public class GameController : MonoBehaviour
     {
         if (gameOver || levelWon) return;
         levelWon = true;
+        levelModifierController?.EndNewModifierEffects();
         TrackCurrentRoundWinStats();
         _claimedRoundWinOneLiner = ClaimRoundTransitionOneLiner(RoundTransitionVariant.Win);
 
@@ -3896,6 +3900,7 @@ public class GameController : MonoBehaviour
         ApplyFinalLevelRoundWinBookkeeping();
 
         gameOver = true;
+        levelModifierController?.EndNewModifierEffects();
         ClearTempRunCheckpoint();
         PlayerProgress.I?.EndRun();
 
@@ -4059,9 +4064,6 @@ public class GameController : MonoBehaviour
             // Track buff round mod achievements
             if (PlayerProgress.I && PlayerProgress.I.GetLifetimeInt(AchievementSystem.Stat.FirstBuffChosen) == 0)
                 PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.FirstBuffChosen, 1);
-
-            if (PlayerProgress.I)
-                PlayerProgress.I.AddRunInt(AchievementSystem.Stat.RunBuffModsChosen, 1);
         }
 
         if (debuff)
@@ -4118,6 +4120,7 @@ public class GameController : MonoBehaviour
         RunModsStore.ReserveUnitsRestoredOnWinAdd = reserveUnitsRestoredOnWinAdd;
         RunModsStore.MaxReserveUnitsAdd = maxReserveUnitsAdd;
         RunModsStore.DisableRoundWinReserveRestore = disableRoundWinReserveRestore;
+        RunModsStore.SyncBuffAchievementProgress();
     }
 
     void ContinueAfterRoundRewards()
@@ -4348,6 +4351,7 @@ public class GameController : MonoBehaviour
             return;
 
         gameOver = true;
+        levelModifierController?.EndNewModifierEffects();
         ClearTempRunCheckpoint();
         PlayerProgress.I?.EndRun();
     }
@@ -5882,6 +5886,13 @@ public class GameController : MonoBehaviour
             Vector2 previousPosition = rt.anchoredPosition;
             rt.anchoredPosition = Vector2.MoveTowards(rt.anchoredPosition, targetAnchored, speed * dt);
 
+            if (levelModifierController && levelModifierController.TryHitHallucination(
+                ProjectileRootToBoardLocal(previousPosition), ProjectileRootToBoardLocal(rt.anchoredPosition)))
+            {
+                ReleaseRuntimeVfxRoot(rt, "AttackProjectile");
+                yield break;
+            }
+
             if (TryGetPlayerAttackHardenedLavaImpactCell(previousPosition, rt.anchoredPosition, out var lavaCell) &&
                 gameBoard.TryHandlePlayerAttackObstacleImpact(lavaCell))
             {
@@ -6156,6 +6167,7 @@ public class GameController : MonoBehaviour
         if (enemyCastleUI.currentHP <= 0 && !winQueued)
         {
             winQueued = true;
+            levelModifierController?.EndNewModifierEffects();
             StartCoroutine(CoWinAfterDelay(0.25f));
             return true;
         }

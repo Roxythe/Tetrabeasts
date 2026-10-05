@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcae7d88244247b6a7e32226574b936e, type: 3}
+  m_Name: Hallucination
+  m_EditorClassIdentifier: Assembly-CSharp::LevelModifierSO
+  kind: 29
+  displayName: Hallucination
+  description: Bouncing hallucinations consume each other. Player projectiles destroy them and spawn a larger replacement.
+  icon: {fileID: -6867703046593702270, guid: 50d4aac37890c4b48940272b8fc7df93, type: 3}
+  hallucinationIdleFrames:
+  - {fileID: 21300000, guid: 60a01c2681964cf4286e3a9b840183c2, type: 3}
+  - {fileID: 21300000, guid: d5d163d435f634042a880edcf1e6536b, type: 3}
+  - {fileID: 21300000, guid: 7b414a51d7e88444e9eb97f9bddbf618, type: 3}
+  - {fileID: 21300000, guid: f7f808570f6593c4e8e1d9e428e89574, type: 3}
+  - {fileID: 21300000, guid: b5267f51f61dff944b8b1132ca18cc6b, type: 3}
+  - {fileID: 21300000, guid: 5cb474b429612f841ac786a4feafbcc8, type: 3}
+  - {fileID: 21300000, guid: 7d5e9f9160f62854fbd11e8f5f84071c, type: 3}
+  - {fileID: 21300000, guid: bb3a794edef17364ca6941f09182a51a, type: 3}
+  - {fileID: 21300000, guid: 76e35e54c1ae89f4bb17517ecd255689, type: 3}
+  - {fileID: 21300000, guid: 9a13fee0fd795444e82cd00d3facb2cc, type: 3}
+  - {fileID: 21300000, guid: a64eee4d8cdb29c48935b3e8ef5094a4, type: 3}
+  - {fileID: 21300000, guid: 61e3bdb32f719de48aae9a9cb94cb752, type: 3}
+  - {fileID: 21300000, guid: a65736fc4be2e554cb2bb1dfca7505ac, type: 3}
+  - {fileID: 21300000, guid: b0f914b3838db4a40b02e21aa24afc5e, type: 3}
+  - {fileID: 21300000, guid: 601d28536ae670340adbc2a366b6864a, type: 3}
+  - {fileID: 21300000, guid: 971a0fad6f3c02e42a8d781d373d1a7c, type: 3}
+  - {fileID: 21300000, guid: e10457ac95731714c81363dcb640f0e6, type: 3}
+  - {fileID: 21300000, guid: 4e4e497a99ff92340844620d39eed601, type: 3}
+  - {fileID: 21300000, guid: 84cc6ff6b9653ad44897638b764615bd, type: 3}
+  hallucinationIdleFramesPerSecond: 12
+  hallucinationAnimation:
+  - {fileID: 21300000, guid: a281be6d092f22c4e964a3d07868d62a, type: 3}
+  hallucinationConsumeSprite: {fileID: 21300000, guid: a281be6d092f22c4e964a3d07868d62a, type: 3}
+

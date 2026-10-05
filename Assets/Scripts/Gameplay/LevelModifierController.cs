@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Video;
 using UnityEngine.UI;
 
-public class LevelModifierController : MonoBehaviour
+public partial class LevelModifierController : MonoBehaviour
 {
     public const float AutoMovementGravityMultiplier = 0.333334f;
 
@@ -177,6 +177,7 @@ public class LevelModifierController : MonoBehaviour
 
     void OnDestroy()
     {
+        EndNewModifierEffects();
         StopVolcanicEruptionRoutine();
         StopSoftSpaceRoutine();
         StopAnimatedBackgroundStartGuard();
@@ -198,6 +199,7 @@ public class LevelModifierController : MonoBehaviour
             return;
 
         float dt = Time.deltaTime;
+        UpdateNewModifierEffects(dt);
 
         switch (ActiveModifier.kind)
         {
@@ -671,6 +673,7 @@ public class LevelModifierController : MonoBehaviour
 
     void ApplyModifierStartupEffects()
     {
+        PrepareNewModifierEffects();
         EnsureBoardPresentation();
 
         _comboShieldRemaining = (ActiveModifier && ActiveModifier.kind == LevelModifierKind.ComboShield)
@@ -2114,6 +2117,7 @@ public class LevelModifierController : MonoBehaviour
 
     void ResetLevelState()
     {
+        EndNewModifierEffects();
         StopVolcanicEruptionRoutine();
         StopSoftSpaceRoutine();
         if (board)

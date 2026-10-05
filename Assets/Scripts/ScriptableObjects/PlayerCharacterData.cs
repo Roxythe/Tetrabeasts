@@ -40,6 +40,9 @@ public class PlayerCharacterData : ScriptableObject
     public AudioClip specialAbilityAnimationSFX;
     [Range(0f, 1f)] public float specialAbilityAnimationSFXVolume = 0.65f;
     [Min(0f)] public float specialAbilityAnimationEndEarlySeconds = 0f;
+    [Min(0.1f)] public float specialAbilityAnimationPlaybackSpeed = 1f;
+    [Tooltip("Close the popup with the final animation frame, overlapping the outro instead of holding the last frame.")]
+    public bool specialAbilityAnimationFinishOnLastFrame = false;
 
     [Header("Restore All To Full (Revive + Heal)")]
     public Sprite reviveAllVFXSprite;

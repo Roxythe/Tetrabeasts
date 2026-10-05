@@ -28,6 +28,9 @@ public sealed class SpecialAbilityPopup : MonoBehaviour
     Transform dimmerTransform;
     RectTransform slideContentRoot;
     float characterAnimationEndEarlySeconds;
+    float characterAnimationPlaybackSpeed = 1f;
+    bool characterAnimationFinishOnLastFrame;
+    float characterAnimationStartedAt;
     readonly List<GraphicFadeTarget> dimmerFadeTargets = new();
     readonly List<RectTransform> slideRects = new();
     readonly List<Vector2> slideEndPositions = new();
@@ -66,6 +69,12 @@ public sealed class SpecialAbilityPopup : MonoBehaviour
         onCharacterAnimationStart?.Invoke();
         StartCharacterAnimator();
 
+        if (characterAnimationFinishOnLastFrame)
+        {
+            yield return PlayCharacterAnimationToCompletion(onClosingStarted);
+            yield break;
+        }
+
         yield return WaitForCharacterAnimation();
         yield return PlayOutro(onClosingStarted);
     }
@@ -89,6 +98,9 @@ public sealed class SpecialAbilityPopup : MonoBehaviour
         characterAnimationEndEarlySeconds = characterData
             ? Mathf.Max(0f, characterData.specialAbilityAnimationEndEarlySeconds)
             : 0f;
+        characterAnimationPlaybackSpeed = characterData
+            ? Mathf.Max(0.1f, characterData.specialAbilityAnimationPlaybackSpeed) : 1f;
+        characterAnimationFinishOnLastFrame = characterData && characterData.specialAbilityAnimationFinishOnLastFrame;
         dimmerFadeTargets.Clear();
         slideRects.Clear();
         slideEndPositions.Clear();
@@ -446,7 +458,53 @@ public sealed class SpecialAbilityPopup : MonoBehaviour
     void StartCharacterAnimator()
     {
         if (characterAnimator)
+        {
             StartAnimator(characterAnimator);
+            characterAnimator.speed = characterAnimationPlaybackSpeed;
+        }
+        characterAnimationStartedAt = Time.realtimeSinceStartup;
+    }
+
+    IEnumerator PlayCharacterAnimationToCompletion(System.Action<float> onClosingStarted)
+    {
+        AnimationClip clip = characterAnimator && characterAnimator.runtimeAnimatorController && characterAnimator.layerCount > 0
+            ? GetCharacterAnimationClip(characterAnimator) : null;
+        float duration = GetCharacterPlaybackDuration(clip);
+        float fadeDuration = Mathf.Min(duration, Mathf.Max(0f, loopSfxFadeOutLeadSeconds));
+        float slideDuration = Mathf.Min(duration, Mathf.Max(0f, slideOutSeconds));
+        bool closingStarted = false;
+
+        // One deadline owns animation, audio fade, and exit. No post-clip buffer
+        // or frozen-frame outro, and no early cut of the character's final frames.
+        while (true)
+        {
+            float remaining = duration - (Time.realtimeSinceStartup - characterAnimationStartedAt);
+            if (!closingStarted && remaining <= fadeDuration)
+            {
+                closingStarted = true;
+                onClosingStarted?.Invoke(Mathf.Max(0f, remaining));
+            }
+            if (remaining <= 0f) break;
+            if (slideDuration > 0f && remaining <= slideDuration)
+                ApplyContentSlide(Mathf.SmoothStep(0f, 1f, remaining / slideDuration));
+            yield return null;
+        }
+
+        if (!closingStarted) onClosingStarted?.Invoke(0f);
+        HoldCharacterAnimationOnLastFrame(clip);
+        yield return null; // Render the final sprite once, with no timed hold.
+        ApplyContentSlide(0f);
+    }
+
+    float GetCharacterPlaybackDuration(AnimationClip clip)
+    {
+        float speed = characterAnimationPlaybackSpeed;
+        if (characterAnimator && characterAnimator.runtimeAnimatorController && characterAnimator.layerCount > 0)
+        {
+            var state = characterAnimator.GetCurrentAnimatorStateInfo(0);
+            speed = Mathf.Max(0.1f, Mathf.Abs(characterAnimator.speed * state.speed * state.speedMultiplier));
+        }
+        return Mathf.Min((clip ? clip.length : fallbackDurationSeconds) / speed, maxDurationSeconds);
     }
 
     void StartAnimator(Animator animator)
@@ -493,7 +551,7 @@ public sealed class SpecialAbilityPopup : MonoBehaviour
         yield return null;
 
         AnimationClip characterClip = GetCharacterAnimationClip(characterAnimator);
-        float duration = Mathf.Min(characterClip ? characterClip.length : fallbackDurationSeconds, maxDurationSeconds);
+        float duration = GetCharacterPlaybackDuration(characterClip);
 
         if (characterAnimationEndEarlySeconds > 0f)
         {

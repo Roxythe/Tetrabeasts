@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcae7d88244247b6a7e32226574b936e, type: 3}
+  m_Name: Inversion
+  m_EditorClassIdentifier: Assembly-CSharp::LevelModifierSO
+  kind: 27
+  displayName: Inversion
+  description: Left and right movement and clockwise and counterclockwise rotation are reversed.
+  icon: {fileID: -7682964960751539237, guid: 91889da090d45184ba99953de6570eaa, type: 3}

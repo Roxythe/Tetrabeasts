@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class Board : MonoBehaviour
+public partial class Board : MonoBehaviour
 {
     [Header("Shop Buff Monster Values")]
     public int attackShopBuff;
@@ -416,6 +416,8 @@ public class Board : MonoBehaviour
         public float contagionPercentPerTick;
         public float contagionTickTimer;
         public float contagionSpreadTimer;
+        public int feelGoodStacks;
+        public float feelGoodTickTimer;
 
         public MonsterInstance(MonsterData d)
         {
@@ -435,6 +437,8 @@ public class Board : MonoBehaviour
             contagionPercentPerTick = 0f;
             contagionTickTimer = 0f;
             contagionSpreadTimer = 0f;
+            feelGoodStacks = 0;
+            feelGoodTickTimer = 0f;
 
             RecalcFromData(setHpToMax: true);
         }
@@ -728,6 +732,7 @@ public class Board : MonoBehaviour
         if (_gc && !_gc.IsRoundActive) return; // Nothing should tick outside active rounds
 
         TickFloorEffects();
+        TickFeelGood();
         AnimateSpikes();
         AnimateTeleportFloorEffects();
         AnimateZipPads();
@@ -740,6 +745,8 @@ public class Board : MonoBehaviour
 
         float healMult = (_gc != null) ? _gc.healPowerMult : 1f;
         int rangeAdd = (_gc != null) ? _gc.healRangeAdd : 0;
+        var feelGood = FeelGoodModifier;
+        if (feelGood) rangeAdd++;
 
         healTimerKeysScratch.Clear();
         foreach (var key in healTimers.Keys)
@@ -761,6 +768,7 @@ public class Board : MonoBehaviour
 
             int finalHeal = Mathf.RoundToInt(inst.healAmount * healMult);
             float interval = inst.healSpeed;
+            if (feelGood) interval *= Mathf.Clamp(feelGood.feelGoodHealIntervalMultiplier, 0.1f, 1f);
 
             // Accumulate timer for this healer
             float t = 0f;
@@ -1254,6 +1262,7 @@ public class Board : MonoBehaviour
             return;
 
         StopMonsterFlashForTile(rt);
+        RestoreFeelGoodTint(rt);
         ReleaseOverlayChildrenNamed(rt, "HealVFX");
         ResetReusableTileImages(rt);
         rt.gameObject.SetActive(false);
@@ -1796,6 +1805,10 @@ public class Board : MonoBehaviour
 
         if (inst.hp <= 0f)
         {
+            inst.feelGoodStacks = 0;
+            inst.feelGoodTickTimer = 0f;
+            monsters[cell] = inst;
+            if (placed.TryGetValue(cell, out var deadTile)) RestoreFeelGoodTint(deadTile);
             StopPortraitAltSwap(cell, restoreNormal: true);
             TileDied?.Invoke(cell, inst.data);
         }
@@ -1826,6 +1839,7 @@ public class Board : MonoBehaviour
         if (applied <= 0.0001f) return false;
 
         inst.hp = newHp;
+        if (FeelGoodModifier) inst.feelGoodStacks++;
         monsters[cell] = inst;
         UpdateTileHPVisual(cell, inst.hp, inst.maxHp);
 
@@ -1890,7 +1904,7 @@ public class Board : MonoBehaviour
 
         if (c.y < 0) return false; // Below the board is not OK (floor)
 
-        return !placed.ContainsKey(c); // Inside the board: must be empty
+        return !placed.ContainsKey(c) && !IsCraterCell(c); // Inside the board: must be empty
     }
 
     public void Place(Vector2Int c, RectTransform visual)
@@ -1974,6 +1988,8 @@ public class Board : MonoBehaviour
 
     public void ClearRoundTransientEffects()
     {
+        ClearFeelGood();
+        ClearCraterCells();
         healVfxGeneration++;
         magicExplosives.Clear();
         DestroyOverlayChildrenNamed("BossWarning");
@@ -2625,6 +2641,7 @@ public class Board : MonoBehaviour
             {
                 totalRestored += Mathf.Max(0f, max - inst.hp);
                 inst.hp = max;
+                if (FeelGoodModifier) inst.feelGoodStacks++;
                 monsters[cell] = inst;
 
                 UpdateTileHPVisual(cell, inst.hp, max); // Update visual
@@ -2789,7 +2806,7 @@ public class Board : MonoBehaviour
                 var from = new Vector2Int(x, y);
 
                 // If obstacles are not allowed to fall, they are fixed blockers
-                if (!allowObstaclesToFall && obstacles.ContainsKey(from))
+                if (IsCraterCell(from) || (!allowObstaclesToFall && obstacles.ContainsKey(from)))
                 {
                     writeY = y + 1;
                     continue;
@@ -2799,7 +2816,7 @@ public class Board : MonoBehaviour
                     continue;
 
                 // Never move obstacle visuals in non-obstacle mode
-                if (!allowObstaclesToFall && obstacles.ContainsKey(from))
+                if (IsCraterCell(from) || (!allowObstaclesToFall && obstacles.ContainsKey(from)))
                     continue;
 
                 // Don't write into obstacle cells when obstacles are fixed
@@ -2927,7 +2944,7 @@ public class Board : MonoBehaviour
                 var from = new Vector2Int(x, y);
 
                 // If obstacles are not allowed to fall, they are fixed blockers
-                if (!allowObstaclesToFall && obstacles.ContainsKey(from))
+                if (IsCraterCell(from) || (!allowObstaclesToFall && obstacles.ContainsKey(from)))
                 {
                     writeY = y + 1;
                     continue;
@@ -2937,7 +2954,7 @@ public class Board : MonoBehaviour
                     continue;
 
                 // Never move obstacle visuals in non-obstacle mode
-                if (!allowObstaclesToFall && obstacles.ContainsKey(from))
+                if (IsCraterCell(from) || (!allowObstaclesToFall && obstacles.ContainsKey(from)))
                     continue;
 
                 // Don't write into obstacle cells when obstacles are fixed
@@ -3671,7 +3688,7 @@ public class Board : MonoBehaviour
         return cleared;
     }
 
-    public bool IsFree(Vector2Int c) => InBounds(c) && !placed.ContainsKey(c);
+    public bool IsFree(Vector2Int c) => InBounds(c) && !placed.ContainsKey(c) && !IsCraterCell(c);
 
     public int CountFreeCellsInRow(int y)
     {
@@ -4171,6 +4188,7 @@ public class Board : MonoBehaviour
     {
         if (!InBounds(cell)) return false;
         if (!IsFree(cell)) return false;
+        if (PreventEnvironmentOverlap && HasFloorEffect(cell)) return false;
 
         var rt = InstantiateTileUI(Color.white, sprite, backgroundSprite ? backgroundSprite : GetBossObstacleBackgroundSprite());
         rt.anchoredPosition = CellToAnchoredPos(cell);
@@ -4213,6 +4231,7 @@ public class Board : MonoBehaviour
     {
         if (!InBounds(cell)) return false;
         if (!IsFree(cell)) return false;
+        if (PreventEnvironmentOverlap && HasFloorEffect(cell)) return false;
 
         var rt = InstantiateTileUI(new Color(0.45f, 0.45f, 0.45f, 1f), stoneUndamagedSprite);
         rt.anchoredPosition = CellToAnchoredPos(cell);
@@ -4228,6 +4247,7 @@ public class Board : MonoBehaviour
     {
         if (!InBounds(cell)) return false;
         if (!IsFree(cell)) return false;
+        if (PreventEnvironmentOverlap && HasFloorEffect(cell)) return false;
         if (!magicPylonSprite) return false;
 
         var rt = InstantiateTileUI(new Color(1f, 1f, 1f, 1f), magicPylonSprite, GetBossObstacleBackgroundSprite());
@@ -4244,6 +4264,7 @@ public class Board : MonoBehaviour
     {
         if (!InBounds(cell)) return false;
         if (!IsFree(cell)) return false;
+        if (PreventEnvironmentOverlap && HasFloorEffect(cell)) return false;
         if (!magicExplosiveSprite) return false;
 
         var rt = InstantiateTileUI(explosiveFillColor, magicExplosiveSprite, GetBossObstacleBackgroundSprite());
@@ -4515,7 +4536,8 @@ public class Board : MonoBehaviour
     {
         if (!InBounds(cell)) return false;
 
-        if (HasFloorEffect(cell)) return false; // Never allow overlapping effects
+        if (HasFloorEffect(cell) || IsCraterCell(cell)) return false; // Never allow overlapping effects
+        if (PreventEnvironmentOverlap && HasObstacle(cell)) return false;
 
         switch (type)
         {

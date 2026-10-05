@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcae7d88244247b6a7e32226574b936e, type: 3}
+  m_Name: WatchYourStep
+  m_EditorClassIdentifier: Assembly-CSharp::LevelModifierSO
+  kind: 25
+  displayName: Watch Your Step
+  description: Random obstacles and floor effects cover 33% of the board below the top five rows.
+  icon: {fileID: -8232596732544374108, guid: c3ed7d6bedda6a94b965d23e9acec17c, type: 3}
