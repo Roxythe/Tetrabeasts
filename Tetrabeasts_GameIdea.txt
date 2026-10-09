@@ -13,7 +13,7 @@
 
 New icons added to the LevelModifer folder for the new level mods. A Halluucination_Animation (0) has been added to be used as a placeholder for the hallucination sprite when the hallucination level modifier is active.
 
-Keep track of what has been finished and what still needs to be done if credits run out before all trequests have been finished.
+Keep track of what has been finished and what still needs to be done if credits run out before all requests have been finished.
 
 - Check if the 'Accumulate 15 buffs' achievement is tracking correctly and can be triggered when the player has at least 15 buffs (including stone block buffs and round end reward buffs)
 
@@ -21,6 +21,22 @@ Keep track of what has been finished and what still needs to be done if credits 
 ------------------------------------------------------------------------------------------------
 
 Not Started yet
+
+- Level Modifier 'Boulders-Away'. Every 5-10 seconds spawn a boulder just above the top of the board and let it fall. When it collides with a living monster unit deal 20 damage to that unit and bounce. The boulder should bounce 3-5 times and then be destroyed. It should bounce off the bottom and sides of the board as well to stay within the board and move semi realistically rotating as it moves to look more animated. when it collides with a living monster unit or the side/bottom of the board it should have a small pixel particle effect play. Living monster unit that the boulder sprite collides with should shake on collision for visual effect. The boulder sprite should move over top of dead units. The only obstacle that should be able to collide with the boulder is the stone obstacle (which should take a single instance of damage from being struck for each time it is collided with). No more than three boulders should ever be active on the board at the same time, if more than 3 exists, pause the boulder spawn timer until there is less than 3. The boulder spawn should only happen when the Boulders-Away level modifier is active or a boss ability spawns them, it is not a normal mechanic for every level. Boulder should be able to collide and bounce off of each other.
+
+- New Boss ability 'Rocks for Everyone'. Add a Boulder spawning mechanic for the boss ability pool. When used it should spawn three boulders spread out (not overlapping) just above the top of the board. Give them the same bounce/damaging mechanics as the level modifier.
+
+- Create a new game mode where the level modifier selection appears at the start of every other level. Level modifiers do not disappear and each level modifier stacks and will continued being used for each level during that run. Keep the same level list as the normal game mode using the same castle data for the level. The main difference is that level modifiers don't disappear after the level is completed. Use the same rules for winning/losing a level for this game mode. Use the same game flow for winning/game over as the standard game mode. Call this game mode 'Chaos' mode. Monster units should gain an additional 20% experience at the end of the run for chaos mode on top of the difficulty bonus. Use the standard mode as a reference for experience.
+
+- Create a new game mode 'Marathon'. Create a new gauge bar to the left side of the board to mirror the ultimate gauge, use the same vfx for the castles health bar (the floating bubbles) and make the color of the bar purple as it fills. It starts empty at the start of the game and the damage dealt by the player increases the bar. Once the bar is filled it should reset the bar back (carrying over any extra points after filling the bar). The game should pause and a pop up panel should give the player three choices. Each choice should be a random pair of one buff and one debuff (of the same rarity, like both common, both rare, or both legendary, etc). After the player confirms their choice the pop up panel should close and the game should resume. The level up gauge should increase in the amount of damage inflicted needed to level up every time the level increases. Every third level should spawn a boss to the enemy castle data with it's ability pool. Use the level exp as an inverse reference to bosses health pool (so when level exp is at 0%, the boss is at 100%. When the level exp is at 40%, the boss is at 60% health. That should allow it to know when to use the bosses normal sprites and critical versions). I have 8 bosses in total right now so when the last boss is spawned she has infinite health, but the level exp should continue normally and not be an infinite pool to level up, she just won't despawn on level up. Use the same rules for losing for this game mode as the standard game mode and gameflow after a gameover is triggered. Monster units should gain a similar amount of experience based on the level reached at the end of the run to standard mode, including the difficulty bonus based on the difficulty setting.
+
+Change the new game button on the MainMenu_Scene to open a panel to select the game mode the player wants to use (make sure there is a close button matching other existing panels for the user to close the panel if they change their mind and want to go back to the main menu. Chaos and Marathon mode should be unlocked by reaching the final level in Standard Mode (at least once). (Have it retroactively unlocked for current players who have reached it once already).
+
+- Create a prefab for the new game mode menu that I can edit to my liking that will be used when playing the game.
+
+- Create a prefab for the new level experience bar UI (Used in marathon mode only) that I can edit to my liking that will be used when playing the game in marathon mode.
+
+- Add a sceenshake VFX when an earthquake or bomb special block is used.
 
 - New Castle/hp bar sprites for volcanic level mod, rain level mod, and Miasma swamp level mod.
 
