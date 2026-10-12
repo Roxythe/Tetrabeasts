@@ -9,6 +9,11 @@ public sealed class MarathonRewardUI : MonoBehaviour
 {
     public Button[] choices;
     public TMP_Text[] choiceLabels;
+    public TMP_Text[] buffLabels, debuffLabels;
+    public Image[] buffIcons, debuffIcons;
+    public Outline[] selectionOutlines;
+    public Color buffTextColor = new Color(0.3f, 0.6f, 1f);
+    public Color debuffTextColor = new Color(1f, 0.22f, 0.25f);
     public Button confirmButton;
     public TMP_Text title;
     public struct Pair { public RunModifierSO buff, debuff; }
@@ -49,17 +54,38 @@ public sealed class MarathonRewardUI : MonoBehaviour
         return result.ToArray();
     }
     public static RunModRarity Rarity(RunModifierSO modifier) => modifier is RunModifier rm ? rm.rarity : RunModRarity.Common;
+    public static Color RarityColor(RunModRarity rarity)
+    {
+        switch (rarity)
+        {
+            case RunModRarity.Uncommon: return Color.green;
+            case RunModRarity.Rare: return new Color(0.3f, 0.6f, 1f);
+            case RunModRarity.Epic: return new Color(0.75f, 0.3f, 1f);
+            case RunModRarity.Legendary: return new Color(1f, 0.75f, 0.2f);
+            default: return Color.white;
+        }
+    }
     public void Show(int level, Pair[] options, Action<RunModifierSO, RunModifierSO> callback)
     {
         pairs = options; onConfirm = callback; selected = -1;
-        title.text = "Level " + level + " — Choose a pair";
+        title.text = "Level " + level + " — Choose a Modifier";
         confirmButton.interactable = false;
         for (int i = 0; i < choices.Length; i++)
         {
             choices[i].gameObject.SetActive(i < pairs.Length);
             if (i >= pairs.Length) continue;
             var p = pairs[i];
-            choiceLabels[i].text = $"{Rarity(p.buff)}\n\n+ {p.buff.displayName}\n{p.buff.description}\n\n− {p.debuff.displayName}\n{p.debuff.description}";
+            var color = RarityColor(Rarity(p.buff));
+            choiceLabels[i].text = Rarity(p.buff).ToString();
+            choiceLabels[i].color = color;
+            buffLabels[i].text = $"<b>{p.buff.displayName}</b>\n{p.buff.description}";
+            debuffLabels[i].text = $"<b>{p.debuff.displayName}</b>\n{p.debuff.description}";
+            buffLabels[i].color = buffTextColor;
+            debuffLabels[i].color = debuffTextColor;
+            buffIcons[i].sprite = p.buff.icon; buffIcons[i].enabled = p.buff.icon;
+            debuffIcons[i].sprite = p.debuff.icon; debuffIcons[i].enabled = p.debuff.icon;
+            choices[i].GetComponent<Image>().color = color;
+            selectionOutlines[i].enabled = false;
         }
         gameObject.SetActive(true); transform.SetAsLastSibling();
         var navigator = GetComponent<ScopedMenuNavigator>() ?? gameObject.AddComponent<ScopedMenuNavigator>();
@@ -70,7 +96,7 @@ public sealed class MarathonRewardUI : MonoBehaviour
     {
         selected = index; confirmButton.interactable = true;
         for (int i = 0; i < choices.Length; i++)
-            choices[i].GetComponent<Image>().color = i == selected ? new Color(0.4f, 0.22f, 0.65f) : new Color(0.12f, 0.09f, 0.2f);
+            selectionOutlines[i].enabled = i == selected;
     }
     void Confirm()
     {

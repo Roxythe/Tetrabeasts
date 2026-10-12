@@ -37,6 +37,7 @@ public static class GameModeAssetBuilder
             menu.marathonButton = Button(panel, "Marathon", "Marathon\nEndless damage levels and boss battles", new Vector2(0, -120), new Vector2(530, 100));
             menu.lockDescription = Label(panel, "Unlock", "Reach the final Standard level to unlock Chaos and Marathon.", new Vector2(0, -245), new Vector2(580, 70), 25);
             menu.closeButton = Button(panel, "Close", "X", new Vector2(303, 277), new Vector2(52, 52), true);
+            GameModeUIPolish.PolishNewPrefab(root);
             PrefabUtility.SaveAsPrefabAsset(root, menuPath); Object.DestroyImmediate(root);
         }
         EditorSceneManager.CloseScene(titleScene, true);
@@ -72,6 +73,7 @@ public static class GameModeAssetBuilder
             ui.gauge.interactable = false; ui.gauge.minValue = 0; ui.gauge.maxValue = 1; ui.gauge.value = 0;
             ui.levelLabel = Label(root, "Level", "Level 1", new Vector2(0, 280), new Vector2(150, 50), 28);
             ui.damageLabel = Label(root, "Damage", "0 / 500", new Vector2(0, -282), new Vector2(150, 50), 23);
+            GameModeUIPolish.PolishNewPrefab(root.gameObject);
             PrefabUtility.SaveAsPrefabAsset(root.gameObject, gaugePath); Object.DestroyImmediate(root.gameObject);
         }
         string rewardPath = Folder + "/MarathonRewardPanel.prefab";
@@ -88,6 +90,7 @@ public static class GameModeAssetBuilder
                 ui.choiceLabels[i].enableAutoSizing = true; ui.choiceLabels[i].fontSizeMin = 18; ui.choiceLabels[i].fontSizeMax = 28;
             }
             ui.confirmButton = Button(panel, "Confirm", "Confirm", new Vector2(0, -305), new Vector2(280, 70));
+            GameModeUIPolish.PolishNewPrefab(root);
             PrefabUtility.SaveAsPrefabAsset(root, rewardPath); Object.DestroyImmediate(root);
         }
         const string configPath = "Assets/Resources/GameModeAssets.asset";
@@ -120,6 +123,14 @@ public static class GameModeAssetBuilder
 
     public static void RenderPreviews()
     {
+        RenderPreviews(false);
+    }
+    public static void RenderGameplayPreview()
+    {
+        RenderPreviews(true);
+    }
+    static void RenderPreviews(bool gameplayOnly)
+    {
         var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
         var config = GameModeAssets.Load();
         var camera = new GameObject("Preview camera").AddComponent<Camera>();
@@ -130,16 +141,32 @@ public static class GameModeAssetBuilder
         var scaler = canvas.GetComponent<CanvasScaler>(); scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1600, 900);
         var target = new RenderTexture(1600, 900, 24); camera.targetTexture = target;
-        var menu = Object.Instantiate(config.modeMenuPrefab, canvas.transform); menu.lockDescription.gameObject.SetActive(false);
-        Capture("Logs/GameModeMenu.png"); Object.DestroyImmediate(menu.gameObject);
-        var reward = Object.Instantiate(config.marathonRewardPrefab, canvas.transform);
-        reward.title.text = "Level 2 — Choose a pair";
-        string[] rarity = { "Common", "Rare", "Legendary" };
-        for (int i = 0; i < 3; i++) reward.choiceLabels[i].text = rarity[i] + "\n\n+ Stronger Attacks\nYour monsters deal more damage.\n\n− Faster Enemies\nEnemy projectiles arrive more often.";
-        Capture("Logs/MarathonRewardPanel.png"); Object.DestroyImmediate(reward.gameObject);
-        var gauge = Object.Instantiate(config.marathonGaugePrefab, canvas.transform); gauge.Refresh(5, 400, 750);
-        Debug.Log("Gauge fill anchors " + gauge.gauge.fillRect.anchorMax + " rect " + gauge.gauge.fillRect.rect + " value " + gauge.gauge.value);
-        Capture("Logs/MarathonLevelGauge.png");
+        if (!gameplayOnly)
+        {
+            var menu = Object.Instantiate(config.modeMenuPrefab, canvas.transform); menu.lockDescription.gameObject.SetActive(false);
+            Capture("Logs/GameModeMenu.png");
+            menu.chaosButton.interactable = false;
+            menu.ShowTooltip(menu.chaosButton, menu.chaosButton.GetComponent<GameModeButtonTooltip>().description);
+            Capture("Logs/GameModeLockedTooltip.png"); Object.DestroyImmediate(menu.gameObject);
+            var reward = Object.Instantiate(config.marathonRewardPrefab, canvas.transform);
+            var modifiers = AssetDatabase.FindAssets("t:RunModifier").Select(g => AssetDatabase.LoadAssetAtPath<RunModifier>(AssetDatabase.GUIDToAssetPath(g))).Where(m => m).ToArray();
+            var pairs = new MarathonRewardUI.Pair[3];
+            var rarities = new[] { RunModRarity.Common, RunModRarity.Rare, RunModRarity.Legendary };
+            for (int i = 0; i < pairs.Length; i++)
+            {
+                var candidates = modifiers.Where(m => m.rarity == rarities[i] && m.icon).ToArray();
+                pairs[i] = new MarathonRewardUI.Pair { buff = candidates.First(m => m.isBuff), debuff = candidates.First(m => !m.isBuff) };
+            }
+            reward.Show(2, pairs, null);
+            Capture("Logs/MarathonRewardPanel.png"); Object.DestroyImmediate(reward.gameObject);
+            var gauge = Object.Instantiate(config.marathonGaugePrefab, canvas.transform); gauge.Refresh(5, 400, 750);
+            Debug.Log("Gauge fill anchors " + gauge.gauge.fillRect.anchorMax + " rect " + gauge.gauge.fillRect.rect + " value " + gauge.gauge.value);
+            Capture("Logs/MarathonLevelGauge.png");
+            gauge.liquidSlosh.AddImpulse(0.15f);
+            Capture("Logs/MarathonGaugeSlosh.png");
+            camera.targetTexture = null; Object.DestroyImmediate(target); Object.DestroyImmediate(canvas.gameObject); Object.DestroyImmediate(camera.gameObject);
+            return;
+        }
         Object.DestroyImmediate(canvas.gameObject);
         var gameplay = EditorSceneManager.OpenScene("Assets/Scenes/GameplayScene.unity", OpenSceneMode.Additive);
         var gc = gameplay.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<GameController>(true)).First();

@@ -36,3 +36,17 @@ The liquid shader retains the castle health bar's bubble/noise shading and textu
 No requested feature is intentionally left unimplemented. A full player-driven campaign/Marathon playthrough and balance tuning are still recommended; automated tests and UI renders do not establish long-run gameplay balance or cover every possible Chaos modifier combination. Tests avoid overwriting the user's real saved run or permanent monster progression.
 
 User changes to `Tetrabeasts_GameIdea.txt` are preserved. No commits were made.
+
+## UI polish — completed October 11, 2026
+- [x] Runtime reward binding: separate buff/debuff icons and blue/red text, rarity colors, selection outline, and “Choose a Modifier” title.
+- [x] Marathon reward pause participates in cursor restoration and keeps the cursor unlocked while choosing.
+- [x] Mode tooltip behavior supports locked buttons and includes the requested unlock note.
+- [x] Gauge surface wave effect responds to damage gains and settles; gauge supports a horizontal placement offset and centered sideways damage text.
+- [x] Saved reward prefab: separate background icons, blue buff/red debuff text, white/green/blue/purple/gold rarity colors, and a yellow selection outline that preserves the rarity color.
+- [x] Saved mode prefab: green mode buttons, red close button, yellow hover/focus, darker pressed colors, grey disabled states, mode-name-only labels, and right-side descriptions/unlock notes. Existing hover/click clips are assigned to every new button; locked modes still play informational hover feedback.
+- [x] Saved gauge prefab: SpecialGauge_UI border and glass sprites, mirrored border, opaque dark background, centered sideways damage text, no duplicate level label. Narrowed the gauge to fit between the left controls and board, and moved it 28 canvas units right of its original mirrored position.
+- [x] Unity compilation and final visual previews completed. Inspected `Logs/GameModeLockedTooltip.png`, `Logs/MarathonRewardPanel.png`, `Logs/MarathonGaugeSlosh.png`, and `Logs/MarathonGameplayLayout.png`.
+- [x] Focused UI suite: 3 passed, 0 failed (`Logs/MarathonUIFocusedTests.xml`). Tests cover paused pointer selection/confirmation, icon clearing on reuse, rarity preservation, locked-mode tooltips/click blocking, cursor focus/deferred-callback guards, actual wave geometry/bounds, existing artwork, and hover sound assignments.
+- [x] Final full regression suite: **13 passed, 0 failed** (`Logs/MarathonUIRegressionTests.xml`). Changed assets/scripts pass `git diff --check`; incidental TimeManager serialization was restored. User edits to `Tetrabeasts_GameIdea.txt` remain untouched.
+
+All requested October 11 UI changes are implemented. The three existing prefabs under `Assets/Prefabs/GameModes` remain the runtime assets to edit. No commits were made.

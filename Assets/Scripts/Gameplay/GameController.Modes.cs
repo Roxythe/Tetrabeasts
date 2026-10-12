@@ -52,6 +52,7 @@ public partial class GameController
             target.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, reference.rect.height * reference.lossyScale.y / canvasRect.lossyScale.y);
         }
         else target.localPosition = boardCenter + Vector3.left * (gameBoard.gridRoot.rect.width * 0.5f + 70f);
+        target.localPosition += Vector3.right * marathonGauge.horizontalOffset;
     }
     void TickGameMode()
     {

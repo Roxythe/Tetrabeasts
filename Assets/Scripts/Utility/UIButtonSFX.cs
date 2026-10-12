@@ -16,6 +16,8 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerDownHand
 
     [Tooltip("If true, ignores clicks when the Button is not interactable.")]
     public bool requireInteractable = true;
+    [Tooltip("Allows informational hover feedback on locked buttons; clicks remain disabled.")]
+    public bool hoverWhenDisabled;
 
     [Tooltip("Clears the selected button after mouse clicks while the effective control profile is Keyboard / Mouse.")]
     public bool clearSelectionOnKeyboardMouseClick = true;
@@ -111,7 +113,7 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerDownHand
     void PlayHoverSFX()
     {
         if (!AudioManager.I || !hoverClip) return;
-        if (requireInteractable && _btn && !_btn.interactable) return;
+        if (requireInteractable && !hoverWhenDisabled && _btn && !_btn.interactable) return;
 
         if (hoverCooldownSeconds > 0f)
         {

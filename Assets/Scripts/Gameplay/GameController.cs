@@ -1500,7 +1500,11 @@ public partial class GameController : MonoBehaviour
     void Update()
     {
         TickGameMode();
-        if (marathonRewardActive) return;
+        if (marathonRewardActive)
+        {
+            EnterUICursorMode();
+            return;
+        }
         TetrabeastsControls.RefreshActiveInputProfile();
         RefreshGameplayControlTextsIfNeeded();
         UpdateTimedSlowGravityTimerUI();
@@ -8181,6 +8185,11 @@ public partial class GameController : MonoBehaviour
 
     void EnterGameplayCursorMode()
     {
+        if (marathonRewardActive)
+        {
+            EnterUICursorMode();
+            return;
+        }
         ClearHardwareCursor();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -8204,7 +8213,7 @@ public partial class GameController : MonoBehaviour
 
     bool ShouldUseUICursorModeForCurrentState()
     {
-        if (isPaused || gameOver || levelWon || ConfirmationPopupUI.IsAnyShowing)
+        if (marathonRewardActive || isPaused || gameOver || levelWon || ConfirmationPopupUI.IsAnyShowing)
             return true;
 
         if (levelModifierController && levelModifierController.IsSelectionRunning)
