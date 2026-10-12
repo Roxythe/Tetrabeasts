@@ -11,15 +11,9 @@ public partial class Board
     readonly Dictionary<RectTransform, Color> feelGoodOriginalTints = new();
 
     LevelModifierSO FeelGoodModifier => _gc && _gc.levelModifierController &&
-        _gc.levelModifierController.NewModifierEffectsActive &&
-        _gc.levelModifierController.ActiveModifier &&
-        _gc.levelModifierController.ActiveModifier.kind == LevelModifierKind.DrFeelGood
-            ? _gc.levelModifierController.ActiveModifier : null;
-
+        _gc.levelModifierController.NewModifierEffectsActive ? _gc.levelModifierController.GetModifier(LevelModifierKind.DrFeelGood) : null;
     public bool IsCraterCell(Vector2Int cell) => craterCells.Contains(cell);
-    bool PreventEnvironmentOverlap => _gc && _gc.levelModifierController &&
-        _gc.levelModifierController.ActiveModifier &&
-        _gc.levelModifierController.ActiveModifier.kind == LevelModifierKind.WatchYourStep;
+    bool PreventEnvironmentOverlap => _gc && _gc.levelModifierController && _gc.levelModifierController.HasModifier(LevelModifierKind.WatchYourStep);
     public void SetCraterCell(Vector2Int cell, bool occupied)
     {
         if (occupied && InBounds(cell)) craterCells.Add(cell);

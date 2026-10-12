@@ -114,6 +114,7 @@ public class CastleData : ScriptableObject
     public bool bossEnableSpecialSiphon = true;
     public bool bossEnableTeleport = true;
     public bool bossEnableZipPad = true;
+    public bool bossEnableRocksForEveryone = true;
 
     [Header("Boss Abilities - Global Timing")]
     [Min(0.25f)] public float bossAbilityIntervalMin = 4f;
@@ -170,7 +171,8 @@ public class CastleData : ScriptableObject
         ForcedDuplication,
         SpecialSiphon,
         Teleport,
-        ZipPad
+        ZipPad,
+        RocksForEveryone
     }
 
     [System.Serializable]

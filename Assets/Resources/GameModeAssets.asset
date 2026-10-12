@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef1f1ba81afd43c3846169f2e28fce80, type: 3}
+  m_Name: GameModeAssets
+  m_EditorClassIdentifier: Assembly-CSharp::GameModeAssets
+  modeMenuPrefab: {fileID: 4986014204074908279, guid: 61954ed700e2e0c40a923dc82a3c65e8, type: 3}
+  marathonGaugePrefab: {fileID: 6675486935777587723, guid: 746aa4de7542bf74f84c983d01e51aa0, type: 3}
+  marathonRewardPrefab: {fileID: 8662329616337007713, guid: 5ac0b787ad08e3f409946888d48178be, type: 3}
+  boulderSprite: {fileID: 488204432910556299, guid: ae4a1f05e5f6f1044978738736519fab, type: 3}
+  standardLevelCount: 14
+  marathonStartingDamage: 500
+  marathonDamageGrowth: 1.18

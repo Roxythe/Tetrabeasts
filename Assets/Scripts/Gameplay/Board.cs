@@ -3009,6 +3009,8 @@ public partial class Board : MonoBehaviour
 
     public void PlaySpecialBoardVFX(SpecialType special)
     {
+        if (special == SpecialType.Bomb || special == SpecialType.Earthquake)
+            ImpactShake.Play(transform, special == SpecialType.Earthquake ? 0.45f : 0.25f, special == SpecialType.Earthquake ? 9f : 6f);
         Sprite sprite = GetBoardVfxSprite(special);
         if (!sprite)
             return;

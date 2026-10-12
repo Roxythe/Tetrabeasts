@@ -11,7 +11,10 @@ public static class TempRunSaveStore
     [Serializable]
     public class SaveData
     {
-        public int version = 1;
+        public int version = 2;
+        public RunGameMode gameMode;
+        public float marathonDamage;
+        public List<string> chaosModifierNames = new();
         public int currentLevel;
         public bool postFinalSurvivalActive;
         public bool standardFinalWinApplied;

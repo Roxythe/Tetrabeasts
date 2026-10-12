@@ -166,6 +166,7 @@ public partial class LevelModifierController : MonoBehaviour
 
     void Start()
     {
+        if (isChaosEffect) return;
         EnsureAnimatedBackgroundRefs();
         CaptureAnimatedBackgroundVideoSettings();
         if (ActiveModifier)
@@ -235,25 +236,31 @@ public partial class LevelModifierController : MonoBehaviour
     public IEnumerator BeginLevel(CastleData castleData, System.Action onSelectionPanelFullyShown = null)
     {
         CacheLevelBackground(castleData);
+        ClearChaosEffects();
         ResetLevelState();
+        if (GameModeStore.Current == RunGameMode.Chaos) RebuildChaosEffects();
 
         yield return WaitForAnimatedBackgroundReadyForCurrentPresentation();
 
         if (castleData == null)
             yield break;
 
-        if (castleData.isBossLevel || !castleData.enableLevelModifierSelection)
+        if (GameModeStore.Current == RunGameMode.Marathon) yield break;
+        bool chaos = GameModeStore.Current == RunGameMode.Chaos;
+        if (chaos && _gc.CurrentLevel % 2 != 0) yield break;
+        if (!chaos && (castleData.isBossLevel || !castleData.enableLevelModifierSelection))
             yield break;
 
-        var database = castleData.levelModifierDatabase;
+        var database = chaos ? ChaosDatabase() : castleData.levelModifierDatabase;
         if (!database)
             yield break;
 
-        var pool = database.BuildPool(castleData.allowedLevelModifierKinds);
+        var pool = database.BuildPool(chaos ? null : castleData.allowedLevelModifierKinds);
+        if (chaos) pool.RemoveAll(m => chaosModifiers.Exists(active => active.kind == m.kind));
         if (pool.Count == 0)
             yield break;
 
-        var chosen = database.PickWeighted(castleData.allowedLevelModifierKinds);
+        var chosen = chaos ? pool[Random.Range(0, pool.Count)] : database.PickWeighted(castleData.allowedLevelModifierKinds);
         if (!chosen)
             yield break;
 
@@ -272,7 +279,8 @@ public partial class LevelModifierController : MonoBehaviour
                 if (_availableRerolls <= 0)
                     return false;
 
-                nextModifier = database.PickWeighted(castleData.allowedLevelModifierKinds, currentModifier);
+                var alternatives = pool.FindAll(m => m != currentModifier);
+                nextModifier = chaos ? (alternatives.Count > 0 ? alternatives[Random.Range(0, alternatives.Count)] : null) : database.PickWeighted(castleData.allowedLevelModifierKinds, currentModifier);
                 if (!nextModifier)
                     return false;
 
@@ -312,6 +320,14 @@ public partial class LevelModifierController : MonoBehaviour
 
     void ActivateModifierForLevel(LevelModifierSO modifier)
     {
+        if (GameModeStore.Current == RunGameMode.Chaos && !isChaosEffect)
+        {
+            if (!chaosModifiers.Contains(modifier)) chaosModifiers.Add(modifier);
+            RebuildChaosEffects();
+            CodexProgressStore.Unlock(modifier);
+            LogModifierActivation();
+            return;
+        }
         ActiveModifier = modifier;
         CodexProgressStore.Unlock(ActiveModifier);
         ApplyModifierStartupEffects();
@@ -320,6 +336,8 @@ public partial class LevelModifierController : MonoBehaviour
 
     public void ResetRunState()
     {
+        ClearChaosEffects();
+        chaosModifiers.Clear();
         _availableRerolls = 0;
         CacheLevelBackground(null);
         ResetLevelState();
@@ -339,6 +357,7 @@ public partial class LevelModifierController : MonoBehaviour
         CacheLevelBackgroundFromCurrentLevel();
         ResetLevelState();
         _availableRerolls = Mathf.Max(0, availableRerolls);
+        if (GameModeStore.Current == RunGameMode.Chaos) { RebuildChaosEffects(); return; }
         ActiveModifier = modifier;
 
         if (ActiveModifier)
@@ -355,6 +374,7 @@ public partial class LevelModifierController : MonoBehaviour
         CacheLevelBackground(castleData ? castleData : ResolveCurrentCastleData());
         ResetLevelState();
         _availableRerolls = Mathf.Max(0, availableRerolls);
+        if (GameModeStore.Current == RunGameMode.Chaos) { RebuildChaosEffects(); return; }
         ActiveModifier = modifier;
 
         if (ActiveModifier)
@@ -403,32 +423,20 @@ public partial class LevelModifierController : MonoBehaviour
         return null;
     }
 
-    public bool BlocksManualRotation => ActiveModifier && ActiveModifier.kind == LevelModifierKind.AutoRotate;
-    public bool BlocksManualHorizontalShift => ActiveModifier && ActiveModifier.kind == LevelModifierKind.AutoShift;
-    public bool BlocksSpecialUsage => ActiveModifier && ActiveModifier.kind == LevelModifierKind.SpecialLock;
-    public bool BlocksSpecialPieceSpawns => ActiveModifier && ActiveModifier.kind == LevelModifierKind.NoSpecialPieces;
-    public bool EnablesPiercingCastleProjectiles => ActiveModifier && ActiveModifier.kind == LevelModifierKind.PiercingShot;
+    public bool BlocksManualRotation => HasModifier(LevelModifierKind.AutoRotate);
+    public bool BlocksManualHorizontalShift => HasModifier(LevelModifierKind.AutoShift);
+    public bool BlocksSpecialUsage => HasModifier(LevelModifierKind.SpecialLock);
+    public bool BlocksSpecialPieceSpawns => HasModifier(LevelModifierKind.NoSpecialPieces);
+    public bool EnablesPiercingCastleProjectiles => HasModifier(LevelModifierKind.PiercingShot);
     public Sprite ActivePiercingCastleProjectileSprite =>
-        EnablesPiercingCastleProjectiles ? ActiveModifier.piercingProjectileSprite : null;
-    public Sprite ActiveCastleProjectileSpriteOverride
-    {
-        get
-        {
-            if (!ActiveModifier)
-                return null;
-
-            if (ActiveModifier.kind == LevelModifierKind.PiercingShot)
-                return ActiveModifier.piercingProjectileSprite;
-
-            return null;
-        }
-    }
-    public bool AppliesAutoMovementGravitySlow => ActiveModifier &&
-        (ActiveModifier.kind == LevelModifierKind.AutoRotate || ActiveModifier.kind == LevelModifierKind.AutoShift);
+        GetModifier(LevelModifierKind.PiercingShot) ? GetModifier(LevelModifierKind.PiercingShot).piercingProjectileSprite : null;
+    public Sprite ActiveCastleProjectileSpriteOverride => ActivePiercingCastleProjectileSprite;
+    public bool AppliesAutoMovementGravitySlow => HasModifier(LevelModifierKind.AutoRotate) || HasModifier(LevelModifierKind.AutoShift);
     public float ActiveGravityMultiplier => AppliesAutoMovementGravitySlow ? AutoMovementGravityMultiplier : 1f;
 
     public float ModifyIncomingDamage(Vector2Int cell, MonsterData target, float amount, Board.DamageSource source)
     {
+        foreach (var effect in chaosEffects) if (effect) amount = effect.ModifyIncomingDamage(cell, target, amount, source);
         if (!ActiveModifier)
             return amount;
 
@@ -440,6 +448,7 @@ public partial class LevelModifierController : MonoBehaviour
 
     public float ModifySpecialGaugeGain(float amount)
     {
+        foreach (var effect in chaosEffects) if (effect) amount = effect.ModifySpecialGaugeGain(amount);
         if (!ActiveModifier)
             return amount;
 
@@ -451,6 +460,7 @@ public partial class LevelModifierController : MonoBehaviour
 
     public int ModifyOutgoingDamage(int damage, int comboCount)
     {
+        foreach (var effect in chaosEffects) if (effect) damage = effect.ModifyOutgoingDamage(damage, comboCount);
         if (!ActiveModifier)
             return damage;
 
@@ -482,6 +492,7 @@ public partial class LevelModifierController : MonoBehaviour
 
     public void OnCastleProjectileImpact()
     {
+        foreach (var effect in chaosEffects) if (effect) effect.OnCastleProjectileImpact();
         if (!ActiveModifier || ActiveModifier.kind != LevelModifierKind.ComboShield)
             return;
 
@@ -502,6 +513,7 @@ public partial class LevelModifierController : MonoBehaviour
 
     public void HandlePieceAutomation(Piece activePiece, float dt)
     {
+        foreach (var effect in chaosEffects) if (effect) effect.HandlePieceAutomation(activePiece, dt);
         if (!ActiveModifier || !activePiece || !activePiece.HasActiveCells)
             return;
 
@@ -547,6 +559,7 @@ public partial class LevelModifierController : MonoBehaviour
 
     public void OnNormalPiecePlaced(IReadOnlyList<Vector2Int> cells)
     {
+        foreach (var effect in chaosEffects) if (effect) effect.OnNormalPiecePlaced(cells);
         if (!ActiveModifier || cells == null || cells.Count == 0 || !board)
             return;
 
@@ -562,6 +575,7 @@ public partial class LevelModifierController : MonoBehaviour
 
     public void OnRowsResolved(Dictionary<int, int> rowDamage)
     {
+        foreach (var effect in chaosEffects) if (effect) effect.OnRowsResolved(rowDamage);
         if (!ActiveModifier || rowDamage == null || rowDamage.Count == 0)
             return;
 
@@ -577,6 +591,7 @@ public partial class LevelModifierController : MonoBehaviour
 
     public void OnSpecialEnvironmentHit(IEnumerable<Vector2Int> affectedCells, SpecialType special)
     {
+        foreach (var effect in chaosEffects) if (effect) effect.OnSpecialEnvironmentHit(affectedCells, special);
         if (!ActiveModifier || ActiveModifier.kind != LevelModifierKind.Overgrowth || affectedCells == null)
             return;
 
@@ -589,6 +604,7 @@ public partial class LevelModifierController : MonoBehaviour
 
     public void OnTileDamaged(Vector2Int cell, MonsterData data, float amount, Board.DamageSource source)
     {
+        foreach (var effect in chaosEffects) if (effect) effect.OnTileDamaged(cell, data, amount, source);
         if (!ActiveModifier || !board || amount <= 0f || ActiveModifier.kind != LevelModifierKind.SoulLink)
             return;
 
@@ -623,6 +639,7 @@ public partial class LevelModifierController : MonoBehaviour
 
     public void OnTileHealed(Vector2Int cell, MonsterData target, MonsterData source, float amount)
     {
+        foreach (var effect in chaosEffects) if (effect) effect.OnTileHealed(cell, target, source, amount);
         if (!ActiveModifier || !board || amount <= 0f || ActiveModifier.kind != LevelModifierKind.SoulLink)
             return;
 
@@ -657,6 +674,7 @@ public partial class LevelModifierController : MonoBehaviour
 
     public void OnTileDied(Vector2Int cell, MonsterData data)
     {
+        foreach (var effect in chaosEffects) if (effect) effect.OnTileDied(cell, data);
         if (!ActiveModifier || !board)
             return;
 
@@ -741,7 +759,8 @@ public partial class LevelModifierController : MonoBehaviour
 
     void RefreshModifierUI()
     {
-        bool specialLocked = ActiveModifier && ActiveModifier.kind == LevelModifierKind.SpecialLock;
+        if (isChaosEffect) return;
+        bool specialLocked = HasModifier(LevelModifierKind.SpecialLock);
 
         if (specialGaugeRoot)
             specialGaugeRoot.SetActive(!specialLocked);
@@ -2047,6 +2066,7 @@ public partial class LevelModifierController : MonoBehaviour
 
     void EnsureBoardPresentation()
     {
+        if (isChaosEffect) return;
         if (!board)
             return;
 
@@ -3087,6 +3107,7 @@ public partial class LevelModifierController : MonoBehaviour
 
     void SyncVolcanicBoardAnimationRoots()
     {
+        if (isChaosEffect) return;
         EnsureVolcanicBoardAnimationRefs();
 
         ConfigureBoardBorderAnimators();
@@ -3206,6 +3227,7 @@ public partial class LevelModifierController : MonoBehaviour
 
     void EnsureSelectionUI()
     {
+        if (isChaosEffect) return;
         if (_selectionUI)
             return;
 

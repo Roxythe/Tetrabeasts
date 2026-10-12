@@ -39,8 +39,7 @@ public partial class LevelModifierController
 
     public bool NewModifierEffectsActive { get; private set; }
     public bool BoardFlipped { get; private set; }
-    public bool InvertsPieceControls => NewModifierEffectsActive && ActiveModifier &&
-        ActiveModifier.kind == LevelModifierKind.Inversion;
+    public bool InvertsPieceControls => NewModifierEffectsActive && HasModifier(LevelModifierKind.Inversion);
 
     void PrepareNewModifierEffects()
     {
@@ -53,6 +52,7 @@ public partial class LevelModifierController
     // Keep ActiveModifier available for the results screen without leaving effects running.
     public void EndNewModifierEffects()
     {
+        foreach (var effect in chaosEffects) if (effect) { effect.StopAllCoroutines(); effect.EndNewModifierEffects(); }
         NewModifierEffectsActive = false;
         _newModifiersStarted = false;
         ClearNewWarnings();
@@ -63,7 +63,7 @@ public partial class LevelModifierController
         }
         _boardTransformCaptured = false;
         BoardFlipped = false;
-        if (board)
+        if (board && !isChaosEffect)
         {
             board.ClearFeelGood();
             board.ClearCraterCells();
@@ -431,6 +431,7 @@ public partial class LevelModifierController
 
     public bool TryHitHallucination(Vector2 previousBoardLocal, Vector2 currentBoardLocal)
     {
+        foreach (var effect in chaosEffects) if (effect && effect.TryHitHallucination(previousBoardLocal, currentBoardLocal)) return true;
         if (!NewModifierEffectsActive || !_gc.IsRoundActive || !ActiveModifier || ActiveModifier.kind != LevelModifierKind.Hallucination) return false;
         Vector2 size = board.GetCellSize();
         Vector2 origin = board.CellToAnchoredPos(Vector2Int.zero) - size * 0.5f;

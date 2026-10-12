@@ -199,7 +199,7 @@ public class Piece : MonoBehaviour
                                TetrabeastsControls.WasPressed(TetrabeastsControlAction.HardDrop);
 
         bool invertControls = gc && gc.levelModifierController && gc.levelModifierController.InvertsPieceControls;
-        bool flippedBoard = gc && gc.levelModifierController && gc.levelModifierController.BoardFlipped;
+        bool flippedBoard = gc && gc.levelModifierController && gc.levelModifierController.IsBoardFlipped;
         // Translate screen directions to the rotated grid; inversion swaps actions
         // without modifying the player's keyboard, gamepad, or Steam bindings.
         if (invertControls != flippedBoard)

@@ -32,7 +32,8 @@ public enum LevelModifierKind
     FlipTheBoard,
     Inversion,
     Bombardment,
-    Hallucination
+    Hallucination,
+    BouldersAway
 }
 
 [System.Serializable]

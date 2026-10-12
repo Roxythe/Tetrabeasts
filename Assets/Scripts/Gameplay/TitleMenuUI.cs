@@ -238,7 +238,24 @@ public class TitleMenuUI : MonoBehaviour
     }
 
     // --- Button hooks ---
+    GameModeSelectionUI modeSelection;
     public void OnStartGame()
+    {
+        var assets = GameModeAssets.Load();
+        if (!assets || !assets.modeMenuPrefab) { Debug.LogError("Game mode menu prefab is missing."); return; }
+        if (!modeSelection)
+        {
+            var canvas = GetComponentInParent<Canvas>() ?? FindFirstObjectByType<Canvas>();
+            modeSelection = Instantiate(assets.modeMenuPrefab, canvas.transform);
+        }
+        modeSelection.Show(assets.standardLevelCount, mode =>
+        {
+            GameModeStore.Current = mode;
+            StartSelectedGameMode();
+        });
+    }
+
+    void StartSelectedGameMode()
     {
         if (TryGetValidTempRun(out _))
         {
@@ -713,6 +730,7 @@ public class TitleMenuUI : MonoBehaviour
 
     GameObject GetCurrentNavigationRoot()
     {
+        if (modeSelection && modeSelection.gameObject.activeInHierarchy) return modeSelection.gameObject;
         if (ConfirmationPopupUI.TryGetShowingRoot(out var popupRoot))
             return popupRoot;
 

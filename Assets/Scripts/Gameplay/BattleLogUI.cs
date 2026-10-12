@@ -67,6 +67,7 @@ public sealed class BattleLogUI : MonoBehaviour
         { "Teleport", "Teleport" },
         { "Boss_Teleport", "Teleport" },
         { "ZipPad", "Zip Pad" },
+        { "RocksForEveryone", "Rocks for Everyone" },
         { "Boss_ZipPad", "Zip Pad" },
     };
 

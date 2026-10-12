@@ -101,6 +101,7 @@ public class EnemyCastleUI : MonoBehaviour
         }
 
         sourceData = data;
+        marathonProgress = -1f;
         _infiniteHealth = forceInfiniteHealth || data.infiniteHealth;
         _forceBossLevel = forceBossLevel;
 
@@ -175,6 +176,21 @@ public class EnemyCastleUI : MonoBehaviour
     }
 
     // Call this whenever damage to the castle occurs
+    float marathonProgress = -1f;
+    bool marathonFinalBoss;
+    public void SetMarathonProgress(float progress, bool finalBoss)
+    {
+        bool wasCritical = IsBossCriticalHP();
+        marathonProgress = Mathf.Clamp01(progress);
+        marathonFinalBoss = finalBoss;
+        UpdateVisuals();
+        if (wasCritical != IsBossCriticalHP() && _bossSpriteCR == null && bossOverlayImage)
+        {
+            SetBossOverlaySprite(GetBossIdleSprite());
+            UpdateBossIdleSpeedForCurrentHP();
+        }
+    }
+
     public int ApplyDamage(int dmg)
     {
         if (dmg <= 0 || sourceData == null) return 0;
@@ -228,6 +244,12 @@ public class EnemyCastleUI : MonoBehaviour
 
     void UpdateVisuals()
     {
+        if (marathonProgress >= 0f)
+        {
+            if (healthBarSlider) healthBarSlider.normalizedValue = marathonFinalBoss ? 1f : 1f - marathonProgress;
+            if (healthBarText) healthBarText.text = marathonFinalBoss ? "\u221E" : Mathf.CeilToInt((1f - marathonProgress) * 100f) + "%";
+            return;
+        }
         if (healthBarSlider)
             healthBarSlider.value = _infiniteHealth ? 1f : currentHP;
 
@@ -666,6 +688,7 @@ public class EnemyCastleUI : MonoBehaviour
 
     bool IsBossCriticalHP()
     {
+        if (marathonProgress >= 0f && sourceData) return !marathonFinalBoss && 1f - marathonProgress <= sourceData.bossCriticalHpThreshold;
         if (sourceData == null) return false;
 
         float t = Mathf.Clamp01(sourceData.bossCriticalHpThreshold <= 0f ? 0.30f : sourceData.bossCriticalHpThreshold);

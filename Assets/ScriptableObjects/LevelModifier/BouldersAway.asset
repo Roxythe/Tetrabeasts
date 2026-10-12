@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcae7d88244247b6a7e32226574b936e, type: 3}
+  m_Name: BouldersAway
+  m_EditorClassIdentifier: Assembly-CSharp::LevelModifierSO
+  kind: 30
+  displayName: Boulders-Away
+  description: Boulders fall every 5-10 seconds, dealing 20 damage and bouncing 3-5 times. At most three boulders are active.
+  icon: {fileID: -4759659127916700106, guid: ea787686bac1cda45a4214d6c34c4096, type: 3}

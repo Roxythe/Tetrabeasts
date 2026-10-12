@@ -10,7 +10,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 #endif
 
-public class GameController : MonoBehaviour
+public partial class GameController : MonoBehaviour
 {
     enum TimedSlowGravitySource
     {
@@ -746,7 +746,7 @@ public class GameController : MonoBehaviour
     public int MaxReserveUnits => EffectiveMaxUnitLives;
     public int CurrentStarDifficulty => _starDifficulty;
     public float CurrentMisfortune => misfortune + _starDifficultyModifiers.misfortuneAdd;
-    public bool IsGameplaySuspended => gameOver || levelWon || winQueued || isPaused || LoadingScreen.IsVisible || ConfirmationPopupUI.IsAnyShowing || tutorialSuspended || _roundTransitionActive || _specialAbilityCinematicActive || _levelStartBlocked || _environmentRowClearResolving || (levelModifierController && levelModifierController.IsSelectionRunning);
+    public bool IsGameplaySuspended => marathonRewardActive || gameOver || levelWon || winQueued || isPaused || LoadingScreen.IsVisible || ConfirmationPopupUI.IsAnyShowing || tutorialSuspended || _roundTransitionActive || _specialAbilityCinematicActive || _levelStartBlocked || _environmentRowClearResolving || (levelModifierController && levelModifierController.IsSelectionRunning);
     public bool IsRoundActive => !IsGameplaySuspended && !gameOver && !levelWon && !winQueued;
     public bool IsTutorialPieceInputBlocked => tutorialPieceInputBlocked;
     public bool IsTutorialHardDropInputGraceActive => Time.unscaledTime < _tutorialHardDropInputBlockedUntilRealtime;
@@ -800,7 +800,7 @@ public class GameController : MonoBehaviour
         get
         {
             float multiplier = Mathf.Max(0f, monsterDamageMult) * AllyMonsterOutgoingDamageMultiplier * PlayerMonsterAttackMult;
-            LevelModifierSO activeModifier = levelModifierController ? levelModifierController.ActiveModifier : null;
+            LevelModifierSO activeModifier = levelModifierController ? levelModifierController.GetModifier(LevelModifierKind.DoubleDamage) : null;
             if (activeModifier && activeModifier.kind == LevelModifierKind.DoubleDamage)
                 multiplier *= Mathf.Max(0f, activeModifier.dealtDamageMultiplier);
 
@@ -1001,6 +1001,7 @@ public class GameController : MonoBehaviour
         if (!piece) piece = GetComponent<Piece>();
         if (!levelModifierController) levelModifierController = GetComponent<LevelModifierController>();
         if (!levelModifierController) levelModifierController = gameObject.AddComponent<LevelModifierController>();
+        InitializeModeRuntime();
         EnsureFloatingDamageText();
         EnsureTriggeredTutorialPopups();
         EnsureSpecialBlockTutorials();
@@ -1255,6 +1256,7 @@ public class GameController : MonoBehaviour
         _tutorialHardDropInputBlockedUntilRealtime = 0f;
         HideRoundTransitionImmediate();
 
+        ResetModeProgress();
         currentLevel = 0;
         score = 0;
         _cachedTempRunCheckpoint = null;
@@ -1302,6 +1304,9 @@ public class GameController : MonoBehaviour
             return;
         }
 
+        GameModeStore.Current = System.Enum.IsDefined(typeof(RunGameMode), saveData.gameMode) ? saveData.gameMode : RunGameMode.Standard;
+        marathonDamage = Mathf.Max(0f, saveData.marathonDamage);
+        levelModifierController.RestoreChaosModifiers(saveData.chaosModifierNames);
         _cachedTempRunCheckpoint = saveData;
         _postFinalSurvivalActive = saveData.postFinalSurvivalActive && postFinalSurvivalCastle != null;
         _pendingPostFinalSurvivalIntro = false;
@@ -1310,7 +1315,7 @@ public class GameController : MonoBehaviour
 
         currentLevel = _postFinalSurvivalActive
             ? GetPostFinalSurvivalLevelIndex()
-            : GetClampedSavedLevelIndex(saveData.currentLevel);
+            : (IsMarathon ? Mathf.Max(0, saveData.currentLevel) : GetClampedSavedLevelIndex(saveData.currentLevel));
         score = Mathf.Max(0, saveData.score);
         luck = (saveData.runMods != null) ? saveData.runMods.luck : 0f;
         misfortune = (saveData.runMods != null) ? saveData.runMods.misfortune : 0f;
@@ -1494,6 +1499,8 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
+        TickGameMode();
+        if (marathonRewardActive) return;
         TetrabeastsControls.RefreshActiveInputProfile();
         RefreshGameplayControlTextsIfNeeded();
         UpdateTimedSlowGravityTimerUI();
@@ -1702,6 +1709,9 @@ public class GameController : MonoBehaviour
 
     void OnDestroy()
     {
+        ResetModeProgress();
+        if (marathonGauge) Destroy(marathonGauge.gameObject);
+        if (marathonRewards) Destroy(marathonRewards.gameObject);
         ClearPrewarmedSpecialAbilityPopup();
         StopSpecialSiphonChannel(forceDestroyParticles: true);
         ResetForcedDuplicationEffect();
@@ -1784,6 +1794,9 @@ public class GameController : MonoBehaviour
 
         if (finalLevelWin)
             fraction += Mathf.Clamp01(finalLevelWinXpConversionBonus);
+
+        if (GameModeStore.Current == RunGameMode.Chaos)
+            fraction += 0.20f;
 
         return Mathf.Clamp01(fraction);
     }
@@ -2162,6 +2175,9 @@ public class GameController : MonoBehaviour
     {
         var data = new TempRunSaveStore.SaveData
         {
+            gameMode = GameModeStore.Current,
+            marathonDamage = marathonDamage,
+            chaosModifierNames = levelModifierController.CaptureChaosModifiers(),
             currentLevel = currentLevel,
             postFinalSurvivalActive = _postFinalSurvivalActive,
             standardFinalWinApplied = _finalWinStateApplied,
@@ -2470,6 +2486,7 @@ public class GameController : MonoBehaviour
 
         gameOver = true;
         levelModifierController?.EndNewModifierEffects();
+        boulders?.Clear();
         StopSpecialSiphonChannel(forceDestroyParticles: true);
         _claimedRoundLossOneLiner = ClaimRoundTransitionOneLiner(RoundTransitionVariant.Loss);
         ClearTempRunCheckpoint();
@@ -2807,7 +2824,7 @@ public class GameController : MonoBehaviour
             return;
         }
 
-        LevelModifierSO modifier = levelModifierController ? levelModifierController.ActiveModifier : null;
+        LevelModifierSO modifier = levelModifierController ? levelModifierController.GetModifier(LevelModifierKind.Roulette) : null;
         float interval = Mathf.Max(0.1f, modifier ? modifier.roulettePreviewInterval : 1f);
 
         _roulettePreviewTimer += Mathf.Max(0f, dt);
@@ -2821,8 +2838,7 @@ public class GameController : MonoBehaviour
     bool IsRouletteModifierActive()
     {
         return levelModifierController &&
-               levelModifierController.ActiveModifier &&
-               levelModifierController.ActiveModifier.kind == LevelModifierKind.Roulette;
+               levelModifierController.HasModifier(LevelModifierKind.Roulette);
     }
 
     bool ReplaceRoulettePreviewHead()
@@ -3125,8 +3141,8 @@ public class GameController : MonoBehaviour
         if (!source || source.special != SpecialType.None || source.cells == null || source.cells.Length != 4)
             return source;
 
-        LevelModifierSO modifier = levelModifierController ? levelModifierController.ActiveModifier : null;
-        if (!modifier || modifier.kind != LevelModifierKind.Disarray)
+        LevelModifierSO modifier = levelModifierController ? levelModifierController.GetModifier(LevelModifierKind.Disarray) : null;
+        if (!modifier)
             return source;
 
         var mutation = RollDisarrayMutation(modifier);
@@ -3574,6 +3590,7 @@ public class GameController : MonoBehaviour
 
     CastleData ResolveCastleDataForLevel(int levelIndex)
     {
+        if (IsMarathon) return ResolveMarathonCastle(levelIndex);
         if (_postFinalSurvivalActive && postFinalSurvivalCastle)
             return postFinalSurvivalCastle;
 
@@ -3637,6 +3654,7 @@ public class GameController : MonoBehaviour
     void CleanupRoundTransientGameplayObjects()
     {
         levelModifierController?.EndNewModifierEffects();
+        boulders?.Clear();
         InvalidateRoundTransientActions();
         ClearProjectileRootTransients();
         gameBoard?.ClearRoundTransientEffects();
@@ -3690,8 +3708,10 @@ public class GameController : MonoBehaviour
                childName.StartsWith("AttackExplosion", System.StringComparison.Ordinal);
     }
 
-    void InitLevel(int levelIndex)
+    void InitLevel(int levelIndex, bool spawnEnvironment = true)
     {
+        if (GameModeStore.Current == RunGameMode.Standard && castlesByLevel != null && levelIndex >= castlesByLevel.Length - 1)
+            GameModeStore.MarkFinalLevelReached();
         levelWon = false;
         winQueued = false;
         _currentRoundWinStatsRecorded = false;
@@ -3719,7 +3739,7 @@ public class GameController : MonoBehaviour
         if (enemyCastleUI && data)
         {
             int levelNumber = levelIndex + 1;
-            bool forceInfiniteHealth = _postFinalSurvivalActive && forcePostFinalSurvivalInfiniteHealth;
+            bool forceInfiniteHealth = IsMarathon || (_postFinalSurvivalActive && forcePostFinalSurvivalInfiniteHealth);
             bool forceBossLevel = _postFinalSurvivalActive && forcePostFinalSurvivalBossLevel;
             enemyCastleUI.InitCastle(
                 data,
@@ -3757,7 +3777,7 @@ public class GameController : MonoBehaviour
             AudioManager.I.PlayLevelMusic(IsCastleBossForCurrentMode(data));
         }
 
-        if (obstacleManager)
+        if (obstacleManager && spawnEnvironment)
         {
             obstacleManager.OnLevelStart(levelIndex + 1, currentCastleData);
         }
@@ -3769,6 +3789,7 @@ public class GameController : MonoBehaviour
         if (gameOver || levelWon) return;
         levelWon = true;
         levelModifierController?.EndNewModifierEffects();
+        boulders?.Clear();
         TrackCurrentRoundWinStats();
         _claimedRoundWinOneLiner = ClaimRoundTransitionOneLiner(RoundTransitionVariant.Win);
 
@@ -3901,6 +3922,7 @@ public class GameController : MonoBehaviour
 
         gameOver = true;
         levelModifierController?.EndNewModifierEffects();
+        boulders?.Clear();
         ClearTempRunCheckpoint();
         PlayerProgress.I?.EndRun();
 
@@ -4054,6 +4076,12 @@ public class GameController : MonoBehaviour
 
     void OnRoundModsChosen(RunModifierSO buff, RunModifierSO debuff)
     {
+        ApplyChosenRunMods(buff, debuff);
+        ContinueAfterRoundRewards();
+    }
+
+    void ApplyChosenRunMods(RunModifierSO buff, RunModifierSO debuff)
+    {
         if (buff)
         {
             _runBuffs.Add(buff);
@@ -4080,7 +4108,6 @@ public class GameController : MonoBehaviour
 
         SyncRunModsToStore();
         if (runModsPanelUI) runModsPanelUI.Refresh();
-        ContinueAfterRoundRewards();
     }
 
     void SyncRunModsToStore()
@@ -4352,6 +4379,7 @@ public class GameController : MonoBehaviour
 
         gameOver = true;
         levelModifierController?.EndNewModifierEffects();
+        boulders?.Clear();
         ClearTempRunCheckpoint();
         PlayerProgress.I?.EndRun();
     }
@@ -6158,16 +6186,18 @@ public class GameController : MonoBehaviour
         {
             StopSpecialSiphonChannel(forceDestroyParticles: false);
             RunSummaryStats.RecordDamageDealt(appliedDamage);
+            if (IsMarathon) marathonDamage += appliedDamage;
             ShowCastleFloatingDamageText(appliedDamage,
                 !enemyCastleUI.InfiniteHealth && enemyCastleUI.currentHP <= 0,
                 impactRoot,
                 impactAnchoredPosition);
         }
 
-        if (enemyCastleUI.currentHP <= 0 && !winQueued)
+        if (!IsMarathon && enemyCastleUI.currentHP <= 0 && !winQueued)
         {
             winQueued = true;
             levelModifierController?.EndNewModifierEffects();
+            boulders?.Clear();
             StartCoroutine(CoWinAfterDelay(0.25f));
             return true;
         }
@@ -6915,6 +6945,7 @@ public class GameController : MonoBehaviour
         unitLives = EffectiveMaxUnitLives;
         SetupUnitLivesUI();
 
+        ResetModeProgress();
         currentLevel = 0;
         ResetRunGridToBase();
         ApplyRunGridSize(currentLevel);
@@ -7926,8 +7957,7 @@ public class GameController : MonoBehaviour
     {
         return src == Board.DamageSource.FloorPoison &&
                levelModifierController &&
-               levelModifierController.ActiveModifier &&
-               levelModifierController.ActiveModifier.kind == LevelModifierKind.Swamp;
+               levelModifierController.HasModifier(LevelModifierKind.Swamp);
     }
 
     void ShowCastleFloatingDamageText(int amount, bool killingBlow, RectTransform impactRoot = null,
@@ -8819,6 +8849,7 @@ public class GameController : MonoBehaviour
         if (_castleData.bossEnableSpecialSiphon) picks.Add(CastleData.BossAbilityKind.SpecialSiphon);
         if (_castleData.bossEnableTeleport) picks.Add(CastleData.BossAbilityKind.Teleport);
         if (_castleData.bossEnableZipPad) picks.Add(CastleData.BossAbilityKind.ZipPad);
+        if (_castleData.bossEnableRocksForEveryone) picks.Add(CastleData.BossAbilityKind.RocksForEveryone);
 
         for (int i = picks.Count - 1; i >= 0; i--)
         {
@@ -8855,6 +8886,7 @@ public class GameController : MonoBehaviour
             case CastleData.BossAbilityKind.SpecialSiphon: Boss_SpecialSiphon(); break;
             case CastleData.BossAbilityKind.Teleport: Boss_Teleport(); break;
             case CastleData.BossAbilityKind.ZipPad: Boss_ZipPad(); break;
+            case CastleData.BossAbilityKind.RocksForEveryone: PlayBossAbilityWarningSFX(); boulders.RequestBossVolley(); break;
         }
     }
 
@@ -8928,6 +8960,7 @@ public class GameController : MonoBehaviour
             case CastleData.BossAbilityKind.SpecialSiphon: return cd.bossEnableSpecialSiphon;
             case CastleData.BossAbilityKind.Teleport: return cd.bossEnableTeleport;
             case CastleData.BossAbilityKind.ZipPad: return cd.bossEnableZipPad;
+            case CastleData.BossAbilityKind.RocksForEveryone: return cd.bossEnableRocksForEveryone;
             default: return false;
         }
     }
@@ -8936,6 +8969,8 @@ public class GameController : MonoBehaviour
     {
         switch (kind)
         {
+            case CastleData.BossAbilityKind.RocksForEveryone:
+                return boulders && boulders.CanSpawnVolley;
             case CastleData.BossAbilityKind.SpecialSiphon:
                 if (_specialSiphonActive)
                     return false;
