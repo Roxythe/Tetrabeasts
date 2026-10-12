@@ -68,6 +68,48 @@ Marathon Level up bar UI
 
 ------------------------------------------------------------------------------------------------
 
+# Changes to make
+
+## Marathon mode
+
+- The level up exp gauge UI is still visible when the game over is triggered and the exp panel pops up for monster unit exp transfer
+
+- The level up exp gauge UI should be wider to match the special gauge in size.
+
+- Apply the sloshing liquid animation when the fill bar increases or decreases to the special ability gauge, the castle enemy health gauge, and the unit reserve gauge for all game modes.
+
+- Add the same shaders/animation that are used for the other fill gauges on the special gauge (it's the only one thats different and it looks bad)
+
+- The level background is changing after a level up and the castle sprite is changing but not the enemy health bar border, the board background, or the board borders which all have level specific sprites saved in castle data for each level.
+
+- I am not sure how gravity is being set currently for marathon mode or if it is being fully reset at the beginning of each level but I would like it to only be dropped down slightly each level up and not fully reset if that is what is happening. The gravity should be increasing over time like normal and speed up more over time. Increase the gravity cap as well each level up with the lower level cap being relatively low. The increase in gravity cap should be smaller with each level up so that higher level ups only increase the gravity cap by a small amount.
+
+## Marathon Mode Level Up reward panel
+
+- I want the reward buttons that are not selected or hovered over to be slightly transparent/faded. While the selected and hovered over buttons should be fully opaque.
+
+- I want the Buff/Debuff title text to be at the top of their section with their description text centered.
+
+- Change the title text for the buff/debuff to a different shade of blue/red respectively to help it stand out better.
+
+- Add an opaque black shadow to the title and description text as well as the panels title text at the top to make it stand out visually.
+
+- Change the confirmation button image to match the other buttons in the project.
+
+- Change the background image behind the buff/debuffs to match the round rewards background image for buff and debuffs from the standard game mode for consistency with the background image colored blue behind the buff section and red behind the debuff section.
+
+- Use the flame border animation for the selected reward border instead of the yellow outline that is currently set (it is currently used for things like selected monster unit/player commander in the main menu's selection panel.
+
+- Create a script that controls the colors for the buttons different rarities background, description text, and title text so that I can modify it myself easily from the editor and attach it to where it needs to be to be used when I start my game.
+
+## Leaderboard
+
+- Add different drop down tab to the leaderboard to show different high scores for the three different game modes with Standard as the starting default. Place it centered at the top of the leaderboard. Just to the right of the leaderboard text without overlapping it.
+
+- Change how scores are saved and exported to the leaderboard/steam so that the correct score is linked to the correct leaderboard. Currently I believe every score is saved the same and there is only a single leaderboard section to show all the scores from different game modes in the same list.
+
+------------------------------------------------------------------------------------------------
+
 Not Started yet
 
 - Level Modifier 'Boulders-Away'. Every 5-10 seconds spawn a boulder just above the top of the board and let it fall. When it collides with a living monster unit deal 20 damage to that unit and bounce. The boulder should bounce 3-5 times and then be destroyed. It should bounce off the bottom and sides of the board as well to stay within the board and move semi realistically rotating as it moves to look more animated. when it collides with a living monster unit or the side/bottom of the board it should have a small pixel particle effect play. Living monster unit that the boulder sprite collides with should shake on collision for visual effect. The boulder sprite should move over top of dead units. The only obstacle that should be able to collide with the boulder is the stone obstacle (which should take a single instance of damage from being struck for each time it is collided with). No more than three boulders should ever be active on the board at the same time, if more than 3 exists, pause the boulder spawn timer until there is less than 3. The boulder spawn should only happen when the Boulders-Away level modifier is active or a boss ability spawns them, it is not a normal mechanic for every level. Boulder should be able to collide and bounce off of each other.
