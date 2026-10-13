@@ -2188,6 +2188,12 @@ public partial class LevelModifierController : MonoBehaviour
         RefreshModifierUI();
     }
 
+    public void RefreshCastlePresentation(CastleData castleData)
+    {
+        CacheLevelBackground(castleData);
+        EnsureBoardPresentation();
+    }
+
     void CacheLevelBackground(CastleData castleData)
     {
         _currentLevelBackgroundSprite = castleData ? castleData.levelBackgroundSprite : null;

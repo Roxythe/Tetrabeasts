@@ -16,6 +16,10 @@ public class SteamLeaderboardUI : MonoBehaviour
     [Header("Steam")]
     [SerializeField] string leaderboardName = SteamLeaderboardService.DefaultLeaderboardName;
     [SerializeField] PlayerCharacterData[] commanderRoster;
+    public TMP_Dropdown modeDropdown;
+    RunGameMode selectedMode = RunGameMode.Standard;
+    SteamLeaderboardService modeService;
+    int requestVersion;
 
     [Header("Prefab Row")]
     [SerializeField] GameObject rowPrefab;
@@ -57,6 +61,7 @@ public class SteamLeaderboardUI : MonoBehaviour
     {
         ResolveMissingReferences();
         HookButtons();
+        if (modeDropdown) modeDropdown.onValueChanged.AddListener(SelectMode);
         SetActiveTab(_activeTab);
         RefreshStaticLabels();
         UpdateResetTimer(true);
@@ -64,6 +69,9 @@ public class SteamLeaderboardUI : MonoBehaviour
 
     void OnEnable()
     {
+        selectedMode = RunGameMode.Standard;
+        if (modeDropdown) modeDropdown.SetValueWithoutNotify(0);
+        requestVersion++; _isRefreshing = false; _snapshot = null;
         TetrabeastsLocalization.LanguageChanged += HandleLanguageChanged;
         RefreshStaticLabels();
 
@@ -86,7 +94,7 @@ public class SteamLeaderboardUI : MonoBehaviour
 
     void OnDestroy()
     {
-        var service = SteamLeaderboardService.Instance;
+        var service = modeService;
         if (service)
             service.AvatarsChanged -= HandleAvatarsChanged;
     }
@@ -105,7 +113,9 @@ public class SteamLeaderboardUI : MonoBehaviour
         if (_isRefreshing)
             return;
 
-        var service = SteamLeaderboardService.Ensure(leaderboardName);
+        var service = SteamLeaderboardService.Ensure(SteamLeaderboardService.NameForMode(selectedMode));
+        if (modeService && modeService != service) modeService.AvatarsChanged -= HandleAvatarsChanged;
+        modeService = service;
         if (!service || !service.IsAvailable)
         {
             HideIfSteamUnavailable();
@@ -119,8 +129,10 @@ public class SteamLeaderboardUI : MonoBehaviour
         service.AvatarsChanged -= HandleAvatarsChanged;
         service.AvatarsChanged += HandleAvatarsChanged;
 
+        int version = ++requestVersion;
         service.RefreshAll(commanderRoster, snapshot =>
         {
+            if (!this || version != requestVersion) return;
             _isRefreshing = false;
             _snapshot = snapshot;
             RebuildRows();
@@ -130,7 +142,7 @@ public class SteamLeaderboardUI : MonoBehaviour
 
     public bool HideIfSteamUnavailable(bool instant = true)
     {
-        var service = SteamLeaderboardService.Ensure(leaderboardName);
+        var service = SteamLeaderboardService.Ensure(SteamLeaderboardService.NameForMode(selectedMode));
         if (service && service.IsAvailable)
             return false;
 
@@ -145,7 +157,7 @@ public class SteamLeaderboardUI : MonoBehaviour
         if (!isActiveAndEnabled || _snapshot == null)
             return;
 
-        var service = SteamLeaderboardService.Instance;
+        var service = modeService;
         if (!service)
             return;
 
@@ -160,6 +172,12 @@ public class SteamLeaderboardUI : MonoBehaviour
         RefreshStaticLabels();
         RebuildRows();
         UpdateResetTimer(true);
+    }
+    public void SelectMode(int value)
+    {
+        selectedMode = (RunGameMode)Mathf.Clamp(value, 0, 2);
+        requestVersion++; _isRefreshing = false; _snapshot = null;
+        RefreshLeaderboard();
     }
 
     void ApplyAvatarSprites(List<SteamLeaderboardEntry> entries, SteamLeaderboardService service)

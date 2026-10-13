@@ -47,6 +47,8 @@ GameObject:
   - component: {fileID: 5129938639731213584}
   - component: {fileID: 6543863702362497772}
   - component: {fileID: 269097223245844829}
+  - component: {fileID: 1290770877459362191}
+  - component: {fileID: 6272208185095682444}
   m_Layer: 5
   m_Name: Fill
   m_TagString: Untagged
@@ -93,7 +95,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: fde7e4649ce98ef438548cd0c2e7741d, type: 2}
   m_Color: {r: 0.9433962, g: 0.12636216, b: 0.07564971, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -101,16 +103,48 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: -6127496689725143716, guid: 6d4112ab5db82f84780b39f0d8edc53d, type: 3}
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
+  m_FillMethod: 1
+  m_FillAmount: 0
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1290770877459362191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1654250697127922847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b6be326f64562c4da7f7979030f979f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MarathonLiquidSlosh
+  maxWaveHeight: 18
+  damping: 2.8
+  waveSpeed: 12
+--- !u!114 &6272208185095682444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1654250697127922847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 446fa9833a037a44aba842e08a14a5d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UILiquidMaterialScroll
+  targetGraphic: {fileID: 0}
+  noiseSpeedProperty: _NoiseSpeed
+  bubbleSpeedProperty: _BubbleSpeed
+  noiseSpeed: {x: 0.18, y: 0.05}
+  bubbleSpeed: {x: 0, y: -0.2}
 --- !u!1 &2540224305493535391
 GameObject:
   m_ObjectHideFlags: 0
@@ -543,6 +577,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8786061414054807061}
   - component: {fileID: 2644856679917131238}
+  - component: {fileID: 1751716223898110499}
   m_Layer: 5
   m_Name: SpecialGauge_Slider
   m_TagString: Untagged
@@ -627,6 +662,18 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1751716223898110499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4451206019818042710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fda6b6aa95b251f49bcb7a8a089806b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GaugeLiquidMotion
 --- !u!1 &4763553537406177989
 GameObject:
   m_ObjectHideFlags: 0

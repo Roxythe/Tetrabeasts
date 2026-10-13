@@ -6189,6 +6189,7 @@ GameObject:
   m_Component:
   - component: {fileID: 369178296}
   - component: {fileID: 369178297}
+  - component: {fileID: 369178298}
   m_Layer: 5
   m_Name: HealthBar_Slider
   m_TagString: Untagged
@@ -6270,6 +6271,18 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &369178298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 369178295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fda6b6aa95b251f49bcb7a8a089806b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GaugeLiquidMotion
 --- !u!114 &370722339 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2295373856644971480, guid: 02711be9b9a4ba1408787d58b7410ac5, type: 3}
@@ -19164,6 +19177,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1132580155}
   - component: {fileID: 1132580156}
+  - component: {fileID: 1132580157}
   m_Layer: 5
   m_Name: UnitReserve_Slider
   m_TagString: Untagged
@@ -19246,6 +19260,18 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1132580157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1132580154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fda6b6aa95b251f49bcb7a8a089806b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GaugeLiquidMotion
 --- !u!1 &1133658192
 GameObject:
   m_ObjectHideFlags: 0
@@ -26275,6 +26301,7 @@ GameObject:
   - component: {fileID: 1562077746}
   - component: {fileID: 1562077748}
   - component: {fileID: 1562077749}
+  - component: {fileID: 1562077750}
   m_Layer: 5
   m_Name: Fill
   m_TagString: Untagged
@@ -26313,7 +26340,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 2100000, guid: df9e1c237d00b544e91fbc910f3db865, type: 2}
+  m_Material: {fileID: 2100000, guid: 1b969a938b182da4d80f4b1feffe749b, type: 2}
   m_Color: {r: 0.12540635, g: 0.8773585, b: 0.086908154, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -26369,7 +26396,22 @@ MonoBehaviour:
   noiseSpeedProperty: _NoiseSpeed
   bubbleSpeedProperty: _BubbleSpeed
   noiseSpeed: {x: 0.25, y: 0.05}
-  bubbleSpeed: {x: 0.15, y: -0.2}
+  bubbleSpeed: {x: -0.1, y: -0.2}
+--- !u!114 &1562077750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562077744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b6be326f64562c4da7f7979030f979f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MarathonLiquidSlosh
+  maxWaveHeight: 18
+  damping: 2.8
+  waveSpeed: 12
 --- !u!1001 &1566396369
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28724,6 +28766,7 @@ GameObject:
   - component: {fileID: 1763698299}
   - component: {fileID: 1763698302}
   - component: {fileID: 1763698301}
+  - component: {fileID: 1763698303}
   m_Layer: 5
   m_Name: Fill
   m_TagString: Untagged
@@ -28762,7 +28805,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 2100000, guid: df9e1c237d00b544e91fbc910f3db865, type: 2}
+  m_Material: {fileID: 2100000, guid: 3159ef85f545daa49b464976e10d30d9, type: 2}
   m_Color: {r: 0.1254902, g: 0.8784314, b: 0.08627451, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -28771,10 +28814,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: -6127496689725143716, guid: 6d4112ab5db82f84780b39f0d8edc53d, type: 3}
-  m_Type: 0
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
+  m_FillMethod: 0
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
@@ -28804,7 +28847,7 @@ MonoBehaviour:
   noiseSpeedProperty: _NoiseSpeed
   bubbleSpeedProperty: _BubbleSpeed
   noiseSpeed: {x: 0.24, y: 0.09}
-  bubbleSpeed: {x: 0.15, y: -0.3}
+  bubbleSpeed: {x: -0.1, y: -0.2}
 --- !u!114 &1763698302
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28819,6 +28862,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UILiquidFillAspectDriver
   targetGraphic: {fileID: 1763698299}
   aspectProperty: _Aspect
+--- !u!114 &1763698303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1763698297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b6be326f64562c4da7f7979030f979f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MarathonLiquidSlosh
+  maxWaveHeight: 18
+  damping: 2.8
+  waveSpeed: 12
 --- !u!1 &1772839726
 GameObject:
   m_ObjectHideFlags: 0
@@ -35900,6 +35958,11 @@ MonoBehaviour:
   triggeredTutorialPopups: {fileID: 2092384772}
   specialBlockTutorials: {fileID: 2092384773}
   tutorialPopupView: {fileID: 1007656541}
+  marathonStartingGravityCap: 3
+  marathonGravityCapGrowth: 2
+  marathonLevelUpGravityReduction: 0.08
+  marathonRampAccelerationSeconds: 180
+  marathonEnemyDamageGrowthPerLevel: 0.03
 --- !u!114 &2092384765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39341,6 +39404,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2092384763}
     m_Modifications:
+    - target: {fileID: 269097223245844829, guid: 19f832125037c1e4098247fab38bb0c1, type: 3}
+      propertyPath: m_FillAmount
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 770404773581705926, guid: 19f832125037c1e4098247fab38bb0c1, type: 3}
       propertyPath: m_Name
       value: SpecialGauge_UI

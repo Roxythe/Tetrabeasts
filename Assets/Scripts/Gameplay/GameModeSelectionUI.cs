@@ -10,6 +10,7 @@ public sealed class GameModeSelectionUI : MonoBehaviour
     public TMP_Text lockDescription;
     public RectTransform tooltip;
     public TMP_Text tooltipTitle, tooltipDescription, tooltipLockNote;
+    public GameModeDescriptions descriptions;
     public float tooltipGap = 18f;
     Button tooltipOwner;
     Action<RunGameMode> selected;
@@ -43,13 +44,14 @@ public sealed class GameModeSelectionUI : MonoBehaviour
         if (!tooltip) return;
         tooltipOwner = button;
         tooltipTitle.text = button.GetComponentInChildren<TMP_Text>().text;
-        tooltipDescription.text = description;
+        tooltipDescription.text = descriptions ? descriptions.Get(button == marathonButton ? RunGameMode.Marathon : button == chaosButton ? RunGameMode.Chaos : RunGameMode.Standard) : description;
         tooltipLockNote.text = "Reach the final level in Standard to unlock this game mode.";
         tooltipLockNote.gameObject.SetActive(!button.interactable);
         var rect = (RectTransform)button.transform;
         // Place relative to the button, independent of canvas scale and menu transitions.
         tooltip.position = rect.TransformPoint(new Vector3(rect.rect.xMax + tooltipGap, rect.rect.center.y));
         tooltip.gameObject.SetActive(true);
+        tooltipTitle.GetComponent<TMPLabelShadow>()?.Sync();
         tooltip.SetAsLastSibling();
     }
     public void HideTooltip(Button owner = null)

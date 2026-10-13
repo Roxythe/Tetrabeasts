@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelModifierSO
   kind: 30
   displayName: Boulders-Away
-  description: Boulders fall every 5-10 seconds, dealing 20 damage and bouncing 3-5 times. At most three boulders are active.
+  description: Boulders fall every 5-10 seconds and deal 20 damage to monsters. Each boulder lasts for 4-7 damaging hits against monsters or stone obstacles, or until it falls off screen. Walls and other boulders do not use up hits. At most four boulders are active.
   icon: {fileID: -4759659127916700106, guid: ea787686bac1cda45a4214d6c34c4096, type: 3}

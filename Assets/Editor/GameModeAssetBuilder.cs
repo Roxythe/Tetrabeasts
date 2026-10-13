@@ -102,6 +102,7 @@ public static class GameModeAssetBuilder
             config.marathonGaugePrefab = AssetDatabase.LoadAssetAtPath<MarathonGaugeUI>(gaugePath);
             config.marathonRewardPrefab = AssetDatabase.LoadAssetAtPath<MarathonRewardUI>(rewardPath);
             config.boulderSprite = AssetDatabase.LoadAllAssetsAtPath("Assets/Sprites/Traps_Obstacles/Boulder_Sprite.png").OfType<Sprite>().First();
+            config.boulderImpactSfx = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/MonsterPieceSFX/AttackSFX/ThudRing.wav");
             var gameplay = EditorSceneManager.OpenScene("Assets/Scenes/GameplayScene.unity", OpenSceneMode.Additive);
             var controller = gameplay.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<GameController>(true)).First();
             config.standardLevelCount = controller.castlesByLevel.Length;
@@ -147,7 +148,10 @@ public static class GameModeAssetBuilder
             Capture("Logs/GameModeMenu.png");
             menu.chaosButton.interactable = false;
             menu.ShowTooltip(menu.chaosButton, menu.chaosButton.GetComponent<GameModeButtonTooltip>().description);
-            Capture("Logs/GameModeLockedTooltip.png"); Object.DestroyImmediate(menu.gameObject);
+            Capture("Logs/GameModeLockedTooltip.png");
+            menu.marathonButton.interactable = false;
+            menu.ShowTooltip(menu.marathonButton, "");
+            Capture("Logs/MarathonModeTooltip.png"); Object.DestroyImmediate(menu.gameObject);
             var reward = Object.Instantiate(config.marathonRewardPrefab, canvas.transform);
             var modifiers = AssetDatabase.FindAssets("t:RunModifier").Select(g => AssetDatabase.LoadAssetAtPath<RunModifier>(AssetDatabase.GUIDToAssetPath(g))).Where(m => m).ToArray();
             var pairs = new MarathonRewardUI.Pair[3];
@@ -158,7 +162,24 @@ public static class GameModeAssetBuilder
                 pairs[i] = new MarathonRewardUI.Pair { buff = candidates.First(m => m.isBuff), debuff = candidates.First(m => !m.isBuff) };
             }
             reward.Show(2, pairs, null);
+            reward.cards[1].SetSelected(true);
+            foreach (var animator in reward.cards[1].selectedFlames.GetComponentsInChildren<Animator>(true))
+                if (animator.runtimeAnimatorController)
+                    animator.runtimeAnimatorController.animationClips[0].SampleAnimation(animator.gameObject, 0.25f);
             Capture("Logs/MarathonRewardPanel.png"); Object.DestroyImmediate(reward.gameObject);
+            foreach (var path in new[] { "Assets/Resources/Prefabs/Panels/SteamLeaderboard_Panel.prefab", "Assets/Prefabs/Panels/HighScore_Panel.prefab" })
+            {
+                var panel = Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(path), canvas.transform);
+                panel.SetActive(true);
+                Capture("Logs/" + panel.name + ".png");
+                var dropdown = panel.GetComponentInChildren<TMP_Dropdown>(true);
+                typeof(TMP_Dropdown).GetMethod("Start", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).Invoke(dropdown, null);
+                dropdown.alphaFadeSpeed = 0;
+                dropdown.Show();
+                foreach (var group in dropdown.GetComponentsInChildren<CanvasGroup>()) group.alpha = 1;
+                Capture("Logs/" + panel.name + "Dropdown.png");
+                Object.DestroyImmediate(panel);
+            }
             var gauge = Object.Instantiate(config.marathonGaugePrefab, canvas.transform); gauge.Refresh(5, 400, 750);
             Debug.Log("Gauge fill anchors " + gauge.gauge.fillRect.anchorMax + " rect " + gauge.gauge.fillRect.rect + " value " + gauge.gauge.value);
             Capture("Logs/MarathonLevelGauge.png");
@@ -176,6 +197,9 @@ public static class GameModeAssetBuilder
         gc.GetType().GetMethod("EnsureMarathonUI", flags).Invoke(gc, null);
         gc.GetType().GetField("marathonDamage", flags).SetValue(gc, 250f);
         gc.GetType().GetMethod("RefreshMarathonGauge", flags).Invoke(gc, null);
+        gc.specialSlider.normalizedValue = 0.65f;
+        gc.specialGauge = 65f;
+        gc.GetType().GetMethod("UpdateSpecialGaugeFieryFill", flags).Invoke(gc, null);
         canvas = gc.gameBoard.GetComponentInParent<Canvas>().rootCanvas;
         canvas.renderMode = RenderMode.ScreenSpaceCamera; canvas.worldCamera = camera; canvas.planeDistance = 1f;
         Capture("Logs/MarathonGameplayLayout.png");

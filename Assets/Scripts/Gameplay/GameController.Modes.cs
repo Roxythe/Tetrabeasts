@@ -11,6 +11,21 @@ public partial class GameController
     float marathonDamage;
     bool marathonRewardActive;
     float marathonResumeTimeScale = 1f;
+    [Header("Marathon Gravity (cells per second)")]
+    [SerializeField, Min(0.1f)] float marathonStartingGravityCap = 3f;
+    [SerializeField, Min(0f)] float marathonGravityCapGrowth = 2f;
+    [SerializeField, Range(0f, 0.3f)] float marathonLevelUpGravityReduction = 0.08f;
+    [SerializeField, Min(30f)] float marathonRampAccelerationSeconds = 180f;
+    [SerializeField, Min(0f)] float marathonEnemyDamageGrowthPerLevel = 0.03f;
+    float marathonElapsedSeconds;
+    float marathonCarriedGravity;
+    public static float MarathonGravityCap(int levelIndex, float initial = 3f, float growth = 2f) =>
+        Mathf.Max(0.1f, initial) + Mathf.Max(0f, growth) * Mathf.Log(1f + Mathf.Max(0, levelIndex));
+    float CurrentMarathonGravityCap => MarathonGravityCap(currentLevel, marathonStartingGravityCap, marathonGravityCapGrowth);
+    float MarathonPersistentGravityMultiplier => Mathf.Max(0.01f, pieceGravityMult * ShopBuffEffects.GravityMultiplier * ActiveLevelModifierGravityMult);
+    float MarathonCoreGravity => Mathf.Min(CurrentMarathonGravityCap / MarathonPersistentGravityMultiplier,
+        1f / Mathf.Max(0.0001f, _thisLevelBaseFallInterval) +
+        GetCurrentGravityIncreasePerSecond() * GetCurrentFallRampRateMultiplier(1f) * _levelTimer);
     public bool IsMarathon => GameModeStore.Current == RunGameMode.Marathon;
     public float MarathonDamage => marathonDamage;
     public float MarathonRequiredDamage => RequiredMarathonDamage(currentLevel,
@@ -30,11 +45,17 @@ public partial class GameController
         modeAssets = GameModeAssets.Load();
         boulders = GetComponent<BoulderController>();
         if (!boulders) boulders = gameObject.AddComponent<BoulderController>();
-        if (modeAssets) boulders.boulderSprite = modeAssets.boulderSprite;
+        if (modeAssets)
+        {
+            boulders.boulderSprite = modeAssets.boulderSprite;
+            boulders.impactSfx = modeAssets.boulderImpactSfx;
+        }
     }
     void EnsureMarathonUI()
     {
-        if (!IsMarathon || marathonGauge || !modeAssets || !gameBoard) return;
+        if (!IsMarathon || gameOver) return;
+        if (marathonGauge) { marathonGauge.gameObject.SetActive(true); return; }
+        if (!modeAssets || !gameBoard) return;
         var canvas = gameBoard.GetComponentInParent<Canvas>()?.rootCanvas;
         if (!canvas) return;
         marathonGauge = Instantiate(modeAssets.marathonGaugePrefab, canvas.transform);
@@ -50,13 +71,21 @@ public partial class GameController
             Vector3 ultimateCenter = canvasRect.InverseTransformPoint(reference.TransformPoint(reference.rect.center));
             target.localPosition = new Vector3(2f * boardCenter.x - ultimateCenter.x, ultimateCenter.y, 0f);
             target.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, reference.rect.height * reference.lossyScale.y / canvasRect.lossyScale.y);
+            target.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, reference.rect.width * reference.lossyScale.x / canvasRect.lossyScale.x);
         }
         else target.localPosition = boardCenter + Vector3.left * (gameBoard.gridRoot.rect.width * 0.5f + 70f);
         target.localPosition += Vector3.right * marathonGauge.horizontalOffset;
+        if (reference)
+        {
+            // Share the special gauge's HUD parent, visibility and canvas sorting.
+            target.SetParent(reference.parent, true);
+            target.SetSiblingIndex(reference.GetSiblingIndex());
+        }
     }
     void TickGameMode()
     {
         if (!IsMarathon) return;
+        if (gameOver) { HideMarathonUI(); return; }
         EnsureMarathonUI();
         RefreshMarathonGauge();
         if (IsRoundActive && !marathonRewardActive && marathonDamage >= MarathonRequiredDamage)
@@ -66,7 +95,12 @@ public partial class GameController
     {
         if (marathonGauge) marathonGauge.Refresh(currentLevel + 1, marathonDamage, MarathonRequiredDamage);
         if (IsMarathon && enemyCastleUI)
-            enemyCastleUI.SetMarathonProgress(Mathf.Clamp01(marathonDamage / MarathonRequiredDamage), IsFinalMarathonBoss());
+            enemyCastleUI.SetMarathonProgress(Mathf.Clamp01(marathonDamage / MarathonRequiredDamage), false);
+    }
+    void HideMarathonUI()
+    {
+        if (marathonGauge) marathonGauge.gameObject.SetActive(false);
+        if (marathonRewards) marathonRewards.gameObject.SetActive(false);
     }
     List<CastleData> MarathonBosses()
     {
@@ -77,21 +111,17 @@ public partial class GameController
         if (postFinalSurvivalCastle && !bosses.Contains(postFinalSurvivalCastle)) bosses.Add(postFinalSurvivalCastle);
         return bosses;
     }
-    bool IsFinalMarathonBoss()
-    {
-        var bosses = MarathonBosses();
-        return bosses.Count > 0 && currentLevel + 1 >= bosses.Count * 3;
-    }
     CastleData ResolveMarathonCastle(int levelIndex)
     {
         var bosses = MarathonBosses();
-        int level = levelIndex + 1;
-        if (bosses.Count > 0 && (level % 3 == 0 || level >= bosses.Count * 3))
-            return bosses[Mathf.Min(bosses.Count - 1, level / 3 - 1)];
+        int cycleIndex = bosses.Count > 0 ? Mathf.Max(0, levelIndex) % (bosses.Count * 3) : Mathf.Max(0, levelIndex);
+        int level = cycleIndex + 1;
+        if (bosses.Count > 0 && level % 3 == 0)
+            return bosses[level / 3 - 1];
         var normal = new List<CastleData>();
         if (castlesByLevel != null)
             foreach (var castle in castlesByLevel) if (castle && !castle.isBossLevel) normal.Add(castle);
-        return normal.Count > 0 ? normal[levelIndex % normal.Count] : (bosses.Count > 0 ? bosses[0] : null);
+        return normal.Count > 0 ? normal[cycleIndex % normal.Count] : (bosses.Count > 0 ? bosses[0] : null);
     }
     IEnumerator MarathonLevelUp()
     {
@@ -108,10 +138,12 @@ public partial class GameController
         // Carryover can earn several levels; offer a separate confirmed choice for each.
         while (marathonDamage >= MarathonRequiredDamage && !gameOver)
         {
-            bool keepFinalBoss = IsFinalMarathonBoss();
+            marathonCarriedGravity = Mathf.Max(GetLevelOneBaseGravityCellsPerSecond(),
+                MarathonCoreGravity * (1f - marathonLevelUpGravityReduction));
             marathonDamage -= MarathonRequiredDamage;
             var xp = ComputeRoundWinXp(currentLevel + 1);
             foreach (var award in xp.perMonsterAwardXp) RunMonsterProgress.AddRunXp(award.Key, award.Value);
+            int reinforcements = GrantMarathonReinforcements();
             currentLevel++;
             bool confirmed = false;
             options = MarathonRewardUI.RollPairs(buffPool, debuffPool);
@@ -123,15 +155,8 @@ public partial class GameController
             RefreshMarathonGauge();
             while (!confirmed && !gameOver) yield return null;
             if (gameOver) break;
-            if (!keepFinalBoss) InitLevel(currentLevel, spawnEnvironment: false);
-            else
-            {
-                // The final boss and her ability timers survive subsequent level-ups.
-                ResetLevelTimerAndDrop(currentLevel);
-                _maxComboThisLevel = 0; _obstaclesDestroyedThisLevel = 0;
-                _levelStartReserveUnits = unitLives; _levelStartMaxLives = EffectiveMaxUnitLives;
-                if (levelText) levelText.text = "Level: " + (currentLevel + 1);
-            }
+            InitLevel(currentLevel, spawnEnvironment: false);
+            ShowMarathonReinforcements(reinforcements);
             RefreshMarathonGauge();
             CacheAndWriteTempRunCheckpoint();
         }
@@ -139,12 +164,61 @@ public partial class GameController
         Time.timeScale = marathonResumeTimeScale;
         if (!gameOver) EnterGameplayCursorMode();
     }
+    int GrantMarathonReinforcements()
+    {
+        int before = unitLives;
+        unitLives = Mathf.Clamp(unitLives + CurrentReinforcementsPerWin, 0, EffectiveMaxUnitLives);
+        UpdateUnitLivesUI();
+        return Mathf.Max(0, unitLives - before);
+    }
+    void ShowMarathonReinforcements(int amount)
+    {
+        if (amount <= 0 || !unitLivesSlider || !stoneBuffPopupStyle || !stoneBuffPopupStyle.popupPrefab) return;
+        var instance = Instantiate(stoneBuffPopupStyle.popupPrefab, unitLivesSlider.transform);
+        var view = instance.GetComponent<BuffPopupView>();
+        if (!view || !view.IsValid) { Destroy(instance); return; }
+        view.RectTransform.anchorMin = view.RectTransform.anchorMax = new Vector2(0.5f, 1f);
+        view.RectTransform.pivot = new Vector2(0.5f, 0f);
+        view.RectTransform.anchoredPosition = new Vector2(0, 12);
+        view.RectTransform.sizeDelta = new Vector2(360, 50);
+        view.mainText.text = view.shadowText.text = "+" + amount + " Reinforcements";
+        view.mainText.color = new Color(0.5f, 1f, 0.45f);
+        view.shadowText.color = Color.black;
+        foreach (var text in new[] { view.mainText, view.shadowText })
+        {
+            text.rectTransform.anchorMin = Vector2.zero;
+            text.rectTransform.anchorMax = Vector2.one;
+            text.rectTransform.sizeDelta = Vector2.zero;
+            text.rectTransform.anchoredPosition = Vector2.zero;
+            text.raycastTarget = false;
+            text.enableAutoSizing = true;
+            text.fontSizeMin = 18;
+            text.fontSizeMax = 30;
+            text.alignment = TMPro.TextAlignmentOptions.Center;
+        }
+        view.shadowText.rectTransform.anchoredPosition = stoneBuffPopupStyle.shadowOffset;
+        StartCoroutine(FloatReinforcements(view, Mathf.Max(1.5f, stoneBuffPopupStyle.duration), stoneBuffPopupStyle.floatPixels));
+    }
+    IEnumerator FloatReinforcements(BuffPopupView view, float duration, float rise)
+    {
+        var start = view.RectTransform.anchoredPosition;
+        var group = view.GetComponent<CanvasGroup>() ?? view.gameObject.AddComponent<CanvasGroup>();
+        for (float elapsed = 0; elapsed < duration && view; elapsed += Time.deltaTime)
+        {
+            float progress = elapsed / duration;
+            view.RectTransform.anchoredPosition = start + Vector2.up * rise * progress;
+            group.alpha = 1f - progress;
+            yield return null;
+        }
+        if (view) Destroy(view.gameObject);
+    }
     void ResetModeProgress()
     {
         if (marathonRewardActive) Time.timeScale = marathonResumeTimeScale;
         marathonRewardActive = false;
         marathonDamage = 0f;
-        if (marathonRewards) marathonRewards.gameObject.SetActive(false);
+        marathonElapsedSeconds = marathonCarriedGravity = 0f;
+        HideMarathonUI();
         boulders?.Clear();
     }
 }

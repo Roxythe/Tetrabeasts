@@ -387,6 +387,10 @@ public sealed class SteamCloudSaveService : MonoBehaviour
             "SelectedCharacterName",
             "SelectedMonstersCSV",
             "HighScores_v1",
+            HighScoreManager.LegacyMigrationKey,
+            HighScoreManager.KeyForMode(RunGameMode.Standard),
+            HighScoreManager.KeyForMode(RunGameMode.Chaos),
+            HighScoreManager.KeyForMode(RunGameMode.Marathon),
             "Settings_LanguageCode",
             "Settings_ControlBindings_KeyboardMouse",
             "Settings_ControlBindings_XboxController",
@@ -576,6 +580,10 @@ public sealed class SteamCloudSaveService : MonoBehaviour
 
         if (!string.IsNullOrEmpty(PlayerPrefs.GetString("HighScores_v1", string.Empty)))
             return true;
+
+        foreach (RunGameMode mode in Enum.GetValues(typeof(RunGameMode)))
+            if (!string.IsNullOrEmpty(PlayerPrefs.GetString(HighScoreManager.KeyForMode(mode), string.Empty)))
+                return true;
 
         foreach (var type in ShopBuffStore.AllTypes)
         {

@@ -72,7 +72,11 @@ public static class SteamLeaderboardResetSchedule
 
 public class SteamLeaderboardService : MonoBehaviour
 {
+    // Standard retains the original board and its existing scores/reset history.
     public const string DefaultLeaderboardName = "Tetrabeasts_GlobalScore";
+    public static string NameForMode(RunGameMode mode) => mode == RunGameMode.Chaos ? "Tetrabeasts_ChaosScore" :
+        mode == RunGameMode.Marathon ? "Tetrabeasts_MarathonScore" : DefaultLeaderboardName;
+    static readonly Dictionary<string, SteamLeaderboardService> Services = new();
 
     static SteamLeaderboardService _instance;
     public static SteamLeaderboardService Instance => _instance;
@@ -120,44 +124,45 @@ public class SteamLeaderboardService : MonoBehaviour
 
     public static SteamLeaderboardService Ensure(string requestedLeaderboardName = DefaultLeaderboardName)
     {
-        if (_instance)
-        {
-            _instance.SetLeaderboardName(requestedLeaderboardName);
-            return _instance;
-        }
-
-        var go = new GameObject("SteamLeaderboardService");
+        if (string.IsNullOrWhiteSpace(requestedLeaderboardName)) requestedLeaderboardName = DefaultLeaderboardName;
+        if (Services.TryGetValue(requestedLeaderboardName, out var existing) && existing) return existing;
+        // Each board owns its own immutable name, handle, callback set and pending requests.
+        // Switching UI tabs cannot redirect an in-flight score upload to another mode.
+        var go = new GameObject("SteamLeaderboardService_" + requestedLeaderboardName);
+        go.SetActive(false);
+        var service = go.AddComponent<SteamLeaderboardService>();
+        service.leaderboardName = requestedLeaderboardName;
+        Services[requestedLeaderboardName] = service;
+        if (!_instance) _instance = service;
         DontDestroyOnLoad(go);
-        _instance = go.AddComponent<SteamLeaderboardService>();
-        _instance.SetLeaderboardName(requestedLeaderboardName);
-        return _instance;
+        go.SetActive(true);
+        return service;
     }
 
     void Awake()
     {
-        if (_instance && _instance != this)
+        if (Services.TryGetValue(leaderboardName, out var existing) && existing && existing != this)
         {
             Destroy(gameObject);
             return;
         }
-
-        _instance = this;
+        Services[leaderboardName] = this;
+        if (!_instance) _instance = this;
         DontDestroyOnLoad(gameObject);
         InitializeSteamIfAvailable();
     }
 
-    public void SetLeaderboardName(string requestedLeaderboardName)
+    void OnDestroy()
     {
-        if (string.IsNullOrWhiteSpace(requestedLeaderboardName))
-            requestedLeaderboardName = DefaultLeaderboardName;
-
-        if (leaderboardName == requestedLeaderboardName)
-            return;
-
-        leaderboardName = requestedLeaderboardName;
+        if (Services.TryGetValue(leaderboardName, out var existing) && existing == this) Services.Remove(leaderboardName);
+        if (_instance == this) _instance = null;
 #if TETRABEASTS_STEAMWORKS || STEAMWORKS_NET
-        InvalidateLeaderboard();
+        _findLeaderboardResult?.Dispose(); _uploadResult?.Dispose();
+        _globalResult?.Dispose(); _friendsResult?.Dispose(); _currentRankResult?.Dispose();
+        _avatarLoadedCallback?.Dispose();
 #endif
+        foreach (var sprite in _avatarSprites.Values)
+            if (sprite) { Destroy(sprite.texture); Destroy(sprite); }
     }
 
     public void SubmitScore(int score, PlayerCharacterData commander, PlayerCharacterData[] commanderRoster = null)

@@ -172,6 +172,7 @@ public class EnemyCastleUI : MonoBehaviour
             return;
 
         frameImage.sprite = frameSprite;
+        frameImage.overrideSprite = null;
         frameImage.enabled = true;
     }
 

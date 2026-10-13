@@ -70,7 +70,7 @@ public static class GameModeUIPolish
         string[] descriptions = {
             "Battle through the original castle campaign. Defeat each castle to advance and conquer the final level to win.",
             "Play the Standard campaign with a new modifier every other level. All selected modifiers stay active for the rest of the run. Earn an additional 20% monster experience.",
-            "An endless battle. Deal damage to level up and choose a buff and debuff of matching rarity. Face a boss every third level; the final boss stays indefinitely."
+            "Battle endlessly. Deal damage to level up, gain reinforcements, and choose a buff and debuff of matching rarity. A boss appears every third level. After the final boss, the castles repeat while damage targets and difficulty keep rising."
         };
         var buttons = new[] { ui.standardButton, ui.chaosButton, ui.marathonButton };
         for (int i = 0; i < buttons.Length; i++)
@@ -141,13 +141,14 @@ public static class GameModeUIPolish
             }
         }
         Style(ui.confirmButton, Green);
+        GameModeFollowupAuthoring.PolishRewards(root);
     }
 
     static void Gauge(GameObject root)
     {
         var ui = root.GetComponent<MarathonGaugeUI>();
         var rect = (RectTransform)root.transform;
-        rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 64f);
+        rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 100f);
         ui.horizontalOffset = 28f;
         ui.gauge.transition = Selectable.Transition.None;
         ui.gauge.navigation = new Navigation { mode = Navigation.Mode.None };

@@ -9,6 +9,9 @@ public class HighScoreUI : MonoBehaviour
     public GameObject panel;
     public TMP_InputField nameInput;
     public Button submitButton;
+    public TMP_Dropdown modeDropdown;
+    RunGameMode selectedMode = RunGameMode.Standard;
+    RunGameMode pendingMode;
 
     [Header("Post-Submit Buttons")]
     public Button restartButton;
@@ -34,15 +37,23 @@ public class HighScoreUI : MonoBehaviour
     {
         if (!panel) panel = gameObject;
         if (submitButton) submitButton.onClick.AddListener(Submit);
+        if (modeDropdown) modeDropdown.onValueChanged.AddListener(value =>
+        {
+            selectedMode = (RunGameMode)Mathf.Clamp(value, 0, 2);
+            _highlightRankIndex = -1;
+            RefreshTable();
+        });
     }
 
     public void TryShow(int score)
     {
         pendingScore = score;
+        pendingMode = selectedMode = GameModeStore.Current;
+        if (modeDropdown) modeDropdown.SetValueWithoutNotify((int)selectedMode);
         _highlightRankIndex = -1;
         RefreshTable();
 
-        bool qualifies = HighScoreManager.IsHighScore(score);
+        bool qualifies = HighScoreManager.IsHighScore(score, mode: pendingMode);
         ForceActivate();
 
         if (qualifies && TryGetSteamPlayerName(out string steamPlayerName))
@@ -79,7 +90,9 @@ public class HighScoreUI : MonoBehaviour
 
     void SubmitScore(string playerName)
     {
-        _highlightRankIndex = HighScoreManager.Add(playerName, pendingScore);
+        selectedMode = pendingMode;
+        if (modeDropdown) modeDropdown.SetValueWithoutNotify((int)selectedMode);
+        _highlightRankIndex = HighScoreManager.Add(playerName, pendingScore, mode: pendingMode);
         RefreshTable();
         SetSubmissionUIActive(false);
         SetPostSubmitButtonsActive(true);
@@ -123,7 +136,7 @@ public class HighScoreUI : MonoBehaviour
     public void RefreshTable()
     {
         foreach (Transform c in tableRoot) Destroy(c.gameObject);
-        var list = HighScoreManager.LoadTop(10, pad: true);
+        var list = HighScoreManager.LoadTop(10, pad: true, mode: selectedMode);
 
         for (int i = 0; i < list.Count; i++)
         {
@@ -147,6 +160,9 @@ public class HighScoreUI : MonoBehaviour
 
     public void ShowReadOnly()
     {
+        selectedMode = RunGameMode.Standard;
+        _highlightRankIndex = -1;
+        if (modeDropdown) modeDropdown.SetValueWithoutNotify(0);
         ForceActivate();
         RefreshTable();
 

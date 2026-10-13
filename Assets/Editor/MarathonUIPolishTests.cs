@@ -48,12 +48,29 @@ public class MarathonUIPolishTests
         Assert.IsFalse(rewards.confirmButton.interactable);
         Assert.AreSame(buff.icon, rewards.buffIcons[0].sprite);
         Assert.AreSame(debuff.icon, rewards.debuffIcons[0].sprite);
-        Assert.AreEqual(rewards.buffTextColor, rewards.buffLabels[0].color);
-        Assert.AreEqual(rewards.debuffTextColor, rewards.debuffLabels[0].color);
+        Assert.AreEqual(rewards.colors.buffDescription, rewards.buffLabels[0].color);
+        Assert.AreEqual(rewards.colors.debuffDescription, rewards.debuffLabels[0].color);
+        Assert.AreEqual(rewards.colors.buffTitle, rewards.buffTitles[0].color);
+        Assert.AreNotEqual(rewards.buffTitles[0].color, rewards.buffLabels[0].color);
+        Assert.AreEqual(Color.black, rewards.buffTitles[0].GetComponent<TMPLabelShadow>().shadow.color);
+        Assert.AreEqual(rewards.colors.inactiveAlpha, rewards.cards[1].GetComponent<CanvasGroup>().alpha);
         var pointer = new PointerEventData(EventSystem.current) { button = PointerEventData.InputButton.Left };
+        var sourceField = typeof(UICursorController).GetField("s_targetInputSource", BindingFlags.Static | BindingFlags.NonPublic);
+        var previousSource = sourceField.GetValue(null);
+        try
+        {
+            sourceField.SetValue(null, UITargetInputSource.MousePointer);
+            ExecuteEvents.Execute(rewards.choices[2].gameObject, pointer, ExecuteEvents.pointerEnterHandler);
+            Assert.AreEqual(1f, rewards.cards[2].GetComponent<CanvasGroup>().alpha);
+            ExecuteEvents.Execute(rewards.choices[2].gameObject, pointer, ExecuteEvents.pointerExitHandler);
+            Assert.AreEqual(rewards.colors.inactiveAlpha, rewards.cards[2].GetComponent<CanvasGroup>().alpha);
+        }
+        finally { sourceField.SetValue(null, previousSource); }
         ExecuteEvents.Execute(rewards.choices[1].gameObject, pointer, ExecuteEvents.pointerClickHandler);
         Assert.IsTrue(rewards.confirmButton.interactable);
-        Assert.IsTrue(rewards.selectionOutlines[1].enabled);
+        Assert.IsTrue(rewards.cards[1].selectedFlames.activeSelf);
+        Assert.AreEqual(1f, rewards.cards[1].GetComponent<CanvasGroup>().alpha);
+        Assert.IsFalse(rewards.selectionOutlines[1].enabled);
         Assert.IsFalse(rewards.selectionOutlines[0].enabled);
         Assert.AreEqual(MarathonRewardUI.RarityColor(RunModRarity.Rare), rewards.choices[1].GetComponent<Image>().color, "Selection must preserve rarity.");
         ExecuteEvents.Execute(rewards.confirmButton.gameObject, pointer, ExecuteEvents.pointerClickHandler);
@@ -63,9 +80,16 @@ public class MarathonUIPolishTests
         rewards.Show(4, new[] { pair, pair, pair }, null);
         Assert.IsFalse(rewards.buffIcons[0].enabled, "Reused choices must clear missing icons.");
         Assert.IsFalse(rewards.selectionOutlines[1].enabled);
+        Assert.IsFalse(rewards.cards[1].selectedFlames.activeSelf);
         rewards.gameObject.SetActive(false);
 
         var menu = Object.Instantiate(config.modeMenuPrefab, canvas.transform);
+        Assert.IsNotNull(menu.descriptions);
+        menu.descriptions.marathon = "Custom editable Marathon description";
+        menu.ShowTooltip(menu.marathonButton, "Old description");
+        Assert.AreEqual(menu.descriptions.marathon, menu.tooltipDescription.text);
+        Assert.IsTrue((menu.tooltipTitle.fontStyle & TMPro.FontStyles.Bold) != 0);
+        Assert.IsNotNull(menu.tooltipTitle.GetComponent<TMPLabelShadow>());
         menu.chaosButton.interactable = false;
         ExecuteEvents.Execute(menu.chaosButton.gameObject, pointer, ExecuteEvents.pointerEnterHandler);
         Assert.IsTrue(menu.tooltip.gameObject.activeSelf);
@@ -151,6 +175,13 @@ public class MarathonUIPolishTests
                 Assert.IsNotNull(sound.hoverClip, button.name);
             }
         Assert.IsNull(config.marathonGaugePrefab.levelLabel);
+        var reward = config.marathonRewardPrefab;
+        Assert.IsNotNull(reward.title.transform.parent.Find("Panel Border"));
+        foreach (var icon in reward.buffIcons)
+        {
+            Assert.AreEqual(1f, icon.color.a); Assert.IsTrue(icon.preserveAspect);
+            Assert.IsNotNull(icon.transform.parent.Find("Icon Border"));
+        }
         Assert.Greater(config.marathonGaugePrefab.horizontalOffset, 0);
         Assert.AreEqual(1f, config.marathonGaugePrefab.transform.Find("Background").GetComponent<Image>().color.a);
     }

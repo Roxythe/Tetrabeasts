@@ -14,6 +14,8 @@ public static class TempRunSaveStore
         public int version = 2;
         public RunGameMode gameMode;
         public float marathonDamage;
+        public float marathonGravity;
+        public float marathonElapsedSeconds;
         public List<string> chaosModifierNames = new();
         public int currentLevel;
         public bool postFinalSurvivalActive;

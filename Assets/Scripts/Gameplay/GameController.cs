@@ -646,6 +646,7 @@ public partial class GameController : MonoBehaviour
     {
         get
         {
+            if (IsMarathon) return 1f / CurrentMarathonGravityCap;
             float normalCap = Mathf.Max(0.01f, minFallInterval);
             if (!_postFinalSurvivalActive)
                 return normalCap;
@@ -1306,6 +1307,8 @@ public partial class GameController : MonoBehaviour
 
         GameModeStore.Current = System.Enum.IsDefined(typeof(RunGameMode), saveData.gameMode) ? saveData.gameMode : RunGameMode.Standard;
         marathonDamage = Mathf.Max(0f, saveData.marathonDamage);
+        marathonCarriedGravity = Mathf.Max(0f, saveData.marathonGravity);
+        marathonElapsedSeconds = Mathf.Max(0f, saveData.marathonElapsedSeconds);
         levelModifierController.RestoreChaosModifiers(saveData.chaosModifierNames);
         _cachedTempRunCheckpoint = saveData;
         _postFinalSurvivalActive = saveData.postFinalSurvivalActive && postFinalSurvivalCastle != null;
@@ -1658,7 +1661,10 @@ public partial class GameController : MonoBehaviour
             bool blockGravityTimer = IsTutorialPromptActive;
 
             if (!blockGravityTimer)
+            {
                 _levelTimer += Time.deltaTime;
+                if (IsMarathon) marathonElapsedSeconds += Time.deltaTime;
+            }
 
             UpdateLevelTimerUI();
 
@@ -1916,7 +1922,8 @@ public partial class GameController : MonoBehaviour
 
     public float GetScaledEnemyDamage(float amount)
     {
-        return Mathf.Max(0f, amount) * _starDifficultyModifiers.enemyDamageMultiplier;
+        return Mathf.Max(0f, amount) * _starDifficultyModifiers.enemyDamageMultiplier *
+            (IsMarathon ? 1f + Mathf.Max(0, currentLevel) * marathonEnemyDamageGrowthPerLevel : 1f);
     }
 
     float GetScaledBossAbilityDamage(float amount)
@@ -2181,6 +2188,8 @@ public partial class GameController : MonoBehaviour
         {
             gameMode = GameModeStore.Current,
             marathonDamage = marathonDamage,
+            marathonGravity = IsMarathon ? MarathonCoreGravity : 0f,
+            marathonElapsedSeconds = marathonElapsedSeconds,
             chaosModifierNames = levelModifierController.CaptureChaosModifiers(),
             currentLevel = currentLevel,
             postFinalSurvivalActive = _postFinalSurvivalActive,
@@ -2489,6 +2498,7 @@ public partial class GameController : MonoBehaviour
             return;
 
         gameOver = true;
+        HideMarathonUI();
         levelModifierController?.EndNewModifierEffects();
         boulders?.Clear();
         StopSpecialSiphonChannel(forceDestroyParticles: true);
@@ -2612,7 +2622,7 @@ public partial class GameController : MonoBehaviour
         if (score <= 0)
             return;
 
-        SteamLeaderboardService.Ensure().SubmitScore(score, selectedCharacter, roster);
+        SteamLeaderboardService.Ensure(SteamLeaderboardService.NameForMode(GameModeStore.Current)).SubmitScore(score, selectedCharacter, roster);
     }
 
     public void PlayPieceLockSFX()
@@ -3739,6 +3749,7 @@ public partial class GameController : MonoBehaviour
             enemyCastleUI = FindFirstObjectByType<EnemyCastleUI>(FindObjectsInactive.Include);
 
         currentCastleData = data; // For external reference if needed
+        if (IsMarathon) levelModifierController?.RefreshCastlePresentation(data);
 
         if (enemyCastleUI && data)
         {
@@ -7364,8 +7375,15 @@ public partial class GameController : MonoBehaviour
 
         float baseGravity = 1f / Mathf.Max(0.0001f, _level1FallInterval);
         float levelStartGravity = Mathf.Max(0.0001f, baseGravity + levelBonus);
+        if (IsMarathon)
+        {
+            levelStartGravity = marathonCarriedGravity > 0f ? marathonCarriedGravity : baseGravity;
+            marathonCarriedGravity = 0f;
+        }
 
-        _thisLevelBaseFallInterval = Mathf.Max(
+        // Marathon caps the final modified speed in CalculateFallInterval. Capping the
+        // unmodified base here would discard carried speed when a slowing buff is active.
+        _thisLevelBaseFallInterval = IsMarathon ? 1f / levelStartGravity : Mathf.Max(
             CurrentGravityMinFallInterval,
             1f / levelStartGravity
         );
@@ -7539,6 +7557,8 @@ public partial class GameController : MonoBehaviour
     float GetCurrentGravityIncreasePerSecond()
     {
         float normal = Mathf.Max(0f, gravityIncreasePerSecond);
+        if (IsMarathon)
+            return normal * (1f + marathonElapsedSeconds / Mathf.Max(30f, marathonRampAccelerationSeconds));
         return _postFinalSurvivalActive
             ? Mathf.Max(normal, Mathf.Max(0f, postFinalSurvivalGravityIncreasePerSecond))
             : normal;

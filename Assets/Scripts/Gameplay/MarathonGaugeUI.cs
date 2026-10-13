@@ -14,8 +14,8 @@ public sealed class MarathonGaugeUI : MonoBehaviour
     float previousRequired;
     public void Refresh(int level, float damage, float required)
     {
-        if (liquidSlosh && previousRequired == required && damage > previousDamage)
-            liquidSlosh.AddImpulse((damage - previousDamage) / Mathf.Max(1f, required));
+        if (liquidSlosh && previousRequired > 0)
+            liquidSlosh.AddImpulse(Mathf.Clamp01(damage / Mathf.Max(1f, required)) - Mathf.Clamp01(previousDamage / previousRequired));
         previousDamage = damage;
         previousRequired = required;
         gauge.normalizedValue = Mathf.Clamp01(damage / Mathf.Max(1f, required));

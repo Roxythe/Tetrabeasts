@@ -6,7 +6,10 @@ using UnityEngine.UI;
 public sealed class BoulderController : MonoBehaviour
 {
     public Sprite boulderSprite;
-    public const int Capacity = 3;
+    public AudioClip impactSfx;
+    [Range(0f, 1f)] public float impactVolume = 0.65f;
+    public const int Capacity = 4;
+    const int BossVolleySize = 3;
     public const float HitDamage = 20f;
     const float Radius = 0.42f;
     sealed class Rock
@@ -24,6 +27,7 @@ public sealed class BoulderController : MonoBehaviour
     }
     readonly List<Rock> rocks = new();
     readonly List<Pixel> pixels = new();
+    readonly Vector3[] screenCorners = new Vector3[4];
     GameController gc;
     Board board;
     float countdown = 5f;
@@ -48,7 +52,7 @@ public sealed class BoulderController : MonoBehaviour
         if (bossVolleyPending && rocks.Count == 0)
         {
             bossVolleyPending = false;
-            for (int i = 0; i < Capacity; i++) Spawn((i + 0.5f) * board.width / Capacity);
+            for (int i = 0; i < BossVolleySize; i++) Spawn((i + 0.5f) * board.width / BossVolleySize);
         }
         bool enabledByModifier = gc.levelModifierController &&
             gc.levelModifierController.HasModifier(LevelModifierKind.BouldersAway);
@@ -89,7 +93,7 @@ public sealed class BoulderController : MonoBehaviour
     {
         if (rocks.Count >= Capacity) return;
         var rock = new Rock { position = new Vector2(x, board.height + Radius),
-            velocity = new Vector2(Random.Range(-2f, 2f), -1f), bounces = Random.Range(3, 6) };
+            velocity = new Vector2(Random.Range(-2f, 2f), -1f), bounces = Random.Range(4, 8) };
         rock.image = CreateImage("Boulder", board.GetCellSize() * (Radius * 2f));
         rock.image.sprite = boulderSprite;
         rock.image.preserveAspect = true;
@@ -107,12 +111,6 @@ public sealed class BoulderController : MonoBehaviour
             if (rock.position.x < Radius) { rock.position.x = Radius; normal = Vector2.right; }
             else if (rock.position.x > board.width - Radius) { rock.position.x = board.width - Radius; normal = Vector2.left; }
             if (normal != Vector2.zero && Vector2.Dot(rock.velocity, normal) < 0f) Bounce(rock, normal);
-            if (rock.bounces <= 0) continue;
-            if (rock.position.y < Radius)
-            {
-                rock.position.y = Radius;
-                if (rock.velocity.y < 0f) Bounce(rock, Vector2.up);
-            }
             if (rock.bounces <= 0) continue;
             // Prevent successive damage while still touching the same target.
             rock.contacts.RemoveWhere(c => !Overlaps(rock.position, c, Radius + 0.04f));
@@ -133,8 +131,9 @@ public sealed class BoulderController : MonoBehaviour
                 if (n == Vector2.zero) n = Vector2.up;
                 rock.position += n * Mathf.Max(0.001f, Radius - delta.magnitude);
                 if (!rock.contacts.Add(cell)) continue;
-                board.StrikeWithBoulder(targetCell);
+                if (board.StrikeWithBoulder(targetCell)) rock.bounces--;
                 Bounce(rock, n);
+                PlayImpact();
             }
         }
         for (int i = 0; i < rocks.Count; i++)
@@ -151,11 +150,30 @@ public sealed class BoulderController : MonoBehaviour
             float approach = Vector2.Dot(a.velocity - b.velocity, n);
             if (approach >= 0f) continue;
             a.velocity -= n * approach; b.velocity += n * approach;
-            a.bounces--; b.bounces--;
             Burst((a.position + b.position) * 0.5f);
+            PlayImpact();
         }
         for (int i = rocks.Count - 1; i >= 0; i--)
-            if (rocks[i].bounces <= 0) { Destroy(rocks[i].image.gameObject); rocks.RemoveAt(i); }
+            if (rocks[i].bounces <= 0 || IsBelowScreen(rocks[i])) { Destroy(rocks[i].image.gameObject); rocks.RemoveAt(i); }
+    }
+    bool IsBelowScreen(Rock rock)
+    {
+        if (rock.position.y >= -Radius) return false;
+        var canvas = board.gridRoot.GetComponentInParent<Canvas>();
+        if (!canvas) return rock.position.y < -board.height;
+        canvas = canvas.rootCanvas;
+        var camera = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
+        // Project the entire image at its simulated position, including board rotation.
+        var rect = rock.image.rectTransform;
+        rect.anchoredPosition = ToLocal(rock.position);
+        rect.GetWorldCorners(screenCorners);
+        foreach (var corner in screenCorners)
+            if (RectTransformUtility.WorldToScreenPoint(camera, corner).y >= 0f) return false;
+        return true;
+    }
+    void PlayImpact()
+    {
+        if (AudioManager.I && impactSfx) AudioManager.I.PlaySFX(impactSfx, impactVolume, pitch: 0.75f);
     }
     static bool Overlaps(Vector2 p, Vector2Int c, float radius)
     {
@@ -167,7 +185,6 @@ public sealed class BoulderController : MonoBehaviour
         float speed = Vector2.Dot(rock.velocity, normal);
         if (speed < 0f) rock.velocity -= normal * speed * 1.8f;
         if (normal.y > 0.5f) rock.velocity.y = Mathf.Max(4f, rock.velocity.y);
-        rock.bounces--;
         Burst(rock.position - normal * Radius);
     }
     Vector2 ToLocal(Vector2 p)

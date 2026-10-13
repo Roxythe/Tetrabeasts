@@ -68,6 +68,37 @@ Marathon Level up bar UI
 
 ------------------------------------------------------------------------------------------------
 
+# Main Menu Leaderboard Changes
+
+- The dropdown box color doesn't match the rest of the leaderboard. Everything else has sunset orange, purple, and yellow but it stands out as dark blue
+- Treat all old or previously existing stored scores as standard mode so that they aren't erased when adding in the new game mode leaderboard information
+
+# Local Leaderboard Changes
+
+- The Leaderboard title used to be centered and much larger, I want that back
+- I want the leaderboard drop down box to the right of the leader board title but not overlapping the text
+- All of the old local leaderboard data is missing now, the older leaderboard scores should be considered standard mode scores since that was the only mode previously
+
+# Marathon Mode Changes
+
+- In the pop up description for the different mode I want the title (Game mode type) text to be bold at the top and have an offset shadow to make the text pop out visually and change the main font color from green to the yellow/gold
+
+- Change the description text for marathon mode. Can you make and attach a script so that I can change the text description for each of the game mode buttons pop ups (then tell me where it is so I can edit it)
+
+- Change it so that it doesn't end on the final boss any more and it just continues truly endlessly increasing difficulty over time as the rest of the game mode does. The old final boss should given a consistent increase in damage needed to level up and then restart from the first level with continuing increased difficulty instead of staying on the last boss/level.
+
+# Marathon Mode Rewards Panel Changes
+
+- The buff and debuff Icons need to be more opaque, they are too transparent right now.
+- Add the border image that I use with other buff/debuff reward panels for each Icon so that it helps hide where the image ends and properly frames it. The icon image should keep its normal aspect ratio so it doesn't get stretched
+- The title text for the buff/debuff color should be a darker blue/red tone respectively, the lighter tone looks faded and unappealing visually
+- Add a border image to the panel to improve it visually
+- After a level up the player should be receiving reinforcements to their reserve units like they do in other game modes, but I don't think it currently does. Make sure they are being added and add a pop up floating text next to the reserve saying "+X Reinforcements" that floats up and fades away like the stone obstacle buffs use.
+- Special gauge for the special ability doesn't have the right shader/bubbling liquid visual effect as the other gauges do. I want to keep it's current colors and the flashing that it does when it's full already, but it should have the same liquid bubble effect the other gauges have too.
+- The level up gauge UI for Marathon mode is still on the wrong layer as well and is visible when it shouldn't be. It should be in the same layer as the special ability gauge so that it is hidden or below other panels at the same time. 
+
+------------------------------------------------------------------------------------------------
+
 # Changes to make
 
 ## Marathon mode

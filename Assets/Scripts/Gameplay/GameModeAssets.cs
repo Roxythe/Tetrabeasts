@@ -7,6 +7,7 @@ public sealed class GameModeAssets : ScriptableObject
     public MarathonGaugeUI marathonGaugePrefab;
     public MarathonRewardUI marathonRewardPrefab;
     public Sprite boulderSprite;
+    public AudioClip boulderImpactSfx;
     public int standardLevelCount = 24;
     [Min(1f)] public float marathonStartingDamage = 500f;
     [Min(1f)] public float marathonDamageGrowth = 1.18f;
