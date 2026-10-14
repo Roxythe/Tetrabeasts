@@ -102,7 +102,7 @@ public static class GameModeAssetBuilder
             config.marathonGaugePrefab = AssetDatabase.LoadAssetAtPath<MarathonGaugeUI>(gaugePath);
             config.marathonRewardPrefab = AssetDatabase.LoadAssetAtPath<MarathonRewardUI>(rewardPath);
             config.boulderSprite = AssetDatabase.LoadAllAssetsAtPath("Assets/Sprites/Traps_Obstacles/Boulder_Sprite.png").OfType<Sprite>().First();
-            config.boulderImpactSfx = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/MonsterPieceSFX/AttackSFX/ThudRing.wav");
+            config.boulderImpactSfx = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/LevelModifier/BoulderImpact.wav");
             var gameplay = EditorSceneManager.OpenScene("Assets/Scenes/GameplayScene.unity", OpenSceneMode.Additive);
             var controller = gameplay.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<GameController>(true)).First();
             config.standardLevelCount = controller.castlesByLevel.Length;
@@ -130,7 +130,8 @@ public static class GameModeAssetBuilder
     {
         RenderPreviews(true);
     }
-    static void RenderPreviews(bool gameplayOnly)
+    public static void RenderModifierFeedbackPreviews() => RenderPreviews(true, true);
+    static void RenderPreviews(bool gameplayOnly, bool modifierFeedback = false)
     {
         var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
         var config = GameModeAssets.Load();
@@ -202,6 +203,40 @@ public static class GameModeAssetBuilder
         gc.GetType().GetMethod("UpdateSpecialGaugeFieryFill", flags).Invoke(gc, null);
         canvas = gc.gameBoard.GetComponentInParent<Canvas>().rootCanvas;
         canvas.renderMode = RenderMode.ScreenSpaceCamera; canvas.worldCamera = camera; canvas.planeDistance = 1f;
+        if (modifierFeedback)
+        {
+            typeof(Board).GetField("boardRect", flags).SetValue(gc.gameBoard, (RectTransform)gc.gameBoard.transform);
+            gc.gameBoard.RecomputeCellMetrics();
+            typeof(Board).GetMethod("DrawGridOverlay", flags).Invoke(gc.gameBoard, null);
+            var inversion = AssetDatabase.LoadAssetAtPath<LevelModifierSO>("Assets/ScriptableObjects/LevelModifier/Inversion.asset");
+            var sigil = gc.gameBoard.CreateModifierBoardVFX(inversion.inversionBoardSprite);
+            sigil.type = Image.Type.Filled; sigil.fillMethod = Image.FillMethod.Radial360;
+            sigil.fillOrigin = (int)Image.Origin360.Top; sigil.fillClockwise = false;
+            sigil.color = new Color(1, 1, 1, .6f);
+            sigil.fillAmount = 1f; Capture("Logs/InversionActivePreview.png");
+            sigil.fillAmount = .5f; Capture("Logs/InversionHalfPreview.png");
+            Object.DestroyImmediate(sigil.gameObject);
+            var boulders = gc.gameObject.AddComponent<BoulderController>();
+            boulders.boulderSprite = config.boulderSprite;
+            typeof(BoulderController).GetField("board", flags).SetValue(boulders, gc.gameBoard);
+            typeof(BoulderController).GetField("gc", flags).SetValue(boulders, gc);
+            typeof(BoulderController).GetMethod("Spawn", flags).Invoke(boulders, new object[] { 5f });
+            var rockList = (System.Collections.IList)typeof(BoulderController).GetField("rocks", flags).GetValue(boulders);
+            var rockImage = (Image)rockList[0].GetType().GetField("image").GetValue(rockList[0]);
+            var contact = new Vector2(5f, 8f);
+            var rockPosition = contact + Vector2.up * .42f;
+            rockImage.rectTransform.anchoredPosition = (Vector2)typeof(BoulderController).GetMethod("ToLocal", flags).Invoke(boulders, new object[] { rockPosition });
+            typeof(BoulderController).GetMethod("Burst", flags).Invoke(boulders, new object[] { contact, Vector2.up });
+            var pixels = (System.Collections.IList)typeof(BoulderController).GetField("pixels", flags).GetValue(boulders);
+            foreach (var pixel in pixels)
+            {
+                var image = (Image)pixel.GetType().GetField("image").GetValue(pixel);
+                image.rectTransform.anchoredPosition += (Vector2)pixel.GetType().GetField("velocity").GetValue(pixel) * .18f + Vector2.down * (250f * .18f * .18f);
+            }
+            Capture("Logs/BoulderImpactPreview.png");
+            // Scene close owns cleanup in edit mode; don't invoke runtime Destroy calls.
+            rockList.Clear(); pixels.Clear();
+        }
         Capture("Logs/MarathonGameplayLayout.png");
         GameModeStore.Current = RunGameMode.Standard;
         EditorSceneManager.CloseScene(gameplay, true);

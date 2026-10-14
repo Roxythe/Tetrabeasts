@@ -14,5 +14,122 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelModifierSO
   kind: 30
   displayName: Boulders-Away
-  description: Boulders fall every 5-10 seconds and deal 20 damage to monsters. Each boulder lasts for 4-7 damaging hits against monsters or stone obstacles, or until it falls off screen. Walls and other boulders do not use up hits. At most four boulders are active.
+  description: Waves of 1-3 boulders fall every 5-10 seconds, accelerating toward
+    2-4 seconds over three minutes. Up to four can be active. Hits deal 10-15% of
+    a monster's maximum health plus 5 damage. Boulders expire after 4-7 damaging
+    hits or falling off screen.
   icon: {fileID: -4759659127916700106, guid: ea787686bac1cda45a4214d6c34c4096, type: 3}
+  backgroundOverrideSprite: {fileID: 0}
+  backgroundOverrideVideoClip: {fileID: 0}
+  backgroundOverrideVideoPlaybackSpeed: 0
+  backgroundOverrideVideoPingPongLoop: 0
+  boardBackgroundOverrideSprite: {fileID: 0}
+  enableRainOverlay: 0
+  rainDrops: 44
+  rainSpeed: 140
+  rainDropLength: 16
+  rainDropWidth: 2
+  rainAngle: -18
+  rainTint: {r: 0.85, g: 0.93, b: 1, a: 0.55}
+  dealtDamageMultiplier: 2
+  receivedDamageMultiplier: 2
+  overgrowthTargetInterval: 2.5
+  overgrowthInitialTargetRows: 3
+  overgrowthCellsPerExtraRow: 6
+  overgrowthPartialSeconds: 5
+  overgrowthFullSeconds: 10
+  overgrowthInitialSprite: {fileID: 0}
+  overgrowthPartialSprite: {fileID: 0}
+  overgrowthFullSprite: {fileID: 0}
+  overgrowthTint: {r: 1, g: 1, b: 1, a: 1}
+  stormStrikeIntervalMin: 5
+  stormStrikeIntervalMax: 8
+  stormTargetsMin: 1
+  stormTargetsMax: 2
+  stormCrossChance: 0.6
+  stormLowerRowsOnlyCount: 8
+  stormInitialStrikeDamage: 2
+  stormFloorTickDamage: 1
+  stormFloorTickInterval: 0.5
+  stormFloorDuration: 4
+  rearAmbushInterval: 10
+  rearAmbushSoldierSprite: {fileID: 0}
+  lowRationsTickInterval: 3
+  lowRationsNegligibleReserveThreshold: 5
+  lowRationsNegligibleDamage: 0.1
+  lowRationsDamageAtMaxReserve: 1.35
+  contagionInfectionChanceOnPieceSet: 0.3
+  contagionTickInterval: 3
+  contagionPercentDamagePerTick: 0.04
+  contagionPercentIncreasePerTick: 0.02
+  contagionSpreadInterval: 4
+  contagionSpreadChance: 0.15
+  contagionUnitOverlaySprite: {fileID: 0}
+  contagionFloorSprite: {fileID: 0}
+  contagionUnitTint: {r: 0.6, g: 1, b: 0.45, a: 0.85}
+  contagionFloorTint: {r: 0.45, g: 0.9, b: 0.35, a: 0.5}
+  deathExplosionMaxHpPercent: 0.3
+  swampPoisonDamage: 1
+  swampPoisonInterval: 1
+  swampPoisonTicks: -1
+  autoRotateInterval: 0.75
+  autoShiftInterval: 0.4
+  autoShiftEdgePauseSeconds: 0.6
+  comboThreshold: 3
+  comboBelowThresholdDamageMultiplier: 0.2
+  comboAtOrAboveThresholdDamageMultiplier: 1.5
+  comboShieldThreshold: 4
+  comboShieldCount: 3
+  comboShieldBlockedDamageMultiplier: 0.1
+  startingHealthFraction: 0.5
+  piercingProjectileSprite: {fileID: 0}
+  disarrayTriminoChance: 0.15
+  disarrayPentaminoChance: 0.15
+  outFlankedProjectileSprite: {fileID: 0}
+  outFlankedIntervalMin: 6
+  outFlankedIntervalMax: 10
+  outFlankedRowsPerWave: 1
+  outFlankedWarningSeconds: 2
+  outFlankedProjectileSideOffsetCells: 3.25
+  outFlankedProjectileSpeedMultiplier: 0.75
+  outFlankedProjectileSizeMultiplier: 1
+  volcanicEruptionIntervalMin: 12
+  volcanicEruptionIntervalMax: 20
+  volcanicEruptionTargetCount: 4
+  volcanicEruptionExcludedTopRows: 4
+  volcanicEruptionWarningSeconds: 2
+  volcanicEruptionMonsterTargetChance: 0.5
+  volcanicEruptionWarningSprite: {fileID: 0}
+  volcanicEruptionWarningTint: {r: 1, g: 0.08, b: 0, a: 0.45}
+  hardenedLavaObstacleSprite: {fileID: 0}
+  roulettePreviewInterval: 1
+  softSpaceTeleportInterval: 6
+  softSpaceTeleportDestinationExcludedTopRows: 4
+  softSpaceTeleportDestinationExcludedBottomRows: 0
+  turboBoostedRowFromTop: 5
+  feelGoodHealIntervalMultiplier: 0.5
+  feelGoodDamagePerStack: 0.25
+  feelGoodTickSeconds: 1
+  feelGoodForegroundBrightness: 0.8
+  flipSfx: {fileID: 0}
+  flipIntervalMin: 20
+  flipIntervalMax: 30
+  flipWarningSprite: {fileID: 0}
+  bombardmentImpactSfx: {fileID: 0}
+  bombardmentWarningSprite: {fileID: 0}
+  bombardmentCraterSprite: {fileID: 0}
+  hallucinationSpawnSfx: {fileID: 0}
+  hallucinationMergeSfx: {fileID: 0}
+  hallucinationDeathSfx: {fileID: 0}
+  hallucinationIdleFrames: []
+  hallucinationIdleFramesPerSecond: 12
+  hallucinationAnimation: []
+  hallucinationConsumeSprite: {fileID: 0}
+  hallucinationSpeedCellsPerSecond: 4
+  hallucinationBaseSizeCells: 1.5
+  hallucinationSizeIncreaseCells: 0.25
+  hallucinationDeathFrameSeconds: 0.1
+  inversionActiveSeconds: 8
+  inversionRestSeconds: 12
+  inversionBoardSprite: {fileID: 0}
+  inversionSfx: {fileID: 0}

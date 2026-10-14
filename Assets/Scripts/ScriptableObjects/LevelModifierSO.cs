@@ -194,15 +194,20 @@ public class LevelModifierSO : ScriptableObject
     [Range(0.1f, 1f)] public float feelGoodForegroundBrightness = 0.8f;
 
     [Header("Flip The Board")]
+    public AudioClip flipSfx;
     [Min(2f)] public float flipIntervalMin = 20f;
     [Min(2f)] public float flipIntervalMax = 30f;
     public Sprite flipWarningSprite;
 
     [Header("Bombardment")]
+    public AudioClip bombardmentImpactSfx;
     public Sprite bombardmentWarningSprite;
     public Sprite bombardmentCraterSprite;
 
     [Header("Hallucination")]
+    public AudioClip hallucinationSpawnSfx;
+    public AudioClip hallucinationMergeSfx;
+    public AudioClip hallucinationDeathSfx;
     [Tooltip("Living sprite frames, played forward and backward while moving.")]
     public Sprite[] hallucinationIdleFrames;
     [Min(1f)] public float hallucinationIdleFramesPerSecond = 12f;
@@ -213,4 +218,10 @@ public class LevelModifierSO : ScriptableObject
     [Min(0.1f)] public float hallucinationBaseSizeCells = 1.5f;
     [Min(0.01f)] public float hallucinationSizeIncreaseCells = 0.25f;
     [Min(0.01f)] public float hallucinationDeathFrameSeconds = 0.1f;
+
+    [Header("Inversion")]
+    [Min(0.1f)] public float inversionActiveSeconds = 8f;
+    [Min(0.1f)] public float inversionRestSeconds = 12f;
+    public Sprite inversionBoardSprite;
+    public AudioClip inversionSfx;
 }

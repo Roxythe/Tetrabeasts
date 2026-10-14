@@ -300,6 +300,10 @@ public class EnemyCastleUI : MonoBehaviour
         float intensity = Mathf.Clamp01(recentDamage / maxDamageForShake);
         float pixels = Mathf.Lerp(minDamageShakePixels, maxDamageShakePixels, intensity);
         float seconds = Mathf.Lerp(minDamageShakeSeconds, maxDamageShakeSeconds, intensity);
+        // Rapid volleys should remain punchier even once the damage curve saturates.
+        float burstBoost = 1f + Mathf.Min(0.65f, (_recentDamageShakeHits.Count - 1) * 0.13f);
+        pixels *= burstBoost;
+        seconds *= Mathf.Lerp(1f, 1.2f, (burstBoost - 1f) / 0.65f);
 
         _damageShakeCR = StartCoroutine(DamageShakeRoutine(seconds, pixels));
     }

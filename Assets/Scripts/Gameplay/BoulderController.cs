@@ -7,10 +7,12 @@ public sealed class BoulderController : MonoBehaviour
 {
     public Sprite boulderSprite;
     public AudioClip impactSfx;
-    [Range(0f, 1f)] public float impactVolume = 0.65f;
+    [Range(0f, 1f)] public float impactVolume = 1f;
     public const int Capacity = 4;
     const int BossVolleySize = 3;
-    public const float HitDamage = 20f;
+    public const float FlatHitDamage = 5f;
+    public static float CalculateHitDamage(float maxHealth, float fraction) => FlatHitDamage + Mathf.Max(0f, maxHealth) * Mathf.Clamp(fraction, 0.10f, 0.15f);
+    public static float SpawnIntervalScale(float elapsed) => Mathf.Lerp(1f, 0.4f, Mathf.Clamp01(elapsed / 180f));
     const float Radius = 0.42f;
     sealed class Rock
     {
@@ -23,7 +25,8 @@ public sealed class BoulderController : MonoBehaviour
     {
         public Image image;
         public Vector2 velocity;
-        public float life = 0.3f;
+        public float life = 0.5f;
+        public float shade;
     }
     readonly List<Rock> rocks = new();
     readonly List<Pixel> pixels = new();
@@ -31,6 +34,7 @@ public sealed class BoulderController : MonoBehaviour
     GameController gc;
     Board board;
     float countdown = 5f;
+    float modifierElapsed;
     bool bossVolleyPending;
     bool lastFlipped;
     bool Flipped => gc && gc.levelModifierController && gc.levelModifierController.IsBoardFlipped;
@@ -56,13 +60,14 @@ public sealed class BoulderController : MonoBehaviour
         }
         bool enabledByModifier = gc.levelModifierController &&
             gc.levelModifierController.HasModifier(LevelModifierKind.BouldersAway);
+        if (enabledByModifier) modifierElapsed += Time.deltaTime;
         if (enabledByModifier && rocks.Count < Capacity && !bossVolleyPending)
         {
             countdown -= Time.deltaTime;
             if (countdown <= 0f)
             {
-                Spawn(Random.Range(Radius, board.width - Radius));
-                countdown = Random.Range(5f, 10f);
+                SpawnModifierWave();
+                countdown = Random.Range(5f, 10f) * SpawnIntervalScale(modifierElapsed);
             }
         }
         // Substeps prevent fast rocks tunnelling through a tile or each other.
@@ -84,9 +89,23 @@ public sealed class BoulderController : MonoBehaviour
             var p = pixels[i];
             p.life -= Time.deltaTime;
             if (p.life <= 0f) { Destroy(p.image.gameObject); pixels.RemoveAt(i); continue; }
-            p.velocity += Vector2.down * 160f * Time.deltaTime;
+            p.velocity += (Flipped ? Vector2.up : Vector2.down) * 500f * Time.deltaTime;
             p.image.rectTransform.anchoredPosition += p.velocity * Time.deltaTime;
-            p.image.color = new Color(0.7f, 0.64f, 0.53f, p.life / 0.3f);
+            p.image.color = new Color(p.shade, p.shade, p.shade, Mathf.Clamp01(p.life / 0.2f));
+            p.image.transform.SetAsLastSibling();
+        }
+    }
+    void SpawnModifierWave()
+    {
+        int count = Mathf.Min(Random.Range(1, 4), Capacity - rocks.Count);
+        // Pick separated lanes and reject lanes occupied by a newly spawned rock.
+        var lanes = new List<float>();
+        for (float x = Radius; x <= board.width - Radius; x += Radius * 2f + 0.15f)
+            if (!rocks.Exists(r => Vector2.Distance(r.position, new Vector2(x, board.height + Radius)) < Radius * 2f + 0.1f)) lanes.Add(x);
+        for (int i = 0; i < count && lanes.Count > 0; i++)
+        {
+            int index = Random.Range(0, lanes.Count);
+            Spawn(lanes[index]); lanes.RemoveAt(index);
         }
     }
     void Spawn(float x)
@@ -150,7 +169,8 @@ public sealed class BoulderController : MonoBehaviour
             float approach = Vector2.Dot(a.velocity - b.velocity, n);
             if (approach >= 0f) continue;
             a.velocity -= n * approach; b.velocity += n * approach;
-            Burst((a.position + b.position) * 0.5f);
+            Burst((a.position + b.position) * 0.5f, n);
+            Burst((a.position + b.position) * 0.5f, -n);
             PlayImpact();
         }
         for (int i = rocks.Count - 1; i >= 0; i--)
@@ -173,7 +193,7 @@ public sealed class BoulderController : MonoBehaviour
     }
     void PlayImpact()
     {
-        if (AudioManager.I && impactSfx) AudioManager.I.PlaySFX(impactSfx, impactVolume, pitch: 0.75f);
+        if (AudioManager.I && impactSfx) AudioManager.I.PlaySFX(impactSfx, impactVolume);
     }
     static bool Overlaps(Vector2 p, Vector2Int c, float radius)
     {
@@ -185,7 +205,7 @@ public sealed class BoulderController : MonoBehaviour
         float speed = Vector2.Dot(rock.velocity, normal);
         if (speed < 0f) rock.velocity -= normal * speed * 1.8f;
         if (normal.y > 0.5f) rock.velocity.y = Mathf.Max(4f, rock.velocity.y);
-        Burst(rock.position - normal * Radius);
+        Burst(rock.position - normal * Radius, normal);
     }
     Vector2 ToLocal(Vector2 p)
     {
@@ -202,13 +222,20 @@ public sealed class BoulderController : MonoBehaviour
         image.rectTransform.sizeDelta = size;
         return image;
     }
-    void Burst(Vector2 p)
+    void Burst(Vector2 p, Vector2 normal)
     {
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < 16; i++)
         {
-            var image = CreateImage("Rock pixel", Vector2.one * 3f);
+            var image = CreateImage("Rock pixel", Vector2.one * Random.Range(5f, 9f));
+            var outline = image.gameObject.AddComponent<Outline>();
+            outline.effectColor = new Color(.08f, .08f, .08f, .85f);
+            outline.effectDistance = Vector2.one;
             image.rectTransform.anchoredPosition = ToLocal(p);
-            pixels.Add(new Pixel { image = image, velocity = Random.insideUnitCircle * 90f });
+            Vector2 direction = (Quaternion.Euler(0, 0, Random.Range(-75f, 75f)) * normal).normalized;
+            if (Flipped) direction = -direction;
+            float shade = Random.Range(0.55f, 1f);
+            image.color = new Color(shade, shade, shade, 1f);
+            pixels.Add(new Pixel { image = image, velocity = direction * Random.Range(180f, 380f), shade = shade });
         }
     }
     public void Clear()
@@ -217,6 +244,7 @@ public sealed class BoulderController : MonoBehaviour
         foreach (var p in pixels) if (p.image) Destroy(p.image.gameObject);
         rocks.Clear(); pixels.Clear(); bossVolleyPending = false;
         countdown = Random.Range(5f, 10f);
+        modifierElapsed = 0f;
     }
     void OnDisable() => Clear();
 }

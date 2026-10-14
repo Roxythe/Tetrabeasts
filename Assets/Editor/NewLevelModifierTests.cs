@@ -173,9 +173,26 @@ public class NewLevelModifierTests
         Assert.AreEqual(originalPosition, board.transform.localPosition);
         Assert.AreEqual(originalRotation, board.transform.localRotation);
         Activate(LevelModifierKind.Inversion);
+        modifier.inversionBoardSprite = AssetDatabase.LoadAssetAtPath<LevelModifierSO>("Assets/ScriptableObjects/LevelModifier/Inversion.asset").inversionBoardSprite;
         Assert.IsTrue(controller.InvertsPieceControls);
+        Call(controller, "UpdateNewModifierEffects", 0f);
+        var inversionImage = (Image)Get(controller, "_inversionImage");
+        Assert.IsNotNull(inversionImage);
+        Assert.AreEqual(Image.FillMethod.Radial360, inversionImage.fillMethod);
+        Assert.AreSame(board.CraterVisualRoot, inversionImage.transform.parent);
+        Call(controller, "UpdateNewModifierEffects", 4f);
+        Assert.AreEqual(.5f, inversionImage.fillAmount, .0001f);
+        Call(controller, "UpdateNewModifierEffects", 4f);
+        Assert.IsFalse(controller.InvertsPieceControls);
+        Assert.IsFalse(inversionImage.gameObject.activeSelf);
+        Call(controller, "UpdateNewModifierEffects", 11f);
+        Assert.IsFalse(controller.InvertsPieceControls);
+        Call(controller, "UpdateNewModifierEffects", 1f);
+        Assert.IsTrue(controller.InvertsPieceControls);
+        Assert.AreEqual(1f, inversionImage.fillAmount);
         controller.EndNewModifierEffects();
         Assert.IsFalse(controller.InvertsPieceControls);
+        Assert.IsNull(Get(controller, "_inversionImage"));
 
         Activate(LevelModifierKind.Bombardment);
         Call(controller, "UpdateNewModifierEffects", 0f);
@@ -191,6 +208,7 @@ public class NewLevelModifierTests
         Assert.IsFalse(board.HasObstacle(target + Vector2Int.up));
         Assert.IsTrue(board.IsCraterCell(target));
         Assert.AreEqual(1, ((IList)Get(controller, "_craters")).Count);
+        Assert.IsNotNull(((RectTransform)Get(controller, "_modifierFeedbackRoot")).GetComponentInChildren<ImpactEchoVFX>());
         Call(controller, "UpdateNewModifierEffects", 13f);
         Call(controller, "UpdateNewModifierEffects", 2f);
         Assert.AreEqual(2, ((IList)Get(controller, "_craters")).Count);
@@ -239,6 +257,11 @@ public class NewLevelModifierTests
         Assert.AreEqual(1, hallucinations.Count);
         var survivor = hallucinations[0];
         Assert.Greater((float)survivor.GetType().GetField("diameter").GetValue(survivor), modifier.hallucinationBaseSizeCells);
+        Assert.IsNotNull(((RectTransform)Get(controller, "_hallucinationRoot")).GetComponentInChildren<PixelSprayVFX>());
+        survivor.GetType().GetField("consumeFlash").SetValue(survivor, .375f);
+        Call(controller, "SyncHallucinationVisual", survivor);
+        var grownImage = (Image)survivor.GetType().GetField("image").GetValue(survivor);
+        Assert.Greater(grownImage.transform.localScale.x, grownImage.transform.localScale.y);
         var hitPosition = (Vector2)positionField.GetValue(survivor);
         Vector2 hitLocal = board.CellToAnchoredPos(Vector2Int.zero) + Vector2.Scale(hitPosition - Vector2.one * 0.5f, board.GetCellSize());
         Assert.IsTrue(controller.TryHitHallucination(hitLocal - Vector2.right * 200f, hitLocal + Vector2.right * 200f));

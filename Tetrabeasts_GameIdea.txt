@@ -141,6 +141,36 @@ Marathon Level up bar UI
 
 ------------------------------------------------------------------------------------------------
 
+# Changes to Boulder mechanic
+
+- The collision SFX for the boulder is too quiet and can't be heard. Make sure it works with the current volume settings sliders
+- Have it spawn 1-3 boulders at a time
+- Have the boulder spawn time speed up over time during a level that has the boulders away level modifier active
+- change the damage to be 10-15% monster unit max health + flat damage component so it does reasonable damage
+- The VFX animation for when a boulder collides with something doesn't really stand out right now and need to be more eye catching. It should be a small spraying of gray pixels that shoot out from the boulder at the point of contact
+
+# CHanges to hallucination level modifier
+
+- Add a sfx for when the hallucination ghosts combine and an SFX for when they are destroyed that fits the retro ghost hallucination visual design
+
+- Add an SFX for when the hallucination sprite spawns
+
+- Add a small visual animation when the hallucinations combine and grow bigger that fits the pixel art style of the game
+
+# General Changes
+
+- I like the screen shake when the players attack lands on the enemy castle or special blocks like the bomb and earthquake are activated, but I would like them to be a bit more intense when multiple screen shakes are triggered and overlapping or happen in a short amount of time
+
+- Add a SFX for when the bombardment attack lands on the board and shake the units hit and the screen slightly when the bombardment level modifier is active
+
+- Add a SFX and a VFX for when the inversion of controls is activated when a level has the Inversion Level modifier active. The VFX can be treated as a board background sprite like when special blocks are activated and do a radial wipe away to show how long it will last like the slowed gravity special block does ( I don't have a sprite for this so make one and make sure it fits the pixel art style).
+
+- Add a SFX for when the board is flipped and shake the screen when it happens when the Flip The Board level modifier is active.
+
+Make sure all the new SFX work with the volume settings sliders so that all the volume stay consistent. 
+
+------------------------------------------------------------------------------------------------
+
 Not Started yet
 
 - Level Modifier 'Boulders-Away'. Every 5-10 seconds spawn a boulder just above the top of the board and let it fall. When it collides with a living monster unit deal 20 damage to that unit and bounce. The boulder should bounce 3-5 times and then be destroyed. It should bounce off the bottom and sides of the board as well to stay within the board and move semi realistically rotating as it moves to look more animated. when it collides with a living monster unit or the side/bottom of the board it should have a small pixel particle effect play. Living monster unit that the boulder sprite collides with should shake on collision for visual effect. The boulder sprite should move over top of dead units. The only obstacle that should be able to collide with the boulder is the stone obstacle (which should take a single instance of damage from being struck for each time it is collided with). No more than three boulders should ever be active on the board at the same time, if more than 3 exists, pause the boulder spawn timer until there is less than 3. The boulder spawn should only happen when the Boulders-Away level modifier is active or a boss ability spawns them, it is not a normal mechanic for every level. Boulder should be able to collide and bounce off of each other.

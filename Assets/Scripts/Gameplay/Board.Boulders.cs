@@ -2,6 +2,7 @@ using UnityEngine;
 
 public partial class Board
 {
+    public UnityEngine.UI.Image CreateModifierBoardVFX(Sprite sprite) => CreateBoardVfxImage("InversionBoard_VFX", sprite);
     public bool IsBoulderTarget(Vector2Int cell) =>
         (monsters.TryGetValue(cell, out var monster) && monster.hp > 0f) ||
         (obstacles.TryGetValue(cell, out var obstacle) && obstacle.type == ObstacleType.Stone);
@@ -17,7 +18,7 @@ public partial class Board
         else if (monsters.TryGetValue(cell, out var monster) && monster.hp > 0f)
         {
             float before = monster.hp;
-            DamageTile(cell, BoulderController.HitDamage, DamageSource.BossAbility);
+            DamageTile(cell, BoulderController.CalculateHitDamage(monster.maxHp, Random.Range(0.10f, 0.15f)), DamageSource.BossAbility);
             if (TryGetTileRect(cell, out var tile))
                 ImpactShake.Play(tile.Find("MonsterPortrait") ?? tile, 0.18f, 4f);
             return !monsters.TryGetValue(cell, out var after) || after.hp < before;

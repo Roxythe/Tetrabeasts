@@ -224,7 +224,8 @@ public class MarathonFollowupTests
                 Assert.AreEqual("Tetrabeasts/UI/Marathon Liquid", fill.material.shader.name);
             }
             var modifiers = gc.GetComponent<LevelModifierController>();
-            var castles = gc.castlesByLevel.Where(c => c && !c.isBossLevel).Take(2).ToArray();
+            // Optional/test castles can intentionally omit artwork and use the scene fallback.
+            var castles = gc.castlesByLevel.Where(c => c && !c.isBossLevel && c.boardBackgroundSprite && c.hpGaugeFrameSprite).Take(2).ToArray();
             Assert.AreEqual(2, castles.Length);
             foreach (var castle in castles)
             {

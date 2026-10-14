@@ -91,11 +91,12 @@ public class BoulderAndModeTests
         var rocks = (IList)Get(boulders, "rocks"); var rock = rocks[0];
         Set(rock, "position", new Vector2(4.5f, 6.43f)); Set(rock, "velocity", new Vector2(0, -6)); Set(rock, "bounces", 5);
         Call(boulders, "Simulate", 0.01f);
-        board.TryGetMonster(cell, out instance); Assert.AreEqual(80, instance.hp, 0.001f);
+        board.TryGetMonster(cell, out instance); Assert.That(instance.hp, Is.InRange(80f, 85f));
+        float hpAfterHit = instance.hp;
         Assert.AreEqual(4, Get(rock, "bounces"));
         Assert.Greater(((Vector2)Get(rock, "velocity")).y, 0);
         Call(boulders, "Simulate", 0.001f);
-        board.TryGetMonster(cell, out instance); Assert.AreEqual(80, instance.hp, 0.001f, "Sustained contact must not repeatedly damage.");
+        board.TryGetMonster(cell, out instance); Assert.AreEqual(hpAfterHit, instance.hp, 0.001f, "Sustained contact must not repeatedly damage.");
         Assert.AreEqual(4, Get(rock, "bounces"));
         Set(board, "tilesImmune", true);
         Assert.IsFalse(board.StrikeWithBoulder(cell), "Immune targets must not consume a damaging bounce.");
@@ -150,6 +151,18 @@ public class BoulderAndModeTests
         Set(b, "position", new Vector2(3, -1000));
         Call(boulders, "Simulate", 0.01f); Assert.AreEqual(0, boulders.ActiveCount);
         boulders.Clear(); Assert.AreEqual(0, boulders.ActiveCount);
+        for (int trial = 0; trial < 20; trial++)
+        {
+            Call(boulders, "SpawnModifierWave");
+            Assert.That(boulders.ActiveCount, Is.InRange(1, 3));
+            for (int i = 0; i < rocks.Count; i++)
+            for (int j = i + 1; j < rocks.Count; j++)
+                Assert.Greater(Vector2.Distance((Vector2)Get(rocks[i], "position"), (Vector2)Get(rocks[j], "position")), .84f);
+            Call(boulders, "SpawnModifierWave");
+            Assert.LessOrEqual(boulders.ActiveCount, 4);
+            boulders.Clear();
+        }
+        Assert.AreEqual(0f, Get(boulders, "modifierElapsed"));
         Set(modifiers, "<ActiveModifier>k__BackingField", null); Set(boulders, "countdown", -1f); Call(boulders, "Update"); Assert.AreEqual(0, boulders.ActiveCount, "Ordinary rounds never spawn boulders.");
         boulders.RequestBossVolley(); Call(boulders, "Update"); Assert.AreEqual(3, boulders.ActiveCount);
         Assert.Greater(Vector2.Distance((Vector2)Get(rocks[0], "position"), (Vector2)Get(rocks[1], "position")), 0.84f);
