@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Bombardment
   description: Every 15 seconds a warned 3x3 area is destroyed and blocked by a crater
     for 30 seconds.
-  icon: {fileID: -780943859792177635, guid: 93dd39004d8d1d541bd3822082a99d6f, type: 3}
+  icon: {fileID: 21300000, guid: 93dd39004d8d1d541bd3822082a99d6f, type: 3}
   backgroundOverrideSprite: {fileID: 0}
   backgroundOverrideVideoClip: {fileID: 0}
   backgroundOverrideVideoPlaybackSpeed: 0

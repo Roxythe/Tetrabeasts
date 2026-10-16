@@ -17,6 +17,7 @@ public static class ModifierFeedbackAuthoring
         importer.SaveAndReimport();
         var assets = GameModeAssets.Load();
         assets.boulderImpactSfx = Clip("BoulderImpact");
+        assets.boulderImpactAlternates = new[] { Clip("BoulderStoneThud"), Clip("BoulderStoneCrack"), Clip("BoulderStoneClatter") };
         EditorUtility.SetDirty(assets);
         var ghost = Modifier("Hallucination");
         ghost.hallucinationSpawnSfx = Clip("GhostSpawn");

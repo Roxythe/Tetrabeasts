@@ -103,6 +103,10 @@ public static class GameModeAssetBuilder
             config.marathonRewardPrefab = AssetDatabase.LoadAssetAtPath<MarathonRewardUI>(rewardPath);
             config.boulderSprite = AssetDatabase.LoadAllAssetsAtPath("Assets/Sprites/Traps_Obstacles/Boulder_Sprite.png").OfType<Sprite>().First();
             config.boulderImpactSfx = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/LevelModifier/BoulderImpact.wav");
+            config.boulderImpactAlternates = new[] {
+                AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/LevelModifier/BoulderStoneThud.wav"),
+                AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/LevelModifier/BoulderStoneCrack.wav"),
+                AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/LevelModifier/BoulderStoneClatter.wav") };
             var gameplay = EditorSceneManager.OpenScene("Assets/Scenes/GameplayScene.unity", OpenSceneMode.Additive);
             var controller = gameplay.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<GameController>(true)).First();
             config.standardLevelCount = controller.castlesByLevel.Length;

@@ -384,6 +384,7 @@ public sealed class SteamCloudSaveService : MonoBehaviour
     {
         var strings = new HashSet<string>
         {
+            GameplayPlaylist.PreferenceKey,
             "SelectedCharacterName",
             "SelectedMonstersCSV",
             "HighScores_v1",
@@ -497,7 +498,11 @@ public sealed class SteamCloudSaveService : MonoBehaviour
             {
                 var entry = snapshot.stringPrefs[i];
                 if (entry != null && !string.IsNullOrEmpty(entry.key))
+                {
                     PlayerPrefs.SetString(entry.key, entry.value ?? string.Empty);
+                    if (entry.key == GameplayPlaylist.PreferenceKey)
+                        GameplayPlaylist.ApplyCloudPreferenceToLocalFile();
+                }
             }
         }
 
@@ -538,12 +543,20 @@ public sealed class SteamCloudSaveService : MonoBehaviour
 
         if (!entry.exists)
         {
-            if (File.Exists(path))
-                File.Delete(path);
+            if (safeName == TempRunFileName) LocalSaveFiles.Delete(path);
+            else if (File.Exists(path)) File.Delete(path);
             return;
         }
 
-        File.WriteAllText(path, entry.contents ?? string.Empty);
+        if (safeName == TempRunFileName)
+        {
+            var run = JsonUtility.FromJson<TempRunSaveStore.SaveData>(entry.contents ?? string.Empty);
+            if (!TempRunSaveStore.IsValid(run))
+                throw new IOException("The cloud run save is invalid; the local save was preserved.");
+            if (!LocalSaveFiles.Write(path, entry.contents))
+                throw new IOException("The cloud run save could not be written locally.");
+        }
+        else File.WriteAllText(path, entry.contents ?? string.Empty);
     }
 
     static long GetLocalFileContentTicks()

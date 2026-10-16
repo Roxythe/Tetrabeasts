@@ -10,7 +10,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 #endif
 
-public class VolumePanelUI : MonoBehaviour
+public partial class VolumePanelUI : MonoBehaviour
 {
     static readonly string[] MusicModeOptionLabels = { "EDM", "Metal", "Random" };
     const float VolumeSliderStep = 0.1f;
@@ -93,6 +93,8 @@ public class VolumePanelUI : MonoBehaviour
         RefreshMusicModeDropdown();
         EnsureControlsPanelUI();
 
+        EnsurePlaylistUI();
+
         cg = GetComponent<CanvasGroup>();
         if (closeButton) closeButton.onClick.AddListener(Close);
         if (controlsButton)
@@ -167,6 +169,7 @@ public class VolumePanelUI : MonoBehaviour
 
     void OnDisable()
     {
+        ClosePlaylistForSettingsExit();
         TetrabeastsLocalization.LanguageChanged -= RefreshLanguageControls;
         TetrabeastsControls.ProfileChanged -= HandleControlsProfileChanged;
         TetrabeastsControls.BindingsChanged -= HandleControlsBindingsChanged;
@@ -1157,6 +1160,7 @@ public class VolumePanelUI : MonoBehaviour
 
     void CloseVolumePanelNow(bool instant)
     {
+        ClosePlaylistForSettingsExit();
         if (TryGetOpenDropdown(out var dropdown, out _))
             dropdown.Hide();
 
@@ -1217,7 +1221,10 @@ public class VolumePanelUI : MonoBehaviour
     void Update()
     {
         if (!UIPanelTransition.IsVisible(gameObject))
+        {
+            ClosePlaylistForSettingsExit();
             return;
+        }
 
         TetrabeastsControls.RefreshActiveInputProfile();
 
@@ -1266,6 +1273,12 @@ public class VolumePanelUI : MonoBehaviour
 
         if (pausePressed && ShouldLetGameplayPauseHandleEscape())
             return;
+
+        if (playlistPanel && playlistPanel.activeSelf)
+        {
+            ClosePlaylistTab();
+            return;
+        }
 
         if (controlsPanelRoot && UIPanelTransition.IsVisible(controlsPanelRoot))
         {
@@ -1639,6 +1652,9 @@ public class VolumePanelUI : MonoBehaviour
     {
         if (ConfirmationPopupUI.TryGetShowingRoot(out var popupRoot))
             return popupRoot;
+
+        if (playlistPanel && playlistPanel.activeSelf)
+            return playlistPanel;
 
         if (controlsPanelRoot && UIPanelTransition.IsVisible(controlsPanelRoot))
             return controlsPanelRoot;

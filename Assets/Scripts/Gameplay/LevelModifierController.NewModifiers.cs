@@ -25,6 +25,7 @@ public partial class LevelModifierController
     readonly List<Crater> _craters = new();
     readonly List<Image> _newModifierWarnings = new();
     readonly List<Hallucination> _hallucinations = new();
+    readonly Dictionary<Sprite, Vector2[]> _hallucinationVertices = new();
     bool _newModifiersStarted;
     bool _boardTransformCaptured;
     Quaternion _boardDefaultRotation;
@@ -90,6 +91,7 @@ public partial class LevelModifierController
         if (_hallucinationRoot) Destroy(_hallucinationRoot.gameObject);
         _hallucinationRoot = null;
         _hallucinations.Clear();
+        _hallucinationVertices.Clear();
         if (_modifierFeedbackRoot) Destroy(_modifierFeedbackRoot.gameObject);
         _modifierFeedbackRoot = null;
         if (_inversionImage) Destroy(_inversionImage.gameObject);
@@ -441,9 +443,6 @@ public partial class LevelModifierController
                 continue;
             }
             h.position += h.velocity * dt;
-            float radius = h.diameter * 0.5f;
-            ReflectAxis(ref h.position.x, ref h.velocity.x, radius, board.width - radius);
-            ReflectAxis(ref h.position.y, ref h.velocity.y, radius, board.height - radius);
             h.consumeFlash = Mathf.Max(0f, h.consumeFlash - dt);
             if (h.consumeFlash > 0f && ActiveModifier.hallucinationConsumeSprite)
                 h.image.sprite = ActiveModifier.hallucinationConsumeSprite;
@@ -456,6 +455,7 @@ public partial class LevelModifierController
                 if (ActiveModifier.hallucinationIdleFrames == null || ActiveModifier.hallucinationIdleFrames.Length == 0)
                     h.image.sprite = HallucinationDefaultSprite;
             }
+            ConstrainHallucination(h, reflect: true);
             SyncHallucinationVisual(h);
         }
         ResolveHallucinationMerges();
@@ -466,15 +466,21 @@ public partial class LevelModifierController
     void MaintainHallucinationLayer()
     {
         if (!_hallucinationRoot) return;
-        _hallucinationRoot.SetAsLastSibling();
-        // The pause panel's top-level branch stays above the hallucination layer.
+        // Move only the effect layer, never the pause menu: promoting the menu
+        // every frame puts it above its own settings and confirmation dialogs.
         if (_gc && _gc.pausePanel && _gc.pausePanel.activeInHierarchy)
         {
             Transform pauseBranch = _gc.pausePanel.transform;
             while (pauseBranch.parent && pauseBranch.parent != _hallucinationRoot.parent)
                 pauseBranch = pauseBranch.parent;
-            if (pauseBranch.parent == _hallucinationRoot.parent) pauseBranch.SetAsLastSibling();
+            if (pauseBranch.parent == _hallucinationRoot.parent &&
+                _hallucinationRoot.GetSiblingIndex() > pauseBranch.GetSiblingIndex())
+                _hallucinationRoot.SetSiblingIndex(pauseBranch.GetSiblingIndex());
+            return;
         }
+        if (ConfirmationPopupUI.IsAnyShowing) return;
+        if (_hallucinationRoot.GetSiblingIndex() != _hallucinationRoot.parent.childCount - 1)
+            _hallucinationRoot.SetAsLastSibling();
     }
 
     void ResolveHallucinationMerges()
@@ -489,11 +495,11 @@ public partial class LevelModifierController
             bool aWins = Mathf.Approximately(a.diameter, b.diameter) ? Random.value < 0.5f : a.diameter > b.diameter;
             var winner = aWins ? a : b;
             var loser = aWins ? b : a;
-            winner.diameter = Mathf.Min(Mathf.Sqrt(a.diameter * a.diameter + b.diameter * b.diameter), Mathf.Min(board.width, board.height) * 0.85f);
+            winner.diameter = Mathf.Min(Mathf.Max(a.diameter, b.diameter) + Mathf.Min(a.diameter, b.diameter) * .65f,
+                Mathf.Min(board.width, board.height) * 0.85f);
             winner.consumeFlash = 0.5f;
             winner.image.sprite = ActiveModifier.hallucinationConsumeSprite ? ActiveModifier.hallucinationConsumeSprite : HallucinationDefaultSprite;
-            float radius = winner.diameter * 0.5f;
-            winner.position = new Vector2(Mathf.Clamp(winner.position.x, radius, board.width - radius), Mathf.Clamp(winner.position.y, radius, board.height - radius));
+            ConstrainHallucination(winner, reflect: false);
             SyncHallucinationVisual(winner);
             PlayModifierSound(ActiveModifier.hallucinationMergeSfx, .8f);
             PixelSprayVFX.Play(_hallucinationRoot, winner.image.transform.position, new Color(.55f, .3f, 1f), board.GetCellSize().x * winner.diameter * .35f);
@@ -507,12 +513,69 @@ public partial class LevelModifierController
 
     static void ReflectAxis(ref float position, ref float velocity, float min, float max)
     {
-        // Mirror the overshoot instead of discarding travel distance at a wall.
-        while (position < min || position > max)
+        // Constant-time mirroring also handles large frame deltas and oversized art.
+        float width = max - min;
+        if (width <= .0001f) { position = (min + max) * .5f; velocity = 0f; return; }
+        if (position >= min && position <= max) return;
+        float wrapped = Mathf.Repeat(position - min, width * 2f);
+        if (wrapped >= width) { position = max - (wrapped - width); velocity = -velocity; }
+        else position = min + wrapped;
+    }
+
+    float HallucinationHeading(Hallucination h)
+    {
+        Vector2 direction = Vector2.Scale(h.velocity, board.GetCellSize());
+        return direction.sqrMagnitude > .0001f ? Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f : 0f;
+    }
+
+    static Vector2 HallucinationPulse(Hallucination h)
+    {
+        float pulse = h.consumeFlash > 0f
+            ? Mathf.Round(Mathf.Sin((1f - h.consumeFlash / .5f) * Mathf.PI * 2f) * 4f) / 4f : 0f;
+        return new Vector2(1f + pulse * .18f, 1f - pulse * .12f);
+    }
+
+    Rect HallucinationVisibleBounds(Hallucination h)
+    {
+        var sprite = h.image.sprite;
+        if (!sprite) return new Rect(Vector2.one * (-h.diameter * .5f), Vector2.one * h.diameter);
+        if (!_hallucinationVertices.TryGetValue(sprite, out var vertices))
         {
-            if (position < min) { position = 2f * min - position; velocity = Mathf.Abs(velocity); }
-            if (position > max) { position = 2f * max - position; velocity = -Mathf.Abs(velocity); }
+            // Unity's tight sprite mesh follows the alpha silhouette without CPU texture reads.
+            vertices = sprite.vertices;
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                Vector2 pixel = vertices[i] * sprite.pixelsPerUnit + sprite.pivot;
+                vertices[i] = new Vector2(pixel.x / sprite.rect.width - .5f, pixel.y / sprite.rect.height - .5f);
+            }
+            _hallucinationVertices.Add(sprite, vertices);
         }
+        Vector2 cell = board.GetCellSize();
+        float fit = Mathf.Min(cell.x / sprite.rect.width, cell.y / sprite.rect.height) * h.diameter;
+        Vector2 size = Vector2.Scale(sprite.rect.size * fit, HallucinationPulse(h));
+        Quaternion rotation = Quaternion.Euler(0, 0, HallucinationHeading(h));
+        Vector2 min = Vector2.one * float.PositiveInfinity, max = Vector2.one * float.NegativeInfinity;
+        foreach (var vertex in vertices)
+        {
+            Vector2 point = rotation * Vector2.Scale(vertex, size);
+            point = new Vector2(point.x / cell.x, point.y / cell.y);
+            min = Vector2.Min(min, point); max = Vector2.Max(max, point);
+        }
+        return Rect.MinMaxRect(min.x, min.y, max.x, max.y);
+    }
+
+    void ConstrainHallucination(Hallucination h, bool reflect)
+    {
+        Rect bounds = HallucinationVisibleBounds(h);
+        if (reflect)
+        {
+            ReflectAxis(ref h.position.x, ref h.velocity.x, -bounds.xMin, board.width - bounds.xMax);
+            ReflectAxis(ref h.position.y, ref h.velocity.y, -bounds.yMin, board.height - bounds.yMax);
+            // A bounce changes the facing and thus the asymmetric visible silhouette.
+            bounds = HallucinationVisibleBounds(h);
+        }
+        h.position.x = Mathf.Clamp(h.position.x, -bounds.xMin, board.width - bounds.xMax);
+        h.position.y = Mathf.Clamp(h.position.y, -bounds.yMin, board.height - bounds.yMax);
     }
 
     void SyncHallucinationVisual(Hallucination h)
@@ -524,11 +587,12 @@ public partial class LevelModifierController
         Vector3 boardScale = board.gridRoot.lossyScale;
         Vector3 parentScale = _hallucinationRoot.lossyScale;
         h.image.rectTransform.localScale = new Vector3(boardScale.x / parentScale.x, boardScale.y / parentScale.y, 1f);
+        h.image.rectTransform.rotation = board.gridRoot.rotation * Quaternion.Euler(0, 0, HallucinationHeading(h));
         // A stepped squash/stretch pulse makes the growth readable in pixel art.
         if (h.consumeFlash > 0f)
         {
-            float pulse = Mathf.Round(Mathf.Sin((1f - h.consumeFlash / .5f) * Mathf.PI * 2f) * 4f) / 4f;
-            h.image.rectTransform.localScale = Vector3.Scale(h.image.rectTransform.localScale, new Vector3(1f + pulse * .18f, 1f - pulse * .12f, 1f));
+            Vector2 pulse = HallucinationPulse(h);
+            h.image.rectTransform.localScale = Vector3.Scale(h.image.rectTransform.localScale, new Vector3(pulse.x, pulse.y, 1f));
         }
     }
 

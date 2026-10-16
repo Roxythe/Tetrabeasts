@@ -19,7 +19,13 @@ public sealed class ImpactShake : MonoBehaviour
         shake.remaining = shake.duration;
         shake.lastTriggerTime = Time.time;
     }
-    void Update() { transform.localPosition -= offset; offset = Vector3.zero; }
+    void Update()
+    {
+        // Idle components must not dirty a UI transform (and its canvas) every frame.
+        if (offset == Vector3.zero) return;
+        transform.localPosition -= offset;
+        offset = Vector3.zero;
+    }
     public static void Stop(Transform target)
     {
         var shake = target ? target.GetComponent<ImpactShake>() : null;

@@ -3,10 +3,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 // One shared simulation for modifier and boss boulders. Coordinates are board cells.
-public sealed class BoulderController : MonoBehaviour
+public sealed partial class BoulderController : MonoBehaviour
 {
     public Sprite boulderSprite;
     public AudioClip impactSfx;
+    public AudioClip[] alternateImpactSfx;
     [Range(0f, 1f)] public float impactVolume = 1f;
     public const int Capacity = 4;
     const int BossVolleySize = 3;
@@ -20,6 +21,8 @@ public sealed class BoulderController : MonoBehaviour
         public Image image;
         public int bounces;
         public readonly HashSet<Vector2Int> contacts = new();
+        public readonly System.Predicate<Vector2Int> endedContact;
+        public Rock() { endedContact = cell => !Overlaps(position, cell, Radius + .04f); }
     }
     sealed class Pixel
     {
@@ -27,9 +30,15 @@ public sealed class BoulderController : MonoBehaviour
         public Vector2 velocity;
         public float life = 0.5f;
         public float shade;
+        public float spin;
     }
     readonly List<Rock> rocks = new();
     readonly List<Pixel> pixels = new();
+    readonly Queue<Pixel> sparePixels = new();
+    const int DebrisCapacity = 96;
+    RectTransform effectsRoot;
+    AudioClip lastImpactClip;
+    float nextImpactTime;
     readonly Vector3[] screenCorners = new Vector3[4];
     GameController gc;
     Board board;
@@ -47,6 +56,8 @@ public sealed class BoulderController : MonoBehaviour
     {
         if (!gc) return;
         if (!board) board = gc.gameBoard;
+        // Warm a bounded pool over several frames before the first modifier wave.
+        if (board && board.gridRoot) WarmDebrisPool();
         if (!board || !gc.IsRoundActive) return;
         if (lastFlipped != Flipped)
         {
@@ -82,17 +93,18 @@ public sealed class BoulderController : MonoBehaviour
         {
             rock.image.rectTransform.anchoredPosition = ToLocal(rock.position);
             rock.image.rectTransform.Rotate(0f, 0f, -rock.velocity.x * 90f * Time.deltaTime);
-            rock.image.transform.SetAsLastSibling();
         }
+        if (effectsRoot && effectsRoot.GetSiblingIndex() != board.gridRoot.childCount - 1)
+            effectsRoot.SetAsLastSibling();
         for (int i = pixels.Count - 1; i >= 0; i--)
         {
             var p = pixels[i];
             p.life -= Time.deltaTime;
-            if (p.life <= 0f) { Destroy(p.image.gameObject); pixels.RemoveAt(i); continue; }
+            if (p.life <= 0f) { p.image.gameObject.SetActive(false); sparePixels.Enqueue(p); pixels.RemoveAt(i); continue; }
             p.velocity += (Flipped ? Vector2.up : Vector2.down) * 500f * Time.deltaTime;
             p.image.rectTransform.anchoredPosition += p.velocity * Time.deltaTime;
             p.image.color = new Color(p.shade, p.shade, p.shade, Mathf.Clamp01(p.life / 0.2f));
-            p.image.transform.SetAsLastSibling();
+            p.image.rectTransform.Rotate(0, 0, p.spin * Time.deltaTime);
         }
     }
     void SpawnModifierWave()
@@ -132,7 +144,7 @@ public sealed class BoulderController : MonoBehaviour
             if (normal != Vector2.zero && Vector2.Dot(rock.velocity, normal) < 0f) Bounce(rock, normal);
             if (rock.bounces <= 0) continue;
             // Prevent successive damage while still touching the same target.
-            rock.contacts.RemoveWhere(c => !Overlaps(rock.position, c, Radius + 0.04f));
+            rock.contacts.RemoveWhere(rock.endedContact);
             int minX = Mathf.Max(0, Mathf.FloorToInt(rock.position.x - Radius));
             int maxX = Mathf.Min(board.width - 1, Mathf.FloorToInt(rock.position.x + Radius));
             int minY = Mathf.Max(0, Mathf.FloorToInt(rock.position.y - Radius));
@@ -152,7 +164,6 @@ public sealed class BoulderController : MonoBehaviour
                 if (!rock.contacts.Add(cell)) continue;
                 if (board.StrikeWithBoulder(targetCell)) rock.bounces--;
                 Bounce(rock, n);
-                PlayImpact();
             }
         }
         for (int i = 0; i < rocks.Count; i++)
@@ -193,7 +204,19 @@ public sealed class BoulderController : MonoBehaviour
     }
     void PlayImpact()
     {
-        if (AudioManager.I && impactSfx) AudioManager.I.PlaySFX(impactSfx, impactVolume);
+        if (!AudioManager.I || Time.unscaledTime < nextImpactTime) return;
+        // Reservoir selection avoids allocations and immediate repeats, including the original cue.
+        AudioClip selected = null;
+        int candidates = 0;
+        if (impactSfx && impactSfx != lastImpactClip) { selected = impactSfx; candidates++; }
+        if (alternateImpactSfx != null)
+            foreach (var clip in alternateImpactSfx)
+                if (clip && clip != lastImpactClip && Random.Range(0, ++candidates) == 0) selected = clip;
+        if (!selected) selected = impactSfx ? impactSfx : lastImpactClip;
+        if (!selected) return;
+        lastImpactClip = selected;
+        nextImpactTime = Time.unscaledTime + .04f;
+        AudioManager.I.PlaySFX(selected, impactVolume);
     }
     static bool Overlaps(Vector2 p, Vector2Int c, float radius)
     {
@@ -206,6 +229,7 @@ public sealed class BoulderController : MonoBehaviour
         if (speed < 0f) rock.velocity -= normal * speed * 1.8f;
         if (normal.y > 0.5f) rock.velocity.y = Mathf.Max(4f, rock.velocity.y);
         Burst(rock.position - normal * Radius, normal);
+        PlayImpact();
     }
     Vector2 ToLocal(Vector2 p)
     {
@@ -215,36 +239,76 @@ public sealed class BoulderController : MonoBehaviour
     }
     Image CreateImage(string label, Vector2 size)
     {
+        EnsureEffectsRoot();
         var go = new GameObject(label, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-        go.transform.SetParent(board.gridRoot, false);
+        go.transform.SetParent(effectsRoot, false);
         var image = go.GetComponent<Image>(); image.raycastTarget = false;
         image.rectTransform.anchorMin = image.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
         image.rectTransform.sizeDelta = size;
         return image;
     }
+    void EnsureEffectsRoot()
+    {
+        if (effectsRoot) return;
+        // Isolate changing debris geometry from the board's much larger UI canvas.
+        effectsRoot = new GameObject("Boulder Effects", typeof(RectTransform), typeof(Canvas)).GetComponent<RectTransform>();
+        effectsRoot.SetParent(board.gridRoot, false);
+        effectsRoot.anchorMin = effectsRoot.anchorMax = effectsRoot.pivot = Vector2.one * .5f;
+        effectsRoot.sizeDelta = Vector2.zero;
+    }
+    Pixel CreateDebris()
+    {
+        var image = CreateImage("Rock chip", Vector2.one);
+        image.gameObject.SetActive(false);
+        return new Pixel { image = image };
+    }
+    void WarmDebrisPool()
+    {
+        for (int i = 0; i < 8 && pixels.Count + sparePixels.Count < DebrisCapacity; i++)
+            sparePixels.Enqueue(CreateDebris());
+    }
     void Burst(Vector2 p, Vector2 normal)
     {
-        for (int i = 0; i < 16; i++)
+        for (int i = 0; i < 8; i++)
         {
-            var image = CreateImage("Rock pixel", Vector2.one * Random.Range(5f, 9f));
-            var outline = image.gameObject.AddComponent<Outline>();
-            outline.effectColor = new Color(.08f, .08f, .08f, .85f);
-            outline.effectDistance = Vector2.one;
+            Pixel chip;
+            if (sparePixels.Count > 0) chip = sparePixels.Dequeue();
+            else if (pixels.Count < DebrisCapacity) chip = CreateDebris();
+            else { chip = pixels[0]; pixels.RemoveAt(0); }
+            var image = chip.image;
+            // Reuse the actual irregular rock art instead of a solid UI quad.
+            image.sprite = boulderSprite;
+            image.preserveAspect = true;
+            float size = Random.Range(3f, 5.5f);
+            image.rectTransform.sizeDelta = new Vector2(size, size * Random.Range(.75f, 1.15f));
+            image.rectTransform.localRotation = Quaternion.Euler(0, 0, Random.Range(0f, 360f));
             image.rectTransform.anchoredPosition = ToLocal(p);
             Vector2 direction = (Quaternion.Euler(0, 0, Random.Range(-75f, 75f)) * normal).normalized;
             if (Flipped) direction = -direction;
-            float shade = Random.Range(0.55f, 1f);
+            float shade = Random.Range(0.7f, 1f);
             image.color = new Color(shade, shade, shade, 1f);
-            pixels.Add(new Pixel { image = image, velocity = direction * Random.Range(180f, 380f), shade = shade });
+            chip.velocity = direction * Random.Range(90f, 190f);
+            chip.shade = shade;
+            chip.life = Random.Range(.25f, .4f);
+            chip.spin = Random.Range(-240f, 240f);
+            image.gameObject.SetActive(true);
+            pixels.Add(chip);
         }
     }
     public void Clear()
     {
         foreach (var r in rocks) if (r.image) Destroy(r.image.gameObject);
-        foreach (var p in pixels) if (p.image) Destroy(p.image.gameObject);
+        foreach (var p in pixels) if (p.image) { p.image.gameObject.SetActive(false); sparePixels.Enqueue(p); }
         rocks.Clear(); pixels.Clear(); bossVolleyPending = false;
         countdown = Random.Range(5f, 10f);
         modifierElapsed = 0f;
+        nextImpactTime = 0f;
     }
     void OnDisable() => Clear();
+    void OnDestroy()
+    {
+        if (!effectsRoot) return;
+        if (Application.isPlaying) Destroy(effectsRoot.gameObject);
+        else DestroyImmediate(effectsRoot.gameObject);
+    }
 }

@@ -4,7 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Piece : MonoBehaviour
+public partial class Piece : MonoBehaviour
 {
     public Board board;
     public Image activeTilePrefab;

@@ -17,6 +17,10 @@ MonoBehaviour:
   marathonRewardPrefab: {fileID: 8662329616337007713, guid: 5ac0b787ad08e3f409946888d48178be, type: 3}
   boulderSprite: {fileID: 488204432910556299, guid: ae4a1f05e5f6f1044978738736519fab, type: 3}
   boulderImpactSfx: {fileID: 8300000, guid: b2c2eab5668360d418e826b17f8a00dd, type: 3}
+  boulderImpactAlternates:
+  - {fileID: 8300000, guid: 752a6f1f93874be1807563403c7cfb4a, type: 3}
+  - {fileID: 8300000, guid: 3be3d879697b48d68e99e319bc0362d5, type: 3}
+  - {fileID: 8300000, guid: ba6c75d3ab7546b2a108cd6f91874fe5, type: 3}
   standardLevelCount: 14
   marathonStartingDamage: 500
   marathonDamageGrowth: 1.18

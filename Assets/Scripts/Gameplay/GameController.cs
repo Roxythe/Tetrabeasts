@@ -974,6 +974,7 @@ public partial class GameController : MonoBehaviour
 
         TempRunSaveStore.SaveData pendingTempRunSave;
         bool resumeFromTempRun = PreparePendingTempRunResume(out pendingTempRunSave);
+        if (!enabled) return;
 
         // New run starts when gameplay scene starts
         if (!resumeFromTempRun)
@@ -1098,12 +1099,16 @@ public partial class GameController : MonoBehaviour
         else
             StartFreshRun();
 
-        // Pause menu defaults
-        if (pausePanel) UIPanelTransition.Hide(pausePanel, true);
-        Time.timeScale = 1f;
-        isPaused = false;
-
-        EnterGameplayCursorMode(); // Lock cursor at start
+        // A live Marathon restore must never advance before the player resumes.
+        if (resumeFromTempRun && pendingTempRunSave?.marathonSnapshot != null)
+            OpenRestoredPauseMenu();
+        else
+        {
+            if (pausePanel) UIPanelTransition.Hide(pausePanel, true);
+            Time.timeScale = 1f;
+            isPaused = false;
+            EnterGameplayCursorMode();
+        }
 
         // Wire pause buttons
         if (resumeButton)
@@ -1142,6 +1147,15 @@ public partial class GameController : MonoBehaviour
 
         if (!TempRunSaveStore.TryConsumePendingResume(out saveData) || saveData == null)
             return false;
+
+        if (saveData.marathonSnapshot != null && !SnapshotAssetsAvailable(saveData.marathonSnapshot))
+        {
+            // Leave the durable save intact if content has been removed/renamed.
+            Debug.LogError("The Marathon save references unavailable gameplay assets. The save has been preserved.");
+            enabled = false;
+            UnityEngine.SceneManagement.SceneManager.LoadScene(titleSceneName);
+            return false;
+        }
 
         ApplyTempRunPersistentState(saveData);
         return true;
@@ -1342,7 +1356,7 @@ public partial class GameController : MonoBehaviour
 
         ResetRunGridToBase();
         ApplyRunGridSize(currentLevel);
-        InitLevel(currentLevel);
+        InitLevel(currentLevel, spawnEnvironment: saveData.marathonSnapshot == null);
 
         unitLives = Mathf.Clamp(saveData.unitLives, 0, EffectiveMaxUnitLives);
         SetupUnitLivesUI();
@@ -1362,6 +1376,13 @@ public partial class GameController : MonoBehaviour
         ResetCombo();
         ResetBossGravityVisuals();
         ResetForcedDuplicationEffect();
+
+        if (IsMarathon && saveData.marathonSnapshot != null)
+        {
+            RestoreMarathonMatch(saveData.marathonSnapshot);
+            return;
+        }
+
 
         var restoredLevelModifier = ResolveSavedLevelModifier(saveData);
         int restoredRerolls = (saveData.levelModifier != null) ? saveData.levelModifier.availableRerolls : 0;
@@ -2295,16 +2316,23 @@ public partial class GameController : MonoBehaviour
 
     bool SaveTempRunForQuit()
     {
-        if (_cachedTempRunCheckpoint == null)
+        _snapshotSaveError = null;
+        if (IsMarathon)
+        {
+            if (!CanCaptureMarathon()) return false;
+            _cachedTempRunCheckpoint = BuildTempRunCheckpointData();
+            _cachedTempRunCheckpoint.marathonSnapshot = CaptureMarathonMatch();
+        }
+        else if (_cachedTempRunCheckpoint == null)
             _cachedTempRunCheckpoint = BuildTempRunCheckpointData();
 
         if (_cachedTempRunCheckpoint == null)
             return false;
 
-        TempRunSaveStore.Save(_cachedTempRunCheckpoint);
+        if (!TempRunSaveStore.Save(_cachedTempRunCheckpoint)) return false;
         PlayerPrefsSaveScheduler.Flush(uploadNow: true);
         PlayerProgress.I?.EndRun();
-        return TempRunSaveStore.HasValidSave();
+        return true;
     }
 
     void ClearTempRunCheckpoint()
@@ -3652,6 +3680,7 @@ public partial class GameController : MonoBehaviour
 
     void InvalidateRoundTransientActions()
     {
+        _snapshotTransitions = 0;
         unchecked
         {
             _roundLifecycleToken++;
@@ -3696,6 +3725,7 @@ public partial class GameController : MonoBehaviour
 
     void ClearProjectileRootTransients()
     {
+        _snapshotProjectiles.Clear();
         RectTransform root = projectileRoot ? projectileRoot : (gameBoard ? gameBoard.gridRoot : null);
         if (!root)
             return;
@@ -5084,7 +5114,7 @@ public partial class GameController : MonoBehaviour
                 {
                     RunSummaryStats.AddSpecialUsed();
                     ResetSpecialGauge();
-                    StartCoroutine(ShakeNQuakeSpecialCo());
+                    StartCoroutine(TrackSnapshotTransition(ShakeNQuakeSpecialCo()));
                     break;
                 }
 
@@ -5092,7 +5122,7 @@ public partial class GameController : MonoBehaviour
                 {
                     RunSummaryStats.AddSpecialUsed();
                     ResetSpecialGauge();
-                    StartCoroutine(BombsAwaySpecialCo());
+                    StartCoroutine(TrackSnapshotTransition(BombsAwaySpecialCo()));
                     break;
                 }
         }
@@ -5713,6 +5743,7 @@ public partial class GameController : MonoBehaviour
 
     void ReleaseRuntimeVfxRoot(RectTransform rt, string poolKey)
     {
+        if (rt) _snapshotProjectiles.Remove(rt);
         if (!rt || _pooledRuntimeVfx.Contains(rt))
             return;
 
@@ -5901,7 +5932,9 @@ public partial class GameController : MonoBehaviour
         // Lock-in the clip once, at spawn time
         AudioClip impactClip = attackerMD ? attackerMD.PickRandomAttackSFX() : null;
 
-        StartCoroutine(MoveProjectileAndHit(rt, topImg, botImg, animType, targetAnchored, damage, attackerMD, impactClip));
+        TrackSavedProjectile(rt, sprite, altSprite, animType, targetAnchored, damage, attackerMD);
+        var movement = MoveProjectileAndHit(rt, topImg, botImg, animType, targetAnchored, damage, attackerMD, impactClip);
+        StartCoroutine(_restoringMarathon ? ResumeSavedSimulation(movement) : movement);
     }
 
     System.Collections.IEnumerator MoveProjectileAndHit(RectTransform rt, UnityEngine.UI.Image topImg,
@@ -6469,7 +6502,9 @@ public partial class GameController : MonoBehaviour
         rt.sizeDelta = gameBoard.GetCellSize() * Mathf.Max(0.1f, castleProjectileVisualScale);
         rt.anchoredPosition = start;
 
-        StartCoroutine(CastleDownshotCo(rt, end, column));
+        TrackSavedProjectile(rt, sprite, null, default, end, 0, null, enemy: true, column: column);
+        var movement = CastleDownshotCo(rt, end, column);
+        StartCoroutine(_restoringMarathon ? ResumeSavedSimulation(movement) : movement);
     }
 
     System.Collections.IEnumerator CastleDownshotCo(RectTransform rt, Vector2 end, int column)
@@ -6642,9 +6677,13 @@ public partial class GameController : MonoBehaviour
 
     // ================ Global Immunity System ===================
 
-    System.Collections.IEnumerator GlobalImmunityCo(float totalSeconds)
+    System.Collections.IEnumerator GlobalImmunityCo(float totalSeconds, bool restoring = false)
     {
         if (totalSeconds <= 0f) yield break;
+
+        // The original warning sequence lasts 1.95 seconds. On restore, the
+        // saved duration is already the actual remaining immunity time.
+        _savedImmunityEndsAt = Time.time + (restoring ? totalSeconds : Mathf.Max(0f, totalSeconds - Mathf.Min(3f, totalSeconds)) + 1.95f);
 
         immunityActive = true;
         gameBoard.SetTilesDamageImmunity(true);
@@ -6660,7 +6699,7 @@ public partial class GameController : MonoBehaviour
             AudioManager.I.PlaySFX(selectedCharacter.sfxImmunityOn);
 
         // Steady gold
-        float warnWindow = Mathf.Min(3f, totalSeconds);
+        float warnWindow = Mathf.Min(restoring ? 1.95f : 3f, totalSeconds);
         float steady = Mathf.Max(0f, totalSeconds - warnWindow);
         for (float t = 0f; t < steady; t += Time.deltaTime) yield return null;
 
@@ -6672,7 +6711,7 @@ public partial class GameController : MonoBehaviour
         float[] setDur = { 0.9f, 0.6f, 0.45f };
         for (int s = 0; s < sets; s++)
         {
-            float setTime = setDur[Mathf.Clamp(s, 0, setDur.Length - 1)];
+            float setTime = setDur[Mathf.Clamp(s, 0, setDur.Length - 1)] * (restoring ? Mathf.Min(1f, totalSeconds / 1.95f) : 1f);
             float pulseDur = setTime / 3f;
 
             for (int p = 0; p < 3; p++)
@@ -7097,7 +7136,9 @@ public partial class GameController : MonoBehaviour
         if (IsPauseMenuInputLocked()) return;
 
         ShowConfirmationPopup(
-            "Save this run and quit the game? Continuing later will resume from the start of the current level checkpoint. While a run is saved, you will not be able to change your commander, squad, or shop buffs from the title menu.",
+            IsMarathon
+                ? "Save this Marathon match and quit the game? Continue will restore your current board and progress with the pause menu open. While a run is saved, your commander, squad, and shop buffs stay locked."
+                : "Save this run and quit the game? Continuing later will resume from the start of the current level checkpoint. While a run is saved, you will not be able to change your commander, squad, or shop buffs from the title menu.",
             ConfirmSaveAndQuit);
     }
 
@@ -7105,7 +7146,7 @@ public partial class GameController : MonoBehaviour
     {
         if (!SaveTempRunForQuit())
         {
-            ShowAlertPopup("The run could not be temp-saved, so the game will stay open.");
+            ShowAlertPopup(_snapshotSaveError ?? "The run could not be saved. The game will stay open so you can try again.");
             return;
         }
 
@@ -8666,7 +8707,7 @@ public partial class GameController : MonoBehaviour
         if (!bossEnablePylonShield) return;
         if (!gameBoard || _castleData == null) return;
 
-        StartCoroutine(Boss_PylonShieldRoutine(_roundLifecycleToken));
+        StartCoroutine(TrackSnapshotTransition(Boss_PylonShieldRoutine(_roundLifecycleToken)));
     }
 
     void RefreshPylonShieldState()
@@ -8684,7 +8725,7 @@ public partial class GameController : MonoBehaviour
         if (!bossEnableMagicExplosive) return;
         if (!gameBoard || _castleData == null) return;
 
-        StartCoroutine(Boss_MagicExplosiveRoutine(_roundLifecycleToken));
+        StartCoroutine(TrackSnapshotTransition(Boss_MagicExplosiveRoutine(_roundLifecycleToken)));
     }
 
     bool TryPickBossObstacleCellExcluding(HashSet<Vector2Int> used, HashSet<int> usedRows,
@@ -9111,12 +9152,12 @@ public partial class GameController : MonoBehaviour
             targets.Add(new Vector2Int(x, y2));
         }
 
-        StartCoroutine(BossRowBlastWarnThenDamage(
+        StartCoroutine(TrackSnapshotTransition(BossRowBlastWarnThenDamage(
             targets,
             dmg,
             PickWarningSprite(_castleData.bossRowBlastWarningSprite),
             _roundLifecycleToken
-        ));
+        )));
     }
 
     void Boss_FullBoardBlast()
@@ -9141,7 +9182,7 @@ public partial class GameController : MonoBehaviour
 
         if (targets.Count == 0) return;
 
-        StartCoroutine(BossFullBoardBlastWarnThenDamage(targets, dmg, warn, _roundLifecycleToken));
+        StartCoroutine(TrackSnapshotTransition(BossFullBoardBlastWarnThenDamage(targets, dmg, warn, _roundLifecycleToken)));
     }
 
     IEnumerator BossRowBlastWarnThenDamage(List<Vector2Int> targets, float damage, Sprite warningSprite, int roundToken)
@@ -9229,7 +9270,7 @@ public partial class GameController : MonoBehaviour
             candidates.RemoveAt(pickIndex); // ensures uniqueness
 
             float warn = BossWarnSeconds();
-            StartCoroutine(BossLightningRoutine(target, warn, _roundLifecycleToken));
+            StartCoroutine(TrackSnapshotTransition(BossLightningRoutine(target, warn, _roundLifecycleToken)));
         }
 
     }
@@ -9321,7 +9362,7 @@ public partial class GameController : MonoBehaviour
             Boss_MagicExplosive();
 
         var castOpt = GetBossTrapOptionForThisSpawn();
-        StartCoroutine(BossSpawnTrapsSplitWithWarningRoutine(castOpt, _roundLifecycleToken));
+        StartCoroutine(TrackSnapshotTransition(BossSpawnTrapsSplitWithWarningRoutine(castOpt, _roundLifecycleToken)));
     }
 
     void FlashBossTrapWarning(Vector2Int cell, Sprite sprite, float seconds)
@@ -9689,7 +9730,7 @@ public partial class GameController : MonoBehaviour
         for (int i = 0; i < targetCount; i++)
             targets.Add(_bossTeleportTargetScratch[i]);
 
-        StartCoroutine(BossTeleportRoutine(targets, excludedTopRows, excludedBottomRows, _roundLifecycleToken));
+        StartCoroutine(TrackSnapshotTransition(BossTeleportRoutine(targets, excludedTopRows, excludedBottomRows, _roundLifecycleToken)));
     }
 
     IEnumerator BossTeleportRoutine(List<Vector2Int> targets, int excludedTopRows, int excludedBottomRows, int roundToken)
@@ -10231,6 +10272,8 @@ public partial class GameController : MonoBehaviour
         float delta = Mathf.Max(0f, bonusMult);
         float dur = Mathf.Max(0.05f, seconds);
 
+        _savedBossGravityEndsAt = Time.time + dur;
+
         _bossGravityBonusActive += delta;
         SetBossGravityVisualsActive(true); // Turn on UI cues
 
@@ -10328,12 +10371,13 @@ public partial class GameController : MonoBehaviour
         RefreshGravityTextColor();
     }
 
-    System.Collections.IEnumerator PlayerDoubleStatsCo(float seconds)
+    System.Collections.IEnumerator PlayerDoubleStatsCo(float seconds, bool restoring = false)
     {
+        _savedDoubleStatsEndsAt = Time.time + seconds;
         if (selectedCharacter && selectedCharacter.sfxDoubleStatsOn && AudioManager.I)
             AudioManager.I.PlaySFX(selectedCharacter.sfxDoubleStatsOn);
         
-        if (gameBoard)
+        if (gameBoard && !restoring)
             gameBoard.MultiplyAllMonsterHpAndMax(2f); // Double HP/MaxHP for all monsters currently on the board
 
         _playerDoubleStatsAttackMult = 2f; // Double attack output

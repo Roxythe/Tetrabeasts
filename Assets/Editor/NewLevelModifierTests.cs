@@ -241,6 +241,10 @@ public class NewLevelModifierTests
         Assert.AreEqual(countdownBeforePause, Get(controller, "_hallucinationCountdown"));
         Assert.AreEqual(modifier.hallucinationIdleFrames[1], hallucinationImage.sprite, "Pause freezes idle animation too.");
         Assert.Greater(pause.transform.GetSiblingIndex(), ((RectTransform)Get(controller, "_hallucinationRoot")).GetSiblingIndex());
+        var confirmation = new GameObject("Confirmation above pause", typeof(RectTransform));
+        confirmation.transform.SetParent(root.transform, false);
+        Call(controller, "LateUpdate");
+        Assert.Greater(confirmation.transform.GetSiblingIndex(), pause.transform.GetSiblingIndex(), "Hallucination must not promote pause over a newer dialog.");
         Set(gc, "isPaused", false);
         pause.SetActive(false);
         var positionField = first.GetType().GetField("position");
@@ -249,7 +253,15 @@ public class NewLevelModifierTests
         velocityField.SetValue(first, new Vector2(-4f, 0f));
         Call(controller, "UpdateNewModifierEffects", 1f);
         Assert.Greater(((Vector2)velocityField.GetValue(first)).x, 0f);
-        Assert.That(((Vector2)positionField.GetValue(first)).x, Is.InRange(0.75f, 9.25f));
+        Assert.That(((Vector2)positionField.GetValue(first)).x, Is.InRange(0f, 10f));
+        Vector3 direction = board.gridRoot.TransformVector(Vector3.right).normalized;
+        Assert.Greater(Vector3.Dot(hallucinationImage.transform.up, direction), .999f, "Sprite top follows reflected travel.");
+        Rect visible = (Rect)Call(controller, "HallucinationVisibleBounds", first);
+        float diameter = (float)first.GetType().GetField("diameter").GetValue(first);
+        Assert.Less(visible.width, diameter * .9f, "Alpha padding must not determine movement boundaries.");
+        positionField.SetValue(first, new Vector2(-10, 8));
+        Call(controller, "ConstrainHallucination", first, false);
+        Assert.AreEqual(-visible.xMin, ((Vector2)positionField.GetValue(first)).x, .001f);
         Call(controller, "SpawnHallucination");
         var second = hallucinations[1];
         positionField.SetValue(second, positionField.GetValue(first));
@@ -257,6 +269,7 @@ public class NewLevelModifierTests
         Assert.AreEqual(1, hallucinations.Count);
         var survivor = hallucinations[0];
         Assert.Greater((float)survivor.GetType().GetField("diameter").GetValue(survivor), modifier.hallucinationBaseSizeCells);
+        Assert.AreEqual(modifier.hallucinationBaseSizeCells * 1.65f, (float)survivor.GetType().GetField("diameter").GetValue(survivor), .001f);
         Assert.IsNotNull(((RectTransform)Get(controller, "_hallucinationRoot")).GetComponentInChildren<PixelSprayVFX>());
         survivor.GetType().GetField("consumeFlash").SetValue(survivor, .375f);
         Call(controller, "SyncHallucinationVisual", survivor);

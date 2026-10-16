@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using System.Collections;
 
-public class AudioManager : MonoBehaviour
+public partial class AudioManager : MonoBehaviour
 {
     public static AudioManager I { get; private set; }
 
@@ -452,6 +452,7 @@ public class AudioManager : MonoBehaviour
 
     void ApplyMainMusicSourceVolumes()
     {
+        ApplyPlaylistPreviewVolume();
         if (musicSrc)
             musicSrc.volume = MainMusicFullVolume * musicSrcVolumeScale;
 
@@ -1219,7 +1220,7 @@ public class AudioManager : MonoBehaviour
         PlayerPrefs.SetInt(K_MusicMode, (int)musicMode);
         PlayerPrefsSaveScheduler.QueueSave();
 
-        if (AudioListener.pause)
+        if (AudioListener.pause || playlistSettingsSession)
         {
             restartContextOnUnpause = true;
 
@@ -1237,9 +1238,10 @@ public class AudioManager : MonoBehaviour
 
     public void ApplyPendingMusicModeAfterUnpause()
     {
-        if (!restartContextOnUnpause) return;
+        if (!restartContextOnUnpause && !playlistNeedsNewSong) return;
 
         restartContextOnUnpause = false;
+        playlistNeedsNewSong = false;
         RestartContextMusic();
     }
 
@@ -1289,7 +1291,7 @@ public class AudioManager : MonoBehaviour
         currentPool = BuildPool(isBoss);
         if (currentPool == null || currentPool.Length == 0)
         {
-            if (bgmLoop) PlayMusic(bgmLoop, loop: true, vol: 1f);
+            StopMusic(); // An intentionally empty playlist must remain silent.
             return;
         }
 
@@ -1316,14 +1318,14 @@ public class AudioManager : MonoBehaviour
             StopMusic();
     }
 
-    public void PlayPauseMusic()
+    public void PlayPauseMusic(bool restart = false)
     {
         // Pick EDM/Metal/both clip
         var clip = PickPauseClipByMode();
         FadeMainMusicForPause(fadeOut: true);
         if (!clip) return;
 
-        if (pauseMusicSrc.isPlaying && pauseMusicSrc.clip == clip)
+        if (!restart && pauseMusicSrc.isPlaying && pauseMusicSrc.clip == clip)
         {
             FadePauseMusicTo(1f, stopAtEnd: false);
             return;
@@ -1339,6 +1341,8 @@ public class AudioManager : MonoBehaviour
 
     public void StopPauseMusic()
     {
+        StopPlaylistPreview();
+        SilenceExcludedResumeSources();
         FadeMainMusicForPause(fadeOut: false);
 
         if (pauseMusicSrc && pauseMusicSrc.isPlaying)
@@ -1377,7 +1381,7 @@ public class AudioManager : MonoBehaviour
         {
             if (p == null) continue;
             for (int i = 0; i < p.Length; i++)
-                if (p[i]) merged.Add(p[i]);
+                if (p[i] && GameplayPlaylist.IsEnabled(p[i]) && !merged.Contains(p[i])) merged.Add(p[i]);
         }
 
         return merged.ToArray();
@@ -1494,6 +1498,10 @@ public class AudioManager : MonoBehaviour
 
             if (!levelMusicActive)
                 yield break;
+
+            // The user may have edited the pool while this chain was paused.
+            if (System.Array.IndexOf(currentPool, next) < 0)
+                continue;
 
             // Save last clip for this context (boss vs gameplay)
             lastClip = next;
@@ -1639,6 +1647,7 @@ public class AudioManager : MonoBehaviour
     bool ShouldHoldLevelMusicChain()
     {
         return specialAbilityPausedMainMusic ||
+               playlistSettingsSession || pauseFadedMainMusic ||
                AudioListener.pause ||
                applicationPaused ||
                !applicationHasFocus ||

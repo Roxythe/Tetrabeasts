@@ -52,6 +52,8 @@ public class EnemyCastleUI : MonoBehaviour
 
     bool _invulnerable = false;
     Coroutine _invulnCR;
+    float _invulnerabilityEndsAt;
+    public float InvulnerabilityRemaining => _invulnerable ? Mathf.Max(0.0001f, _invulnerabilityEndsAt - Time.time) : 0f;
     Color _normalHealthBarColor = Color.white;
     bool _capturedHealthBarColor = false;
     Sprite _defaultHpGaugeFrameSprite;
@@ -72,6 +74,7 @@ public class EnemyCastleUI : MonoBehaviour
     Vector2 _bossChannelAttackBaseAnchoredPos;
 
     Coroutine _damageShakeCR;
+    float _damageShakeRemaining, _damageShakeDuration, _damageShakePixels;
     List<DamageShakeTarget> _damageShakeTargets;
     readonly Queue<DamageShakeHit> _recentDamageShakeHits = new();
 
@@ -290,12 +293,6 @@ public class EnemyCastleUI : MonoBehaviour
 
         int recentDamage = RecordRecentDamageShakeHit(appliedDamage, Time.unscaledTime);
 
-        StopDamageShake();
-
-        _damageShakeTargets = BuildDamageShakeTargets();
-        if (_damageShakeTargets == null || _damageShakeTargets.Count == 0)
-            return;
-
         float maxDamageForShake = Mathf.Max(1f, maxHP * Mathf.Max(0.01f, damageForMaxShakeHpFraction));
         float intensity = Mathf.Clamp01(recentDamage / maxDamageForShake);
         float pixels = Mathf.Lerp(minDamageShakePixels, maxDamageShakePixels, intensity);
@@ -305,7 +302,12 @@ public class EnemyCastleUI : MonoBehaviour
         pixels *= burstBoost;
         seconds *= Mathf.Lerp(1f, 1.2f, (burstBoost - 1f) / 0.65f);
 
-        _damageShakeCR = StartCoroutine(DamageShakeRoutine(seconds, pixels));
+        _damageShakeRemaining = _damageShakeDuration = Mathf.Max(seconds, _damageShakeRemaining);
+        _damageShakePixels = pixels;
+        if (_damageShakeCR != null) return;
+        _damageShakeTargets = BuildDamageShakeTargets();
+        if (_damageShakeTargets.Count == 0) return;
+        _damageShakeCR = StartCoroutine(DamageShakeRoutine());
     }
 
     int RecordRecentDamageShakeHit(int appliedDamage, float now)
@@ -332,21 +334,18 @@ public class EnemyCastleUI : MonoBehaviour
         _recentDamageShakeHits.Clear();
     }
 
-    IEnumerator DamageShakeRoutine(float seconds, float pixels)
+    IEnumerator DamageShakeRoutine()
     {
-        seconds = Mathf.Max(0.01f, seconds);
-        pixels = Mathf.Max(0f, pixels);
-
         float elapsed = 0f;
         float sampleInterval = 1f / Mathf.Max(1f, damageShakeSamplesPerSecond);
         float nextSampleTime = 0f;
         Vector2 currentOffset = Vector2.zero;
 
-        while (elapsed < seconds)
+        while (_damageShakeRemaining > 0f)
         {
             elapsed += Time.unscaledDeltaTime;
-            float normalizedTime = Mathf.Clamp01(elapsed / seconds);
-            float decay = 1f - normalizedTime;
+            _damageShakeRemaining = Mathf.Max(0f, _damageShakeRemaining - Time.unscaledDeltaTime);
+            float decay = _damageShakeRemaining / Mathf.Max(.01f, _damageShakeDuration);
 
             if (elapsed >= nextSampleTime)
             {
@@ -355,7 +354,7 @@ public class EnemyCastleUI : MonoBehaviour
                     direction = Vector2.right;
 
                 direction.Normalize();
-                currentOffset = direction * Random.Range(pixels * 0.35f, pixels) * decay;
+                currentOffset = direction * Random.Range(_damageShakePixels * 0.35f, _damageShakePixels) * decay;
                 nextSampleTime = elapsed + sampleInterval;
             }
 
@@ -460,6 +459,7 @@ public class EnemyCastleUI : MonoBehaviour
 
     void StopDamageShake()
     {
+        _damageShakeRemaining = 0f;
         if (_damageShakeCR != null)
         {
             StopCoroutine(_damageShakeCR);
@@ -584,6 +584,7 @@ public class EnemyCastleUI : MonoBehaviour
 
     IEnumerator InvulnRoutine(float seconds)
     {
+        _invulnerabilityEndsAt = Time.time + seconds;
         _invulnerable = true;
         SetInvulnerabilityVFX(true);
 

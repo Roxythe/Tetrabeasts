@@ -215,7 +215,7 @@ public class LevelModifierSO : ScriptableObject
     public Sprite[] hallucinationAnimation;
     public Sprite hallucinationConsumeSprite;
     [Min(0.1f)] public float hallucinationSpeedCellsPerSecond = 4f;
-    [Min(0.1f)] public float hallucinationBaseSizeCells = 1.5f;
+    [Min(0.1f)] public float hallucinationBaseSizeCells = 1.8f;
     [Min(0.01f)] public float hallucinationSizeIncreaseCells = 0.25f;
     [Min(0.01f)] public float hallucinationDeathFrameSeconds = 0.1f;
 

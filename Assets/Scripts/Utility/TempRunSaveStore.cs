@@ -11,7 +11,9 @@ public static class TempRunSaveStore
     [Serializable]
     public class SaveData
     {
-        public int version = 2;
+        public int version = 3;
+        public bool hasMarathonSnapshot;
+        public MarathonMatchSnapshot marathonSnapshot;
         public RunGameMode gameMode;
         public float marathonDamage;
         public float marathonGravity;
@@ -93,11 +95,11 @@ public static class TempRunSaveStore
         public int availableRerolls;
     }
 
-    static string SavePath => Path.Combine(Application.persistentDataPath, FileName);
+    static string SavePath => Path.Combine(LocalSaveFiles.DirectoryPath, FileName);
 
     public static bool Exists()
     {
-        return File.Exists(SavePath);
+        return File.Exists(SavePath) || File.Exists(SavePath + ".bak");
     }
 
     public static bool HasValidSave()
@@ -108,56 +110,33 @@ public static class TempRunSaveStore
         if (TryLoad(out _))
             return true;
 
-        Delete();
         return false;
     }
 
     public static bool TryLoad(out SaveData data)
     {
-        data = null;
-
-        try
-        {
-            if (!File.Exists(SavePath))
-                return false;
-
-            string json = File.ReadAllText(SavePath);
-            if (string.IsNullOrWhiteSpace(json))
-                return false;
-
-            data = JsonUtility.FromJson<SaveData>(json);
-            return data != null;
-        }
-        catch (Exception ex)
-        {
-            Debug.LogWarning($"TempRunSaveStore: Failed to load temp run save. {ex.Message}");
-            data = null;
-            return false;
-        }
+        if (!LocalSaveFiles.Read<SaveData>(SavePath, IsValid, out data)) return false;
+        // JsonUtility materializes empty inline objects instead of preserving null.
+        if (!data.hasMarathonSnapshot) data.marathonSnapshot = null;
+        return true;
     }
 
-    public static void Save(SaveData data)
+    public static bool IsValid(SaveData data)
     {
-        if (data == null)
-        {
-            Delete();
-            return;
-        }
+        if (data == null || data.version < 1 || data.version > 3 ||
+            !Enum.IsDefined(typeof(RunGameMode), data.gameMode) || data.currentLevel < 0)
+            return false;
+        return !data.hasMarathonSnapshot ||
+            (data.gameMode == RunGameMode.Marathon && data.marathonSnapshot != null && data.marathonSnapshot.IsValid());
+    }
 
-        try
-        {
-            string dir = Path.GetDirectoryName(SavePath);
-            if (!string.IsNullOrEmpty(dir))
-                Directory.CreateDirectory(dir);
-
-            string json = JsonUtility.ToJson(data, true);
-            File.WriteAllText(SavePath, json);
-            SteamCloudSaveService.QueueUpload();
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"TempRunSaveStore: Failed to save temp run data. {ex.Message}");
-        }
+    public static bool Save(SaveData data)
+    {
+        if (data != null) data.hasMarathonSnapshot = data.marathonSnapshot != null;
+        if (!IsValid(data)) return false;
+        if (!LocalSaveFiles.Write(SavePath, JsonUtility.ToJson(data, true))) return false;
+        SteamCloudSaveService.QueueUpload();
+        return true;
     }
 
     public static void Delete()
@@ -166,8 +145,7 @@ public static class TempRunSaveStore
 
         try
         {
-            if (File.Exists(SavePath))
-                File.Delete(SavePath);
+            LocalSaveFiles.Delete(SavePath);
 
             SteamCloudSaveService.QueueUpload();
         }

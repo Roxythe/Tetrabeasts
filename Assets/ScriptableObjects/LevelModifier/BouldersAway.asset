@@ -18,7 +18,7 @@ MonoBehaviour:
     2-4 seconds over three minutes. Up to four can be active. Hits deal 10-15% of
     a monster's maximum health plus 5 damage. Boulders expire after 4-7 damaging
     hits or falling off screen.
-  icon: {fileID: -4759659127916700106, guid: ea787686bac1cda45a4214d6c34c4096, type: 3}
+  icon: {fileID: 21300000, guid: ea787686bac1cda45a4214d6c34c4096, type: 3}
   backgroundOverrideSprite: {fileID: 0}
   backgroundOverrideVideoClip: {fileID: 0}
   backgroundOverrideVideoPlaybackSpeed: 0

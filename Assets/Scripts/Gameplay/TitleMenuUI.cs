@@ -995,7 +995,6 @@ public class TitleMenuUI : MonoBehaviour
         if (TempRunSaveStore.TryLoad(out saveData) && saveData != null)
             return true;
 
-        TempRunSaveStore.Delete();
         return false;
     }
 

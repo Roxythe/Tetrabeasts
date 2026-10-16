@@ -335,7 +335,8 @@ public sealed class LoadingScreen : MonoBehaviour
         if (!_timeScalePauseActive)
             return;
 
-        Time.timeScale = _restoreNormalTimeScaleOnHide ? 1f : _timeScaleBeforeShow;
+        var gameplay = FindFirstObjectByType<GameController>();
+        Time.timeScale = gameplay && gameplay.IsPaused ? 0f : (_restoreNormalTimeScaleOnHide ? 1f : _timeScaleBeforeShow);
         _restoreNormalTimeScaleOnHide = false;
         _timeScalePauseActive = false;
     }

@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Flip The Board
   description: The board flips upside down after a two-second warning, then swaps
     every 20-30 seconds.
-  icon: {fileID: 4408475475521802300, guid: f04b1665ba0fff2448020334d51dc8cd, type: 3}
+  icon: {fileID: 21300000, guid: f04b1665ba0fff2448020334d51dc8cd, type: 3}
   backgroundOverrideSprite: {fileID: 0}
   backgroundOverrideVideoClip: {fileID: 0}
   backgroundOverrideVideoPlaybackSpeed: 0

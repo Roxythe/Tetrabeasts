@@ -1,3 +1,45 @@
+- The collision particle effect is a bit too big now and instead of solid squares, I would like smaller pebble and rock shaped bits to be used. Vary the size too slightly so that they aren't all exactly the same size.
+
+- Can you add alternate SFXs to play for the boulder sprite collisions so it doesn't all sound the same every time. The one right now is ok, but I would like a sound that's more appropriate to a boulder/rock/stone hitting a hard surface.
+
+- For the new playlist setting list, could you make it so the header is locked in place and scrolls down with the player so that they can still see the  "EDM / Normal Gameplay Songs" header as they scroll down until they reach the next header and it only releases it once it would overlap the new header and then gets replaced by the new header. This should allow the player to know easily what section they are currently scrolling through.
+
+- When stopping a sampled song in the playlist settings or starting a second sample while a sample is already playing, I would like to use a hard stop on the sample song instead of the fade out instead. After hearing it with the fade out/in overlapping it sounds bad and unpolished. 
+
+- The game now briefly locks up when multiple screen shakes are triggered at the same time. I am not sure if thats due to calculations or just too many things happening at once while I am testing my boulders away level modifier but it looks bad and would like help resolving it.
+
+- The pop up warning panel when quitting from the pause menu is incorrectly layered behand the pause menu panel now and cannot be seen/reached.
+
+- The hallucination sprite should start slightly bigger and increase in size more when a new hallucination combines with it.
+
+- I want the movement pattern for the hallucination sprite to change the rotation for the sprite animation so the top center of the sprite is pointing in the direction the sprite animation is moving
+
+- Increase the width of the hallucination sprite animations movement area, it cannot reach the actual boards of the board because the empty space in the png is considered part of its size and prevents it from getting close to the actual board borders width. I only want the visible portion of the animation to be considered with the boundaries of the board.
+
+
+----------------------------------------------------------------------------------------------------
+
+# Change to Settings Panel
+
+- Add a new tab to the setting that lets the user toggle on each gameplay song
+
+- Make the list a scroll down list with every game play song for EDM genre and a separate section for metal genre gameplay song including normal gameplay and boss gameplay songs
+
+- Each song should have its title (Make up a new title for each song this one time), a play button, a pause button, and a check box (checked by default on first start up)
+
+- The play button should pause the current music and start playing that song so users know what song it is. Pause button should pause that song if it is playing.
+
+- Songs that are unchecked should be removed from the songs that will be played when playing the game. Song picker for gameplay mode should still work the same way as (picking a random gameplay song for normal levels and a boss song for boss levels) before just with the list of songs for the selected genre that are checked. This should allow a player to turn off songs they don't like. It should only include the gameplay music that's used for normal level and boss levels though, not pause/main menu/game over music.
+
+- Add the button hover sound effect and button color change when hovering so it matches other buttons in the game.
+
+- Add a small animation to the row when the song is being played that fits the situation and pixel art style
+
+- when leaving the playlist edit tab restart the pause menu music if the setting are still open, resume the correct song if settings are closed (main menu song if back to main menu or the gameplay song if back to gameplay). If the song that would resume is a song removed from the gameplay playlist now, choose a new song. Remember to use the fade in/out for music transition as normal.
+
+- Use the same background sprite for the new settings tab as the normal settings panel
+
+----------------------------------------------------------------------------------------------------
 
 - Level modifier 'Dr. Feel Good'. Healing monster units will have +1 to healing range and will heal more often. Monster units that are healed will start taking damage over time (starting out small) and increasing each time that monster unit is healed. Clearing/destroying a monster unit should clear away the stacking debuff so that it doesn't carry over if reused from the unit pool. All debuffs should be cleared when the level ends. Visually the debuff should be represented by changing the foreground color of the monster unit slightly darker. Color changes should not be permanently changed.
 
@@ -19,7 +61,6 @@ Keep track of what has been finished and what still needs to be done if credits 
 
 - Shorten the animation for mao and quixel, too long.
 
-------------------------------------------------------------------------------------------------
 
 - Level Modifier 'Boulders-Away'. Every 5-10 seconds spawn a boulder just above the top of the board and let it fall. When it collides with a living monster unit deal 20 damage to that unit and bounce. The boulder should bounce 3-5 times and then be destroyed. It should bounce off the bottom and sides of the board as well to stay within the board and move semi realistically rotating as it moves to look more animated. when it collides with a living monster unit or the side/bottom of the board it should have a small pixel particle effect play. Living monster unit that the boulder sprite collides with should shake on collision for visual effect. The boulder sprite should move over top of dead units. The only obstacle that should be able to collide with the boulder is the stone obstacle (which should take a single instance of damage from being struck for each time it is collided with). No more than three boulders should ever be active on the board at the same time, if more than 3 exists, pause the boulder spawn timer until there is less than 3. The boulder spawn should only happen when the Boulders-Away level modifier is active or a boss ability spawns them, it is not a normal mechanic for every level. Boulder should be able to collide and bounce off of each other.
 
@@ -37,7 +78,6 @@ Change the new game button on the MainMenu_Scene to open a panel to select the g
 
 - Add a sceenshake VFX when an earthquake or bomb special block is used.
 
-------------------------------------------------------------------------------------------------
 
 Marathon level up rewards panel changes
 
@@ -66,7 +106,6 @@ Marathon Level up bar UI
 - Can you make the fill for the gauge look like it is liquid sloshing around whenever the fill increases?
 - Make the background behind the fill less transparent as well to contrast from the fill.
 
-------------------------------------------------------------------------------------------------
 
 # Main Menu Leaderboard Changes
 
@@ -97,7 +136,6 @@ Marathon Level up bar UI
 - Special gauge for the special ability doesn't have the right shader/bubbling liquid visual effect as the other gauges do. I want to keep it's current colors and the flashing that it does when it's full already, but it should have the same liquid bubble effect the other gauges have too.
 - The level up gauge UI for Marathon mode is still on the wrong layer as well and is visible when it shouldn't be. It should be in the same layer as the special ability gauge so that it is hidden or below other panels at the same time. 
 
-------------------------------------------------------------------------------------------------
 
 # Changes to make
 
@@ -139,8 +177,6 @@ Marathon Level up bar UI
 
 - Change how scores are saved and exported to the leaderboard/steam so that the correct score is linked to the correct leaderboard. Currently I believe every score is saved the same and there is only a single leaderboard section to show all the scores from different game modes in the same list.
 
-------------------------------------------------------------------------------------------------
-
 # Changes to Boulder mechanic
 
 - The collision SFX for the boulder is too quiet and can't be heard. Make sure it works with the current volume settings sliders
@@ -169,10 +205,6 @@ Marathon Level up bar UI
 
 Make sure all the new SFX work with the volume settings sliders so that all the volume stay consistent. 
 
-------------------------------------------------------------------------------------------------
-
-Not Started yet
-
 - Level Modifier 'Boulders-Away'. Every 5-10 seconds spawn a boulder just above the top of the board and let it fall. When it collides with a living monster unit deal 20 damage to that unit and bounce. The boulder should bounce 3-5 times and then be destroyed. It should bounce off the bottom and sides of the board as well to stay within the board and move semi realistically rotating as it moves to look more animated. when it collides with a living monster unit or the side/bottom of the board it should have a small pixel particle effect play. Living monster unit that the boulder sprite collides with should shake on collision for visual effect. The boulder sprite should move over top of dead units. The only obstacle that should be able to collide with the boulder is the stone obstacle (which should take a single instance of damage from being struck for each time it is collided with). No more than three boulders should ever be active on the board at the same time, if more than 3 exists, pause the boulder spawn timer until there is less than 3. The boulder spawn should only happen when the Boulders-Away level modifier is active or a boss ability spawns them, it is not a normal mechanic for every level. Boulder should be able to collide and bounce off of each other.
 
 - New Boss ability 'Rocks for Everyone'. Add a Boulder spawning mechanic for the boss ability pool. When used it should spawn three boulders spread out (not overlapping) just above the top of the board. Give them the same bounce/damaging mechanics as the level modifier.
@@ -194,7 +226,7 @@ Change the new game button on the MainMenu_Scene to open a panel to select the g
 - Adjustable screen size (Not full screen only). Window screen mode with adjustable screen size.
 
 
-
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ V1.2 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ----------------------------------------------------------------------------------------------------
 
 

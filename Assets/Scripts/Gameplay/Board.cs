@@ -250,6 +250,7 @@ public partial class Board : MonoBehaviour
 
     public enum FloorEffectType { Poison, Burn, Spike, Lightning, Teleport, ZipPad }
 
+    [System.Serializable]
     public struct FloorEffectState
     {
         public FloorEffectType type;

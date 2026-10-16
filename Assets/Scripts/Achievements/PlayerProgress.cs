@@ -59,7 +59,7 @@ public class PlayerProgress : MonoBehaviour
     public event Action<string> AchievementUnlocked;
     public event Action<string, double> StatChanged;
 
-    string SavePath => Path.Combine(Application.persistentDataPath, "tetrabeasts_progress.json");
+    string SavePath => Path.Combine(LocalSaveFiles.DirectoryPath, "tetrabeasts_progress.json");
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     static void Bootstrap()

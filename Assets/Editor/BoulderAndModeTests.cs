@@ -25,6 +25,8 @@ public class BoulderAndModeTests
         Assert.IsNotNull(config);
         Assert.IsNotNull(config.boulderSprite);
         Assert.IsNotNull(config.boulderImpactSfx);
+        Assert.AreEqual(3, config.boulderImpactAlternates.Length);
+        Assert.IsTrue(config.boulderImpactAlternates.All(clip => clip && clip.preloadAudioData));
         Assert.IsNotNull(config.modeMenuPrefab.closeButton);
         Assert.AreEqual(3, config.marathonRewardPrefab.choices.Length);
         Assert.IsNotNull(config.marathonGaugePrefab.gauge.fillRect.GetComponent<Image>().material);
@@ -81,6 +83,19 @@ public class BoulderAndModeTests
         var board = boardObject.AddComponent<Board>(); board.width = 10; board.height = 16; board.animateTetrominoBackgrounds = false;
         board.RecomputeCellMetrics(); gc.gameBoard = board;
         Set(board, "_gc", gc); Set(boulders, "gc", gc); Set(boulders, "board", board);
+        boulders.boulderSprite = GameModeAssets.Load().boulderSprite;
+        for (int i = 0; i < 12; i++) Call(boulders, "WarmDebrisPool");
+        var effectsRoot = (RectTransform)Get(boulders, "effectsRoot");
+        Assert.AreEqual(96, effectsRoot.childCount);
+        for (int i = 0; i < 40; i++) Call(boulders, "Burst", new Vector2(5, 8), Vector2.up);
+        Assert.AreEqual(96, effectsRoot.childCount, "Dense impacts reuse a bounded pool without new UI objects.");
+        foreach (var image in effectsRoot.GetComponentsInChildren<Image>())
+        {
+            Assert.AreSame(boulders.boulderSprite, image.sprite);
+            Assert.That(image.rectTransform.sizeDelta.x, Is.InRange(3f, 5.5f));
+            Assert.IsNull(image.GetComponent<Outline>());
+        }
+        boulders.Clear();
         Set(modifiers, "_gc", gc); Set(modifiers, "board", board);
         var monster = ScriptableObject.CreateInstance<MonsterData>(); temporary.Add(monster); monster.maxHealth = 100;
         var cell = new Vector2Int(4, 5);

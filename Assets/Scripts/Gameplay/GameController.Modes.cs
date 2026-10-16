@@ -49,6 +49,7 @@ public partial class GameController
         {
             boulders.boulderSprite = modeAssets.boulderSprite;
             boulders.impactSfx = modeAssets.boulderImpactSfx;
+            boulders.alternateImpactSfx = modeAssets.boulderImpactAlternates;
         }
     }
     void EnsureMarathonUI()

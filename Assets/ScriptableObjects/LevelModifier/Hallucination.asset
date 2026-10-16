@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Hallucination
   description: Bouncing hallucinations consume each other. Player projectiles destroy
     them and spawn a larger replacement.
-  icon: {fileID: -6867703046593702270, guid: 50d4aac37890c4b48940272b8fc7df93, type: 3}
+  icon: {fileID: 21300000, guid: 50d4aac37890c4b48940272b8fc7df93, type: 3}
   backgroundOverrideSprite: {fileID: 0}
   backgroundOverrideVideoClip: {fileID: 0}
   backgroundOverrideVideoPlaybackSpeed: 0
@@ -144,7 +144,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: a281be6d092f22c4e964a3d07868d62a, type: 3}
   hallucinationConsumeSprite: {fileID: 21300000, guid: a281be6d092f22c4e964a3d07868d62a, type: 3}
   hallucinationSpeedCellsPerSecond: 4
-  hallucinationBaseSizeCells: 1.5
+  hallucinationBaseSizeCells: 1.8
   hallucinationSizeIncreaseCells: 0.25
   hallucinationDeathFrameSeconds: 0.1
   inversionActiveSeconds: 8

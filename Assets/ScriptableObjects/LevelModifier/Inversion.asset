@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Inversion
   description: Movement and rotation controls reverse for 8 seconds, followed by
     12 seconds of normal controls. The reversal sigil wipes away as the effect expires.
-  icon: {fileID: -7682964960751539237, guid: 91889da090d45184ba99953de6570eaa, type: 3}
+  icon: {fileID: 21300000, guid: 91889da090d45184ba99953de6570eaa, type: 3}
   backgroundOverrideSprite: {fileID: 0}
   backgroundOverrideVideoClip: {fileID: 0}
   backgroundOverrideVideoPlaybackSpeed: 0
