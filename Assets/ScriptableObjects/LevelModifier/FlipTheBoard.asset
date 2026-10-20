@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelModifierSO
   kind: 26
   displayName: Flip The Board
-  description: The board flips upside down after a two-second warning, then swaps
-    every 20-30 seconds.
+  description: "Your world is about to turn upside down! Hitting the castle can bring the next flip even sooner. Watch for blazing arrows and brace yourself as pieces rise from below!"
   icon: {fileID: 21300000, guid: f04b1665ba0fff2448020334d51dc8cd, type: 3}
   backgroundOverrideSprite: {fileID: 0}
   backgroundOverrideVideoClip: {fileID: 0}
@@ -105,14 +104,14 @@ MonoBehaviour:
   softSpaceTeleportDestinationExcludedTopRows: 4
   softSpaceTeleportDestinationExcludedBottomRows: 0
   turboBoostedRowFromTop: 5
-  feelGoodHealIntervalMultiplier: 0.5
+  feelGoodStacksPerHeal: 2
   feelGoodDamagePerStack: 0.25
   feelGoodTickSeconds: 1
   feelGoodForegroundBrightness: 0.8
   flipSfx: {fileID: 8300000, guid: b0079d2edaa04ec4c9fa6135b817ac10, type: 3}
-  flipIntervalMin: 20
-  flipIntervalMax: 30
-  flipWarningSprite: {fileID: 0}
+  flipIntervalMin: 5
+  flipIntervalMax: 20
+  flipWarningSprite: {fileID: 21300000, guid: f6786bc9b04546af8fd3a0b538d85431, type: 3}
   bombardmentImpactSfx: {fileID: 0}
   bombardmentWarningSprite: {fileID: 0}
   bombardmentCraterSprite: {fileID: 0}

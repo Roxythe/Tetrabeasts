@@ -11,8 +11,10 @@ public sealed partial class BoulderController : MonoBehaviour
     [Range(0f, 1f)] public float impactVolume = 1f;
     public const int Capacity = 4;
     const int BossVolleySize = 3;
-    public const float FlatHitDamage = 5f;
-    public static float CalculateHitDamage(float maxHealth, float fraction) => FlatHitDamage + Mathf.Max(0f, maxHealth) * Mathf.Clamp(fraction, 0.10f, 0.15f);
+    public const float FlatHitDamage = 8f;
+    public const float MinHitFraction = .15f;
+    public const float MaxHitFraction = .20f;
+    public static float CalculateHitDamage(float maxHealth, float fraction) => FlatHitDamage + Mathf.Max(0f, maxHealth) * Mathf.Clamp(fraction, MinHitFraction, MaxHitFraction);
     public static float SpawnIntervalScale(float elapsed) => Mathf.Lerp(1f, 0.4f, Mathf.Clamp01(elapsed / 180f));
     const float Radius = 0.42f;
     sealed class Rock
@@ -216,7 +218,8 @@ public sealed partial class BoulderController : MonoBehaviour
         if (!selected) return;
         lastImpactClip = selected;
         nextImpactTime = Time.unscaledTime + .04f;
-        AudioManager.I.PlaySFX(selected, impactVolume);
+        // Extra mix gain makes the short stone transient audible over combat/music.
+        AudioManager.I.PlaySFX(selected, impactVolume * 2f);
     }
     static bool Overlaps(Vector2 p, Vector2Int c, float radius)
     {

@@ -3486,7 +3486,7 @@ public partial class GameController : MonoBehaviour
         // No immediate damage, damage applies on impact
     }
 
-    bool ResolveFullRowsAfterBossObstacleSpawn(Dictionary<int, List<int>> clearOriginColumnsByRow)
+    public bool ResolveFullRowsAfterBossObstacleSpawn(Dictionary<int, List<int>> clearOriginColumnsByRow)
     {
         if (!gameBoard || clearOriginColumnsByRow == null || clearOriginColumnsByRow.Count == 0)
             return false;
@@ -5948,6 +5948,7 @@ public partial class GameController : MonoBehaviour
         float spinDPS = (attackerMD ? attackerMD.spinDegreesPerSecond : 720f);
 
         bool topOn = true;
+        var hallucinationsHit = new HashSet<int>();
 
         if (animType == AttackAnimType.MirrorToggle && topImg)
         {
@@ -5962,12 +5963,9 @@ public partial class GameController : MonoBehaviour
             Vector2 previousPosition = rt.anchoredPosition;
             rt.anchoredPosition = Vector2.MoveTowards(rt.anchoredPosition, targetAnchored, speed * dt);
 
-            if (levelModifierController && levelModifierController.TryHitHallucination(
-                ProjectileRootToBoardLocal(previousPosition), ProjectileRootToBoardLocal(rt.anchoredPosition)))
-            {
-                ReleaseRuntimeVfxRoot(rt, "AttackProjectile");
-                yield break;
-            }
+            if (levelModifierController && dt > 0f)
+                levelModifierController.TryHitHallucination(ProjectileRootToBoardLocal(previousPosition),
+                    ProjectileRootToBoardLocal(rt.anchoredPosition), hallucinationsHit);
 
             if (TryGetPlayerAttackHardenedLavaImpactCell(previousPosition, rt.anchoredPosition, out var lavaCell) &&
                 gameBoard.TryHandlePlayerAttackObstacleImpact(lavaCell))
@@ -6232,6 +6230,7 @@ public partial class GameController : MonoBehaviour
         int appliedDamage = enemyCastleUI.ApplyDamage(damage);
         if (appliedDamage > 0)
         {
+            levelModifierController?.OnCastleDamaged();
             StopSpecialSiphonChannel(forceDestroyParticles: false);
             RunSummaryStats.RecordDamageDealt(appliedDamage);
             if (IsMarathon) marathonDamage += appliedDamage;

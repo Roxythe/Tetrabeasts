@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelModifierSO
   kind: 24
   displayName: Dr. Feel Good
-  description: Healers gain +1 range and heal twice as often. Each heal adds a stacking
-    damage-over-time debuff.
+  description: "The doctor is in... and the cure has a catch! Healers reach farther, but every heal deepens a painful curse and makes the next cure weaker. Watch those glowing stacks!"
   icon: {fileID: 21300000, guid: e327277823f65c144a20eb82e480024c, type: 3}
   backgroundOverrideSprite: {fileID: 0}
   backgroundOverrideVideoClip: {fileID: 0}
@@ -105,7 +104,7 @@ MonoBehaviour:
   softSpaceTeleportDestinationExcludedTopRows: 4
   softSpaceTeleportDestinationExcludedBottomRows: 0
   turboBoostedRowFromTop: 5
-  feelGoodHealIntervalMultiplier: 0.5
+  feelGoodStacksPerHeal: 2
   feelGoodDamagePerStack: 0.25
   feelGoodTickSeconds: 1
   feelGoodForegroundBrightness: 0.8

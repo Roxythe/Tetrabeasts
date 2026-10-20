@@ -12,9 +12,11 @@ public class ModifierFeedbackTests
     [Test]
     public void BoulderScalingAndPacingAreBounded()
     {
-        Assert.AreEqual(15f, BoulderController.CalculateHitDamage(100, .1f));
-        Assert.AreEqual(20f, BoulderController.CalculateHitDamage(100, .15f));
-        Assert.AreEqual(155f, BoulderController.CalculateHitDamage(1000, .15f));
+        Assert.AreEqual(23f, BoulderController.CalculateHitDamage(100, .15f), .001f);
+        Assert.AreEqual(28f, BoulderController.CalculateHitDamage(100, .20f), .001f);
+        Assert.AreEqual(208f, BoulderController.CalculateHitDamage(1000, .20f), .001f);
+        Assert.AreEqual(23f, BoulderController.CalculateHitDamage(100, 0f), .001f);
+        Assert.AreEqual(28f, BoulderController.CalculateHitDamage(100, 1f), .001f);
         Assert.AreEqual(1f, BoulderController.SpawnIntervalScale(0));
         Assert.Less(BoulderController.SpawnIntervalScale(90), BoulderController.SpawnIntervalScale(30));
         Assert.AreEqual(.4f, BoulderController.SpawnIntervalScale(180), .0001f);
@@ -27,6 +29,17 @@ public class ModifierFeedbackTests
             Assert.IsNotNull(AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/LevelModifier/" + name + ".wav"));
         var inversion = AssetDatabase.LoadAssetAtPath<LevelModifierSO>("Assets/ScriptableObjects/LevelModifier/Inversion.asset");
         Assert.IsNotNull(inversion.inversionBoardSprite); Assert.IsNotNull(inversion.inversionSfx);
+        foreach (string name in new[] { "BombardmentWarning", "FlipBoardWarning" })
+        {
+            string path = "Assets/Sprites/UI/" + name + ".png";
+            Assert.IsNotNull(AssetDatabase.LoadAssetAtPath<Sprite>(path));
+            var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+            Assert.AreEqual(FilterMode.Point, importer.filterMode);
+            Assert.IsTrue(importer.alphaIsTransparency);
+            Assert.IsFalse(importer.mipmapEnabled);
+        }
+        Assert.IsNotNull(AssetDatabase.LoadAssetAtPath<LevelModifierSO>("Assets/ScriptableObjects/LevelModifier/Bombardment.asset").bombardmentWarningSprite);
+        Assert.IsNotNull(AssetDatabase.LoadAssetAtPath<LevelModifierSO>("Assets/ScriptableObjects/LevelModifier/FlipTheBoard.asset").flipWarningSprite);
         var ghost = AssetDatabase.LoadAssetAtPath<LevelModifierSO>("Assets/ScriptableObjects/LevelModifier/Hallucination.asset");
         Assert.IsNotNull(ghost.hallucinationSpawnSfx); Assert.IsNotNull(ghost.hallucinationMergeSfx); Assert.IsNotNull(ghost.hallucinationDeathSfx);
         Assert.AreEqual("BoulderImpact", GameModeAssets.Load().boulderImpactSfx.name);

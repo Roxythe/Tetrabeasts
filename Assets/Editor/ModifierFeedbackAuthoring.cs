@@ -28,15 +28,30 @@ public static class ModifierFeedbackAuthoring
         inversion.inversionSfx = Clip("InversionActivate");
         inversion.inversionBoardSprite = AssetDatabase.LoadAssetAtPath<Sprite>(spritePath);
         inversion.inversionActiveSeconds = 8f; inversion.inversionRestSeconds = 12f;
-        inversion.description = "Movement and rotation controls reverse for 8 seconds, followed by 12 seconds of normal controls. The reversal sigil wipes away as the effect expires.";
+        inversion.description = "Trust your instincts? Think again! A swirling curse reverses your controls, then fades just long enough to keep you guessing.";
         EditorUtility.SetDirty(inversion);
-        var flip = Modifier("FlipTheBoard"); flip.flipSfx = Clip("BoardFlip"); EditorUtility.SetDirty(flip);
-        var bombard = Modifier("Bombardment"); bombard.bombardmentImpactSfx = Clip("BombardmentImpact"); EditorUtility.SetDirty(bombard);
+        var flip = Modifier("FlipTheBoard"); flip.flipSfx = Clip("BoardFlip");
+        flip.flipWarningSprite = ImportWarning("FlipBoardWarning"); EditorUtility.SetDirty(flip);
+        var bombard = Modifier("Bombardment"); bombard.bombardmentImpactSfx = Clip("BombardmentImpact");
+        bombard.bombardmentWarningSprite = ImportWarning("BombardmentWarning"); EditorUtility.SetDirty(bombard);
         var boulder = Modifier("BouldersAway");
-        boulder.description = "Waves of 1-3 boulders fall every 5-10 seconds, accelerating toward 2-4 seconds over three minutes. Up to four can be active. Hits deal 10-15% of a monster's maximum health plus 5 damage. Boulders expire after 4-7 damaging hits or falling off screen.";
+        boulder.description = "Heads up! Bouncing boulders batter your beasts and smash through stone. The longer the battle rages, the harder the rocks rain down!";
         EditorUtility.SetDirty(boulder);
         AssetDatabase.SaveAssets();
         Debug.Log("Modifier feedback sprites, audio and descriptions assigned.");
+    }
+    static Sprite ImportWarning(string name)
+    {
+        string path = "Assets/Sprites/UI/" + name + ".png";
+        var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+        importer.textureType = TextureImporterType.Sprite;
+        importer.spriteImportMode = SpriteImportMode.Single;
+        importer.filterMode = FilterMode.Point;
+        importer.textureCompression = TextureImporterCompression.Uncompressed;
+        importer.mipmapEnabled = false;
+        importer.alphaIsTransparency = true;
+        importer.SaveAndReimport();
+        return AssetDatabase.LoadAssetAtPath<Sprite>(path);
     }
     static LevelModifierSO Modifier(string name) => AssetDatabase.LoadAssetAtPath<LevelModifierSO>("Assets/ScriptableObjects/LevelModifier/" + name + ".asset");
     static AudioClip Clip(string name) => AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/LevelModifier/" + name + ".wav");

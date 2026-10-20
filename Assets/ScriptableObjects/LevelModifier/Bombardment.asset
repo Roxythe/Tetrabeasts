@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelModifierSO
   kind: 28
   displayName: Bombardment
-  description: Every 15 seconds a warned 3x3 area is destroyed and blocked by a crater
-    for 30 seconds.
+  description: "Incoming! Flaming boulders sweep beasts off the board without draining your reserves. Build around the stubborn craters and turn the wreckage into row-clearing opportunities!"
   icon: {fileID: 21300000, guid: 93dd39004d8d1d541bd3822082a99d6f, type: 3}
   backgroundOverrideSprite: {fileID: 0}
   backgroundOverrideVideoClip: {fileID: 0}
@@ -105,7 +104,7 @@ MonoBehaviour:
   softSpaceTeleportDestinationExcludedTopRows: 4
   softSpaceTeleportDestinationExcludedBottomRows: 0
   turboBoostedRowFromTop: 5
-  feelGoodHealIntervalMultiplier: 0.5
+  feelGoodStacksPerHeal: 2
   feelGoodDamagePerStack: 0.25
   feelGoodTickSeconds: 1
   feelGoodForegroundBrightness: 0.8
@@ -114,7 +113,7 @@ MonoBehaviour:
   flipIntervalMax: 30
   flipWarningSprite: {fileID: 0}
   bombardmentImpactSfx: {fileID: 8300000, guid: 30735f7d23d827b47909e02b808f1414, type: 3}
-  bombardmentWarningSprite: {fileID: 0}
+  bombardmentWarningSprite: {fileID: 21300000, guid: 7a19aa112f164197a85d180bc0068157, type: 3}
   bombardmentCraterSprite: {fileID: 0}
   hallucinationSpawnSfx: {fileID: 0}
   hallucinationMergeSfx: {fileID: 0}

@@ -110,7 +110,9 @@ public partial class Piece : MonoBehaviour
         board.RecomputeCellMetrics();
 
         // Center top
-        origin = new Vector2Int(board.width / 2, board.height);
+        var gc = GetGameController();
+        bool flipped = gc && gc.levelModifierController && gc.levelModifierController.IsBoardFlipped;
+        origin = new Vector2Int(board.width / 2, board.height - (flipped ? 1 : 0));
         foreach (var c in data.cells) cells.Add(origin + c);
 
         // If blocked, try one row lower; else game over
@@ -1252,6 +1254,7 @@ public partial class Piece : MonoBehaviour
     }
 
     public bool HasActiveCells => enabled && cells.Count > 0;
+    public bool OccupiesActiveCell(Vector2Int cell) => HasActiveCells && cells.Contains(cell);
 
     public bool TryTranslate(Vector2Int delta, bool resetLockTimer)
     {

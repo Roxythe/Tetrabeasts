@@ -18,26 +18,37 @@ public partial class LevelModifierController
         public Vector2 position;
         public Vector2 velocity;
         public float diameter;
+        public float seedDiameter;
+        public int combinedGhosts = 1;
+        public bool screenRoaming;
+        public float mergeCooldown;
         public float consumeFlash;
-        public float deathTime = -1f;
     }
 
     readonly List<Crater> _craters = new();
     readonly List<Image> _newModifierWarnings = new();
     readonly List<Hallucination> _hallucinations = new();
     readonly Dictionary<Sprite, Vector2[]> _hallucinationVertices = new();
+    readonly Vector3[] _hallucinationCanvasCorners = new Vector3[4];
     bool _newModifiersStarted;
     bool _boardTransformCaptured;
     Quaternion _boardDefaultRotation;
     Vector3 _boardDefaultPosition;
     float _flipCountdown;
+    float _secondsSinceFlip;
+    bool _flipWarningActive;
     float _bombardmentCountdown;
     Vector2Int? _bombardmentTarget;
     float _hallucinationCountdown;
+    float _hallucinationElapsed;
     float _hallucinationBaseDiameter;
     RectTransform _hallucinationRoot;
     RectTransform _modifierFeedbackRoot;
     Image _inversionImage;
+    Image _inversionBackdrop;
+    float _floorWaveCountdown;
+    readonly List<Vector2Int> _floorWaveCells = new();
+    readonly List<Board.FloorEffectType> _floorWaveTypes = new();
     float _inversionRemaining;
     bool _inversionOn;
     static Sprite _fallbackCrater;
@@ -92,10 +103,21 @@ public partial class LevelModifierController
         _hallucinationRoot = null;
         _hallucinations.Clear();
         _hallucinationVertices.Clear();
+        _hallucinationElapsed = 0f;
+        _hallucinationCountdown = 0f;
+        _hallucinationBaseDiameter = 0f;
+        _floorWaveCountdown = 0f;
+        _floorWaveCells.Clear();
+        _floorWaveTypes.Clear();
+        _flipCountdown = _bombardmentCountdown = 0f;
+        _secondsSinceFlip = 0f;
+        _flipWarningActive = false;
         if (_modifierFeedbackRoot) Destroy(_modifierFeedbackRoot.gameObject);
         _modifierFeedbackRoot = null;
         if (_inversionImage) Destroy(_inversionImage.gameObject);
         _inversionImage = null;
+        if (_inversionBackdrop) Destroy(_inversionBackdrop.gameObject);
+        _inversionBackdrop = null;
         _inversionOn = false;
         _inversionRemaining = 0f;
     }
@@ -110,25 +132,28 @@ public partial class LevelModifierController
             _newModifiersStarted = true;
             switch (ActiveModifier.kind)
             {
-                case LevelModifierKind.WatchYourStep: SpawnWatchYourStep(); break;
+                case LevelModifierKind.WatchYourStep:
+                    SpawnWatchYourStep();
+                    _floorWaveCountdown = Random.Range(7f, 10f);
+                    break;
                 case LevelModifierKind.Inversion: BeginInversion(); break;
                 case LevelModifierKind.FlipTheBoard:
                     _boardDefaultPosition = board.transform.localPosition;
                     _boardDefaultRotation = board.transform.localRotation;
                     _boardTransformCaptured = true;
-                    // Give the initial flip the same warning as later swaps.
-                    _flipCountdown = 2f;
+                    ScheduleFlip();
                     break;
                 case LevelModifierKind.Bombardment: _bombardmentCountdown = 15f; break;
                 case LevelModifierKind.Hallucination:
                     _hallucinationBaseDiameter = Mathf.Max(0.1f, ActiveModifier.hallucinationBaseSizeCells);
                     SpawnHallucination();
-                    _hallucinationCountdown = 10f;
+                    _hallucinationCountdown = ActiveModifier.hallucinationSpawnInterval;
                     break;
             }
         }
         switch (ActiveModifier.kind)
         {
+            case LevelModifierKind.WatchYourStep: UpdateWatchYourStep(dt); break;
             case LevelModifierKind.FlipTheBoard: UpdateFlip(dt); break;
             case LevelModifierKind.Bombardment: UpdateBombardment(dt); break;
             case LevelModifierKind.Hallucination: UpdateHallucinations(dt); break;
@@ -142,6 +167,14 @@ public partial class LevelModifierController
         _inversionOn = true;
         _inversionRemaining = Mathf.Max(.1f, ActiveModifier.inversionActiveSeconds);
         PlayModifierSound(ActiveModifier.inversionSfx, .8f);
+        if (!_inversionBackdrop) _inversionBackdrop = board.CreateModifierBoardVFX(ActiveModifier.inversionBoardSprite);
+        if (_inversionBackdrop)
+        {
+            _inversionBackdrop.name = "Inversion rotating backdrop";
+            _inversionBackdrop.type = Image.Type.Simple;
+            _inversionBackdrop.color = new Color(1f, 1f, 1f, .6f);
+            _inversionBackdrop.gameObject.SetActive(true);
+        }
         if (!_inversionImage) _inversionImage = board.CreateModifierBoardVFX(ActiveModifier.inversionBoardSprite);
         if (_inversionImage)
         {
@@ -151,7 +184,8 @@ public partial class LevelModifierController
             _inversionImage.fillClockwise = false;
             _inversionImage.fillAmount = 1f;
             _inversionImage.rectTransform.localRotation = Quaternion.identity;
-            _inversionImage.color = new Color(1f, 1f, 1f, .6f);
+            _inversionImage.color = new Color(1f, 1f, 1f, .95f);
+            _inversionImage.transform.SetAsLastSibling();
             _inversionImage.gameObject.SetActive(true);
         }
     }
@@ -165,14 +199,17 @@ public partial class LevelModifierController
                 _inversionOn = false;
                 _inversionRemaining = Mathf.Max(.1f, ActiveModifier.inversionRestSeconds);
                 if (_inversionImage) _inversionImage.gameObject.SetActive(false);
+                if (_inversionBackdrop) _inversionBackdrop.gameObject.SetActive(false);
             }
             else BeginInversion();
         }
         if (_inversionOn && _inversionImage)
         {
             _inversionImage.fillAmount = Mathf.Clamp01(_inversionRemaining / Mathf.Max(.1f, ActiveModifier.inversionActiveSeconds));
-            // Positive UI Z rotation is counterclockwise: one turn per active period.
-            _inversionImage.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 360f * (1f - _inversionImage.fillAmount));
+            var rotation = Quaternion.Euler(0f, 0f, 360f * (1f - _inversionImage.fillAmount));
+            _inversionImage.rectTransform.localRotation = rotation;
+            if (_inversionBackdrop)
+                _inversionBackdrop.rectTransform.localRotation = rotation;
         }
     }
     static void PlayModifierSound(AudioClip clip, float volume = 1f)
@@ -195,7 +232,7 @@ public partial class LevelModifierController
         var portrait = tile.Find("MonsterPortrait");
         var original = portrait ? portrait.GetComponent<Image>() : tile.GetComponent<Image>();
         if (!original || !original.sprite) return;
-        // Preserve a short visual echo because the gameplay unit is removed on impact.
+        // Preserve a brief impact echo after the unit is removed from the board.
         var echo = CreateOverlayImage("Bombardment unit impact", FeedbackRoot(), original.sprite, original.color, board.GetCellSize());
         echo.rectTransform.position = tile.position;
         ImpactShake.Play(echo.transform, .25f, 9f);
@@ -227,11 +264,65 @@ public partial class LevelModifierController
         }
     }
 
+    bool IsEmptyFloorTarget(Vector2Int cell) => board.IsFree(cell) && !board.HasObstacle(cell) &&
+        !board.HasFloorEffect(cell) && (!piece || !piece.OccupiesActiveCell(cell));
+
+    void UpdateWatchYourStep(float dt)
+    {
+        _floorWaveCountdown -= dt;
+        if (_floorWaveCountdown <= 2f && _floorWaveCells.Count == 0)
+        {
+            var candidates = new List<Vector2Int>();
+            for (int y = 0; y < board.height - 5; y++)
+            for (int x = 0; x < board.width; x++)
+            {
+                var cell = new Vector2Int(x, y);
+                if (IsEmptyFloorTarget(cell)) candidates.Add(cell);
+            }
+            int count = Mathf.Min(Random.Range(1, 4), candidates.Count);
+            for (int i = 0; i < count; i++)
+            {
+                int index = Random.Range(0, candidates.Count);
+                var cell = candidates[index];
+                candidates.RemoveAt(index);
+                var type = (Board.FloorEffectType)Random.Range(0, 6);
+                _floorWaveCells.Add(cell);
+                _floorWaveTypes.Add(type);
+                var warning = CreateOverlayImage("Watch Your Step warning", board.overlayRoot,
+                    board.FloorWarningSprite(type), Color.white, board.GetCellSize());
+                warning.rectTransform.anchoredPosition = board.CellToAnchoredPos(cell);
+                _newModifierWarnings.Add(warning);
+            }
+            // Even a long frame cannot skip the promised warning window.
+            if (count > 0) _floorWaveCountdown = 2f;
+        }
+        if (_floorWaveCountdown > 0f) return;
+        for (int i = 0; i < _floorWaveCells.Count; i++)
+            if (IsEmptyFloorTarget(_floorWaveCells[i]))
+                board.SetFloorEffect(_floorWaveCells[i], _floorWaveTypes[i], 1f, 1f, -1);
+        _floorWaveCells.Clear();
+        _floorWaveTypes.Clear();
+        ClearNewWarnings();
+        _floorWaveCountdown = Random.Range(7f, 10f);
+    }
+
     void ScheduleFlip()
     {
-        float min = Mathf.Max(2f, Mathf.Min(ActiveModifier.flipIntervalMin, ActiveModifier.flipIntervalMax));
+        float min = Mathf.Max(5f, Mathf.Min(ActiveModifier.flipIntervalMin, ActiveModifier.flipIntervalMax));
         float max = Mathf.Max(min, Mathf.Max(ActiveModifier.flipIntervalMin, ActiveModifier.flipIntervalMax));
         _flipCountdown = Random.Range(min, max);
+        _secondsSinceFlip = 0f;
+        _flipWarningActive = false;
+    }
+
+    public void OnCastleDamaged()
+    {
+        foreach (var effect in chaosEffects) if (effect) effect.OnCastleDamaged();
+        if (!NewModifierEffectsActive || !_newModifiersStarted || !ActiveModifier ||
+            ActiveModifier.kind != LevelModifierKind.FlipTheBoard || _secondsSinceFlip < 5f ||
+            _flipWarningActive) return;
+        _flipCountdown = 2f;
+        BeginFlipWarning();
     }
 
     void ToggleBoardOrientation()
@@ -249,26 +340,35 @@ public partial class LevelModifierController
 
     void UpdateFlip(float dt)
     {
+        _secondsSinceFlip += dt;
         _flipCountdown -= dt;
-        if (_flipCountdown <= 2f && _newModifierWarnings.Count == 0)
+        if (_flipCountdown <= 2f && !_flipWarningActive)
         {
-            Vector2 size = board.GetCellSize();
-            foreach (int side in new[] { -1, 1 })
-            {
-                var warning = CreateOverlayImage("FlipWarning", board.overlayRoot,
-                    ActiveModifier.flipWarningSprite, new Color(1f, 0.25f, 0.05f, 0.85f),
-                    new Vector2(size.x * 0.3f, size.y * board.height));
-                warning.preserveAspect = false;
-                warning.rectTransform.anchoredPosition = new Vector2(side * size.x * (board.width * 0.5f + 0.25f), 0f);
-                _newModifierWarnings.Add(warning);
-            }
+            _flipCountdown = 2f; // A long frame must not skip the warning.
+            BeginFlipWarning();
         }
+        foreach (var warning in _newModifierWarnings)
+            if (warning) warning.rectTransform.localScale = Vector3.one * (1f + .12f * Mathf.Sin(_flipCountdown * 18f));
         if (_flipCountdown > 0f) return;
         ClearNewWarnings();
         ToggleBoardOrientation();
         PlayModifierSound(ActiveModifier.flipSfx, .85f);
         ImpactShake.Play(board.transform, .3f, 7f);
         ScheduleFlip();
+    }
+
+    void BeginFlipWarning()
+    {
+        _flipWarningActive = true;
+        Vector2 size = board.GetCellSize();
+        foreach (int side in new[] { -1, 1 })
+        {
+            var warning = CreateOverlayImage("FlipWarning", board.overlayRoot,
+                ActiveModifier.flipWarningSprite, Color.white, size * 2.4f);
+            warning.rectTransform.anchoredPosition = new Vector2(side * size.x * (board.width * 0.5f - .6f), 0f);
+            warning.rectTransform.localRotation = Quaternion.Euler(0, 0, side < 0 ? 180f : 0f);
+            _newModifierWarnings.Add(warning);
+        }
     }
 
     void ClearNewWarnings()
@@ -321,10 +421,14 @@ public partial class LevelModifierController
                 foreach (var cell in CraterArea(_bombardmentTarget.Value))
                 {
                     var warning = CreateOverlayImage("BombardmentWarning", board.overlayRoot,
-                        ActiveModifier.bombardmentWarningSprite, new Color(1f, 0.15f, 0f, 0.7f), board.GetCellSize());
+                        null, new Color(1f, 0.15f, 0f, 0.7f), board.GetCellSize());
                     warning.rectTransform.anchoredPosition = board.CellToAnchoredPos(cell);
                     _newModifierWarnings.Add(warning);
                 }
+                var icon = CreateOverlayImage("Incoming flaming boulder", board.overlayRoot,
+                    ActiveModifier.bombardmentWarningSprite, Color.white, board.GetCellSize() * 2f);
+                icon.rectTransform.anchoredPosition = board.CellToAnchoredPos(_bombardmentTarget.Value + Vector2Int.one);
+                _newModifierWarnings.Add(icon);
             }
         }
         if (_bombardmentCountdown > 0f) return;
@@ -346,7 +450,8 @@ public partial class LevelModifierController
             {
                 BombardmentUnitFeedback(cell);
                 board.ForceClearEnvironmentTarget(cell);
-                board.ForceKillMonsterAndRemove(cell, Board.DamageSource.Generic);
+                // Removal intentionally emits no TileDied event: bombardment
+                // clears the cell without charging the player's unit reserve.
                 board.RemovePlacedCellImmediate(cell);
                 board.SetCraterCell(cell, true);
             }
@@ -358,6 +463,16 @@ public partial class LevelModifierController
             img.transform.SetAsFirstSibling();
             _craters.Add(new Crater { origin = origin, image = img });
             if (piece && piece.HasActiveCells) piece.TryResolvePlacedOverlapByShiftingUp();
+            if (_gc)
+            {
+                var rows = new Dictionary<int, List<int>>();
+                foreach (var cell in CraterArea(origin))
+                {
+                    if (!rows.TryGetValue(cell.y, out var columns)) rows[cell.y] = columns = new List<int>();
+                    columns.Add(cell.x);
+                }
+                _gc.ResolveFullRowsAfterBossObstacleSpawn(rows);
+            }
         }
         ClearNewWarnings();
         _bombardmentTarget = null;
@@ -398,16 +513,17 @@ public partial class LevelModifierController
         _hallucinationRoot.sizeDelta = Vector2.zero;
     }
 
-    void SpawnHallucination()
+    Hallucination SpawnHallucination()
     {
         EnsureHallucinationRoot();
         float diameter = Mathf.Min(_hallucinationBaseDiameter, Mathf.Min(board.width, board.height) * 0.85f);
         float radius = diameter * 0.5f;
-        float radians = Random.Range(195f, 345f) * Mathf.Deg2Rad;
+        float radians = Random.Range(0f, 360f) * Mathf.Deg2Rad;
         var h = new Hallucination
         {
             diameter = diameter,
-            position = new Vector2(Random.Range(radius, board.width - radius), board.height - radius),
+            seedDiameter = diameter,
+            position = new Vector2(Random.Range(radius, board.width - radius), Random.Range(radius, board.height - radius)),
             velocity = new Vector2(Mathf.Cos(radians), Mathf.Sin(radians)) * Mathf.Max(0.1f, ActiveModifier.hallucinationSpeedCellsPerSecond),
             image = CreateOverlayImage("Hallucination", _hallucinationRoot, HallucinationDefaultSprite, Color.white, Vector2.one)
         };
@@ -418,30 +534,25 @@ public partial class LevelModifierController
         _hallucinations.Add(h);
         SyncHallucinationVisual(h);
         PlayModifierSound(ActiveModifier.hallucinationSpawnSfx, .7f);
+        return h;
     }
 
     void UpdateHallucinations(float dt)
     {
         MaintainHallucinationLayer();
-        _hallucinationCountdown -= dt;
-        if (_hallucinationCountdown <= 0f) { SpawnHallucination(); _hallucinationCountdown += 10f; }
+        _hallucinationElapsed += dt;
+        _hallucinationCountdown -= dt * HallucinationSpawnRate();
+        if (_hallucinationCountdown <= 0f)
+        {
+            SpawnHallucination();
+            _hallucinationCountdown = ActiveModifier.hallucinationSpawnInterval;
+        }
         for (int i = _hallucinations.Count - 1; i >= 0; i--)
         {
             var h = _hallucinations[i];
-            if (h.deathTime >= 0f)
-            {
-                h.deathTime += dt;
-                var frames = ActiveModifier.hallucinationAnimation;
-                int frame = Mathf.FloorToInt(h.deathTime / Mathf.Max(0.01f, ActiveModifier.hallucinationDeathFrameSeconds));
-                if (frame >= Mathf.Max(1, frames == null ? 0 : frames.Length))
-                {
-                    Destroy(h.image.gameObject);
-                    _hallucinations.RemoveAt(i);
-                    continue;
-                }
-                if (frames != null && frame < frames.Length) h.image.sprite = frames[frame];
-                continue;
-            }
+            h.mergeCooldown = Mathf.Max(0f, h.mergeCooldown - dt);
+            float growthSpeed = HallucinationGrowthSpeed(h.diameter);
+            h.velocity = h.velocity.normalized * Mathf.Max(.1f, ActiveModifier.hallucinationSpeedCellsPerSecond) * growthSpeed;
             h.position += h.velocity * dt;
             h.consumeFlash = Mathf.Max(0f, h.consumeFlash - dt);
             if (h.consumeFlash > 0f && ActiveModifier.hallucinationConsumeSprite)
@@ -451,7 +562,7 @@ public partial class LevelModifierController
                 // Play reapplies the current frame after a consume flash without
                 // restarting the ping-pong cycle.
                 h.idleAnimator.Play();
-                h.idleAnimator.Advance(dt);
+                h.idleAnimator.Advance(dt * growthSpeed);
                 if (ActiveModifier.hallucinationIdleFrames == null || ActiveModifier.hallucinationIdleFrames.Length == 0)
                     h.image.sprite = HallucinationDefaultSprite;
             }
@@ -462,6 +573,20 @@ public partial class LevelModifierController
     }
 
     void LateUpdate() => MaintainHallucinationLayer();
+
+    float HallucinationGrowthSpeed(float diameter) => 1f + Mathf.Max(0f,
+        diameter / Mathf.Max(.1f, ActiveModifier.hallucinationBaseSizeCells) - 1f) * ActiveModifier.hallucinationMotionSpeedPerExtraSize;
+
+    float HallucinationSpawnRate()
+    {
+        float largest = ActiveModifier.hallucinationBaseSizeCells;
+        foreach (var h in _hallucinations) largest = Mathf.Max(largest, h.diameter);
+        float timeRate = 1f + Mathf.Clamp01(_hallucinationElapsed / Mathf.Max(1f, ActiveModifier.hallucinationSpawnRampSeconds));
+        float sizeRate = 1f + Mathf.Max(0f, largest / Mathf.Max(.1f, ActiveModifier.hallucinationBaseSizeCells) - 1f) *
+            ActiveModifier.hallucinationSpawnSpeedPerExtraSize;
+        return Mathf.Min(timeRate * sizeRate, Mathf.Max(1f, ActiveModifier.hallucinationSpawnInterval /
+            Mathf.Max(.1f, ActiveModifier.hallucinationMinimumSpawnInterval)));
+    }
 
     void MaintainHallucinationLayer()
     {
@@ -490,13 +615,15 @@ public partial class LevelModifierController
         {
             var a = _hallucinations[i];
             var b = _hallucinations[j];
-            if (a.deathTime >= 0f || b.deathTime >= 0f) continue;
+            if (a.screenRoaming || b.screenRoaming || a.mergeCooldown > 0f || b.mergeCooldown > 0f) continue;
             if ((a.position - b.position).sqrMagnitude > Mathf.Pow((a.diameter + b.diameter) * 0.5f, 2f)) continue;
             bool aWins = Mathf.Approximately(a.diameter, b.diameter) ? Random.value < 0.5f : a.diameter > b.diameter;
             var winner = aWins ? a : b;
             var loser = aWins ? b : a;
-            winner.diameter = Mathf.Min(Mathf.Max(a.diameter, b.diameter) + Mathf.Min(a.diameter, b.diameter) * .65f,
-                Mathf.Min(board.width, board.height) * 0.85f);
+            winner.combinedGhosts = Mathf.Min(10, a.combinedGhosts + b.combinedGhosts);
+            winner.seedDiameter = Mathf.Max(a.seedDiameter, b.seedDiameter);
+            winner.screenRoaming = winner.combinedGhosts >= 10;
+            ResizeHallucination(winner);
             winner.consumeFlash = 0.5f;
             winner.image.sprite = ActiveModifier.hallucinationConsumeSprite ? ActiveModifier.hallucinationConsumeSprite : HallucinationDefaultSprite;
             ConstrainHallucination(winner, reflect: false);
@@ -509,6 +636,12 @@ public partial class LevelModifierController
             i = -1;
             break;
         }
+    }
+
+    void ResizeHallucination(Hallucination h)
+    {
+        h.diameter = Mathf.Min(h.seedDiameter * (1f + .65f * (h.combinedGhosts - 1)),
+            Mathf.Min(board.width, board.height) * .85f);
     }
 
     static void ReflectAxis(ref float position, ref float velocity, float min, float max)
@@ -561,21 +694,45 @@ public partial class LevelModifierController
             point = new Vector2(point.x / cell.x, point.y / cell.y);
             min = Vector2.Min(min, point); max = Vector2.Max(max, point);
         }
+        // Tight meshes still include translucent wisps. Let those reach into the
+        // frame so the solid visible body appears to bounce at the board edge.
+        float silhouette = ActiveModifier.hallucinationBounceSilhouetteScale;
+        return Rect.MinMaxRect(min.x * silhouette, min.y * silhouette, max.x * silhouette, max.y * silhouette);
+    }
+
+    Rect HallucinationMovementArea(Hallucination h)
+    {
+        var canvas = board.GetComponentInParent<Canvas>()?.rootCanvas;
+        if (!h.screenRoaming || !canvas) return new Rect(0f, 0f, board.width, board.height);
+        // Convert the entire canvas into grid coordinates, including a flipped
+        // board and CanvasScaler scaling. Ghosts remain on the shared UI layer.
+        ((RectTransform)canvas.transform).GetWorldCorners(_hallucinationCanvasCorners);
+        Vector2 size = board.GetCellSize();
+        Vector2 origin = board.CellToAnchoredPos(Vector2Int.zero) - size * .5f;
+        Vector2 min = Vector2.one * float.PositiveInfinity, max = Vector2.one * float.NegativeInfinity;
+        foreach (var corner in _hallucinationCanvasCorners)
+        {
+            Vector2 local = board.gridRoot.InverseTransformPoint(corner);
+            Vector2 point = new Vector2((local.x - origin.x) / size.x, (local.y - origin.y) / size.y);
+            min = Vector2.Min(min, point);
+            max = Vector2.Max(max, point);
+        }
         return Rect.MinMaxRect(min.x, min.y, max.x, max.y);
     }
 
     void ConstrainHallucination(Hallucination h, bool reflect)
     {
         Rect bounds = HallucinationVisibleBounds(h);
+        Rect area = HallucinationMovementArea(h);
         if (reflect)
         {
-            ReflectAxis(ref h.position.x, ref h.velocity.x, -bounds.xMin, board.width - bounds.xMax);
-            ReflectAxis(ref h.position.y, ref h.velocity.y, -bounds.yMin, board.height - bounds.yMax);
+            ReflectAxis(ref h.position.x, ref h.velocity.x, area.xMin - bounds.xMin, area.xMax - bounds.xMax);
+            ReflectAxis(ref h.position.y, ref h.velocity.y, area.yMin - bounds.yMin, area.yMax - bounds.yMax);
             // A bounce changes the facing and thus the asymmetric visible silhouette.
             bounds = HallucinationVisibleBounds(h);
         }
-        h.position.x = Mathf.Clamp(h.position.x, -bounds.xMin, board.width - bounds.xMax);
-        h.position.y = Mathf.Clamp(h.position.y, -bounds.yMin, board.height - bounds.yMax);
+        h.position.x = Mathf.Clamp(h.position.x, area.xMin - bounds.xMin, area.xMax - bounds.xMax);
+        h.position.y = Mathf.Clamp(h.position.y, area.yMin - bounds.yMin, area.yMax - bounds.yMax);
     }
 
     void SyncHallucinationVisual(Hallucination h)
@@ -588,6 +745,10 @@ public partial class LevelModifierController
         Vector3 parentScale = _hallucinationRoot.lossyScale;
         h.image.rectTransform.localScale = new Vector3(boardScale.x / parentScale.x, boardScale.y / parentScale.y, 1f);
         h.image.rectTransform.rotation = board.gridRoot.rotation * Quaternion.Euler(0, 0, HallucinationHeading(h));
+        h.image.color = h.screenRoaming
+            ? Color.Lerp(new Color(.55f, .015f, .025f), new Color(1f, .28f, .18f),
+                .5f + .5f * Mathf.Sin(_hallucinationElapsed * 7f))
+            : Color.white;
         // A stepped squash/stretch pulse makes the growth readable in pixel art.
         if (h.consumeFlash > 0f)
         {
@@ -596,34 +757,40 @@ public partial class LevelModifierController
         }
     }
 
-    public bool TryHitHallucination(Vector2 previousBoardLocal, Vector2 currentBoardLocal)
+    public bool TryHitHallucination(Vector2 previousBoardLocal, Vector2 currentBoardLocal, HashSet<int> projectileHits = null)
     {
-        foreach (var effect in chaosEffects) if (effect && effect.TryHitHallucination(previousBoardLocal, currentBoardLocal)) return true;
-        if (!NewModifierEffectsActive || !_gc.IsRoundActive || !ActiveModifier || ActiveModifier.kind != LevelModifierKind.Hallucination) return false;
+        bool anyHit = false;
+        foreach (var effect in chaosEffects)
+            if (effect) anyHit |= effect.TryHitHallucination(previousBoardLocal, currentBoardLocal, projectileHits);
+        if (!NewModifierEffectsActive || !_gc || !_gc.IsRoundActive || !ActiveModifier ||
+            ActiveModifier.kind != LevelModifierKind.Hallucination) return anyHit;
         Vector2 size = board.GetCellSize();
         Vector2 origin = board.CellToAnchoredPos(Vector2Int.zero) - size * 0.5f;
         Vector2 from = new Vector2((previousBoardLocal.x - origin.x) / size.x, (previousBoardLocal.y - origin.y) / size.y);
         Vector2 to = new Vector2((currentBoardLocal.x - origin.x) / size.x, (currentBoardLocal.y - origin.y) / size.y);
         Vector2 travel = to - from;
-        Hallucination hit = null;
-        float nearest = float.PositiveInfinity;
-        foreach (var h in _hallucinations)
+        // Snapshot the count: replacements cannot recursively be hit this frame.
+        int count = _hallucinations.Count;
+        for (int i = 0; i < count; i++)
         {
-            if (h.deathTime >= 0f) continue;
+            var h = _hallucinations[i];
+            if (projectileHits != null && projectileHits.Contains(h.image.GetInstanceID())) continue;
             float t = travel.sqrMagnitude <= 0f ? 0f : Mathf.Clamp01(Vector2.Dot(h.position - from, travel) / travel.sqrMagnitude);
-            if ((from + travel * t - h.position).sqrMagnitude <= h.diameter * h.diameter * 0.25f && t < nearest)
-            { hit = h; nearest = t; }
+            if ((from + travel * t - h.position).sqrMagnitude > h.diameter * h.diameter * .25f) continue;
+            projectileHits?.Add(h.image.GetInstanceID());
+            h.combinedGhosts = Mathf.Max(1, (h.combinedGhosts + 1) / 2);
+            ResizeHallucination(h);
+            h.consumeFlash = .5f;
+            h.mergeCooldown = .5f;
+            ConstrainHallucination(h, reflect: false);
+            SyncHallucinationVisual(h);
+            PlayModifierSound(ActiveModifier.hallucinationDeathSfx, .8f);
+            _hallucinationBaseDiameter += Mathf.Max(.01f, ActiveModifier.hallucinationSizeIncreaseCells);
+            var replacement = SpawnHallucination();
+            replacement.mergeCooldown = .5f;
+            projectileHits?.Add(replacement.image.GetInstanceID());
+            anyHit = true;
         }
-        if (hit == null) return false;
-        hit.deathTime = 0f;
-        hit.idleAnimator.Stop();
-        hit.image.sprite = HallucinationDeathSprite;
-        hit.consumeFlash = 0f;
-        SyncHallucinationVisual(hit);
-        PlayModifierSound(ActiveModifier.hallucinationDeathSfx, .8f);
-        _hallucinationBaseDiameter += Mathf.Max(0.01f, ActiveModifier.hallucinationSizeIncreaseCells);
-        SpawnHallucination();
-        _hallucinationCountdown = 10f;
-        return true;
+        return anyHit;
     }
 }

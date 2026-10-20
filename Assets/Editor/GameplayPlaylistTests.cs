@@ -252,6 +252,23 @@ public class GameplayPlaylistTests
         Assert.Greater(scroll.content.rect.height, scroll.viewport.rect.height);
         var headers = Read<List<TMPro.TMP_Text>>(panel, "playlistHeaders");
         var sticky = Read<RectTransform>(panel, "stickyPlaylistHeader");
+        Assert.IsInstanceOf<SmoothPlaylistScrollRect>(scroll);
+        scroll.verticalNormalizedPosition = 1f;
+        float previousTimeScale = Time.timeScale;
+        Time.timeScale = 0f;
+        scroll.OnScroll(new PointerEventData(EventSystem.current) { scrollDelta = Vector2.down });
+        Assert.AreEqual(0f, scroll.content.anchoredPosition.y, .01f, "Wheel input queues movement instead of jumping.");
+        yield return new WaitForSecondsRealtime(.08f);
+        Assert.Greater(scroll.content.anchoredPosition.y, 0f, "Wheel easing works while gameplay is paused.");
+        Assert.LessOrEqual(scroll.content.anchoredPosition.y, scroll.scrollSensitivity);
+        yield return new WaitForSecondsRealtime(.5f);
+        Assert.AreEqual(scroll.scrollSensitivity, scroll.content.anchoredPosition.y, .2f);
+        scroll.OnScroll(new PointerEventData(EventSystem.current) { scrollDelta = Vector2.down });
+        scroll.content.anchoredPosition = new Vector2(0f, 100f);
+        yield return null;
+        yield return null;
+        Assert.AreEqual(100f, scroll.content.anchoredPosition.y, .1f, "Scrollbar/controller changes cancel wheel easing.");
+        Time.timeScale = previousTimeScale;
         // Part-way through group one, only its pinned copy remains at the top.
         scroll.content.anchoredPosition = new Vector2(0, 200);
         scroll.onValueChanged.Invoke(Vector2.zero);
@@ -261,7 +278,9 @@ public class GameplayPlaylistTests
         float nextHeaderOffset = -headers[1].rectTransform.anchoredPosition.y - headers[1].rectTransform.rect.yMax;
         scroll.content.anchoredPosition = new Vector2(0, nextHeaderOffset - 20);
         scroll.onValueChanged.Invoke(Vector2.zero);
-        Assert.AreEqual(24f, sticky.anchoredPosition.y, .1f, "Incoming section pushes out the pinned header.");
+        Assert.AreEqual(0f, sticky.anchoredPosition.y, .1f, "Header stays flush and masks scrolling content.");
+        Assert.AreEqual(1f, sticky.GetComponent<Image>().color.a);
+        Assert.AreEqual(scroll.viewport.rect.width, sticky.rect.width, .1f);
         Capture(camera, "Playlist-Sticky-Transition");
         scroll.content.anchoredPosition = new Vector2(0, nextHeaderOffset + 10);
         scroll.onValueChanged.Invoke(Vector2.zero);

@@ -769,7 +769,6 @@ public partial class Board : MonoBehaviour
 
             int finalHeal = Mathf.RoundToInt(inst.healAmount * healMult);
             float interval = inst.healSpeed;
-            if (feelGood) interval *= Mathf.Clamp(feelGood.feelGoodHealIntervalMultiplier, 0.1f, 1f);
 
             // Accumulate timer for this healer
             float t = 0f;
@@ -1833,15 +1832,18 @@ public partial class Board : MonoBehaviour
     {
         if (!monsters.TryGetValue(cell, out var inst) || inst.data == null) return false;
         if (inst.hp <= 0f) return false; // cannot heal dead tiles
+        if (amount <= 0f || inst.hp >= inst.maxHp) return false;
 
         float before = inst.hp;
-        float newHp = Mathf.Min(inst.maxHp, inst.hp + amount);
+        float newHp = Mathf.Min(inst.maxHp, inst.hp + amount * FeelGoodHealingMultiplier(inst));
         float applied = newHp - before;
-        if (applied <= 0.0001f) return false;
 
         inst.hp = newHp;
-        if (FeelGoodModifier) inst.feelGoodStacks++;
+        // A heal applied to an injured unit still deepens the curse when recovery
+        // is completely suppressed; the damage stacks themselves remain uncapped.
+        if (FeelGoodModifier) inst.feelGoodStacks += Mathf.Max(1, FeelGoodModifier.feelGoodStacksPerHeal);
         monsters[cell] = inst;
+        if (applied <= 0.0001f) return false;
         UpdateTileHPVisual(cell, inst.hp, inst.maxHp);
 
         TileHealed?.Invoke(cell, inst.data, source, applied);
@@ -2162,7 +2164,7 @@ public partial class Board : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 // Row is full if every cell is occupied by something (monster tile or obstacle tile)
-                if (!IsClearableOccupiedRow(y))
+                if (!CanClearOccupiedRow(y, stonesDamaged))
                     continue;
 
                 clearedAny = true;
@@ -2302,7 +2304,7 @@ public partial class Board : MonoBehaviour
 
             for (int y = 0; y < height; y++)
             {
-                if (!IsClearableOccupiedRow(y))
+                if (!CanClearOccupiedRow(y, stonesDamaged))
                     continue;
 
                 fullRows.Add(y);
@@ -2640,13 +2642,14 @@ public partial class Board : MonoBehaviour
             float max = Mathf.Max(0f, inst.maxHp);
             if (inst.hp < max) // Includes reviving from 0
             {
-                totalRestored += Mathf.Max(0f, max - inst.hp);
-                inst.hp = max;
-                if (FeelGoodModifier) inst.feelGoodStacks++;
+                float restored = Mathf.Max(0f, max - inst.hp) * FeelGoodHealingMultiplier(inst);
+                totalRestored += restored;
+                inst.hp += restored;
+                if (FeelGoodModifier) inst.feelGoodStacks += Mathf.Max(1, FeelGoodModifier.feelGoodStacksPerHeal);
                 monsters[cell] = inst;
 
                 UpdateTileHPVisual(cell, inst.hp, max); // Update visual
-                changedCells.Add(cell);
+                if (restored > 0f) changedCells.Add(cell);
             }
         }
         return changedCells.Count;
@@ -5859,7 +5862,9 @@ public partial class Board : MonoBehaviour
         _activeBuffPopups.Remove(rt);
     }
 
-    public bool IsClearableOccupiedRow(int y)
+    public bool IsClearableOccupiedRow(int y) => CanClearOccupiedRow(y, null);
+
+    bool CanClearOccupiedRow(int y, HashSet<Vector2Int> stonesDamaged)
     {
         bool full = true;
         bool hasClearableContent = false;
@@ -5869,6 +5874,9 @@ public partial class Board : MonoBehaviour
             var c = new Vector2Int(x, y);
             if (!placed.TryGetValue(c, out var rt) || !rt)
             {
+                // Fixed craters fill gaps, but a row of only permanent blockers
+                // must not clear forever in the cascade loop.
+                if (IsCraterCell(c)) continue;
                 full = false;
                 break;
             }
@@ -5879,8 +5887,11 @@ public partial class Board : MonoBehaviour
                 continue;
             }
 
-            if (obs.type != ObstacleType.SoldierWall)
-                hasClearableContent = true;
+            if (obs.type == ObstacleType.SoldierWall || obs.type == ObstacleType.Overgrowth || obs.indestructible)
+                continue;
+            if (obs.type == ObstacleType.Stone && stonesDamaged != null && stonesDamaged.Contains(c))
+                continue;
+            hasClearableContent = true;
         }
 
         return full && hasClearableContent;

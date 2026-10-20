@@ -46,7 +46,7 @@ public partial class VolumePanelUI
         PlacePlaylistControl(activeTab.transform, new Vector2(135, 260), new Vector2(230, 40));
         activeTab.interactable = false;
 
-        var scrollGo = new GameObject("Playlist_Scroll", typeof(RectTransform), typeof(Image), typeof(ScrollRect));
+        var scrollGo = new GameObject("Playlist_Scroll", typeof(RectTransform), typeof(Image), typeof(SmoothPlaylistScrollRect));
         scrollGo.transform.SetParent(playlistPanel.transform, false);
         PlacePlaylistControl(scrollGo.transform, new Vector2(0, -50), new Vector2(710, 430));
         scrollGo.GetComponent<Image>().color = new Color(0.04f, 0.04f, 0.06f, 0.9f);
@@ -54,11 +54,11 @@ public partial class VolumePanelUI
         playlistScroll.horizontal = false;
         playlistScroll.vertical = true;
         playlistScroll.movementType = ScrollRect.MovementType.Clamped;
-        playlistScroll.scrollSensitivity = 38f;
+        playlistScroll.scrollSensitivity = 24f;
 
         var viewport = new GameObject("Viewport", typeof(RectTransform), typeof(RectMask2D));
         viewport.transform.SetParent(scrollGo.transform, false);
-        StretchToFill((RectTransform)viewport.transform, new Vector2(6, 6), new Vector2(-22, -6));
+        StretchToFill((RectTransform)viewport.transform, new Vector2(0, 6), new Vector2(-22, 0));
         playlistScroll.viewport = (RectTransform)viewport.transform;
         var content = new GameObject("Songs", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(ContentSizeFitter));
         content.transform.SetParent(viewport.transform, false);
@@ -77,16 +77,16 @@ public partial class VolumePanelUI
         content.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
         playlistScroll.content = contentRect;
 
-        // A masked overlay keeps the section readable; the next header pushes it out.
+        // Full-width opaque overlay sits flush with the list's top edge.
         var sticky = CreateImage(viewport.transform, "Sticky_Section", new Color(0.04f, 0.04f, 0.06f, 1f));
         stickyPlaylistHeader = sticky.rectTransform;
         stickyPlaylistHeader.anchorMin = new Vector2(0, 1);
         stickyPlaylistHeader.anchorMax = Vector2.one;
         stickyPlaylistHeader.pivot = new Vector2(0.5f, 1);
-        stickyPlaylistHeader.sizeDelta = new Vector2(-12, 44);
+        stickyPlaylistHeader.sizeDelta = new Vector2(0, 44);
         stickyPlaylistLabel = PlaylistText(sticky.transform, "Label", "", 25, TextAlignmentOptions.Left);
         stickyPlaylistLabel.color = new Color(1, 0.72f, 0.25f);
-        StretchToFill(stickyPlaylistLabel.rectTransform, Vector2.zero, Vector2.zero);
+        StretchToFill(stickyPlaylistLabel.rectTransform, new Vector2(12, 0), new Vector2(-6, 0));
         sticky.raycastTarget = stickyPlaylistLabel.raycastTarget = false;
         playlistScroll.onValueChanged.AddListener(_ => UpdateStickyPlaylistHeader());
 
@@ -223,19 +223,20 @@ public partial class VolumePanelUI
         var viewport = playlistScroll.viewport;
         float top = viewport.rect.yMax;
         int current = -1;
-        float nextTop = float.NegativeInfinity;
         for (int i = 0; i < playlistHeaders.Count; i++)
         {
             var rect = playlistHeaders[i].rectTransform;
             float y = viewport.InverseTransformPoint(rect.TransformPoint(new Vector3(0, rect.rect.yMax, 0))).y;
-            if (y >= top - 0.01f) current = i;
-            else { nextTop = y; break; }
+            // Switch when the next heading enters the pinned area, hiding its
+            // scrolling copy so no sliced duplicate text peeks below the header.
+            bool pinned = y >= top - stickyPlaylistHeader.rect.height;
+            playlistHeaders[i].enabled = !pinned;
+            if (pinned) current = i;
         }
         stickyPlaylistHeader.gameObject.SetActive(current >= 0);
         if (current < 0) return;
         stickyPlaylistLabel.text = playlistHeaders[current].text;
-        float push = Mathf.Max(0f, nextTop - (top - stickyPlaylistHeader.rect.height));
-        stickyPlaylistHeader.anchoredPosition = new Vector2(0, push);
+        stickyPlaylistHeader.anchoredPosition = Vector2.zero;
     }
 
     void CopyPlaylistPanelImage(string sourceName)

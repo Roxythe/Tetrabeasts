@@ -4,14 +4,16 @@ using UnityEngine.UI;
 
 public partial class Board
 {
-    // Kept outside placed/obstacles: craters block pieces but never count toward
-    // full rows, take special damage, or intercept either team's projectiles.
+    // Kept outside placed/obstacles: craters fill rows and block pieces, but stay
+    // fixed during clears/settling and never intercept projectiles.
     readonly HashSet<Vector2Int> craterCells = new();
     readonly List<Vector2Int> feelGoodCells = new();
     readonly Dictionary<RectTransform, Color> feelGoodOriginalTints = new();
 
     LevelModifierSO FeelGoodModifier => _gc && _gc.levelModifierController &&
         _gc.levelModifierController.NewModifierEffectsActive ? _gc.levelModifierController.GetModifier(LevelModifierKind.DrFeelGood) : null;
+    float FeelGoodHealingMultiplier(MonsterInstance unit) =>
+        FeelGoodModifier ? Mathf.Clamp01(1f - unit.feelGoodStacks * .01f) : 1f;
     public bool IsCraterCell(Vector2Int cell) => craterCells.Contains(cell);
     bool PreventEnvironmentOverlap => _gc && _gc.levelModifierController && _gc.levelModifierController.HasModifier(LevelModifierKind.WatchYourStep);
     public void SetCraterCell(Vector2Int cell, bool occupied)
@@ -20,6 +22,17 @@ public partial class Board
         else craterCells.Remove(cell);
     }
     public void ClearCraterCells() => craterCells.Clear();
+
+    public Sprite FloorWarningSprite(FloorEffectType type) => type switch
+    {
+        FloorEffectType.Poison => poisonBorderSprite,
+        FloorEffectType.Burn => fireBorderSprite,
+        FloorEffectType.Spike => spikeSpriteHigh,
+        FloorEffectType.Lightning => lightningBorderSprite,
+        FloorEffectType.Teleport => teleportWarningSprite,
+        FloorEffectType.ZipPad => zipPadSprite,
+        _ => null
+    };
 
     public RectTransform CraterVisualRoot
     {
@@ -69,14 +82,19 @@ public partial class Board
                 original = portrait.canvasRenderer.GetColor();
                 feelGoodOriginalTints[tile] = original;
             }
-            float brightness = Mathf.Clamp01(modifier.feelGoodForegroundBrightness);
+            float severity = 1f - 1f / (1f + pair.Value.feelGoodStacks * .12f);
+            float brightness = Mathf.Lerp(modifier.feelGoodForegroundBrightness, .45f, severity);
             portrait.canvasRenderer.SetColor(new Color(original.r * brightness,
-                original.g * brightness, original.b * brightness, original.a));
+                original.g * brightness * .65f, original.b * brightness, original.a));
+            var feedback = tile.GetComponent<FeelGoodDebuffVFX>();
+            if (!feedback) feedback = tile.gameObject.AddComponent<FeelGoodDebuffVFX>();
+            feedback.Show(pair.Value.feelGoodStacks, severity);
         }
     }
 
     void RestoreFeelGoodTint(RectTransform tile)
     {
+        if (tile && tile.TryGetComponent<FeelGoodDebuffVFX>(out var feedback)) feedback.Hide();
         if (!tile || !feelGoodOriginalTints.TryGetValue(tile, out var original)) return;
         var portrait = tile.Find("MonsterPortrait")?.GetComponent<Image>();
         if (portrait) portrait.canvasRenderer.SetColor(original);
@@ -88,6 +106,7 @@ public partial class Board
         foreach (var pair in feelGoodOriginalTints)
         {
             if (!pair.Key) continue;
+            if (pair.Key.TryGetComponent<FeelGoodDebuffVFX>(out var feedback)) feedback.Hide();
             var portrait = pair.Key.Find("MonsterPortrait")?.GetComponent<Image>();
             if (portrait) portrait.canvasRenderer.SetColor(pair.Value);
         }

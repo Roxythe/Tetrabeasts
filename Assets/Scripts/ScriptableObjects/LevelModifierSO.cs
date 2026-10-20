@@ -188,15 +188,15 @@ public class LevelModifierSO : ScriptableObject
     [Min(1)] public int turboBoostedRowFromTop = 5;
 
     [Header("Dr. Feel Good")]
-    [Range(0.1f, 1f)] public float feelGoodHealIntervalMultiplier = 0.5f;
+    [Min(1)] public int feelGoodStacksPerHeal = 2;
     [Min(0.01f)] public float feelGoodDamagePerStack = 0.25f;
     [Min(0.1f)] public float feelGoodTickSeconds = 1f;
     [Range(0.1f, 1f)] public float feelGoodForegroundBrightness = 0.8f;
 
     [Header("Flip The Board")]
     public AudioClip flipSfx;
-    [Min(2f)] public float flipIntervalMin = 20f;
-    [Min(2f)] public float flipIntervalMax = 30f;
+    [Min(5f)] public float flipIntervalMin = 5f;
+    [Min(5f)] public float flipIntervalMax = 20f;
     public Sprite flipWarningSprite;
 
     [Header("Bombardment")]
@@ -211,13 +211,19 @@ public class LevelModifierSO : ScriptableObject
     [Tooltip("Living sprite frames, played forward and backward while moving.")]
     public Sprite[] hallucinationIdleFrames;
     [Min(1f)] public float hallucinationIdleFramesPerSecond = 12f;
-    [Tooltip("Frame zero is the living sprite; the array plays once on death.")]
+    [Tooltip("Legacy sprite fallback: frame zero is used if no idle frames are assigned.")]
     public Sprite[] hallucinationAnimation;
     public Sprite hallucinationConsumeSprite;
     [Min(0.1f)] public float hallucinationSpeedCellsPerSecond = 4f;
     [Min(0.1f)] public float hallucinationBaseSizeCells = 1.8f;
     [Min(0.01f)] public float hallucinationSizeIncreaseCells = 0.25f;
     [Min(0.01f)] public float hallucinationDeathFrameSeconds = 0.1f;
+    [Min(0.1f)] public float hallucinationSpawnInterval = 6f;
+    [Min(0.1f)] public float hallucinationMinimumSpawnInterval = 1.5f;
+    [Min(1f)] public float hallucinationSpawnRampSeconds = 180f;
+    [Min(0f)] public float hallucinationSpawnSpeedPerExtraSize = 0.22f;
+    [Min(0f)] public float hallucinationMotionSpeedPerExtraSize = 0.24f;
+    [Range(0.5f, 1f)] public float hallucinationBounceSilhouetteScale = 0.7f;
 
     [Header("Inversion")]
     [Min(0.1f)] public float inversionActiveSeconds = 8f;

@@ -106,7 +106,7 @@ public class BoulderAndModeTests
         var rocks = (IList)Get(boulders, "rocks"); var rock = rocks[0];
         Set(rock, "position", new Vector2(4.5f, 6.43f)); Set(rock, "velocity", new Vector2(0, -6)); Set(rock, "bounces", 5);
         Call(boulders, "Simulate", 0.01f);
-        board.TryGetMonster(cell, out instance); Assert.That(instance.hp, Is.InRange(80f, 85f));
+        board.TryGetMonster(cell, out instance); Assert.That(instance.hp, Is.InRange(72f, 77f));
         float hpAfterHit = instance.hp;
         Assert.AreEqual(4, Get(rock, "bounces"));
         Assert.Greater(((Vector2)Get(rock, "velocity")).y, 0);
@@ -215,10 +215,23 @@ public class BoulderAndModeTests
         Assert.IsNotNull(controller.GetModifier(LevelModifierKind.DrFeelGood));
         Assert.AreEqual(20f, controller.ModifyIncomingDamage(Vector2Int.zero, null, 10f, Board.DamageSource.BossAbility));
         var saved = controller.CaptureChaosModifiers();
+        var oldEffects = ((List<LevelModifierController>)Get(controller, "chaosEffects")).ToArray();
+        Set(controller, "_hallucinationElapsed", 180f);
+        Set(controller, "_hallucinationBaseDiameter", 8f);
+        Set(controller, "_rearAmbushRowsSpawnedThisLevel", 20);
+        foreach (var effect in oldEffects) Set(effect, "_hallucinationElapsed", 180f);
         controller.EndNewModifierEffects(); Assert.IsFalse(controller.InvertsPieceControls);
         Call(controller, "RebuildChaosEffects");
         CollectionAssert.AreEqual(saved, controller.CaptureChaosModifiers());
         Assert.IsTrue(controller.InvertsPieceControls, "Earlier modifiers resume on the next level.");
+        Assert.AreEqual(0f, Get(controller, "_hallucinationElapsed"));
+        Assert.AreEqual(0f, Get(controller, "_hallucinationBaseDiameter"));
+        Assert.AreEqual(0, Get(controller, "_rearAmbushRowsSpawnedThisLevel"));
+        foreach (var effect in (List<LevelModifierController>)Get(controller, "chaosEffects"))
+        {
+            Assert.IsFalse(oldEffects.Contains(effect), "Retained modifiers get fresh level instances.");
+            Assert.AreEqual(0f, Get(effect, "_hallucinationElapsed"));
+        }
         controller.ResetRunState(); Assert.IsFalse(controller.HasModifier(LevelModifierKind.DoubleDamage));
         Assert.AreEqual(0, controller.ChaosModifiers.Count);
 

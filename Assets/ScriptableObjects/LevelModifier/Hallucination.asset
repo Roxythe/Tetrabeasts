@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelModifierSO
   kind: 29
   displayName: Hallucination
-  description: Bouncing hallucinations consume each other. Player projectiles destroy
-    them and spawn a larger replacement.
+  description: "Seeing things? Hungry ghosts appear everywhere, gobbling each other up and racing around! Your attacks shrink them but invite more company. Let one grow too greedy and a red menace escapes across the screen!"
   icon: {fileID: 21300000, guid: 50d4aac37890c4b48940272b8fc7df93, type: 3}
   backgroundOverrideSprite: {fileID: 0}
   backgroundOverrideVideoClip: {fileID: 0}
@@ -105,7 +104,7 @@ MonoBehaviour:
   softSpaceTeleportDestinationExcludedTopRows: 4
   softSpaceTeleportDestinationExcludedBottomRows: 0
   turboBoostedRowFromTop: 5
-  feelGoodHealIntervalMultiplier: 0.5
+  feelGoodStacksPerHeal: 2
   feelGoodDamagePerStack: 0.25
   feelGoodTickSeconds: 1
   feelGoodForegroundBrightness: 0.8
@@ -151,3 +150,9 @@ MonoBehaviour:
   inversionRestSeconds: 12
   inversionBoardSprite: {fileID: 0}
   inversionSfx: {fileID: 0}
+  hallucinationSpawnInterval: 6
+  hallucinationMinimumSpawnInterval: 1.5
+  hallucinationSpawnRampSeconds: 180
+  hallucinationSpawnSpeedPerExtraSize: 0.22
+  hallucinationMotionSpeedPerExtraSize: 0.24
+  hallucinationBounceSilhouetteScale: 0.7

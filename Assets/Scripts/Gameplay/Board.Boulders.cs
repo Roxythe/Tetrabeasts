@@ -18,7 +18,8 @@ public partial class Board
         else if (monsters.TryGetValue(cell, out var monster) && monster.hp > 0f)
         {
             float before = monster.hp;
-            DamageTile(cell, BoulderController.CalculateHitDamage(monster.maxHp, Random.Range(0.10f, 0.15f)), DamageSource.BossAbility);
+            DamageTile(cell, BoulderController.CalculateHitDamage(monster.maxHp,
+                Random.Range(BoulderController.MinHitFraction, BoulderController.MaxHitFraction)), DamageSource.BossAbility);
             if (TryGetTileRect(cell, out var tile))
                 ImpactShake.Play(tile.Find("MonsterPortrait") ?? tile, 0.18f, 4f);
             return !monsters.TryGetValue(cell, out var after) || after.hp < before;

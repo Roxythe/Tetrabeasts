@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelModifierSO
   kind: 25
   displayName: Watch Your Step
-  description: Random obstacles and floor effects cover 33% of the board below the
-    top five rows.
+  description: "This battlefield bites back! Traps and obstacles litter the ground, and fresh hazards keep popping up. Watch the warning flashes before you plant your next piece!"
   icon: {fileID: 21300000, guid: c3ed7d6bedda6a94b965d23e9acec17c, type: 3}
   backgroundOverrideSprite: {fileID: 0}
   backgroundOverrideVideoClip: {fileID: 0}
@@ -105,7 +104,7 @@ MonoBehaviour:
   softSpaceTeleportDestinationExcludedTopRows: 4
   softSpaceTeleportDestinationExcludedBottomRows: 0
   turboBoostedRowFromTop: 5
-  feelGoodHealIntervalMultiplier: 0.5
+  feelGoodStacksPerHeal: 2
   feelGoodDamagePerStack: 0.25
   feelGoodTickSeconds: 1
   feelGoodForegroundBrightness: 0.8
