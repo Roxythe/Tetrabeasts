@@ -20,6 +20,8 @@ public class GameplayPlaylistTests
     [SetUp] public void SetUp()
     {
         LocalSaveTestScope.Begin();
+        SessionState.SetInt("PlaylistTests.SongPopup", PlayerPrefs.GetInt(SettingsStore.KeySongPopup, -1));
+        PlayerPrefs.DeleteKey(SettingsStore.KeySongPopup);
         SessionState.SetInt("PlaylistTests.PendingWrite", PlayerPrefs.GetInt("gameplay_playlist_pending_file_write", 0));
         PlayerPrefs.DeleteKey("gameplay_playlist_pending_file_write");
         hadPlaylist = PlayerPrefs.HasKey(GameplayPlaylist.PreferenceKey);
@@ -39,6 +41,9 @@ public class GameplayPlaylistTests
             PlayerPrefs.SetString(GameplayPlaylist.PreferenceKey, SessionState.GetString("PlaylistTests.OldPreference", ""));
         else PlayerPrefs.DeleteKey(GameplayPlaylist.PreferenceKey);
         PlayerPrefs.SetInt("gameplay_playlist_pending_file_write", SessionState.GetInt("PlaylistTests.PendingWrite", 0));
+        int popupPreference = SessionState.GetInt("PlaylistTests.SongPopup", -1);
+        if (popupPreference < 0) PlayerPrefs.DeleteKey(SettingsStore.KeySongPopup);
+        else PlayerPrefs.SetInt(SettingsStore.KeySongPopup, popupPreference);
         PlayerPrefs.Save();
         LocalSaveTestScope.End();
     }
@@ -140,6 +145,8 @@ public class GameplayPlaylistTests
         Assert.IsNotNull(Read<AudioSource>(audio, "activeMusicSrc"), "Source immediately after starting gameplay");
         yield return new WaitForSecondsRealtime(2.2f);
         Assert.IsNotNull(Read<AudioSource>(audio, "activeMusicSrc"), "Source after gameplay fade");
+        var currentSong = audio.CurrentGameplaySong;
+        Assert.AreSame(Read<AudioSource>(audio, "activeMusicSrc").clip, currentSong);
         AudioListener.pause = true;
         Time.timeScale = 0;
         audio.PlayPauseMusic();
@@ -153,6 +160,7 @@ public class GameplayPlaylistTests
         var allowed = audio.EDMGameplayMusic[0] != excluded ? audio.EDMGameplayMusic[0] : audio.EDMGameplayMusic[1];
         audio.SetPlaylistSongEnabled(allowed, true);
         audio.PreviewPlaylistSong(audio.MetalBossMusic[0]);
+        Assert.AreSame(currentSong, audio.CurrentGameplaySong, "Pause and previews retain the gameplay song identity.");
         Assert.AreSame(audio.MetalBossMusic[0], preview.clip, "Replacing a sample must not wait for an outgoing fade.");
         yield return new WaitForSecondsRealtime(0.6f);
         Assert.IsTrue(audio.IsPlaylistPreviewPlaying(audio.MetalBossMusic[0]));
@@ -162,6 +170,7 @@ public class GameplayPlaylistTests
         audio.ApplyPendingMusicModeAfterUnpause();
         yield return new WaitForSecondsRealtime(2.2f);
         Assert.AreSame(allowed, Read<AudioSource>(audio, "activeMusicSrc").clip);
+        Assert.AreSame(allowed, audio.CurrentGameplaySong);
         Assert.IsFalse(preview.isPlaying);
 
         // Preserve an eligible track's playback position across another preview session.
@@ -186,6 +195,7 @@ public class GameplayPlaylistTests
         yield return new WaitForSecondsRealtime(1.2f);
         Assert.IsFalse(Read<AudioSource>(audio, "musicSrc").isPlaying);
         Assert.IsFalse(Read<AudioSource>(audio, "musicTransitionSrc").isPlaying);
+        Assert.IsNull(audio.CurrentGameplaySong, "An empty playlist has no current song marker.");
         audio.PlayLevelMusic(true);
         yield return new WaitForSecondsRealtime(2.2f);
         CollectionAssert.Contains(audio.EDMBossMusic, Read<AudioSource>(audio, "activeMusicSrc").clip);
@@ -233,9 +243,20 @@ public class GameplayPlaylistTests
         yield return null;
         Capture(camera, "Playlist-General");
         panel.OpenPlaylistTab();
+        var popupToggle = Read<Toggle>(panel, "songPopupToggle");
+        Assert.IsTrue(popupToggle.isOn, "New accounts default to showing song popups.");
+        popupToggle.isOn = false;
+        Assert.IsFalse(SettingsStore.LoadSongPopupEnabled());
+        panel.ClosePlaylistTab();
+        panel.OpenPlaylistTab();
+        Assert.IsFalse(popupToggle.isOn, "Reopening settings retains the choice.");
+        popupToggle.isOn = true;
+        typeof(AudioManager).GetMethod("NotifyGameplaySongStarted", Private).Invoke(audio, new object[] { audio.EDMGameplayMusic[0] });
         yield return null;
         var rows = panelGo.GetComponentsInChildren<PlaylistSongRowUI>();
         Assert.AreEqual(54, rows.Length);
+        Assert.IsTrue(rows[0].transform.Find("Current song/Current song note").gameObject.activeSelf);
+        Assert.IsFalse(rows[1].transform.Find("Current song/Current song note").gameObject.activeSelf);
         foreach (var row in rows)
         {
             Assert.IsTrue(row.GetComponentInChildren<Toggle>().isOn);
@@ -313,6 +334,33 @@ public class GameplayPlaylistTests
         panel.ClosePlaylistTab();
         Assert.IsFalse(playlistPanel.activeSelf);
         panel.Close(true);
+        var popup = GameplaySongPopup.Create(canvas, panel.closeButton.GetComponentInChildren<TMPro.TMP_Text>(true));
+        popup.ShowSong(audio.EDMGameplayMusic[0], null);
+        var group = popup.GetComponent<CanvasGroup>();
+        Assert.AreEqual(0f, group.alpha);
+        typeof(GameplaySongPopup).GetMethod("Advance", Private).Invoke(popup, new object[] { .3f });
+        Assert.AreEqual(1f, group.alpha);
+        Assert.IsFalse(group.blocksRaycasts);
+        Capture(camera, "Song-Popup");
+        typeof(GameplaySongPopup).GetMethod("Advance", Private).Invoke(popup, new object[] { 2.99f });
+        Assert.AreEqual(1f, group.alpha, "Keep a short title fully opaque for three seconds.");
+        typeof(GameplaySongPopup).GetMethod("Advance", Private).Invoke(popup, new object[] { .26f });
+        Assert.That(group.alpha, Is.InRange(.49f, .51f));
+        typeof(GameplaySongPopup).GetMethod("Advance", Private).Invoke(popup, new object[] { .25f });
+        Assert.AreEqual(0f, group.alpha);
+        var longSong = AudioClip.Create("A Very Long Song Name That Scrolls All The Way To Its Final Words", 44100, 1, 44100, false);
+        temporary.Add(longSong);
+        popup.ShowSong(longSong, null);
+        Assert.Greater(Read<float>(popup, "overflow"), 0f);
+        float hold = Read<float>(popup, "holdSeconds");
+        typeof(GameplaySongPopup).GetMethod("Advance", Private).Invoke(popup, new object[] { .3f + hold });
+        var songTitle = Read<TMPro.TMP_Text>(popup, "title");
+        Assert.AreEqual(-Read<float>(popup, "overflow"), songTitle.rectTransform.anchoredPosition.x, .01f);
+        Assert.AreEqual(1f, group.alpha);
+        Capture(camera, "Song-Popup-Long-End");
+        SettingsStore.SaveSongPopupEnabled(false);
+        yield return null;
+        Assert.AreEqual(0f, group.alpha, "Turning the setting off dismisses an existing popup.");
         foreach (var obj in temporary) if (obj) Object.DestroyImmediate(obj);
         temporary.Clear();
         yield return new ExitPlayMode();

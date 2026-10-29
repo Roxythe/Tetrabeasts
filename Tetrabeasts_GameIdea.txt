@@ -1,4 +1,40 @@
 
+- Make columns with a defensive monster unit as the highest place placed unit more likely target choice when spawning enemy projectiles (this will make defensive units more useful as they draw enemy fire when placed above other units in the column). So for example if the level is currently spawning 3 enemy projectile at a time and three different columns have a defensive unit placed highest in 3 different columns, it should chose to spawn projectiles in those columns over other columns. Right now I think the enemy AI just prioritizes columns with enemies in it, so just add this on top and use the old targeting as the fall back if there aren't enough defense role units to target at the top occupied row of a column.
+
+- Add an icon next to the song that is currently playing on their current game in the playlist setting panel so that they know what song they were listening to before pausing the game and opening the playlist panel.
+
+- Add a fade in/out pop up that last for 3 seconds at full opacity in the bottom right of the screen that shows the current song whenever a new gameplay song starts. if the full song name text doesn't fit, have it slowly scroll from left to right to show the full name over time and then fade out. Use an appropriate background and the same font style used in the rest of the game.
+
+- Add a new setting toggle that can turn the current song pop up on/off. Set default to on for the first time the game is loaded and then save/load the preference as art of the players account saved info for setting to keep it consistent with their choice (persistent like volume or any other setting).
+
+----------------------------------------------------------------------------------------------------
+
+- Reduce the effectiveness of healing by X percent on monster units with the debuff from the Dr feel good level modifier, where X is equal to the number of debuff stacks on that monster unit. So if a unit has 20 stack, they receive 20% less healing. If a heal would recover 5 hp, it recovers 4 hp for that monster unit.
+
+- For the flip the board modifier, have the board flip between every 5-20 seconds. 
+
+- New mechanic For the flip the board modifier, If it has been at least 5 seconds since the last board flip and a player damages the enemy castles, immediately start the warning flashes and then trigger a new board flip and restart the timer once the board is flipped.
+
+- For the inversion level modifier, the top layer of the inversion VFX should also rotate in sync with the lower layer transparent copy while it is radial wiping away the top opaque layer of the VFX.
+
+- I want to change the bombardment attack from the bombardment level modifier to go back to destroying monster units in the occupied cells of the bombardment, but I don't want the monster units to be counted as unit deaths that subtract from the unit reserve.
+
+- Also make sure that enemy and player attacks are not blocked by the cells the bombardment obstacles occupy when on the board.
+
+- For the hallucination modifier, have the hallucinations spawn more often and at different areas around the board.
+
+- Increase the speed of the hallucinations increased more as they get bigger
+
+- Once a hallucination combines with 10 ghost stop having it combine with ghosts and increase its range of movement to anywhere on screen (no longer restricted by the board) and change the color of the hallucination from the standard white to pulsing red to be more eye catching and distracting.
+
+- increase the initial board boundary width for the hallucinations a little more as it is getting closer but not quite reaching the edge of the board before changing directions.
+
+- Instead of fully destroying a hallucination when a player projectile overlaps it, just reduce it to half of it its current hallucinated combination. SO if it was a combination of 6, reduce it to 3 and then still spawn a new hallucination. (this shouldn't consume/destroy/block the player attack)
+
+- Increases the damage from the boulder collision with monster units 
+
+----------------------------------------------------------------------------------------------------
+
 ## Settings Playlist Panel Changes
 
 - Move the sticky headline placement for the playlist up slightly the top of the header is flush with the top of the list and make the background for the header opaque so the items on the list cant be seen above/behind it while you are scrolling down.

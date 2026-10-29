@@ -7,14 +7,17 @@ public sealed class PlaylistSongRowUI : MonoBehaviour
     Toggle enabledToggle;
     Image background;
     RectTransform[] bars;
+    RectTransform currentSongNote;
+    bool lastCurrent;
     int lastFrame = -1;
 
-    public void Configure(AudioClip song, Toggle toggle, Image rowBackground, RectTransform[] meterBars)
+    public void Configure(AudioClip song, Toggle toggle, Image rowBackground, RectTransform[] meterBars, RectTransform note = null)
     {
         clip = song;
         enabledToggle = toggle;
         background = rowBackground;
         bars = meterBars;
+        currentSongNote = note;
     }
 
     public void RefreshToggle() => enabledToggle.SetIsOnWithoutNotify(GameplayPlaylist.IsEnabled(clip));
@@ -23,10 +26,14 @@ public sealed class PlaylistSongRowUI : MonoBehaviour
     {
         if (bars == null) return;
         bool playing = AudioManager.I && AudioManager.I.IsPlaylistPreviewPlaying(clip);
+        bool current = AudioManager.I && AudioManager.I.CurrentGameplaySong == clip;
+        if (currentSongNote && currentSongNote.gameObject.activeSelf != current)
+            currentSongNote.gameObject.SetActive(current);
         int frame = playing ? Mathf.FloorToInt(Time.unscaledTime * 8f) : -2;
-        if (frame == lastFrame) return;
+        if (frame == lastFrame && current == lastCurrent) return;
         lastFrame = frame;
-        background.color = playing ? new Color(1f, 0.62f, 0.08f, 0.18f) : new Color(1, 1, 1, 0.035f);
+        lastCurrent = current;
+        background.color = playing || current ? new Color(1f, 0.62f, 0.08f, 0.18f) : new Color(1, 1, 1, 0.035f);
         for (int i = 0; i < bars.Length; i++)
         {
             // Quantized heights and eight frames per second keep the meter pixel styled.

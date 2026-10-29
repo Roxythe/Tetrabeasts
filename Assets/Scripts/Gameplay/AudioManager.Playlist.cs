@@ -3,6 +3,23 @@ using UnityEngine;
 
 public partial class AudioManager
 {
+    public AudioClip CurrentGameplaySong { get; private set; }
+    GameplaySongPopup songPopup;
+
+    void NotifyGameplaySongStarted(AudioClip clip)
+    {
+        CurrentGameplaySong = clip;
+        if (!SettingsStore.LoadSongPopupEnabled()) return;
+        if (!songPopup) songPopup = GameplaySongPopup.CreateForGameplay();
+        if (songPopup) songPopup.ShowSong(clip, this);
+    }
+
+    void ClearGameplaySong()
+    {
+        CurrentGameplaySong = null;
+        if (songPopup) songPopup.Hide();
+    }
+
     AudioSource playlistPreviewSource;
     Coroutine playlistPreviewFade;
     float playlistPreviewScale;

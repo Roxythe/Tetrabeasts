@@ -13,6 +13,7 @@ public partial class VolumePanelUI
     readonly List<TMP_Text> playlistHeaders = new();
     RectTransform stickyPlaylistHeader;
     TMP_Text stickyPlaylistLabel;
+    Toggle songPopupToggle;
 
     void EnsurePlaylistUI()
     {
@@ -36,8 +37,29 @@ public partial class VolumePanelUI
         CopyPlaylistPanelImage("Border_Image");
         var title = PlaylistText(playlistPanel.transform, "Playlist_Title", "Gameplay Playlist", 38, TextAlignmentOptions.Center);
         PlacePlaylistControl(title.transform, new Vector2(0, 310), new Vector2(650, 56));
-        var hint = PlaylistText(playlistPanel.transform, "Playlist_Hint", "Check songs to include them. Play to preview.", 20, TextAlignmentOptions.Center);
-        PlacePlaylistControl(hint.transform, new Vector2(0, 210), new Vector2(700, 32));
+        var hint = PlaylistText(playlistPanel.transform, "Playlist_Hint", "Gold note = current game song. Play to preview.", 20, TextAlignmentOptions.Center);
+        PlacePlaylistControl(hint.transform, new Vector2(0, 218), new Vector2(700, 28));
+        var popupSetting = new GameObject("Song popup setting", typeof(RectTransform));
+        popupSetting.transform.SetParent(playlistPanel.transform, false);
+        PlacePlaylistControl(popupSetting.transform, new Vector2(0, 184), new Vector2(330, 28));
+        var popupBox = CreateImage(popupSetting.transform, "Toggle", new Color(.3f, .3f, .34f));
+        PlacePlaylistControl(popupBox.transform, new Vector2(-145, 0), new Vector2(24, 24));
+        popupBox.raycastTarget = true;
+        var sourceBox = combatLogToggle ? combatLogToggle.targetGraphic as Image : null;
+        if (sourceBox) { popupBox.sprite = sourceBox.sprite; popupBox.type = sourceBox.type; popupBox.color = sourceBox.color; }
+        var popupTick = CreateImage(popupBox.transform, "Checkmark", new Color(1, .72f, .25f));
+        var sourceTick = combatLogToggle ? combatLogToggle.graphic as Image : null;
+        if (sourceTick) { popupTick.sprite = sourceTick.sprite; popupTick.color = sourceTick.color; }
+        StretchToFill(popupTick.rectTransform, new Vector2(4, 4), new Vector2(-4, -4));
+        songPopupToggle = popupSetting.AddComponent<Toggle>();
+        songPopupToggle.targetGraphic = popupBox;
+        songPopupToggle.graphic = popupTick;
+        songPopupToggle.SetIsOnWithoutNotify(SettingsStore.LoadSongPopupEnabled());
+        songPopupToggle.onValueChanged.AddListener(SettingsStore.SaveSongPopupEnabled);
+        ApplyPlaylistFeedback(songPopupToggle);
+        var popupLabel = PlaylistText(popupSetting.transform, "Label", "Show song popups", 22, TextAlignmentOptions.Left);
+        PlacePlaylistControl(popupLabel.transform, new Vector2(20, 0), new Vector2(280, 28));
+        popupLabel.raycastTarget = true;
 
         var backTab = CreatePlaylistButton(playlistPanel.transform, "General_Tab", "General");
         PlacePlaylistControl(backTab.transform, new Vector2(-135, 260), new Vector2(230, 40));
@@ -130,6 +152,7 @@ public partial class VolumePanelUI
             AddPlaylistGroup("Metal / Boss Gameplay Songs", AudioManager.I.MetalBossMusic);
         }
         foreach (var row in playlistSongRows) row.RefreshToggle();
+        songPopupToggle.SetIsOnWithoutNotify(SettingsStore.LoadSongPopupEnabled());
         playlistPanel.transform.SetAsLastSibling();
         playlistPanel.SetActive(true);
         Canvas.ForceUpdateCanvases();
@@ -190,8 +213,13 @@ public partial class VolumePanelUI
             toggle.SetIsOnWithoutNotify(GameplayPlaylist.IsEnabled(clip));
             toggle.onValueChanged.AddListener(enabled => AudioManager.I?.SetPlaylistSongEnabled(clip, enabled));
 
+            var noteSlot = new GameObject("Current song", typeof(RectTransform));
+            noteSlot.transform.SetParent(row, false);
+            AddLayout(noteSlot, 24, 28);
+            var currentNote = GameplaySongPopup.CreateNote(noteSlot.transform);
+            currentNote.gameObject.SetActive(false);
             var title = PlaylistText(row, "Title", GameplayPlaylist.Title(clip), 22, TextAlignmentOptions.Left);
-            AddLayout(title.gameObject, 230, 44, flexibleWidth: 1);
+            AddLayout(title.gameObject, 196, 44, flexibleWidth: 1);
             var meter = new GameObject("Pixel_Equalizer", typeof(RectTransform));
             meter.transform.SetParent(row, false);
             AddLayout(meter, 30, 30);
@@ -212,7 +240,7 @@ public partial class VolumePanelUI
             AddLayout(pause.gameObject, 82, 38);
             pause.onClick.AddListener(() => AudioManager.I?.PausePlaylistSong(clip));
             var view = row.gameObject.AddComponent<PlaylistSongRowUI>();
-            view.Configure(clip, toggle, background, bars);
+            view.Configure(clip, toggle, background, bars, currentNote);
             playlistSongRows.Add(view);
         }
     }

@@ -345,6 +345,7 @@ public partial class AudioManager : MonoBehaviour
 
     public void PlayMusic(AudioClip clip, bool loop = true, float vol = 1f)
     {
+        ClearGameplaySong();
         if (!clip) return;
 
         CrossfadeMainMusicTo(clip, loop, Mathf.Clamp01(vol), GetGeneralMusicCrossfadeDuration(null, clip));
@@ -352,6 +353,7 @@ public partial class AudioManager : MonoBehaviour
 
     public void StopMusic()
     {
+        ClearGameplaySong();
         StopPauseMainMusicFadeCoroutine();
         StopSpecialAbilityMusicFadeCoroutine();
         pauseFadedMainMusic = false;
@@ -1259,6 +1261,7 @@ public partial class AudioManager : MonoBehaviour
 
     public void TransitionToTitleMusic()
     {
+        ClearGameplaySong();
         context = MusicContext.Title;
         levelMusicActive = false;
 
@@ -1312,6 +1315,7 @@ public partial class AudioManager : MonoBehaviour
 
     void StopLevelMusicInternal(bool fadeOutMusic)
     {
+        ClearGameplaySong();
         if (musicChainCo != null) { StopCoroutine(musicChainCo); musicChainCo = null; }
         currentPool = null;
         if (fadeOutMusic)
@@ -1538,6 +1542,7 @@ public partial class AudioManager : MonoBehaviour
 
         activeMusicSrc = source;
         mainMusicFadeCo = StartCoroutine(CoFadeMainMusicSourceScale(source, 1f, GetLevelMusicCrossfadeDuration(null, clip)));
+        NotifyGameplaySongStarted(clip);
     }
 
     IEnumerator CrossfadeToLevelMusicClip(AudioClip next)
@@ -1577,6 +1582,7 @@ public partial class AudioManager : MonoBehaviour
         activeMusicSrc = to;
 
         float duration = GetLevelMusicCrossfadeDuration(from.clip, next);
+        NotifyGameplaySongStarted(next);
         if (from.clip)
             duration = Mathf.Min(duration, Mathf.Max(0.05f, from.clip.length - from.time));
 

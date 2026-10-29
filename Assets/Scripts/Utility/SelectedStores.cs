@@ -102,6 +102,15 @@ public static class SettingsStore
     private const string KeyCursor = "Settings_CursorScale";
     private const string KeyCombatLog = "Settings_CombatLogEnabled";
     private const string KeySkipIntro = "Settings_SkipIntro";
+    public const string KeySongPopup = "Settings_SongPopupEnabled";
+
+    public static bool LoadSongPopupEnabled() => PlayerPrefs.GetInt(KeySongPopup, 1) == 1;
+
+    public static void SaveSongPopupEnabled(bool enabled)
+    {
+        PlayerPrefs.SetInt(KeySongPopup, enabled ? 1 : 0);
+        PlayerPrefsSaveScheduler.QueueSave();
+    }
 
     // Defaults used when no saved data exists
     public const float DefaultMaster = 0.5f;

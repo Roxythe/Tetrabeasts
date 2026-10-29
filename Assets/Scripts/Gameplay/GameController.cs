@@ -384,6 +384,7 @@ public partial class GameController : MonoBehaviour
     int castleProjectileDamage = 1;
     float castleProjectileVisualScale = 1f;
     readonly List<int> _castleAliveTargetColumns = new();
+    readonly List<int> _castleDefenseTargetColumns = new();
     readonly List<int> _castleDeadOnlyTargetColumns = new();
     readonly List<int> _castleProjectileColumns = new();
 
@@ -6339,34 +6340,44 @@ public partial class GameController : MonoBehaviour
         if (!CanLaunchCastleProjectile())
             return;
 
-        _castleAliveTargetColumns.Clear();
-        _castleDeadOnlyTargetColumns.Clear();
-
-        for (int x = 0; x < gameBoard.width; x++)
-        {
-            bool hasAny = false, hasAlive = false;
-
-            for (int y = gameBoard.height - 1; y >= 0; y--)
-            {
-                var c = new Vector2Int(x, y);
-                if (gameBoard.IsFree(c)) continue;
-
-                hasAny = true;
-                if (gameBoard.TryGetMonster(c, out var mi) && mi.data && mi.hp > 0f)
-                { hasAlive = true; break; }
-            }
-
-            if (hasAlive) _castleAliveTargetColumns.Add(x);
-            else if (hasAny) _castleDeadOnlyTargetColumns.Add(x);
-        }
-
-        if (_castleAliveTargetColumns.Count == 0 && _castleDeadOnlyTargetColumns.Count == 0)
-            return; // No targets on board
+        CollectCastleTargetColumns();
 
         int projectileCount = GetCurrentCastleProjectilesPerAttack();
         var columns = PickCastleProjectileColumns(_castleAliveTargetColumns, _castleDeadOnlyTargetColumns, projectileCount);
         for (int i = 0; i < columns.Count; i++)
             SpawnCastleDownshotInColumn(columns[i]);
+    }
+
+    void CollectCastleTargetColumns()
+    {
+        _castleDefenseTargetColumns.Clear();
+        _castleAliveTargetColumns.Clear();
+        _castleDeadOnlyTargetColumns.Clear();
+
+        for (int x = 0; x < gameBoard.width; x++)
+        {
+            bool hasAny = false, hasAlive = false, exposedDefender = false;
+
+            for (int y = gameBoard.height - 1; y >= 0; y--)
+            {
+                var c = new Vector2Int(x, y);
+                // Craters let projectiles pass and do not cover a defender.
+                if (gameBoard.IsFree(c) || gameBoard.IsCraterCell(c)) continue;
+
+                if (gameBoard.TryGetMonster(c, out var mi) && mi.data && mi.hp > 0f)
+                {
+                    hasAlive = true;
+                    exposedDefender = !hasAny && mi.data.role == MonsterRole.Defense;
+                    break;
+                }
+                hasAny = true;
+            }
+
+            if (exposedDefender) _castleDefenseTargetColumns.Add(x);
+            else if (hasAlive) _castleAliveTargetColumns.Add(x);
+            else if (hasAny) _castleDeadOnlyTargetColumns.Add(x);
+        }
+
     }
 
     int GetCurrentCastleProjectilesPerAttack()
@@ -6399,6 +6410,7 @@ public partial class GameController : MonoBehaviour
         _castleProjectileColumns.Clear();
         int limit = Mathf.Max(0, maxCount);
 
+        AddRandomCastleProjectileColumns(_castleDefenseTargetColumns, _castleProjectileColumns, limit);
         AddRandomCastleProjectileColumns(aliveCols, _castleProjectileColumns, limit);
         AddRandomCastleProjectileColumns(deadOnlyCols, _castleProjectileColumns, limit);
 
