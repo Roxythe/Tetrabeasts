@@ -5,18 +5,38 @@ public partial class AudioManager
 {
     public AudioClip CurrentGameplaySong { get; private set; }
     GameplaySongPopup songPopup;
+    Coroutine songPopupPending;
 
     void NotifyGameplaySongStarted(AudioClip clip)
     {
         CurrentGameplaySong = clip;
+        if (songPopupPending != null) StopCoroutine(songPopupPending);
+        songPopupPending = null;
         if (!SettingsStore.LoadSongPopupEnabled()) return;
-        if (!songPopup) songPopup = GameplaySongPopup.CreateForGameplay();
-        if (songPopup) songPopup.ShowSong(clip, this);
+        songPopupPending = StartCoroutine(ShowGameplaySongWhenReady(clip));
+    }
+
+    IEnumerator ShowGameplaySongWhenReady(AudioClip clip)
+    {
+        // A track can start while the gameplay canvas is still being initialized.
+        while (CurrentGameplaySong == clip && SettingsStore.LoadSongPopupEnabled())
+        {
+            if (!songPopup) songPopup = GameplaySongPopup.CreateForGameplay();
+            if (songPopup)
+            {
+                songPopup.ShowSong(clip, this);
+                break;
+            }
+            yield return null;
+        }
+        songPopupPending = null;
     }
 
     void ClearGameplaySong()
     {
         CurrentGameplaySong = null;
+        if (songPopupPending != null) StopCoroutine(songPopupPending);
+        songPopupPending = null;
         if (songPopup) songPopup.Hide();
     }
 
@@ -43,7 +63,7 @@ public partial class AudioManager
         if (!clip) return;
         playlistSettingsSession = true;
         FadeMainMusicForPause(true);
-        FadePauseMusicTo(0f, stopAtEnd: true);
+        SuspendPauseMusicForPreview();
         if (!playlistPreviewSource)
         {
             playlistPreviewSource = gameObject.AddComponent<AudioSource>();
@@ -73,7 +93,7 @@ public partial class AudioManager
     {
         StopPlaylistPreview();
         RefreshGameplayPlaylist();
-        PlayPauseMusic(restart: true);
+        PlayPauseMusic();
     }
 
     public void ClosePlaylistSettings()
@@ -85,7 +105,7 @@ public partial class AudioManager
         if (AudioListener.pause)
         {
             // Settings can close to the pause menu; ResumeGame owns the unpause.
-            PlayPauseMusic(restart: true);
+            PlayPauseMusic();
             return;
         }
         StopPauseMusic();

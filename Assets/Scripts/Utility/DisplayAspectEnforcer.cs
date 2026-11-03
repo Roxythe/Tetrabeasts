@@ -100,7 +100,7 @@ public sealed class DisplayAspectEnforcer : MonoBehaviour
             return;
 
         _startupResolutionRequested = true;
-        Screen.SetResolution(TargetWidth, TargetHeight, FullScreenMode.FullScreenWindow);
+        VideoSettingsStore.Apply(VideoSettingsStore.Load());
     }
 
     void ApplyLayout(bool forceCameraRefresh)

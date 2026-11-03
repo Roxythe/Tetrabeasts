@@ -43,6 +43,10 @@ public sealed class GameplaySongPopup : MonoBehaviour
         panel.anchoredPosition = new Vector2(-24, 24);
         panel.sizeDelta = new Vector2(420, 86);
         group = GetComponent<CanvasGroup>();
+        group.ignoreParentGroups = true;
+        var topLayer = gameObject.AddComponent<Canvas>();
+        topLayer.overrideSorting = true;
+        topLayer.sortingOrder = 32766;
         group.interactable = group.blocksRaycasts = false;
         group.alpha = 0;
         var frame = Box(transform, "Gold frame", new Color(.68f, .43f, .12f, 1));
@@ -103,6 +107,11 @@ public sealed class GameplaySongPopup : MonoBehaviour
         if (AudioListener.pause || Time.timeScale <= 0f) { group.alpha = 0; return; }
         LayoutTitle();
         Advance(Time.unscaledDeltaTime);
+    }
+
+    void LateUpdate()
+    {
+        if (showing) transform.SetAsLastSibling();
     }
 
     void Advance(float dt)

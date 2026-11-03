@@ -1,4 +1,7 @@
 
+
+----------------------------------------------------------------------------------------------------
+
 - Make columns with a defensive monster unit as the highest place placed unit more likely target choice when spawning enemy projectiles (this will make defensive units more useful as they draw enemy fire when placed above other units in the column). So for example if the level is currently spawning 3 enemy projectile at a time and three different columns have a defensive unit placed highest in 3 different columns, it should chose to spawn projectiles in those columns over other columns. Right now I think the enemy AI just prioritizes columns with enemies in it, so just add this on top and use the old targeting as the fall back if there aren't enough defense role units to target at the top occupied row of a column.
 
 - Add an icon next to the song that is currently playing on their current game in the playlist setting panel so that they know what song they were listening to before pausing the game and opening the playlist panel.

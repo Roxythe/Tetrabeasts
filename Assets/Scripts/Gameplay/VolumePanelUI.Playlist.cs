@@ -5,26 +5,40 @@ using UnityEngine.UI;
 
 public partial class VolumePanelUI
 {
-    GameObject playlistPanel;
-    Button playlistTabButton;
-    Transform playlistRows;
-    ScrollRect playlistScroll;
-    readonly List<PlaylistSongRowUI> playlistSongRows = new();
-    readonly List<TMP_Text> playlistHeaders = new();
-    RectTransform stickyPlaylistHeader;
-    TMP_Text stickyPlaylistLabel;
-    Toggle songPopupToggle;
+    [Header("Playlist Tab")]
+    [SerializeField] GameObject playlistPanel;
+    [SerializeField] Button playlistTabButton;
+    [SerializeField] Transform playlistRows;
+    [SerializeField] ScrollRect playlistScroll;
+    [SerializeField] List<PlaylistSongRowUI> playlistSongRows = new();
+    [SerializeField] List<TMP_Text> playlistHeaders = new();
+    [SerializeField] RectTransform stickyPlaylistHeader;
+    [SerializeField] TMP_Text stickyPlaylistLabel;
+    [SerializeField] Toggle songPopupToggle;
 
     void EnsurePlaylistUI()
     {
+        if (!playlistPanel) BuildPlaylistUI();
+        if (!Application.isPlaying) return;
+        WireSettingsTabs();
+        songPopupToggle.onValueChanged.RemoveListener(SettingsStore.SaveSongPopupEnabled);
+        songPopupToggle.onValueChanged.AddListener(SettingsStore.SaveSongPopupEnabled);
+        playlistScroll.onValueChanged.RemoveListener(OnPlaylistScrolled);
+        playlistScroll.onValueChanged.AddListener(OnPlaylistScrolled);
+        MenuScrollRectInput.Attach(playlistScroll, playlistPanel, autoCenterSelected: true);
+    }
+
+    void OnPlaylistScrolled(Vector2 _) => UpdateStickyPlaylistHeader();
+
+    void BuildPlaylistUI()
+    {
         if (playlistPanel) return;
-        // The same runtime construction serves the title and in-game settings prefab instances.
+        // Used to author the prefab, with a fallback for older settings instances.
         var general = CreatePlaylistButton(transform, "General_Tab", "General");
-        PlacePlaylistControl(general.transform, new Vector2(-135, 260), new Vector2(230, 40));
+        PlacePlaylistControl(general.transform, new Vector2(-240, 260), new Vector2(210, 40));
         general.interactable = false;
         playlistTabButton = CreatePlaylistButton(transform, "Playlist_Tab", "Playlist");
-        PlacePlaylistControl(playlistTabButton.transform, new Vector2(135, 260), new Vector2(230, 40));
-        playlistTabButton.onClick.AddListener(OpenPlaylistTab);
+        PlacePlaylistControl(playlistTabButton.transform, new Vector2(0, 260), new Vector2(210, 40));
 
         playlistPanel = new GameObject("Playlist_Panel", typeof(RectTransform), typeof(Image));
         playlistPanel.transform.SetParent(transform, false);
@@ -54,19 +68,11 @@ public partial class VolumePanelUI
         songPopupToggle = popupSetting.AddComponent<Toggle>();
         songPopupToggle.targetGraphic = popupBox;
         songPopupToggle.graphic = popupTick;
-        songPopupToggle.SetIsOnWithoutNotify(SettingsStore.LoadSongPopupEnabled());
-        songPopupToggle.onValueChanged.AddListener(SettingsStore.SaveSongPopupEnabled);
+        songPopupToggle.SetIsOnWithoutNotify(true);
         ApplyPlaylistFeedback(songPopupToggle);
         var popupLabel = PlaylistText(popupSetting.transform, "Label", "Show song popups", 22, TextAlignmentOptions.Left);
         PlacePlaylistControl(popupLabel.transform, new Vector2(20, 0), new Vector2(280, 28));
         popupLabel.raycastTarget = true;
-
-        var backTab = CreatePlaylistButton(playlistPanel.transform, "General_Tab", "General");
-        PlacePlaylistControl(backTab.transform, new Vector2(-135, 260), new Vector2(230, 40));
-        backTab.onClick.AddListener(ClosePlaylistTab);
-        var activeTab = CreatePlaylistButton(playlistPanel.transform, "Playlist_Tab", "Playlist");
-        PlacePlaylistControl(activeTab.transform, new Vector2(135, 260), new Vector2(230, 40));
-        activeTab.interactable = false;
 
         var scrollGo = new GameObject("Playlist_Scroll", typeof(RectTransform), typeof(Image), typeof(SmoothPlaylistScrollRect));
         scrollGo.transform.SetParent(playlistPanel.transform, false);
@@ -110,7 +116,6 @@ public partial class VolumePanelUI
         stickyPlaylistLabel.color = new Color(1, 0.72f, 0.25f);
         StretchToFill(stickyPlaylistLabel.rectTransform, new Vector2(12, 0), new Vector2(-6, 0));
         sticky.raycastTarget = stickyPlaylistLabel.raycastTarget = false;
-        playlistScroll.onValueChanged.AddListener(_ => UpdateStickyPlaylistHeader());
 
         var track = CreateImage(scrollGo.transform, "Scroll_Track", new Color(0.12f, 0.12f, 0.15f, 1));
         track.raycastTarget = true;
@@ -127,22 +132,20 @@ public partial class VolumePanelUI
         scrollbar.targetGraphic = handle;
         scrollbar.direction = Scrollbar.Direction.BottomToTop;
         playlistScroll.verticalScrollbar = scrollbar;
-        MenuScrollRectInput.Attach(playlistScroll, playlistPanel, autoCenterSelected: true);
 
         var footnote = PlaylistText(playlistPanel.transform, "Playlist_EmptyHint", "No checked songs in a group = silence for those levels.", 17, TextAlignmentOptions.Center);
         PlacePlaylistControl(footnote.transform, new Vector2(0, -285), new Vector2(700, 26));
         var back = CreatePlaylistButton(playlistPanel.transform, "Playlist_Back", "Back");
         PlacePlaylistControl(back.transform, new Vector2(-135, -335), new Vector2(230, 52));
-        back.onClick.AddListener(ClosePlaylistTab);
         var close = CreatePlaylistButton(playlistPanel.transform, "Playlist_Close", "Close Settings");
         PlacePlaylistControl(close.transform, new Vector2(135, -335), new Vector2(230, 52));
-        close.onClick.AddListener(Close);
         playlistPanel.SetActive(false);
     }
 
     public void OpenPlaylistTab()
     {
         EnsurePlaylistUI();
+        CloseVideoTab();
         if (playlistPanel.activeSelf) return;
         if (AudioManager.I && playlistSongRows.Count == 0)
         {
@@ -155,6 +158,7 @@ public partial class VolumePanelUI
         songPopupToggle.SetIsOnWithoutNotify(SettingsStore.LoadSongPopupEnabled());
         playlistPanel.transform.SetAsLastSibling();
         playlistPanel.SetActive(true);
+        RefreshSharedSettingsTabs();
         Canvas.ForceUpdateCanvases();
         playlistScroll.verticalNormalizedPosition = 1f;
         UpdateStickyPlaylistHeader();
@@ -168,6 +172,7 @@ public partial class VolumePanelUI
     {
         if (!playlistPanel || !playlistPanel.activeSelf) return;
         playlistPanel.SetActive(false);
+        RefreshSharedSettingsTabs();
         AudioManager.I?.EndPlaylistEditing();
         RefreshModalSelectableScope();
         SelectSelectable(playlistTabButton, UICursorController.IsButtonNavigationMode);
@@ -175,7 +180,9 @@ public partial class VolumePanelUI
 
     void ClosePlaylistForSettingsExit()
     {
+        CloseVideoTab();
         if (playlistPanel) playlistPanel.SetActive(false);
+        RefreshSharedSettingsTabs();
         AudioManager.I?.ClosePlaylistSettings();
     }
 
@@ -210,8 +217,7 @@ public partial class VolumePanelUI
             toggle.targetGraphic = checkbox;
             toggle.graphic = tick;
             ApplyPlaylistFeedback(toggle);
-            toggle.SetIsOnWithoutNotify(GameplayPlaylist.IsEnabled(clip));
-            toggle.onValueChanged.AddListener(enabled => AudioManager.I?.SetPlaylistSongEnabled(clip, enabled));
+            toggle.SetIsOnWithoutNotify(true);
 
             var noteSlot = new GameObject("Current song", typeof(RectTransform));
             noteSlot.transform.SetParent(row, false);
@@ -235,10 +241,8 @@ public partial class VolumePanelUI
             }
             var play = CreatePlaylistButton(row, "Play", "Play");
             AddLayout(play.gameObject, 82, 38);
-            play.onClick.AddListener(() => AudioManager.I?.PreviewPlaylistSong(clip));
             var pause = CreatePlaylistButton(row, "Pause", "Pause");
             AddLayout(pause.gameObject, 82, 38);
-            pause.onClick.AddListener(() => AudioManager.I?.PausePlaylistSong(clip));
             var view = row.gameObject.AddComponent<PlaylistSongRowUI>();
             view.Configure(clip, toggle, background, bars, currentNote);
             playlistSongRows.Add(view);
@@ -267,11 +271,11 @@ public partial class VolumePanelUI
         stickyPlaylistHeader.anchoredPosition = Vector2.zero;
     }
 
-    void CopyPlaylistPanelImage(string sourceName)
+    void CopyPlaylistPanelImage(string sourceName, Transform parent = null)
     {
         var source = FindChildComponent<Image>(transform, sourceName);
         if (!source) return;
-        var copy = CreateImage(playlistPanel.transform, sourceName, source.color);
+        var copy = CreateImage(parent ? parent : playlistPanel.transform, sourceName, source.color);
         copy.sprite = source.sprite;
         copy.type = source.type;
         copy.material = source.material;

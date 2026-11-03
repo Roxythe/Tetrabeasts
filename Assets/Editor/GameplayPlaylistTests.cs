@@ -20,6 +20,9 @@ public class GameplayPlaylistTests
     [SetUp] public void SetUp()
     {
         LocalSaveTestScope.Begin();
+        SessionState.SetBool("PlaylistTests.HadVideo", PlayerPrefs.HasKey(VideoSettingsStore.PreferenceKey));
+        SessionState.SetString("PlaylistTests.Video", PlayerPrefs.GetString(VideoSettingsStore.PreferenceKey));
+        PlayerPrefs.DeleteKey(VideoSettingsStore.PreferenceKey);
         SessionState.SetInt("PlaylistTests.SongPopup", PlayerPrefs.GetInt(SettingsStore.KeySongPopup, -1));
         PlayerPrefs.DeleteKey(SettingsStore.KeySongPopup);
         SessionState.SetInt("PlaylistTests.PendingWrite", PlayerPrefs.GetInt("gameplay_playlist_pending_file_write", 0));
@@ -37,6 +40,9 @@ public class GameplayPlaylistTests
         Time.timeScale = 1;
         foreach (var obj in temporary) if (obj) Object.DestroyImmediate(obj);
         temporary.Clear();
+        if (SessionState.GetBool("PlaylistTests.HadVideo", false))
+            PlayerPrefs.SetString(VideoSettingsStore.PreferenceKey, SessionState.GetString("PlaylistTests.Video", ""));
+        else PlayerPrefs.DeleteKey(VideoSettingsStore.PreferenceKey);
         if (SessionState.GetBool("PlaylistTests.HadPreference", false))
             PlayerPrefs.SetString(GameplayPlaylist.PreferenceKey, SessionState.GetString("PlaylistTests.OldPreference", ""));
         else PlayerPrefs.DeleteKey(GameplayPlaylist.PreferenceKey);
@@ -52,6 +58,58 @@ public class GameplayPlaylistTests
     static AudioClip[] Pool(AudioManager manager, bool boss) => (AudioClip[])typeof(AudioManager).GetMethod("BuildPool", Private).Invoke(manager, new object[] { boss });
     static void Mode(AudioManager manager, AudioManager.MusicMode mode) => typeof(AudioManager).GetProperty("musicMode").SetValue(manager, mode);
     AudioManager Prefab() => AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/AudioManager.prefab").GetComponent<AudioManager>();
+
+    [Test] public void SettingsTabsAndSongsAreSerializedInTheEditablePrefab()
+    {
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Panels/Volume_Panel.prefab");
+        var panel = prefab.GetComponent<VolumePanelUI>();
+        foreach (string tab in new[] { "General_Tab", "Playlist_Tab", "Video_Tab" })
+        {
+            Assert.IsNotNull(prefab.transform.Find(tab), tab);
+            Assert.AreEqual(1, prefab.GetComponentsInChildren<Button>(true).Count(b => b.name == tab), "One authored tab is shared across all panels.");
+        }
+        Assert.AreEqual(54, prefab.GetComponentsInChildren<PlaylistSongRowUI>(true).Length);
+        Assert.AreEqual(54, Read<List<PlaylistSongRowUI>>(panel, "playlistSongRows").Count);
+        Assert.IsNotNull(Read<GameObject>(panel, "videoPanel"));
+        Assert.IsNotNull(Read<ScrollRect>(panel, "playlistScroll"));
+    }
+
+    [Test] public void SongPopupUsesTheActualGameplayCanvasAboveExistingUI()
+    {
+        var scene = UnityEditor.SceneManagement.EditorSceneManager.OpenScene("Assets/Scenes/GameplayScene.unity", UnityEditor.SceneManagement.OpenSceneMode.Additive);
+        try
+        {
+            var popup = GameplaySongPopup.CreateForGameplay();
+            Assert.IsNotNull(popup);
+            Assert.IsTrue(popup.gameObject.activeInHierarchy);
+            var canvas = popup.GetComponent<Canvas>();
+            Assert.IsTrue(canvas.overrideSorting);
+            foreach (var root in scene.GetRootGameObjects())
+                foreach (var other in root.GetComponentsInChildren<Canvas>(true))
+                    if (other != canvas) Assert.Greater(canvas.sortingOrder, other.sortingOrder, other.name);
+        }
+        finally { UnityEditor.SceneManagement.EditorSceneManager.CloseScene(scene, true); }
+    }
+
+    [Test] public void VideoSettingsPersistAndRejectInvalidValues()
+    {
+        Assert.AreEqual(2, VideoSettingsStore.Load().displayMode);
+        foreach (int mode in new[] { 0, 1, 2 })
+        {
+            var value = new VideoSettingsStore.Options { displayMode = mode, width = 1280, height = 720, vSync = false, frameRate = 120 };
+            VideoSettingsStore.Save(value);
+            Assert.AreEqual(JsonUtility.ToJson(value), JsonUtility.ToJson(VideoSettingsStore.Load()));
+        }
+        PlayerPrefs.SetString(VideoSettingsStore.PreferenceKey, "broken json");
+        Assert.AreEqual(2, VideoSettingsStore.Load().displayMode);
+        var invalid = VideoSettingsStore.Validate(new VideoSettingsStore.Options { displayMode = 9, width = -1, height = 0, frameRate = 0 });
+        Assert.AreEqual(2, invalid.displayMode);
+        Assert.AreEqual(1920, invalid.width);
+        Assert.AreEqual(60, invalid.frameRate);
+        Assert.AreEqual(FullScreenMode.Windowed, VideoSettingsStore.ScreenMode(0));
+        Assert.AreEqual(FullScreenMode.ExclusiveFullScreen, VideoSettingsStore.ScreenMode(1));
+        Assert.AreEqual(FullScreenMode.FullScreenWindow, VideoSettingsStore.ScreenMode(2));
+    }
 
     [Test] public void EveryConfiguredSongHasAUniqueFixedTitleAndDefaultsToEnabled()
     {
@@ -159,11 +217,24 @@ public class GameplayPlaylistTests
         // Avoid a captured lambda in this iterator: EnterPlayMode reloads its closure.
         var allowed = audio.EDMGameplayMusic[0] != excluded ? audio.EDMGameplayMusic[0] : audio.EDMGameplayMusic[1];
         audio.SetPlaylistSongEnabled(allowed, true);
+        var pauseTrack = Read<AudioSource>(audio, "pauseMusicSrc");
+        pauseTrack.time = 8f;
+        var pauseClip = pauseTrack.clip;
         audio.PreviewPlaylistSong(audio.MetalBossMusic[0]);
         Assert.AreSame(currentSong, audio.CurrentGameplaySong, "Pause and previews retain the gameplay song identity.");
         Assert.AreSame(audio.MetalBossMusic[0], preview.clip, "Replacing a sample must not wait for an outgoing fade.");
         yield return new WaitForSecondsRealtime(0.6f);
         Assert.IsTrue(audio.IsPlaylistPreviewPlaying(audio.MetalBossMusic[0]));
+        Assert.AreEqual(8f, pauseTrack.time, .2f, "Previewing freezes the pause track's playback position.");
+        audio.EndPlaylistEditing();
+        yield return new WaitForSecondsRealtime(.6f);
+        Assert.AreSame(pauseClip, pauseTrack.clip);
+        Assert.Greater(pauseTrack.time, 8f, "Leaving the playlist resumes instead of restarting pause music.");
+        Mode(audio, AudioManager.MusicMode.Both);
+        for (int i = 0; i < 6; i++) audio.PlayPauseMusic();
+        Assert.AreSame(pauseClip, pauseTrack.clip, "Panel navigation keeps the chosen Random-mode song.");
+        Assert.Greater(pauseTrack.time, 8f);
+        Mode(audio, AudioManager.MusicMode.EDM);
         audio.ClosePlaylistSettings();
         audio.StopPauseMusic();
         AudioListener.pause = false;
@@ -177,6 +248,11 @@ public class GameplayPlaylistTests
         float beforePause = Read<AudioSource>(audio, "activeMusicSrc").time;
         AudioListener.pause = true;
         audio.PlayPauseMusic();
+        Assert.Less(pauseTrack.time, 1f, "A new pause session starts the track over.");
+        pauseTrack.time = 8f;
+        audio.StopPauseMusic();
+        audio.PlayPauseMusic();
+        Assert.Less(pauseTrack.time, 1f, "An immediate re-pause also starts fresh during the outgoing fade.");
         audio.BeginPlaylistEditing();
         audio.PreviewPlaylistSong(song);
         yield return new WaitForSecondsRealtime(0.6f);
@@ -217,6 +293,7 @@ public class GameplayPlaylistTests
     {
         yield return new EnterPlayMode();
         LocalSaveTestScope.Apply();
+        GameModeStore.Current = RunGameMode.Chaos;
         var audio = Object.Instantiate(Prefab()); temporary.Add(audio.gameObject);
         var canvasGo = new GameObject("Playlist test canvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
         temporary.Add(canvasGo);
@@ -236,13 +313,30 @@ public class GameplayPlaylistTests
         var hook = canvasGo.AddComponent<GameplayUI_SFXHook>();
         hook.uiHoverSFX = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/UI/ButtonHoverUI_SFX.wav");
         var events = new GameObject("Playlist test events", typeof(EventSystem)); temporary.Add(events);
-        var panelPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Panels/Volume_Panel.prefab");
-        var panelGo = Object.Instantiate(panelPrefab, canvas.transform);
+        // Gameplay (including Chaos) uses the settings prefab nested inside PauseMenu.
+        var pausePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Panels/PauseMenu_Panel.prefab");
+        var pauseGo = Object.Instantiate(pausePrefab, canvas.transform);
+        pauseGo.SetActive(true);
+        var panelGo = pauseGo.GetComponentInChildren<VolumePanelUI>(true).gameObject;
         panelGo.SetActive(true);
         var panel = panelGo.GetComponent<VolumePanelUI>();
+        var sharedGeneral = panelGo.transform.Find("General_Tab").GetComponent<Button>();
+        var sharedPlaylist = panelGo.transform.Find("Playlist_Tab").GetComponent<Button>();
+        var sharedVideo = panelGo.transform.Find("Video_Tab").GetComponent<Button>();
+        var authoredOffset = sharedVideo.GetComponentInChildren<TMPro.TMP_Text>(true).rectTransform.anchoredPosition;
         yield return null;
         Capture(camera, "Playlist-General");
+        panel.OpenControlsPanel();
+        Assert.IsFalse(sharedGeneral.gameObject.activeSelf);
+        Assert.IsFalse(sharedPlaylist.gameObject.activeSelf);
+        Assert.IsFalse(sharedVideo.gameObject.activeSelf);
+        panel.CloseControlsPanel(true);
+        Assert.IsTrue(sharedGeneral.gameObject.activeSelf);
+        Assert.IsTrue(sharedPlaylist.gameObject.activeSelf);
+        Assert.IsTrue(sharedVideo.gameObject.activeSelf);
         panel.OpenPlaylistTab();
+        Assert.AreSame(sharedVideo, Read<GameObject>(panel, "playlistPanel").transform.Find("Video_Tab").GetComponent<Button>());
+        Assert.AreEqual(authoredOffset, sharedVideo.GetComponentInChildren<TMPro.TMP_Text>(true).rectTransform.anchoredPosition);
         var popupToggle = Read<Toggle>(panel, "songPopupToggle");
         Assert.IsTrue(popupToggle.isOn, "New accounts default to showing song popups.");
         popupToggle.isOn = false;
@@ -333,10 +427,53 @@ public class GameplayPlaylistTests
         Capture(camera, "Playlist-Metal");
         panel.ClosePlaylistTab();
         Assert.IsFalse(playlistPanel.activeSelf);
+        panelGo.transform.Find("Video_Tab").GetComponent<Button>().onClick.Invoke();
+        var video = Read<GameObject>(panel, "videoPanel");
+        Assert.IsTrue(video.activeSelf);
+        Assert.AreSame(sharedVideo, video.transform.Find("Video_Tab").GetComponent<Button>());
+        Assert.AreEqual(authoredOffset, sharedVideo.GetComponentInChildren<TMPro.TMP_Text>(true).rectTransform.anchoredPosition);
+        foreach (string tab in new[] { "General_Tab", "Playlist_Tab", "Video_Tab" })
+            Assert.AreEqual(1, panelGo.GetComponentsInChildren<Button>(true).Count(b => b.name == tab));
+        Assert.IsEmpty(video.GetComponentsInChildren<Slider>(true), "Artwork must not duplicate General-tab controls.");
+        Assert.AreSame(playlistPanel.transform.Find("Background_Panel").GetComponent<Image>().sprite,
+            video.transform.Find("Background_Panel").GetComponent<Image>().sprite);
+        var display = Read<TMPro.TMP_Dropdown>(panel, "displayModeDropdown");
+        var resolution = Read<TMPro.TMP_Dropdown>(panel, "resolutionDropdown");
+        var vsync = Read<TMPro.TMP_Dropdown>(panel, "vSyncDropdown");
+        var fps = Read<TMPro.TMP_Dropdown>(panel, "frameRateDropdown");
+        Assert.IsFalse(resolution.interactable, "Borderless uses desktop resolution.");
+        Assert.IsFalse(fps.interactable, "VSync controls timing while enabled.");
+        Capture(camera, "Settings-Video");
+        display.value = 0; vsync.value = 0; fps.value = 1;
+        Assert.IsTrue(resolution.interactable);
+        Assert.IsTrue(fps.interactable);
+        Read<Button>(panel, "videoApplyButton").onClick.Invoke();
+        Assert.IsFalse(PlayerPrefs.HasKey(VideoSettingsStore.PreferenceKey), "A pending change is not saved yet.");
+        yield return null;
+        Capture(camera, "Settings-Video-Confirm");
+        Read<Button>(panel, "videoKeepButton").onClick.Invoke();
+        Assert.AreEqual(0, VideoSettingsStore.Load().displayMode);
+        Assert.AreEqual(120, VideoSettingsStore.Load().frameRate);
+        display.value = 1;
+        Read<Button>(panel, "videoApplyButton").onClick.Invoke();
+        typeof(VolumePanelUI).GetField("videoConfirmRemaining", Private).SetValue(panel, 0f);
+        yield return null;
+        Assert.IsFalse(Read<bool>(panel, "videoPending"), "Confirmation expires even while gameplay is paused.");
+        Assert.AreEqual(0, display.value);
+        display.value = 2;
+        Read<Button>(panel, "videoApplyButton").onClick.Invoke();
+        video.transform.Find("Playlist_Tab").GetComponent<Button>().onClick.Invoke();
+        Assert.IsFalse(Read<bool>(panel, "videoPending"), "Leaving Video reverts unconfirmed settings.");
+        Assert.IsTrue(playlistPanel.activeSelf);
+        Assert.AreEqual(54, panelGo.GetComponentsInChildren<PlaylistSongRowUI>(true).Length, "Reopening tabs retains the authored rows.");
+        panel.ClosePlaylistTab();
         panel.Close(true);
         var popup = GameplaySongPopup.Create(canvas, panel.closeButton.GetComponentInChildren<TMPro.TMP_Text>(true));
         popup.ShowSong(audio.EDMGameplayMusic[0], null);
         var group = popup.GetComponent<CanvasGroup>();
+        Assert.IsTrue(group.ignoreParentGroups);
+        Assert.IsTrue(popup.GetComponent<Canvas>().overrideSorting);
+        Assert.AreEqual(32766, popup.GetComponent<Canvas>().sortingOrder);
         Assert.AreEqual(0f, group.alpha);
         typeof(GameplaySongPopup).GetMethod("Advance", Private).Invoke(popup, new object[] { .3f });
         Assert.AreEqual(1f, group.alpha);

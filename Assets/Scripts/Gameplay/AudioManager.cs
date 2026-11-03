@@ -93,6 +93,8 @@ public partial class AudioManager : MonoBehaviour
     AudioSource[] specialAbilityLoopSfxSources;
     AudioSource ambienceLoopSrc;
     AudioSource pauseMusicSrc;
+    bool pauseMusicSession;
+    bool pauseMusicSuspended;
 
     public MusicMode musicMode { get; private set; } = MusicMode.EDM;
 
@@ -1324,18 +1326,21 @@ public partial class AudioManager : MonoBehaviour
 
     public void PlayPauseMusic(bool restart = false)
     {
-        // Pick EDM/Metal/both clip
-        var clip = PickPauseClipByMode();
         FadeMainMusicForPause(fadeOut: true);
-        if (!clip) return;
-
-        if (!restart && pauseMusicSrc.isPlaying && pauseMusicSrc.clip == clip)
+        if (pauseMusicSession && !restart && pauseMusicSrc.clip)
         {
+            if (pauseMusicSuspended) pauseMusicSrc.UnPause();
+            pauseMusicSuspended = false;
             FadePauseMusicTo(1f, stopAtEnd: false);
             return;
         }
+        // Pick EDM/Metal/both clip
+        var clip = PickPauseClipByMode();
+        if (!clip) return;
 
         pauseMusicSrc.clip = clip;
+        pauseMusicSession = true;
+        pauseMusicSuspended = false;
         pauseMusicSrc.loop = true;
         pauseMusicSrc.time = 0f;
         SetPauseMusicVolumeScale(0f);
@@ -1345,12 +1350,31 @@ public partial class AudioManager : MonoBehaviour
 
     public void StopPauseMusic()
     {
+        pauseMusicSession = false;
+        pauseMusicSuspended = false;
         StopPlaylistPreview();
         SilenceExcludedResumeSources();
         FadeMainMusicForPause(fadeOut: false);
 
         if (pauseMusicSrc && pauseMusicSrc.isPlaying)
             FadePauseMusicTo(0f, stopAtEnd: true);
+        else if (pauseMusicSrc)
+        {
+            if (pauseMusicFadeCo != null) StopCoroutine(pauseMusicFadeCo);
+            pauseMusicFadeCo = null;
+            pauseMusicSrc.Stop();
+            pauseMusicSrc.clip = null;
+        }
+    }
+
+    void SuspendPauseMusicForPreview()
+    {
+        if (!pauseMusicSrc || pauseMusicSuspended) return;
+        if (pauseMusicFadeCo != null) StopCoroutine(pauseMusicFadeCo);
+        pauseMusicFadeCo = null;
+        pauseMusicSrc.Pause();
+        pauseMusicSuspended = true;
+        SetPauseMusicVolumeScale(0f);
     }
 
     void RestartContextMusic()

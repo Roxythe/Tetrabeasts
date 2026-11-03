@@ -3,11 +3,12 @@ using UnityEngine.UI;
 
 public sealed class PlaylistSongRowUI : MonoBehaviour
 {
-    AudioClip clip;
-    Toggle enabledToggle;
-    Image background;
-    RectTransform[] bars;
-    RectTransform currentSongNote;
+    [SerializeField] AudioClip clip;
+    [SerializeField] Toggle enabledToggle;
+    [SerializeField] Image background;
+    [SerializeField] RectTransform[] bars;
+    [SerializeField] RectTransform currentSongNote;
+    bool callbacksWired;
     bool lastCurrent;
     int lastFrame = -1;
 
@@ -18,7 +19,23 @@ public sealed class PlaylistSongRowUI : MonoBehaviour
         background = rowBackground;
         bars = meterBars;
         currentSongNote = note;
+        if (Application.isPlaying) WireCallbacks();
     }
+
+    void Awake() => WireCallbacks();
+
+    void WireCallbacks()
+    {
+        if (callbacksWired || !clip || !enabledToggle) return;
+        callbacksWired = true;
+        enabledToggle.onValueChanged.AddListener(SetEnabled);
+        transform.Find("Play").GetComponent<Button>().onClick.AddListener(Preview);
+        transform.Find("Pause").GetComponent<Button>().onClick.AddListener(Pause);
+    }
+
+    void SetEnabled(bool value) => AudioManager.I?.SetPlaylistSongEnabled(clip, value);
+    void Preview() => AudioManager.I?.PreviewPlaylistSong(clip);
+    void Pause() => AudioManager.I?.PausePlaylistSong(clip);
 
     public void RefreshToggle() => enabledToggle.SetIsOnWithoutNotify(GameplayPlaylist.IsEnabled(clip));
 

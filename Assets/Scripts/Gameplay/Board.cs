@@ -1991,6 +1991,7 @@ public partial class Board : MonoBehaviour
 
     public void ClearRoundTransientEffects()
     {
+        ClearRowAttackOutlines();
         ClearFeelGood();
         ClearCraterCells();
         healVfxGeneration++;
@@ -2292,6 +2293,8 @@ public partial class Board : MonoBehaviour
 
         var stonesDamaged = new HashSet<Vector2Int>();
         var fullRows = new List<int>();
+        var waveOutlines = new Dictionary<int, RowAttackOutlineVFX>();
+        var waveOrigins = clearOriginColumnsByRow;
 
         if (gc)
             gc.SetRowClearComboResolutionActive(true);
@@ -2301,6 +2304,7 @@ public partial class Board : MonoBehaviour
         while (true)
         {
             fullRows.Clear();
+            waveOutlines.Clear();
 
             for (int y = 0; y < height; y++)
             {
@@ -2397,7 +2401,16 @@ public partial class Board : MonoBehaviour
                         rowDominantMonster[rowKey] = dominant;
                 }
 
-                float backgroundPulseSeconds = PlayRowClearBackgroundPulse(y, clearOriginColumnsByRow);
+                if (finalRowDamage > 0)
+                {
+                    var outline = PlayRowAttackOutline(y, waveOrigins);
+                    if (outline)
+                    {
+                        waveOutlines[y] = outline;
+                        preClearHoldSeconds = Mathf.Max(preClearHoldSeconds, outline.LeadSeconds);
+                    }
+                }
+                float backgroundPulseSeconds = PlayRowClearBackgroundPulse(y, waveOrigins);
                 bool rowAltShown = ShowAltPortraitsInRow(y);
                 float altHoldSeconds = (rowAltShown && attackLineClearAltHoldSeconds > 0f) ? attackLineClearAltHoldSeconds : 0f;
                 preClearHoldSeconds = Mathf.Max(preClearHoldSeconds, backgroundPulseSeconds, altHoldSeconds);
@@ -2412,6 +2425,7 @@ public partial class Board : MonoBehaviour
             for (int i = 0; i < fullRows.Count; i++)
             {
                 int y = fullRows[i];
+                if (waveOutlines.TryGetValue(y, out var outline) && outline) outline.Release();
                 for (int x = 0; x < width; x++)
                 {
                     var key = new Vector2Int(x, y);
@@ -2431,7 +2445,8 @@ public partial class Board : MonoBehaviour
                 }
             }
 
-            SettleAllColumns(false); // Let remaining tiles fall into gaps (stones remain as blockers)
+            waveOrigins = new Dictionary<int, List<int>>();
+            SettleAllColumns(false, waveOrigins); // Track newly filled cells for the next cascade's outline.
 
             // Redraw at least one frame so cascade-created full rows are visible before being cleared.
             // The cascade pause is already included in the shared pre-clear timing above.
@@ -2440,6 +2455,7 @@ public partial class Board : MonoBehaviour
         }
         finally
         {
+            foreach (var outline in waveOutlines.Values) if (outline) outline.Release();
             if (gc)
                 gc.SetRowClearComboResolutionActive(false);
         }
@@ -2800,6 +2816,9 @@ public partial class Board : MonoBehaviour
     public void SettleAllColumns() => SettleAllColumns(false);
 
     public void SettleAllColumns(bool allowObstaclesToFall)
+        => SettleAllColumns(allowObstaclesToFall, null);
+
+    void SettleAllColumns(bool allowObstaclesToFall, Dictionary<int, List<int>> filledColumnsByRow)
     {
         for (int x = 0; x < width; x++)
         {
@@ -2838,6 +2857,13 @@ public partial class Board : MonoBehaviour
                     placed.Remove(from);
                     placed[to] = rt;
                     rt.anchoredPosition = CellToAnchoredPos(to);
+
+                    if (filledColumnsByRow != null)
+                    {
+                        if (!filledColumnsByRow.TryGetValue(to.y, out var columns))
+                            filledColumnsByRow[to.y] = columns = new List<int>();
+                        if (!columns.Contains(to.x)) columns.Add(to.x);
+                    }
 
                     if (monsters.TryGetValue(from, out var inst))
                     {

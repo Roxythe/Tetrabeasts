@@ -94,6 +94,7 @@ public partial class VolumePanelUI : MonoBehaviour
         EnsureControlsPanelUI();
 
         EnsurePlaylistUI();
+        EnsureVideoUI();
 
         cg = GetComponent<CanvasGroup>();
         if (closeButton) closeButton.onClick.AddListener(Close);
@@ -161,6 +162,10 @@ public partial class VolumePanelUI : MonoBehaviour
         TetrabeastsControls.PlatformDefaultProfileChanged += HandlePlatformDefaultProfileChanged;
         RefreshControlsPanel();
         CloseControlsPanel(true);
+        // A tab may be left active while editing the prefab; settings always opens on General.
+        if (playlistPanel) playlistPanel.SetActive(false);
+        if (videoPanel) videoPanel.SetActive(false);
+        RefreshSharedSettingsTabs();
         RefreshModalSelectableScope();
 
         if (focusFirstSelectableWhenOpened && UINavigationUtility.ShouldKeepNavigationSelection)
@@ -169,6 +174,7 @@ public partial class VolumePanelUI : MonoBehaviour
 
     void OnDisable()
     {
+        RestoreSettingsTabsAfterControls();
         ClosePlaylistForSettingsExit();
         TetrabeastsLocalization.LanguageChanged -= RefreshLanguageControls;
         TetrabeastsControls.ProfileChanged -= HandleControlsProfileChanged;
@@ -1007,6 +1013,7 @@ public partial class VolumePanelUI : MonoBehaviour
         RefreshControlsPanel();
         controlsPanelRoot.transform.SetAsLastSibling();
         UIPanelTransition.Show(controlsPanelRoot);
+        HideSettingsTabsForControls();
         suppressDropdownOpenUntilFrame = Time.frameCount + 2;
         RefreshModalSelectableScope();
 
@@ -1067,6 +1074,7 @@ public partial class VolumePanelUI : MonoBehaviour
 
         RestoreDropdownSelectableScope();
         UIPanelTransition.Hide(controlsPanelRoot, instant);
+        if (!controlsPanelRoot.activeSelf) RestoreSettingsTabsAfterControls();
 
         RefreshModalSelectableScope();
 
@@ -1220,6 +1228,13 @@ public partial class VolumePanelUI : MonoBehaviour
 
     void Update()
     {
+        // Keep tabs hidden until the Controls closing animation has finished.
+        if (controlsHiddenTabs.Count > 0 && (!controlsPanelRoot || !controlsPanelRoot.activeSelf))
+        {
+            RestoreSettingsTabsAfterControls();
+            RefreshModalSelectableScope();
+        }
+        UpdateVideoConfirmation();
         if (!UIPanelTransition.IsVisible(gameObject))
         {
             ClosePlaylistForSettingsExit();
@@ -1277,6 +1292,12 @@ public partial class VolumePanelUI : MonoBehaviour
         if (playlistPanel && playlistPanel.activeSelf)
         {
             ClosePlaylistTab();
+            return;
+        }
+
+        if (videoPanel && videoPanel.activeSelf)
+        {
+            CloseVideoTab();
             return;
         }
 
@@ -1656,6 +1677,9 @@ public partial class VolumePanelUI : MonoBehaviour
         if (playlistPanel && playlistPanel.activeSelf)
             return playlistPanel;
 
+        if (videoPanel && videoPanel.activeSelf)
+            return videoPanel;
+
         if (controlsPanelRoot && UIPanelTransition.IsVisible(controlsPanelRoot))
             return controlsPanelRoot;
 
@@ -1708,6 +1732,12 @@ public partial class VolumePanelUI : MonoBehaviour
 
     bool TryGetOpenDropdown(out TMP_Dropdown dropdown, out GameObject dropdownRoot)
     {
+        if (TryGetOpenDropdown(displayModeDropdown, out dropdown, out dropdownRoot) ||
+            TryGetOpenDropdown(resolutionDropdown, out dropdown, out dropdownRoot) ||
+            TryGetOpenDropdown(vSyncDropdown, out dropdown, out dropdownRoot) ||
+            TryGetOpenDropdown(frameRateDropdown, out dropdown, out dropdownRoot))
+            return true;
+
         if (TryGetOpenDropdown(controlsProfileDropdown, out dropdown, out dropdownRoot))
             return true;
 
