@@ -41,6 +41,8 @@ public class RunModOptionButton : MonoBehaviour, IPointerEnterHandler, IPointerM
     public Color legendaryDescColor = new Color(1f, 0.75f, 0.2f);
 
     RunModifierSO _mod;
+    public RoundRewardUI previewOwner { private get; set; }
+    bool previewVisible;
     bool _selected;
     bool _isPointerHover;
     bool _isNavigationFocus;
@@ -76,6 +78,22 @@ public class RunModOptionButton : MonoBehaviour, IPointerEnterHandler, IPointerM
             _isPointerHover = false;
             ApplyBgVisual();
         }
+    }
+
+    void LateUpdate()
+    {
+        if (!previewOwner) return;
+        bool targeted = !IsTutorialUiBlocking() && ((_isPointerHover && UICursorController.IsPointerTargetMode) ||
+            (_isNavigationFocus && UICursorController.IsButtonNavigationMode));
+        if (targeted == previewVisible) return;
+        previewVisible = targeted;
+        previewOwner.TargetReward(this, targeted ? _mod : null);
+    }
+
+    void OnDisable()
+    {
+        if (previewVisible && previewOwner) previewOwner.TargetReward(this, null);
+        previewVisible = _isPointerHover = _isNavigationFocus = false;
     }
 
     public void Bind(RunModifierSO mod, Action<RunModifierSO> onSelected)

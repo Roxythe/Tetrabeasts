@@ -200,6 +200,7 @@ public partial class LevelModifierController : MonoBehaviour
             return;
 
         float dt = Time.deltaTime;
+        UpdateChaosTitle(dt);
         UpdateNewModifierEffects(dt);
 
         switch (ActiveModifier.kind)
@@ -256,7 +257,7 @@ public partial class LevelModifierController : MonoBehaviour
             yield break;
 
         var pool = database.BuildPool(chaos ? null : castleData.allowedLevelModifierKinds);
-        if (chaos) pool.RemoveAll(m => chaosModifiers.Exists(active => active.kind == m.kind));
+        if (chaos) pool.RemoveAll(HasAcceptedChaosKind);
         if (pool.Count == 0)
             yield break;
 
@@ -322,7 +323,7 @@ public partial class LevelModifierController : MonoBehaviour
     {
         if (GameModeStore.Current == RunGameMode.Chaos && !isChaosEffect)
         {
-            if (!chaosModifiers.Contains(modifier)) chaosModifiers.Add(modifier);
+            if (!HasAcceptedChaosKind(modifier)) chaosModifiers.Add(modifier);
             RebuildChaosEffects();
             CodexProgressStore.Unlock(modifier);
             LogModifierActivation();

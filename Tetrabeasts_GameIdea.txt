@@ -1,5 +1,27 @@
 
 
+
+
+----------------------------------------------------------------------------------------------------
+
+- At round reward selection I want to add a pop up text box when hovering over a buff or debuff that shows how choosing that option will affect the player. For example (increasing reinforcements shows the current reinforcements # -> increased reinforcements # with the increased reinforcements number as a blue color text). if a debuff is being highlighted it should show the updated stat or change in a red color text. (essentially if something is bad for the player it should be red in color, if its good it should be blue. For example, raising enemy attack power debuff should be red color text and lowering the players unit health should also be red color text. The color shouldn't be based on whether a value increases or decreases, but whether it is good or bad for the player.
+
+- Add a particle VFX when player attacks land on the enemy castle, spawning behind the current vfx animation. It should be 1-5 pixel debris particles that have irregular shapes like pieces of the castle wall chipping off. They should move up and or out from the point where the player attack was destroyed after reaching the enemy castle and move in an arcing path. It should last a couple seconds and fade away. Each player attack should trigger its own VFX. Change the color of the debris to match the enemy castle for that level. The color can be pre sampled so it doesn't need to be decided at runtime for each attack.
+
+- In chaos mode, when multiple level modifiers are active at the same time. Instead of adding the name text to the same modifier name text field in the gameplay scene, it should cycle through each of them over time, changing from one to the next every 3 seconds. That way the name of each modifier can be scene over time.
+
+- In chaos mode, once a player has gotten a certain level modifier and accepted it (not rerolled) it should be removed from the available pool of level modifiers that can be chosen from the slot machine in the same run. I don't know if this can happen or not.
+
+- Currently the modifier button on the level modifier selection panel only opens to the information of the first level modifier the player received that run. For example, I got watch your step for my first choice, and hallucination for my second choice. When I click the modifier button for more info on hallucination, it bring up the icon, name, and description for Watch your step though and not Hallucination (the one I just got).
+
+- I would also like to add a new level modifier button to the run modifier's panel that's accessed through the pause menu panel. The button should be in the bottom right of the run modifier panel. Pressing it should open a new panel that shows the current level modifier that's active (greyed out and unclickable when no level modifier is active). For chaos mode, add an arrow button on the left and right side of the panel that allows the player to cycle through any active level modifier they currently have. Each level modifier should use the same set up I have in the level modifier selection panel when you click the modifier button and it opens a panel to show more info and show the background image, the level modifier icon, the level modifier title, and the level modifier description. That way players can see what level modifiers they have active and read what they do.
+
+- The top of my special ability gauge is still showing slightly white instead of the normal red color when its full. It's only at the very top visually that its doing this.
+
+- The players special ability is activated and the special ability VFX animation come on screen, it should be at the top layer of the canvas. I just noticed that the hallucinations level modifier sprites were above it and it looked bad.
+
+- Make sure the changes are made to the actual LevelModifier_Panel and PauseMenu_Panel prefabs so that I can modify them myself in the editor if I need to.
+
 ----------------------------------------------------------------------------------------------------
 
 - Make columns with a defensive monster unit as the highest place placed unit more likely target choice when spawning enemy projectiles (this will make defensive units more useful as they draw enemy fire when placed above other units in the column). So for example if the level is currently spawning 3 enemy projectile at a time and three different columns have a defensive unit placed highest in 3 different columns, it should chose to spawn projectiles in those columns over other columns. Right now I think the enemy AI just prioritizes columns with enemies in it, so just add this on top and use the old targeting as the fall back if there aren't enough defense role units to target at the top occupied row of a column.

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: TestCastle 0
   m_EditorClassIdentifier: Assembly-CSharp::CastleData
   castleName: Starting Village
+  wallDebrisColor: {r: 0.349020, g: 0.301961, b: 0.207843, a: 1}
   damageStages:
   - {fileID: 21300000, guid: fc6e0b3b0316e284d95b796fa6418af6, type: 3}
   - {fileID: 21300000, guid: 937750f5cc1c58142b6b9d834baa4d64, type: 3}

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: TestBossLevel 3
   m_EditorClassIdentifier: Assembly-CSharp::CastleData
   castleName: Eris, City Priestess
+  wallDebrisColor: {r: 0.231373, g: 0.235294, b: 0.254902, a: 1}
   damageStages:
   - {fileID: 21300000, guid: b081466c86400cd488cab6d9a53db279, type: 3}
   - {fileID: 21300000, guid: 188e455d1000ec24f97f3a195105d5b0, type: 3}

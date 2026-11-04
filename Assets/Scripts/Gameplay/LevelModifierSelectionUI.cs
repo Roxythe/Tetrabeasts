@@ -46,6 +46,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
 
     [Header("Modifier Info Panel")]
     [SerializeField] GameObject modifierInfoPanel;
+    [SerializeField] LevelModifierDetails detailsView;
     [SerializeField] TMP_Text modifierInfoTitleText;
     [SerializeField] TMP_Text modifierInfoShadowTitleText;
     [SerializeField] Image modifierInfoIcon;
@@ -804,10 +805,6 @@ public class LevelModifierSelectionUI : MonoBehaviour
 
     LevelModifierSO ResolveInfoModifier(LevelModifierSO preferred)
     {
-        var gameController = FindFirstObjectByType<GameController>(FindObjectsInactive.Include);
-        if (gameController && gameController.levelModifierController && gameController.levelModifierController.ActiveModifier)
-            return gameController.levelModifierController.ActiveModifier;
-
         if (preferred)
             return preferred;
 
@@ -823,6 +820,11 @@ public class LevelModifierSelectionUI : MonoBehaviour
             return;
 
         _lastInfoModifier = modifier;
+        if (detailsView)
+        {
+            detailsView.ShowModifier(modifier);
+            return;
+        }
         EnsureSelectedModifierTextRefs();
 
         string displayName = TetrabeastsLocalization.LocalizeText(modifier.displayName);
@@ -887,7 +889,7 @@ public class LevelModifierSelectionUI : MonoBehaviour
         texts.Add(text);
     }
 
-    static void SetDynamicText(TMP_Text text, string value, bool forceMeshUpdate)
+    internal static void SetDynamicText(TMP_Text text, string value, bool forceMeshUpdate)
     {
         if (!text)
             return;

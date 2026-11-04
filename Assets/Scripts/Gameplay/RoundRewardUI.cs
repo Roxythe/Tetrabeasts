@@ -17,6 +17,35 @@ public class RoundRewardUI : MonoBehaviour
     public GameObject buffPanel;
     public GameObject debuffPanel;
 
+    [Header("Reward preview")]
+    [SerializeField] GameObject previewBox;
+    [SerializeField] TMP_Text previewText;
+    GameController previewGame;
+    RunModOptionButton previewTarget;
+
+    internal void TargetReward(RunModOptionButton option, RunModifierSO reward)
+    {
+        if (!previewBox || !previewText) return;
+        if (!reward)
+        {
+            if (previewTarget == option) HidePreview();
+            return;
+        }
+        if (!previewGame || _completionLocked || _tutorialInteractionLocked) return;
+        previewTarget = option;
+        var pending = debuffPanel && debuffPanel.activeInHierarchy ? _selectedBuff as RunModifier : null;
+        previewText.text = reward is RunModifier generic ? previewGame.RewardPreview(generic, pending)
+            : TetrabeastsLocalization.LocalizeText(reward.description);
+        previewBox.SetActive(true);
+        previewBox.transform.SetAsLastSibling();
+    }
+
+    void HidePreview()
+    {
+        previewTarget = null;
+        if (previewBox) previewBox.SetActive(false);
+    }
+
     [Header("Rarity Balancing")]
     [Tooltip("Lower values = more common rewards during normal levels")]
     [Range(0.25f, 1.5f)]
@@ -90,6 +119,8 @@ public class RoundRewardUI : MonoBehaviour
                  Func<bool> trySpendReroll = null)
     {
         var gc = FindFirstObjectByType<GameController>();
+        previewGame = gc;
+        HidePreview();
         float luck = gc ? gc.EffectiveLuckForStats : RunModsStore.Luck;
         float misfortune = gc ? gc.CurrentMisfortune : RunModsStore.Misfortune;
 
@@ -174,6 +205,7 @@ public class RoundRewardUI : MonoBehaviour
 
             // Lock the whole panel while next level loads
             _completionLocked = true;
+            HidePreview();
             SetRootPanelInteractable(false);
             StopPanelTutorials(markComplete: false);
 
@@ -352,6 +384,7 @@ public class RoundRewardUI : MonoBehaviour
             }
 
             var btn = Instantiate(prefab, container);
+            btn.previewOwner = this;
 
             _sfxHook?.HookButton(btn.GetComponent<Button>()); // Hook SFX onto the instantiated button
             btn.Bind(mod, selected =>
@@ -780,6 +813,7 @@ public class RoundRewardUI : MonoBehaviour
 
     public void Hide()
     {
+        HidePreview();
         if (!rootPanel) return;
 
         StopPanelTutorials(markComplete: false);

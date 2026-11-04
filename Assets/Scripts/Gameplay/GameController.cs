@@ -1580,7 +1580,7 @@ public partial class GameController : MonoBehaviour
                 // Close Run Mods
                 if (!closedSomething && runModsPanelRoot && UIPanelTransition.IsVisible(runModsPanelRoot))
                 {
-                    UIPanelTransition.Hide(runModsPanelRoot);
+                    if (!runModsPanelUI || !runModsPanelUI.CloseDetails()) UIPanelTransition.Hide(runModsPanelRoot);
                     closedSomething = true;
                 }
 
@@ -4870,6 +4870,13 @@ public partial class GameController : MonoBehaviour
         if (!popup)
             return;
 
+        var layer = popup.GetComponent<Canvas>();
+        if (!layer) layer = popup.AddComponent<Canvas>();
+        var parentCanvas = popup.transform.parent.GetComponentInParent<Canvas>();
+        if (parentCanvas) layer.sortingLayerID = parentCanvas.rootCanvas.sortingLayerID;
+        layer.overrideSorting = true;
+        layer.sortingOrder = short.MaxValue;
+
         if (popup.TryGetComponent(out RectTransform rt))
         {
             rt.SetAsLastSibling();
@@ -6200,6 +6207,9 @@ public partial class GameController : MonoBehaviour
         if (damage <= 0 || !enemyCastleUI || gameOver)
             return false;
 
+        if (impactRoot && currentCastleData)
+            CastleImpactDebris.Spawn(impactRoot, impactAnchoredPosition, currentCastleData.wallDebrisColor);
+
         if (winQueued || levelWon)
         {
             PlayCastleAttackImpactFeedback(damage, attackerMD, impactClip);
@@ -6823,7 +6833,7 @@ public partial class GameController : MonoBehaviour
             return helpPanelRoot;
 
         if (runModsPanelRoot && UIPanelTransition.IsVisible(runModsPanelRoot))
-            return runModsPanelRoot;
+            return runModsPanelUI && runModsPanelUI.OpenDetailsRoot ? runModsPanelUI.OpenDetailsRoot : runModsPanelRoot;
 
         return pausePanel;
     }
@@ -6883,7 +6893,7 @@ public partial class GameController : MonoBehaviour
 
         if (runModsPanelRoot && UIPanelTransition.IsVisible(runModsPanelRoot))
         {
-            UIPanelTransition.Hide(runModsPanelRoot);
+            if (!runModsPanelUI || !runModsPanelUI.CloseDetails()) UIPanelTransition.Hide(runModsPanelRoot);
             RefreshPauseMenuNavigation();
             return true;
         }

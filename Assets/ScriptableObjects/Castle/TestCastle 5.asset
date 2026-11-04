@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: TestCastle 5
   m_EditorClassIdentifier: Assembly-CSharp::CastleData
   castleName: Grand Dukedom
+  wallDebrisColor: {r: 0.250980, g: 0.290196, b: 0.337255, a: 1}
   damageStages:
   - {fileID: 21300000, guid: 27706a273c3bc4b46a953b7421c90de9, type: 3}
   - {fileID: 21300000, guid: 02905cd8a6edf5a4cb22cc7aea357325, type: 3}

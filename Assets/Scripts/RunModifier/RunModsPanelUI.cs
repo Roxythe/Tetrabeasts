@@ -1,6 +1,7 @@
 // File: Assets/Scripts/UI/RunModsPanelUI.cs
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RunModsPanelUI : MonoBehaviour
 {
@@ -14,6 +15,56 @@ public class RunModsPanelUI : MonoBehaviour
 
     [Header("Behavior")]
     [SerializeField] bool refreshOnEnable = true;
+
+    [Header("Active level modifiers")]
+    [SerializeField] Button levelModifiersButton;
+    [SerializeField] LevelModifierDetails details;
+    [SerializeField] Button previous, next, closeDetails;
+    LevelModifierController controller;
+    int page;
+    public GameObject OpenDetailsRoot => details && details.gameObject.activeSelf ? details.gameObject : null;
+
+    void Awake()
+    {
+        if (details) details.gameObject.SetActive(false);
+        if (levelModifiersButton) levelModifiersButton.onClick.AddListener(OpenDetails);
+        if (previous) previous.onClick.AddListener(() => ChangePage(-1));
+        if (next) next.onClick.AddListener(() => ChangePage(1));
+        if (closeDetails) closeDetails.onClick.AddListener(() => CloseDetails());
+    }
+
+    void OpenDetails()
+    {
+        if (!details || !controller || controller.ActiveModifierCount == 0) return;
+        page = controller.ActiveModifierCount - 1;
+        details.gameObject.SetActive(true);
+        ShowPage();
+        if (UICursorController.IsButtonNavigationMode) closeDetails.Select();
+    }
+
+    void ChangePage(int step)
+    {
+        int count = controller ? controller.ActiveModifierCount : 0;
+        if (count == 0) { CloseDetails(); return; }
+        page = (page + step + count) % count;
+        ShowPage();
+    }
+
+    void ShowPage()
+    {
+        bool browse = controller.ActiveModifierCount > 1;
+        previous.gameObject.SetActive(browse);
+        next.gameObject.SetActive(browse);
+        details.ShowModifier(controller.ActiveModifierAt(page));
+    }
+
+    public bool CloseDetails()
+    {
+        if (!OpenDetailsRoot) return false;
+        details.gameObject.SetActive(false);
+        if (UICursorController.IsButtonNavigationMode && levelModifiersButton) levelModifiersButton.Select();
+        return true;
+    }
 
     readonly struct ModKey
     {
@@ -60,6 +111,7 @@ public class RunModsPanelUI : MonoBehaviour
     void OnDisable()
     {
         TetrabeastsLocalization.LanguageChanged -= HandleLanguageChanged;
+        if (details) details.gameObject.SetActive(false);
     }
 
     void HandleLanguageChanged()
@@ -69,6 +121,13 @@ public class RunModsPanelUI : MonoBehaviour
 
     public void Refresh()
     {
+        if (!controller)
+        {
+            var game = FindFirstObjectByType<GameController>();
+            controller = game ? game.levelModifierController : null;
+        }
+        if (levelModifiersButton) levelModifiersButton.interactable = controller && controller.ActiveModifierCount > 0;
+        if (OpenDetailsRoot && controller && controller.ActiveModifierCount > 0) ShowPage();
         if (!buffsContainer || !debuffsContainer || !buffRowPrefab || !debuffRowPrefab)
         {
             Debug.LogWarning("RunModsPanelUI: Missing refs (containers or row prefabs).");

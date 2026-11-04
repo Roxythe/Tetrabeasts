@@ -9,6 +9,26 @@ public partial class LevelModifierController
     readonly List<LevelModifierSO> chaosModifiers = new();
     readonly List<LevelModifierController> chaosEffects = new();
     public IReadOnlyList<LevelModifierSO> ChaosModifiers => chaosModifiers;
+    int chaosTitleIndex;
+    float chaosTitleElapsed;
+
+    public int ActiveModifierCount => chaosModifiers.Count > 0 ? chaosModifiers.Count : ActiveModifier ? 1 : 0;
+    public LevelModifierSO ActiveModifierAt(int index) =>
+        chaosModifiers.Count > 0 ? chaosModifiers[index] : index == 0 ? ActiveModifier : null;
+
+    bool HasAcceptedChaosKind(LevelModifierSO modifier) =>
+        modifier && chaosModifiers.Exists(active => active && active.kind == modifier.kind);
+
+    void UpdateChaosTitle(float dt)
+    {
+        if (chaosModifiers.Count < 2 || !activeModifierTitleText) return;
+        chaosTitleElapsed += dt;
+        if (chaosTitleElapsed < 3f) return;
+        chaosTitleElapsed %= 3f;
+        chaosTitleIndex = (chaosTitleIndex + 1) % chaosModifiers.Count;
+        activeModifierTitleText.text = TetrabeastsLocalization.LocalizeText(chaosModifiers[chaosTitleIndex].displayName);
+    }
+
     public bool HasModifier(LevelModifierKind kind) => GetModifier(kind) != null;
     public LevelModifierSO GetModifier(LevelModifierKind kind)
     {
@@ -32,7 +52,7 @@ public partial class LevelModifierController
         foreach (var name in names)
         {
             var modifier = pool.Find(m => m && m.name == name);
-            if (modifier && !chaosModifiers.Contains(modifier)) chaosModifiers.Add(modifier);
+            if (modifier && !HasAcceptedChaosKind(modifier)) chaosModifiers.Add(modifier);
         }
     }
     LevelModifierDatabaseSO ChaosDatabase()
@@ -78,8 +98,9 @@ public partial class LevelModifierController
             effect.ApplyModifierStartupEffects();
         }
         if (specialGaugeRoot) specialGaugeRoot.SetActive(!BlocksSpecialUsage);
-        if (activeModifierTitleText)
-            activeModifierTitleText.text = string.Join(" • ", chaosModifiers.ConvertAll(m => m.displayName));
+        chaosTitleIndex = chaosModifiers.Count - 1;
+        chaosTitleElapsed = 0f;
+        RefreshModifierUI();
     }
     public bool IsBoardFlipped
     {

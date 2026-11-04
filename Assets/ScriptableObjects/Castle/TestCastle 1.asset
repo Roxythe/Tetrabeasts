@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: TestCastle 1
   m_EditorClassIdentifier: Assembly-CSharp::CastleData
   castleName: Shanty Town
+  wallDebrisColor: {r: 0.337255, g: 0.270588, b: 0.243137, a: 1}
   damageStages:
   - {fileID: 21300000, guid: 14e730998bbe33b41beaf469481d8e82, type: 3}
   - {fileID: 21300000, guid: 6f29acdde90638d42bce75b7dbcb83a8, type: 3}

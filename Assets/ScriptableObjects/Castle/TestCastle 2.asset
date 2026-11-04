@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: TestCastle 2
   m_EditorClassIdentifier: Assembly-CSharp::CastleData
   castleName: Fortified Hamlet
+  wallDebrisColor: {r: 0.486275, g: 0.419608, b: 0.341176, a: 1}
   damageStages:
   - {fileID: 21300000, guid: d9e9fc7d075d9854fa618554dfc8c7ca, type: 3}
   - {fileID: 21300000, guid: f2539f44d022d6a4b80e57517997a4dc, type: 3}

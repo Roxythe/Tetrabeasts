@@ -9,6 +9,8 @@ public class CastleData : ScriptableObject
 
     [Tooltip("0 = healthy, 1 = chipped, 2 = cracked, 3 = crumbling")]
     public Sprite[] damageStages = new Sprite[4];
+    [Tooltip("Wall color for chipped stone at projectile impacts.")]
+    public Color wallDebrisColor = new Color32(143, 126, 106, 255);
 
     [Tooltip("Optional background sprite shown by the enemy castle UI for this level.")]
     public Sprite levelBackgroundSprite;

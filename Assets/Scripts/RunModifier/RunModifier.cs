@@ -75,8 +75,7 @@ public class RunModifier : RunModifierSO
         {
             // ---------------- Currency Drops ----------------
             case RunModStat.LineClearCurrencyChanceAdd:
-                if (op == RunModOp.Add) gc.lineClearCurrencyChanceAdd += value;
-                else gc.lineClearCurrencyChanceAdd *= value;
+                ApplyFloat(ref gc.lineClearCurrencyChanceAdd);
                 break;
 
             case RunModStat.LineClearCurrencyAmountMult:
@@ -85,19 +84,16 @@ public class RunModifier : RunModifierSO
 
             // ---------------- Stone obstacle drops ----------------
             case RunModStat.StoneBuffDropChanceAdd:
-                if (op == RunModOp.Add) gc.stoneBuffDropChanceAdd += value;
-                else gc.stoneBuffDropChanceAdd *= value;
+                ApplyFloat(ref gc.stoneBuffDropChanceAdd);
                 break;
 
             case RunModStat.StoneObstacleDropsDebuffsOnly:
-                if (op == RunModOp.Add) gc.stoneObstacleDropsDebuffsOnly = (value >= 0.5f) || gc.stoneObstacleDropsDebuffsOnly;
-                else gc.stoneObstacleDropsDebuffsOnly = value >= 0.5f;
+                gc.stoneObstacleDropsDebuffsOnly = ProjectFlag(gc.stoneObstacleDropsDebuffsOnly);
                 break;
 
             // ---------------- Currency Per Round ----------------
             case RunModStat.CurrencyPerRoundWin:
-                if (op == RunModOp.Add) gc.currencyPerRoundWin += Mathf.RoundToInt(value);
-                else gc.currencyPerRoundWin = Mathf.RoundToInt(gc.currencyPerRoundWin * value);
+                gc.currencyPerRoundWin = ProjectInteger(gc.currencyPerRoundWin);
                 break;
 
             // ---------------- Enemy ----------------
@@ -128,8 +124,7 @@ public class RunModifier : RunModifierSO
 
             // ---------------- Piece / specials ----------------
             case RunModStat.SpecialBlockChanceAdd:
-                if (op == RunModOp.Add) gc.specialBlockChanceAdd += value;
-                else gc.specialBlockChanceAdd *= value;
+                ApplyFloat(ref gc.specialBlockChanceAdd);
                 break;
 
             case RunModStat.PieceGravityMult:
@@ -155,8 +150,7 @@ public class RunModifier : RunModifierSO
 
             // ---------------- Unit reserves ----------------
             case RunModStat.ReserveUnitsRestoredOnWinAdd:
-                if (op == RunModOp.Add) gc.reserveUnitsRestoredOnWinAdd += Mathf.RoundToInt(value);
-                else gc.reserveUnitsRestoredOnWinAdd = Mathf.RoundToInt(gc.reserveUnitsRestoredOnWinAdd * value);
+                gc.reserveUnitsRestoredOnWinAdd = ProjectInteger(gc.reserveUnitsRestoredOnWinAdd);
                 break;
 
             case RunModStat.MaxReserveUnitsAdd:
@@ -165,20 +159,17 @@ public class RunModifier : RunModifierSO
                 break;
 
             case RunModStat.DisableRoundWinReserveRestore:
-                if (op == RunModOp.Add) gc.disableRoundWinReserveRestore = (value >= 0.5f) || gc.disableRoundWinReserveRestore;
-                else gc.disableRoundWinReserveRestore = value >= 0.5f;
+                gc.disableRoundWinReserveRestore = ProjectFlag(gc.disableRoundWinReserveRestore);
                 break;
 
             // ---------------- Rarity Chance ----------------
             case RunModStat.LuckAdd:
                 // Typically Add only. Multiply supported for scaling mods later
-                if (op == RunModOp.Add) gc.luck += value;
-                else gc.luck *= value;
+                ApplyFloat(ref gc.luck);
                 break;
 
             case RunModStat.MisfortuneAdd:
-                if (op == RunModOp.Add) gc.misfortune += value;
-                else gc.misfortune *= value;
+                ApplyFloat(ref gc.misfortune);
                 break;
 
             // ---------------- Healing ----------------
@@ -187,27 +178,25 @@ public class RunModifier : RunModifierSO
                 break;
 
             case RunModStat.HealRangeAdd:
-                if (op == RunModOp.Add) gc.healRangeAdd += Mathf.RoundToInt(value);
-                else gc.healRangeAdd = Mathf.RoundToInt(gc.healRangeAdd * value);
+                gc.healRangeAdd = ProjectInteger(gc.healRangeAdd);
                 break;
 
             // ---------------- UI / Hints ----------------
             case RunModStat.DisableNextPreview:
-                if (op == RunModOp.Add) gc.disableNextPreview = (value >= 0.5f) || gc.disableNextPreview;
-                else gc.disableNextPreview = (value >= 0.5f);
+                gc.disableNextPreview = ProjectFlag(gc.disableNextPreview);
                 break;
 
             case RunModStat.DisableLandingHint:
-                if (op == RunModOp.Add) gc.disableLandingHint = (value >= 0.5f) || gc.disableLandingHint;
-                else gc.disableLandingHint = (value >= 0.5f);
+                gc.disableLandingHint = ProjectFlag(gc.disableLandingHint);
                 break;
 
         }
     }
 
-    void ApplyFloat(ref float target)
-    {
-        if (op == RunModOp.Add) target += value;
-        else target *= value;
-    }
+    public float Project(float current) => op == RunModOp.Add ? current + value : current * value;
+    public int ProjectInteger(int current) => op == RunModOp.Add
+        ? current + Mathf.RoundToInt(value) : Mathf.RoundToInt(current * value);
+    public bool ProjectFlag(bool current) => value >= 0.5f || (op == RunModOp.Add && current);
+
+    void ApplyFloat(ref float target) => target = Project(target);
 }
