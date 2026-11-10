@@ -15,15 +15,17 @@ public sealed class MarathonLiquidSlosh : BaseMeshEffect
     {
         gainedFraction = Mathf.Abs(gainedFraction);
         if (gainedFraction <= 0f) return;
-        energy = Mathf.Clamp01(energy + 0.3f + gainedFraction * 3f);
+        energy = Mathf.Clamp01(energy + gainedFraction * 3f);
         graphic.SetVerticesDirty();
     }
 
-    void Update()
+    void Update() => AdvanceWaves(Time.unscaledDeltaTime);
+
+    void AdvanceWaves(float deltaTime)
     {
-        if (energy <= 0f || Time.deltaTime <= 0f) return;
-        phase += Time.deltaTime * waveSpeed;
-        energy *= Mathf.Exp(-damping * Time.deltaTime);
+        if (energy <= 0f || deltaTime <= 0f) return;
+        phase += deltaTime * waveSpeed;
+        energy *= Mathf.Exp(-damping * deltaTime);
         if (energy < 0.001f) energy = 0f;
         graphic.SetVerticesDirty();
     }
@@ -59,7 +61,7 @@ public sealed class MarathonLiquidSlosh : BaseMeshEffect
         }
         var bounds = ((RectTransform)transform).rect;
         if (horizontal) bounds = new Rect(bounds.y, bounds.x, bounds.height, bounds.width);
-        float amplitude = Mathf.Min(maxWaveHeight * energy, (maxY - minY) * 0.45f, (bounds.yMax - maxY) * 0.8f);
+        float amplitude = Mathf.Min(maxWaveHeight * energy, (maxY - minY) * 0.45f);
         if (amplitude <= 0f) return;
         mesh.Clear();
         const int segments = 24;
@@ -68,6 +70,8 @@ public sealed class MarathonLiquidSlosh : BaseMeshEffect
             float x = (float)i / segments;
             float height = maxY + amplitude * (Mathf.Sin(phase) * (2f * x - 1f) * 0.65f +
                 Mathf.Sin(x * Mathf.PI * 2f + phase * 1.3f) * 0.35f);
+            // Full gauges can ripple inward without spilling outside their glass.
+            height = Mathf.Clamp(height, minY, bounds.yMax);
             var lower = bottomLeft;
             lower.position.x = Mathf.Lerp(minX, maxX, x);
             lower.uv0.x = Mathf.Lerp(bottomLeft.uv0.x, topRight.uv0.x, x);

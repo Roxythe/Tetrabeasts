@@ -79,6 +79,16 @@ public class RewardAndModifierPresentationTests
                 Call(option,"LateUpdate");
                 Assert.IsTrue(preview.activeSelf);
                 StringAssert.Contains("#72C9FF",label.text);
+                ui.rootPanel.transform.localScale = Vector3.one;
+                ui.GetComponentInParent<Canvas>(true).rootCanvas.transform.localScale = Vector3.one;
+                Canvas.ForceUpdateCanvases();
+                Call(ui, "PositionPreview");
+                var optionRect = (RectTransform)option.transform;
+                var previewRect = (RectTransform)preview.transform;
+                Vector3 cardRight = optionRect.TransformPoint(new Vector3(optionRect.rect.xMax, optionRect.rect.center.y));
+                Vector3 popupLeft = previewRect.TransformPoint(new Vector3(previewRect.rect.xMin, previewRect.rect.center.y));
+                Assert.Greater(popupLeft.x, cardRight.x);
+                Assert.AreEqual(cardRight.y, popupLeft.y, .01f);
                 CaptureRewardPreview(ui);
                 option.OnPointerExit(null);
                 Call(option,"LateUpdate");

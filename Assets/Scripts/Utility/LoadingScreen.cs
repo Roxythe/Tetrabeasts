@@ -189,7 +189,7 @@ public sealed class LoadingScreen : MonoBehaviour
 
         AsyncOperation operation = null;
         ThreadPriority previousBackgroundPriority = Application.backgroundLoadingPriority;
-        Application.backgroundLoadingPriority = ThreadPriority.BelowNormal;
+        Application.backgroundLoadingPriority = ThreadPriority.Low;
 
         try
         {
@@ -220,8 +220,8 @@ public sealed class LoadingScreen : MonoBehaviour
         while (!operation.isDone)
             yield return null;
 
-        Application.backgroundLoadingPriority = previousBackgroundPriority;
         yield return WaitForSceneSettle();
+        Application.backgroundLoadingPriority = previousBackgroundPriority;
 
         _sceneLoadCoroutine = null;
         HideInternal();
@@ -279,6 +279,12 @@ public sealed class LoadingScreen : MonoBehaviour
 
     IEnumerator WaitForSceneSettle()
     {
+        // Gameplay startup is deliberately spread across frames so this canvas can render.
+        yield return null; // Allow the new scene's Start methods to register their setup.
+        var gameplay = FindFirstObjectByType<GameController>();
+        while (gameplay && gameplay.isActiveAndEnabled && gameplay.IsInitializing)
+            yield return null;
+
         int frames = Mathf.Max(0, Settings ? Settings.hideDelayFrames : 1);
         while (frames > 0)
         {

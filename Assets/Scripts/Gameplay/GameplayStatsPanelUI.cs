@@ -922,6 +922,9 @@ public class GameplayStatsPanelUI : MonoBehaviour
                 allowOverflow: true);
             AddStatsGridCell(parent, $"{title}_HeaderValue", string.Empty, headerColor, gameplayStatsHeaderFontSize, FontStyles.Bold);
             AddStatsGridCell(parent, $"{title}_HeaderSource", string.Empty, headerColor, gameplayStatsHeaderFontSize, FontStyles.Bold);
+            AddStatsGridCell(parent, $"{title}_ColumnStat", TetrabeastsLocalization.LocalizeText("Stat"), unchangedColor, gameplayStatsFontSize, FontStyles.Bold);
+            AddStatsGridCell(parent, $"{title}_Column_Value", TetrabeastsLocalization.LocalizeText("Current (Change)"), unchangedColor, gameplayStatsFontSize, FontStyles.Bold);
+            AddStatsGridCell(parent, $"{title}_ColumnSource", TetrabeastsLocalization.LocalizeText("Sources"), unchangedColor, gameplayStatsFontSize, FontStyles.Bold);
             return;
         }
 

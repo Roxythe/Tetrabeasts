@@ -10,6 +10,7 @@ public sealed class ImpactShake : MonoBehaviour
     public static void Play(Transform target, float seconds, float pixels)
     {
         if (!target) return;
+        if (target.GetComponent<Board>()) GaugeLiquidMotion.NotifyScreenShake(pixels / 12f);
         var shake = target.GetComponent<ImpactShake>() ?? target.gameObject.AddComponent<ImpactShake>();
         float carried = shake.remaining > 0f && shake.duration > 0f ? shake.strength * (shake.remaining / shake.duration) : 0f;
         // Keep a small impact memory even just after a short shake has finished.

@@ -748,7 +748,7 @@ public partial class GameController : MonoBehaviour
     public int MaxReserveUnits => EffectiveMaxUnitLives;
     public int CurrentStarDifficulty => _starDifficulty;
     public float CurrentMisfortune => misfortune + _starDifficultyModifiers.misfortuneAdd;
-    public bool IsGameplaySuspended => marathonRewardActive || gameOver || levelWon || winQueued || isPaused || LoadingScreen.IsVisible || ConfirmationPopupUI.IsAnyShowing || tutorialSuspended || _roundTransitionActive || _specialAbilityCinematicActive || _levelStartBlocked || _environmentRowClearResolving || (levelModifierController && levelModifierController.IsSelectionRunning);
+    public bool IsGameplaySuspended => IsInitializing || marathonRewardActive || gameOver || levelWon || winQueued || isPaused || LoadingScreen.IsVisible || ConfirmationPopupUI.IsAnyShowing || tutorialSuspended || _roundTransitionActive || _specialAbilityCinematicActive || _levelStartBlocked || _environmentRowClearResolving || (levelModifierController && levelModifierController.IsSelectionRunning);
     public bool IsRoundActive => !IsGameplaySuspended && !gameOver && !levelWon && !winQueued;
     public bool IsTutorialPieceInputBlocked => tutorialPieceInputBlocked;
     public bool IsTutorialHardDropInputGraceActive => Time.unscaledTime < _tutorialHardDropInputBlockedUntilRealtime;
@@ -942,204 +942,225 @@ public partial class GameController : MonoBehaviour
         DemoBuildGuardRails.Configure(demoBuildGuardRailsEnabled, demoMaxCompletedLevel);
     }
 
-    void Start()
+    public bool IsInitializing { get; private set; }
+
+    IEnumerator Start()
     {
-        ApplyDemoBuildGuardRailsSetting();
-        SetGravityTimerVisible(false);
-        SetDuplicateCountVisible(false);
-        RefreshBossAbilityEffectVisual();
-        SteamInputService.Ensure();
-        SteamPlatformService.Ensure();
-        SteamInputService.ControllerDisconnected -= HandleControllerDisconnected;
-        SteamInputService.ControllerDisconnected += HandleControllerDisconnected;
-        SteamPlatformService.OverlayActiveChanged -= HandleSteamOverlayActiveChanged;
-        SteamPlatformService.OverlayActiveChanged += HandleSteamOverlayActiveChanged;
-        TetrabeastsControls.ProfileChanged -= HandleControlsDisplayChanged;
-        TetrabeastsControls.ProfileChanged += HandleControlsDisplayChanged;
-        TetrabeastsControls.BindingsChanged -= HandleControlsDisplayChanged;
-        TetrabeastsControls.BindingsChanged += HandleControlsDisplayChanged;
-        TetrabeastsControls.PlatformDefaultProfileChanged -= HandleControlsDisplayChanged;
-        TetrabeastsControls.PlatformDefaultProfileChanged += HandleControlsDisplayChanged;
+        IsInitializing = true;
+        try
+        {
+            ApplyDemoBuildGuardRailsSetting();
+            SetGravityTimerVisible(false);
+            SetDuplicateCountVisible(false);
+            RefreshBossAbilityEffectVisual();
+            SteamInputService.Ensure();
+            SteamPlatformService.Ensure();
+            SteamInputService.ControllerDisconnected -= HandleControllerDisconnected;
+            SteamInputService.ControllerDisconnected += HandleControllerDisconnected;
+            SteamPlatformService.OverlayActiveChanged -= HandleSteamOverlayActiveChanged;
+            SteamPlatformService.OverlayActiveChanged += HandleSteamOverlayActiveChanged;
+            TetrabeastsControls.ProfileChanged -= HandleControlsDisplayChanged;
+            TetrabeastsControls.ProfileChanged += HandleControlsDisplayChanged;
+            TetrabeastsControls.BindingsChanged -= HandleControlsDisplayChanged;
+            TetrabeastsControls.BindingsChanged += HandleControlsDisplayChanged;
+            TetrabeastsControls.PlatformDefaultProfileChanged -= HandleControlsDisplayChanged;
+            TetrabeastsControls.PlatformDefaultProfileChanged += HandleControlsDisplayChanged;
 
 #if ENABLE_INPUT_SYSTEM
-        InputSystem.onDeviceChange -= HandleInputDeviceChange;
-        InputSystem.onDeviceChange += HandleInputDeviceChange;
+            InputSystem.onDeviceChange -= HandleInputDeviceChange;
+            InputSystem.onDeviceChange += HandleInputDeviceChange;
 #endif
 
-        // Ensure PlayerProgress exists (stats + achievements)
-        if (PlayerProgress.I == null)
-        {
-            var go = new GameObject("PlayerProgress");
-            go.AddComponent<PlayerProgress>();
+            // Ensure PlayerProgress exists (stats + achievements)
+            if (PlayerProgress.I == null)
+            {
+                var go = new GameObject("PlayerProgress");
+                go.AddComponent<PlayerProgress>();
+            }
+
+            TempRunSaveStore.SaveData pendingTempRunSave;
+            bool resumeFromTempRun = PreparePendingTempRunResume(out pendingTempRunSave);
+            if (!enabled) yield break;
+
+            // New run starts when gameplay scene starts
+            if (!resumeFromTempRun)
+                PlayerProgress.I.BeginRun();
+
+            if (LoadingScreen.IsVisible) yield return null;
+
+            HighScoreManager.EnsureInitialized(10);
+            if (!highScoreUI)
+                highScoreUI = FindFirstObjectByType<HighScoreUI>(FindObjectsInactive.Include);
+
+            if (!highScoreUI) Debug.LogError("HighScoreUI not found in scene.");
+
+            ResolveVictoryPanelUi();
+            if (victoryPanelUI) victoryPanelUI.Hide();
+
+            if (!roundTransitionUI)
+                roundTransitionUI = FindFirstObjectByType<RoundTransitionUI>(FindObjectsInactive.Include);
+            HideRoundTransitionImmediate();
+
+            if (allTetrominoes == null || allTetrominoes.Length == 0)
+            {
+                Debug.LogError("GameController: allTetrominoes is empty.");
+                yield break;
+            }
+
+            if (!gameBoard) gameBoard = FindFirstObjectByType<Board>();
+            if (!piece) piece = GetComponent<Piece>();
+            if (!levelModifierController) levelModifierController = GetComponent<LevelModifierController>();
+            if (!levelModifierController) levelModifierController = gameObject.AddComponent<LevelModifierController>();
+            if (LoadingScreen.IsVisible) yield return null;
+
+            InitializeModeRuntime();
+            EnsureFloatingDamageText();
+            EnsureTriggeredTutorialPopups();
+            EnsureSpecialBlockTutorials();
+
+            if (!obstacleManager)
+                obstacleManager = FindFirstObjectByType<ObstacleManager>(FindObjectsInactive.Include);
+
+            if (obstacleManager)
+                obstacleManager.Initialize(this, gameBoard);
+
+            if (gameBoard != null)
+            {
+                gameBoard.ObstacleDestroyed -= OnBoardObstacleDestroyed;
+                gameBoard.ObstacleDestroyed += OnBoardObstacleDestroyed;
+            }
+
+            _level1FallInterval = startFallInterval; // Cache initial value
+
+            if (gameBoard != null)
+            {
+                gameBoard.TileDied -= OnBoardTileDied;
+                gameBoard.TileDied += OnBoardTileDied;
+            }
+
+            if (!battleLog)
+                battleLog = FindFirstObjectByType<BattleLogUI>(FindObjectsInactive.Include);
+
+            if (battleLog)
+                battleLog.SetVisible(SettingsStore.LoadCombatLogEnabled());
+
+            if (gameBoard != null)
+            {
+                gameBoard.TileDamaged -= OnBoardTileDamaged;
+                gameBoard.TileDamaged += OnBoardTileDamaged;
+
+                gameBoard.TileHealed -= OnBoardTileHealed;
+                gameBoard.TileHealed += OnBoardTileHealed;
+            }
+
+            // Resolve saved character selection if any
+            if (selectedCharacter == null && roster != null && roster.Length > 0)
+            {
+                var saved = SelectedCharacterStore.ResolveFromRoster(roster);
+                if (saved != null) SelectedCharacterStore.Current = saved;
+            }
+
+            // Prefer the character picked on the title screen
+            if (SelectedCharacterStore.Current != null)
+                selectedCharacter = SelectedCharacterStore.Current;
+            else if (!selectedCharacter && roster != null && roster.Length > 0)
+                selectedCharacter = roster[0];
+
+            if (LoadingScreen.IsVisible) yield return null;
+
+            ApplySelectedCharacterUI();
+
+            // Wire Run Mods panel buttons
+            if (!runModsPanelRoot && runModsPanelUI)
+                runModsPanelRoot = runModsPanelUI.gameObject;
+
+            if (openRunModsButton)
+                openRunModsButton.onClick.AddListener(OpenRunModsPanel);
+
+            if (closeRunModsButton)
+                closeRunModsButton.onClick.AddListener(CloseRunModsPanel);
+
+            if (LoadingScreen.IsVisible) yield return null;
+
+            SetupGameplayStatsPanel();
+
+            // Ensure pause menu sub panels start closed
+            if (runModsPanelRoot) UIPanelTransition.Hide(runModsPanelRoot, true);
+            if (gameplayStatsPanelUI) gameplayStatsPanelUI.Close(true);
+            if (helpPanelRoot) UIPanelTransition.Hide(helpPanelRoot, true);
+
+            // Apply character special gauge max
+            if (selectedCharacter && selectedCharacter.specialGaugeMax > 0f)
+                specialGaugeMax = selectedCharacter.specialGaugeMax;
+
+            ResetSpecialGauge();
+            RefreshGameplayControlTexts();
+            ResetSpecialChargedVisuals();
+            if (LoadingScreen.IsVisible) yield return null;
+
+            PrewarmSpecialAbilityPopup();
+
+            if (_specialFillCR != null) StopCoroutine(_specialFillCR);
+            _specialFillCR = StartCoroutine(SpecialGaugeFillFieryCo());
+
+            if (LoadingScreen.IsVisible) yield return null;
+
+            levelModifierController?.ResetRunState();
+            ResetRunMods();
+            RefreshStarDifficultyState();
+            RefreshActiveMonsterPassives(applyStartingReserveDelta: false);
+
+            CacheBaseBoardSizeIfNeeded();
+
+            if (resumeFromTempRun && pendingTempRunSave != null)
+                RestoreTempRunCheckpoint(pendingTempRunSave);
+            else
+                StartFreshRun();
+
+            // A live Marathon restore must never advance before the player resumes.
+            if (resumeFromTempRun && pendingTempRunSave?.marathonSnapshot != null)
+                OpenRestoredPauseMenu();
+            else
+            {
+                if (pausePanel) UIPanelTransition.Hide(pausePanel, true);
+                Time.timeScale = 1f;
+                isPaused = false;
+                EnterGameplayCursorMode();
+            }
+
+            if (LoadingScreen.IsVisible) yield return null;
+
+            // Wire pause buttons
+            if (resumeButton)
+            {
+                resumeButton.onClick.RemoveAllListeners();
+                resumeButton.onClick.AddListener(ResumeGame);
+            }
+
+            if (mainMenuButton)
+            {
+                mainMenuButton.onClick.RemoveAllListeners();
+                mainMenuButton.onClick.AddListener(ReturnToMainMenu);
+            }
+
+            if (quitButton)
+            {
+                quitButton.onClick.RemoveAllListeners();
+                quitButton.onClick.AddListener(RequestSaveAndQuit);
+            }
+
+            if (volumePanelInPause) volumePanelInPause.pauseWhenOpen = false;
+
+            if (currencyUI) currencyUI.Refresh();
+
+            SettingsStore.ApplySavedVolumesToAudio();
+
+            if (pauseCursor)
+                pauseCursor.SetScale(SettingsStore.LoadCursorScale());
+
+            SettingsStore.CursorScaleChanged += OnCursorScaleChanged;
         }
-
-        TempRunSaveStore.SaveData pendingTempRunSave;
-        bool resumeFromTempRun = PreparePendingTempRunResume(out pendingTempRunSave);
-        if (!enabled) return;
-
-        // New run starts when gameplay scene starts
-        if (!resumeFromTempRun)
-            PlayerProgress.I.BeginRun();
-
-        HighScoreManager.EnsureInitialized(10);
-        if (!highScoreUI)
-            highScoreUI = FindFirstObjectByType<HighScoreUI>(FindObjectsInactive.Include);
-
-        if (!highScoreUI) Debug.LogError("HighScoreUI not found in scene.");
-
-        ResolveVictoryPanelUi();
-        if (victoryPanelUI) victoryPanelUI.Hide();
-
-        if (!roundTransitionUI)
-            roundTransitionUI = FindFirstObjectByType<RoundTransitionUI>(FindObjectsInactive.Include);
-        HideRoundTransitionImmediate();
-
-        if (allTetrominoes == null || allTetrominoes.Length == 0)
-        {
-            Debug.LogError("GameController: allTetrominoes is empty.");
-            return;
-        }
-
-        if (!gameBoard) gameBoard = FindFirstObjectByType<Board>();
-        if (!piece) piece = GetComponent<Piece>();
-        if (!levelModifierController) levelModifierController = GetComponent<LevelModifierController>();
-        if (!levelModifierController) levelModifierController = gameObject.AddComponent<LevelModifierController>();
-        InitializeModeRuntime();
-        EnsureFloatingDamageText();
-        EnsureTriggeredTutorialPopups();
-        EnsureSpecialBlockTutorials();
-
-        if (!obstacleManager)
-            obstacleManager = FindFirstObjectByType<ObstacleManager>(FindObjectsInactive.Include);
-
-        if (obstacleManager)
-            obstacleManager.Initialize(this, gameBoard);
-
-        if (gameBoard != null)
-        {
-            gameBoard.ObstacleDestroyed -= OnBoardObstacleDestroyed;
-            gameBoard.ObstacleDestroyed += OnBoardObstacleDestroyed;
-        }
-
-        _level1FallInterval = startFallInterval; // Cache initial value
-
-        if (gameBoard != null)
-        {
-            gameBoard.TileDied -= OnBoardTileDied;
-            gameBoard.TileDied += OnBoardTileDied;
-        }
-
-        if (!battleLog)
-            battleLog = FindFirstObjectByType<BattleLogUI>(FindObjectsInactive.Include);
-
-        if (battleLog)
-            battleLog.SetVisible(SettingsStore.LoadCombatLogEnabled());
-
-        if (gameBoard != null)
-        {
-            gameBoard.TileDamaged -= OnBoardTileDamaged;
-            gameBoard.TileDamaged += OnBoardTileDamaged;
-
-            gameBoard.TileHealed -= OnBoardTileHealed;
-            gameBoard.TileHealed += OnBoardTileHealed;
-        }
-
-        // Resolve saved character selection if any
-        if (selectedCharacter == null && roster != null && roster.Length > 0)
-        {
-            var saved = SelectedCharacterStore.ResolveFromRoster(roster);
-            if (saved != null) SelectedCharacterStore.Current = saved;
-        }
-
-        // Prefer the character picked on the title screen
-        if (SelectedCharacterStore.Current != null)
-            selectedCharacter = SelectedCharacterStore.Current;
-        else if (!selectedCharacter && roster != null && roster.Length > 0)
-            selectedCharacter = roster[0];
-
-        ApplySelectedCharacterUI();
-
-        // Wire Run Mods panel buttons
-        if (!runModsPanelRoot && runModsPanelUI)
-            runModsPanelRoot = runModsPanelUI.gameObject;
-
-        if (openRunModsButton)
-            openRunModsButton.onClick.AddListener(OpenRunModsPanel);
-
-        if (closeRunModsButton)
-            closeRunModsButton.onClick.AddListener(CloseRunModsPanel);
-
-        SetupGameplayStatsPanel();
-
-        // Ensure pause menu sub panels start closed
-        if (runModsPanelRoot) UIPanelTransition.Hide(runModsPanelRoot, true);
-        if (gameplayStatsPanelUI) gameplayStatsPanelUI.Close(true);
-        if (helpPanelRoot) UIPanelTransition.Hide(helpPanelRoot, true);
-
-        // Apply character special gauge max
-        if (selectedCharacter && selectedCharacter.specialGaugeMax > 0f)
-            specialGaugeMax = selectedCharacter.specialGaugeMax;
-
-        ResetSpecialGauge();
-        RefreshGameplayControlTexts();
-        ResetSpecialChargedVisuals();
-        PrewarmSpecialAbilityPopup();
-
-        if (_specialFillCR != null) StopCoroutine(_specialFillCR);
-        _specialFillCR = StartCoroutine(SpecialGaugeFillFieryCo());
-
-        levelModifierController?.ResetRunState();
-        ResetRunMods();
-        RefreshStarDifficultyState();
-        RefreshActiveMonsterPassives(applyStartingReserveDelta: false);
-
-        CacheBaseBoardSizeIfNeeded();
-
-        if (resumeFromTempRun && pendingTempRunSave != null)
-            RestoreTempRunCheckpoint(pendingTempRunSave);
-        else
-            StartFreshRun();
-
-        // A live Marathon restore must never advance before the player resumes.
-        if (resumeFromTempRun && pendingTempRunSave?.marathonSnapshot != null)
-            OpenRestoredPauseMenu();
-        else
-        {
-            if (pausePanel) UIPanelTransition.Hide(pausePanel, true);
-            Time.timeScale = 1f;
-            isPaused = false;
-            EnterGameplayCursorMode();
-        }
-
-        // Wire pause buttons
-        if (resumeButton)
-        {
-            resumeButton.onClick.RemoveAllListeners();
-            resumeButton.onClick.AddListener(ResumeGame);
-        }
-
-        if (mainMenuButton)
-        {
-            mainMenuButton.onClick.RemoveAllListeners();
-            mainMenuButton.onClick.AddListener(ReturnToMainMenu);
-        }
-
-        if (quitButton)
-        {
-            quitButton.onClick.RemoveAllListeners();
-            quitButton.onClick.AddListener(RequestSaveAndQuit);
-        }
-
-        if (volumePanelInPause) volumePanelInPause.pauseWhenOpen = false;
-
-        if (currencyUI) currencyUI.Refresh();
-
-        SettingsStore.ApplySavedVolumesToAudio();
-
-        if (pauseCursor)
-            pauseCursor.SetScale(SettingsStore.LoadCursorScale());
-
-        SettingsStore.CursorScaleChanged += OnCursorScaleChanged;
+        finally { IsInitializing = false; }
     }
 
     bool PreparePendingTempRunResume(out TempRunSaveStore.SaveData saveData)
@@ -1524,6 +1545,7 @@ public partial class GameController : MonoBehaviour
 
     void Update()
     {
+        if (IsInitializing) return;
         TickGameMode();
         if (marathonRewardActive)
         {
@@ -3738,7 +3760,11 @@ public partial class GameController : MonoBehaviour
                 continue;
 
             if (IsProjectileRootTransient(child))
+            {
+                child.gameObject.SetActive(false);
+                _attackExplosionPrefabByInstance.Remove(child.gameObject);
                 Destroy(child.gameObject);
+            }
         }
     }
 
@@ -3748,7 +3774,8 @@ public partial class GameController : MonoBehaviour
             return false;
 
         string childName = child.name;
-        return childName.StartsWith("AttackProjectile", System.StringComparison.Ordinal) ||
+        return child.GetComponent<CastleImpactDebris>() ||
+               childName.StartsWith("AttackProjectile", System.StringComparison.Ordinal) ||
                childName.StartsWith("CastleDownshot", System.StringComparison.Ordinal) ||
                childName.StartsWith("AttackExplosion", System.StringComparison.Ordinal);
     }
@@ -4105,6 +4132,12 @@ public partial class GameController : MonoBehaviour
                 actualReinforcements,
                 () => ClampRoundRewardRerolls(_roundRewardRerollsAvailable),
                 TrySpendRoundRewardReroll);
+
+            StartCoroutine(CoInvokeAfterPanelFullyShown(roundRewardUI.rootPanel, () =>
+            {
+                if ((winQueued || levelWon) && UIPanelTransition.IsFullyShown(roundRewardUI.rootPanel))
+                    ClearProjectileRootTransients();
+            }));
 
             if (closeXpAfterRewardOpen)
                 StartCoroutine(CoCloseXpAfterPanelFullyShown(roundRewardUI.rootPanel, resumeGameplay: false));
@@ -5572,7 +5605,12 @@ public partial class GameController : MonoBehaviour
     void UpdateSpecialUI(bool playGaugeFullSFX = true)
     {
         if (specialSlider)
-            specialSlider.value = Mathf.Clamp01(specialGauge / Mathf.Max(1f, specialGaugeMax));
+        {
+            float target = Mathf.Clamp01(specialGauge / Mathf.Max(1f, specialGaugeMax));
+            var motion = specialSlider.GetComponent<GaugeLiquidMotion>();
+            if (motion) motion.SetTarget(target);
+            else specialSlider.value = target;
+        }
 
         if (specialText)
             specialText.text = $"{Mathf.RoundToInt(100f * Mathf.Clamp01(specialGauge / Mathf.Max(1f, specialGaugeMax)))}%";
@@ -5965,7 +6003,7 @@ public partial class GameController : MonoBehaviour
             topImg.color = c;
         }
 
-        while (rt && (rt.anchoredPosition - targetAnchored).sqrMagnitude > 9f)
+        while (rt && rt.gameObject.activeSelf && (rt.anchoredPosition - targetAnchored).sqrMagnitude > 9f)
         {
             float dt = GetPlayerAttackProjectileDeltaTime();
             Vector2 previousPosition = rt.anchoredPosition;
@@ -6011,7 +6049,7 @@ public partial class GameController : MonoBehaviour
             yield return null;
         }
 
-        if (!rt)
+        if (!rt || !rt.gameObject.activeSelf)
             yield break;
 
         var impactRoot = projectileRoot ? projectileRoot : (gameBoard ? gameBoard.gridRoot : null);

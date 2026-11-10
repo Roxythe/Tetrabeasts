@@ -20,6 +20,7 @@ public class RoundRewardUI : MonoBehaviour
     [Header("Reward preview")]
     [SerializeField] GameObject previewBox;
     [SerializeField] TMP_Text previewText;
+    [SerializeField, Min(0f)] float previewGap = 18f;
     GameController previewGame;
     RunModOptionButton previewTarget;
 
@@ -38,6 +39,22 @@ public class RoundRewardUI : MonoBehaviour
             : TetrabeastsLocalization.LocalizeText(reward.description);
         previewBox.SetActive(true);
         previewBox.transform.SetAsLastSibling();
+        PositionPreview();
+    }
+
+    void LateUpdate()
+    {
+        if (previewTarget && previewBox && previewBox.activeSelf) PositionPreview();
+    }
+
+    void PositionPreview()
+    {
+        if (!previewTarget || !previewBox) return;
+        var target = previewTarget.transform as RectTransform;
+        var popup = previewBox.transform as RectTransform;
+        if (!target || !popup) return;
+        popup.pivot = new Vector2(0f, .5f);
+        popup.position = target.TransformPoint(new Vector3(target.rect.xMax + previewGap, target.rect.center.y));
     }
 
     void HidePreview()

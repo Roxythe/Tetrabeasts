@@ -295,6 +295,7 @@ public class EnemyCastleUI : MonoBehaviour
 
         float maxDamageForShake = Mathf.Max(1f, maxHP * Mathf.Max(0.01f, damageForMaxShakeHpFraction));
         float intensity = Mathf.Clamp01(recentDamage / maxDamageForShake);
+        GaugeLiquidMotion.NotifyScreenShake(intensity);
         float pixels = Mathf.Lerp(minDamageShakePixels, maxDamageShakePixels, intensity);
         float seconds = Mathf.Lerp(minDamageShakeSeconds, maxDamageShakeSeconds, intensity);
         // Rapid volleys should remain punchier even once the damage curve saturates.
