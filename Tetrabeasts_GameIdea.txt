@@ -1,6 +1,17 @@
 
+- Add a script so I can modify the pop up description text for the different game modes in the title menu. Create a prefab of the current pop up box that I can modify including text font size and visual components that will be used instead of the current run time pop up instead so I can edit it to my liking from the editor.
 
+- Add the same gradual decrease transition for the enemy castle health bar that's used for the player's special gauge. Currently when the enemy takes a large amount of damage from multiple player attacks it can reduce the health bar instantaneously and the visual is jerky and looks bad and messes up the sloshing liquid VFX for the health bar stopping and restarting it. I want the transition to be smoother and less jerky like the player special gauge is now. Do the same for the unit reserve bar as well when increasing/decreasing.
 
+- The stats panel scrollbar is a bit jerky when using the mouse wheel to scroll up and down, I would like a smoth transition instead of immediate jerky jumps.
+
+- For the unit stats in the stats panel I would like to remove the healing related stats text category for units that aren't healers (attack/defense units).
+
+- The level modifier panel that the player can access through the modifier panel in the pause menu panel should have a new text field that say (X of Y) where X is the level modifier in the list and Y is the number of total level modifiers active in the current run when playing in chaos mode.
+
+- I need a change for text bar progress for achievements with a time requirement to be changed. Instead of showing fastest time / time needed, just show fastest level clear time "XX Seconds".
+
+- Change the achievement prefab to include a gold border around the edge of the achievement that have been completed with a glowing yellow/golden light vfx around the edge of the border. No vfx or border for achievements that haven't been unlocked. I have a boarder in the prefab already but it needs to be toggled on when the achievement is completed.
 
 ----------------------------------------------------------------------------------------------------
 
