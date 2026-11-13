@@ -267,17 +267,36 @@ public static class TetrabeastsLocalization
     }
 
     [Serializable]
-    sealed class RuntimeLocalesProvider : ILocalesProvider
+    sealed class RuntimeLocalesProvider : ILocalesProvider, IReset
     {
-        [SerializeField] List<Locale> locales = new();
+        // These are transient ScriptableObjects, never asset references to serialize
+        // into LocalizationSettings across an editor/play-mode reload.
+        [NonSerialized] List<Locale> locales = new();
 
-        public List<Locale> Locales => locales;
+        public List<Locale> Locales
+        {
+            get
+            {
+                locales ??= new List<Locale>();
+                // Unity's toolbar uses List.Contains, which calls Locale.Equals and
+                // reads the native name even on a destroyed Unity object.
+                locales.RemoveAll(locale => !locale);
+                foreach (var language in Supported)
+                {
+                    var id = new LocaleIdentifier(language.Code);
+                    if (!locales.Exists(locale => locale.Identifier == id))
+                        locales.Add(Locale.CreateLocale(id));
+                }
+                return locales;
+            }
+        }
 
         public Locale GetLocale(LocaleIdentifier id)
         {
-            for (int i = 0; i < locales.Count; i++)
+            var available = Locales;
+            for (int i = 0; i < available.Count; i++)
             {
-                var locale = locales[i];
+                var locale = available[i];
                 if (locale != null && locale.Identifier == id)
                     return locale;
             }
@@ -295,10 +314,22 @@ public static class TetrabeastsLocalization
                 return;
 
             locales.Add(locale);
-            locales.Sort((a, b) => string.CompareOrdinal(a?.Identifier.CultureInfo?.EnglishName, b?.Identifier.CultureInfo?.EnglishName));
+            locales.Sort((a, b) => string.CompareOrdinal(a ? a.Identifier.CultureInfo?.EnglishName : null, b ? b.Identifier.CultureInfo?.EnglishName : null));
         }
 
-        public bool RemoveLocale(Locale locale) => locales.Remove(locale);
+        public bool RemoveLocale(Locale locale)
+        {
+            if (locales == null) return false;
+            // Do not dispatch Locale.Equals on a destroyed entry.
+            return locales.RemoveAll(entry => ReferenceEquals(entry, locale)) > 0;
+        }
+
+        public void ResetState()
+        {
+            // Keep live instances; Unity owns their lifetime. Recreate any destroyed
+            // entries lazily, including when its toolbar asks before game startup.
+            locales?.RemoveAll(locale => !locale);
+        }
     }
 
     public static event Action LanguageChanged;
@@ -320,6 +351,9 @@ public static class TetrabeastsLocalization
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     static void InitializeBeforeSceneLoad()
     {
+        // This also runs when Enter Play Mode has domain reload disabled.
+        initialized = false;
+        LocalizationSettings.SelectedLocaleChanged -= RelayLocaleChanged;
         EnsureInitialized();
     }
 
@@ -541,6 +575,10 @@ public static class TetrabeastsLocalization
             provider = new RuntimeLocalesProvider();
             settings.SetAvailableLocales(provider);
         }
+
+        // The standard Addressables provider can also contain runtime-added locales
+        // until its next reset. Remove dead entries before its duplicate comparisons.
+        provider.Locales.RemoveAll(locale => !locale);
 
         for (int i = 0; i < Supported.Length; i++)
         {

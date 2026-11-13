@@ -11,6 +11,35 @@ public partial class LevelModifierController
     public IReadOnlyList<LevelModifierSO> ChaosModifiers => chaosModifiers;
     int chaosTitleIndex;
     float chaosTitleElapsed;
+    public int ChaosPresentationAnchorLevel { get; private set; } = -1;
+    public string ChaosPresentationAnchorName { get; private set; }
+    LevelModifierSO chaosPresentationModifier;
+    LevelModifierSO PresentationModifier => GameModeStore.Current == RunGameMode.Chaos && !isChaosEffect
+        ? chaosPresentationModifier : ActiveModifier;
+
+    bool HasPresentation(LevelModifierSO modifier) => modifier &&
+        (modifier.backgroundOverrideSprite || modifier.backgroundOverrideVideoClip ||
+         modifier.boardBackgroundOverrideSprite || modifier.enableRainOverlay || ResolveModifierBoardBorderRoot(modifier));
+
+    void SelectChaosPresentation(int level)
+    {
+        var variants = chaosModifiers.FindAll(HasPresentation);
+        chaosPresentationModifier = null;
+        if (variants.Count == 0) return;
+        if (variants.Count == 1) { chaosPresentationModifier = variants[0]; return; }
+        int anchor = variants.FindIndex(m => m.name == ChaosPresentationAnchorName);
+        if (anchor < 0)
+        {
+            anchor = variants.Count - 1;
+            ChaosPresentationAnchorName = variants[anchor].name;
+            ChaosPresentationAnchorLevel = level;
+        }
+        // Walk newest to oldest, followed by one level with the normal castle art.
+        int count = variants.Count + 1;
+        int offset = Mathf.Max(0, level - ChaosPresentationAnchorLevel) % count;
+        int index = (anchor - offset + count) % count;
+        if (index < variants.Count) chaosPresentationModifier = variants[index];
+    }
 
     public int ActiveModifierCount => chaosModifiers.Count > 0 ? chaosModifiers.Count : ActiveModifier ? 1 : 0;
     public LevelModifierSO ActiveModifierAt(int index) =>
@@ -43,8 +72,11 @@ public partial class LevelModifierController
         foreach (var modifier in chaosModifiers) if (modifier) names.Add(modifier.name);
         return names;
     }
-    public void RestoreChaosModifiers(List<string> names)
+    public void RestoreChaosModifiers(List<string> names, int presentationAnchorLevel = -1, string presentationAnchorName = null)
     {
+        ChaosPresentationAnchorLevel = presentationAnchorLevel;
+        ChaosPresentationAnchorName = presentationAnchorName;
+        chaosPresentationModifier = null;
         chaosModifiers.Clear();
         var database = ChaosDatabase();
         if (!database || names == null) return;
@@ -80,6 +112,7 @@ public partial class LevelModifierController
     }
     void RebuildChaosEffects()
     {
+        SelectChaosPresentation(_gc ? _gc.CurrentLevel : 0);
         bool selectionWasRunning = IsSelectionRunning;
         ClearChaosEffects();
         ResetLevelState();

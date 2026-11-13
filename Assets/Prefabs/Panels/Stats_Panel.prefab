@@ -1226,9 +1226,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4677647681372184761}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
+  m_Script: {fileID: 11500000, guid: 68fbf341009bbc24c8a9a335c70b9f62, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ScrollRect
+  m_EditorClassIdentifier: Assembly-CSharp::SmoothPlaylistScrollRect
   m_Content: {fileID: 1187358368213352690}
   m_Horizontal: 0
   m_Vertical: 1
@@ -1714,9 +1714,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6518710579421381187}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
+  m_Script: {fileID: 11500000, guid: 68fbf341009bbc24c8a9a335c70b9f62, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ScrollRect
+  m_EditorClassIdentifier: Assembly-CSharp::SmoothPlaylistScrollRect
   m_Content: {fileID: 5398921713743945476}
   m_Horizontal: 0
   m_Vertical: 1

@@ -165,8 +165,8 @@ public class GaugeAndLoadingFeedbackTests
             Set(loading, "_loadingTextVfxActive", true);
             for (int step = 0; step < 8; step++)
             {
-                Set(loading, "_loadingTextVfxStartedAtRealtime", Time.realtimeSinceStartup - step * .35f - .05f);
-                Call(loading, "TickLoadingTextVFX");
+                if (step == 0) Call(loading, "AdvanceLoadingAnimation", 0f);
+                else for (int frame = 0; frame < 4; frame++) Call(loading, "AdvanceLoadingAnimation", .0625f);
                 Assert.AreEqual("Loading" + new string('.', step % 4), label.text);
             }
         }

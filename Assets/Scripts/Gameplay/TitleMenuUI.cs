@@ -114,79 +114,86 @@ public class TitleMenuUI : MonoBehaviour
     "Deleting the current temp run will permanently erase that saved run. After deleting it, you will be able to change your commander, monsters, and access the shop again. Continue?";
 
 
-    void Awake()
+    public bool IsInitializing { get; private set; }
+    void Awake() { IsInitializing = true; }
+
+    System.Collections.IEnumerator Start()
     {
-        ApplyDemoBuildGuardRailsSetting();
-        UnlockDeferredDemoAchievementsIfRetail();
-
-        // --- Character ---
-        if (characterSelectUI && characterSelectUI.roster != null && characterSelectUI.roster.Length > 0)
+        try
         {
-            var savedChar = SelectedCharacterStore.ResolveFromRoster(characterSelectUI.roster);
-            if (savedChar != null && UnlockStore.IsUnlocked(savedChar))
+            ApplyDemoBuildGuardRailsSetting();
+            UnlockDeferredDemoAchievementsIfRetail();
+
+            // --- Character ---
+            if (characterSelectUI && characterSelectUI.roster != null && characterSelectUI.roster.Length > 0)
             {
-                SelectedCharacterStore.Current = savedChar;
+                var savedChar = SelectedCharacterStore.ResolveFromRoster(characterSelectUI.roster);
+                if (savedChar != null && UnlockStore.IsUnlocked(savedChar))
+                {
+                    SelectedCharacterStore.Current = savedChar;
+                }
+                else
+                {
+                    var fallback = GetFirstUnlockedCharacter(characterSelectUI.roster) ?? defaultCharacter ?? characterSelectUI.roster[0];
+                    SelectedCharacterStore.Current = fallback;
+                    SelectedCharacterStore.Save(fallback); // Persist so first launch has a stable default
+                }
+
+                characterSelectUI.RefreshPreview();
             }
-            else
+
+            if (LoadingScreen.IsVisible) yield return null;
+            // --- Monsters (deck) ---
+            if (monsterSelectUI && monsterSelectUI.roster != null && monsterSelectUI.roster.Length > 0)
             {
-                var fallback = GetFirstUnlockedCharacter(characterSelectUI.roster) ?? defaultCharacter ?? characterSelectUI.roster[0];
-                SelectedCharacterStore.Current = fallback;
-                SelectedCharacterStore.Save(fallback); // Persist so first launch has a stable default
+                var resolved = SelectedMonstersStore.ResolveFromRoster(monsterSelectUI.roster);
+                var sanitized = SanitizeMonsterSelection(resolved, monsterSelectUI.roster);
+
+                SelectedMonstersStore.Active = sanitized;
+                SelectedMonstersStore.SaveNames(sanitized); // Persist sanitized defaults / locked removals
+
+                monsterSelectUI.RefreshAllUI();
             }
 
-            characterSelectUI.RefreshPreview();
+            if (TryGetValidTempRun(out var tempRun))
+                ApplyTempRunSelectionsToStores(tempRun);
+
+            if (LoadingScreen.IsVisible) yield return null;
+            RefreshSelectedLoadoutUI();
+            if (LoadingScreen.IsVisible) yield return null;
+            TetrabeastsLocalization.EnsureInitialized();
+
+            ApplyDemoBuildGuardRailsSetting();
+            UnlockDeferredDemoAchievementsIfRetail();
+
+            SettingsStore.ApplySavedVolumesToAudio();
+
+            StartTitleMusicWhenLoadingComplete();
+
+            if (volumePanelUI && volumePanelUI.uiCursor)
+                volumePanelUI.uiCursor.SetScale(SettingsStore.LoadCursorScale());
+
+            // Setup cursor
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = false;
+
+            if (LoadingScreen.IsVisible) yield return null;
+            EnsureStarDifficultyUI();
+            ResolveCreditsReferences();
+            HideCreditsPanel(instant: true);
+            RefreshTempRunUI();
+            HideSteamLeaderboardIfUnavailable();
+            RefreshSteamLeaderboardIfVisible();
+            HookAllButtonsForSFX(); // Auto-hook all buttons under this menu for click/hover sounds
+            TetrabeastsFirstLaunchLanguagePrompt.ShowIfNeeded(transform);
         }
-
-        // --- Monsters (deck) ---
-        if (monsterSelectUI && monsterSelectUI.roster != null && monsterSelectUI.roster.Length > 0)
-        {
-            var resolved = SelectedMonstersStore.ResolveFromRoster(monsterSelectUI.roster);
-            var sanitized = SanitizeMonsterSelection(resolved, monsterSelectUI.roster);
-
-            SelectedMonstersStore.Active = sanitized;
-            SelectedMonstersStore.SaveNames(sanitized); // Persist sanitized defaults / locked removals
-
-            monsterSelectUI.RefreshAllUI();
-        }
-
-        if (TryGetValidTempRun(out var tempRun))
-            ApplyTempRunSelectionsToStores(tempRun);
-
-        RefreshSelectedLoadoutUI();
-    }
-
-    void Start()
-    {
-        TetrabeastsLocalization.EnsureInitialized();
-
-        ApplyDemoBuildGuardRailsSetting();
-        UnlockDeferredDemoAchievementsIfRetail();
-
-        SettingsStore.ApplySavedVolumesToAudio();
-
-        StartTitleMusicWhenLoadingComplete();
-
-        if (volumePanelUI && volumePanelUI.uiCursor)
-            volumePanelUI.uiCursor.SetScale(SettingsStore.LoadCursorScale());
-
-        // Setup cursor
-        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = false;
-
-        EnsureStarDifficultyUI();
-        ResolveCreditsReferences();
-        HideCreditsPanel(instant: true);
-        RefreshTempRunUI();
-        HideSteamLeaderboardIfUnavailable();
-        RefreshSteamLeaderboardIfVisible();
-        HookAllButtonsForSFX(); // Auto-hook all buttons under this menu for click/hover sounds
-        TetrabeastsFirstLaunchLanguagePrompt.ShowIfNeeded(transform);
+        finally { IsInitializing = false; }
     }
 
     void OnEnable()
     {
-        HookAllButtonsForSFX();
+        if (!IsInitializing) HookAllButtonsForSFX();
     }
 
     void OnDisable()
@@ -1345,6 +1352,7 @@ public class TitleMenuUI : MonoBehaviour
             return;
 
         var entry = Instantiate(selectedCommanderPrefab, selectedCommanderParent);
+        entry.GetComponent<CommanderCompletionBadge>()?.Bind(current);
         var refs = entry.GetComponent<CommanderIconUIRefs>();
 
         if (!refs)
@@ -1386,6 +1394,7 @@ public class TitleMenuUI : MonoBehaviour
             }
 
             int skinIndex = MonsterSkinStore.GetValidSelected(monster);
+            refs.BindLabels(monster);
 
             if (refs.iconImage)
                 refs.iconImage.sprite = MonsterSkinStore.GetPortrait(monster, skinIndex);

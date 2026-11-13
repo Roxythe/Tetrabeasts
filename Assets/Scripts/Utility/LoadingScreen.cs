@@ -12,7 +12,7 @@ public sealed class LoadingScreen : MonoBehaviour
 {
     const string SettingsResourcePath = "LoadingScreenSettings";
     const int CanvasSortingOrder = 32767;
-    const float LoadingTextDotIntervalSeconds = 0.35f;
+    const float LoadingTextDotIntervalSeconds = 0.25f;
     static readonly string[] LoadingTextDots = { string.Empty, ".", "..", "..." };
 
     static LoadingScreen _instance;
@@ -33,8 +33,9 @@ public sealed class LoadingScreen : MonoBehaviour
     string[] _loadingTextBaseStrings;
     Coroutine _hideCoroutine;
     Coroutine _sceneLoadCoroutine;
-    float _shownAtRealtime;
-    float _loadingTextVfxStartedAtRealtime;
+    float _animatedVisibleSeconds;
+    float _dotFrameSeconds;
+    int _loadingDotStep;
     float _timeScaleBeforeShow = 1f;
     bool _timeScalePauseActive;
     bool _restoreNormalTimeScaleOnHide;
@@ -120,7 +121,7 @@ public sealed class LoadingScreen : MonoBehaviour
         if (!loadingScreen || !IsVisible)
             return;
 
-        loadingScreen._shownAtRealtime = Time.unscaledTime;
+        loadingScreen._animatedVisibleSeconds = 0f;
     }
 
     public static IEnumerator HideAndWaitUntilInactive()
@@ -185,6 +186,9 @@ public sealed class LoadingScreen : MonoBehaviour
     {
         ShowInternal(restoreNormalTimeScaleOnHide: true);
         Canvas.ForceUpdateCanvases();
+        // Present the first moving dots before Unity begins potentially blocking asset integration.
+        while (_animatedVisibleSeconds < LoadingTextDotIntervalSeconds)
+            yield return null;
         yield return null;
 
         AsyncOperation operation = null;
@@ -250,6 +254,7 @@ public sealed class LoadingScreen : MonoBehaviour
         _canvas.enabled = true;
         ApplyLoadingTimeScalePause(restoreNormalTimeScaleOnHide);
         ApplyRandomBackground();
+        _animatedVisibleSeconds = 0f;
         StartLoadingTextBlink();
 
         if (_canvasGroup)
@@ -258,8 +263,6 @@ public sealed class LoadingScreen : MonoBehaviour
             _canvasGroup.blocksRaycasts = true;
             _canvasGroup.interactable = false;
         }
-
-        _shownAtRealtime = Time.unscaledTime;
     }
 
     void HideAfterSettled()
@@ -285,6 +288,10 @@ public sealed class LoadingScreen : MonoBehaviour
         while (gameplay && gameplay.isActiveAndEnabled && gameplay.IsInitializing)
             yield return null;
 
+        var title = FindFirstObjectByType<TitleMenuUI>();
+        while (title && title.isActiveAndEnabled && title.IsInitializing)
+            yield return null;
+
         int frames = Mathf.Max(0, Settings ? Settings.hideDelayFrames : 1);
         while (frames > 0)
         {
@@ -297,15 +304,15 @@ public sealed class LoadingScreen : MonoBehaviour
 
     IEnumerator WaitForMinimumVisible()
     {
-        float remaining = GetMinimumVisibleRemainingSeconds();
-        if (remaining > 0f)
-            yield return new WaitForSecondsRealtime(remaining);
+        while (GetMinimumVisibleRemainingSeconds() > 0f)
+            yield return null;
     }
 
     float GetMinimumVisibleRemainingSeconds()
     {
         float minimumVisibleSeconds = Mathf.Max(0f, Settings ? Settings.minimumVisibleSeconds : 0f);
-        return minimumVisibleSeconds - (Time.unscaledTime - _shownAtRealtime);
+        // A long blocked frame is not time in which the player could see animation.
+        return Mathf.Max(minimumVisibleSeconds, LoadingTextDotIntervalSeconds * LoadingTextDots.Length) - _animatedVisibleSeconds;
     }
 
     void HideInternal()
@@ -610,7 +617,16 @@ public sealed class LoadingScreen : MonoBehaviour
         for (int i = 0; i < _loadingTexts.Length; i++)
         {
             _loadingTextBaseColors[i] = _loadingTexts[i] ? _loadingTexts[i].color : Color.white;
-            _loadingTextBaseStrings[i] = _loadingTexts[i] ? _loadingTexts[i].text : string.Empty;
+            _loadingTextBaseStrings[i] = _loadingTexts[i] ? _loadingTexts[i].text.TrimEnd('.') : string.Empty;
+            var text = _loadingTexts[i];
+            if (!text) continue;
+            // Warm the longest label once; adding dots must not resize the word each tick.
+            text.text = _loadingTextBaseStrings[i] + "...";
+            text.ForceMeshUpdate(true, true);
+            float fittedSize = text.fontSize;
+            text.enableAutoSizing = false;
+            text.fontSize = fittedSize;
+            text.text = _loadingTextBaseStrings[i];
         }
     }
 
@@ -618,11 +634,9 @@ public sealed class LoadingScreen : MonoBehaviour
     {
         StopLoadingTextBlink();
 
-        if (_loadingTexts == null || _loadingTexts.Length == 0)
-            return;
-
         _loadingTextVfxActive = true;
-        _loadingTextVfxStartedAtRealtime = Time.realtimeSinceStartup;
+        _dotFrameSeconds = 0f;
+        _loadingDotStep = 0;
         _lastLoadingTextDotCount = -1;
         SetLoadingTextAlpha(1f);
         SetLoadingTextDots(0);
@@ -638,8 +652,15 @@ public sealed class LoadingScreen : MonoBehaviour
 
     void TickLoadingTextVFX()
     {
-        if (!_loadingTextVfxActive)
-            return;
+        AdvanceLoadingAnimation(Time.unscaledDeltaTime);
+    }
+
+    void AdvanceLoadingAnimation(float visibleDeltaTime)
+    {
+        if (!_loadingTextVfxActive) return;
+        float dt = Mathf.Clamp(visibleDeltaTime, 0f, 1f / 15f);
+        _animatedVisibleSeconds += dt;
+        _dotFrameSeconds += dt;
 
         if (_loadingTexts == null || _loadingTexts.Length == 0)
         {
@@ -648,15 +669,19 @@ public sealed class LoadingScreen : MonoBehaviour
                 return;
         }
 
-        float minAlpha = Mathf.Clamp01(Settings ? Settings.loadingTextMinAlpha : 0.15f);
+        float minAlpha = Mathf.Max(.65f, Mathf.Clamp01(Settings ? Settings.loadingTextMinAlpha : .65f));
         float fadeSeconds = Mathf.Max(0.01f, Settings ? Settings.loadingTextFadeSeconds : 1.1f);
-        float elapsed = Mathf.Max(0f, Time.realtimeSinceStartup - _loadingTextVfxStartedAtRealtime);
+        float elapsed = _animatedVisibleSeconds;
         float alphaT = Mathf.SmoothStep(0f, 1f, Mathf.PingPong(elapsed / fadeSeconds, 1f));
 
         SetLoadingTextAlpha(Mathf.Lerp(1f, minAlpha, alphaT));
 
-        int dotCount = Mathf.FloorToInt(elapsed / LoadingTextDotIntervalSeconds) % LoadingTextDots.Length;
-        SetLoadingTextDots(dotCount);
+        if (_dotFrameSeconds >= LoadingTextDotIntervalSeconds)
+        {
+            _dotFrameSeconds %= LoadingTextDotIntervalSeconds;
+            _loadingDotStep = (_loadingDotStep + 1) % LoadingTextDots.Length;
+        }
+        SetLoadingTextDots(_loadingDotStep);
     }
 
     void SetLoadingTextDots(int dotCount)

@@ -7,6 +7,7 @@ public sealed class TMPLabelShadow : MonoBehaviour
     public TMP_Text shadow;
     TMP_Text source;
     void OnEnable() => Sync();
+    void OnDisable() { if (shadow) shadow.gameObject.SetActive(false); }
     void LateUpdate() => Sync();
     public void Sync()
     {

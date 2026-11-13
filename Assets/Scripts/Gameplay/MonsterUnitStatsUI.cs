@@ -42,7 +42,10 @@ public class MonsterUnitStatsUI : MonoBehaviour
         SetText(nameText, nameShadowText, monsterName);
         SetText(levelText, levelShadowText, TetrabeastsLocalization.LocalizeFormat("Level {0}", Mathf.Max(1, level)));
         SetText(stats1Text, stats1ShadowText, stats1);
-        SetText(stats2Text, stats2ShadowText, stats2);
+        bool healer = monster && monster.role == MonsterRole.Healer;
+        SetText(stats2Text, stats2ShadowText, healer ? stats2 : string.Empty);
+        if (stats2Text) stats2Text.gameObject.SetActive(healer);
+        if (stats2ShadowText) stats2ShadowText.gameObject.SetActive(healer);
 
         if (monsterImage)
         {

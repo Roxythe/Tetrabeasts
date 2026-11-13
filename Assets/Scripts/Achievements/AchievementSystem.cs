@@ -295,7 +295,13 @@ public static class AchievementSystem
         if (def == null)
             return BuildProgress(unlocked ? 1.0 : 0.0, 1.0, Compare.Gte, unlocked);
 
-        return BuildProgress(ReadProgressStat(def), def.target, def.compare, unlocked);
+        double current = ReadProgressStat(def);
+        string text = null;
+        if (def.statKey == Stat.RunBestLevelWinSeconds)
+            text = current > 0 && !double.IsInfinity(current) && !double.IsNaN(current)
+                ? TetrabeastsLocalization.LocalizeFormat("{0} Seconds", Math.Floor(current).ToString())
+                : TetrabeastsLocalization.LocalizeText("No clear time yet");
+        return BuildProgress(current, def.target, def.compare, unlocked, text);
     }
 
     static Def FindDef(string achievementId)

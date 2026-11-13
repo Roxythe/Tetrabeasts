@@ -13,6 +13,14 @@
 
 - Change the achievement prefab to include a gold border around the edge of the achievement that have been completed with a glowing yellow/golden light vfx around the edge of the border. No vfx or border for achievements that haven't been unlocked. I have a boarder in the prefab already but it needs to be toggled on when the achievement is completed.
 
+- Add a slightly offset opaque black shadow text to the buff/debuff pop up text so that it stands out against the background and matches the font format of the buff/debuff description text. And change the pop up texts Buff blue color to match the "Choose Buff" title Text color. Do the same for the red color text for debuff stats so it matches the "Choose Debuff" title font color. The current colors are a bit too light and it looks weird to have so many slightly different shades of blue and red for different fonts.
+
+- For the level modifier panel in chaos mode, I want the page number to be centered under the Level modifier Title text, make the font size larger and add an opaque black offset shadow to make it stand out more. If it hasn't been added to the panel's prefab yet then add it so I can make changes in the editor for it please. It can be off by default and only used for chaos mode where multiple level modifiers will be active at one time. The arrow buttons can be toggled off as well when there is only 1 active level modifier as well so they aren't visible when it doesn't make sense for them to be.
+
+- I would like the bubbling liquid VFX for the different gauges (enemy castle, player special, and unit reserve) to continue playing when the game is paused. Right now they are stopped when the game is paused.
+
+- If the game is alt tabbed or taken out of focus I would like it to automatically pause the game (opening pause menu) so that if a player has to minimize the game or something pops up on their screen that steals focus it doesn't mess up their run.
+
 ----------------------------------------------------------------------------------------------------
 
 - At round reward selection I want to add a pop up text box when hovering over a buff or debuff that shows how choosing that option will affect the player. For example (increasing reinforcements shows the current reinforcements # -> increased reinforcements # with the increased reinforcements number as a blue color text). if a debuff is being highlighted it should show the updated stat or change in a red color text. (essentially if something is bad for the player it should be red in color, if its good it should be blue. For example, raising enemy attack power debuff should be red color text and lowering the players unit health should also be red color text. The color shouldn't be based on whether a value increases or decreases, but whether it is good or bad for the player.

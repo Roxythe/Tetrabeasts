@@ -20,6 +20,7 @@ public class RoundRewardUI : MonoBehaviour
     [Header("Reward preview")]
     [SerializeField] GameObject previewBox;
     [SerializeField] TMP_Text previewText;
+    [SerializeField] TMP_Text buffTitleText, debuffTitleText;
     [SerializeField, Min(0f)] float previewGap = 18f;
     GameController previewGame;
     RunModOptionButton previewTarget;
@@ -35,9 +36,11 @@ public class RoundRewardUI : MonoBehaviour
         if (!previewGame || _completionLocked || _tutorialInteractionLocked) return;
         previewTarget = option;
         var pending = debuffPanel && debuffPanel.activeInHierarchy ? _selectedBuff as RunModifier : null;
-        previewText.text = reward is RunModifier generic ? previewGame.RewardPreview(generic, pending)
+        previewText.text = reward is RunModifier generic ? previewGame.RewardPreview(generic, pending,
+            buffTitleText ? buffTitleText.color : (Color?)null, debuffTitleText ? debuffTitleText.color : (Color?)null)
             : TetrabeastsLocalization.LocalizeText(reward.description);
         previewBox.SetActive(true);
+        previewText.GetComponent<TMPLabelShadow>()?.Sync();
         previewBox.transform.SetAsLastSibling();
         PositionPreview();
     }

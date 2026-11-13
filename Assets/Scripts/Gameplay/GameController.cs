@@ -1345,7 +1345,8 @@ public partial class GameController : MonoBehaviour
         marathonDamage = Mathf.Max(0f, saveData.marathonDamage);
         marathonCarriedGravity = Mathf.Max(0f, saveData.marathonGravity);
         marathonElapsedSeconds = Mathf.Max(0f, saveData.marathonElapsedSeconds);
-        levelModifierController.RestoreChaosModifiers(saveData.chaosModifierNames);
+        levelModifierController.RestoreChaosModifiers(saveData.chaosModifierNames,
+            saveData.chaosPresentationAnchorLevel, saveData.chaosPresentationAnchorName);
         _cachedTempRunCheckpoint = saveData;
         _postFinalSurvivalActive = saveData.postFinalSurvivalActive && postFinalSurvivalCastle != null;
         _pendingPostFinalSurvivalIntro = false;
@@ -1546,6 +1547,7 @@ public partial class GameController : MonoBehaviour
     void Update()
     {
         if (IsInitializing) return;
+        TryApplyFocusPause();
         TickGameMode();
         if (marathonRewardActive)
         {
@@ -2235,6 +2237,8 @@ public partial class GameController : MonoBehaviour
             marathonGravity = IsMarathon ? MarathonCoreGravity : 0f,
             marathonElapsedSeconds = marathonElapsedSeconds,
             chaosModifierNames = levelModifierController.CaptureChaosModifiers(),
+            chaosPresentationAnchorLevel = levelModifierController.ChaosPresentationAnchorLevel,
+            chaosPresentationAnchorName = levelModifierController.ChaosPresentationAnchorName,
             currentLevel = currentLevel,
             postFinalSurvivalActive = _postFinalSurvivalActive,
             standardFinalWinApplied = _finalWinStateApplied,
@@ -2504,7 +2508,7 @@ public partial class GameController : MonoBehaviour
         if (variant != RoundTransitionVariant.Win && variant != RoundTransitionVariant.Loss)
             return;
 
-        CleanupRoundTransientGameplayObjects();
+        CleanupRoundTransientGameplayObjects(preserveImpactVfx: true);
         levelModifierController?.PauseAnimatedBackgroundForPostRound();
     }
 
@@ -3717,12 +3721,12 @@ public partial class GameController : MonoBehaviour
         return token == _roundLifecycleToken && !gameOver && !levelWon && !winQueued && gameBoard;
     }
 
-    void CleanupRoundTransientGameplayObjects()
+    void CleanupRoundTransientGameplayObjects(bool preserveImpactVfx = false)
     {
         levelModifierController?.EndNewModifierEffects();
         boulders?.Clear();
         InvalidateRoundTransientActions();
-        ClearProjectileRootTransients();
+        ClearProjectileRootTransients(preserveImpactVfx);
         gameBoard?.ClearRoundTransientEffects();
 
         if (_bossGravityCR != null)
@@ -3746,7 +3750,7 @@ public partial class GameController : MonoBehaviour
         _environmentRowClearResolving = false;
     }
 
-    void ClearProjectileRootTransients()
+    void ClearProjectileRootTransients(bool preserveImpactVfx = false)
     {
         _snapshotProjectiles.Clear();
         RectTransform root = projectileRoot ? projectileRoot : (gameBoard ? gameBoard.gridRoot : null);
@@ -3758,6 +3762,9 @@ public partial class GameController : MonoBehaviour
             Transform child = root.GetChild(i);
             if (child && !child.gameObject.activeSelf)
                 continue;
+
+            if (preserveImpactVfx && child && (child.GetComponent<CastleImpactDebris>() ||
+                child.name.StartsWith("AttackExplosion", System.StringComparison.Ordinal))) continue;
 
             if (IsProjectileRootTransient(child))
             {
@@ -3782,8 +3789,8 @@ public partial class GameController : MonoBehaviour
 
     void InitLevel(int levelIndex, bool spawnEnvironment = true)
     {
-        if (GameModeStore.Current == RunGameMode.Standard && castlesByLevel != null && levelIndex >= castlesByLevel.Length - 1)
-            GameModeStore.MarkFinalLevelReached();
+        if (GameModeStore.Current == RunGameMode.Standard && castlesByLevel != null && castlesByLevel.Length > 0 && levelIndex >= castlesByLevel.Length - 1)
+            GameModeStore.MarkFinalLevelReached(selectedCharacter);
         levelWon = false;
         winQueued = false;
         _currentRoundWinStatsRecorded = false;
@@ -4136,7 +4143,7 @@ public partial class GameController : MonoBehaviour
             StartCoroutine(CoInvokeAfterPanelFullyShown(roundRewardUI.rootPanel, () =>
             {
                 if ((winQueued || levelWon) && UIPanelTransition.IsFullyShown(roundRewardUI.rootPanel))
-                    ClearProjectileRootTransients();
+                    ClearProjectileRootTransients(preserveImpactVfx: true);
             }));
 
             if (closeXpAfterRewardOpen)
@@ -6148,6 +6155,11 @@ public partial class GameController : MonoBehaviour
         }
 
         Animator animator = go.GetComponent<Animator>();
+        foreach (var particles in go.GetComponentsInChildren<ParticleSystem>(true))
+        {
+            var main = particles.main;
+            main.useUnscaledTime = true;
+        }
         if (animator)
         {
             animator.updateMode = AnimatorUpdateMode.UnscaledTime;
@@ -6206,6 +6218,7 @@ public partial class GameController : MonoBehaviour
             yield return null;
         }
 
+        yield return FinishAttackImpactParticles(instance);
         ReleaseAttackExplosionInstance(instance);
     }
 
@@ -6236,7 +6249,24 @@ public partial class GameController : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(Mathf.Max(0f, delaySeconds));
 
+        yield return FinishAttackImpactParticles(instance);
         ReleaseAttackExplosionInstance(instance);
+    }
+
+    IEnumerator FinishAttackImpactParticles(GameObject instance)
+    {
+        if (!instance) yield break;
+        var systems = instance.GetComponentsInChildren<ParticleSystem>(true);
+        foreach (var system in systems)
+            system.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        while (instance && instance.activeInHierarchy)
+        {
+            bool alive = false;
+            foreach (var system in systems)
+                if (system && system.IsAlive(true)) { alive = true; break; }
+            if (!alive) yield break;
+            yield return null;
+        }
     }
 
     bool ApplyCastleAttackDamage(int damage, MonsterData attackerMD, AudioClip impactClip,
@@ -7882,7 +7912,7 @@ public partial class GameController : MonoBehaviour
         }
 
         _lastUnitLivesGlassState = null;
-        UpdateUnitLivesUI();
+        UpdateUnitLivesUI(immediate: true);
     }
 
     void FlashUnitLivesFill()
@@ -7936,7 +7966,7 @@ public partial class GameController : MonoBehaviour
         _unitLivesShakeCR = null;
     }
 
-    void UpdateUnitLivesUI()
+    void UpdateUnitLivesUI(bool immediate = false)
     {
         int max = EffectiveMaxUnitLives;
 
@@ -7945,8 +7975,20 @@ public partial class GameController : MonoBehaviour
 
         if (unitLivesSlider)
         {
-            unitLivesSlider.maxValue = max;
-            unitLivesSlider.value = unitLives;
+            var motion = unitLivesSlider.GetComponent<GaugeLiquidMotion>();
+            if (motion)
+            {
+                // The slider is a normalized visual; the label and gameplay keep the exact reserve count.
+                unitLivesSlider.wholeNumbers = false;
+                unitLivesSlider.minValue = 0f;
+                unitLivesSlider.maxValue = 1f;
+                motion.SetTarget((float)unitLives / Mathf.Max(1, max), immediate);
+            }
+            else
+            {
+                unitLivesSlider.maxValue = max;
+                unitLivesSlider.value = unitLives;
+            }
         }
 
         RefreshUnitLivesGlassOverlay(unitLives, max);
@@ -11359,6 +11401,7 @@ public partial class GameController : MonoBehaviour
     {
         if (!hasFocus)
         {
+            PauseForLostFocus();
             if (ShouldUseUICursorModeForCurrentState())
                 EnterUICursorMode();
 
@@ -11368,6 +11411,30 @@ public partial class GameController : MonoBehaviour
         TetrabeastsControls.RefreshActiveInputProfile();
         ApplyCursorModeForCurrentState();
         StartCoroutine(ReapplyCursorForFocusNextFrame());
+    }
+
+    void OnApplicationPause(bool paused)
+    {
+        if (paused) PauseForLostFocus();
+    }
+
+    void PauseForLostFocus()
+    {
+        if (!isActiveAndEnabled || gameOver) return;
+        _focusPausePending = true;
+        TryApplyFocusPause();
+    }
+
+    bool _focusPausePending;
+    void TryApplyFocusPause()
+    {
+        if (!_focusPausePending) return;
+        if (gameOver || isPaused) { _focusPausePending = false; return; }
+        // A reward panel or special cinematic already suspends gameplay. Open the
+        // pause menu as soon as that transition releases its input lock.
+        if (IsInitializing || IsGameplaySuspended || IsPauseMenuInputLocked()) return;
+        PauseGame();
+        if (isPaused) _focusPausePending = false;
     }
 
     IEnumerator ReapplyCursorForFocusNextFrame()

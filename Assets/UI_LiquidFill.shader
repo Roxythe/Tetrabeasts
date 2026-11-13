@@ -125,6 +125,8 @@ Shader "Custom/UI_LiquidFill"
                 float _UseUIAlphaClip;
             CBUFFER_END
 
+            float _TetrabeastsLiquidTime;
+
             struct Attributes
             {
                 float4 positionOS : POSITION;
@@ -182,7 +184,7 @@ Shader "Custom/UI_LiquidFill"
 
             half4 frag(Varyings IN) : SV_Target
             {
-                float t = _Time.y;
+                float t = _TetrabeastsLiquidTime;
                 float2 uv = IN.uv;
 
                 float2 nUV = uv * _NoiseScale + (t * _NoiseSpeed.xy);

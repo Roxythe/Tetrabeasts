@@ -49,7 +49,7 @@ public sealed class CastleImpactDebris : MaskableGraphic
 
     void Update()
     {
-        elapsed += Time.deltaTime;
+        elapsed += Time.unscaledDeltaTime;
         if (elapsed >= duration) Destroy(gameObject);
         else SetVerticesDirty();
     }

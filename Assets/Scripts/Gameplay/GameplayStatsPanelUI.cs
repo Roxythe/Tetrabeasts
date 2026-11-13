@@ -780,12 +780,6 @@ public class GameplayStatsPanelUI : MonoBehaviour
             AddCompactMonsterStat(stats, "Heal Range", currentRange, baseRange, FormatNumber, true);
             AddTextStat(stats, "Heal Speed", FormatSeconds(leveled.healSpeed), unchangedColor, compact: true);
         }
-        else
-        {
-            AddTextStat(stats, "Heal Power", "-", unchangedColor, compact: true);
-            AddTextStat(stats, "Heal Range", "-", unchangedColor, compact: true);
-            AddTextStat(stats, "Heal Speed", "-", unchangedColor, compact: true);
-        }
         AddTextStat(stats, "Spawn Weight", FormatNumber(monster.weightedSpawnRate), unchangedColor, compact: true);
     }
 
@@ -830,10 +824,7 @@ public class GameplayStatsPanelUI : MonoBehaviour
     {
         if (!monster || monster.role != MonsterRole.Healer)
         {
-            return
-                "Heal Power: -\n" +
-                "Heal Range: -\n" +
-                "Heal Speed: -";
+            return string.Empty;
         }
 
         return
@@ -847,7 +838,7 @@ public class GameplayStatsPanelUI : MonoBehaviour
         RectTransform scrollRt = AddRect(name, parent);
         Stretch(scrollRt, 24f, 24f, 24f, 146f);
 
-        var scroll = scrollRt.gameObject.AddComponent<ScrollRect>();
+        var scroll = scrollRt.gameObject.AddComponent<SmoothPlaylistScrollRect>();
         scroll.horizontal = false;
         scroll.vertical = true;
         scroll.scrollSensitivity = 32f;

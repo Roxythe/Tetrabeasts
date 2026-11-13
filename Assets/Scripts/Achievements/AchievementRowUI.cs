@@ -11,6 +11,8 @@ public class AchievementRowUI : MonoBehaviour
     public Slider progressSlider;
     public TMP_Text progressText;
     public Image progressFill;
+    public GameObject completedBorder;
+    public GameObject completedGlow;
 
     [Header("Colors")]
     public Color unlockedIconColor = Color.white;
@@ -31,6 +33,8 @@ public class AchievementRowUI : MonoBehaviour
     // Use this for special rows
     public void SetCustom(Sprite customIcon, string title, string desc, bool unlocked, bool showLockedOverlay)
     {
+        if (completedBorder) completedBorder.SetActive(unlocked);
+        if (completedGlow) completedGlow.SetActive(unlocked);
         if (icon)
         {
             icon.sprite = customIcon;

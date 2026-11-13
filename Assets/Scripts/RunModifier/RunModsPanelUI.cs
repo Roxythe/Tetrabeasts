@@ -20,6 +20,7 @@ public class RunModsPanelUI : MonoBehaviour
     [SerializeField] Button levelModifiersButton;
     [SerializeField] LevelModifierDetails details;
     [SerializeField] Button previous, next, closeDetails;
+    [SerializeField] TMPro.TMP_Text modifierPageText;
     LevelModifierController controller;
     int page;
     public GameObject OpenDetailsRoot => details && details.gameObject.activeSelf ? details.gameObject : null;
@@ -52,7 +53,16 @@ public class RunModsPanelUI : MonoBehaviour
 
     void ShowPage()
     {
-        bool browse = controller.ActiveModifierCount > 1;
+        int count = controller.ActiveModifierCount;
+        if (count == 0) { CloseDetails(); return; }
+        page = Mathf.Clamp(page, 0, count - 1);
+        bool browse = count > 1;
+        if (modifierPageText)
+        {
+            modifierPageText.gameObject.SetActive(GameModeStore.Current == RunGameMode.Chaos && browse);
+            modifierPageText.text = TetrabeastsLocalization.LocalizeFormat("({0} of {1})", page + 1, count);
+            modifierPageText.GetComponent<TMPLabelShadow>()?.Sync();
+        }
         previous.gameObject.SetActive(browse);
         next.gameObject.SetActive(browse);
         details.ShowModifier(controller.ActiveModifierAt(page));

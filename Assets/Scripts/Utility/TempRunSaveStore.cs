@@ -19,6 +19,8 @@ public static class TempRunSaveStore
         public float marathonGravity;
         public float marathonElapsedSeconds;
         public List<string> chaosModifierNames = new();
+        public int chaosPresentationAnchorLevel = -1;
+        public string chaosPresentationAnchorName;
         public int currentLevel;
         public bool postFinalSurvivalActive;
         public bool standardFinalWinApplied;

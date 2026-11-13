@@ -56,7 +56,11 @@ public sealed class GaugeLiquidMotion : MonoBehaviour
     void SetVisualValue(float normalizedValue) =>
         slider.SetValueWithoutNotify(Mathf.Lerp(slider.minValue, slider.maxValue, normalizedValue));
     void ReactToShake(float intensity) { if (slosh) slosh.AddImpulse(intensity * .3f); }
-    void LateUpdate() => AdvanceVisual(Time.unscaledDeltaTime);
+    void LateUpdate()
+    {
+        Shader.SetGlobalFloat("_TetrabeastsLiquidTime", Time.unscaledTime);
+        AdvanceVisual(Time.unscaledDeltaTime);
+    }
 
     void AdvanceVisual(float deltaTime)
     {

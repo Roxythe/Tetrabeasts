@@ -95,6 +95,7 @@ public class CharacterSelectUI : MonoBehaviour
         foreach (var data in roster)
         {
             var btn = Instantiate(characterButtonPrefab, listParent);
+            btn.GetComponent<CommanderCompletionBadge>()?.Bind(data);
             var targetVisual = UIButtonTargetVisual.Ensure(btn.gameObject);
 
             buttons[data] = btn;
@@ -409,6 +410,8 @@ public class CharacterSelectUI : MonoBehaviour
             var button = kv.Value;
             if (!button)
                 continue;
+
+            button.GetComponent<CommanderCompletionBadge>()?.Bind(data);
 
             bool unlocked = UnlockStore.IsUnlocked(data);
             bool isSelected = SelectedCharacterStore.Current == data;

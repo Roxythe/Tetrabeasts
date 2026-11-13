@@ -127,9 +127,10 @@ public class EnemyCastleUI : MonoBehaviour
 
         if (healthBarSlider)
         {
+            healthBarSlider.wholeNumbers = false;
             healthBarSlider.minValue = 0;
             healthBarSlider.maxValue = _infiniteHealth ? 1f : maxHP;
-            healthBarSlider.value = _infiniteHealth ? 1f : currentHP;
+            SetHealthBarFill(1f, immediate: true);
         }
 
         CacheNormalHealthBarColorIfNeeded();
@@ -246,16 +247,23 @@ public class EnemyCastleUI : MonoBehaviour
         TriggerDamageShake(feedbackDamage);
     }
 
+    void SetHealthBarFill(float fraction, bool immediate = false)
+    {
+        if (!healthBarSlider) return;
+        var motion = healthBarSlider.GetComponent<GaugeLiquidMotion>();
+        if (motion) motion.SetTarget(fraction, immediate);
+        else healthBarSlider.normalizedValue = Mathf.Clamp01(fraction);
+    }
+
     void UpdateVisuals()
     {
         if (marathonProgress >= 0f)
         {
-            if (healthBarSlider) healthBarSlider.normalizedValue = marathonFinalBoss ? 1f : 1f - marathonProgress;
+            SetHealthBarFill(marathonFinalBoss ? 1f : 1f - marathonProgress);
             if (healthBarText) healthBarText.text = marathonFinalBoss ? "\u221E" : Mathf.CeilToInt((1f - marathonProgress) * 100f) + "%";
             return;
         }
-        if (healthBarSlider)
-            healthBarSlider.value = _infiniteHealth ? 1f : currentHP;
+        SetHealthBarFill(_infiniteHealth ? 1f : (float)currentHP / Mathf.Max(1, maxHP));
 
         if (healthBarText)
             healthBarText.text = _infiniteHealth ? "\u221E" : $"{currentHP} / {maxHP}";

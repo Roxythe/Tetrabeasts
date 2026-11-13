@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// Edit this component on GameModeMenu.prefab to change the mode tooltips used in game.
+// Edit this component on GameModeTooltip.prefab to change the mode tooltips used in game.
 public sealed class GameModeDescriptions : MonoBehaviour
 {
     [TextArea(3, 8)] public string standard = "Battle through the castles, choose rewards, and defeat the final boss. Level modifiers last for one level.";

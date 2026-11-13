@@ -4,11 +4,13 @@ using UnityEngine;
 public partial class GameController
 {
     // Project both choices without applying either of them to the live run.
-    public string RewardPreview(RunModifier reward, RunModifier pendingBuff = null)
+    public string RewardPreview(RunModifier reward, RunModifier pendingBuff = null, Color? buffColor = null, Color? debuffColor = null)
     {
         string Change(string label, string before, string after)
         {
-            string color = before == after ? "#D8D3CB" : reward.isBuff ? "#72C9FF" : "#FF817A";
+            Color good = buffColor ?? new Color(.15641688f, .4393744f, .8962264f);
+            Color bad = debuffColor ?? new Color(.8679245f, 0f, 0f);
+            string color = before == after ? "#D8D3CB" : "#" + ColorUtility.ToHtmlStringRGB(reward.isBuff ? good : bad);
             return $"{TetrabeastsLocalization.LocalizeText(label)}\n{before}  ->  <color={color}>{after}</color>";
         }
 

@@ -323,7 +323,15 @@ public partial class LevelModifierController : MonoBehaviour
     {
         if (GameModeStore.Current == RunGameMode.Chaos && !isChaosEffect)
         {
-            if (!HasAcceptedChaosKind(modifier)) chaosModifiers.Add(modifier);
+            if (!HasAcceptedChaosKind(modifier))
+            {
+                chaosModifiers.Add(modifier);
+                if (HasPresentation(modifier))
+                {
+                    ChaosPresentationAnchorLevel = _gc ? _gc.CurrentLevel : 0;
+                    ChaosPresentationAnchorName = modifier.name;
+                }
+            }
             RebuildChaosEffects();
             CodexProgressStore.Unlock(modifier);
             LogModifierActivation();
@@ -339,6 +347,9 @@ public partial class LevelModifierController : MonoBehaviour
     {
         ClearChaosEffects();
         chaosModifiers.Clear();
+        chaosPresentationModifier = null;
+        ChaosPresentationAnchorLevel = -1;
+        ChaosPresentationAnchorName = null;
         _availableRerolls = 0;
         CacheLevelBackground(null);
         ResetLevelState();
@@ -2098,7 +2109,7 @@ public partial class LevelModifierController : MonoBehaviour
         ApplyBoardPresentation();
         SyncVolcanicBoardAnimationRoots();
 
-        if (ActiveModifier && ActiveModifier.enableRainOverlay)
+        if (PresentationModifier && PresentationModifier.enableRainOverlay)
         {
             if (!_rainOverlay)
             {
@@ -2117,12 +2128,12 @@ public partial class LevelModifierController : MonoBehaviour
             }
 
             _rainOverlay.Configure(
-                ActiveModifier.rainDrops,
-                ActiveModifier.rainSpeed,
-                ActiveModifier.rainDropLength,
-                ActiveModifier.rainDropWidth,
-                ActiveModifier.rainAngle,
-                ActiveModifier.rainTint);
+                PresentationModifier.rainDrops,
+                PresentationModifier.rainSpeed,
+                PresentationModifier.rainDropLength,
+                PresentationModifier.rainDropWidth,
+                PresentationModifier.rainAngle,
+                PresentationModifier.rainTint);
             _rainOverlay.gameObject.SetActive(true);
 
             AudioManager.I?.PlayRainAmbience();
@@ -2234,16 +2245,16 @@ public partial class LevelModifierController : MonoBehaviour
 
     Sprite ResolveBackgroundSprite()
     {
-        if (ActiveModifier && ActiveModifier.backgroundOverrideSprite)
-            return ActiveModifier.backgroundOverrideSprite;
+        if (PresentationModifier && PresentationModifier.backgroundOverrideSprite)
+            return PresentationModifier.backgroundOverrideSprite;
 
         return _currentLevelBackgroundSprite ? _currentLevelBackgroundSprite : defaultBackgroundSprite;
     }
 
     VideoClip ResolveBackgroundVideoClip()
     {
-        if (ActiveModifier && ActiveModifier.backgroundOverrideVideoClip)
-            return ActiveModifier.backgroundOverrideVideoClip;
+        if (PresentationModifier && PresentationModifier.backgroundOverrideVideoClip)
+            return PresentationModifier.backgroundOverrideVideoClip;
 
         return _currentLevelBackgroundVideoClip;
     }
@@ -2255,16 +2266,16 @@ public partial class LevelModifierController : MonoBehaviour
         if (!clip)
             return fallbackSpeed;
 
-        if (ActiveModifier && ActiveModifier.backgroundOverrideVideoClip == clip)
-            return ResolveConfiguredAnimatedBackgroundPlaybackSpeed(ActiveModifier.backgroundOverrideVideoPlaybackSpeed, fallbackSpeed);
+        if (PresentationModifier && PresentationModifier.backgroundOverrideVideoClip == clip)
+            return ResolveConfiguredAnimatedBackgroundPlaybackSpeed(PresentationModifier.backgroundOverrideVideoPlaybackSpeed, fallbackSpeed);
 
         return ResolveConfiguredAnimatedBackgroundPlaybackSpeed(_currentLevelBackgroundVideoPlaybackSpeed, fallbackSpeed);
     }
 
     Sprite ResolveBoardBackgroundSprite()
     {
-        if (ActiveModifier && ActiveModifier.boardBackgroundOverrideSprite)
-            return ActiveModifier.boardBackgroundOverrideSprite;
+        if (PresentationModifier && PresentationModifier.boardBackgroundOverrideSprite)
+            return PresentationModifier.boardBackgroundOverrideSprite;
 
         return _currentLevelBoardBackgroundSprite ? _currentLevelBoardBackgroundSprite : _defaultBoardBackgroundSprite;
     }
@@ -2274,8 +2285,8 @@ public partial class LevelModifierController : MonoBehaviour
         if (!clip)
             return false;
 
-        bool explicitPingPong = ActiveModifier && ActiveModifier.backgroundOverrideVideoClip == clip
-            ? ActiveModifier.backgroundOverrideVideoPingPongLoop
+        bool explicitPingPong = PresentationModifier && PresentationModifier.backgroundOverrideVideoClip == clip
+            ? PresentationModifier.backgroundOverrideVideoPingPongLoop
             : _currentLevelBackgroundVideoPingPongLoop;
 
         return explicitPingPong || IsNamedPingPongBackgroundClip(clip);
@@ -2635,9 +2646,9 @@ public partial class LevelModifierController : MonoBehaviour
         if (!clip)
             return 0f;
 
-        if (ActiveModifier &&
-            ActiveModifier.kind == LevelModifierKind.StormyWeather &&
-            ActiveModifier.backgroundOverrideVideoClip == clip)
+        if (PresentationModifier &&
+            PresentationModifier.kind == LevelModifierKind.StormyWeather &&
+            PresentationModifier.backgroundOverrideVideoClip == clip)
             return Mathf.Clamp01(stormyWeatherVideoAudioVolume);
 
         return Mathf.Clamp01(animatedBackgroundVideoAudioVolume);
@@ -2790,9 +2801,9 @@ public partial class LevelModifierController : MonoBehaviour
 
     GameObject ResolveBoardBorderRoot()
     {
-        if (ActiveModifier)
+        if (PresentationModifier)
         {
-            GameObject modifierBorderRoot = ResolveModifierBoardBorderRoot(ActiveModifier);
+            GameObject modifierBorderRoot = ResolveModifierBoardBorderRoot(PresentationModifier);
             if (modifierBorderRoot)
                 return modifierBorderRoot;
         }

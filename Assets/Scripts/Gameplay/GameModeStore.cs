@@ -6,6 +6,16 @@ public static class GameModeStore
 {
     public static RunGameMode Current { get; set; }
     const string UnlockStat = "lt_standard_final_level_reached";
+    const string CommanderCompletionPrefix = "lt_standard_final_level_char_";
+
+    public static bool HasStandardCompletion(PlayerCharacterData commander)
+    {
+        var progress = PlayerProgress.I;
+        if (!commander || !progress) return false;
+        // Preserve commander-specific victories recorded by older versions.
+        return progress.GetLifetimeInt(CommanderCompletionPrefix + commander.name) > 0 ||
+               progress.GetLifetimeInt("lt_final_win_char_" + commander.name) > 0;
+    }
     public static bool ExtraModesUnlocked(int standardLevelCount)
     {
         var progress = PlayerProgress.I;
@@ -20,9 +30,15 @@ public static class GameModeStore
         if (legacy) MarkFinalLevelReached();
         return legacy;
     }
-    public static void MarkFinalLevelReached()
+    public static void MarkFinalLevelReached(PlayerCharacterData commander = null)
     {
         if (PlayerProgress.I && PlayerProgress.I.GetLifetimeInt(UnlockStat) == 0)
             PlayerProgress.I.AddLifetimeInt(UnlockStat, 1);
+        if (Current == RunGameMode.Standard && commander && PlayerProgress.I)
+        {
+            string key = CommanderCompletionPrefix + commander.name;
+            if (PlayerProgress.I.GetLifetimeInt(key) == 0)
+                PlayerProgress.I.AddLifetimeInt(key, 1);
+        }
     }
 }
