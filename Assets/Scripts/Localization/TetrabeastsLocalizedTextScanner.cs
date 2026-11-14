@@ -9,6 +9,10 @@ public sealed class TetrabeastsLocalizedTextScanner : MonoBehaviour
     static TetrabeastsLocalizedTextScanner instance;
     Coroutine scanRoutine;
     bool scanQueued;
+    const int TextsPerFrame = 32;
+    const double ScanBudgetMilliseconds = 2d;
+
+    public static bool IsScanning => instance && (instance.scanQueued || instance.scanRoutine != null);
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     static void Bootstrap()
@@ -72,16 +76,35 @@ public sealed class TetrabeastsLocalizedTextScanner : MonoBehaviour
         }
 
         scanQueued = true;
-        scanRoutine = StartCoroutine(ScanNextFrame());
+        if (scanRoutine == null)
+            scanRoutine = StartCoroutine(ScanNextFrame());
     }
 
     IEnumerator ScanNextFrame()
     {
         yield return null;
 
-        scanRoutine = null;
-        scanQueued = false;
-        ScanAllText();
+        // Requests made during a scan schedule another pass, including dynamically
+        // created UI, without restarting the work already completed.
+        try
+        {
+            while (scanQueued)
+            {
+                scanQueued = false;
+                TetrabeastsLocalization.EnsureInitialized();
+                var texts = FindObjectsByType<TMP_Text>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                var legacyTexts = FindObjectsByType<Text>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                // Iterate here so failures also release the loading-screen wait in finally.
+                var scan = BindTexts(texts, legacyTexts, true);
+                while (scan.MoveNext())
+                    yield return scan.Current;
+            }
+        }
+        finally
+        {
+            scanRoutine = null;
+            scanQueued = false;
+        }
     }
 
     void ScanAllText()
@@ -89,12 +112,31 @@ public sealed class TetrabeastsLocalizedTextScanner : MonoBehaviour
         TetrabeastsLocalization.EnsureInitialized();
 
         var texts = FindObjectsByType<TMP_Text>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        for (int i = 0; i < texts.Length; i++)
-            BindIfKnown(texts[i]);
-
         var legacyTexts = FindObjectsByType<Text>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        for (int i = 0; i < legacyTexts.Length; i++)
-            BindIfKnown(legacyTexts[i]);
+        var scan = BindTexts(texts, legacyTexts, false);
+        while (scan.MoveNext()) { }
+    }
+
+    static IEnumerator BindTexts(TMP_Text[] texts, Text[] legacyTexts, bool spreadAcrossFrames)
+    {
+        var budget = System.Diagnostics.Stopwatch.StartNew();
+        int processed = 0;
+        for (int i = 0; i < texts.Length + legacyTexts.Length; i++)
+        {
+            if (i < texts.Length)
+                BindIfKnown(texts[i]);
+            else
+                BindIfKnown(legacyTexts[i - texts.Length]);
+
+            processed++;
+            if (spreadAcrossFrames &&
+                (processed >= TextsPerFrame || budget.Elapsed.TotalMilliseconds >= ScanBudgetMilliseconds))
+            {
+                yield return null;
+                processed = 0;
+                budget.Restart();
+            }
+        }
     }
 
     static void BindIfKnown(TMP_Text text)

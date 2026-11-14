@@ -80,7 +80,7 @@ public class PanelAuthoringFollowupTests
     }
 
     [Test]
-    public void LoadingStallsCannotSkipDotsOrConsumeTheVisibleAnimationTime()
+    public void LoadingAnimationCatchesUpWithoutConsumingTheMinimumPresentationTime()
     {
         var go = new GameObject("Loading test"); go.SetActive(false);
         var loading = go.AddComponent<LoadingScreen>();
@@ -93,11 +93,11 @@ public class PanelAuthoringFollowupTests
             Set(loading, "_loadingTextBaseColors", new[] { Color.white });
             Call(loading, "StartLoadingTextBlink");
             Assert.AreEqual("Loading", label.text);
-            Call(loading, "AdvanceLoadingAnimation", 5f);
-            Assert.AreEqual("Loading", label.text);
+            Call(loading, "AdvanceLoadingAnimation", 5.5f);
+            Assert.AreEqual("Loading..", label.text);
             Assert.Greater((float)Call(loading, "GetMinimumVisibleRemainingSeconds"), .9f);
-            for (int i = 0; i < 3; i++) Call(loading, "AdvanceLoadingAnimation", .0625f);
-            Assert.AreEqual("Loading.", label.text);
+            for (int i = 0; i < 4; i++) Call(loading, "AdvanceLoadingAnimation", .0625f);
+            Assert.AreEqual("Loading...", label.text);
         }
         finally { Object.DestroyImmediate(go); }
     }

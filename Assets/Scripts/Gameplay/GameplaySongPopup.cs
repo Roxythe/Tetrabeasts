@@ -103,8 +103,7 @@ public sealed class GameplaySongPopup : MonoBehaviour
     {
         if (!showing) return;
         if (!SettingsStore.LoadSongPopupEnabled() || (owner && owner.CurrentGameplaySong != song)) { Hide(); return; }
-        // Keep the announcement available after pausing, without covering settings.
-        if (AudioListener.pause || Time.timeScale <= 0f) { group.alpha = 0; return; }
+        // The announcement stays above pause UI and finishes on real time while gameplay is paused.
         LayoutTitle();
         Advance(Time.unscaledDeltaTime);
     }

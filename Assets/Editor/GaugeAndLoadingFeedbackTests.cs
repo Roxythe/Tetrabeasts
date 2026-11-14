@@ -172,5 +172,55 @@ public class GaugeAndLoadingFeedbackTests
         }
         finally { Time.timeScale = oldTimeScale; Object.DestroyImmediate(root); }
     }
+
+    [Test]
+    public void LoadingDotsKeepTheirCadenceAtEightFramesPerSecond()
+    {
+        var root = new GameObject("Slow loading feedback test");
+        root.SetActive(false);
+        var loading = root.AddComponent<LoadingScreen>();
+        var label = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI)).GetComponent<TMP_Text>();
+        label.transform.SetParent(root.transform);
+        try
+        {
+            Set(loading, "_loadingTexts", new[] { label });
+            Set(loading, "_loadingTextBaseStrings", new[] { "Loading" });
+            Set(loading, "_loadingTextBaseColors", new[] { Color.white });
+            Call(loading, "StartLoadingTextBlink");
+            for (int step = 1; step <= 8; step++)
+            {
+                Call(loading, "AdvanceLoadingAnimation", .125f);
+                Call(loading, "AdvanceLoadingAnimation", .125f);
+                Assert.AreEqual("Loading" + new string('.', step % 4), label.text);
+            }
+        }
+        finally { Object.DestroyImmediate(root); }
+    }
+
+    [Test]
+    public void SceneTextBindingYieldsBeforeProcessingTheWholeScene()
+    {
+        var root = new GameObject("Batched localization test");
+        root.SetActive(false);
+        var labels = new Text[80];
+        try
+        {
+            for (int i = 0; i < labels.Length; i++)
+            {
+                labels[i] = new GameObject("Label", typeof(RectTransform), typeof(Text)).GetComponent<Text>();
+                labels[i].transform.SetParent(root.transform, false);
+                labels[i].text = "New Game";
+            }
+            var method = typeof(TetrabeastsLocalizedTextScanner).GetMethod("BindTexts", BindingFlags.Static | BindingFlags.NonPublic);
+            var scan = (System.Collections.IEnumerator)method.Invoke(null,
+                new object[] { new TMP_Text[0], labels, true });
+            Assert.IsTrue(scan.MoveNext());
+            int firstBatch = root.GetComponentsInChildren<TetrabeastsLocalizedLegacyText>(true).Length;
+            Assert.That(firstBatch, Is.InRange(1, 32));
+            while (scan.MoveNext()) { }
+            Assert.AreEqual(labels.Length, root.GetComponentsInChildren<TetrabeastsLocalizedLegacyText>(true).Length);
+        }
+        finally { Object.DestroyImmediate(root); }
+    }
 }
 #endif

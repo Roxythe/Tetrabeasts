@@ -34,7 +34,7 @@ public sealed class LoadingScreen : MonoBehaviour
     Coroutine _hideCoroutine;
     Coroutine _sceneLoadCoroutine;
     float _animatedVisibleSeconds;
-    float _dotFrameSeconds;
+    double _animationSeconds;
     int _loadingDotStep;
     float _timeScaleBeforeShow = 1f;
     bool _timeScalePauseActive;
@@ -290,6 +290,10 @@ public sealed class LoadingScreen : MonoBehaviour
 
         var title = FindFirstObjectByType<TitleMenuUI>();
         while (title && title.isActiveAndEnabled && title.IsInitializing)
+            yield return null;
+
+        // Text binding is time-sliced too; do not reveal a partly localized scene.
+        while (TetrabeastsLocalizedTextScanner.IsScanning)
             yield return null;
 
         int frames = Mathf.Max(0, Settings ? Settings.hideDelayFrames : 1);
@@ -635,7 +639,7 @@ public sealed class LoadingScreen : MonoBehaviour
         StopLoadingTextBlink();
 
         _loadingTextVfxActive = true;
-        _dotFrameSeconds = 0f;
+        _animationSeconds = 0d;
         _loadingDotStep = 0;
         _lastLoadingTextDotCount = -1;
         SetLoadingTextAlpha(1f);
@@ -658,9 +662,11 @@ public sealed class LoadingScreen : MonoBehaviour
     void AdvanceLoadingAnimation(float visibleDeltaTime)
     {
         if (!_loadingTextVfxActive) return;
-        float dt = Mathf.Clamp(visibleDeltaTime, 0f, 1f / 15f);
-        _animatedVisibleSeconds += dt;
-        _dotFrameSeconds += dt;
+        float dt = Mathf.Max(0f, visibleDeltaTime);
+        // Keep the minimum presentation time separate from the animation clock.
+        // Clamping the latter makes every slow loading frame slow the animation down.
+        _animatedVisibleSeconds += Mathf.Min(dt, 1f / 15f);
+        _animationSeconds += dt;
 
         if (_loadingTexts == null || _loadingTexts.Length == 0)
         {
@@ -671,16 +677,12 @@ public sealed class LoadingScreen : MonoBehaviour
 
         float minAlpha = Mathf.Max(.65f, Mathf.Clamp01(Settings ? Settings.loadingTextMinAlpha : .65f));
         float fadeSeconds = Mathf.Max(0.01f, Settings ? Settings.loadingTextFadeSeconds : 1.1f);
-        float elapsed = _animatedVisibleSeconds;
+        float elapsed = (float)(_animationSeconds % (fadeSeconds * 2d));
         float alphaT = Mathf.SmoothStep(0f, 1f, Mathf.PingPong(elapsed / fadeSeconds, 1f));
 
         SetLoadingTextAlpha(Mathf.Lerp(1f, minAlpha, alphaT));
 
-        if (_dotFrameSeconds >= LoadingTextDotIntervalSeconds)
-        {
-            _dotFrameSeconds %= LoadingTextDotIntervalSeconds;
-            _loadingDotStep = (_loadingDotStep + 1) % LoadingTextDots.Length;
-        }
+        _loadingDotStep = (int)(_animationSeconds / LoadingTextDotIntervalSeconds % LoadingTextDots.Length);
         SetLoadingTextDots(_loadingDotStep);
     }
 
