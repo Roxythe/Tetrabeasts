@@ -274,7 +274,7 @@ public class ObstacleManager : MonoBehaviour
             int x = Random.Range(0, _board.width);
             int y = PickSpawnRow(includeStoneGrowth: true);
             var c = new Vector2Int(x, y);
-            if (_board.IsFree(c))
+            if (_board.IsFree(c) && (!_gc || !_gc.piece || !_gc.piece.OccupiesActiveCell(c)))
             {
                 cell = c;
                 return true;

@@ -77,7 +77,6 @@ public static class GameModeFollowupAuthoring
         panelFrame.rectTransform.offsetMin = new Vector2(-12, -12); panelFrame.rectTransform.offsetMax = new Vector2(12, 12);
         panelFrame.pixelsPerUnitMultiplier = 4;
         panelFrame.transform.SetAsLastSibling();
-        var fire = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Animations/FireBorder_Animation.prefab");
         for (int i = 0; i < 3; i++)
         {
             var button = ui.choices[i];
@@ -85,22 +84,7 @@ public static class GameModeFollowupAuthoring
             ui.selectionOutlines[i].enabled = false;
             var card = button.GetComponent<MarathonRewardCard>() ?? button.gameObject.AddComponent<MarathonRewardCard>();
             ui.cards[i] = card; card.colors = ui.colors;
-            if (!card.selectedFlames)
-            {
-                var flame = (GameObject)PrefabUtility.InstantiatePrefab(fire);
-                flame.transform.SetParent(button.transform, false);
-                var rect = (RectTransform)flame.transform;
-                rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
-                rect.offsetMin = new Vector2(-20, -20); rect.offsetMax = new Vector2(20, 20);
-                foreach (var image in flame.GetComponentsInChildren<Graphic>(true)) image.raycastTarget = false;
-                foreach (var animator in flame.GetComponentsInChildren<Animator>(true)) animator.updateMode = AnimatorUpdateMode.UnscaledTime;
-                card.selectedFlames = flame;
-            }
-            var flameRect = (RectTransform)card.selectedFlames.transform;
-            flameRect.offsetMin = new Vector2(-22, -22); flameRect.offsetMax = new Vector2(22, 22);
-            var borderFit = card.selectedFlames.GetComponent<AnimatedBorderFit>() ?? card.selectedFlames.AddComponent<AnimatedBorderFit>();
-            borderFit.edgeWidth = 22f;
-            card.selectedFlames.transform.SetAsLastSibling(); card.selectedFlames.SetActive(false);
+            MarathonRewardPresentationAuthoring.ReplaceSelectionAnimation(card);
             ConfigureSection(ui.buffLabels[i], buffStyle.backgroundImage, "Buff Title", ui.colors.buffTitle, ui.colors.buffDescription, ui.colors.buffBackground, out ui.buffTitles[i], out ui.buffBackgrounds[i]);
             ConfigureSection(ui.debuffLabels[i], debuffStyle.backgroundImage, "Debuff Title", ui.colors.debuffTitle, ui.colors.debuffDescription, ui.colors.debuffBackground, out ui.debuffTitles[i], out ui.debuffBackgrounds[i]);
             foreach (var icon in new[] { ui.buffIcons[i], ui.debuffIcons[i] })
@@ -118,6 +102,7 @@ public static class GameModeFollowupAuthoring
         var buttonArt = AssetDatabase.LoadAssetAtPath<GameModeSelectionUI>(Modes + "GameModeMenu.prefab").standardButton.GetComponent<Image>();
         ui.confirmButton.GetComponent<Image>().sprite = buttonArt.sprite;
         ui.confirmButton.GetComponent<Image>().type = buttonArt.type;
+        MarathonRewardPresentationAuthoring.ConfigureRewards(root);
     }
 
     static void ConfigureSection(TMP_Text description, Image source, string name, Color titleColor, Color descriptionColor, Color backgroundColor, out TMP_Text title, out Image background)

@@ -152,14 +152,20 @@ public partial class GameController
             {
                 ApplyChosenRunMods(buff, debuff);
                 confirmed = true;
-            });
+            }, this, keepOpenAfterConfirm: true);
             RefreshMarathonGauge();
             while (!confirmed && !gameOver) yield return null;
             if (gameOver) break;
-            InitLevel(currentLevel, spawnEnvironment: false);
-            ShowMarathonReinforcements(reinforcements);
+            // Add this level's environment while the reward panel still covers the board.
+            InitLevel(currentLevel, spawnEnvironment: true);
             RefreshMarathonGauge();
+            if (levelModifierController) yield return levelModifierController.WaitForMarathonPresentation();
+            // Let deferred layout, animation activation and destroyed objects settle under the opaque panel.
+            yield return null;
+            Canvas.ForceUpdateCanvases();
             CacheAndWriteTempRunCheckpoint();
+            marathonRewards.Dismiss();
+            ShowMarathonReinforcements(reinforcements);
         }
         marathonRewardActive = false;
         Time.timeScale = marathonResumeTimeScale;
@@ -203,8 +209,10 @@ public partial class GameController
     IEnumerator FloatReinforcements(BuffPopupView view, float duration, float rise)
     {
         var start = view.RectTransform.anchoredPosition;
-        var group = view.GetComponent<CanvasGroup>() ?? view.gameObject.AddComponent<CanvasGroup>();
-        for (float elapsed = 0; elapsed < duration && view; elapsed += Time.deltaTime)
+        var group = view.GetComponent<CanvasGroup>();
+        if (!group) group = view.gameObject.AddComponent<CanvasGroup>();
+        group.interactable = group.blocksRaycasts = false;
+        for (float elapsed = 0; elapsed < duration && view && group; elapsed += Time.deltaTime)
         {
             float progress = elapsed / duration;
             view.RectTransform.anchoredPosition = start + Vector2.up * rise * progress;

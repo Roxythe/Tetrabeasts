@@ -33,7 +33,7 @@ public static class GameModeAssetBuilder
             var menu = root.AddComponent<GameModeSelectionUI>();
             Label(panel, "Title", "Choose Game Mode", new Vector2(0, 248), new Vector2(570, 65), 42);
             menu.standardButton = Button(panel, "Standard", "Standard\nThe original castle campaign", new Vector2(0, 120), new Vector2(530, 100));
-            menu.chaosButton = Button(panel, "Chaos", "Chaos\nModifiers accumulate • +20% experience", new Vector2(0, 0), new Vector2(530, 100));
+            menu.chaosButton = Button(panel, "Chaos", "Chaos\nModifiers accumulate â€¢ +20% experience", new Vector2(0, 0), new Vector2(530, 100));
             menu.marathonButton = Button(panel, "Marathon", "Marathon\nEndless damage levels and boss battles", new Vector2(0, -120), new Vector2(530, 100));
             menu.lockDescription = Label(panel, "Unlock", "Reach the final Standard level to unlock Chaos and Marathon.", new Vector2(0, -245), new Vector2(580, 70), 25);
             menu.closeButton = Button(panel, "Close", "X", new Vector2(303, 277), new Vector2(52, 52), true);
@@ -168,7 +168,7 @@ public static class GameModeAssetBuilder
             }
             reward.Show(2, pairs, null);
             reward.cards[1].SetSelected(true);
-            foreach (var animator in reward.cards[1].selectedFlames.GetComponentsInChildren<Animator>(true))
+            foreach (var animator in reward.cards[1].selectionAnimation.GetComponentsInChildren<Animator>(true))
                 if (animator.runtimeAnimatorController)
                     animator.runtimeAnimatorController.animationClips[0].SampleAnimation(animator.gameObject, 0.25f);
             Capture("Logs/MarathonRewardPanel.png"); Object.DestroyImmediate(reward.gameObject);

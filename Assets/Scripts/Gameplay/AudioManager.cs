@@ -1283,8 +1283,10 @@ public partial class AudioManager : MonoBehaviour
             StopMusic();
     }
 
-    public void PlayLevelMusic(bool isBoss)
+    public void PlayLevelMusic(bool isBoss, bool continueCurrentPlaylist = false)
     {
+        if (continueCurrentPlaylist && context == MusicContext.Level && levelMusicActive && levelIsBoss == isBoss)
+            return;
         StopPauseMusic();
 
         context = MusicContext.Level;

@@ -282,6 +282,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4830383270770323142}
   - component: {fileID: 1230742321742557116}
+  - component: {fileID: 6637110133335968771}
   m_Layer: 5
   m_Name: BuffPopUpText_Prefab
   m_TagString: Untagged
@@ -324,3 +325,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuffPopupView
   mainText: {fileID: 2828120500738242960}
   shadowText: {fileID: 7133668807791552203}
+--- !u!225 &6637110133335968771
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4911539687238431656}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0

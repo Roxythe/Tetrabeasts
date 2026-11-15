@@ -3854,7 +3854,7 @@ public partial class GameController : MonoBehaviour
 
         if (AudioManager.I && data != null)
         {
-            AudioManager.I.PlayLevelMusic(IsCastleBossForCurrentMode(data));
+            AudioManager.I.PlayLevelMusic(IsCastleBossForCurrentMode(data), continueCurrentPlaylist: IsMarathon && marathonRewardActive);
         }
 
         if (obstacleManager && spawnEnvironment)

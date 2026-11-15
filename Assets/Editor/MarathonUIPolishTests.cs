@@ -68,11 +68,11 @@ public class MarathonUIPolishTests
         finally { sourceField.SetValue(null, previousSource); }
         ExecuteEvents.Execute(rewards.choices[1].gameObject, pointer, ExecuteEvents.pointerClickHandler);
         Assert.IsTrue(rewards.confirmButton.interactable);
-        Assert.IsTrue(rewards.cards[1].selectedFlames.activeSelf);
+        Assert.IsTrue(rewards.cards[1].selectionAnimation.activeSelf);
         Assert.AreEqual(1f, rewards.cards[1].GetComponent<CanvasGroup>().alpha);
         Assert.IsFalse(rewards.selectionOutlines[1].enabled);
         Assert.IsFalse(rewards.selectionOutlines[0].enabled);
-        Assert.AreEqual(MarathonRewardUI.RarityColor(RunModRarity.Rare), rewards.choices[1].GetComponent<Image>().color, "Selection must preserve rarity.");
+        Assert.AreEqual(MarathonRewardUI.RarityColor(RunModRarity.Rare), rewards.cards[1].rarityBorder.color, "Selection must preserve rarity.");
         ExecuteEvents.Execute(rewards.confirmButton.gameObject, pointer, ExecuteEvents.pointerClickHandler);
         Assert.AreEqual(1, confirmations);
         Assert.IsFalse(rewards.gameObject.activeSelf);
@@ -80,7 +80,7 @@ public class MarathonUIPolishTests
         rewards.Show(4, new[] { pair, pair, pair }, null);
         Assert.IsFalse(rewards.buffIcons[0].enabled, "Reused choices must clear missing icons.");
         Assert.IsFalse(rewards.selectionOutlines[1].enabled);
-        Assert.IsFalse(rewards.cards[1].selectedFlames.activeSelf);
+        Assert.IsFalse(rewards.cards[1].selectionAnimation.activeSelf);
         rewards.gameObject.SetActive(false);
 
         var menu = Object.Instantiate(config.modeMenuPrefab, canvas.transform);
@@ -176,7 +176,7 @@ public class MarathonUIPolishTests
             }
         Assert.IsNull(config.marathonGaugePrefab.levelLabel);
         var reward = config.marathonRewardPrefab;
-        Assert.IsNotNull(reward.title.transform.parent.Find("Panel Border"));
+        Assert.IsNotNull(reward.transform.Find("Panel/Panel Border"));
         foreach (var icon in reward.buffIcons)
         {
             Assert.AreEqual(1f, icon.color.a); Assert.IsTrue(icon.preserveAspect);

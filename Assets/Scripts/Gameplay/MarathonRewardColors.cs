@@ -18,7 +18,7 @@ public sealed class MarathonRewardColors : MonoBehaviour
     public Color debuffTitle = new Color(1f, 0.65f, 0.68f);
     public Color debuffDescription = new Color(1f, 0.25f, 0.3f);
     [Header("Unfocused choices")]
-    [Range(0.1f, 1f)] public float inactiveAlpha = 0.65f;
+    [Range(0.1f, 1f)] public float inactiveAlpha = 185f / 255f;
     public Color GetRarity(RunModRarity rarity)
     {
         switch (rarity)

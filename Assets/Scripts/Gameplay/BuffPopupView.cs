@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 
+[RequireComponent(typeof(CanvasGroup))]
 public class BuffPopupView : MonoBehaviour
 {
     public TMP_Text mainText;

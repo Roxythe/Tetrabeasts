@@ -54,8 +54,8 @@ public class BoulderAndModeTests
         var buffs = new List<RunModifierSO>(); var debuffs = new List<RunModifierSO>();
         for (int i = 0; i < 5; i++)
         {
-            var buff = ScriptableObject.CreateInstance<RunModifier>(); buff.rarity = (RunModRarity)i; buffs.Add(buff); temporary.Add(buff);
-            var debuff = ScriptableObject.CreateInstance<RunModifier>(); debuff.rarity = (RunModRarity)i; debuffs.Add(debuff); temporary.Add(debuff);
+            var buff = ScriptableObject.CreateInstance<RunModifier>(); buff.rarity = (RunModRarity)i; buff.stat = RunModStat.MonsterDamageMult; buffs.Add(buff); temporary.Add(buff);
+            var debuff = ScriptableObject.CreateInstance<RunModifier>(); debuff.rarity = (RunModRarity)i; debuff.stat = RunModStat.MonsterMaxHpMult; buff.stat = RunModStat.MonsterDamageMult; debuffs.Add(debuff); temporary.Add(debuff);
         }
         for (int i = 0; i < 100; i++)
         {
@@ -188,6 +188,44 @@ public class BoulderAndModeTests
     }
 
     [UnityTest]
+    public IEnumerator LaterMarathonLevelsAddEnvironmentWithoutReplacingExistingCells()
+    {
+        yield return new EnterPlayMode();
+        GameModeStore.Current = RunGameMode.Marathon;
+        controllerRoot = new GameObject("Marathon environment test"); controllerRoot.SetActive(false);
+        var gc = controllerRoot.AddComponent<GameController>();
+        gc.piece = controllerRoot.AddComponent<Piece>();
+        var activeCells = (List<Vector2Int>)Get(gc.piece, "cells");
+        activeCells.Add(new Vector2Int(1, 0));
+        activeCells.Add(new Vector2Int(2, 0));
+        canvasRoot = new GameObject("Environment test canvas", typeof(RectTransform), typeof(Canvas));
+        var boardObject = new GameObject("Board", typeof(RectTransform));
+        boardObject.transform.SetParent(canvasRoot.transform, false);
+        ((RectTransform)boardObject.transform).sizeDelta = new Vector2(400, 640);
+        var board = boardObject.AddComponent<Board>();
+        board.width = 10; board.height = 16; board.animateTetrominoBackgrounds = false;
+        board.RecomputeCellMetrics(); gc.gameBoard = board; Set(board, "_gc", gc);
+        var obstacles = controllerRoot.AddComponent<ObstacleManager>();
+        obstacles.Initialize(gc, board);
+        obstacles.stoneBaseCount = 2; obstacles.stonePerLevel = 0;
+        obstacles.poisonBaseCount = 1;
+        var oldCell = new Vector2Int(0, 0);
+        Assert.IsTrue(board.TrySpawnStoneObstacle(oldCell));
+        for (int level = 2; level <= 3; level++)
+        {
+            var before = board.CaptureMarathonBoard();
+            obstacles.OnLevelStart(level);
+            var after = board.CaptureMarathonBoard();
+            Assert.AreEqual(before.tiles.Count + 2, after.tiles.Count);
+            Assert.AreEqual(before.floors.Count + 1, after.floors.Count);
+            Assert.IsTrue(board.HasObstacle(oldCell), "Level-up must retain existing obstacles.");
+            foreach (var cell in activeCells) Assert.IsFalse(board.HasObstacle(cell), "New stones must avoid the falling piece.");
+        }
+        Cleanup();
+        yield return new ExitPlayMode();
+    }
+
+    [UnityTest]
     public IEnumerator ChaosRetainsIndependentEffectsAndMarathonCarriesDamageIntoPausedChoice()
     {
         yield return new EnterPlayMode();
@@ -259,8 +297,8 @@ public class BoulderAndModeTests
         var buffs = new List<RunModifierSO>(); var debuffs = new List<RunModifierSO>();
         for (int i = 0; i < 3; i++)
         {
-            var buff = ScriptableObject.CreateInstance<RunModifier>(); temporary.Add(buff); buff.displayName = "Buff " + i; buffs.Add(buff);
-            var debuff = ScriptableObject.CreateInstance<RunModifier>(); temporary.Add(debuff); debuff.displayName = "Debuff " + i; debuffs.Add(debuff);
+            var buff = ScriptableObject.CreateInstance<RunModifier>(); temporary.Add(buff); buff.displayName = "Buff " + i; buff.stat = RunModStat.MonsterDamageMult; buffs.Add(buff);
+            var debuff = ScriptableObject.CreateInstance<RunModifier>(); temporary.Add(debuff); debuff.displayName = "Debuff " + i; debuff.stat = RunModStat.MonsterMaxHpMult; debuffs.Add(debuff);
         }
         Set(gc, "buffPool", buffs.ToArray()); Set(gc, "debuffPool", debuffs.ToArray());
         gc.fallbackMonsters = new MonsterData[0];

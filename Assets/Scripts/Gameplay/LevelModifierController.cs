@@ -2206,6 +2206,32 @@ public partial class LevelModifierController : MonoBehaviour
         EnsureBoardPresentation();
     }
 
+    public IEnumerator WaitForMarathonPresentation()
+    {
+        EnsureAnimatedBackgroundRefs();
+        var player = animatedBackgroundPlayer;
+        if (!player) yield break;
+        // Reward selection pauses gameplay. Still decode the new video's first frame under the cover.
+        var previousClock = player.timeUpdateMode;
+        player.timeUpdateMode = VideoTimeUpdateMode.UnscaledGameTime;
+        try
+        {
+            yield return WaitForAnimatedBackgroundReadyForCurrentPresentation();
+            var clip = ResolveBackgroundVideoClip();
+            if (!clip || !player) yield break;
+            float deadline = Time.realtimeSinceStartup + Mathf.Max(1f, animatedBackgroundPrepareTimeoutSeconds);
+            while (player && player.clip == clip && player.frame < 0 && Time.realtimeSinceStartup < deadline)
+                yield return null;
+            // A failed video must not swap in late after the reward cover is removed.
+            if (player && player.clip == clip && player.frame < 0)
+            {
+                StopAnimatedBackground(clearTexture: true);
+                ApplyResolvedBackgroundSprite();
+            }
+        }
+        finally { if (player) player.timeUpdateMode = previousClock; }
+    }
+
     void CacheLevelBackground(CastleData castleData)
     {
         _currentLevelBackgroundSprite = castleData ? castleData.levelBackgroundSprite : null;

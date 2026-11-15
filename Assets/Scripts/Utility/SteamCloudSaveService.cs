@@ -405,6 +405,7 @@ public sealed class SteamCloudSaveService : MonoBehaviour
             "Settings_CombatLogEnabled",
             "Settings_SkipIntro",
             SettingsStore.KeySongPopup,
+            SettingsStore.KeyMarathonCompareRewards,
             "Settings_ControlProfile",
             "music_mode",
             "Tetrabeasts_PostFinalSurvivalIntroHidden"

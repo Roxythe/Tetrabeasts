@@ -103,6 +103,15 @@ public static class SettingsStore
     private const string KeyCombatLog = "Settings_CombatLogEnabled";
     private const string KeySkipIntro = "Settings_SkipIntro";
     public const string KeySongPopup = "Settings_SongPopupEnabled";
+    public const string KeyMarathonCompareRewards = "Settings_MarathonCompareRewards";
+
+    public static bool LoadMarathonCompareRewards() => PlayerPrefs.GetInt(KeyMarathonCompareRewards, 0) == 1;
+
+    public static void SaveMarathonCompareRewards(bool enabled)
+    {
+        PlayerPrefs.SetInt(KeyMarathonCompareRewards, enabled ? 1 : 0);
+        PlayerPrefsSaveScheduler.QueueSave();
+    }
 
     public static bool LoadSongPopupEnabled() => PlayerPrefs.GetInt(KeySongPopup, 1) == 1;
 
