@@ -366,9 +366,9 @@ public class GameplayStatsPanelUI : MonoBehaviour
             sources: SourcesFor(passive: passives.partyExperienceGainMultiplierAdd > Epsilon));
 
         AddSection(_statsContent, "Enemy");
-        AddComparedFloat(_statsContent, "Enemy Castle HP", gc.enemyCastleHpMult * stars.enemyHealthMultiplier, 1f,
+        AddComparedFloat(_statsContent, "Enemy Castle HP", gc.EnemyCastleHealthMultiplier, 1f,
             FormatMultiplier, FormatSignedPercentDelta, higherIsBetter: false,
-            sources: SourcesFor(starDifficulty: gc.CurrentStarDifficulty > 0,
+            sources: SourcesFor(starDifficulty: !gc.IsMarathon && gc.CurrentStarDifficulty > 0,
                 runModStats: new[] { RunModStat.EnemyCastleHpMult }));
         AddComparedFloat(_statsContent, "Enemy Damage", gc.enemyProjectileDamageMult * stars.enemyDamageMultiplier, 1f,
             FormatMultiplier, FormatSignedPercentDelta, higherIsBetter: false,

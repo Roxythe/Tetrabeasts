@@ -70,7 +70,7 @@ public static class GameModeUIPolish
         string[] descriptions = {
             "Battle through the original castle campaign. Defeat each castle to advance and conquer the final level to win.",
             "Play the Standard campaign with a new modifier every other level. All selected modifiers stay active for the rest of the run. Earn an additional 20% monster experience.",
-            "Battle endlessly. Deal damage to level up, gain reinforcements, and choose a buff and debuff of matching rarity. A boss appears every third level. After the final boss, the castles repeat while damage targets and difficulty keep rising."
+            "Battle endlessly. Deal damage to level up and choose a buff and debuff no more than one rarity tier apart. Defeat castles for gold, unit XP, and reinforcements. A boss appears every third level. After the final boss, the castles repeat while damage targets and difficulty keep rising."
         };
         var buttons = new[] { ui.standardButton, ui.chaosButton, ui.marathonButton };
         for (int i = 0; i < buttons.Length; i++)

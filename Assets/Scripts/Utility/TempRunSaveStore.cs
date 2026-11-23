@@ -16,6 +16,9 @@ public static class TempRunSaveStore
         public MarathonMatchSnapshot marathonSnapshot;
         public RunGameMode gameMode;
         public float marathonDamage;
+        public int marathonProgressVersion;
+        public int marathonRewardLevel;
+        public int marathonCastleHP;
         public float marathonGravity;
         public float marathonElapsedSeconds;
         public List<string> chaosModifierNames = new();

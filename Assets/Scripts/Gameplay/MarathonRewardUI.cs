@@ -23,9 +23,14 @@ public sealed class MarathonRewardUI : MonoBehaviour
     [Header("Stat previews (authored in the prefab)")]
     public RectTransform[] previewPanels;
     public TMP_Text[] previewLabels;
+    public Color previewBuffColor = new Color(.15641688f, .4393744f, .8962264f);
+    public Color previewDebuffColor = new Color(.8679245f, 0f, 0f);
     public Toggle compareAllToggle;
     public RectTransform content;
     public Vector2 contentSize = new Vector2(1120f, 900f);
+    [Header("Panel animation")]
+    [Min(0f)] public float panelTravelSeconds = .7f;
+    [Min(0f)] public float panelGrowSeconds = .35f;
     GameController previewGame;
     bool[] targeted;
     bool awaitingConfirmation;
@@ -36,6 +41,8 @@ public sealed class MarathonRewardUI : MonoBehaviour
     Action<RunModifierSO, RunModifierSO> onConfirm;
     void Awake()
     {
+        var transition = GetComponent<UIPanelTransition>() ?? gameObject.AddComponent<UIPanelTransition>();
+        transition.SetDurations(panelTravelSeconds, panelGrowSeconds);
         for (int i = 0; i < choices.Length; i++)
         {
             int index = i;
@@ -54,7 +61,7 @@ public sealed class MarathonRewardUI : MonoBehaviour
         if (buffs != null && debuffs != null)
             foreach (var buff in buffs)
             foreach (var debuff in debuffs)
-                if (buff && debuff && Rarity(buff) == Rarity(debuff) && !Conflicts(buff, debuff))
+                if (buff && debuff && Mathf.Abs((int)Rarity(buff) - (int)Rarity(debuff)) <= 1 && !Conflicts(buff, debuff))
                 {
                     var pair = new Pair { buff = buff, debuff = debuff };
                     if (seen.Add((buff, debuff))) available.Add(pair);
@@ -100,6 +107,33 @@ public sealed class MarathonRewardUI : MonoBehaviour
             default: return Color.white;
         }
     }
+    public void ConfigureCardArt(int index, Color upper, Color lower)
+    {
+        var card = (RectTransform)choices[index].transform;
+        // The inter-section gap belongs to the debuff's rarity, above its artwork.
+        var section = buffBackgrounds[index].rectTransform;
+        float boundary = Mathf.InverseLerp(card.rect.yMin, card.rect.yMax,
+            card.InverseTransformPoint(section.TransformPoint(new Vector3(0, section.rect.yMin))).y);
+        void Backing(string name, float bottom, float top, Color rarity)
+        {
+            var existing = card.Find(name);
+            var image = existing ? existing.GetComponent<Image>() : null;
+            if (!image)
+            {
+                image = new GameObject(name, typeof(RectTransform), typeof(Image)).GetComponent<Image>();
+                image.transform.SetParent(card, false);
+            }
+            image.rectTransform.anchorMin = new Vector2(0, bottom); image.rectTransform.anchorMax = new Vector2(1, top);
+            image.rectTransform.offsetMin = image.rectTransform.offsetMax = Vector2.zero;
+            image.color = new Color(rarity.r, rarity.g, rarity.b, 1);
+            image.raycastTarget = false; image.transform.SetAsFirstSibling();
+        }
+        Backing("Buff Rarity Backing", boundary, 1, upper);
+        Backing("Debuff Rarity Backing", 0, boundary, lower);
+        RewardIconBackdrop.Attach(buffIcons[index], upper);
+        RewardIconBackdrop.Attach(debuffIcons[index], lower);
+    }
+
     public void Show(int level, Pair[] options, Action<RunModifierSO, RunModifierSO> callback,
         GameController previewSource = null, bool keepOpenAfterConfirm = false)
     {
@@ -113,7 +147,7 @@ public sealed class MarathonRewardUI : MonoBehaviour
             compareAllToggle.SetIsOnWithoutNotify(SettingsStore.LoadMarathonCompareRewards());
             compareAllToggle.interactable = true;
         }
-        title.text = "Level " + level + " — Choose a Modifier";
+        title.text = "Commander Level " + level + " - Choose Modifier";
         confirmButton.interactable = false;
         for (int i = 0; i < choices.Length; i++)
         {
@@ -122,8 +156,13 @@ public sealed class MarathonRewardUI : MonoBehaviour
             if (i >= pairs.Length) continue;
             var p = pairs[i];
             var color = colors ? colors.GetRarity(Rarity(p.buff)) : RarityColor(Rarity(p.buff));
-            choiceLabels[i].text = Rarity(p.buff).ToString();
-            choiceLabels[i].color = color;
+            var badColor = colors ? colors.GetRarity(Rarity(p.debuff)) : RarityColor(Rarity(p.debuff));
+            ConfigureCardArt(i, color, badColor);
+            buffIcons[i].transform.parent.GetComponentInChildren<RewardIconBackdrop>(true).rarity = Rarity(p.buff);
+            debuffIcons[i].transform.parent.GetComponentInChildren<RewardIconBackdrop>(true).rarity = Rarity(p.debuff);
+            choiceLabels[i].text = Rarity(p.buff) == Rarity(p.debuff) ? Rarity(p.buff).ToString() :
+                $"<color=#{ColorUtility.ToHtmlStringRGB(color)}>Buff: {Rarity(p.buff)}</color>\n<color=#{ColorUtility.ToHtmlStringRGB(badColor)}>Debuff: {Rarity(p.debuff)}</color>";
+            choiceLabels[i].color = Rarity(p.buff) == Rarity(p.debuff) ? color : Color.white;
             buffTitles[i].text = p.buff.displayName;
             debuffTitles[i].text = p.debuff.displayName;
             buffLabels[i].text = p.buff.description;
@@ -134,13 +173,16 @@ public sealed class MarathonRewardUI : MonoBehaviour
             buffIcons[i].sprite = p.buff.icon; buffIcons[i].enabled = p.buff.icon;
             debuffIcons[i].sprite = p.debuff.icon; debuffIcons[i].enabled = p.debuff.icon;
             choices[i].GetComponent<Image>().color = Color.clear;
-            if (cards[i].rarityBorder) cards[i].rarityBorder.color = color;
+            if (cards[i].rarityBorder) cards[i].rarityBorder.SetRarities(color, badColor, debuffBackgrounds[i].rectTransform);
+            var selectedBorder = cards[i].selectionAnimation ? cards[i].selectionAnimation.GetComponent<MarathonSelectionBorder>() : null;
+            if (selectedBorder) selectedBorder.SetRarities(color, badColor, debuffBackgrounds[i].rectTransform);
             selectionOutlines[i].enabled = false;
             cards[i].ResetState();
             if (previewLabels != null && i < previewLabels.Length && previewLabels[i])
-                previewLabels[i].text = Describe(p.buff, null) + "\n\n" + Describe(p.debuff, p.buff as RunModifier);
+                previewLabels[i].text = Describe(p.buff, null) + "\n" + Describe(p.debuff, p.buff as RunModifier);
         }
-        gameObject.SetActive(true); transform.SetAsLastSibling();
+        transform.SetAsLastSibling();
+        UIPanelTransition.Show(gameObject);
         FitContent();
         RefreshPreviews();
         foreach (var shadow in GetComponentsInChildren<TMPLabelShadow>(true)) shadow.Sync();
@@ -168,10 +210,20 @@ public sealed class MarathonRewardUI : MonoBehaviour
         onConfirm?.Invoke(pair.buff, pair.debuff);
     }
 
-    public void Dismiss() => gameObject.SetActive(false);
+    public void Dismiss() => UIPanelTransition.Hide(gameObject);
+
+    public System.Collections.IEnumerator WaitUntilShown()
+    {
+        while (gameObject.activeInHierarchy && !UIPanelTransition.IsFullyShown(gameObject)) yield return null;
+    }
+
+    public System.Collections.IEnumerator WaitUntilHidden()
+    {
+        while (gameObject.activeInHierarchy) yield return null;
+    }
 
     string Describe(RunModifierSO mod, RunModifier pendingBuff) => previewGame && mod is RunModifier generic
-        ? previewGame.RewardPreview(generic, pendingBuff, colors.buffDescription, colors.debuffDescription)
+        ? previewGame.RewardPreview(generic, pendingBuff, previewBuffColor, previewDebuffColor)
         : TetrabeastsLocalization.LocalizeText(mod.description);
 
     public void TargetReward(int index, bool isTargeted)
@@ -206,13 +258,7 @@ public sealed class MarathonRewardUI : MonoBehaviour
         if (!content || !(transform is RectTransform root)) return;
         var panel = content.parent as RectTransform;
         if (!panel) return;
-        if (panel != root)
-        {
-            float panelScale = Mathf.Min(1f, (root.rect.width - 48f) / panel.rect.width,
-                (root.rect.height - 48f) / panel.rect.height);
-            panel.localScale = Vector3.one * Mathf.Max(.1f, panelScale);
-        }
-        float scale = Mathf.Min(1f, (panel.rect.width - 48f) / contentSize.x, (panel.rect.height - 48f) / contentSize.y);
+        float scale = Mathf.Min((panel.rect.width - 48f) / contentSize.x, (panel.rect.height - 100f) / contentSize.y);
         content.localScale = Vector3.one * Mathf.Max(.1f, scale);
     }
 }

@@ -1871,6 +1871,7 @@ public partial class LevelModifierController : MonoBehaviour
 
     void PromoteOvergrowthToFull(Vector2Int cell)
     {
+        Sprite previousGrowth = _overgrowthVisuals.TryGetValue(cell, out var growth) && growth ? growth.sprite : null;
         RemoveGrowingOvergrowth(cell);
 
         if (board.TryGetMonster(cell, out var inst) && inst.data != null)
@@ -1886,6 +1887,14 @@ public partial class LevelModifierController : MonoBehaviour
         }
 
         board.TrySpawnCustomObstacle(cell, Board.ObstacleType.Overgrowth, ActiveModifier.overgrowthFullSprite, 1, false);
+        if (previousGrowth && board.TryGetTileRect(cell, out var grown))
+        {
+            var image = grown.GetComponentInChildren<Image>();
+            // Obstacle artwork can live beneath a transparent tile root.
+            foreach (var candidate in grown.GetComponentsInChildren<Image>())
+                if (candidate.sprite == ActiveModifier.overgrowthFullSprite) { image = candidate; break; }
+            if (image) SpriteCrossfade.Swap(image, image.sprite, image.color, previousGrowth);
+        }
     }
 
     void ClearGrowingOvergrowthInRows(HashSet<int> rows)
@@ -2003,8 +2012,7 @@ public partial class LevelModifierController : MonoBehaviour
 
         if (_overgrowthVisuals.TryGetValue(cell, out var existing) && existing)
         {
-            existing.sprite = sprite;
-            existing.color = ActiveModifier ? ActiveModifier.overgrowthTint : Color.white;
+            SpriteCrossfade.Swap(existing, sprite, ActiveModifier ? ActiveModifier.overgrowthTint : Color.white);
             existing.rectTransform.anchoredPosition = board.CellToAnchoredPos(cell);
             return;
         }

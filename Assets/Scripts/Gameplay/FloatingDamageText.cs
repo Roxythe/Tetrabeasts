@@ -80,6 +80,9 @@ public class FloatingDamageText : MonoBehaviour
         public TextMeshProUGUI text;
         public Coroutine routine;
         public float activatedAt;
+        public RectTransform unit;
+        public int unitGeneration;
+        public Board.DamageSource source;
     }
 
     struct PendingPopup
@@ -135,6 +138,16 @@ public class FloatingDamageText : MonoBehaviour
 
         Vector3 worldPosition = target.TransformPoint(new Vector3(0f, target.rect.height * 0.18f + spawnYOffset, 0f));
         ShowAtWorldPosition(worldPosition, amount, kind, killingBlow, target.rect.size);
+    }
+
+    public void ShowUnitDamage(RectTransform target, int amount, DamageKind kind, bool killingBlow, Board.DamageSource source)
+    {
+        if (!target || !enabledText || amount <= 0) return;
+        var identity = target.GetComponent<DamageTextUnitIdentity>() ?? target.gameObject.AddComponent<DamageTextUnitIdentity>();
+        Vector3 position = target.TransformPoint(new Vector3(0f, target.rect.height * .18f + spawnYOffset, 0f));
+        // Unit damage must not use spatial burst aggregation: adjacent units and
+        // different sources that share a text color are independent.
+        SpawnPopupAtWorldPosition(position, amount, kind, killingBlow, target.rect.size, target, identity.Generation, source);
     }
 
     public void ShowAtLocalPosition(RectTransform sourceRoot, Vector2 anchoredPosition, Vector2 sourceSize,
@@ -250,7 +263,8 @@ public class FloatingDamageText : MonoBehaviour
         pendingPopups.Clear();
     }
 
-    void SpawnPopupAtWorldPosition(Vector3 worldPosition, int amount, DamageKind kind, bool killingBlow, Vector2 sourceSize)
+    void SpawnPopupAtWorldPosition(Vector3 worldPosition, int amount, DamageKind kind, bool killingBlow, Vector2 sourceSize,
+        RectTransform unit = null, int unitGeneration = 0, Board.DamageSource source = Board.DamageSource.Generic)
     {
         if (!enabledText || amount <= 0)
             return;
@@ -261,6 +275,14 @@ public class FloatingDamageText : MonoBehaviour
 
         root.SetAsLastSibling();
         EnsurePoolPrewarmed(root);
+
+        if (unit)
+            for (int i = activePopups.Count - 1; i >= 0; i--)
+            {
+                var previous = activePopups[i];
+                if (previous.unit == unit && previous.unitGeneration == unitGeneration && previous.source == source)
+                    StopAndPool(previous);
+            }
 
         PopupInstance popup = GetPopup(root);
         if (popup == null || !popup.rect || !popup.text)
@@ -302,6 +324,9 @@ public class FloatingDamageText : MonoBehaviour
         text.outlineWidth = outlineWidth;
 
         popup.activatedAt = Time.unscaledTime;
+        popup.unit = unit;
+        popup.unitGeneration = unitGeneration;
+        popup.source = source;
         popup.routine = StartCoroutine(AnimateAndRelease(popup));
     }
 
@@ -396,6 +421,7 @@ public class FloatingDamageText : MonoBehaviour
 
         activePopups.Remove(popup);
         popup.routine = null;
+        popup.unit = null;
 
         if (!popup.rect)
             return;

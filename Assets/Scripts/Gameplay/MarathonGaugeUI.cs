@@ -12,13 +12,35 @@ public sealed class MarathonGaugeUI : MonoBehaviour
     public RectTransform glassOverlay;
     float previousDamage;
     float previousRequired;
+    GaugeLiquidMotion motion;
+    void Awake() => EnsureMotion();
+    void EnsureMotion()
+    {
+        if (!motion && gauge) motion = gauge.GetComponent<GaugeLiquidMotion>() ?? gauge.gameObject.AddComponent<GaugeLiquidMotion>();
+    }
+    public System.Collections.IEnumerator FlashLevelUp(float seconds = .65f)
+    {
+        var fill = gauge && gauge.fillRect ? gauge.fillRect.GetComponent<UnityEngine.UI.Graphic>() : null;
+        if (!fill) yield break;
+        Color original = fill.color;
+        try
+        {
+            for (float elapsed = 0f; elapsed < seconds; elapsed += Time.unscaledDeltaTime)
+            {
+                fill.color = Color.Lerp(original, new Color(.8f, .4f, 1f, original.a), .5f + .5f * Mathf.Sin(elapsed * Mathf.PI * 8f));
+                if (liquidSlosh) liquidSlosh.AddImpulse(.03f);
+                yield return null;
+            }
+        }
+        finally { if (fill) fill.color = original; }
+    }
     public void Refresh(int level, float damage, float required)
     {
-        if (liquidSlosh && previousRequired > 0)
-            liquidSlosh.AddImpulse(Mathf.Clamp01(damage / Mathf.Max(1f, required)) - Mathf.Clamp01(previousDamage / previousRequired));
+        EnsureMotion();
+        if (previousRequired <= 0 || damage != previousDamage || required != previousRequired)
+            motion.SetTarget(Mathf.Clamp01(damage / Mathf.Max(1f, required)), immediate: previousRequired <= 0);
         previousDamage = damage;
         previousRequired = required;
-        gauge.normalizedValue = Mathf.Clamp01(damage / Mathf.Max(1f, required));
         if (levelLabel) levelLabel.gameObject.SetActive(false);
         damageLabel.text = Mathf.FloorToInt(damage) + " / " + Mathf.CeilToInt(required);
         // Keep the sideways label centered when runtime layout matches the ultimate gauge height.

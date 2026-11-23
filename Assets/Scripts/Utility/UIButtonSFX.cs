@@ -97,7 +97,11 @@ public class UIButtonSFX : MonoBehaviour, IPointerEnterHandler, IPointerDownHand
         if (requireInteractable && _btn && !_btn.interactable) return;
         if (ClickSfxPlayedThisFrame()) return;
 
-        AudioManager.I.PlayUISFX(clickClip, vol: clickVolume);
+        var shopEntry = GetComponentInParent<ShopBuffEntryUI>();
+        if (shopEntry && shopEntry.levelUpButton && shopEntry.levelUpButton.gameObject == gameObject)
+            AudioManager.I.PlayUISFX(clickClip, vol: clickVolume,
+                pitch: 1f + Random.Range(-AudioManager.ShopPitchJitter, AudioManager.ShopPitchJitter), jitter: false);
+        else AudioManager.I.PlayUISFX(clickClip, vol: clickVolume);
     }
 
     bool ClickSfxPlayedThisFrame()

@@ -40,6 +40,7 @@ public class XpMonsterRowUI : MonoBehaviour
 
     Coroutine _statsCycleCR;
     Coroutine _pulseCR;
+    SquadLevelUpFireworks _fireworks;
 
     Vector3 _statScale0;
     Coroutine _statPulseCR;
@@ -113,7 +114,12 @@ public class XpMonsterRowUI : MonoBehaviour
 
     public void BeginLevelUpSequence()
     {
-        StopLevelUpEffects();
+        StopLevelUpEffects(stopFireworks: false);
+        if (GameModeStore.Current == RunGameMode.Standard || GameModeStore.Current == RunGameMode.Chaos)
+        {
+            if (!_fireworks) _fireworks = SquadLevelUpFireworks.Create(portraitImage);
+            if (_fireworks) _fireworks.Begin();
+        }
 
         _levelUpCount = 0;
         _statLines.Clear();
@@ -204,8 +210,9 @@ public class XpMonsterRowUI : MonoBehaviour
         xpDrainText.text = TetrabeastsLocalization.LocalizeFormat("+{0} Exp", FormatXp(preservedXp));
     }
 
-    void StopLevelUpEffects()
+    void StopLevelUpEffects(bool stopFireworks = true)
     {
+        if (stopFireworks && _fireworks) _fireworks.End();
         if (_statsCycleCR != null) { StopCoroutine(_statsCycleCR); _statsCycleCR = null; }
         if (_pulseCR != null) { StopCoroutine(_pulseCR); _pulseCR = null; }
         if (_statPulseCR != null) { StopCoroutine(_statPulseCR); _statPulseCR = null; }
@@ -226,6 +233,9 @@ public class XpMonsterRowUI : MonoBehaviour
             levelUpShadowText.transform.localScale = _lvlShadowScale0 == default ? Vector3.one : _lvlShadowScale0;
         }
     }
+
+    void OnDisable() => StopLevelUpEffects();
+    void OnDestroy() { if (_fireworks) Destroy(_fireworks.gameObject); }
 
     IEnumerator CoCycleStatLines()
     {

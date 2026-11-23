@@ -57,13 +57,12 @@ public static class MarathonRewardPresentationAuthoring
         rootImage.raycastTarget = true;
 
         var panel = (RectTransform)root.transform.Find("Panel");
-        panel.anchorMin = panel.anchorMax = panel.pivot = Vector2.one * .5f;
-        panel.anchoredPosition = Vector2.zero;
-        panel.sizeDelta = new Vector2(1120, 740);
+        Stretch(panel, 0f);
+        panel.localScale = Vector3.one;
         var content = (root.transform.Find("Content") ?? panel.Find("Content")) as RectTransform;
         if (!content) content = Rect("Content", panel, Vector2.zero, new Vector2(1120, 900));
         content.SetParent(panel, false);
-        content.localScale = Vector3.one * (692f / 900f);
+        content.localScale = Vector3.one;
         ui.content = content;
         ui.contentSize = content.sizeDelta = new Vector2(1120, 900);
         // Preserve the user's full-screen frame, but do not let its center tint the cards.
@@ -78,7 +77,7 @@ public static class MarathonRewardPresentationAuthoring
         if (border)
         {
             border.SetParent(panel, false);
-            Stretch((RectTransform)border, -12f);
+            Stretch((RectTransform)border, 12f);
             border.GetComponent<Image>().fillCenter = false;
             border.GetComponent<Image>().raycastTarget = false;
         }
@@ -87,7 +86,6 @@ public static class MarathonRewardPresentationAuthoring
         ui.title.transform.SetParent(content, false);
         ui.title.rectTransform.anchoredPosition = new Vector2(0, 410);
         if (shadow && shadow.shadow) shadow.shadow.rectTransform.anchoredPosition = new Vector2(2, 408);
-        ui.colors.inactiveAlpha = 185f / 255f;
         ui.previewPanels = new RectTransform[3];
         ui.previewLabels = new TMP_Text[3];
 
@@ -96,7 +94,13 @@ public static class MarathonRewardPresentationAuthoring
             float x = (i - 1) * 352f;
             var choice = ui.choices[i];
             choice.transform.SetParent(content, false);
-            ((RectTransform)choice.transform).anchoredPosition = new Vector2(x, -95);
+            ((RectTransform)choice.transform).anchoredPosition = new Vector2(x, -111);
+            ((RectTransform)choice.transform).sizeDelta = new Vector2(330, 522);
+            ui.choiceLabels[i].rectTransform.sizeDelta = new Vector2(294, 76);
+            var rarityBacking = choice.transform.Find("Rarity Backing") as RectTransform;
+            if (rarityBacking) rarityBacking.sizeDelta = new Vector2(306, 80);
+            ui.buffBackgrounds[i].rectTransform.anchoredPosition = new Vector2(0, 63);
+            ui.debuffBackgrounds[i].rectTransform.anchoredPosition = new Vector2(0, -148);
             choice.transition = Selectable.Transition.None;
             var card = ui.cards[i];
             card.colors = ui.colors;
@@ -127,7 +131,7 @@ public static class MarathonRewardPresentationAuthoring
             outline.effectDistance = new Vector2(2, -2);
             var label = Label("Stat Changes", preview, ui.title);
             Stretch(label.rectTransform, 12f);
-            label.text = "Monster attack power\n1 -> 1.1\n\nEnemy attack power\n1 -> 1.1";
+            label.text = "Monster attack power\n1 -> 1.1\nEnemy attack power\n1 -> 1.1";
             label.fontSize = 24;
             label.enableAutoSizing = true;
             label.fontSizeMin = 18;
@@ -137,9 +141,13 @@ public static class MarathonRewardPresentationAuthoring
             ui.previewLabels[i] = label;
             preview.gameObject.SetActive(false);
         }
+        MarathonRewardPreviewStyleAuthoring.MatchStandardStyle(ui);
 
-        ui.confirmButton.transform.SetParent(content, false);
-        ((RectTransform)ui.confirmButton.transform).anchoredPosition = new Vector2(0, -402);
+        ui.confirmButton.transform.SetParent(root.transform, false);
+        var confirmRect = (RectTransform)ui.confirmButton.transform;
+        confirmRect.anchorMin = confirmRect.anchorMax = new Vector2(.5f, 0f);
+        confirmRect.anchoredPosition = new Vector2(0, 70);
+        confirmRect.localScale = Vector3.one * (692f / 900f);
         var confirmStyle = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/GameModes/GameModeMenu.prefab")
             .GetComponent<GameModeSelectionUI>().standardButton;
         foreach (var label in ui.confirmButton.GetComponentsInChildren<TMP_Text>(true))
@@ -172,7 +180,7 @@ public static class MarathonRewardPresentationAuthoring
         var toggleLabel = Label("Label", toggleRect, ui.title);
         toggleLabel.rectTransform.anchoredPosition = new Vector2(24, 0);
         toggleLabel.rectTransform.sizeDelta = new Vector2(248, 40);
-        toggleLabel.text = "Compare all rewards";
+        toggleLabel.text = "Compare Stat Changes";
         toggleLabel.fontSize = 24;
         toggleLabel.alignment = TextAlignmentOptions.Left;
         ui.compareAllToggle = toggle;

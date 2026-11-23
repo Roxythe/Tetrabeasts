@@ -43,7 +43,7 @@ public static class MarathonRewardPresentationValidation
                 var rolled = MarathonRewardUI.RollPairs(buffs, debuffs);
                 Check(rolled.Length == 3 && rolled.Distinct().Count() == 3, "Each roll needs three distinct legal pairs.");
                 foreach (var pair in rolled)
-                    Check(!MarathonRewardUI.Conflicts(pair.buff, pair.debuff) && MarathonRewardUI.Rarity(pair.buff) == MarathonRewardUI.Rarity(pair.debuff), "Conflicting or mismatched pair.");
+                    Check(!MarathonRewardUI.Conflicts(pair.buff, pair.debuff) && Mathf.Abs((int)MarathonRewardUI.Rarity(pair.buff) - (int)MarathonRewardUI.Rarity(pair.debuff)) <= 1, "Conflicting or mismatched pair.");
             }
             var attackUp = mods.First(m => m.isBuff && m.stat == RunModStat.MonsterDamageMult);
             var attackDown = mods.First(m => !m.isBuff && m.stat == RunModStat.MonsterDamageMult);
@@ -91,11 +91,36 @@ public static class MarathonRewardPresentationValidation
             for (int i = 0; i < 3; i++)
             {
                 var buff = mods.First(m => m.isBuff && m.rarity == rarities[i] && m.stat == RunModStat.MonsterDamageMult);
-                var debuff = mods.First(m => !m.isBuff && m.rarity == rarities[i] && m.stat == RunModStat.MonsterMaxHpMult);
+                var debuff = mods.First(m => !m.isBuff && m.rarity == (RunModRarity)((int)rarities[i] + 1) && m.stat == RunModStat.MonsterMaxHpMult);
                 pairs[i] = new MarathonRewardUI.Pair { buff = buff, debuff = debuff };
             }
             int confirmations = 0;
             reward.Show(2, pairs, (b, d) => confirmations++, game, true);
+            for (int i = 0; i < reward.cards.Length; i++)
+            {
+                var card = reward.cards[i].transform;
+                var good = card.Find("Buff Rarity Backing").GetComponent<Image>();
+                var bad = card.Find("Debuff Rarity Backing").GetComponent<Image>();
+                Check(good.color.a == 1 && bad.color.a == 1 && good.rectTransform.anchorMin.y == bad.rectTransform.anchorMax.y,
+                    "Rarity backings must meet without transparent gaps.");
+                Check(good.color != bad.color, "Mixed rarities need distinct section backings.");
+                Check(good.color == reward.colors.GetRarity(MarathonRewardUI.Rarity(pairs[i].buff)) &&
+                    bad.color == reward.colors.GetRarity(MarathonRewardUI.Rarity(pairs[i].debuff)), "Backings must use full-brightness rarity colors.");
+                var header = (RectTransform)card.Find("Rarity Backing");
+                var top = reward.buffBackgrounds[i].rectTransform;
+                var bottom = reward.debuffBackgrounds[i].rectTransform;
+                float headerGap = header.anchoredPosition.y + header.rect.yMin - top.anchoredPosition.y - top.rect.yMax;
+                float middleGap = top.anchoredPosition.y + top.rect.yMin - bottom.anchoredPosition.y - bottom.rect.yMax;
+                Check(headerGap > 0 && Mathf.Abs(headerGap - middleGap) < .1f, "Header and inter-section gaps must match.");
+                foreach (var icon in new[] { reward.buffIcons[i], reward.debuffIcons[i] })
+                {
+                    var backing = icon.transform.parent.GetComponentInChildren<RewardIconBackdrop>(true);
+                    Check(backing && backing.transform.GetSiblingIndex() < icon.transform.GetSiblingIndex(), "Icon animation must remain behind the icon.");
+                    Check(!icon.transform.parent.Find("Icon Border").gameObject.activeSelf, "Gold frame must not cover the rarity-colored frame.");
+                }
+            }
+            Check(reward.title.text == "Commander Level 2 - Choose Modifier", "Reward title must identify the commander level.");
+            Check(reward.choiceLabels.All(label => label.text.Contains("Buff:") && label.text.Contains("Debuff:")), "Mixed rarity labels must identify both tiers.");
             Check(!reward.compareAllToggle.isOn, "Checkbox must start off.");
             reward.cards[0].OnPointerEnter(null);
             Check(reward.cards[0].GetComponent<CanvasGroup>().alpha == 1f, "Hovered cards must be opaque.");
@@ -108,8 +133,12 @@ public static class MarathonRewardPresentationValidation
             Check(SettingsStore.LoadMarathonCompareRewards(), "Comparison setting must persist.");
             Check(reward.previewPanels.All(p => p.gameObject.activeSelf), "All previews must be visible for comparison.");
             Call(reward, "Select", 1);
-            Check(Mathf.Approximately(reward.cards[0].GetComponent<CanvasGroup>().alpha, 185f / 255f), "Inactive card alpha must be 185/255.");
+            Check(reward.cards[0].GetComponent<CanvasGroup>().alpha == 1f, "Inactive cards must not wash out their artwork through a transparency overlay.");
             Check(reward.cards[1].GetComponent<CanvasGroup>().alpha == 1, "Selected card must be opaque.");
+            foreach (var effect in reward.cards[0].GetComponentsInChildren<RewardIconBackdrop>())
+                Check(!(bool)typeof(RewardIconBackdrop).GetField("highlighted", Private).GetValue(effect), "Idle icons must not animate.");
+            foreach (var effect in reward.cards[1].GetComponentsInChildren<RewardIconBackdrop>())
+                Check((bool)typeof(RewardIconBackdrop).GetField("highlighted", Private).GetValue(effect), "Selected icons must animate.");
             Check(reward.cards[1].selectionAnimation.GetComponent<MarathonSelectionBorder>(), "Selection must use the new pixel animation.");
             Check(reward.choices.All(c => c.GetComponent<Image>().color.a == 0f), "Card centers must not tint transparent contents.");
             Check(reward.confirmButton.GetComponentInChildren<TMP_Text>().color == Color.black, "Confirm text must be black.");
@@ -127,6 +156,7 @@ public static class MarathonRewardPresentationValidation
                 "Confirmation must fire once and keep the level-transition cover visible.");
             reward.Dismiss();
             reward.Show(3, pairs, null, game, true);
+            Check(reward.GetComponentsInChildren<RewardIconBackdrop>(true).Length == 6, "Reopening must reuse the six icon backgrounds.");
             Check(reward.compareAllToggle.isOn && reward.previewPanels.All(p => p.gameObject.activeSelf), "Reopening must restore comparison preference.");
             reward.compareAllToggle.isOn = false;
             reward.cards[1].OnPointerEnter(null);
@@ -152,9 +182,11 @@ public static class MarathonRewardPresentationValidation
                 cityRect.sizeDelta = size;
                 Canvas.ForceUpdateCanvases();
                 Rect bounds = backingFit.ArtworkBackingRect();
-                float fittedWidth = Mathf.Min(size.x, size.y * 720f / 1280f);
-                Check(Mathf.Abs(bounds.width - fittedWidth / 3f) < .1f, "Backing must cover only the central masonry strip at every aspect ratio.");
-                Check(Mathf.Abs(bounds.center.x) < .1f, "Backing must remain centered behind the animation.");
+                var spriteSize = backingFit.artwork.overrideSprite.rect.size;
+                float fittedWidth = Mathf.Min(size.x, size.y * spriteSize.x / spriteSize.y);
+                Check(Mathf.Abs(bounds.width - fittedWidth / 3f) < .5f,
+                    $"Backing must cover the central strip: expected {fittedWidth / 3f}, actual {bounds.width}.");
+                Check(Mathf.Abs(bounds.center.x) < .5f, "Backing must remain centered behind the animation.");
             }
             Object.DestroyImmediate(cityInstance);
             Directory.CreateDirectory("Logs");

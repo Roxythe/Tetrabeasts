@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEditor;
@@ -748,7 +748,7 @@ public partial class GameController : MonoBehaviour
     public int MaxReserveUnits => EffectiveMaxUnitLives;
     public int CurrentStarDifficulty => _starDifficulty;
     public float CurrentMisfortune => misfortune + _starDifficultyModifiers.misfortuneAdd;
-    public bool IsGameplaySuspended => IsInitializing || marathonRewardActive || gameOver || levelWon || winQueued || isPaused || LoadingScreen.IsVisible || ConfirmationPopupUI.IsAnyShowing || tutorialSuspended || _roundTransitionActive || _specialAbilityCinematicActive || _levelStartBlocked || _environmentRowClearResolving || (levelModifierController && levelModifierController.IsSelectionRunning);
+    public bool IsGameplaySuspended => IsInitializing || marathonRewardActive || marathonTransitionActive || gameOver || levelWon || winQueued || isPaused || LoadingScreen.IsVisible || ConfirmationPopupUI.IsAnyShowing || tutorialSuspended || _roundTransitionActive || _specialAbilityCinematicActive || _levelStartBlocked || _environmentRowClearResolving || (gameBoard && (gameBoard.IsEarthquakeAnimating || gameBoard.IsColumnSettling || gameBoard.IsSpecialAnimating)) || (levelModifierController && levelModifierController.IsSelectionRunning);
     public bool IsRoundActive => !IsGameplaySuspended && !gameOver && !levelWon && !winQueued;
     public bool IsTutorialPieceInputBlocked => tutorialPieceInputBlocked;
     public bool IsTutorialHardDropInputGraceActive => Time.unscaledTime < _tutorialHardDropInputBlockedUntilRealtime;
@@ -1155,6 +1155,10 @@ public partial class GameController : MonoBehaviour
 
             SettingsStore.ApplySavedVolumesToAudio();
 
+            if (resumeFromTempRun && pendingTempRunSave != null && AudioManager.I)
+                AudioManager.I.RestoreLevelMusic(IsCastleBossForCurrentMode(currentCastleData),
+                    pendingTempRunSave.marathonSnapshot != null);
+
             if (pauseCursor)
                 pauseCursor.SetScale(SettingsStore.LoadCursorScale());
 
@@ -1343,6 +1347,7 @@ public partial class GameController : MonoBehaviour
 
         GameModeStore.Current = System.Enum.IsDefined(typeof(RunGameMode), saveData.gameMode) ? saveData.gameMode : RunGameMode.Standard;
         marathonDamage = Mathf.Max(0f, saveData.marathonDamage);
+        marathonRewardLevel = Mathf.Max(0, saveData.marathonProgressVersion > 0 ? saveData.marathonRewardLevel : saveData.currentLevel);
         marathonCarriedGravity = Mathf.Max(0f, saveData.marathonGravity);
         marathonElapsedSeconds = Mathf.Max(0f, saveData.marathonElapsedSeconds);
         levelModifierController.RestoreChaosModifiers(saveData.chaosModifierNames,
@@ -1380,6 +1385,8 @@ public partial class GameController : MonoBehaviour
         ResetRunGridToBase();
         ApplyRunGridSize(currentLevel);
         InitLevel(currentLevel, spawnEnvironment: saveData.marathonSnapshot == null);
+        if (IsMarathon && saveData.marathonProgressVersion > 0 && enemyCastleUI)
+            enemyCastleUI.RestoreHealth(saveData.marathonCastleHP);
 
         unitLives = Mathf.Clamp(saveData.unitLives, 0, EffectiveMaxUnitLives);
         SetupUnitLivesUI();
@@ -1549,7 +1556,7 @@ public partial class GameController : MonoBehaviour
         if (IsInitializing) return;
         TryApplyFocusPause();
         TickGameMode();
-        if (marathonRewardActive)
+        if (marathonRewardActive || marathonTransitionActive)
         {
             EnterUICursorMode();
             return;
@@ -2085,7 +2092,7 @@ public partial class GameController : MonoBehaviour
             nextPreview.SyncBorderToImmunity(immunityActive, gameBoard.immuneBorderColor, gameBoard.normalBorderColor);
     }
 
-    public bool CanSpawnNewPiece() => !gameOver && !levelWon && !winQueued && !_levelStartBlocked && !LoadingScreen.IsVisible;
+    public bool CanSpawnNewPiece() => !gameOver && !levelWon && !winQueued && !_levelStartBlocked && !LoadingScreen.IsVisible && !(gameBoard && (gameBoard.IsSpecialAnimating || gameBoard.IsColumnSettling));
 
     public void SpawnNextPiece()
     {
@@ -2234,6 +2241,9 @@ public partial class GameController : MonoBehaviour
         {
             gameMode = GameModeStore.Current,
             marathonDamage = marathonDamage,
+            marathonProgressVersion = 1,
+            marathonRewardLevel = marathonRewardLevel,
+            marathonCastleHP = enemyCastleUI ? enemyCastleUI.currentHP : 0,
             marathonGravity = IsMarathon ? MarathonCoreGravity : 0f,
             marathonElapsedSeconds = marathonElapsedSeconds,
             chaosModifierNames = levelModifierController.CaptureChaosModifiers(),
@@ -3819,14 +3829,16 @@ public partial class GameController : MonoBehaviour
         if (enemyCastleUI && data)
         {
             int levelNumber = levelIndex + 1;
-            bool forceInfiniteHealth = IsMarathon || (_postFinalSurvivalActive && forcePostFinalSurvivalInfiniteHealth);
+            bool forceInfiniteHealth = _postFinalSurvivalActive && forcePostFinalSurvivalInfiniteHealth;
             bool forceBossLevel = _postFinalSurvivalActive && forcePostFinalSurvivalBossLevel;
             enemyCastleUI.InitCastle(
                 data,
                 levelNumber,
-                enemyCastleHpMult * _starDifficultyModifiers.enemyHealthMultiplier,
+                EnemyCastleHealthMultiplier,
                 forceInfiniteHealth,
-                forceBossLevel);
+                forceBossLevel,
+                IsMarathon ? MarathonCastleHealth(levelIndex, modeAssets ? modeAssets.marathonCastleStartingHealth : 1000f,
+                    modeAssets ? modeAssets.marathonCastleHealthGrowth : 1.35f) : 0);
 
             _castleData = data;
 
@@ -3854,7 +3866,7 @@ public partial class GameController : MonoBehaviour
 
         if (AudioManager.I && data != null)
         {
-            AudioManager.I.PlayLevelMusic(IsCastleBossForCurrentMode(data), continueCurrentPlaylist: IsMarathon && marathonRewardActive);
+            AudioManager.I.PlayLevelMusic(IsCastleBossForCurrentMode(data), continueCurrentPlaylist: IsMarathon && (marathonRewardActive || marathonTransitionActive));
         }
 
         if (obstacleManager && spawnEnvironment)
@@ -8110,7 +8122,7 @@ public partial class GameController : MonoBehaviour
 
         if (gameBoard.TryGetTileRect(cell, out var tileRect) && tileRect)
         {
-            floatingDamageText.Show(tileRect, amount, kind, killingBlow);
+            floatingDamageText.ShowUnitDamage(tileRect, amount, kind, killingBlow, src);
             return;
         }
 
@@ -8347,7 +8359,7 @@ public partial class GameController : MonoBehaviour
 
     void EnterGameplayCursorMode()
     {
-        if (marathonRewardActive)
+        if (marathonRewardActive || marathonTransitionActive)
         {
             EnterUICursorMode();
             return;
@@ -8375,7 +8387,7 @@ public partial class GameController : MonoBehaviour
 
     bool ShouldUseUICursorModeForCurrentState()
     {
-        if (marathonRewardActive || isPaused || gameOver || levelWon || ConfirmationPopupUI.IsAnyShowing)
+        if (marathonRewardActive || marathonTransitionActive || isPaused || gameOver || levelWon || ConfirmationPopupUI.IsAnyShowing)
             return true;
 
         if (levelModifierController && levelModifierController.IsSelectionRunning)
@@ -11420,7 +11432,7 @@ public partial class GameController : MonoBehaviour
 
     void PauseForLostFocus()
     {
-        if (!isActiveAndEnabled || gameOver) return;
+        if (!isActiveAndEnabled || !IsRoundActive || Time.timeScale <= 0f || !piece || !piece.isActiveAndEnabled || !piece.HasActiveCells || IsPauseMenuInputLocked()) return;
         _focusPausePending = true;
         TryApplyFocusPause();
     }
@@ -11429,10 +11441,7 @@ public partial class GameController : MonoBehaviour
     void TryApplyFocusPause()
     {
         if (!_focusPausePending) return;
-        if (gameOver || isPaused) { _focusPausePending = false; return; }
-        // A reward panel or special cinematic already suspends gameplay. Open the
-        // pause menu as soon as that transition releases its input lock.
-        if (IsInitializing || IsGameplaySuspended || IsPauseMenuInputLocked()) return;
+        if (!IsRoundActive || Time.timeScale <= 0f || IsPauseMenuInputLocked()) { _focusPausePending = false; return; }
         PauseGame();
         if (isPaused) _focusPausePending = false;
     }

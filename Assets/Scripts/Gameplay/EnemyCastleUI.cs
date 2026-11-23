@@ -93,7 +93,7 @@ public class EnemyCastleUI : MonoBehaviour
         InitCastle(data, levelNumber, hpMult, false, false);
     }
 
-    public void InitCastle(CastleData data, int levelNumber, float hpMult, bool forceInfiniteHealth, bool forceBossLevel)
+    public void InitCastle(CastleData data, int levelNumber, float hpMult, bool forceInfiniteHealth, bool forceBossLevel, int maxHpOverride = 0)
     {
         if (data == null)
         {
@@ -105,15 +105,15 @@ public class EnemyCastleUI : MonoBehaviour
 
         sourceData = data;
         marathonProgress = -1f;
-        _infiniteHealth = forceInfiniteHealth || data.infiniteHealth;
+        _infiniteHealth = maxHpOverride <= 0 && (forceInfiniteHealth || data.infiniteHealth);
         _forceBossLevel = forceBossLevel;
 
         castleName = data.castleName;
 
-        int baseMax = Mathf.Max(1, data.maxHP);
+        int baseMax = maxHpOverride > 0 ? maxHpOverride : Mathf.Max(1, data.maxHP);
         maxHP = _infiniteHealth
             ? baseMax
-            : Mathf.Max(1, Mathf.RoundToInt(baseMax * Mathf.Max(0.01f, hpMult)));
+            : (int)System.Math.Clamp(System.Math.Round((double)baseMax * Mathf.Max(0.01f, hpMult)), 1d, 2000000000d);
         currentHP = maxHP;
         StopDamageShake();
         ClearDamageShakeHistory();
@@ -148,6 +148,21 @@ public class EnemyCastleUI : MonoBehaviour
         ClearBossChannelAttackSprite(restoreIdle: false);
         StopDamageShake();
         ClearDamageShakeHistory();
+    }
+
+    public void RestoreHealth(int health)
+    {
+        currentHP = Mathf.Clamp(health, 0, maxHP);
+        UpdateVisuals();
+    }
+
+    public void RescaleHealth(int baseHealth, float multiplier)
+    {
+        double remaining = (double)currentHP / Mathf.Max(1, maxHP);
+        maxHP = (int)System.Math.Clamp(System.Math.Round((double)baseHealth * Mathf.Max(.01f, multiplier)), 1d, 2000000000d);
+        currentHP = remaining > 0d ? Mathf.Max(1, (int)System.Math.Round(remaining * maxHP)) : 0;
+        if (healthBarSlider) healthBarSlider.maxValue = maxHP;
+        UpdateVisuals();
     }
 
     void ApplyLevelBackground(CastleData data)

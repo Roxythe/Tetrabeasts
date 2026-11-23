@@ -951,6 +951,7 @@ public partial class Board : MonoBehaviour
     RectTransform InstantiateTileUIBase(Color color, Sprite backgroundImage)
     {
         var rt = GetOrCreateBoardTile();
+        rt.GetComponent<BoardOwned>().tileColor = color;
 
         rt.SetParent(gridRoot, false);
         rt.gameObject.SetActive(true);
@@ -1267,6 +1268,7 @@ public partial class Board : MonoBehaviour
         ResetReusableTileImages(rt);
         rt.gameObject.SetActive(false);
         rt.SetParent(gridRoot, false);
+        if (rt.TryGetComponent<CanvasGroup>(out var specialGroup)) specialGroup.alpha = 1;
         ResetTilePulseChild(rt, "HealthFill");
         HideTileChild(rt, "MonsterPortrait");
         HideTileChild(rt, "DeadOverlay");
@@ -1928,6 +1930,13 @@ public partial class Board : MonoBehaviour
 
     public void ClearAll()
     {
+        specialPresentationGeneration++;
+        IsSpecialAnimating = false;
+        foreach (var visual in placed.Values)
+            if (visual && visual.TryGetComponent<CanvasGroup>(out var group)) group.alpha = 1;
+        earthquakeGeneration++;
+        IsEarthquakeAnimating = false;
+        IsColumnSettling = false;
         StopAllBoardVFX();
         StopAllPortraitAltSwaps(restoreNormal: false);
         StopAllMonsterTickFlashes();
@@ -2446,7 +2455,7 @@ public partial class Board : MonoBehaviour
             }
 
             waveOrigins = new Dictionary<int, List<int>>();
-            SettleAllColumns(false, waveOrigins); // Track newly filled cells for the next cascade's outline.
+            yield return AnimateRowClearSettle(waveOrigins, () => Time.deltaTime);
 
             // Redraw at least one frame so cascade-created full rows are visible before being cleared.
             // The cascade pause is already included in the shared pre-clear timing above.
@@ -2821,77 +2830,86 @@ public partial class Board : MonoBehaviour
     void SettleAllColumns(bool allowObstaclesToFall, Dictionary<int, List<int>> filledColumnsByRow)
     {
         for (int x = 0; x < width; x++)
-        {
-            int writeY = 0;
-
-            for (int y = 0; y < height; y++)
-            {
-                var from = new Vector2Int(x, y);
-
-                // If obstacles are not allowed to fall, they are fixed blockers
-                if (IsCraterCell(from) || (!allowObstaclesToFall && obstacles.ContainsKey(from)))
-                {
-                    writeY = y + 1;
-                    continue;
-                }
-
-                if (!placed.TryGetValue(from, out var rt) || !rt)
-                    continue;
-
-                // Never move obstacle visuals in non-obstacle mode
-                if (IsCraterCell(from) || (!allowObstaclesToFall && obstacles.ContainsKey(from)))
-                    continue;
-
-                // Don't write into obstacle cells when obstacles are fixed
-                if (!allowObstaclesToFall)
-                {
-                    while (writeY < height && obstacles.ContainsKey(new Vector2Int(x, writeY)))
-                        writeY++;
-                }
-
-                var to = new Vector2Int(x, writeY);
-
-                if (to != from)
-                {
-                    StopPortraitAltSwap(from, restoreNormal: true);
-                    placed.Remove(from);
-                    placed[to] = rt;
-                    rt.anchoredPosition = CellToAnchoredPos(to);
-
-                    if (filledColumnsByRow != null)
-                    {
-                        if (!filledColumnsByRow.TryGetValue(to.y, out var columns))
-                            filledColumnsByRow[to.y] = columns = new List<int>();
-                        if (!columns.Contains(to.x)) columns.Add(to.x);
-                    }
-
-                    if (monsters.TryGetValue(from, out var inst))
-                    {
-                        monsters.Remove(from);
-                        monsters[to] = inst;
-                    }
-
-                    if (healTimers.TryGetValue(from, out var t))
-                    {
-                        healTimers.Remove(from);
-                        healTimers[to] = t;
-                    }
-
-                    // When obstacles are allowed to fall, keep obstacle state synced
-                    if (allowObstaclesToFall && obstacles.TryGetValue(from, out var obs))
-                    {
-                        obstacles.Remove(from);
-                        obstacles[to] = obs;
-                    }
-                }
-
-                writeY++;
-            }
-        }
+            SettleColumn(x, allowObstaclesToFall, filledColumnsByRow);
 
         RefreshAllTileBorders();
         CleanOrphanedTiles();
         ActivateTeleportFloorEffectsForSettledMonsters();
+    }
+
+    // Earthquake commits each column at its wave crest, then animates the visuals to these cells.
+    void SettleColumn(int x, bool allowObstaclesToFall, Dictionary<int, List<int>> filledColumnsByRow = null)
+    {
+        int writeY = 0;
+
+        for (int y = 0; y < height; y++)
+        {
+            var from = new Vector2Int(x, y);
+
+            // If obstacles are not allowed to fall, they are fixed blockers
+            if (IsCraterCell(from) || (!allowObstaclesToFall && obstacles.ContainsKey(from)))
+            {
+                writeY = y + 1;
+                continue;
+            }
+
+            if (!placed.TryGetValue(from, out var rt) || !rt)
+                continue;
+
+            // Never move obstacle visuals in non-obstacle mode
+            if (IsCraterCell(from) || (!allowObstaclesToFall && obstacles.ContainsKey(from)))
+                continue;
+
+            // Don't write into obstacle cells when obstacles are fixed
+            if (!allowObstaclesToFall)
+            {
+                while (writeY < height && obstacles.ContainsKey(new Vector2Int(x, writeY)))
+                    writeY++;
+            }
+
+            var to = new Vector2Int(x, writeY);
+
+            if (to != from)
+            {
+                StopPortraitAltSwap(from, restoreNormal: true);
+                placed.Remove(from);
+                placed[to] = rt;
+                rt.anchoredPosition = CellToAnchoredPos(to);
+
+                if (filledColumnsByRow != null)
+                {
+                    if (!filledColumnsByRow.TryGetValue(to.y, out var columns))
+                        filledColumnsByRow[to.y] = columns = new List<int>();
+                    if (!columns.Contains(to.x)) columns.Add(to.x);
+                }
+
+                if (monsters.TryGetValue(from, out var inst))
+                {
+                    monsters.Remove(from);
+                    monsters[to] = inst;
+                }
+
+                if (healTimers.TryGetValue(from, out var t))
+                {
+                    healTimers.Remove(from);
+                    healTimers[to] = t;
+                }
+
+                // When obstacles are allowed to fall, keep obstacle state synced
+                if (allowObstaclesToFall && obstacles.TryGetValue(from, out var obs))
+                {
+                    obstacles.Remove(from);
+                    obstacles[to] = obs;
+                }
+                if (allowObstaclesToFall && magicExplosives.TryGetValue(from, out var explosive))
+                {
+                    magicExplosives.Remove(from);
+                    magicExplosives[to] = explosive;
+                }
+            }
+
+            writeY++;
+        }
     }
 
     public void ShiftBoardUpOneRowAndFillBottom(Sprite soldierSprite)
@@ -4667,6 +4685,8 @@ public partial class Board : MonoBehaviour
             foreach (var c in affectedCells)
             {
                 if (!InBounds(c)) continue;
+                if (floorEffects.TryGetValue(c, out var trap) && (trap.type == FloorEffectType.Spike || trap.type == FloorEffectType.ZipPad))
+                    ClearFloorEffect(c);
                 if (obstacles.TryGetValue(c, out var obs) &&
                     (obs.type == ObstacleType.Stone || obs.type == ObstacleType.HardenedLava))
                 {
@@ -4700,13 +4720,7 @@ public partial class Board : MonoBehaviour
     {
         if (!overlayRoot) return;
 
-        // If sprite not provided, just clear any existing
-        if (!sprite)
-        {
-            if (dict.TryGetValue(cell, out var old) && old) Destroy(old.gameObject);
-            dict.Remove(cell);
-            return;
-        }
+        var ambientKind = dict == poisonBorders ? FloorEffectType.Poison : dict == fireBorders ? FloorEffectType.Burn : FloorEffectType.Lightning;
 
         if (dict.TryGetValue(cell, out var existing) && existing)
         {
@@ -4714,11 +4728,13 @@ public partial class Board : MonoBehaviour
             existing.rectTransform.sizeDelta = GetCellSize();
             existing.rectTransform.anchoredPosition = CellToAnchoredPos(cell);
             existing.rectTransform.SetAsLastSibling();
+            FloorAmbientVfx.Attach(existing, ambientKind);
             return;
         }
 
         var img = new GameObject($"Border_{cell.x}_{cell.y}", typeof(Image)).GetComponent<Image>();
         img.sprite = sprite;
+        img.color = sprite ? Color.white : Color.clear;
         img.type = Image.Type.Simple;
         img.preserveAspect = false;
         img.raycastTarget = false;
@@ -4731,6 +4747,7 @@ public partial class Board : MonoBehaviour
         rt.SetAsLastSibling(); // always above blocks
 
         dict[cell] = img;
+        FloorAmbientVfx.Attach(img, ambientKind);
     }
 
     void EnsureSpikeUnderlay(Vector2Int cell)

@@ -106,7 +106,7 @@ public class ShopBuffEntryUI : MonoBehaviour
         CurrencyStore.Add(-cost); // Deduct currency
 
         if (AudioManager.I && successSFX)
-            AudioManager.I.PlaySFX(successSFX);
+            AudioManager.I.PlayShopPurchaseSFX(successSFX);
 
         ShopBuffStore.Increment(buffType);
 

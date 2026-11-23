@@ -53,7 +53,7 @@ public class MarathonUIPolishTests
         Assert.AreEqual(rewards.colors.buffTitle, rewards.buffTitles[0].color);
         Assert.AreNotEqual(rewards.buffTitles[0].color, rewards.buffLabels[0].color);
         Assert.AreEqual(Color.black, rewards.buffTitles[0].GetComponent<TMPLabelShadow>().shadow.color);
-        Assert.AreEqual(rewards.colors.inactiveAlpha, rewards.cards[1].GetComponent<CanvasGroup>().alpha);
+        Assert.AreEqual(1f, rewards.cards[1].GetComponent<CanvasGroup>().alpha);
         var pointer = new PointerEventData(EventSystem.current) { button = PointerEventData.InputButton.Left };
         var sourceField = typeof(UICursorController).GetField("s_targetInputSource", BindingFlags.Static | BindingFlags.NonPublic);
         var previousSource = sourceField.GetValue(null);
@@ -63,7 +63,7 @@ public class MarathonUIPolishTests
             ExecuteEvents.Execute(rewards.choices[2].gameObject, pointer, ExecuteEvents.pointerEnterHandler);
             Assert.AreEqual(1f, rewards.cards[2].GetComponent<CanvasGroup>().alpha);
             ExecuteEvents.Execute(rewards.choices[2].gameObject, pointer, ExecuteEvents.pointerExitHandler);
-            Assert.AreEqual(rewards.colors.inactiveAlpha, rewards.cards[2].GetComponent<CanvasGroup>().alpha);
+            Assert.AreEqual(1f, rewards.cards[2].GetComponent<CanvasGroup>().alpha);
         }
         finally { sourceField.SetValue(null, previousSource); }
         ExecuteEvents.Execute(rewards.choices[1].gameObject, pointer, ExecuteEvents.pointerClickHandler);

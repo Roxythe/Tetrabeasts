@@ -5,7 +5,8 @@ using UnityEngine;
 public static class VideoSettingsStore
 {
     public const string PreferenceKey = "Settings_Video_v1";
-    public static readonly int[] FrameRates = { 60, 120, 144, 240, -1 };
+    public static readonly int[] FrameRates = { 30, 60, 90, 120, -1 };
+    public static string[] FrameRateLabels => Array.ConvertAll(FrameRates, fps => fps < 0 ? "Unlimited" : fps + " FPS");
 
     [Serializable]
     public struct Options
@@ -16,7 +17,7 @@ public static class VideoSettingsStore
         public int frameRate;
     }
 
-    public static Options Defaults => new Options { displayMode = 2, width = 1920, height = 1080, vSync = true, frameRate = 60 };
+    public static Options Defaults => new Options { displayMode = 2, width = 1920, height = 1080, vSync = false, frameRate = 60 };
 
     public static Options Load()
     {

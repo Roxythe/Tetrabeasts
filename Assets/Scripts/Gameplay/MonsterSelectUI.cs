@@ -147,6 +147,7 @@ public class MonsterSelectUI : MonoBehaviour
             if (!md) continue;
 
             var btn = Instantiate(itemButtonPrefab, listParent);
+            UIButtonTargetVisual.Ensure(btn.gameObject).useSelectionSoundPitch = true;
             UIButtonTargetVisual.Ensure(btn.gameObject)?.Configure(
                 hoverSFX,
                 UIButtonTargetVisual.ControllerArrowPlacement.Above,
@@ -449,7 +450,7 @@ public class MonsterSelectUI : MonoBehaviour
             return;
 
         if (AudioManager.I && selectSFX)
-            AudioManager.I.PlaySFX(selectSFX);
+            AudioManager.I.PlaySelectionSFX(selectSFX);
 
         SelectedMonstersStore.Active = new List<MonsterData>(selected);
         SelectedMonstersStore.SaveNames(SelectedMonstersStore.Active);

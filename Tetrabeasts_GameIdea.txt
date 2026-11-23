@@ -1,3 +1,25 @@
+I need to make some changes to the level rewards transition pop up to make it more easily scannable and accurately reflect what I need. Change the font color  for "Gold" to a gold color. Change the font color for a unit's name to their role color (Rem and Ram Red for attack, Bulrog blue for defender, and Celest Green for healer). Change the XP number and text to a purple color to match exp color gauge fill. The total exp text should be their total exp to level ratio (54.5/100). The total should roll up in real time to show the increase and should indicate with a VFX if a unit levels up (can reuse the level up flashing text that's used in the normal exp panel when a unit levels up) and make sure the units used have the correct stat/passive increases moving forward so it is accurately reflected in the gameplay of the current run. These should still be temp levels during the run and use the normal temp exp drain and permanent exp gain at the end of the run. Reinforcements text can stay white. Add an offset black opaque shadow text below as well for all the text to make it pop more visually. The title text for the pop up can be "Level 'X' - Castle Destroyed"
+
+Change the title text for the commander level up to "Commander Level 'X' - Choose Modifier"
+For the reward pop up, bring the text for the buff and the debuff slightly closer towards the middle of the pop up. Its currently has too big of an empty gap in the middle and it forces the text to be to close to the top and bottom of the pop up border.
+
+Change the text for the check box "Compare all rewards" to "Compare Stat Changes"
+
+I want to add a visual effect that's unique for each special blocks activation. 
+
+For the lightning special bock I want an electric blue outline border for each block effected and for every unit/trap/obstacle that is destroyed to be broken into particles and dissolve. It should start with the top object effected in the column and work down in a cascading sequence. I want the border for the effected objects in the column to use the lightning floor effect visual around the boarder.
+
+For the bomb special block I want units, obstacles, and traps that are destroyed by the bomb to explode directionally away from the impact point of the bomb tile (object below it explode down, objects to the left of the bomb explode to the left, etc). The destroyed objects should create pixel particles of rubble that match their color as debris particles ( a yellow unit pieces is yellow, a stone block is gray, a purple unit block is purple) to make it look like they were destroyed in an explosive manner. The debris should move in a manner fitting an explosion and should be destroyed when they fall off screen.
+
+The death special block should make all of the units effected with away.
+
+IN marathon mode rewards make it so that the buffs and debuffs can be different rarities within the same reward but with only a single tier difference at most (for example a buff could be common and a debuff could be uncommon rarity, but buff couldn't be epic or legendary and be with a common debuff because that would be a two or three tier difference in rarity). Make sure the border and text accurately reflects the difference in rarity.
+
+If the game is already paused (for example when the rewards screen is up) and the player minimizes the game, don't que up a pause game call when the rewards panel is then closed. I am getting a bug where if the game is normally already paused and I minimize the game, then bring it back up to focus and continue through the rewards panel (or somewhere else the game is already paused like the level modifier selection screen) and then go back to the game play screen it automatically pauses first. The automatic pause feature I wanted for when the game is minimized or unfocused is only meant to be used if the game is actively running (essentially when pieces are being spawned and falling down on the board).
+
+Add a simple looping VFX to pair with each floor effect so they aren't so bare and static. (poison floor effect purple, fire floor effect red/yellow/orange, and lightning floor effect electric blue/white). Make it fitting for the specific floor effect (just an example purple poison bubbles rising and popping, small embers oof fire sparking, or sparks of electricity or glowing lines).
+
+----------------------------------------------------------------------------------------------------
 
 - Add a script so I can modify the pop up description text for the different game modes in the title menu. Create a prefab of the current pop up box that I can modify including text font size and visual components that will be used instead of the current run time pop up instead so I can edit it to my liking from the editor.
 

@@ -31,6 +31,7 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
     [SerializeField] Color persistentFireBorderTint = new Color(0.55f, 0.9f, 1f, 1f);
 
     AudioClip hoverSfx;
+    public bool useSelectionSoundPitch;
     Transform visualSearchRoot;
     GameObject fireBorderAnimation;
     Image controllerArrow;
@@ -168,7 +169,10 @@ public class UIButtonTargetVisual : MonoBehaviour, IPointerEnterHandler, IPointe
         pointerInside = true;
 
         if (hoverSfx && AudioManager.I)
-            AudioManager.I.PlaySFX(hoverSfx);
+        {
+            if (useSelectionSoundPitch) AudioManager.I.PlaySelectionSFX(hoverSfx);
+            else AudioManager.I.PlaySFX(hoverSfx);
+        }
 
         RefreshVisuals();
     }

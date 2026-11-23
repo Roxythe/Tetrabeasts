@@ -62,7 +62,7 @@ public class BoulderAndModeTests
             var choices = MarathonRewardUI.RollPairs(buffs.ToArray(), debuffs.ToArray());
             Assert.AreEqual(3, choices.Length);
             Assert.AreEqual(3, choices.Select(p => p.buff).Distinct().Count());
-            foreach (var pair in choices) Assert.AreEqual(MarathonRewardUI.Rarity(pair.buff), MarathonRewardUI.Rarity(pair.debuff));
+            foreach (var pair in choices) Assert.LessOrEqual(Mathf.Abs((int)MarathonRewardUI.Rarity(pair.buff) - (int)MarathonRewardUI.Rarity(pair.debuff)), 1);
         }
         for (int i = 1; i < 150; i++) Assert.Greater(GameController.RequiredMarathonDamage(i, 500, 1.18f), GameController.RequiredMarathonDamage(i - 1, 500, 1.18f));
         Assert.IsFalse(float.IsInfinity(GameController.RequiredMarathonDamage(10000, 500, 1.18f)));

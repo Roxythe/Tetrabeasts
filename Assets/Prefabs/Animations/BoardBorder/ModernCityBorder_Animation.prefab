@@ -188,4 +188,9 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::BoardBorderBackingFit
   artwork: {fileID: 2991009059618150757}
-  normalizedBounds: {x: 0.33333334, y: 0, width: 0.33333334, height: 1}
+  normalizedBounds:
+    serializedVersion: 2
+    x: 0.33333334
+    y: 0
+    width: 0.33333334
+    height: 1

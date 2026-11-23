@@ -59,6 +59,37 @@ public class GameplayPlaylistTests
     static void Mode(AudioManager manager, AudioManager.MusicMode mode) => typeof(AudioManager).GetProperty("musicMode").SetValue(manager, mode);
     AudioManager Prefab() => AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/AudioManager.prefab").GetComponent<AudioManager>();
 
+    [UnityTest] public IEnumerator RestoredRunsStartPlaylistOrBossMusicAfterPause()
+    {
+        yield return new EnterPlayMode();
+        LocalSaveTestScope.Apply();
+        var audio = Object.Instantiate(Prefab()); temporary.Add(audio.gameObject);
+        Mode(audio, AudioManager.MusicMode.EDM);
+        typeof(AudioManager).GetField("applicationHasFocus", Private).SetValue(audio, true);
+        audio.SetMasterVolume(1f, save: false); audio.SetMusicVolume(1f, save: false);
+        foreach (bool boss in new[] { false, true })
+        {
+            AudioListener.pause = true; Time.timeScale = 0;
+            audio.RestoreLevelMusic(boss, paused: true);
+            yield return new WaitForSecondsRealtime(.7f);
+            Assert.IsTrue(Read<AudioSource>(audio, "pauseMusicSrc").isPlaying, "A restored pause menu must play pause music.");
+            Assert.IsNull(audio.CurrentGameplaySong, "Gameplay must wait for Resume.");
+            audio.StopPauseMusic();
+            AudioListener.pause = false; Time.timeScale = 1;
+            yield return new WaitForSecondsRealtime(2.2f);
+            var source = Read<AudioSource>(audio, "activeMusicSrc");
+            Assert.IsTrue(source.isPlaying); Assert.Greater(source.volume, .1f, "Resume must not restore a zero-volume loading fade.");
+            CollectionAssert.Contains(boss ? audio.EDMBossMusic : audio.EDMGameplayMusic, source.clip);
+            Assert.IsTrue(GameplayPlaylist.IsEnabled(source.clip));
+        }
+        audio.RestoreLevelMusic(false, paused: false);
+        yield return new WaitForSecondsRealtime(2.2f);
+        Assert.IsTrue(Read<AudioSource>(audio, "activeMusicSrc").isPlaying);
+        CollectionAssert.Contains(audio.EDMGameplayMusic, audio.CurrentGameplaySong);
+        Object.DestroyImmediate(audio.gameObject);
+        yield return new ExitPlayMode();
+    }
+
     [Test] public void SettingsTabsAndSongsAreSerializedInTheEditablePrefab()
     {
         var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Panels/Volume_Panel.prefab");
@@ -442,9 +473,10 @@ public class GameplayPlaylistTests
         var vsync = Read<TMPro.TMP_Dropdown>(panel, "vSyncDropdown");
         var fps = Read<TMPro.TMP_Dropdown>(panel, "frameRateDropdown");
         Assert.IsFalse(resolution.interactable, "Borderless uses desktop resolution.");
-        Assert.IsFalse(fps.interactable, "VSync controls timing while enabled.");
+        Assert.IsTrue(fps.interactable, "The default 60 FPS limiter must be configurable.");
+        CollectionAssert.AreEqual(new[] { "30 FPS", "60 FPS", "90 FPS", "120 FPS", "Unlimited" }, fps.options.Select(o => o.text));
         Capture(camera, "Settings-Video");
-        display.value = 0; vsync.value = 0; fps.value = 1;
+        display.value = 0; vsync.value = 0; fps.value = System.Array.IndexOf(VideoSettingsStore.FrameRates, 120);
         Assert.IsTrue(resolution.interactable);
         Assert.IsTrue(fps.interactable);
         Read<Button>(panel, "videoApplyButton").onClick.Invoke();

@@ -69,6 +69,33 @@ public partial class Piece : MonoBehaviour
         return _onePx;
     }
 
+    IEnumerator CoResolveDestructiveSpecial(Board board, GameController gc, Vector2Int center, List<Vector2Int> toRemove, List<Vector2Int> envAffected)
+    {
+        int levelBeforeSpecial = gc.CurrentLevel;
+        yield return board.PlaySpecialDestruction(data.special, center, toRemove, envAffected);
+        if (!board || !gc || gc.CurrentLevel != levelBeforeSpecial) yield break;
+        board.ApplySpecialToEnvironment(envAffected, data.special);
+        // Remove targets and make only the directly-above tiles fall sparsely
+        board.RemoveCellsAndFall(toRemove, out var removedA, out int dmgA, out float chargeA);
+
+        // Track stats for Death special unit removal
+        if (data.special == SpecialType.Death && PlayerProgress.I != null && removedA != null && removedA.Count > 0)
+            PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.DeathblockUnitsRemoved, removedA.Count);
+
+
+        board.ClearFullLinesAnimated((rowsAfter, removedB, dmgB, chargeB, rowDamageB, rowDomB) =>
+        {
+            var colsByRowSpecial = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<int>>();
+
+            if (gc != null)
+                gc.OnPieceLocked(rowsAfter, removedB, dmgA + dmgB, chargeA + chargeB, rowDamageB, rowDomB, colsByRowSpecial);
+
+            if (gc != null && gc.CurrentLevel == levelBeforeSpecial && gc.CanSpawnNewPiece())
+                gc.SpawnNextPiece();
+        });
+
+    }
+
     void Awake()
     {
         gameController = GetComponent<GameController>();
@@ -1056,12 +1083,10 @@ public partial class Piece : MonoBehaviour
                                 affectedEQ.Add(new Vector2Int(x, y));
                         board.FlashCells(affectedEQ, data.specialFlashSprite, data.flashOnlyOccupied);
 
-                        board.SettleAllColumns(true);
-
                         enabled = false;
                         int levelBeforeEQ = gc.CurrentLevel;
 
-                        gc.StartCoroutine(CoEarthquakeDelayedClear(board, gc, levelBeforeEQ));
+                        gc.StartCoroutine(CoEarthquakeDelayedClear(board, gc, levelBeforeEQ, center.x));
 
                         return;
                     }
@@ -1101,35 +1126,8 @@ public partial class Piece : MonoBehaviour
 
             if (AudioManager.I && data.specialSFX) AudioManager.I.PlaySFX(data.specialSFX);
 
-            board.ApplySpecialToEnvironment(envAffected, data.special);
-            if (data.special != SpecialType.SlowGravity)
-            {
-                board.FlashCells(
-                    toRemove,
-                    data.specialFlashSprite,
-                    data.flashOnlyOccupied); // Flash on affected cells using data flags
-            }
-
-            // Remove targets and make only the directly-above tiles fall sparsely
-            board.RemoveCellsAndFall(toRemove, out var removedA, out int dmgA, out float chargeA);
-
-            // Track stats for Death special unit removal
-            if (data.special == SpecialType.Death && PlayerProgress.I != null && removedA != null && removedA.Count > 0)
-                PlayerProgress.I.AddLifetimeInt(AchievementSystem.Stat.DeathblockUnitsRemoved, removedA.Count);
-
             enabled = false;
-            int levelBeforeSpecial = gc.CurrentLevel;
-
-            board.ClearFullLinesAnimated((rowsAfter, removedB, dmgB, chargeB, rowDamageB, rowDomB) =>
-            {
-                var colsByRowSpecial = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<int>>();
-
-                if (gc != null)
-                    gc.OnPieceLocked(rowsAfter, removedB, dmgA + dmgB, chargeA + chargeB, rowDamageB, rowDomB, colsByRowSpecial);
-
-                if (gc != null && gc.CurrentLevel == levelBeforeSpecial && gc.CanSpawnNewPiece())
-                    gc.SpawnNextPiece();
-            });
+            gc.StartCoroutine(CoResolveDestructiveSpecial(board, gc, center, toRemove, envAffected));
 
             return;
         }
@@ -1640,9 +1638,11 @@ public partial class Piece : MonoBehaviour
         }
     }
 
-    IEnumerator CoEarthquakeDelayedClear(Board boardRef, GameController gcRef, int levelBeforeEQ)
+    IEnumerator CoEarthquakeDelayedClear(Board boardRef, GameController gcRef, int levelBeforeEQ, int epicenterColumn)
     {
         if (!boardRef) yield break;
+        yield return boardRef.PlayEarthquakeRipple(epicenterColumn);
+        if (!boardRef || !gcRef || gcRef.CurrentLevel != levelBeforeEQ) yield break;
 
         // Same timing used for cascade clear visuals
         yield return null;

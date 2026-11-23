@@ -713,6 +713,7 @@ public partial class AudioManager : MonoBehaviour
         if (fadeOut)
         {
             pauseFadedMainMusic = IsMainMusicPlaying();
+            if (!pauseFadedMainMusic) return;
             pauseMusicSrcResumeScale = GetMainMusicSourceVolumeScale(musicSrc);
             pauseMusicTransitionResumeScale = GetMainMusicSourceVolumeScale(musicTransitionSrc);
             pauseMainMusicFadeCo = StartCoroutine(CoFadeMainMusicForPause(0f, 0f));
@@ -807,6 +808,14 @@ public partial class AudioManager : MonoBehaviour
         source.pitch = Mathf.Clamp(p, 0.5f, 2f);
         source.PlayOneShot(clip, vol);
     }
+
+    public const float SelectionPitchJitter = .03f;
+    public const float DeathPitchJitter = .025f;
+    public const float ShopPitchJitter = .02f;
+    public void PlayShopPurchaseSFX(AudioClip clip)
+        => PlaySFX(clip, pitch: 1f + Random.Range(-ShopPitchJitter, ShopPitchJitter), jitter: false);
+    public void PlaySelectionSFX(AudioClip clip)
+        => PlaySFX(clip, pitch: 1f + Random.Range(-SelectionPitchJitter, SelectionPitchJitter), jitter: false);
 
     public void PlayPreviewSFX()
     {
@@ -1251,6 +1260,7 @@ public partial class AudioManager : MonoBehaviour
 
     public void PlayTitleMusic()
     {
+        restoredLevelMusicWaitingForResume = false;
         context = MusicContext.Title;
         levelMusicActive = false;
         StopLevelMusicInternal(fadeOutMusic: false);
@@ -1263,6 +1273,7 @@ public partial class AudioManager : MonoBehaviour
 
     public void TransitionToTitleMusic()
     {
+        restoredLevelMusicWaitingForResume = false;
         ClearGameplaySong();
         context = MusicContext.Title;
         levelMusicActive = false;
@@ -1283,8 +1294,36 @@ public partial class AudioManager : MonoBehaviour
             StopMusic();
     }
 
+    bool restoredLevelMusicWaitingForResume;
+
+    public void RestoreLevelMusic(bool isBoss, bool paused)
+    {
+        // Loading can interrupt a fade at zero volume. Discard that playback state
+        // and select a fresh song when gameplay is ready to run.
+        restoredLevelMusicWaitingForResume = false;
+        StopPauseMusic();
+        StopLevelMusicInternal(fadeOutMusic: false);
+        StopMainMusicFadeCoroutine();
+        StopPauseMainMusicFadeCoroutine();
+        pauseFadedMainMusic = false;
+        StopMainMusicSource(musicSrc);
+        StopMainMusicSource(musicTransitionSrc);
+        SetMainMusicSourceVolumeScale(musicSrc, 0f);
+        SetMainMusicSourceVolumeScale(musicTransitionSrc, 0f);
+        context = MusicContext.Level;
+        levelIsBoss = isBoss;
+        levelMusicActive = false;
+        if (paused)
+        {
+            restoredLevelMusicWaitingForResume = true;
+            PlayPauseMusic();
+        }
+        else PlayLevelMusic(isBoss);
+    }
+
     public void PlayLevelMusic(bool isBoss, bool continueCurrentPlaylist = false)
     {
+        restoredLevelMusicWaitingForResume = false;
         if (continueCurrentPlaylist && context == MusicContext.Level && levelMusicActive && levelIsBoss == isBoss)
             return;
         StopPauseMusic();
@@ -1307,6 +1346,7 @@ public partial class AudioManager : MonoBehaviour
 
     public void StopLevelMusic()
     {
+        restoredLevelMusicWaitingForResume = false;
         levelMusicActive = false;
         StopLevelMusicInternal();
         StopRainAmbience();
@@ -1366,6 +1406,11 @@ public partial class AudioManager : MonoBehaviour
             pauseMusicFadeCo = null;
             pauseMusicSrc.Stop();
             pauseMusicSrc.clip = null;
+        }
+        if (restoredLevelMusicWaitingForResume)
+        {
+            restoredLevelMusicWaitingForResume = false;
+            PlayLevelMusic(levelIsBoss);
         }
     }
 
@@ -1740,7 +1785,7 @@ public partial class AudioManager : MonoBehaviour
         }
 
         uiSfxSrc.volume = masterVolume * sfxVolume;
-        PlayUISFX(sfxMonsterDie, vol: vol, pitch: 1f, jitter: true);
+        PlayUISFX(sfxMonsterDie, vol: vol, pitch: 1f + Random.Range(-DeathPitchJitter, DeathPitchJitter), jitter: false);
     }
 
     public void PlayRandomGlassCrack(float vol = 1f)

@@ -15,6 +15,11 @@ MonoBehaviour:
   modeMenuPrefab: {fileID: 4986014204074908279, guid: 61954ed700e2e0c40a923dc82a3c65e8, type: 3}
   marathonGaugePrefab: {fileID: 6675486935777587723, guid: 746aa4de7542bf74f84c983d01e51aa0, type: 3}
   marathonRewardPrefab: {fileID: 8662329616337007713, guid: 5ac0b787ad08e3f409946888d48178be, type: 3}
+  commanderLevelUpPrefab: {fileID: 3054151440020852939, guid: 68ac910d073c64e4f8f8691249dfe1a2, type: 3}
+  marathonCurtainPrefab: {fileID: 1851536611473210441, guid: 946e9c5df2b90cb488a6015649e1cbfd, type: 3}
+  marathonCurtainOpening: {fileID: 7400000, guid: 3b4b3551462549a489b59908c52d8ee2, type: 2}
+  marathonCastleStartingHealth: 1000
+  marathonCastleHealthGrowth: 1.35
   boulderSprite: {fileID: 488204432910556299, guid: ae4a1f05e5f6f1044978738736519fab, type: 3}
   boulderImpactSfx: {fileID: 8300000, guid: b2c2eab5668360d418e826b17f8a00dd, type: 3}
   boulderImpactAlternates:
@@ -23,4 +28,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ba6c75d3ab7546b2a108cd6f91874fe5, type: 3}
   standardLevelCount: 14
   marathonStartingDamage: 500
+  commanderLevelUpSfx: {fileID: 8300000, guid: f25fd68dbb2652b499c15bc4332b30c7, type: 3}
+  curtainPulleySfx: {fileID: 8300000, guid: 81140f3a0124d5246a81bb935bf23d5e, type: 3}
+  squadFireworkPrefab: {fileID: 4954584651243868360, guid: 9cc77649b15bc0b42ac2abc4a950fd0f, type: 3}
+  squadFireworkAnimation: {fileID: 7400000, guid: da43353664f98fd4089e8520d390db43, type: 2}
+  squadFireworkSfx: {fileID: 8300000, guid: 5a90504485ec4c5a9f68ef366b026360, type: 3}
+  squadFireworkVolume: 1.2
+  squadFireworkExplosionTimes: [0.75, 2.3, 3.45, 4.6, 5.95, 6.95, 7.4, 7.95]
   marathonDamageGrowth: 1.18

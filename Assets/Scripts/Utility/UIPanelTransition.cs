@@ -24,6 +24,11 @@ public class UIPanelTransition : MonoBehaviour
     Vector3 _targetLocalScale;
 
     public bool IsHiding => _isHiding;
+    public void SetDurations(float travelSeconds, float growSeconds)
+    {
+        moveToSavedPositionSeconds = Mathf.Max(0f, travelSeconds);
+        growToFullSizeSeconds = Mathf.Max(0f, growSeconds);
+    }
     public bool IsTransitioning => _fadeRoutine != null;
     public static bool IsAnyTransitioning => RunningTransitions.Count > 0;
 

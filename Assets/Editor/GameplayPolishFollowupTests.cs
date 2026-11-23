@@ -61,8 +61,11 @@ public class GameplayPolishFollowupTests
     {
         float scale=Time.timeScale; bool audio=AudioListener.pause;
         var go=new GameObject("Focus test"); var gc=go.AddComponent<GameController>();
+        gc.piece=go.AddComponent<Piece>();
+        ((System.Collections.IList)typeof(Piece).GetField("cells",Private).GetValue(gc.piece)).Add(Vector2Int.zero);
         try
         {
+            Time.timeScale=1;
             Call(gc,"OnApplicationFocus",false);
             Assert.IsTrue(Get<bool>(gc,"isPaused")); Assert.AreEqual(0,Time.timeScale);
             Call(gc,"OnApplicationFocus",true);
@@ -72,7 +75,7 @@ public class GameplayPolishFollowupTests
     }
 
     [Test]
-    public void FocusLossDuringCinematicPausesWhenTheCinematicFinishes()
+    public void FocusLossDuringCinematicDoesNotQueueAnotherPause()
     {
         float scale=Time.timeScale; bool audio=AudioListener.pause;
         var go=new GameObject("Deferred focus test"); var gc=go.AddComponent<GameController>();
@@ -83,7 +86,7 @@ public class GameplayPolishFollowupTests
             Assert.IsFalse(Get<bool>(gc,"isPaused"));
             Set(gc,"_specialAbilityCinematicActive",false);
             Call(gc,"TryApplyFocusPause");
-            Assert.IsTrue(Get<bool>(gc,"isPaused"));
+            Assert.IsFalse(Get<bool>(gc,"isPaused"));
         }
         finally { Object.DestroyImmediate(go); Time.timeScale=scale; AudioListener.pause=audio; }
     }

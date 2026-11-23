@@ -10,6 +10,15 @@ public sealed class MarathonSelectionBorder : MaskableGraphic
     [Min(0f)] public float pixelsPerSecond = 160f;
     public Color highlightColor = new Color(1f, .98f, .72f, 1f);
     float distance;
+    bool splitRarity;
+    Color lowerColor;
+    RectTransform lowerSection;
+    public void SetRarities(Color upper, Color lower, RectTransform debuffSection = null)
+    {
+        color = upper; lowerColor = lower; splitRarity = upper != lower;
+        lowerSection = debuffSection;
+        SetVerticesDirty();
+    }
 
     protected override void OnEnable() { base.OnEnable(); distance = 0f; }
     void Update()
@@ -23,6 +32,8 @@ public sealed class MarathonSelectionBorder : MaskableGraphic
     {
         mesh.Clear();
         Rect r = rectTransform.rect;
+        float splitY = lowerSection ? rectTransform.InverseTransformPoint(
+            lowerSection.TransformPoint(new Vector3(0, lowerSection.rect.yMax))).y : r.center.y;
         float edge = Mathf.Min(thickness, Mathf.Min(r.width, r.height) * .5f);
         float perimeter = 2f * (r.width + r.height);
         if (perimeter <= 0f) return;
@@ -48,13 +59,17 @@ public sealed class MarathonSelectionBorder : MaskableGraphic
                 float span = Mathf.Min(Mathf.Max(2f, pixelLength), length - start);
                 float phase = Mathf.Repeat(along + start - distance, perimeter * .5f);
                 float glow = pixelsPerSecond > 0f ? 1f - Mathf.Clamp01(phase / 100f) : 0f;
-                Color tint = Color.Lerp(color, highlightColor, glow);
                 Rect segment = segmentRect(start, span);
+                Color Tint(float y)
+                {
+                    float blend = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(splitY - r.height * .12f, splitY + r.height * .12f, y));
+                    return Color.Lerp(splitRarity ? Color.Lerp(lowerColor, color, blend) : color, highlightColor, glow);
+                }
                 int index = mesh.currentVertCount;
-                mesh.AddVert(new Vector3(segment.xMin, segment.yMin), tint, Vector2.zero);
-                mesh.AddVert(new Vector3(segment.xMin, segment.yMax), tint, Vector2.up);
-                mesh.AddVert(new Vector3(segment.xMax, segment.yMax), tint, Vector2.one);
-                mesh.AddVert(new Vector3(segment.xMax, segment.yMin), tint, Vector2.right);
+                mesh.AddVert(new Vector3(segment.xMin, segment.yMin), Tint(segment.yMin), Vector2.zero);
+                mesh.AddVert(new Vector3(segment.xMin, segment.yMax), Tint(segment.yMax), Vector2.up);
+                mesh.AddVert(new Vector3(segment.xMax, segment.yMax), Tint(segment.yMax), Vector2.one);
+                mesh.AddVert(new Vector3(segment.xMax, segment.yMin), Tint(segment.yMin), Vector2.right);
                 mesh.AddTriangle(index, index + 1, index + 2);
                 mesh.AddTriangle(index, index + 2, index + 3);
             }

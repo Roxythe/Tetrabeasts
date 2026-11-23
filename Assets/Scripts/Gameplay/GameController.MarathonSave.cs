@@ -16,7 +16,7 @@ public partial class GameController
         // mutation cannot be reconstructed from just the resulting board state.
         // Keep the match open instead of reporting success with a lossy snapshot.
         bool safe = isPaused && gameBoard && piece && piece.HasActiveCells && !gameOver && !levelWon && !winQueued &&
-            !marathonRewardActive && !_levelStartBlocked && !_roundTransitionActive && !_specialAbilityCinematicActive &&
+            !marathonRewardActive && !marathonTransitionActive && !_levelStartBlocked && !_roundTransitionActive && !_specialAbilityCinematicActive &&
             !_environmentRowClearResolving && !_rowClearComboResolutionActive && _snapshotTransitions == 0;
         _snapshotSaveError = safe ? null : "An attack or board change is still resolving. Resume briefly, then pause and use Save and Quit again. Your match is still open.";
         return safe;

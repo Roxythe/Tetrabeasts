@@ -109,6 +109,7 @@ public class CharacterSelectUI : MonoBehaviour
             if (targetVisual)
             {
                 targetVisual.Configure(hoverSFX, false, btn.transform);
+                targetVisual.useSelectionSoundPitch = true;
                 targetVisual.SetPulseTargets();
                 targetVisual.SetTargetPulseEnabled(false);
                 buttonTargetVisuals[data] = targetVisual;
@@ -453,7 +454,7 @@ public class CharacterSelectUI : MonoBehaviour
         SelectedCharacterStore.Current = data;
 
         if (AudioManager.I && selectSFX)
-            AudioManager.I.PlaySFX(selectSFX);
+            AudioManager.I.PlaySelectionSFX(selectSFX);
 
         RefreshPreview();
         RefreshButtonAlphas();

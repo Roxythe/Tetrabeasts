@@ -12,6 +12,7 @@ public sealed class MarathonRewardCard : MonoBehaviour, IPointerEnterHandler, IP
     public int choiceIndex;
     bool selected, hovered, focused;
     CanvasGroup group;
+    RewardIconBackdrop[] iconEffects;
     public void SetSelected(bool value) { selected = value; Refresh(); }
     public void ResetState() { selected = hovered = focused = false; Refresh(); }
     void OnEnable() => Refresh();
@@ -30,7 +31,9 @@ public sealed class MarathonRewardCard : MonoBehaviour, IPointerEnterHandler, IP
         if (!group) group = GetComponent<CanvasGroup>();
         bool targeted = (hovered && UICursorController.IsPointerTargetMode) ||
             (focused && UICursorController.IsButtonNavigationMode);
-        group.alpha = selected || targeted ? 1f : (colors ? colors.inactiveAlpha : 185f / 255f);
+        group.alpha = 1f;
+        if (iconEffects == null || iconEffects.Length == 0) iconEffects = GetComponentsInChildren<RewardIconBackdrop>(true);
+        foreach (var effect in iconEffects) effect.SetHighlighted(selected || targeted);
         if (selectionAnimation && selectionAnimation.activeSelf != selected) selectionAnimation.SetActive(selected);
         if (previewOwner) previewOwner.TargetReward(choiceIndex, targeted);
     }

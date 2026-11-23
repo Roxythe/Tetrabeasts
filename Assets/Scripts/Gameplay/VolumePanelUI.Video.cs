@@ -137,6 +137,9 @@ public partial class VolumePanelUI
         resolutionDropdown.SetValueWithoutNotify(Mathf.Max(0, videoResolutions.IndexOf(new Vector2Int(value.width, value.height))));
         displayModeDropdown.SetValueWithoutNotify(value.displayMode);
         vSyncDropdown.SetValueWithoutNotify(value.vSync ? 1 : 0);
+        // Refresh authored dropdowns too, so their serialized options cannot go stale.
+        frameRateDropdown.ClearOptions();
+        frameRateDropdown.AddOptions(new List<string>(VideoSettingsStore.FrameRateLabels));
         frameRateDropdown.SetValueWithoutNotify(System.Array.IndexOf(VideoSettingsStore.FrameRates, value.frameRate));
         videoKeepButton.gameObject.SetActive(false);
         videoRevertButton.gameObject.SetActive(false);
@@ -216,7 +219,7 @@ public partial class VolumePanelUI
         displayModeDropdown = VideoDropdown("Display_Mode", "Display mode", 155, new[] { "Windowed", "Fullscreen", "Borderless" });
         resolutionDropdown = VideoDropdown("Resolution", "Resolution", 75, new[] { "1920 x 1080" });
         vSyncDropdown = VideoDropdown("VSync", "VSync", -5, new[] { "Off", "On" });
-        frameRateDropdown = VideoDropdown("Frame_Rate", "Frame rate limit", -85, new[] { "60 FPS", "120 FPS", "144 FPS", "240 FPS", "Unlimited" });
+        frameRateDropdown = VideoDropdown("Frame_Rate", "FPS limiter", -85, VideoSettingsStore.FrameRateLabels);
         videoStatus = PlaylistText(videoPanel.transform, "Video_Status", "Borderless uses your desktop resolution.\nVSync uses your display's refresh rate.\nThe game keeps its widescreen layout.", 20, TextAlignmentOptions.Center);
         PlacePlaylistControl(videoStatus.transform, new Vector2(0, -187), new Vector2(680, 90));
         videoApplyButton = VideoButton("Video_Apply", "Apply", new Vector2(0, -270));
@@ -243,6 +246,14 @@ public partial class VolumePanelUI
     {
         var button = CreatePlaylistButton(videoPanel.transform, name, label);
         PlacePlaylistControl(button.transform, position, new Vector2(230, 48));
+        var text = button.GetComponentInChildren<TMP_Text>();
+        if (text)
+        {
+            text.alignment = TextAlignmentOptions.Center;
+            text.rectTransform.anchoredPosition = new Vector2(0, 5);
+            text.rectTransform.sizeDelta = new Vector2(-29, -15);
+            text.fontSize = 26;
+        }
         return button;
     }
 

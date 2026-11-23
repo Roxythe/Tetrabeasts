@@ -11,14 +11,12 @@ public sealed class MarathonRewardColors : MonoBehaviour
     public Color legendary = new Color(1f, 0.75f, 0.2f);
     [Header("Buff section")]
     public Color buffBackground = new Color(0.16f, 0.32f, 0.65f);
-    public Color buffTitle = new Color(0.55f, 0.82f, 1f);
-    public Color buffDescription = new Color(0.3f, 0.6f, 1f);
+    public Color buffTitle = new Color(.65f, .85f, 1f);
+    public Color buffDescription = new Color(.75f, .88f, 1f);
     [Header("Debuff section")]
     public Color debuffBackground = new Color(0.65f, 0.16f, 0.2f);
-    public Color debuffTitle = new Color(1f, 0.65f, 0.68f);
-    public Color debuffDescription = new Color(1f, 0.25f, 0.3f);
-    [Header("Unfocused choices")]
-    [Range(0.1f, 1f)] public float inactiveAlpha = 185f / 255f;
+    public Color debuffTitle = new Color(1f, .6f, .54f);
+    public Color debuffDescription = new Color(1f, .78f, .73f);
     public Color GetRarity(RunModRarity rarity)
     {
         switch (rarity)
