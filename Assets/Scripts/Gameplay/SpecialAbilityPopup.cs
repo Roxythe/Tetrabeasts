@@ -69,14 +69,8 @@ public sealed class SpecialAbilityPopup : MonoBehaviour
         onCharacterAnimationStart?.Invoke();
         StartCharacterAnimator();
 
-        if (characterAnimationFinishOnLastFrame)
-        {
-            yield return PlayCharacterAnimationToCompletion(onClosingStarted);
-            yield break;
-        }
-
-        yield return WaitForCharacterAnimation();
-        yield return PlayOutro(onClosingStarted);
+        // Each commander's actual clip and playback speed own the exit deadline.
+        yield return PlayCharacterAnimationToCompletion(onClosingStarted);
     }
 
     public IEnumerator Play(
@@ -504,7 +498,7 @@ public sealed class SpecialAbilityPopup : MonoBehaviour
             var state = characterAnimator.GetCurrentAnimatorStateInfo(0);
             speed = Mathf.Max(0.1f, Mathf.Abs(characterAnimator.speed * state.speed * state.speedMultiplier));
         }
-        return Mathf.Min((clip ? clip.length : fallbackDurationSeconds) / speed, maxDurationSeconds);
+        return clip ? clip.length / speed : Mathf.Min(fallbackDurationSeconds / speed, maxDurationSeconds);
     }
 
     void StartAnimator(Animator animator)

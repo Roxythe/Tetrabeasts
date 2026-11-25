@@ -50,9 +50,7 @@ public partial class Board
         var canvas = GetComponentInParent<Canvas>()?.rootCanvas;
         if (!canvas) yield break;
         var targets = new List<SpecialTarget>();
-        var borders = new Dictionary<Vector2Int, Image>();
         var seen = new HashSet<RectTransform>();
-        int top = 0;
         void Add(Vector2Int cell, RectTransform rect, bool destroyed, Color fallback)
         {
             if (!rect || !seen.Add(rect)) return;
@@ -64,17 +62,6 @@ public partial class Board
             var colors = new Color[images.Length]; for (int i = 0; i < images.Length; i++) colors[i] = images[i].color;
             targets.Add(new SpecialTarget { cell = cell, rect = rect, group = group, alpha = group.alpha, scale = rect.localScale,
                 tint = owned ? owned.tileColor : fill ? fill.color : fallback, destroy = destroyed, images = images, colors = colors });
-            top = Mathf.Max(top, cell.y);
-            if (kind == SpecialType.Bolt && !borders.ContainsKey(cell))
-            {
-                var border = new GameObject("Lightning special border", typeof(RectTransform), typeof(Image)).GetComponent<Image>();
-                border.transform.SetParent(overlayRoot ? overlayRoot : gridRoot, false);
-                border.rectTransform.sizeDelta = GetCellSize(); border.rectTransform.anchoredPosition = CellToAnchoredPos(cell);
-                border.sprite = lightningBorderSprite; border.color = lightningBorderSprite ? new Color(.2f, .7f, 1) : Color.clear;
-                border.raycastTarget = false;
-                FloorAmbientVfx.Attach(border, FloorEffectType.Lightning);
-                border.gameObject.SetActive(false); borders[cell] = border;
-            }
         }
         foreach (var cell in units)
             if (placed.TryGetValue(cell, out var rect)) Add(cell, rect, SpecialWillDestroy(cell, kind), Color.gray);
@@ -93,14 +80,15 @@ public partial class Board
         {
             var contact = new Vector2Int(Mathf.Clamp(epicenter.x, 0, width - 1), Mathf.Clamp(epicenter.y, 0, height - 1));
             Vector2 bottom = CellToAnchoredPos(new Vector2Int(contact.x, 0)) - Vector2.up * GetCellSize().y * .5f;
-            columnSpark = LightningColumnSpark.Create(overlayRoot ? overlayRoot : gridRoot, CellToAnchoredPos(contact), bottom, GetCellSize());
-            sparkSeconds = Mathf.Max(.3f, (contact.y + 1) * .055f);
+            columnSpark = LightningColumnSpark.Create(overlayRoot ? overlayRoot : gridRoot, CellToAnchoredPos(contact) + Vector2.up * GetCellSize().y * .5f, bottom, GetCellSize());
+            sparkSeconds = Mathf.Max(.3f, (contact.y + 2) * .11f);
         }
         var debris = PixelDebrisVfx.Create(canvas);
         float size = GetCellSize().x * Mathf.Abs(gridRoot.lossyScale.x) / Mathf.Max(.0001f, Mathf.Abs(canvas.transform.lossyScale.x));
         float duration = kind == SpecialType.Bomb ? .23f : kind == SpecialType.Death ? .75f : .55f;
         float lastDelay = 0;
-        foreach (var target in targets) if (kind == SpecialType.Bolt) lastDelay = Mathf.Max(lastDelay, (top - target.cell.y) * .055f);
+        float Delay(SpecialTarget target) => columnSpark ? columnSpark.ProgressPastCell(CellToAnchoredPos(target.cell).y - GetCellSize().y * .5f) * sparkSeconds : 0;
+        foreach (var target in targets) lastDelay = Mathf.Max(lastDelay, Delay(target));
         IsSpecialAnimating = true;
         bool completed = false;
         try
@@ -112,9 +100,8 @@ public partial class Board
                 foreach (var target in targets)
                 {
                     if (!target.rect) continue;
-                    float local = t - (kind == SpecialType.Bolt ? (top - target.cell.y) * .055f : 0);
+                    float local = t - Delay(target);
                     if (local < 0) continue;
-                    if (borders.TryGetValue(target.cell, out var border) && border) border.gameObject.SetActive(local < duration);
                     if (!target.destroy) continue;
                     float p = Mathf.Clamp01(local / duration);
                     if (kind == SpecialType.Death)
@@ -124,12 +111,12 @@ public partial class Board
                         for (int i = 0; i < target.images.Length; i++)
                             if (target.images[i]) target.images[i].color = Color.Lerp(target.colors[i], new Color(.22f, .13f, .08f), p);
                     }
-                    if (!target.emitted && local >= (kind == SpecialType.Bolt ? .12f : kind == SpecialType.Death ? .5f : .03f))
+                    if (!target.emitted && local >= (kind == SpecialType.Bolt ? 0f : kind == SpecialType.Death ? .5f : .03f))
                     {
                         target.emitted = true;
                         debris.Burst(target.rect.TransformPoint(target.rect.rect.center), size,
                             kind == SpecialType.Death ? new Color(.3f, .2f, .12f) : target.tint,
-                            (Vector2)(target.cell - epicenter), kind == SpecialType.Bomb);
+                            (Vector2)(target.cell - epicenter), kind == SpecialType.Bomb, disintegrate: kind == SpecialType.Bolt);
                         if (kind != SpecialType.Death) target.group.alpha = 0;
                     }
                 }
@@ -145,10 +132,6 @@ public partial class Board
                 if (target.rect) target.rect.localScale = target.scale;
                 if (target.group) target.group.alpha = completed && target.destroy ? 0 : target.alpha;
                 for (int i = 0; i < target.images.Length; i++) if (target.images[i]) target.images[i].color = target.colors[i];
-            }
-            foreach (var border in borders.Values) if (border)
-            {
-                if (Application.isPlaying) Destroy(border.gameObject); else DestroyImmediate(border.gameObject);
             }
             if (debris) debris.keepAlive = false;
             if (columnSpark)

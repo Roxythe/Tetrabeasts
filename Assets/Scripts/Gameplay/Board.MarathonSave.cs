@@ -35,6 +35,11 @@ public partial class Board
                 target.data && state.poisonTargetDataId == target.data.GetInstanceID() ? 1 : 0;
             result.floors.Add(new MarathonMatchSnapshot.FloorState { cell = entry.Key, state = state });
         }
+        foreach (var entry in bossLightningEffects)
+        {
+            var state = entry.Value; state.nextTickTime -= Time.time;
+            result.floors.Add(new MarathonMatchSnapshot.FloorState { cell = entry.Key, state = state, bossLightning = true });
+        }
         return result;
     }
 
@@ -78,6 +83,12 @@ public partial class Board
         foreach (var floor in state.floors)
         {
             var fx = floor.state;
+            if (floor.bossLightning)
+            {
+                AddBossLightning(floor.cell, fx.damage, fx.interval, fx.ticksRemaining);
+                fx.nextTickTime += Time.time; bossLightningEffects[floor.cell] = fx;
+                continue;
+            }
             SetFloorEffect(floor.cell, fx.type, fx.damage, fx.interval, fx.ticksRemaining);
             fx.nextTickTime += Time.time;
             if (fx.poisonTargetDataId != 0 && monsters.TryGetValue(floor.cell, out var target) && target.data)

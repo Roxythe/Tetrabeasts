@@ -115,7 +115,8 @@ public static class MarathonRewardPresentationValidation
                 foreach (var icon in new[] { reward.buffIcons[i], reward.debuffIcons[i] })
                 {
                     var backing = icon.transform.parent.GetComponentInChildren<RewardIconBackdrop>(true);
-                    Check(backing && backing.transform.GetSiblingIndex() < icon.transform.GetSiblingIndex(), "Icon animation must remain behind the icon.");
+                    Check(backing && backing.transform.GetSiblingIndex() > icon.transform.GetSiblingIndex(), "Icon animation must draw above the icon.");
+                    Check(backing.plate && backing.plate.transform.GetSiblingIndex() < icon.transform.GetSiblingIndex(), "Only the opaque plate belongs behind the icon.");
                     Check(!icon.transform.parent.Find("Icon Border").gameObject.activeSelf, "Gold frame must not cover the rarity-colored frame.");
                 }
             }
@@ -133,7 +134,7 @@ public static class MarathonRewardPresentationValidation
             Check(SettingsStore.LoadMarathonCompareRewards(), "Comparison setting must persist.");
             Check(reward.previewPanels.All(p => p.gameObject.activeSelf), "All previews must be visible for comparison.");
             Call(reward, "Select", 1);
-            Check(reward.cards[0].GetComponent<CanvasGroup>().alpha == 1f, "Inactive cards must not wash out their artwork through a transparency overlay.");
+            Check(Mathf.Approximately(reward.cards[0].GetComponent<CanvasGroup>().alpha, 215f / 255f), "Inactive cards must fade uniformly to 215/255 alpha.");
             Check(reward.cards[1].GetComponent<CanvasGroup>().alpha == 1, "Selected card must be opaque.");
             foreach (var effect in reward.cards[0].GetComponentsInChildren<RewardIconBackdrop>())
                 Check(!(bool)typeof(RewardIconBackdrop).GetField("highlighted", Private).GetValue(effect), "Idle icons must not animate.");

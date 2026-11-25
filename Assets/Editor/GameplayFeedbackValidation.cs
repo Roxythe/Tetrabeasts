@@ -84,10 +84,12 @@ public static class GameplayFeedbackValidation
             Check(!(bool)Call(board, "SpecialWillDestroy", cells[1], SpecialType.Bolt), "A surviving multi-hit stone must not dissolve.");
             Check((bool)Call(board, "SpecialWillDestroy", cells[1], SpecialType.Bomb), "Bomb destruction should include stone rubble.");
             animation = (IEnumerator)Call(board, "AnimateSpecialDestruction", SpecialType.Bolt, new Vector2Int(3, 10), cells, cells, new Func<float>(() => .05f));
-            for (int i = 0; i < 5; i++) Check(animation.MoveNext(), "Lightning animation should remain active during cascade.");
+            for (int i = 0; i < 8; i++) Check(animation.MoveNext(), "Lightning animation should remain active during cascade.");
             Check(board.IsSpecialAnimating && placed[cells[0]].GetComponent<CanvasGroup>().alpha == 0 && placed[cells[2]].GetComponent<CanvasGroup>().alpha == 1,
                 "Lightning must dissolve the highest unit before the lowest one.");
             var emittedPixels = (IList)Get(canvas.GetComponentInChildren<PixelDebrisVfx>(), "particles");
+            Check((bool)emittedPixels[0].GetType().GetField("disintegrate").GetValue(emittedPixels[0]), "Lightning must use round disintegration particles.");
+            Check(emittedPixels.Cast<object>().All(p => ((Vector2)p.GetType().GetField("velocity").GetValue(p)).y > 0), "Disintegration must drift upward.");
             Color originalBlockTint = (Color)emittedPixels[0].GetType().GetField("tint").GetValue(emittedPixels[0]);
             Check(originalBlockTint.g > .9f && originalBlockTint.b < .2f, "Temporary white tile flashes must not erase the original debris color.");
             Capture(canvas, scene, "Logs/LightningCascade-preview.png");

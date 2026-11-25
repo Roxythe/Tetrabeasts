@@ -387,9 +387,9 @@ public partial class Board : MonoBehaviour
 
     readonly Dictionary<Vector2Int, ZipPadVisual> zipPadVisuals = new();
 
-    public bool HasFloorEffect(Vector2Int cell) => floorEffects.ContainsKey(cell);
+    public bool HasFloorEffect(Vector2Int cell) => floorEffects.ContainsKey(cell) || bossLightningEffects.ContainsKey(cell);
     public bool HasFloorEffectOfType(Vector2Int cell, FloorEffectType type) =>
-        floorEffects.TryGetValue(cell, out var fx) && fx.type == type;
+        (floorEffects.TryGetValue(cell, out var fx) && fx.type == type) || (type == FloorEffectType.Lightning && bossLightningEffects.ContainsKey(cell));
 
     // Events
     public event Action<Vector2Int, MonsterData> TileDied; // Event called when a tile's HP reaches 0
@@ -1930,6 +1930,7 @@ public partial class Board : MonoBehaviour
 
     public void ClearAll()
     {
+        ClearAllBossLightning();
         specialPresentationGeneration++;
         IsSpecialAnimating = false;
         foreach (var visual in placed.Values)
@@ -2767,7 +2768,7 @@ public partial class Board : MonoBehaviour
     public void RemoveCellsAndFall(IEnumerable<Vector2Int> toRemove,
                                out List<Vector2Int> removedCells,
                                out int damageFromMonsters,
-                               out float specialChargeFromMonsters)
+                               out float specialChargeFromMonsters, bool settleImmediately = true)
     {
         removedCells = new List<Vector2Int>();
         damageFromMonsters = 0;
@@ -2818,7 +2819,7 @@ public partial class Board : MonoBehaviour
         foreach (var c in removeSet)
             cols.Add(c.x);
 
-        SettleColumns(cols, false);
+        if (settleImmediately) SettleColumns(cols, false);
         CleanOrphanedTiles();
     }
 
@@ -5042,6 +5043,7 @@ public partial class Board : MonoBehaviour
 
     void TickFloorEffects()
     {
+        TickBossLightning(Time.time);
         if (floorEffects.Count == 0) return;
 
         float now = Time.time;

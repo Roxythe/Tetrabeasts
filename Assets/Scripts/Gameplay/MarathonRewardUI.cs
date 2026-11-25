@@ -130,8 +130,38 @@ public sealed class MarathonRewardUI : MonoBehaviour
         }
         Backing("Buff Rarity Backing", boundary, 1, upper);
         Backing("Debuff Rarity Backing", 0, boundary, lower);
+        var dividerObject = card.Find("Blended Divider");
+        var divider = dividerObject ? dividerObject.GetComponent<MarathonSelectionBorder>() : null;
+        if (!divider)
+        {
+            divider = new GameObject("Blended Divider", typeof(RectTransform), typeof(CanvasRenderer), typeof(MarathonSelectionBorder)).GetComponent<MarathonSelectionBorder>();
+            divider.transform.SetParent(card, false);
+        }
+        var bad = debuffBackgrounds[index].rectTransform;
+        float gapBottom = bad.anchoredPosition.y + bad.rect.yMax;
+        float gapTop = section.anchoredPosition.y + section.rect.yMin;
+        divider.rectTransform.anchorMin = divider.rectTransform.anchorMax = Vector2.one * .5f;
+        divider.rectTransform.anchoredPosition = new Vector2(0, (gapBottom + gapTop) * .5f);
+        divider.rectTransform.sizeDelta = new Vector2(section.rect.width, Mathf.Max(0, gapTop - gapBottom));
+        divider.fillRectangle = true; divider.gradientReference = card; divider.pixelsPerSecond = 0; divider.raycastTarget = false;
+        divider.SetRarities(upper, lower, bad);
         RewardIconBackdrop.Attach(buffIcons[index], upper);
-        RewardIconBackdrop.Attach(debuffIcons[index], lower);
+        RewardIconBackdrop.Attach(debuffIcons[index], lower).isDebuff = true;
+        if (previewLabels != null && index < previewLabels.Length && previewLabels[index])
+        {
+            var label = previewLabels[index];
+            label.rectTransform.offsetMin = new Vector2(26, 18); label.rectTransform.offsetMax = new Vector2(-26, -18);
+            label.enableAutoSizing = true; label.fontSizeMin = 14; label.fontSizeMax = 24;
+            var shadow = label.GetComponent<TMPLabelShadow>();
+            if (shadow && shadow.shadow)
+            {
+                var rect = shadow.shadow.rectTransform;
+                rect.anchorMin = label.rectTransform.anchorMin; rect.anchorMax = label.rectTransform.anchorMax;
+                rect.pivot = label.rectTransform.pivot; rect.sizeDelta = label.rectTransform.sizeDelta;
+                rect.anchoredPosition = label.rectTransform.anchoredPosition + new Vector2(2, -2);
+                shadow.Sync();
+            }
+        }
     }
 
     public void Show(int level, Pair[] options, Action<RunModifierSO, RunModifierSO> callback,

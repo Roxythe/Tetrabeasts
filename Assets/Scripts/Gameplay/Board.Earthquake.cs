@@ -23,12 +23,23 @@ public partial class Board
     // Resolve occupancy once, then let each visual accelerate into its final cell.
     // The row-clear caller waits here before finding the next cascade or spawning a piece.
     IEnumerator AnimateRowClearSettle(Dictionary<int, List<int>> filledColumnsByRow, System.Func<float> deltaTime)
+        => AnimateColumnSettle(filledColumnsByRow, deltaTime, null);
+
+    public IEnumerator SettleAfterSpecial(IEnumerable<Vector2Int> affectedCells)
+    {
+        var columns = new HashSet<int>();
+        foreach (var cell in affectedCells) columns.Add(cell.x);
+        yield return AnimateColumnSettle(null, () => Time.deltaTime, columns);
+    }
+
+    IEnumerator AnimateColumnSettle(Dictionary<int, List<int>> filledColumnsByRow, System.Func<float> deltaTime, HashSet<int> columns)
     {
         int generation = earthquakeGeneration;
         var origins = new Dictionary<RectTransform, Vector2>();
         foreach (var pair in placed)
             if (pair.Value) origins[pair.Value] = pair.Value.anchoredPosition;
-        for (int x = 0; x < width; x++) SettleColumn(x, false, filledColumnsByRow);
+        for (int x = 0; x < width; x++)
+            if (columns == null || columns.Contains(x)) SettleColumn(x, false, filledColumnsByRow);
         var falling = new List<EarthquakeTile>();
         foreach (var pair in placed)
             if (pair.Value && origins.TryGetValue(pair.Value, out var origin) && origin.y > CellToAnchoredPos(pair.Key).y + .01f)

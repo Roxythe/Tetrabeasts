@@ -486,6 +486,15 @@ public class GameplayPlaylistTests
         Read<Button>(panel, "videoKeepButton").onClick.Invoke();
         Assert.AreEqual(0, VideoSettingsStore.Load().displayMode);
         Assert.AreEqual(120, VideoSettingsStore.Load().frameRate);
+        fps.value = System.Array.IndexOf(VideoSettingsStore.FrameRates, 90);
+        Read<Button>(panel, "videoApplyButton").onClick.Invoke();
+        Assert.IsFalse(Read<bool>(panel, "videoPending"), "FPS-only changes must save without display confirmation.");
+        Assert.AreEqual(90, VideoSettingsStore.Load().frameRate);
+        vsync.value = 1;
+        Read<Button>(panel, "videoApplyButton").onClick.Invoke();
+        Assert.IsFalse(Read<bool>(panel, "videoPending"), "VSync-only changes must save without display confirmation.");
+        Assert.IsTrue(VideoSettingsStore.Load().vSync);
+        Assert.IsFalse(Read<TMPro.TMP_Text>(panel, "videoStatus").gameObject.activeSelf);
         display.value = 1;
         Read<Button>(panel, "videoApplyButton").onClick.Invoke();
         typeof(VolumePanelUI).GetField("videoConfirmRemaining", Private).SetValue(panel, 0f);

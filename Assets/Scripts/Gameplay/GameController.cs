@@ -9452,13 +9452,8 @@ public partial class GameController : MonoBehaviour
         float duration = Mathf.Max(0.05f, _castleData.bossLightningHazardDuration);
 
         int ticks = Mathf.CeilToInt(duration / interval);
-        gameBoard.SetFloorEffect(cell, (Board.FloorEffectType)System.Enum.Parse(typeof(Board.FloorEffectType), "Lightning"),
-                                 tickDmg, interval, ticks);
-
-        yield return new WaitForSeconds(duration);
-
-        if (IsRoundActionTokenCurrent(roundToken))
-            gameBoard.ClearFloorEffect(cell);
+        // This layer owns its own ticks and expiration, including after save/load.
+        gameBoard.AddBossLightning(cell, tickDmg, interval, ticks);
     }
 
     struct TrapSpawnBatch

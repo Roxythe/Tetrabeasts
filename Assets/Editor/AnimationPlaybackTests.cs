@@ -44,7 +44,7 @@ public class AnimationPlaybackTests
     }
 
     [UnityTest]
-    public IEnumerator MaoAndQuixelFinishWithLastFrameAtFasterSpeedDuringGameplayPause()
+    public IEnumerator AllCommandersFinishDuringSlideOutWhilePaused()
     {
         yield return new EnterPlayMode();
         float oldTimeScale = Time.timeScale;
@@ -52,12 +52,10 @@ public class AnimationPlaybackTests
         try
         {
             Time.timeScale = 0f;
-            foreach (string name in new[] { "Mao", "Quixel" })
+            foreach (var character in AssetDatabase.FindAssets("t:PlayerCharacterData").Select(g => AssetDatabase.LoadAssetAtPath<PlayerCharacterData>(AssetDatabase.GUIDToAssetPath(g))).Where(c => c && c.specialAbilityAnimationPrefab))
             {
-                var character = AssetDatabase.LoadAssetAtPath<PlayerCharacterData>($"Assets/ScriptableObjects/Commanders/{name}.asset");
-                var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>($"Assets/Animations/{name}Special.anim");
-                Assert.AreEqual(1.25f, character.specialAbilityAnimationPlaybackSpeed);
-                Assert.IsTrue(character.specialAbilityAnimationFinishOnLastFrame);
+                string name = character.name;
+                var clip = character.specialAbilityAnimationPrefab.GetComponentInChildren<Animator>(true).runtimeAnimatorController.animationClips.OrderByDescending(c=>c.length).First();
                 var binding = AnimationUtility.GetObjectReferenceCurveBindings(clip).First(b => b.propertyName == "m_Sprite");
                 var keys = AnimationUtility.GetObjectReferenceCurve(clip, binding);
                 var lastSprite = keys[keys.Length - 1].value as Sprite;
@@ -71,7 +69,7 @@ public class AnimationPlaybackTests
                     onCharacterAnimationStart: () => started = Time.realtimeSinceStartup,
                     onClosingStarted: _ => closing = Time.realtimeSinceStartup);
                 float elapsed = Time.realtimeSinceStartup - started;
-                float expected = clip.length / 1.25f;
+                float expected = clip.length / Mathf.Max(.1f, character.specialAbilityAnimationPlaybackSpeed);
                 Assert.That(elapsed, Is.InRange(expected, expected + 0.4f), name + " must not wait through an extra outro after the clip.");
                 Assert.That(closing - started, Is.InRange(expected - 1.2f, expected - 0.6f));
                 var animator = root.GetComponentsInChildren<Animator>().Single();

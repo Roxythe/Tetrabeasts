@@ -14,6 +14,17 @@ public sealed class MarathonGaugeUI : MonoBehaviour
     float previousRequired;
     GaugeLiquidMotion motion;
     void Awake() => EnsureMotion();
+    public void MatchTypography(TMP_Text reference)
+    {
+        if (!reference || !damageLabel) return;
+        damageLabel.font = reference.font;
+        damageLabel.fontSharedMaterial = reference.fontSharedMaterial;
+        damageLabel.fontStyle = reference.fontStyle;
+        damageLabel.enableAutoSizing = false;
+        damageLabel.fontSize = reference.fontSize * Mathf.Abs(reference.transform.lossyScale.x) /
+            Mathf.Max(.0001f, Mathf.Abs(damageLabel.transform.lossyScale.x));
+        damageLabel.characterSpacing = reference.characterSpacing;
+    }
     void EnsureMotion()
     {
         if (!motion && gauge) motion = gauge.GetComponent<GaugeLiquidMotion>() ?? gauge.gameObject.AddComponent<GaugeLiquidMotion>();
@@ -44,7 +55,7 @@ public sealed class MarathonGaugeUI : MonoBehaviour
         if (levelLabel) levelLabel.gameObject.SetActive(false);
         damageLabel.text = Mathf.FloorToInt(damage) + " / " + Mathf.CeilToInt(required);
         // Keep the sideways label centered when runtime layout matches the ultimate gauge height.
-        damageLabel.rectTransform.sizeDelta = new Vector2(((RectTransform)transform).rect.height - 40f, 36f);
+        damageLabel.rectTransform.sizeDelta = new Vector2(((RectTransform)transform).rect.height - 40f, Mathf.Max(36f, damageLabel.fontSize * 1.6f));
         if (glassOverlay)
         {
             var rect = ((RectTransform)transform).rect;

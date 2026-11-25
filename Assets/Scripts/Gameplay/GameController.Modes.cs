@@ -92,6 +92,7 @@ public partial class GameController
             target.SetParent(reference.parent, true);
             target.SetSiblingIndex(reference.GetSiblingIndex());
         }
+        marathonGauge.MatchTypography(specialText);
     }
     void TickGameMode()
     {

@@ -13,11 +13,10 @@ MonoBehaviour:
   m_Name: Debuff_ReducedCurrency_0
   m_EditorClassIdentifier: Assembly-CSharp::RunModifier
   displayName: Win Currency Down
-  description: Slightly reduces the amount of currency the player gains after winning
-    the round.
+  description: Decreases gold gained after winning a round by 10%, rounded to the nearest whole gold.
   icon: {fileID: 21300000, guid: ea98b3cef7aa5c64e95cc08bef496841, type: 3}
   isBuff: 0
   rarity: 0
   stat: 0
-  op: 0
-  value: -5
+  op: 1
+  value: 0.90

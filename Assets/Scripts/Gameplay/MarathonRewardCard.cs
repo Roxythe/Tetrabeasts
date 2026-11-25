@@ -31,7 +31,7 @@ public sealed class MarathonRewardCard : MonoBehaviour, IPointerEnterHandler, IP
         if (!group) group = GetComponent<CanvasGroup>();
         bool targeted = (hovered && UICursorController.IsPointerTargetMode) ||
             (focused && UICursorController.IsButtonNavigationMode);
-        group.alpha = 1f;
+        group.alpha = selected || targeted ? 1f : 215f / 255f;
         if (iconEffects == null || iconEffects.Length == 0) iconEffects = GetComponentsInChildren<RewardIconBackdrop>(true);
         foreach (var effect in iconEffects) effect.SetHighlighted(selected || targeted);
         if (selectionAnimation && selectionAnimation.activeSelf != selected) selectionAnimation.SetActive(selected);

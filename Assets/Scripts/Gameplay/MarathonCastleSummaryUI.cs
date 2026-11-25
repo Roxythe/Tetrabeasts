@@ -13,6 +13,7 @@ public sealed class MarathonCastleSummaryUI : MonoBehaviour
     readonly List<CanvasGroup> rows = new List<CanvasGroup>();
     readonly List<TMP_Text> labels = new List<TMP_Text>();
     readonly List<TMP_Text> levelUps = new List<TMP_Text>();
+    readonly List<int> celebratedLevels = new List<int>();
     IReadOnlyList<RewardLine> shownLines;
     float presentationElapsed, rollSeconds;
     bool presenting;
@@ -62,6 +63,7 @@ public sealed class MarathonCastleSummaryUI : MonoBehaviour
         foreach (Transform child in panel) Destroy(child.gameObject);
         rows.Clear();
         labels.Clear(); levelUps.Clear();
+        celebratedLevels.Clear();
         shownLines = lines; presentationElapsed = 0; rollSeconds = 3.2f;
         group.alpha = 1;
         gameObject.SetActive(true);
@@ -92,6 +94,7 @@ public sealed class MarathonCastleSummaryUI : MonoBehaviour
                 rollSeconds = Mathf.Max(rollSeconds, Mathf.Min(5f, 3.2f + .35f * (lines[i].Level(lines[i].afterXp) - lines[i].Level(lines[i].beforeXp))));
             }
             levelUps.Add(badge);
+            celebratedLevels.Add(lines[i].Level(lines[i].beforeXp));
         }
         Canvas.ForceUpdateCanvases();
         for (int i = 0; i < lines.Count; i++)
@@ -123,6 +126,12 @@ public sealed class MarathonCastleSummaryUI : MonoBehaviour
             {
                 float total = Mathf.Lerp(line.beforeXp, line.afterXp, progress);
                 bool leveled = line.Level(total) > line.Level(line.beforeXp);
+                while (celebratedLevels[i] < line.Level(total))
+                {
+                    celebratedLevels[i]++;
+                    if (AudioManager.I && AudioManager.I.sfxLevelUp)
+                        AudioManager.I.PlayUISFX(AudioManager.I.sfxLevelUp);
+                }
                 labels[i].text = line.Format(total, leveled);
                 var badge = levelUps[i];
                 if (badge && leveled)
@@ -130,6 +139,7 @@ public sealed class MarathonCastleSummaryUI : MonoBehaviour
                     badge.transform.parent.gameObject.SetActive(true);
                     badge.color = Color.Lerp(new Color(1, .78f, .15f), Color.white, .5f + .5f * Mathf.Sin(presentationElapsed * Mathf.PI * 3f));
                     PositionLevelUp(labels[i], badge);
+                    badge.transform.parent.localScale = Vector3.one * (1f + .08f * Mathf.Sin(presentationElapsed * Mathf.PI * 4f));
                     badge.GetComponent<TMPLabelShadow>().Sync();
                 }
                 labels[i].GetComponent<TMPLabelShadow>().Sync();

@@ -76,7 +76,9 @@ public partial class Piece : MonoBehaviour
         if (!board || !gc || gc.CurrentLevel != levelBeforeSpecial) yield break;
         board.ApplySpecialToEnvironment(envAffected, data.special);
         // Remove targets and make only the directly-above tiles fall sparsely
-        board.RemoveCellsAndFall(toRemove, out var removedA, out int dmgA, out float chargeA);
+        board.RemoveCellsAndFall(toRemove, out var removedA, out int dmgA, out float chargeA, settleImmediately: false);
+        yield return board.SettleAfterSpecial(toRemove);
+        if (!board || !gc || gc.CurrentLevel != levelBeforeSpecial) yield break;
 
         // Track stats for Death special unit removal
         if (data.special == SpecialType.Death && PlayerProgress.I != null && removedA != null && removedA.Count > 0)

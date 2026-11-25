@@ -38,6 +38,18 @@ public static class VideoSettingsStore
     public static FullScreenMode ScreenMode(int mode) => mode == 0 ? FullScreenMode.Windowed
         : mode == 1 ? FullScreenMode.ExclusiveFullScreen : FullScreenMode.FullScreenWindow;
 
+    public static bool RequiresDisplayConfirmation(Options current, Options requested) =>
+        current.displayMode != requested.displayMode ||
+        (requested.displayMode != 2 && (current.width != requested.width || current.height != requested.height));
+
+    public static void ApplyPerformance(Options value)
+    {
+        value = Validate(value);
+        if (Application.isEditor) return;
+        QualitySettings.vSyncCount = value.vSync ? 1 : 0;
+        Application.targetFrameRate = value.frameRate;
+    }
+
     public static Options CaptureCurrent() => new Options
     {
         displayMode = Screen.fullScreenMode == FullScreenMode.Windowed ? 0
@@ -59,8 +71,7 @@ public static class VideoSettingsStore
             !Array.Exists(Screen.resolutions, r => r.width == width && r.height == height))
         { width = desktop.width; height = desktop.height; }
         Screen.SetResolution(width, height, ScreenMode(value.displayMode));
-        QualitySettings.vSyncCount = value.vSync ? 1 : 0;
-        Application.targetFrameRate = value.frameRate;
+        ApplyPerformance(value);
     }
 
     public static void Save(Options value)

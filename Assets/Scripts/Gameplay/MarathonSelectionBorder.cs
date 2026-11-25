@@ -9,6 +9,8 @@ public sealed class MarathonSelectionBorder : MaskableGraphic
     [Min(2f)] public float pixelLength = 8f;
     [Min(0f)] public float pixelsPerSecond = 160f;
     public Color highlightColor = new Color(1f, .98f, .72f, 1f);
+    public bool fillRectangle;
+    public RectTransform gradientReference;
     float distance;
     bool splitRarity;
     Color lowerColor;
@@ -34,6 +36,17 @@ public sealed class MarathonSelectionBorder : MaskableGraphic
         Rect r = rectTransform.rect;
         float splitY = lowerSection ? rectTransform.InverseTransformPoint(
             lowerSection.TransformPoint(new Vector3(0, lowerSection.rect.yMax))).y : r.center.y;
+        float blendHeight = gradientReference ? gradientReference.rect.height : r.height;
+        Color RarityTint(float y) => splitRarity ? Color.Lerp(lowerColor, color,
+            Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(splitY - blendHeight * .12f, splitY + blendHeight * .12f, y))) : color;
+        if (fillRectangle)
+        {
+            mesh.AddVert(new Vector3(r.xMin, r.yMin), RarityTint(r.yMin), Vector2.zero);
+            mesh.AddVert(new Vector3(r.xMin, r.yMax), RarityTint(r.yMax), Vector2.up);
+            mesh.AddVert(new Vector3(r.xMax, r.yMax), RarityTint(r.yMax), Vector2.one);
+            mesh.AddVert(new Vector3(r.xMax, r.yMin), RarityTint(r.yMin), Vector2.right);
+            mesh.AddTriangle(0,1,2); mesh.AddTriangle(0,2,3); return;
+        }
         float edge = Mathf.Min(thickness, Mathf.Min(r.width, r.height) * .5f);
         float perimeter = 2f * (r.width + r.height);
         if (perimeter <= 0f) return;
@@ -62,8 +75,7 @@ public sealed class MarathonSelectionBorder : MaskableGraphic
                 Rect segment = segmentRect(start, span);
                 Color Tint(float y)
                 {
-                    float blend = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(splitY - r.height * .12f, splitY + r.height * .12f, y));
-                    return Color.Lerp(splitRarity ? Color.Lerp(lowerColor, color, blend) : color, highlightColor, glow);
+                    return Color.Lerp(RarityTint(y), highlightColor, glow);
                 }
                 int index = mesh.currentVertCount;
                 mesh.AddVert(new Vector3(segment.xMin, segment.yMin), Tint(segment.yMin), Vector2.zero);

@@ -15,11 +15,14 @@ public partial class VolumePanelUI
     readonly List<GameObject> controlsHiddenTabs = new();
     bool videoPending;
     float videoConfirmRemaining;
-    VideoSettingsStore.Options previousVideo, pendingVideo;
+    VideoSettingsStore.Options previousVideo, pendingVideo, displayedVideo;
 
     void EnsureVideoUI()
     {
         if (!videoPanel) BuildVideoUI();
+        videoKeepButton.colors = videoApplyButton.colors;
+        var cancel = videoPanel.transform.Find("Video_Close")?.GetComponent<Button>();
+        if (cancel) videoRevertButton.colors = cancel.colors;
         RefreshSharedSettingsTabs();
         if (!Application.isPlaying) return;
         WireSettingsTabs();
@@ -124,6 +127,7 @@ public partial class VolumePanelUI
     void RefreshVideoSettings()
     {
         var value = VideoSettingsStore.Load();
+        displayedVideo = value;
         videoResolutions.Clear();
         foreach (var resolution in Screen.resolutions) AddVideoResolution(resolution.width, resolution.height);
         AddVideoResolution(Screen.width, Screen.height);
@@ -159,20 +163,29 @@ public partial class VolumePanelUI
         frameRateDropdown.interactable = !videoPending && vSyncDropdown.value == 0;
         videoApplyButton.interactable = !videoPending;
         videoApplyButton.gameObject.SetActive(!videoPending);
-        if (!videoPending) videoStatus.text = "Borderless uses your desktop resolution.\nVSync uses your display's refresh rate.\nThe game keeps its widescreen layout.";
+        videoStatus.gameObject.SetActive(videoPending);
+        if (!videoPending) videoStatus.text = string.Empty;
     }
 
     void ApplyVideoSettings()
     {
         if (videoPending || videoResolutions.Count == 0) return;
         var size = videoResolutions[resolutionDropdown.value];
-        previousVideo = VideoSettingsStore.CaptureCurrent();
         pendingVideo = new VideoSettingsStore.Options { displayMode = displayModeDropdown.value,
             width = size.x, height = size.y, vSync = vSyncDropdown.value == 1,
             frameRate = VideoSettingsStore.FrameRates[frameRateDropdown.value] };
+        if (!VideoSettingsStore.RequiresDisplayConfirmation(displayedVideo, pendingVideo))
+        {
+            VideoSettingsStore.ApplyPerformance(pendingVideo);
+            VideoSettingsStore.Save(pendingVideo);
+            RefreshVideoSettings();
+            return;
+        }
+        previousVideo = VideoSettingsStore.CaptureCurrent();
         VideoSettingsStore.Apply(pendingVideo);
         videoPending = true;
         videoConfirmRemaining = 15f;
+        videoStatus.text = "Keep these video settings?\nReverting in 15 seconds.";
         videoKeepButton.gameObject.SetActive(true);
         videoRevertButton.gameObject.SetActive(true);
         UpdateVideoAvailability(0);
@@ -220,7 +233,9 @@ public partial class VolumePanelUI
         resolutionDropdown = VideoDropdown("Resolution", "Resolution", 75, new[] { "1920 x 1080" });
         vSyncDropdown = VideoDropdown("VSync", "VSync", -5, new[] { "Off", "On" });
         frameRateDropdown = VideoDropdown("Frame_Rate", "FPS limiter", -85, VideoSettingsStore.FrameRateLabels);
-        videoStatus = PlaylistText(videoPanel.transform, "Video_Status", "Borderless uses your desktop resolution.\nVSync uses your display's refresh rate.\nThe game keeps its widescreen layout.", 20, TextAlignmentOptions.Center);
+        videoStatus = PlaylistText(videoPanel.transform, "Video_Status", string.Empty, 32, TextAlignmentOptions.Center);
+        videoStatus.enableAutoSizing = false;
+        videoStatus.gameObject.SetActive(false);
         PlacePlaylistControl(videoStatus.transform, new Vector2(0, -187), new Vector2(680, 90));
         videoApplyButton = VideoButton("Video_Apply", "Apply", new Vector2(0, -270));
         videoKeepButton = VideoButton("Video_Keep", "Keep", new Vector2(-130, -270));
@@ -245,6 +260,10 @@ public partial class VolumePanelUI
     Button VideoButton(string name, string label, Vector2 position)
     {
         var button = CreatePlaylistButton(videoPanel.transform, name, label);
+        var colors = button.colors;
+        if (name == "Video_Apply" || name == "Video_Keep") colors.normalColor = new Color(.20106629f, .98039216f, .17254902f);
+        else if (name == "Video_Close" || name == "Video_Revert") colors.normalColor = new Color(.98039216f, .2509804f, .17254902f);
+        button.colors = colors;
         PlacePlaylistControl(button.transform, position, new Vector2(230, 48));
         var text = button.GetComponentInChildren<TMP_Text>();
         if (text)

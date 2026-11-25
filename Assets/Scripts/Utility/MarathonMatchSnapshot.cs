@@ -48,8 +48,10 @@ public sealed class MarathonMatchSnapshot
         foreach (var cell in piece.cells)
             if (cell.x < 0 || cell.x >= board.width || cell.y < 0 || cell.y > board.height + 8 || occupied.Contains(cell) || !active.Add(cell)) return false;
         var floors = new HashSet<Vector2Int>();
+        var lightningFloors = new HashSet<Vector2Int>();
         foreach (var floor in board.floors)
-            if (floor == null || !InBounds(floor.cell) || !floors.Add(floor.cell) || !Finite(floor.state.nextTickTime) ||
+            if (floor == null || !InBounds(floor.cell) || !(floor.bossLightning ? lightningFloors : floors).Add(floor.cell) || !Finite(floor.state.nextTickTime) ||
+                (floor.bossLightning && floor.state.type != Board.FloorEffectType.Lightning) ||
                 !Enum.IsDefined(typeof(Board.FloorEffectType), floor.state.type)) return false;
         foreach (var next in queue)
             if (next == null || string.IsNullOrEmpty(next.asset) || next.monsters == null) return false;
@@ -86,6 +88,7 @@ public sealed class MarathonMatchSnapshot
     }
     [Serializable] public sealed class FloorState
     {
+        public bool bossLightning;
         public Vector2Int cell;
         public Board.FloorEffectState state;
     }
